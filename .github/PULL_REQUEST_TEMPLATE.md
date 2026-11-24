@@ -1,11 +1,37 @@
-## 🎟️ Tracking
+## 这个 PR 做了什么
 
-<!-- Paste the link to the Jira or GitHub issue or otherwise describe / point to where this change is coming from. -->
+<!-- 一两句话说明改动内容和动机。关联的 issue：Fixes #123 -->
 
-## 📔 Objective
+## 改动类型
 
-<!-- Describe what the purpose of this PR is, for example what bug you're fixing or new feature you're adding. -->
+- [ ] 缺陷修复
+- [ ] 新功能
+- [ ] 重构（不改变行为）
+- [ ] 文档 / 构建 / 工具链
+- [ ] 上游代码合并
 
-## 📸 Screenshots
+## 检查清单
 
-<!-- Required for any UI changes; delete if not applicable. Use fixed width images for better display. -->
+- [ ] 已在本地跑通 `npm run lint`
+- [ ] 已在本地跑通 `npm test`（涉及加密、同步、本地写入的改动必须有单测）
+- [ ] 已用 `npm run build:chrome` 构建并在浏览器中实际验证
+- [ ] 新增的持久化状态已注册到对应的 `state-definitions.ts`
+- [ ] 没有在 `chrome.storage`、日志、错误上报中写入明文
+- [ ] 没有引入新的出站网络请求（若有，已在下方说明理由）
+- [ ] 未触碰 `bitwarden_license/` 目录
+
+## 离线性与隐私影响
+
+<!-- 断网时这个改动的行为是否完整？是否新增联网？有没有新的数据落盘？ -->
+
+## 对上游文件的改动
+
+<!-- 如果修改了 Bitwarden 上游原有文件，列出文件与行号范围，并说明为何必须改这里而不是新建文件 -->
+
+| 文件 | 改动内容 | 原因 |
+|---|---|---|
+|  |  |  |
+
+## 截图
+
+<!-- UI 改动请附截图；删除不适用项 -->
