@@ -6,11 +6,11 @@
     "message": "Logo di LocalPassword"
   },
   "extName": {
-    "message": "LocalPassword Password Manager",
+    "message": "LocalPassword",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "LocalPassword Password Manager Beta",
+    "message": "LocalPassword Beta",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
