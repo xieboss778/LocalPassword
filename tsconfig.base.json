@@ -199,6 +199,9 @@
       ],
       "@bitwarden/tools-share": [
         "./libs/tools/share/src/index.ts"
+      ],
+      "@bitwarden/local-vault": [
+        "./libs/local-vault/src/index.ts"
       ]
     },
     "plugins": [
