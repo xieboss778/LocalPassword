@@ -1,0 +1,77 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
+import { OrganizationResponse } from "../../../admin-console/models/response/organization.response";
+import { BaseResponse } from "../../../models/response/base.response";
+
+import { PendingAnnualUpgradeResponse } from "./pending-annual-upgrade.response";
+import {
+  BillingSubscriptionResponse,
+  BillingSubscriptionUpcomingInvoiceResponse,
+} from "./subscription.response";
+
+export class OrganizationSubscriptionResponse extends OrganizationResponse {
+  storageName: string;
+  storageGb: number;
+  subscription: BillingSubscriptionResponse;
+  upcomingInvoice: BillingSubscriptionUpcomingInvoiceResponse;
+  customerDiscount: BillingCustomerDiscount;
+  expiration: string;
+  expirationWithoutGracePeriod: string;
+  exemptFromBillingAutomation: boolean;
+  pendingAnnualUpgrade?: PendingAnnualUpgradeResponse;
+  pamSeats?: number;
+  occupiedPamSeats?: number;
+  maxAutoscalePamSeats?: number;
+  isOnPamSalesInitiatedTrial?: boolean;
+
+  constructor(response: any) {
+    super(response);
+    this.storageName = this.getResponseProperty("StorageName");
+    this.storageGb = this.getResponseProperty("StorageGb");
+    const subscription = this.getResponseProperty("Subscription");
+    this.subscription = subscription == null ? null : new BillingSubscriptionResponse(subscription);
+    const upcomingInvoice = this.getResponseProperty("UpcomingInvoice");
+    this.upcomingInvoice =
+      upcomingInvoice == null
+        ? null
+        : new BillingSubscriptionUpcomingInvoiceResponse(upcomingInvoice);
+    const customerDiscount = this.getResponseProperty("CustomerDiscount");
+    this.customerDiscount =
+      customerDiscount == null ? null : new BillingCustomerDiscount(customerDiscount);
+    this.expiration = this.getResponseProperty("Expiration");
+    this.expirationWithoutGracePeriod = this.getResponseProperty("ExpirationWithoutGracePeriod");
+    this.exemptFromBillingAutomation = this.getResponseProperty("ExemptFromBillingAutomation");
+    const pendingAnnualUpgrade = this.getResponseProperty("PendingAnnualUpgrade");
+    if (pendingAnnualUpgrade) {
+      this.pendingAnnualUpgrade = new PendingAnnualUpgradeResponse(pendingAnnualUpgrade);
+    }
+    this.pamSeats = this.getResponseProperty("PamSeats") ?? undefined;
+    this.occupiedPamSeats = this.getResponseProperty("OccupiedPamSeats") ?? undefined;
+    this.maxAutoscalePamSeats = this.getResponseProperty("MaxAutoscalePamSeats") ?? undefined;
+    this.isOnPamSalesInitiatedTrial =
+      this.getResponseProperty("IsOnPamSalesInitiatedTrial") ?? undefined;
+  }
+}
+
+export class BillingCustomerDiscount extends BaseResponse {
+  id: string;
+  active: boolean;
+  percentOff?: number;
+  amountOff?: number;
+  end?: string;
+  durationInMonths?: number;
+  appliesTo: string[];
+  isFromSchedule: boolean;
+
+  constructor(response: any) {
+    super(response);
+    this.id = this.getResponseProperty("Id");
+    this.active = this.getResponseProperty("Active");
+    this.percentOff = this.getResponseProperty("PercentOff");
+    this.amountOff = this.getResponseProperty("AmountOff");
+    this.end = this.getResponseProperty("End");
+    this.durationInMonths = this.getResponseProperty("DurationInMonths");
+    this.appliesTo = this.getResponseProperty("AppliesTo") || [];
+    this.isFromSchedule = this.getResponseProperty("IsFromSchedule") ?? false;
+  }
+}

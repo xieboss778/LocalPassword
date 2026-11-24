@@ -1,0 +1,85 @@
+@if (initializing) {
+  <div class="tw-flex tw-items-center tw-justify-center">
+    <i
+      class="bwi bwi-spinner bwi-spin bwi-3x tw-text-muted"
+      title="{{ 'loading' | i18n }}"
+      aria-hidden="true"
+    ></i>
+    <span class="tw-sr-only">{{ "loading" | i18n }}</span>
+  </div>
+} @else {
+  <div *ngIf="!useTrialStepper">
+    <auth-input-password
+      [flow]="inputPasswordFlow"
+      [email]="email"
+      [loading]="submitting"
+      (onPasswordFormSubmit)="handlePasswordSubmit($event)"
+      [primaryButtonText]="{ key: 'createAccount' }"
+    ></auth-input-password>
+  </div>
+  <div *ngIf="useTrialStepper">
+    <app-vertical-stepper #stepper linear (selectionChange)="verticalStepChange($event)">
+      <app-vertical-step label="Create Account" [editable]="false" [subLabel]="email">
+        <auth-input-password
+          [flow]="inputPasswordFlow"
+          [email]="email"
+          [loading]="submitting"
+          (onPasswordFormSubmit)="handlePasswordSubmit($event)"
+          [primaryButtonText]="{ key: 'createAccount' }"
+        ></auth-input-password>
+      </app-vertical-step>
+      <app-vertical-step label="Organization Information" [subLabel]="orgInfoSubLabel">
+        @if (includesPrivilegedControls && trialLength > 0) {
+          <bit-callout
+            type="info"
+            [title]="null"
+            [accessibleName]="'privilegedControls' | i18n"
+            class="tw-mb-3 tw-block"
+          >
+            {{ "trialIncludesPrivilegedControls" | i18n }}
+          </bit-callout>
+        } @else if (showPrivilegedControlsSalesCallout) {
+          <bit-callout
+            type="info"
+            [title]="null"
+            [accessibleName]="'privilegedControls' | i18n"
+            class="tw-mb-3 tw-block"
+            id="privileged-controls-sales-callout"
+          >
+            {{ "trialPrivilegedControlsThroughSales" | i18n }}
+            <a
+              bitLink
+              href="https://bitwarden.com/contact/"
+              target="_blank"
+              rel="noreferrer"
+              id="complete-trial-initiation_link_privileged-controls-contact-sales"
+            >
+              {{ "contactSales" | i18n }}
+            </a>
+          </bit-callout>
+        }
+        <app-org-info [nameOnly]="true" [formGroup]="orgInfoFormGroup"></app-org-info>
+        <button
+          type="button"
+          bitButton
+          buttonType="primary"
+          [disabled]="orgInfoFormGroup.controls.name.invalid"
+          [loading]="loading"
+          (click)="orgNameEntrySubmit()"
+        >
+          {{ orgInfoButtonLabel | i18n }}
+        </button>
+      </app-vertical-step>
+      <app-vertical-step label="Billing" [subLabel]="billingSubLabel" *ngIf="showBillingStep">
+        <app-trial-billing-step
+          *ngIf="stepper.selectedIndex === 2"
+          [trial]="trial"
+          (organizationCreated)="createdOrganization($event)"
+          [existingOrganization]="organization"
+          (steppedBack)="previousStep()"
+        >
+        </app-trial-billing-step>
+      </app-vertical-step>
+    </app-vertical-stepper>
+  </div>
+}

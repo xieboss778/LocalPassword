@@ -1,0 +1,94 @@
+import { Observable, catchError, firstValueFrom, from, shareReplay } from "rxjs";
+
+import { FeatureFlag } from "../../enums/feature-flag.enum";
+import { MasterPasswordServiceAbstraction } from "../../key-management/master-password/abstractions/master-password.service.abstraction";
+import { ConfigService } from "../../platform/abstractions/config/config.service";
+import { SdkService } from "../../platform/abstractions/sdk/sdk.service";
+
+import { PasswordPreloginApiService } from "./password-prelogin-api.service";
+import { PasswordPreloginData } from "./password-prelogin.model";
+import { PasswordPreloginRequest } from "./password-prelogin.request";
+import { PasswordPreloginService } from "./password-prelogin.service";
+
+export class DefaultPasswordPreloginService implements PasswordPreloginService {
+  // TODO: PM-46654 - Key the cache on email and environment. A cache keyed on email alone
+  // returns the previous region's KDF config when the user changes region and keeps the same
+  // email.
+  private currentEmail: string | null = null;
+  private currentPreloginData$: Observable<PasswordPreloginData> | null = null;
+
+  constructor(
+    private passwordPreloginApiService: PasswordPreloginApiService,
+    private sdkService: SdkService,
+    private configService: ConfigService,
+    private masterPasswordService: MasterPasswordServiceAbstraction,
+  ) {}
+
+  getPreloginData$(email: string): Observable<PasswordPreloginData> {
+    const normalized = email.trim().toLowerCase();
+
+    if (normalized === this.currentEmail && this.currentPreloginData$ !== null) {
+      return this.currentPreloginData$;
+    }
+
+    this.currentEmail = normalized;
+    this.currentPreloginData$ = from(this.fetchPreloginData(normalized)).pipe(
+      catchError((err: unknown) => {
+        // If the fetch fails, we want to reset the stored email and prelogin data so that future calls will attempt to fetch again
+        // otherwise, there isn't a way to recover from a failed call since the failed result would be cached indefinitely
+        // TODO: This clears the cache even when it now holds a different email's request. If a
+        // subscribed request for email A fails after a request for email B has replaced it, B's
+        // entry is dropped and B is fetched again. The data stays correct; only the request
+        // repeats. Fix: keep a reference to the observable built here and clear only while
+        // currentPreloginData$ still points at it.
+        this.currentEmail = null;
+        this.currentPreloginData$ = null;
+        throw err;
+      }),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+
+    return this.currentPreloginData$;
+  }
+
+  clearCache(): void {
+    this.currentEmail = null;
+    this.currentPreloginData$ = null;
+  }
+
+  /**
+   * Resolves both the KDF config and the salt to derive with. The flag is read once, here, so
+   * that its outcome travels with the returned data. A second read downstream can observe a
+   * different value (the pre-auth server config renews on an interval) and disagree with the
+   * fetch that produced the data.
+   */
+  private async fetchPreloginData(email: string): Promise<PasswordPreloginData> {
+    // TODO: PM-40137 - Remove this flag
+    const useSdk = await this.configService.getFeatureFlag(
+      FeatureFlag.PM27060_PasswordPreloginFromSdk,
+    );
+
+    return useSdk ? this.fetchPreloginDataFromSdk(email) : this.fetchPreloginDataFromApi(email);
+  }
+
+  /**
+   * Kill switch for server-supplied salts: ignores any salt in the response and derives from the
+   * email, so turning the flag off restores email-based derivation if salt normalization
+   * diverges.
+   */
+  private async fetchPreloginDataFromApi(email: string): Promise<PasswordPreloginData> {
+    const response = await this.passwordPreloginApiService.getPreloginData(
+      new PasswordPreloginRequest(email),
+    );
+    return PasswordPreloginData.fromResponse(
+      response,
+      this.masterPasswordService.emailToSalt(email),
+    );
+  }
+
+  private async fetchPreloginDataFromSdk(email: string): Promise<PasswordPreloginData> {
+    const client = await firstValueFrom(this.sdkService.client$);
+    const loginClient = client.auth().login();
+    return PasswordPreloginData.fromSdk(await loginClient.get_password_prelogin(email));
+  }
+}

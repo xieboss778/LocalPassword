@@ -1,0 +1,107 @@
+import { Injectable } from "@angular/core";
+
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
+import {
+  SubscriptionDiscount,
+  SubscriptionDiscountResponse,
+} from "@bitwarden/common/billing/models/response/subscription-discount.response";
+import { SubscriptionCadence } from "@bitwarden/common/billing/types/subscription-pricing-tier";
+
+import {
+  BillingAddress,
+  NonTokenizedPaymentMethod,
+  TokenizedPaymentMethod,
+} from "../payment/types";
+
+export type UpgradePremiumToOrganizationRequest = {
+  organizationName: string;
+  organizationKey: string;
+  collectionName: string | null;
+  publicKey: string;
+  encryptedPrivateKey: string;
+  planTier: ProductTierType;
+  cadence: SubscriptionCadence;
+  billingAddress: Pick<BillingAddress, "country" | "postalCode" | "taxId">;
+};
+
+@Injectable({ providedIn: "root" })
+export class AccountBillingClient {
+  private endpoint = "/account/billing/vnext";
+
+  constructor(private apiService: ApiService) {}
+
+  getLicense = async (): Promise<string> => {
+    const path = `${this.endpoint}/license`;
+    return this.apiService.send("GET", path, null, true, true);
+  };
+
+  purchaseSubscription = async (
+    paymentMethod: TokenizedPaymentMethod | NonTokenizedPaymentMethod,
+    billingAddress: Pick<BillingAddress, "country" | "postalCode">,
+    coupons?: string[],
+    fromMarketing?: string | null,
+  ): Promise<void> => {
+    const path = `${this.endpoint}/subscription`;
+
+    const isTokenizedPayment = "token" in paymentMethod;
+
+    const base = isTokenizedPayment
+      ? { tokenizedPaymentMethod: paymentMethod, billingAddress }
+      : { nonTokenizedPaymentMethod: paymentMethod, billingAddress };
+
+    const request = {
+      ...base,
+      ...(coupons?.length ? { coupons } : {}),
+      ...(fromMarketing ? { fromMarketing } : {}),
+    };
+
+    await this.apiService.send("POST", path, request, true, true);
+  };
+
+  reinstateSubscription = async (): Promise<void> => {
+    const path = `${this.endpoint}/subscription/reinstate`;
+    await this.apiService.send("POST", path, null, true, false);
+  };
+
+  updateSubscriptionStorage = async (additionalStorageGb: number): Promise<void> => {
+    const path = `${this.endpoint}/subscription/storage`;
+    await this.apiService.send("PUT", path, { additionalStorageGb }, true, false);
+  };
+
+  getApplicableDiscounts = async (): Promise<SubscriptionDiscount[]> => {
+    const path = `${this.endpoint}/discounts`;
+    const json = await this.apiService.send("GET", path, null, true, true);
+    if (!Array.isArray(json)) {
+      return [];
+    }
+    return json.map((item: any) => new SubscriptionDiscountResponse(item));
+  };
+
+  upgradePremiumToOrganization = async (
+    request: UpgradePremiumToOrganizationRequest,
+  ): Promise<string> => {
+    const path = `${this.endpoint}/upgrade`;
+    const response = await this.apiService.send(
+      "POST",
+      path,
+      {
+        organizationName: request.organizationName,
+        key: request.organizationKey,
+        collectionName: request.collectionName,
+        publicKey: request.publicKey,
+        encryptedPrivateKey: request.encryptedPrivateKey,
+        targetProductTierType: request.planTier,
+        cadence: request.cadence as string,
+        billingAddress: request.billingAddress,
+      },
+      true,
+      true,
+    );
+
+    // The endpoint returns an `UpgradePremiumToOrganizationResponseModel` object. It previously
+    // returned the organization ID as a bare string, so tolerate both shapes: a client running
+    // against an older server would otherwise resolve to "[object Object]".
+    return typeof response === "string" ? response : response?.organizationId;
+  };
+}

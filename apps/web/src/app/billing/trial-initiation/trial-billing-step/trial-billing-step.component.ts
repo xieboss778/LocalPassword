@@ -1,0 +1,193 @@
+import { Component, computed, input, OnInit, output, viewChild } from "@angular/core";
+import { toObservable, toSignal } from "@angular/core/rxjs-interop";
+import { FormControl, FormGroup } from "@angular/forms";
+import { debounceTime, firstValueFrom, map, Observable, startWith, switchMap } from "rxjs";
+
+import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
+import { DiscountTierType } from "@bitwarden/common/billing/enums/discount-tier-type.enum";
+import { SubscriptionDiscount } from "@bitwarden/common/billing/models/response/subscription-discount.response";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { ToastService } from "@bitwarden/components";
+import { Discount, DiscountBadgeComponent } from "@bitwarden/pricing";
+import {
+  EnterBillingAddressComponent,
+  EnterPaymentMethodComponent,
+} from "@bitwarden/web-vault/app/billing/payment/components";
+import { SubscriptionDiscountService } from "@bitwarden/web-vault/app/billing/services/subscription-discount.service";
+import {
+  Cadence,
+  Cadences,
+  Prices,
+  Trial,
+  TrialBillingStepService,
+} from "@bitwarden/web-vault/app/billing/trial-initiation/trial-billing-step/trial-billing-step.service";
+import { TrialPreviewCartComponent } from "@bitwarden/web-vault/app/billing/trial-initiation/trial-billing-step/trial-preview-cart.component";
+import { SharedModule } from "@bitwarden/web-vault/app/shared";
+
+export interface OrganizationCreatedEvent {
+  organizationId: string;
+  planDescription: string;
+}
+
+// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+@Component({
+  selector: "app-trial-billing-step",
+  templateUrl: "./trial-billing-step.component.html",
+  imports: [
+    EnterPaymentMethodComponent,
+    EnterBillingAddressComponent,
+    TrialPreviewCartComponent,
+    SharedModule,
+    DiscountBadgeComponent,
+  ],
+})
+export class TrialBillingStepComponent implements OnInit {
+  protected readonly enterPaymentMethodComponent = viewChild.required(EnterPaymentMethodComponent);
+
+  protected readonly previewCart = viewChild(TrialPreviewCartComponent);
+
+  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // eslint-disable-next-line @angular-eslint/prefer-signals
+  protected trial = input.required<Trial>();
+  protected steppedBack = output<void>();
+
+  /** Emitted once the org exists; the container navigates. Duplicate submits are stopped by the created guards. */
+  protected readonly organizationCreated = output<OrganizationCreatedEvent>();
+
+  /** The org the container already created, so a remounted step navigates instead of creating again. */
+  protected readonly existingOrganization = input<OrganizationCreatedEvent | undefined>(undefined);
+
+  protected prices$!: Observable<Prices>;
+
+  protected formGroup = new FormGroup({
+    cadence: new FormControl<Cadence>(Cadences.Annually, {
+      nonNullable: true,
+    }),
+    paymentMethod: EnterPaymentMethodComponent.getFormGroup(),
+    billingAddress: EnterBillingAddressComponent.getFormGroup(),
+  });
+
+  /** The cadence currently selected on the billing plan radios. */
+  protected readonly cadenceSelected$ = this.formGroup.controls.cadence.valueChanges.pipe(
+    startWith(Cadences.Annually),
+  );
+
+  /** The cadence value for the preview component — a FormControl isn't a signal. */
+  protected readonly cadenceValue = toSignal(this.cadenceSelected$, {
+    initialValue: Cadences.Annually,
+  });
+
+  /** The debounced billing address value for the preview component. */
+  protected readonly billingAddressValue = toSignal(
+    this.formGroup.controls.billingAddress.valueChanges.pipe(
+      debounceTime(500),
+      map(() => this.formGroup.controls.billingAddress.getRawValue()),
+    ),
+    { initialValue: this.formGroup.controls.billingAddress.getRawValue() },
+  );
+
+  protected readonly discountTierType = computed<DiscountTierType | null>(() =>
+    this.trial().tier === "families" ? DiscountTierType.Families : null,
+  );
+
+  protected readonly eligibleDiscounts = toSignal(
+    toObservable(this.discountTierType).pipe(
+      switchMap(() => this.trialBillingStepService.getEligibleDiscounts$(this.trial().tier)),
+    ),
+    { initialValue: [] },
+  );
+
+  protected readonly cartDiscounts = computed<Discount[]>(() =>
+    this.eligibleDiscounts()
+      .map((d) => this.subscriptionDiscountService.mapToCartDiscount(d))
+      .filter((d): d is Discount => d !== null),
+  );
+
+  private readonly eligibleCouponIds = computed<string[]>(() =>
+    this.eligibleDiscounts().map((d: SubscriptionDiscount) => d.stripeCouponId),
+  );
+
+  constructor(
+    private i18nService: I18nService,
+    private toastService: ToastService,
+    private trialBillingStepService: TrialBillingStepService,
+    private subscriptionDiscountService: SubscriptionDiscountService,
+  ) {}
+
+  async ngOnInit() {
+    this.prices$ = this.trialBillingStepService.getPrices$(
+      this.trial().product,
+      this.trial().tier,
+      this.trial().privilegedControls != null,
+    );
+  }
+
+  private describeCadence(cadence: Cadence, price: number): string {
+    switch (cadence) {
+      case Cadences.Annually:
+        return `${this.i18nService.t("annual")} ($${price}/${this.i18nService.t("yr")})`;
+      case Cadences.Monthly:
+        return `${this.i18nService.t("monthly")} ($${price}/${this.i18nService.t("monthAbbr")})`;
+    }
+  }
+
+  /** Submit is allowed unless a rendered preview cart is still loading, erroring, or empty. */
+  protected canSubmit(): boolean {
+    const cart = this.previewCart();
+    return cart == null || cart.canSubmit();
+  }
+
+  submit = async (): Promise<void> => {
+    const existingOrganization = this.existingOrganization();
+    if (existingOrganization != null) {
+      this.organizationCreated.emit(existingOrganization);
+      return;
+    }
+
+    this.formGroup.markAllAsTouched();
+    if (this.formGroup.invalid) {
+      return;
+    }
+
+    const paymentMethod = await this.enterPaymentMethodComponent().tokenize();
+    if (!paymentMethod) {
+      return;
+    }
+
+    const billingAddress = this.formGroup.controls.billingAddress.getRawValue();
+
+    const cadence = this.formGroup.value.cadence!;
+
+    const prices = await firstValueFrom(this.prices$);
+
+    let organization: OrganizationResponse;
+    try {
+      organization = await this.trialBillingStepService.startTrial(
+        this.trial(),
+        cadence,
+        billingAddress,
+        paymentMethod,
+        this.eligibleCouponIds(),
+      );
+    } catch (e: unknown) {
+      if (this.subscriptionDiscountService.isDiscountExpiredError(e)) {
+        this.subscriptionDiscountService.refresh();
+        this.toastService.showToast({
+          variant: "warning",
+          title: "",
+          message: this.i18nService.t("discountExpiredOnPurchase"),
+        });
+        return;
+      }
+      throw e;
+    }
+
+    this.organizationCreated.emit({
+      organizationId: organization.id,
+      planDescription: this.describeCadence(cadence, prices[cadence]!),
+    });
+  };
+
+  protected stepBack = () => this.steppedBack.emit();
+}

@@ -1,0 +1,630 @@
+import { firstValueFrom, startWith, Subscription } from "rxjs";
+import { pairwise } from "rxjs/operators";
+
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { isUrlInList } from "@bitwarden/common/autofill/utils";
+import { Fido2ActiveRequestManager } from "@bitwarden/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
+import {
+  AssertCredentialParams,
+  AssertCredentialResult,
+  CreateCredentialParams,
+  CreateCredentialResult,
+  FallbackRequestedError,
+  Fido2ClientService,
+} from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
+
+import { BrowserApi } from "../../../platform/browser/browser-api";
+import { ScriptInjectorService } from "../../../platform/services/abstractions/script-injector.service";
+import { AbortManager } from "../../../vault/background/abort-manager";
+import { Fido2ContentScript, Fido2ContentScriptId } from "../enums/fido2-content-script.enum";
+import { Fido2PortName } from "../enums/fido2-port-name.enum";
+import { BrowserFido2ParentWindowReference } from "../services/browser-fido2-user-interface.service";
+
+import {
+  Fido2BackgroundExtensionMessageHandlers,
+  Fido2Background as Fido2BackgroundInterface,
+  Fido2ExtensionMessage,
+  SharedFido2ScriptInjectionDetails,
+  SharedFido2ScriptRegistrationOptions,
+} from "./abstractions/fido2.background";
+import { PermissionsPolicyBackground } from "./permissions-policy/permissions-policy.background";
+import { WebAuthnPermissionsPolicyFeature } from "./permissions-policy/types";
+
+export class Fido2Background implements Fido2BackgroundInterface {
+  private currentAuthStatus$: Subscription = Subscription.EMPTY;
+  private abortManager = new AbortManager();
+  private fido2ContentScriptPortsSet = new Set<chrome.runtime.Port>();
+  private activeCredentialRequests = new Set<number>();
+  private registeredContentScripts: browser.contentScripts.RegisteredContentScript | undefined =
+    undefined;
+  private readonly sharedInjectionDetails: SharedFido2ScriptInjectionDetails = {
+    runAt: "document_start",
+  };
+  private readonly sharedRegistrationOptions: SharedFido2ScriptRegistrationOptions = {
+    matches: ["https://*/*", "http://localhost/*"],
+    excludeMatches: ["https://*/*.xml*"],
+    allFrames: true,
+    ...this.sharedInjectionDetails,
+  };
+  private readonly extensionMessageHandlers: Fido2BackgroundExtensionMessageHandlers = {
+    fido2AbortRequest: ({ message }) => this.abortRequest(message),
+    fido2RegisterCredentialRequest: ({ message, sender }) =>
+      this.registerCredentialRequest(message, sender),
+    fido2GetCredentialRequest: ({ message, sender }) => this.getCredentialRequest(message, sender),
+  };
+
+  constructor(
+    private logService: LogService,
+    private fido2ActiveRequestManager: Fido2ActiveRequestManager,
+    private fido2ClientService: Fido2ClientService<BrowserFido2ParentWindowReference>,
+    private vaultSettingsService: VaultSettingsService,
+    private scriptInjectorService: ScriptInjectorService,
+    private authService: AuthService,
+    private permissionsPolicy: PermissionsPolicyBackground,
+    private domainSettingsService: DomainSettingsService,
+  ) {}
+
+  /**
+   * Checks if a FIDO2 credential request (registration or assertion)
+   * is currently in progress for the given tab.
+   *
+   * @param tabId - The tab id to check.
+   */
+  private isCredentialRequestInProgress(tabId: number): boolean {
+    return this.activeCredentialRequests.has(tabId);
+  }
+
+  /**
+   * Returns true when vault notifications should defer for visible FIDO2 UI.
+   */
+  shouldDeferVaultNotificationsForPasskeyUi(tabId: number): boolean {
+    if (!this.isCredentialRequestInProgress(tabId)) {
+      return false;
+    }
+
+    const activeRequest = this.fido2ActiveRequestManager.getActiveRequest(tabId);
+    if (activeRequest == null) {
+      return true;
+    }
+
+    return activeRequest.credentials.length > 0;
+  }
+
+  /**
+   * Initializes the FIDO2 background service. Sets up the extension message
+   * and port listeners. Subscribes to the enablePasskeys$ observable to
+   * handle passkey enable/disable events.
+   */
+  init() {
+    this.permissionsPolicy.init();
+    BrowserApi.messageListener("fido2.background", this.handleExtensionMessage);
+    BrowserApi.addListener(chrome.runtime.onConnect, this.handleInjectedScriptPortConnection);
+    this.vaultSettingsService.enablePasskeys$
+      .pipe(startWith(undefined), pairwise())
+      .subscribe(([previous, current]) => this.handleEnablePasskeysUpdate(previous, current));
+    this.currentAuthStatus$ = this.authService.activeAccountStatus$
+      .pipe(startWith(undefined), pairwise())
+      .subscribe(([_previous, current]) => {
+        if (current !== undefined) {
+          void this.handleAuthStatusUpdate(current);
+        }
+      });
+  }
+
+  /**
+   * Handles initializing the FIDO2 content scripts based on the current
+   * authentication status. We only want to inject the FIDO2 content scripts
+   * if the user is logged in.
+   *
+   * @param authStatus - The current authentication status.
+   */
+  private async handleAuthStatusUpdate(authStatus: AuthenticationStatus) {
+    if (authStatus === AuthenticationStatus.LoggedOut) {
+      return;
+    }
+
+    const enablePasskeys = await this.isPasskeySettingEnabled();
+    await this.handleEnablePasskeysUpdate(enablePasskeys, enablePasskeys);
+    this.currentAuthStatus$.unsubscribe();
+  }
+
+  /**
+   * Injects the FIDO2 content and page script into all existing browser tabs.
+   */
+  private async injectFido2ContentScriptsInAllTabs() {
+    const tabs = await BrowserApi.tabsQuery({});
+
+    for (let index = 0; index < tabs.length; index++) {
+      const tab = tabs[index];
+      const url = tab.url ?? "";
+      if (
+        url.startsWith("https://") ||
+        url.startsWith("http://localhost/") ||
+        url.startsWith("http://localhost:")
+      ) {
+        void this.injectFido2ContentScripts(tab);
+      }
+    }
+  }
+
+  /**
+   * Gets the user's authentication status from the auth service.
+   */
+  private async getAuthStatus() {
+    return await firstValueFrom(this.authService.activeAccountStatus$);
+  }
+
+  /**
+   * Handles reacting to the enablePasskeys setting being updated. If the setting
+   * is enabled, the FIDO2 content scripts are injected into all tabs. If the setting
+   * is disabled, the FIDO2 content scripts will be from all tabs. This logic will
+   * not trigger until after the first setting update.
+   *
+   * @param previousEnablePasskeysSetting - The previous value of the enablePasskeys setting.
+   * @param enablePasskeys - The new value of the enablePasskeys setting.
+   */
+  private async handleEnablePasskeysUpdate(
+    previousEnablePasskeysSetting: boolean | undefined,
+    enablePasskeys: boolean | undefined,
+  ) {
+    if ((await this.getAuthStatus()) === AuthenticationStatus.LoggedOut) {
+      return;
+    }
+
+    if (previousEnablePasskeysSetting === undefined || enablePasskeys === undefined) {
+      return;
+    }
+
+    this.fido2ActiveRequestManager.removeAllActiveRequests();
+    await this.updateContentScriptRegistration();
+
+    this.destroyLoadedFido2ContentScripts();
+    if (enablePasskeys) {
+      void this.injectFido2ContentScriptsInAllTabs();
+    }
+  }
+
+  /**
+   * Updates the registration status of static FIDO2 content
+   * scripts based on the enablePasskeys setting.
+   */
+  private async updateContentScriptRegistration() {
+    if (BrowserApi.isManifestVersion(2)) {
+      await this.updateMv2ContentScriptsRegistration();
+
+      return;
+    }
+
+    await this.updateMv3ContentScriptsRegistration();
+  }
+
+  /**
+   * Updates the registration status of static FIDO2 content
+   * scripts based on the enablePasskeys setting for manifest v2.
+   */
+  private async updateMv2ContentScriptsRegistration() {
+    if (!(await this.isPasskeySettingEnabled())) {
+      await this.registeredContentScripts?.unregister();
+      this.registeredContentScripts = undefined;
+      return;
+    }
+
+    this.registeredContentScripts = await BrowserApi.registerContentScriptsMv2({
+      js: [
+        { file: await this.getFido2PageScriptAppendFileName() },
+        { file: Fido2ContentScript.ContentScript },
+      ],
+      ...this.sharedRegistrationOptions,
+    });
+  }
+
+  /**
+   * Updates the registration status of static FIDO2 content
+   * scripts based on the enablePasskeys setting for manifest v3.
+   */
+  private async updateMv3ContentScriptsRegistration() {
+    if (await this.isPasskeySettingEnabled()) {
+      void BrowserApi.registerContentScriptsMv3([
+        {
+          id: Fido2ContentScriptId.PageScript,
+          js: [Fido2ContentScript.PageScript],
+          world: "MAIN",
+          ...this.sharedRegistrationOptions,
+        },
+        {
+          id: Fido2ContentScriptId.ContentScript,
+          js: [Fido2ContentScript.ContentScript],
+          ...this.sharedRegistrationOptions,
+        },
+      ]);
+
+      return;
+    }
+
+    void BrowserApi.unregisterContentScriptsMv3({
+      ids: [Fido2ContentScriptId.PageScript, Fido2ContentScriptId.ContentScript],
+    });
+  }
+
+  /**
+   * Injects the FIDO2 content and page script into the current tab.
+   *
+   * @param tab - The current tab to inject the scripts into.
+   */
+  private async injectFido2ContentScripts(tab: chrome.tabs.Tab): Promise<void> {
+    const tabId = tab.id;
+    if (tabId == null) {
+      return;
+    }
+    void this.scriptInjectorService.inject({
+      tabId,
+      injectDetails: { frame: "all_frames", ...this.sharedInjectionDetails },
+      mv2Details: { file: await this.getFido2PageScriptAppendFileName() },
+      mv3Details: {
+        file: Fido2ContentScript.PageScript,
+        world: chrome.scripting.ExecutionWorld.MAIN,
+      },
+    });
+
+    void this.scriptInjectorService.inject({
+      tabId,
+      injectDetails: {
+        file: Fido2ContentScript.ContentScript,
+        frame: "all_frames",
+        ...this.sharedInjectionDetails,
+      },
+    });
+  }
+
+  /**
+   * Iterates over the set of injected FIDO2 content script ports
+   * and disconnects them, destroying the content scripts.
+   */
+  private destroyLoadedFido2ContentScripts() {
+    for (const port of this.fido2ContentScriptPortsSet) {
+      port.disconnect();
+    }
+    this.fido2ContentScriptPortsSet.clear();
+  }
+
+  /**
+   * Aborts the FIDO2 request with the provided requestId.
+   *
+   * @param message - The FIDO2 extension message containing the requestId to abort.
+   */
+  private abortRequest(message: Fido2ExtensionMessage) {
+    if (message.abortedRequestId != null) {
+      this.abortManager.abort(message.abortedRequestId);
+    }
+  }
+
+  /**
+   * Registers a new FIDO2 credential with the provided request data.
+   *
+   * @param message - The FIDO2 extension message containing the request data.
+   * @param sender - The sender of the message.
+   */
+  private async registerCredentialRequest(
+    message: Fido2ExtensionMessage,
+    sender: chrome.runtime.MessageSender,
+  ): Promise<CreateCredentialResult> {
+    if (await this.isDisabledByAncestorFrame(sender)) {
+      throw new FallbackRequestedError();
+    }
+    await this.enforcePermissionsPolicyGate(sender, WebAuthnPermissionsPolicyFeature.Create);
+    return await this.handleCredentialRequest<CreateCredentialResult>(
+      message,
+      await this.buildParentWindowReference(sender),
+      (data, tabParam, abortController) =>
+        this.fido2ClientService.createCredential(
+          data as CreateCredentialParams,
+          tabParam,
+          abortController,
+        ),
+    );
+  }
+
+  /**
+   * Gets a FIDO2 credential with the provided request data.
+   *
+   * @param message - The FIDO2 extension message containing the request data.
+   * @param sender - The sender of the message.
+   */
+  private async getCredentialRequest(
+    message: Fido2ExtensionMessage,
+    sender: chrome.runtime.MessageSender,
+  ): Promise<AssertCredentialResult> {
+    if (await this.isDisabledByAncestorFrame(sender)) {
+      throw new FallbackRequestedError();
+    }
+    await this.enforcePermissionsPolicyGate(sender, WebAuthnPermissionsPolicyFeature.Get);
+    return await this.handleCredentialRequest<AssertCredentialResult>(
+      message,
+      await this.buildParentWindowReference(sender),
+      (data, tabParam, abortController) =>
+        this.fido2ClientService.assertCredential(
+          data as AssertCredentialParams,
+          tabParam,
+          abortController,
+        ),
+    );
+  }
+
+  /**
+   * Builds the reference the FIDO2 client passes through to the user interface. The requesting
+   * frame's URL is resolved from the browser-attested sender, because a WebAuthn request from a
+   * sub-frame belongs to that frame's origin rather than the tab's.
+   *
+   * @param sender - The sender of the credential request. Its tab is verified as present by
+   * `handleExtensionMessage` before any credential request handler runs.
+   */
+  private async buildParentWindowReference(
+    sender: chrome.runtime.MessageSender,
+  ): Promise<BrowserFido2ParentWindowReference> {
+    const tab = sender.tab!;
+    const requestFrameUrl = (await BrowserApi.getSenderFrameUrl(sender)) ?? tab.url;
+
+    return { ...tab, requestFrameUrl };
+  }
+
+  /**
+   * Indicates whether a blocked or excluded domain rule for a frame enclosing the sender's frame
+   * disables FIDO2 for it. A frame's rule applies to that frame and every frame nested within it,
+   * but not to the frames enclosing it. The rule for the sender's own frame is enforced against
+   * its hostname by `Fido2ClientService.isFido2FeatureEnabled`.
+   *
+   * Blocked domains match by hostname suffix, as they do for content script injection. Excluded
+   * domains match the hostname exactly.
+   *
+   * @param sender - The sender whose frame FIDO2 is evaluated for.
+   */
+  private async isDisabledByAncestorFrame(sender: chrome.runtime.MessageSender): Promise<boolean> {
+    const blockedDomains = await firstValueFrom(
+      this.domainSettingsService.blockedInteractionsUris$,
+    );
+    const excludedDomains = await firstValueFrom(this.domainSettingsService.neverDomains$);
+
+    // Without any rules, there is nothing to match, so skip reading the frame tree
+    if (!Object.keys(blockedDomains ?? {}).length && !Object.keys(excludedDomains ?? {}).length) {
+      return false;
+    }
+
+    const ancestorFrameUrls = await this.getAncestorFrameUrls(sender);
+
+    return ancestorFrameUrls.some((frameUrl) => {
+      if (isUrlInList(frameUrl, blockedDomains)) {
+        return true;
+      }
+
+      const frameHostname = Utils.getHostname(frameUrl);
+
+      return excludedDomains != null && frameHostname != null && frameHostname in excludedDomains;
+    });
+  }
+
+  /**
+   * Resolves the URLs of the frames enclosing the sender's frame, nearest first. The tab URL is
+   * included whenever the frame tree cannot be followed up to the top-level frame, since the
+   * top-level frame encloses every sub-frame.
+   *
+   * @param sender - The sender whose enclosing frames are resolved.
+   */
+  private async getAncestorFrameUrls(sender: chrome.runtime.MessageSender): Promise<string[]> {
+    const { frameId, tab } = sender;
+    if (frameId === 0) {
+      return [];
+    }
+
+    const frames =
+      tab?.id != null
+        ? await BrowserApi.getAllFrameDetails(tab.id).catch((): undefined => undefined)
+        : undefined;
+    const framesById = new Map((frames ?? []).map((frame) => [frame.frameId, frame]));
+    const ancestorFrameUrls: string[] = [];
+    let parentFrameId = frameId != null ? framesById.get(frameId)?.parentFrameId : undefined;
+
+    while (parentFrameId != null && parentFrameId >= 0) {
+      const parentFrame = framesById.get(parentFrameId);
+
+      if (!parentFrame) {
+        break;
+      }
+
+      // Each frame is visited at most once, so a malformed frame tree cannot loop indefinitely.
+      framesById.delete(parentFrameId);
+      ancestorFrameUrls.push(parentFrame.url);
+      parentFrameId = parentFrame.parentFrameId;
+    }
+
+    if (parentFrameId !== -1 && tab?.url) {
+      ancestorFrameUrls.push(tab.url);
+    }
+
+    return ancestorFrameUrls;
+  }
+
+  /**
+   * Consults the Permissions Policy gate before starting a ceremony. Throws
+   * a `NotAllowedError`-named Error when the gate denies, matching the error
+   * the native browser API would throw. The page-script side rehydrates the
+   * error into a real `DOMException` so callers that check `instanceof
+   * DOMException` see what they'd see with the native API.
+   *
+   * Fails open when sender metadata is missing — the in-content-script gate
+   * still provides defense-in-depth.
+   */
+  private async enforcePermissionsPolicyGate(
+    sender: chrome.runtime.MessageSender,
+    feature: WebAuthnPermissionsPolicyFeature,
+  ): Promise<void> {
+    const tabId = sender.tab?.id;
+    if (tabId == null) {
+      return;
+    }
+    const frameId = sender.frameId ?? 0;
+
+    const allowed = await this.permissionsPolicy.isFeatureAllowedForFrame(tabId, frameId, feature);
+    if (allowed) {
+      return;
+    }
+
+    const error = new Error(
+      `The '${feature}' feature is not enabled in this document. ` +
+        "Permissions Policy may be used to delegate Web Authentication capabilities to cross-origin child frames.",
+    );
+    error.name = "NotAllowedError";
+    throw error;
+  }
+
+  /**
+   * Handles Fido2 credential requests by calling the provided callback with the
+   * request data, tab, and abort controller. The callback is expected to return
+   * a promise that resolves with the result of the credential request.
+   *
+   * @param requestId - The request ID associated with the request.
+   * @param data - The request data to handle.
+   * @param tab - The tab associated with the request, and the URL of the requesting frame.
+   * @param callback - The callback to call with the request data, tab, and abort controller.
+   */
+  private handleCredentialRequest = async <CredentialResult>(
+    message: Fido2ExtensionMessage,
+    tab: BrowserFido2ParentWindowReference,
+    callback: (
+      data: AssertCredentialParams | CreateCredentialParams,
+      tab: BrowserFido2ParentWindowReference,
+      abortController: AbortController,
+    ) => Promise<CredentialResult>,
+  ): Promise<CredentialResult> => {
+    const { requestId, data } = message;
+    const tabId = tab.id;
+    if (tabId != null) {
+      this.activeCredentialRequests.add(tabId);
+    }
+    try {
+      return await this.abortManager.runWithAbortController(requestId!, async (abortController) => {
+        try {
+          return await callback(data!, tab, abortController);
+        } finally {
+          if (tab.id != null) {
+            await BrowserApi.focusTab(tab.id);
+          }
+          if (tab.windowId != null) {
+            await BrowserApi.focusWindow(tab.windowId);
+          }
+        }
+      });
+    } finally {
+      if (tabId != null) {
+        this.activeCredentialRequests.delete(tabId);
+      }
+    }
+  };
+
+  /**
+   * Checks if the enablePasskeys setting is enabled.
+   */
+  async isPasskeySettingEnabled() {
+    return await firstValueFrom(this.vaultSettingsService.enablePasskeys$);
+  }
+
+  /**
+   * Handles the FIDO2 extension message by calling the
+   * appropriate handler based on the message command.
+   *
+   * @param message - The FIDO2 extension message to handle.
+   * @param sender - The sender of the message.
+   * @param sendResponse - The function to call with the response.
+   */
+  private handleExtensionMessage = (
+    message: Fido2ExtensionMessage,
+    sender: chrome.runtime.MessageSender,
+    sendResponse: (response?: any) => void,
+  ): boolean | void => {
+    const handler: CallableFunction | undefined = this.extensionMessageHandlers[message?.command];
+    if (!handler) {
+      return;
+    }
+
+    const isCredentialCommand =
+      message?.command === "fido2RegisterCredentialRequest" ||
+      message?.command === "fido2GetCredentialRequest";
+    if (
+      isCredentialCommand &&
+      (sender.tab == null || message.requestId == null || message.data == null)
+    ) {
+      sendResponse(undefined);
+      return true;
+    }
+
+    const messageResponse = handler({ message, sender });
+    if (typeof messageResponse === "undefined") {
+      return;
+    }
+
+    Promise.resolve(messageResponse)
+      .then(
+        (response) => sendResponse(response),
+        (error) => sendResponse({ error: { ...error, message: error.message } }),
+      )
+      .catch(this.logService.error);
+
+    return true;
+  };
+
+  /**
+   * Handles the connection of a FIDO2 content script port by checking if the
+   * FIDO2 feature is enabled for the sender's hostname and origin. If the feature
+   * is not enabled, the port is disconnected.
+   *
+   * @param port - The port which is connecting
+   */
+  private handleInjectedScriptPortConnection = async (port: chrome.runtime.Port) => {
+    if (port.name !== Fido2PortName.InjectedScript || !port.sender?.url) {
+      return;
+    }
+
+    try {
+      const { hostname, origin } = new URL(port.sender.url);
+      if (
+        !(await this.fido2ClientService.isFido2FeatureEnabled(hostname, origin)) ||
+        (await this.isDisabledByAncestorFrame(port.sender))
+      ) {
+        port.disconnect();
+        return;
+      }
+
+      this.fido2ContentScriptPortsSet.add(port);
+      port.onDisconnect.addListener(this.handleInjectScriptPortOnDisconnect);
+    } catch (error) {
+      this.logService.error(error);
+      port.disconnect();
+    }
+  };
+
+  /**
+   * Handles the disconnection of a FIDO2 content script port
+   * by removing it from the set of connected ports.
+   *
+   * @param port - The port which is disconnecting
+   */
+  private handleInjectScriptPortOnDisconnect = (port: chrome.runtime.Port) => {
+    if (port.name !== Fido2PortName.InjectedScript) {
+      return;
+    }
+
+    this.fido2ContentScriptPortsSet.delete(port);
+  };
+
+  /**
+   * Gets the file name of the page-script used within mv2. Will return the
+   * delayed append script if the associated feature flag is enabled.
+   */
+  private async getFido2PageScriptAppendFileName() {
+    return Fido2ContentScript.PageScriptDelayAppend;
+  }
+}
