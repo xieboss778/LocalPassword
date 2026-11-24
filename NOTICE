@@ -1,0 +1,37 @@
+LocalPassword
+Copyright (C) 2026 LocalPassword contributors
+
+This product is a derivative work of Bitwarden clients.
+
+    Bitwarden clients
+    Copyright (C) 2015-2026 Bitwarden Inc. and contributors
+    https://github.com/bitwarden/clients
+    Licensed under the GNU General Public License v3.0 and the
+    Bitwarden License v1.0 (the latter applies only to code inside the
+    bitwarden_license/ directory of the upstream repository).
+
+The upstream source code has been modified for the LocalPassword project.
+A summary of the modifications is available in the project's git history and
+in docs/LocalPassword-实施计划.md.
+
+This distribution is licensed as a whole under the GNU General Public
+License v3.0 (see LICENSE). It does not include any code that upstream
+licenses solely under the Bitwarden License v1.0.
+
+--------------------------------------------------------------------------
+TRADEMARKS
+
+"Bitwarden" and the Bitwarden logo are trademarks of Bitwarden Inc.
+No trademark rights are granted by this license. This project is an
+independent derivative work and is not affiliated with, sponsored by,
+or endorsed by Bitwarden Inc. References to Bitwarden in this repository
+are made solely for the purpose of attributing the origin of the code and
+describing interoperability (for example, the import/export data format).
+
+--------------------------------------------------------------------------
+THIRD-PARTY COMPONENTS
+
+This project depends on third-party open source packages listed in
+package.json and package-lock.json. Each package is distributed under its
+own license; see the corresponding package directories after running
+`npm ci` for their license texts.

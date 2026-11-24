@@ -1,0 +1,65 @@
+# 依赖自动更新
+#
+# 每周检查一次 npm 依赖与 GitHub Actions。
+# Bitwarden SDK（@bitwarden/sdk-internal）与 Rust 相关依赖手工升级：加密格式的变化
+# 需要人工验证保险库的加解密兼容性，不能让机器人直接合并。
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+    groups:
+      # 生产依赖与开发依赖分开成组，减少 PR 数量
+      production-minor-patch:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      development-minor-patch:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # 加密相关的包不自动升级
+      - dependency-name: "@bitwarden/sdk-internal"
+      - dependency-name: "@bitwarden/sdk-zstd"
+      # Nx / Angular 大版本升级需要单独安排
+      - dependency-name: "nx"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@angular-devkit/*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - "dependencies"
+      - "ci"
+
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+    ignore:
+      # Rust SDK 由上游控制，手工跟进
+      - dependency-name: "bitwarden-*"
