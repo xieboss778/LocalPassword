@@ -1,20 +1,20 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "LocalPassword"
   },
   "appLogoLabel": {
-    "message": "Bitwarden လိုဂို"
+    "message": "LocalPassword လိုဂို"
   },
   "extName": {
-    "message": "Bitwarden စကားဝှက် မန်နေဂျာ",
+    "message": "LocalPassword စကားဝှက် မန်နေဂျာ",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "Bitwarden စကားဝှက် မန်နေဂျာ ဘီတာ",
+    "message": "LocalPassword စကားဝှက် မန်နေဂျာ ဘီတာ",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "Bitwarden က စကားဝှက်၊ passkey နှင့် လျှို့ဝှက်အချက်အလက်များကို နေရာမရွေး လုံခြုံစွာ သိမ်းပေးသည်။",
+    "message": "LocalPassword က စကားဝှက်၊ passkey နှင့် လျှို့ဝှက်အချက်အလက်များကို နေရာမရွေး လုံခြုံစွာ သိမ်းပေးသည်။",
     "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {

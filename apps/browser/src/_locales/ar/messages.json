@@ -1,20 +1,20 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "LocalPassword"
   },
   "appLogoLabel": {
-    "message": "شعار Bitwarden"
+    "message": "شعار LocalPassword"
   },
   "extName": {
-    "message": "Bitwarden مدير كلمات المرور",
+    "message": "LocalPassword مدير كلمات المرور",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "Bitwarden مدير كلمات المرور بيتا",
+    "message": "LocalPassword مدير كلمات المرور بيتا",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "في المنزل، في العمل، أو في أثناء التنقل، يقوم Bitwarden بتأمين جميع كلمات المرور والمعلومات الحساسة بسهولة",
+    "message": "في المنزل، في العمل، أو في أثناء التنقل، يقوم LocalPassword بتأمين جميع كلمات المرور والمعلومات الحساسة بسهولة",
     "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {

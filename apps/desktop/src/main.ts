@@ -446,7 +446,9 @@ export class Main {
         }
 
         this.powerMonitorMain.init();
-        await this.updaterMain.init();
+        // LocalPassword: self-update stays off. electron-updater is configured for
+        // artifacts.bitwarden.com and would replace this build with Bitwarden.
+        // Re-enable only after pointing it at our own release feed.
 
         const [ddgIntegrationEnabled] = await Promise.all([
           firstValueFrom(this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$),

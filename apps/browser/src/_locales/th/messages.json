@@ -1,20 +1,20 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "LocalPassword"
   },
   "appLogoLabel": {
-    "message": "โลโก้ Bitwarden"
+    "message": "โลโก้ LocalPassword"
   },
   "extName": {
-    "message": "Bitwarden Password Manager",
+    "message": "LocalPassword Password Manager",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "Bitwarden ตัวจัดการรหัสผ่าน เบต้า",
+    "message": "LocalPassword ตัวจัดการรหัสผ่าน เบต้า",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "ไม่ว่าจะอยู่ที่ไหน Bitwarden ก็สามารถปกป้องรหัสผ่าน พาสคีย์ และข้อมูลสำคัญของคุณได้อย่างง่ายดาย",
+    "message": "ไม่ว่าจะอยู่ที่ไหน LocalPassword ก็สามารถปกป้องรหัสผ่าน พาสคีย์ และข้อมูลสำคัญของคุณได้อย่างง่ายดาย",
     "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
