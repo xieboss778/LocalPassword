@@ -1,0 +1,103 @@
+name: 缺陷报告
+description: 报告一个可以复现的问题
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你花时间填写这份报告。
+
+        提交前请确认：这个问题不是安全问题（安全问题请按 SECURITY.md 私下报告），也不是功能建议（请使用功能建议模板）。
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已经搜索过现有 issue，没有发现重复
+          required: true
+        - label: 我使用的是从源码自行构建的最新版本
+          required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 如何稳定地重现这个问题
+      value: |
+        1. 打开 '...'
+        2. 点击 '....'
+        3. 滚动到 '....'
+        4. 看到问题
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+      description: 你认为应该发生什么
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+      description: 实际发生了什么
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图或录屏
+      description: 界面问题请附截图，注意遮盖真实密码等敏感信息
+    validations:
+      required: false
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: 安装方式
+      options:
+        - 开发者模式加载未打包扩展（build）
+        - 开发者模式加载未打包扩展（dist）
+        - 其他
+    validations:
+      required: true
+  - type: input
+    id: browser-version
+    attributes:
+      label: 浏览器及版本
+      placeholder: 例如 Chrome 142.0.7444.60
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: 操作系统
+      placeholder: 例如 macOS 15.1 / Windows 11 23H2 / Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: 构建所用的提交
+      description: 运行 `git rev-parse --short HEAD` 可获取
+      placeholder: 例如 2e45b56
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: 控制台日志
+      description: |
+        弹出页右键 →「检查」→ Console；后台错误可在 `chrome://extensions` 中点击「Service Worker」查看。
+        **请先删除任何包含密码、密钥、令牌的行。**
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: offline
+    attributes:
+      label: 网络状态
+      description: LocalPassword 以离线为核心，网络相关问题请说明测试时的网络条件
+      options:
+        - label: 完全断网时也能复现
+        - label: 只在联网时出现
