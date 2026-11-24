@@ -20,6 +20,7 @@ module.exports = {
     "<rootDir>/apps/desktop/jest.config.js",
 
     "<rootDir>/libs/admin-console/jest.config.js",
+    "<rootDir>/libs/local-vault/jest.config.js",
     "<rootDir>/libs/angular/jest.config.js",
     "<rootDir>/libs/assets/jest.config.js",
     "<rootDir>/libs/automation-driver/jest.config.js",

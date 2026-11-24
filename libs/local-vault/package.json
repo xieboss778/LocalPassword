@@ -1,0 +1,11 @@
+{
+  "name": "@bitwarden/local-vault",
+  "version": "0.0.1",
+  "description": "Local-only vault core: account bootstrap, local writes, R2/S3 sync, network gate",
+  "private": true,
+  "type": "commonjs",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "license": "GPL-3.0",
+  "author": "LocalPassword"
+}
