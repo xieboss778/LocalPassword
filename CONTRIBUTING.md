@@ -1,3 +1,53 @@
-# How to Contribute
+# 参与贡献
 
-Our [Contributing Guidelines](https://contributing.bitwarden.com/contributing/) are located in our [Contributing Documentation](https://contributing.bitwarden.com/). The documentation also includes recommended tooling, code style tips, and lots of other great information to get you started.
+感谢你愿意为 LocalPassword 出力。这是一个离线密码管理器，安全性和可审查性比功能速度更重要，因此下面这些约定请认真读一遍。
+
+## 开始之前
+
+- 先看 [README](README.md) 了解项目定位，以及 [docs/LocalPassword-实施计划.md](docs/LocalPassword-实施计划.md) 了解架构决策。
+- 较大的改动（新增依赖、修改保险库写入路径、改动加密相关代码）请**先开 issue 讨论**，避免白做工。
+- 参与本项目即表示你同意遵守 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
+
+## 环境准备
+
+需要 Node.js（版本见 `.nvmrc`）与 npm。
+
+```bash
+git clone https://github.com/xieboss778/LocalPassword.git
+cd LocalPassword
+npm ci
+npm run build:chrome
+```
+
+构建产物在 `apps/browser/build`，用 `chrome://extensions` 的「加载已解压的扩展程序」加载即可调试。
+
+## 分支与提交
+
+- 从 `main` 切出功能分支：`feat/xxx`、`fix/xxx`、`docs/xxx`。
+- 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/)：
+  - `feat: 支持从 Google Authenticator 导入`
+  - `fix(popup): 弹出页关闭后同步中断`
+  - `docs: 补充 R2 配置说明`
+- 一个 PR 只做一件事。格式化、重命名之类的无关改动请单独提交。
+- 提交前请确保 `npm run lint` 与 `npm test` 通过。
+
+## 代码要求
+
+1. **不要引入网络请求。** 除备份存储和用户主动触发的泄露查询外，任何新的出站请求都需要在 PR 里说明理由，并经过维护者确认。
+2. **不要绕过加密。** 条目必须先经 SDK 加密再落盘，明文不得写入 `chrome.storage`、日志或错误上报。
+3. **对上游改动保持最小。** 优先新建文件承载逻辑；必须改上游文件时，把改动控制在尽量少的行数，并在 PR 描述里列出改动位置，方便后续合并上游。
+4. **不要碰 `bitwarden_license/` 目录。** 该目录在上游适用另一套许可，本项目不包含、也不修改其中的代码。
+5. **补充测试。** 涉及加密、同步合并、本地写入的改动必须有单元测试覆盖。
+
+## 数据库 / 状态变更
+
+新增持久化状态时，需在对应的 `state-definitions.ts` 中注册，并说明是否兼容旧数据。破坏性变更必须在 PR 中写明迁移方案。
+
+## 报告问题
+
+- 功能缺陷或建议：使用 issue 模板提交。
+- 安全漏洞：**不要开公开 issue**，请按 [SECURITY.md](SECURITY.md) 的流程私下报告。
+
+## 许可
+
+你提交的代码将以 [GNU GPL v3.0](LICENSE) 发布。提交 PR 即表示你确认自己有权提交这些代码，并同意以上许可条款。
