@@ -2,12 +2,12 @@
   "manifest_version": 3,
   "minimum_chrome_version": "134.0",
   "name": "__MSG_extName__",
-  "short_name": "Bitwarden",
+  "short_name": "LocalPassword",
   "version": "2026.11.0",
   "description": "__MSG_extDesc__",
   "default_locale": "en",
-  "author": "Bitwarden Inc.",
-  "homepage_url": "https://bitwarden.com",
+  "author": "LocalPassword",
+  "homepage_url": "https://github.com/xieboss778/LocalPassword",
   "icons": {
     "16": "images/icon16.png",
     "32": "images/icon32.png",
@@ -18,17 +18,35 @@
   "content_scripts": [
     {
       "all_frames": false,
-      "js": ["content/content-message-handler.js"],
-      "matches": ["*://*/*", "file:///*"],
-      "exclude_matches": ["*://*/*.xml*", "file:///*.xml*"],
+      "js": [
+        "content/content-message-handler.js"
+      ],
+      "matches": [
+        "*://*/*",
+        "file:///*"
+      ],
+      "exclude_matches": [
+        "*://*/*.xml*",
+        "file:///*.xml*"
+      ],
       "run_at": "document_start"
     },
     {
       "all_frames": true,
-      "css": ["content/autofill.css"],
-      "js": ["content/trigger-autofill-script-injection.js"],
-      "matches": ["*://*/*", "file:///*"],
-      "exclude_matches": ["*://*/*.xml*", "file:///*.xml*"],
+      "css": [
+        "content/autofill.css"
+      ],
+      "js": [
+        "content/trigger-autofill-script-injection.js"
+      ],
+      "matches": [
+        "*://*/*",
+        "file:///*"
+      ],
+      "exclude_matches": [
+        "*://*/*.xml*",
+        "file:///*.xml*"
+      ],
       "run_at": "document_start"
     }
   ],
@@ -36,14 +54,16 @@
     "service_worker": "background.js"
   },
   "__firefox__background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js"
+    ]
   },
   "action": {
     "default_icon": {
       "19": "images/icon19.png",
       "38": "images/icon38.png"
     },
-    "default_title": "Bitwarden",
+    "default_title": "LocalPassword",
     "default_popup": "popup/index.html"
   },
   "permissions": [
@@ -97,16 +117,28 @@
     "webRequest",
     "webRequestAuthProvider"
   ],
-  "optional_permissions": ["nativeMessaging", "privacy"],
-  "__firefox__optional_permissions": ["nativeMessaging", "privacy"],
+  "optional_permissions": [
+    "nativeMessaging",
+    "privacy"
+  ],
+  "__firefox__optional_permissions": [
+    "nativeMessaging",
+    "privacy"
+  ],
   "__safari__optional_permissions": null,
-  "host_permissions": ["https://*/*", "http://*/*"],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
     "__chrome__sandbox": "sandbox allow-scripts; script-src 'self'"
   },
   "sandbox": {
-    "pages": ["overlay/menu-button.html", "overlay/menu-list.html"]
+    "pages": [
+      "overlay/menu-button.html",
+      "overlay/menu-list.html"
+    ]
   },
   "__firefox__sandbox": null,
   "__chrome__side_panel": {
@@ -168,7 +200,9 @@
         "overlay/menu.html",
         "popup/fonts/*"
       ],
-      "matches": ["<all_urls>"],
+      "matches": [
+        "<all_urls>"
+      ],
       "use_dynamic_url": true
     }
   ],
@@ -194,5 +228,6 @@
     "default_icon": "images/icon19.png",
     "open_at_install": false,
     "browser_style": false
-  }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5mOBl8r3jESr92N0mSYTH50HqwpyXSVshKy5cSYysQmGf8V+A6N9KS2BZ44vr0fZwcUPCJFCyez9ju1CBDrt2sAJ3N3zOEM+aVMu4J5UT+53Ma5abTXHQTKozaghbZ53zCbHLwLJ2pgToq4cnJnQBPBgJ+PW7Im5UPjndyDtxqTJ3E/0RyUtiKtYd3k7dUKajv9uKs6Nvloyml0sBZRTOpNZkutvnReeuHSKHYv54uYSrwGaP9uZssO8a3l5Yr42rkNJUlDCtxRh/yBZzzn4k9iaLUCLOKAxu2Kx1iMa9SAhtTaddBM3YqY78qMVVW7LQ4JeShpYeeKPwNnoZX7e6wIDAQAB"
 }

@@ -1,12 +1,12 @@
 {
   "appLogoLabel": {
-    "message": "Bitwarden logó"
+    "message": "LocalPassword logó"
   },
   "bitwarden": {
-    "message": "Bitwarden"
+    "message": "LocalPassword"
   },
   "bitwardenBeta": {
-    "message": "Bitwarden béta",
+    "message": "LocalPassword béta",
     "description": "Product name for the beta channel; shown in the tray tooltip and About dialog"
   },
   "filters": {

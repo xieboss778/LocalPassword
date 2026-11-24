@@ -67,3 +67,7 @@ apps/**/config/local.json
 .debug/**
 !.debug/**/
 !.debug/**/.gitkeep
+
+# LocalPassword: 扩展签名私钥与构建产物，不入库
+.keys/
+.localpassword-ext-id

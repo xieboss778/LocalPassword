@@ -1,20 +1,20 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "LocalPassword"
   },
   "appLogoLabel": {
-    "message": "Bitwarden-ის ლოგო"
+    "message": "LocalPassword-ის ლოგო"
   },
   "extName": {
-    "message": "Bitwarden პაროლების მენეჯერი",
+    "message": "LocalPassword პაროლების მენეჯერი",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "Bitwarden პაროლების მენეჯერი Beta",
+    "message": "LocalPassword პაროლების მენეჯერი Beta",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "სახლში, სამსახურში ან გზაში, Bitwarden მარტივად იცავს თქვენს ყველა პაროლს, პასკის და მგრძნობიარე ინფორმაციას",
+    "message": "სახლში, სამსახურში ან გზაში, LocalPassword მარტივად იცავს თქვენს ყველა პაროლს, პასკის და მგრძნობიარე ინფორმაციას",
     "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {

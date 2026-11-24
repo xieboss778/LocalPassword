@@ -1,16 +1,16 @@
 {
   "appName": {
-    "message": "Битуорден (Bitwarden)"
+    "message": "Битуорден (LocalPassword)"
   },
   "appLogoLabel": {
     "message": "Лого на Битуорден"
   },
   "extName": {
-    "message": "Bitwarden — управител на пароли",
+    "message": "LocalPassword — управител на пароли",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "Bitwarden — управител на пароли — бета",
+    "message": "LocalPassword — управител на пароли — бета",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
