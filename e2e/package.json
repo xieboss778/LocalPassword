@@ -11,6 +11,6 @@
     "test:shared": "playwright test -c playwright.shared.config.ts"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.1"
+    "@playwright/test": "1.65.1"
   }
 }
