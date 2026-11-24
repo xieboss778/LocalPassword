@@ -1,0 +1,54 @@
+import { UserId } from "../../types/guid";
+import { RegisterSendVerificationEmailRequest } from "../models/request/registration/register-send-verification-email.request";
+import { RegisterVerificationEmailClickedRequest } from "../models/request/registration/register-verification-email-clicked.request";
+import { SecretVerificationRequest } from "../models/request/secret-verification.request";
+import { SetVerifyDevicesRequest } from "../models/request/set-verify-devices.request";
+
+export abstract class AccountApiService {
+  /**
+   * Deletes the user's account on the server.
+   *
+   * @param userId The user whose account to delete. The request is authenticated as this user.
+   * @param request The verification secret that authorizes the deletion.
+   * @returns A promise that resolves when the account is deleted.
+   */
+  abstract deleteAccount(userId: UserId, request: SecretVerificationRequest): Promise<void>;
+
+  /**
+   * Sends a verification email as part of the registration process.
+   *
+   * @param request - The request object containing
+   * information needed to send the verification email, such as the user's email address.
+   * @returns A promise that resolves to a string token containing the user's encrypted
+   * information which must be submitted to complete registration or `null` if
+   * email verification is enabled (users must get the token by clicking a
+   * link in the email that will be sent to them).
+   */
+  abstract registerSendVerificationEmail(
+    request: RegisterSendVerificationEmailRequest,
+  ): Promise<null | string>;
+
+  /**
+   * Raises a server event to identify when users click the email verification link and land
+   * on the registration finish screen.
+   *
+   * @param request - The request object containing the email verification token and the
+   * user's email address (which is required to validate the token)
+   * @returns A promise that resolves when the event is logged on the server successfully or a bad
+   * request if the token is invalid for any reason.
+   */
+  abstract registerVerificationEmailClicked(
+    request: RegisterVerificationEmailClickedRequest,
+  ): Promise<void>;
+
+  /**
+   * Sets the [dbo].[User].[VerifyDevices] flag to true or false.
+   *
+   * @param request - The request object is a SecretVerificationRequest extension
+   * that also contains the boolean value that the VerifyDevices property is being
+   * set to.
+   * @returns A promise that resolves when the process is successfully completed or
+   * a bad request if secret verification fails.
+   */
+  abstract setVerifyDevices(request: SetVerifyDevicesRequest): Promise<string>;
+}

@@ -1,0 +1,225 @@
+import { ServerConfig } from "../platform/abstractions/config/server-config";
+
+/**
+ * Feature flags.
+ *
+ * Flags MUST be short lived and SHALL be removed once enabled.
+ *
+ * Flags should be grouped by team to have visibility of ownership and cleanup.
+ */
+// FIXME: update to use a const object instead of a typescript enum
+// eslint-disable-next-line @bitwarden/platform/no-enums
+export enum FeatureFlag {
+  /* Admin Console Team */
+  InviteLinkAutoConfirm = "pm-34429-invite-link-auto-confirm",
+  GroupsComponentRefactor = "pm-43419-groups-table-v2",
+  MembersTableV2 = "pm-37463-members-table-v2",
+  OrganizationMembershipSdk = "pm-41568-org-memberships-v2",
+
+  /* Auth */
+  // TODO: PM-40137 - Remove this flag
+  PM27060_PasswordPreloginFromSdk = "pm-27060-password-prelogin-from-sdk",
+  SafariAccountSwitching = "pm-5594-safari-account-switching",
+  PM30811_ChangeEmailNewAuthenticationApis = "pm-30811-change-email-new-authentication-apis",
+  PM30806_SelfServiceChangeEmailCommand = "pm-30806-self-service-change-email-command",
+  PM31088_MasterPasswordServiceEmitSalt = "pm-31088-master-password-service-emit-salt",
+  PM34210_DesktopAddDevices = "pm-34210-desktop-add-devices",
+  PM44303_EmergencyAccessSdkApi = "pm-44303-emergency-access-sdk-api",
+
+  /* Autofill */
+  FillAssistTargetingRules = "fill-assist-targeting-rules",
+  FillAssistRuleFallback = "fill-assist-rule-fallback",
+  DefaultPasswordManagerPrompt = "pm-39071-default-password-manager-prompt",
+  LitInlineMenuComponents = "lit-inline-menu-components",
+  // Note: This flag gates security risks and should not be turned on without
+  // changes to the underlying experience
+  EnableBasicAuthResponse = "enable-basic-auth-response",
+
+  /* Desktop Native */
+  MacOsNativeCredentialSync = "macos-native-credential-sync",
+  WindowsDesktopAutotype = "windows-desktop-autotype",
+  WindowsDesktopAutotypeGA = "windows-desktop-autotype-ga",
+  WindowsNativeCredentialSync = "windows-native-credential-sync",
+  SSHecdsa = "ssh-ecdsa",
+
+  /* Billing */
+  PM29108_EnablePersonalDiscounts = "pm-29108-enable-personal-discounts",
+  PM24032_NewNavigationPremiumUpgradeButton = "pm-24032-new-navigation-premium-upgrade-button",
+  PM23713_PremiumBadgeOpensNewPremiumUpgradeDialog = "pm-23713-premium-badge-opens-new-premium-upgrade-dialog",
+  PM34515_BrowserDesktopCheckout = "pm-34515-browser-desktop-checkout",
+  DebugDisableSelfHostPremiumCheck = "debug-disable-self-host-premium-check",
+  PM29593_PremiumToOrganizationUpgrade = "pm-29593-premium-to-organization-upgrade",
+  PM38333_AnnualBillingSavings = "pm-38333-annual-billing-savings",
+  PamBillingSupport = "pm-39883-pam-billing-support",
+  PM42214_FeatureBasedUpgradePaths = "pm-42214-feature-based-upgrade-paths",
+
+  /* Key Management */
+  PrivateKeyRegeneration = "pm-12241-private-key-regeneration",
+  SharedUnlockPart2 = "innovation-sprint-shared-unlock-part-2",
+  EnableAccountEncryptionV2KeyConnectorRegistration = "enable-account-encryption-v2-key-connector-registration",
+  BiometricsSDKIPC = "biometrics-sdk-ipc",
+  ForceUpgradeV2Encryption = "force-upgrade-v2-encryption",
+
+  /* Tools */
+  ImportUpgrade = "pm-35053-import-upgrade",
+  PM34203TemporaryItemSharing = "pm-34203-temporary-item-sharing",
+
+  /* DIRT */
+  EventManagementForBlumira = "event-management-for-blumira",
+  EventManagementForDataDogAndCrowdStrike = "event-management-for-datadog-and-crowdstrike",
+  EventManagementForGenericHec = "event-management-for-generic-hec",
+  EventManagementForHuntress = "event-management-for-huntress",
+  EventManagementForSplunk = "event-management-for-splunk",
+  PhishingDetection = "phishing-detection",
+  Milestone11AppPageImprovements = "pm-30538-dirt-milestone-11-app-page-improvements",
+  AccessIntelligenceNewArchitecture = "pm-31936-access-intelligence-new-architecture",
+  PasskeyLoginReport = "inno-passkey-directory-report",
+  AccessIntelligenceAdoptionUxImprovements = "pm-34723-access-intelligence-adoption-ux-improvements",
+  BrowserExtensionHealthReport = "pm-35928-premium-user-health-reports",
+  HealthReportExclusions = "pm-39196-health-report-exclusions",
+  AccessIntelligencePerformanceAtScale = "pm-43231-access-intelligence-performance-at-scale",
+
+  /* Vault */
+  PM32009NewItemTypes = "pm-32009-new-item-types",
+  PM29438_DialogWithExtensionPromptAccountAge = "pm-29438-dialog-with-extension-prompt-account-age",
+  PM32180PremiumUpsellAccountAge = "pm-32180-premium-upsell-account-age",
+  PM34500_StrictCipherDecryption = "pm-34500-strict-cipher-decryption",
+  PM45335_ExtensionWelcomePage = "pm-45335-extension-welcome-page",
+
+  /* Platform */
+  FedRampGovRegion = "fedramp-gov-region",
+  ContentScriptIpcChannelFramework = "content-script-ipc-channel-framework",
+  ManagedDeviceFramework = "pm-27719-managed-device-framework",
+  PM30935_FlightRecorderTsLogging = "pm-30935-flight-recorder-ts-logging",
+
+  /* Secrets Manager */
+  SecretVersioning = "sm-1587-secrets-versioning",
+  SmCli = "sm-2107-cli",
+
+  /* PAM */
+  Pam = "pm-37044-pam-v-0",
+  PamAccessConnector = "pm-42354-rotation-daemon",
+
+  /* VFO */
+  VFO1Foundation = "vfo1-foundation",
+}
+
+export type AllowedFeatureFlagTypes = boolean | number | string;
+
+// Helper to ensure the value is treated as a boolean.
+const FALSE = false as boolean;
+
+/**
+ * Default value for feature flags.
+ *
+ * DO NOT enable previously disabled flags, REMOVE them instead.
+ * We support true as a value as we prefer flags to "enable" not "disable".
+ *
+ * Flags should be grouped by team to have visibility of ownership and cleanup.
+ */
+export const DefaultFeatureFlagValue = {
+  /* Admin Console Team */
+  [FeatureFlag.InviteLinkAutoConfirm]: FALSE,
+  [FeatureFlag.GroupsComponentRefactor]: FALSE,
+  [FeatureFlag.MembersTableV2]: FALSE,
+  [FeatureFlag.OrganizationMembershipSdk]: FALSE,
+
+  /* Autofill */
+  [FeatureFlag.FillAssistTargetingRules]: FALSE,
+  [FeatureFlag.FillAssistRuleFallback]: FALSE,
+  [FeatureFlag.DefaultPasswordManagerPrompt]: FALSE,
+  [FeatureFlag.LitInlineMenuComponents]: FALSE,
+  [FeatureFlag.EnableBasicAuthResponse]: FALSE,
+
+  /* Desktop Native */
+  [FeatureFlag.MacOsNativeCredentialSync]: FALSE,
+  [FeatureFlag.WindowsDesktopAutotype]: FALSE,
+  [FeatureFlag.WindowsDesktopAutotypeGA]: FALSE,
+  [FeatureFlag.WindowsNativeCredentialSync]: FALSE,
+  [FeatureFlag.SSHecdsa]: FALSE,
+
+  /* Tools */
+  [FeatureFlag.ImportUpgrade]: FALSE,
+  [FeatureFlag.PM34203TemporaryItemSharing]: FALSE,
+
+  /* DIRT */
+  [FeatureFlag.EventManagementForBlumira]: FALSE,
+  [FeatureFlag.EventManagementForDataDogAndCrowdStrike]: FALSE,
+  [FeatureFlag.EventManagementForGenericHec]: FALSE,
+  [FeatureFlag.EventManagementForHuntress]: FALSE,
+  [FeatureFlag.EventManagementForSplunk]: FALSE,
+  [FeatureFlag.PhishingDetection]: FALSE,
+  [FeatureFlag.Milestone11AppPageImprovements]: FALSE,
+  [FeatureFlag.AccessIntelligenceNewArchitecture]: FALSE,
+  [FeatureFlag.PasskeyLoginReport]: FALSE,
+  [FeatureFlag.AccessIntelligenceAdoptionUxImprovements]: FALSE,
+  [FeatureFlag.BrowserExtensionHealthReport]: FALSE,
+  [FeatureFlag.HealthReportExclusions]: FALSE,
+  [FeatureFlag.AccessIntelligencePerformanceAtScale]: FALSE,
+
+  /* Vault */
+  [FeatureFlag.PM32009NewItemTypes]: FALSE,
+  [FeatureFlag.PM29438_DialogWithExtensionPromptAccountAge]: 5,
+  [FeatureFlag.PM32180PremiumUpsellAccountAge]: 7,
+  [FeatureFlag.PM34500_StrictCipherDecryption]: FALSE,
+  [FeatureFlag.PM45335_ExtensionWelcomePage]: FALSE,
+
+  /* Auth */
+  [FeatureFlag.PM27060_PasswordPreloginFromSdk]: FALSE,
+  [FeatureFlag.SafariAccountSwitching]: FALSE,
+  [FeatureFlag.PM30811_ChangeEmailNewAuthenticationApis]: FALSE,
+  [FeatureFlag.PM30806_SelfServiceChangeEmailCommand]: FALSE,
+  [FeatureFlag.PM31088_MasterPasswordServiceEmitSalt]: FALSE,
+  [FeatureFlag.PM34210_DesktopAddDevices]: FALSE,
+  [FeatureFlag.PM44303_EmergencyAccessSdkApi]: FALSE,
+
+  /* Billing */
+  [FeatureFlag.PM29108_EnablePersonalDiscounts]: FALSE,
+  [FeatureFlag.PM24032_NewNavigationPremiumUpgradeButton]: FALSE,
+  [FeatureFlag.PM23713_PremiumBadgeOpensNewPremiumUpgradeDialog]: FALSE,
+  [FeatureFlag.PM34515_BrowserDesktopCheckout]: FALSE,
+  [FeatureFlag.DebugDisableSelfHostPremiumCheck]: FALSE,
+  [FeatureFlag.PM29593_PremiumToOrganizationUpgrade]: FALSE,
+  [FeatureFlag.PM38333_AnnualBillingSavings]: FALSE,
+  [FeatureFlag.PM42214_FeatureBasedUpgradePaths]: FALSE,
+
+  /* Key Management */
+  [FeatureFlag.PrivateKeyRegeneration]: FALSE,
+  [FeatureFlag.SharedUnlockPart2]: FALSE,
+  [FeatureFlag.ForceUpgradeV2Encryption]: FALSE,
+  [FeatureFlag.EnableAccountEncryptionV2KeyConnectorRegistration]: FALSE,
+  [FeatureFlag.BiometricsSDKIPC]: FALSE,
+
+  /* Platform */
+  [FeatureFlag.FedRampGovRegion]: FALSE,
+  [FeatureFlag.ContentScriptIpcChannelFramework]: FALSE,
+  [FeatureFlag.ManagedDeviceFramework]: FALSE,
+  [FeatureFlag.PM30935_FlightRecorderTsLogging]: FALSE,
+
+  /* Secrets Manager */
+  [FeatureFlag.SecretVersioning]: FALSE,
+  [FeatureFlag.SmCli]: FALSE,
+
+  /* PAM */
+  [FeatureFlag.Pam]: FALSE,
+  [FeatureFlag.PamBillingSupport]: FALSE,
+  [FeatureFlag.PamAccessConnector]: FALSE,
+
+  /* VFO */
+  [FeatureFlag.VFO1Foundation]: FALSE,
+} satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
+
+export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
+
+export type FeatureFlagValueType<Flag extends FeatureFlag> = DefaultFeatureFlagValueType[Flag];
+
+export function getFeatureFlagValue<Flag extends FeatureFlag>(
+  serverConfig: ServerConfig | null,
+  flag: Flag,
+) {
+  if (serverConfig?.featureStates == null || serverConfig.featureStates[flag] == null) {
+    return DefaultFeatureFlagValue[flag];
+  }
+
+  return serverConfig.featureStates[flag] as FeatureFlagValueType<Flag>;
+}

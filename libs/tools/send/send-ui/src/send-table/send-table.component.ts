@@ -1,0 +1,112 @@
+import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+
+import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
+import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
+import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import {
+  BadgeModule,
+  ButtonModule,
+  IconButtonModule,
+  IconModule,
+  LinkModule,
+  MenuModule,
+  TableDataSource,
+  TableModule,
+  TooltipDirective,
+  TypographyModule,
+} from "@bitwarden/components";
+
+import { removeSendAuthI18nKeys } from "../send-auth/remove-send-auth-i18n";
+import { getSendItemIcon } from "../send-item-icon";
+
+/**
+ * A table component for displaying Send items with sorting, status indicators, and action menus. Handles the presentation of sends in a tabular format with options
+ * for editing, copying links, removing passwords, and deleting.
+ */
+@Component({
+  selector: "tools-send-table",
+  templateUrl: "./send-table.component.html",
+  imports: [
+    CommonModule,
+    JslibModule,
+    TableModule,
+    ButtonModule,
+    LinkModule,
+    IconModule,
+    IconButtonModule,
+    MenuModule,
+    BadgeModule,
+    TypographyModule,
+    TooltipDirective,
+    IconModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class SendTableComponent {
+  protected readonly sendType = SendType;
+  protected readonly authType = AuthType;
+  protected readonly removeSendAuthI18nKeys = removeSendAuthI18nKeys;
+
+  protected readonly itemIcon = getSendItemIcon;
+
+  /**
+   * The data source containing the Send items to display in the table.
+   */
+  readonly dataSource = input<TableDataSource<SendView>>();
+
+  /**
+   * Whether Send functionality is disabled by policy.
+   * When true, the "Remove password" / "Remove email verification" option is hidden from the action menu.
+   */
+  readonly disableSend = input(false);
+
+  /**
+   * Whether policy requires Sends to keep their password or email verification.
+   * When true, the "Remove password" / "Remove email verification" option is hidden from the action menu.
+   */
+  readonly sendAuthRequired = input(false);
+
+  /**
+   * Emitted when a user clicks on a Send item to edit it.
+   * The clicked SendView is passed as the event payload.
+   */
+  readonly editSend = output<SendView>();
+
+  /**
+   * Emitted when a user clicks the "Copy Send Link" action.
+   * The SendView is passed as the event payload for generating and copying the link.
+   */
+  readonly copySend = output<SendView>();
+
+  /**
+   * Emitted when a user clicks the "Remove password" / "Remove email verification" action.
+   * The SendView is passed as the event payload for authentication removal.
+   * This action is only available if the Send has authentication, Send is not disabled, policy
+   * doesn't require authentication, and the Send is compliant with policy.
+   */
+  readonly removeAuth = output<SendView>();
+
+  /**
+   * Emitted when a user clicks the "Delete" action.
+   * The SendView is passed as the event payload for deletion.
+   */
+  readonly deleteSend = output<SendView>();
+
+  protected onEditSend(send: SendView): void {
+    this.editSend.emit(send);
+  }
+
+  protected onCopy(send: SendView): void {
+    this.copySend.emit(send);
+  }
+
+  protected onRemoveAuth(send: SendView): void {
+    this.removeAuth.emit(send);
+  }
+
+  protected onDelete(send: SendView): void {
+    this.deleteSend.emit(send);
+  }
+}

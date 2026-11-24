@@ -1,0 +1,689 @@
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { Router } from "@angular/router";
+import { mock } from "jest-mock-extended";
+import { BehaviorSubject, of } from "rxjs";
+
+import { CollectionService } from "@bitwarden/admin-console/common";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import {
+  UriMatchStrategy,
+  UriMatchStrategySetting,
+} from "@bitwarden/common/models/domain/domain-service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { CipherId } from "@bitwarden/common/types/guid";
+import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
+import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
+import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { RestrictedCipherAction } from "@bitwarden/common/vault/utils/restricted-cipher-policy";
+import { DialogService, ToastService } from "@bitwarden/components";
+import { ShareLinkService } from "@bitwarden/tools-share";
+import {
+  PasswordRepromptService,
+  VAULT_ROW_ACTIONS,
+  type VaultItemsTableRowAction,
+} from "@bitwarden/vault";
+
+import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
+import { VaultPopupItemsService } from "../../../services/vault-popup-items.service";
+import {
+  AutofillConfirmationDialogComponent,
+  AutofillConfirmationDialogResult,
+} from "../autofill-confirmation-dialog/autofill-confirmation-dialog.component";
+
+import { ItemMoreOptionsComponent } from "./item-more-options.component";
+
+describe("ItemMoreOptionsComponent", () => {
+  let fixture: ComponentFixture<ItemMoreOptionsComponent>;
+  let component: ItemMoreOptionsComponent;
+
+  const dialogService = {
+    openSimpleDialog: jest.fn().mockResolvedValue(true),
+    open: jest.fn(),
+  };
+  const cipherService = {
+    get: jest.fn(),
+    decrypt: jest.fn(),
+    getFullCipherView: jest.fn(),
+    encrypt: jest.fn(),
+    updateWithServer: jest.fn(),
+    softDeleteWithServer: jest.fn(),
+  };
+  const autofillSvc = {
+    doAutofill: jest.fn(),
+    doAutofillAndSave: jest.fn(),
+    currentAutofillTab$: new BehaviorSubject<{ url?: string | null } | null>(null),
+    autofillAllowed$: new BehaviorSubject(true),
+  };
+
+  const passwordRepromptService = {
+    passwordRepromptCheck: jest.fn().mockResolvedValue(true),
+  };
+
+  const uriMatchStrategy$ = new BehaviorSubject<UriMatchStrategySetting>(UriMatchStrategy.Domain);
+
+  const domainSettingsService = {
+    resolvedDefaultUriMatchStrategy$: uriMatchStrategy$.asObservable(),
+    getUrlEquivalentDomains: jest.fn().mockReturnValue(of(new Set<string>())),
+  };
+
+  const revealedCipherService = mock<RevealedCipherService>();
+  let revealed$: BehaviorSubject<ReadonlyMap<CipherId, CipherView>>;
+  /** Contributed menu actions (`VAULT_ROW_ACTIONS`), read when the component is created. */
+  let rowActions: VaultItemsTableRowAction<CipherViewLike>[];
+
+  const baseCipher = {
+    id: "cipher-1",
+    login: {
+      uris: [
+        { uri: "https://one.example.com" },
+        { uri: "" },
+        { uri: undefined as unknown as string },
+        { uri: "https://two.example.com/a" },
+      ],
+      username: "user",
+    },
+    favorite: false,
+    reprompt: 0,
+    type: CipherType.Login,
+    viewPassword: true,
+    edit: true,
+  } as any;
+
+  beforeEach(waitForAsync(async () => {
+    jest.clearAllMocks();
+    rowActions = [];
+    await setup();
+  }));
+
+  /** Builds the testing module and the component. Call again after a reset to change its inputs. */
+  async function setup() {
+    revealed$ = new BehaviorSubject<ReadonlyMap<CipherId, CipherView>>(new Map());
+    revealedCipherService.revealed$.mockReturnValue(revealed$);
+
+    cipherService.getFullCipherView.mockImplementation(async (c) => ({ ...baseCipher, ...c }));
+
+    TestBed.configureTestingModule({
+      imports: [ItemMoreOptionsComponent, NoopAnimationsModule],
+      providers: [
+        { provide: RevealedCipherService, useValue: revealedCipherService },
+        { provide: VAULT_ROW_ACTIONS, useFactory: () => rowActions },
+        { provide: CipherService, useValue: cipherService },
+        { provide: VaultPopupAutofillService, useValue: autofillSvc },
+
+        { provide: I18nService, useValue: { t: (k: string) => k } },
+        { provide: AccountService, useValue: { activeAccount$: of({ id: "UserId" }) } },
+        { provide: OrganizationService, useValue: { hasOrganizations: () => of(false) } },
+        {
+          provide: CipherAuthorizationService,
+          useValue: { canDeleteCipher$: () => of(true), canCloneCipher$: () => of(true) },
+        },
+        { provide: CollectionService, useValue: { decryptedCollections$: () => of([]) } },
+        { provide: RestrictedItemTypesService, useValue: { restricted$: of([]) } },
+        {
+          provide: CipherArchiveService,
+          useValue: { userCanArchive$: () => of(true) },
+        },
+        { provide: ToastService, useValue: { showToast: () => {} } },
+        { provide: Router, useValue: { navigate: () => Promise.resolve(true) } },
+        { provide: PasswordRepromptService, useValue: passwordRepromptService },
+        {
+          provide: DomainSettingsService,
+          useValue: domainSettingsService,
+        },
+        {
+          provide: VaultPopupItemsService,
+          useValue: mock<VaultPopupItemsService>({}),
+        },
+        {
+          provide: ConfigService,
+          useValue: { getFeatureFlag$: () => of(false) },
+        },
+        {
+          provide: ShareLinkService,
+          useValue: { cipherCanBeShared$: () => of(false) },
+        },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    });
+    TestBed.overrideProvider(DialogService, { useValue: dialogService });
+    await TestBed.compileComponents();
+    fixture = TestBed.createComponent(ItemMoreOptionsComponent);
+    component = fixture.componentInstance;
+    component.cipher = baseCipher;
+  }
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  function mockConfirmDialogResult(result: string) {
+    const openSpy = jest
+      .spyOn(AutofillConfirmationDialogComponent, "open")
+      .mockReturnValue({ closed: of(result) } as any);
+    return openSpy;
+  }
+
+  describe("doAutofill", () => {
+    beforeEach(() => {
+      jest.spyOn(component as any, "_domainMatched").mockResolvedValue(false);
+    });
+
+    it("calls the passwordService to passwordRepromptCheck", async () => {
+      autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+      mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+
+      await component.doAutofill();
+
+      expect(passwordRepromptService.passwordRepromptCheck).toHaveBeenCalledWith(baseCipher);
+    });
+
+    it("does nothing if the user fails master password reprompt", async () => {
+      baseCipher.reprompt = 2; // Master Password reprompt enabled
+      autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+      passwordRepromptService.passwordRepromptCheck.mockResolvedValue(false); // Reprompt fails
+      mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+
+      await component.doAutofill();
+
+      expect(autofillSvc.doAutofill).not.toHaveBeenCalled();
+      expect(autofillSvc.doAutofillAndSave).not.toHaveBeenCalled();
+    });
+
+    describe("autofill confirmation dialog", () => {
+      beforeEach(() => {
+        uriMatchStrategy$.next(UriMatchStrategy.Domain);
+        passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
+        jest.spyOn(component as any, "_domainMatched").mockResolvedValue(false);
+      });
+
+      it("autofills directly without showing confirmation dialog when domain matches", async () => {
+        autofillSvc.currentAutofillTab$.next({ url: "https://one.example.com" });
+        jest.spyOn(component as any, "_domainMatched").mockResolvedValue(true);
+        const openSpy = jest.spyOn(AutofillConfirmationDialogComponent, "open");
+
+        await component.doAutofill();
+
+        expect(openSpy).not.toHaveBeenCalled();
+        expect(autofillSvc.doAutofill).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "cipher-1" }),
+          true,
+          true,
+        );
+      });
+
+      it("calls the passwordService to passwordRepromptCheck", async () => {
+        autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+        mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+
+        await component.doAutofill();
+
+        expect(passwordRepromptService.passwordRepromptCheck).toHaveBeenCalledWith(baseCipher);
+      });
+
+      it("opens the autofill confirmation dialog with filtered saved URLs", async () => {
+        autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com/path" });
+        const openSpy = mockConfirmDialogResult(AutofillConfirmationDialogResult.Canceled);
+
+        await component.doAutofill();
+
+        expect(openSpy).toHaveBeenCalledTimes(1);
+        const args = openSpy.mock.calls[0][1];
+        expect(args.data?.currentUrl).toBe("https://page.example.com/path");
+        expect(args.data?.savedUris).toEqual([
+          { uri: "https://one.example.com" },
+          { uri: "https://two.example.com/a" },
+        ]);
+      });
+
+      it("does nothing when the user cancels the autofill confirmation dialog", async () => {
+        autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+        mockConfirmDialogResult(AutofillConfirmationDialogResult.Canceled);
+
+        await component.doAutofill();
+
+        expect(autofillSvc.doAutofill).not.toHaveBeenCalled();
+        expect(autofillSvc.doAutofillAndSave).not.toHaveBeenCalled();
+      });
+
+      it("calls the autofill service to autofill when the user selects 'AutofilledOnly'", async () => {
+        autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+        mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+
+        await component.doAutofill();
+
+        expect(autofillSvc.doAutofill).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "cipher-1" }),
+          true,
+          true,
+        );
+        expect(autofillSvc.doAutofillAndSave).not.toHaveBeenCalled();
+      });
+
+      it("calls the autofill service to doAutofillAndSave when the user selects 'AutofillAndUrlAdded'", async () => {
+        autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+        mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofillAndUrlAdded);
+
+        await component.doAutofill();
+
+        expect(autofillSvc.doAutofillAndSave).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "cipher-1" }),
+          false,
+          true,
+        );
+        expect(autofillSvc.doAutofillAndSave.mock.calls[0][1]).toBe(false);
+        expect(autofillSvc.doAutofill).not.toHaveBeenCalled();
+      });
+
+      describe("URI match strategy handling", () => {
+        it("calls the passwordService to passwordRepromptCheck", async () => {
+          autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+          mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+
+          await component.doAutofill();
+
+          expect(passwordRepromptService.passwordRepromptCheck).toHaveBeenCalledWith(baseCipher);
+        });
+
+        describe("when the default URI match strategy is Exact", () => {
+          beforeEach(() => {
+            uriMatchStrategy$.next(UriMatchStrategy.Exact);
+          });
+
+          it("shows the confirmation dialog when the cipher has no saved URIs", async () => {
+            mockConfirmDialogResult(AutofillConfirmationDialogResult.Canceled);
+            autofillSvc.currentAutofillTab$.next({ url: "https://no-match.example.com" });
+            cipherService.getFullCipherView.mockImplementation(async (c) => ({
+              ...baseCipher,
+              ...c,
+              login: {
+                ...baseCipher.login,
+                uris: [],
+              },
+            }));
+
+            await component.doAutofill();
+
+            expect(dialogService.openSimpleDialog).not.toHaveBeenCalled();
+            expect(autofillSvc.doAutofill).not.toHaveBeenCalled();
+            expect(autofillSvc.doAutofillAndSave).not.toHaveBeenCalled();
+          });
+
+          it("shows the confirmation dialog when all URIs have exact match strategy", async () => {
+            mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+            cipherService.getFullCipherView.mockImplementation(async (c) => ({
+              ...baseCipher,
+              ...c,
+              login: {
+                ...baseCipher.login,
+                uris: [
+                  { uri: "https://one.example.com", match: UriMatchStrategy.Exact },
+                  { uri: "https://two.example.com/a", match: UriMatchStrategy.Exact },
+                ],
+              },
+            }));
+
+            autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com/path" });
+            await component.doAutofill();
+
+            expect(dialogService.openSimpleDialog).not.toHaveBeenCalled();
+            expect(autofillSvc.doAutofill).toHaveBeenCalled();
+          });
+        });
+
+        describe("when the default URI match strategy is not Exact", () => {
+          beforeEach(() => {
+            mockConfirmDialogResult(AutofillConfirmationDialogResult.Canceled);
+            uriMatchStrategy$.next(UriMatchStrategy.Domain);
+          });
+
+          it("shows the confirmation dialog when the cipher has no saved URIs", async () => {
+            autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+
+            await component.doAutofill();
+
+            expect(dialogService.openSimpleDialog).not.toHaveBeenCalled();
+          });
+
+          it("shows the confirmation dialog when the cipher has only exact match saved URIs", async () => {
+            mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+            cipherService.getFullCipherView.mockImplementation(async (c) => ({
+              ...baseCipher,
+              ...c,
+              login: {
+                ...baseCipher.login,
+                uris: [
+                  { uri: "https://one.example.com", match: UriMatchStrategy.Exact },
+                  { uri: "https://two.example.com/a", match: UriMatchStrategy.Exact },
+                ],
+              },
+            }));
+
+            autofillSvc.currentAutofillTab$.next({ url: "https://no-match.example.com" });
+
+            await component.doAutofill();
+
+            expect(dialogService.openSimpleDialog).not.toHaveBeenCalled();
+            expect(autofillSvc.doAutofill).toHaveBeenCalled();
+          });
+
+          it("does not show the exact match dialog when the cipher has at least one uri without a match strategy of Exact", async () => {
+            mockConfirmDialogResult(AutofillConfirmationDialogResult.Canceled);
+            cipherService.getFullCipherView.mockImplementation(async (c) => ({
+              ...baseCipher,
+              ...c,
+              login: {
+                ...baseCipher.login,
+                uris: [
+                  { uri: "https://one.example.com", match: UriMatchStrategy.Exact },
+                  { uri: "https://page.example.com", match: UriMatchStrategy.Domain },
+                ],
+              },
+            }));
+
+            autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+
+            await component.doAutofill();
+
+            expect(dialogService.openSimpleDialog).not.toHaveBeenCalled();
+          });
+        });
+      });
+
+      it("hides the 'Fill and Save' button when showAutofillConfirmation$ is true", async () => {
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        const fillAndSaveButton = fixture.nativeElement.querySelector(
+          "button[bitMenuItem]:not([disabled])",
+        );
+
+        const buttonText = fillAndSaveButton?.textContent?.trim().toLowerCase() ?? "";
+        expect(buttonText.includes("fillAndSave".toLowerCase())).toBe(false);
+      });
+
+      it("does nothing if the user fails master password reprompt", async () => {
+        baseCipher.reprompt = 2; // Master Password reprompt enabled
+        autofillSvc.currentAutofillTab$.next({ url: "https://page.example.com" });
+        passwordRepromptService.passwordRepromptCheck.mockResolvedValue(false); // Reprompt fails
+        mockConfirmDialogResult(AutofillConfirmationDialogResult.AutofilledOnly);
+
+        await component.doAutofill();
+
+        expect(autofillSvc.doAutofill).not.toHaveBeenCalled();
+        expect(autofillSvc.doAutofillAndSave).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("restricted ciphers", () => {
+    it("offers only the user fields for a restricted cipher without a revealed view", () => {
+      component.cipher = { ...baseCipher, partial: true };
+
+      expect(component.canEdit).toBe(false);
+      expect(component.canAutofill).toBe(false);
+      expect(component["allows"](RestrictedCipherAction.Share)).toBe(false);
+      expect(component["allows"](RestrictedCipherAction.UserFields)).toBe(true);
+    });
+
+    it("allows edit and delete, but not clone, while a reveal of its restricted cipher is live", () => {
+      const restricted = { ...baseCipher, partial: true } as CipherView;
+      component.cipher = restricted;
+      expect(component["isLocked"]).toBe(true);
+
+      revealed$.next(
+        new Map([["cipher-1" as CipherId, { ...baseCipher, partial: false } as CipherView]]),
+      );
+
+      expect(component["isLocked"]).toBe(false);
+      expect(component.canEdit).toBe(true);
+      expect(component["allows"](RestrictedCipherAction.Delete)).toBe(true);
+      expect(component["allows"](RestrictedCipherAction.Clone)).toBe(false);
+    });
+
+    it("allows edit of a revealed view, but not share or assign collections", () => {
+      const revealed = { ...baseCipher, partial: false } as CipherView;
+      revealed$.next(new Map([["cipher-1" as CipherId, revealed]]));
+      component.cipher = revealed;
+
+      expect(component.canEdit).toBe(true);
+      expect(component.canAutofill).toBe(true);
+      expect(component["allows"](RestrictedCipherAction.Share)).toBe(false);
+      expect(component["allows"](RestrictedCipherAction.AssignCollections)).toBe(false);
+    });
+  });
+
+  describe("toggleFavorite", () => {
+    beforeEach(() => {
+      cipherService.get.mockResolvedValue({ id: "cipher-1" });
+    });
+
+    it("saves the stored copy of a revealed row and reads the reveal again", async () => {
+      const revealed = { ...baseCipher, partial: false } as CipherView;
+      revealed$.next(new Map([["cipher-1" as CipherId, revealed]]));
+      component.cipher = revealed;
+      cipherService.decrypt.mockResolvedValue({ ...baseCipher, partial: true });
+
+      await component.toggleFavorite();
+
+      expect(cipherService.get).toHaveBeenCalledWith("cipher-1", "UserId");
+      expect(cipherService.updateWithServer).toHaveBeenCalledWith(
+        expect.objectContaining({ partial: true, favorite: true }),
+        "UserId",
+      );
+      expect(revealed.favorite).toBe(false);
+      expect(revealedCipherService.refresh).toHaveBeenCalledWith("UserId", "cipher-1");
+    });
+
+    it("does not read a reveal again for a row without one", async () => {
+      cipherService.decrypt.mockResolvedValue({ ...baseCipher });
+
+      await component.toggleFavorite();
+
+      expect(cipherService.updateWithServer).toHaveBeenCalledWith(
+        expect.objectContaining({ favorite: true }),
+        "UserId",
+      );
+      expect(revealedCipherService.refresh).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("canAssignCollections$", () => {
+    it("emits true when user has organizations and editable collections", (done) => {
+      jest.spyOn(component["organizationService"], "hasOrganizations").mockReturnValue(of(true));
+      jest
+        .spyOn(component["collectionService"], "decryptedCollections$")
+        .mockReturnValue(of([{ id: "col-1", readOnly: false }] as any));
+
+      component["canAssignCollections$"].subscribe((result) => {
+        expect(result).toBe(true);
+        done();
+      });
+    });
+
+    it("emits false when user has no organizations", (done) => {
+      jest.spyOn(component["organizationService"], "hasOrganizations").mockReturnValue(of(false));
+      jest
+        .spyOn(component["collectionService"], "decryptedCollections$")
+        .mockReturnValue(of([{ id: "col-1", readOnly: false }] as any));
+
+      component["canAssignCollections$"].subscribe((result) => {
+        expect(result).toBe(false);
+        done();
+      });
+    });
+
+    it("emits false when all collections are read-only", (done) => {
+      jest.spyOn(component["organizationService"], "hasOrganizations").mockReturnValue(of(true));
+      jest
+        .spyOn(component["collectionService"], "decryptedCollections$")
+        .mockReturnValue(of([{ id: "col-1", readOnly: true }] as any));
+
+      component["canAssignCollections$"].subscribe((result) => {
+        expect(result).toBe(false);
+        done();
+      });
+    });
+  });
+
+  describe("restricted cipher menu", () => {
+    let overlayContainer: OverlayContainer;
+
+    const restrictedCipher = { ...baseCipher, partial: true, favorite: false };
+
+    function menuTrigger(): HTMLButtonElement | null {
+      return fixture.nativeElement.querySelector('button[biticonbutton="bwi-ellipsis-v"]');
+    }
+
+    function openMenu(): HTMLElement {
+      fixture.detectChanges();
+      menuTrigger()!.click();
+      fixture.detectChanges();
+      return overlayContainer.getContainerElement();
+    }
+
+    function menuItems(): string[] {
+      return Array.from(
+        openMenu().querySelectorAll<HTMLElement>("[bitmenuitem]"),
+        (item) => item.textContent?.trim() ?? "",
+      );
+    }
+
+    beforeEach(() => {
+      overlayContainer = TestBed.inject(OverlayContainer);
+      fixture.componentRef.setInput("showAutofill", true);
+    });
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it("offers Favorite and Archive, but not Autofill, Edit, Clone or Delete, without a reveal", () => {
+      component.cipher = restrictedCipher;
+
+      expect(menuItems()).toEqual(["favorite", "archiveVerb"]);
+    });
+
+    it("offers Edit and Delete, but not Clone, on a revealed row", () => {
+      const revealed = { ...baseCipher, partial: false } as CipherView;
+      revealed$.next(new Map([["cipher-1" as CipherId, revealed]]));
+      component.cipher = revealed;
+
+      const items = menuItems();
+
+      expect(items).toContain("edit");
+      expect(items).toContain("delete");
+      expect(items).not.toContain("clone");
+    });
+
+    it("keeps the overflow trigger for a restricted row", () => {
+      component.cipher = restrictedCipher;
+      fixture.detectChanges();
+
+      expect(menuTrigger()).not.toBeNull();
+    });
+  });
+
+  describe("contributed actions", () => {
+    let overlayContainer: OverlayContainer;
+
+    const action = (
+      id: string,
+      overrides: Partial<VaultItemsTableRowAction<CipherViewLike>> = {},
+    ): VaultItemsTableRowAction<CipherViewLike> => ({
+      id,
+      label: id,
+      icon: "bwi-lock",
+      run: jest.fn(),
+      ...overrides,
+    });
+
+    async function provideActions(actions: VaultItemsTableRowAction<CipherViewLike>[]) {
+      TestBed.resetTestingModule();
+      rowActions = actions;
+      await setup();
+      overlayContainer = TestBed.inject(OverlayContainer);
+    }
+
+    function openMenu(): HTMLElement {
+      fixture.detectChanges();
+      fixture.nativeElement.querySelector('button[biticonbutton="bwi-ellipsis-v"]')!.click();
+      fixture.detectChanges();
+      return overlayContainer.getContainerElement();
+    }
+
+    function menuItem(label: string): HTMLButtonElement | undefined {
+      return Array.from(openMenu().querySelectorAll<HTMLButtonElement>("[bitmenuitem]")).find(
+        (item) => item.textContent?.trim() === label,
+      );
+    }
+
+    afterEach(() => {
+      overlayContainer?.ngOnDestroy();
+    });
+
+    it("shows contributed actions after View and before Favorite, in order", async () => {
+      await provideActions([action("first"), action("second")]);
+      fixture.componentRef.setInput("showViewOption", true);
+
+      const labels = Array.from(openMenu().querySelectorAll<HTMLElement>("[bitmenuitem]"), (item) =>
+        item.textContent?.trim(),
+      );
+
+      expect(labels.slice(0, 4)).toEqual(["view", "first", "second", "favorite"]);
+    });
+
+    it("hides an action whose show returns false for the row", async () => {
+      const show = jest.fn().mockReturnValue(false);
+      await provideActions([action("hidden", { show })]);
+
+      expect(menuItem("hidden")).toBeUndefined();
+      expect(show).toHaveBeenCalledWith(baseCipher);
+    });
+
+    it("disables an action whose disabled returns true for the row", async () => {
+      await provideActions([action("disabled", { disabled: () => true }), action("enabled")]);
+
+      const items = Array.from(openMenu().querySelectorAll<HTMLButtonElement>("[bitmenuitem]"));
+      const item = (label: string) => items.find((i) => i.textContent?.trim() === label);
+
+      expect(item("disabled")?.disabled).toBe(true);
+      expect(item("enabled")?.disabled).toBe(false);
+    });
+
+    it("runs the action with the row's cipher", async () => {
+      const run = jest.fn();
+      await provideActions([action("run", { run })]);
+
+      menuItem("run")!.click();
+
+      expect(run).toHaveBeenCalledWith(baseCipher);
+    });
+
+    it("shows contributed actions on a restricted row", async () => {
+      await provideActions([action("request")]);
+      component.cipher = { ...baseCipher, partial: true };
+
+      expect(menuItem("request")).toBeDefined();
+    });
+
+    it("throws in dev mode when an action ID matches a built-in action", async () => {
+      TestBed.resetTestingModule();
+      rowActions = [action("edit")];
+
+      await expect(setup()).rejects.toThrow(
+        'VAULT_ROW_ACTIONS action ID "edit" is already in use.',
+      );
+    });
+  });
+});
