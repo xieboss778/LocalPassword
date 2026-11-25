@@ -60,7 +60,7 @@ const TILES: readonly KindTile[] = [
         @for (tile of tiles; track tile.kind) {
           <button
             type="button"
-            class="tw-flex tw-flex-col tw-items-start tw-gap-1 tw-rounded-[12px] tw-border tw-border-transparent tw-bg-[var(--lp-card)] tw-px-3 tw-py-3 tw-text-left tw-shadow-[0_1px_2px_#10131812] hover:tw-border-[#c9d4ff]"
+            class="tw-flex tw-flex-col tw-items-start tw-gap-1 tw-rounded-[12px] tw-border tw-border-transparent tw-bg-[var(--lp-card)] tw-p-3 tw-text-left tw-shadow-[0_1px_2px_#10131812] hover:tw-border-[#c9d4ff]"
             (click)="pick(tile.kind)"
           >
             <span class="tw-text-[20px]" aria-hidden="true">{{ tile.emoji }}</span>

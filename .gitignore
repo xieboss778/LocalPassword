@@ -74,3 +74,6 @@ apps/**/config/local.json
 
 # 本地 agent 工具目录（不随产品分发）
 .dsh/
+
+# 设计原型（只存在原型分支）
+prototype/

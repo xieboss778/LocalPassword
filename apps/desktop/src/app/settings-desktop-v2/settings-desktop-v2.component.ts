@@ -175,8 +175,15 @@ export class SettingsDesktopV2Component implements OnInit {
         return;
       }
 
-      await this.biometricStateService.setBiometricUnlockEnabled(true, userId);
+      // 没有解锁密钥就没有 Touch ID 的立足点：先取出并确认，再改状态，避免开关亮着却不能用。
       const userKey = await firstValueFrom(this.keyService.userKey$(userId));
+      if (userKey == null) {
+        this.errorMessage.set(this.i18n.t("unexpectedError"));
+        this.touchIdEnabled.set(false);
+        return;
+      }
+
+      await this.biometricStateService.setBiometricUnlockEnabled(true, userId);
       await this.biometricsService.setBiometricProtectedUnlockKeyForUser(userId, userKey);
 
       try {

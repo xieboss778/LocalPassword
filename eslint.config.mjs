@@ -66,6 +66,10 @@ const NODE_FORBIDDEN_PACKAGES = [
 ];
 
 export default tseslint.config(
+  {
+    // prototype/ 是设计原型（纯静态 HTML/JS），不属于客户端代码，不参与 lint。
+    ignores: ["prototype/**", ".dsh/**"],
+  },
   ...storybook.configs["flat/recommended"],
   {
     // Everything in this config object targets our TypeScript files (Components, Directives, Pipes etc)
