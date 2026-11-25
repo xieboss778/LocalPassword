@@ -8170,5 +8170,8 @@
   },
   "localVault": {
     "message": "本地保险库"
+  },
+  "passkey": {
+    "message": "Passkey"
   }
 }

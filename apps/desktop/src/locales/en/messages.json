@@ -8197,5 +8197,8 @@
   },
   "localVault": {
     "message": "Local vault"
+  },
+  "passkey": {
+    "message": "Passkey"
   }
 }

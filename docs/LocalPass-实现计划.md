@@ -87,3 +87,15 @@
 1. **kind 映射的边界**：用户从 Bitwarden 导入的条目没有 `lp:kind`，一律按 `login` 显示——可接受，但要在导入完成页说明。
 2. **服务端字段语义被借用**（令牌用 Login.password 存密钥）——搜索、复制、导出都还能工作，但「密码历史」会把它当密码记录；P1 需要显式排除。
 3. **桌面端三栏壳**会替换现有 desktop layout，Send/组织相关入口已删，注意别把 `桌面端设置` 里还活着的项丢掉。
+
+## 6. 本地验证方式（每轮收工必须三绿）
+
+| 端 | 类型检查 | 模板检查 | 构建 |
+| --- | --- | --- | --- |
+| 扩展弹窗 | `npx tsc -p apps/browser/tsconfig.json --noEmit` | 由 webpack 构建覆盖 | `npm run build:prod:chrome --workspace @localpass/browser` |
+| 桌面端 | `npx tsc -p apps/desktop/tsconfig.json --noEmit` | `npx ngc -p apps/desktop/tsconfig.renderer.json --noEmit` | **本地不可用**，见下 |
+| 共享库 | `npx tsc -p libs/local-vault/tsconfig.json --noEmit` | — | `npx jest --config libs/local-vault/jest.config.js` |
+
+**桌面端 renderer 构建本地跑不了**：`npm run build:bit:renderer` 依赖 `localpass_license/bit-desktop/webpack.config.js`，本仓库没有这个覆盖层目录，webpack 直接报找不到配置。这不是代码问题——用 `ngc`（`strictTemplates: true`）做模板类型检查，等价覆盖 `NG8001` 这类模板错误。
+
+CI 的 windows / chrome / 静态检查三个 job 仍然能验证真实构建，所以本地补齐 `ngc` 即可。

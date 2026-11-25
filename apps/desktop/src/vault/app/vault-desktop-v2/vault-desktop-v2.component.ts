@@ -7,8 +7,9 @@ import {
   inject,
   signal,
 } from "@angular/core";
+import { takeUntilDestroyed, toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, of, switchMap } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
@@ -21,8 +22,9 @@ import { AccountService } from "@localpass/common/auth/abstractions/account.serv
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
-import { ButtonModule, IconButtonModule } from "@localpass/components";
+import { ButtonModule, DialogService, IconButtonModule } from "@localpass/components";
 import {
   applyFieldValues,
   FIELDS,
@@ -49,8 +51,8 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
 /**
  * 桌面端三栏保险库（方向 C）：左 rail + 中间列表 + 右栏详情 / 内联表单。
  *
- * 右栏的编辑表单与弹窗共用 `@localpass/local-vault` 里的字段清单与读写映射，
- * 所以两边不会出现「同一个字段两边名字不一样」的漂移。
+ * 右栏表单与弹窗共用 `@localpass/local-vault` 的字段清单与读写映射；
+ * 复制只有「点行」一个入口（见 {@link LpRowComponent}）。
  */
 @Component({
   selector: "vault-desktop-v2",
@@ -66,9 +68,11 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
     LpPageHeaderComponent,
     LpRowComponent,
   ],
+  host: {
+    "(document:keydown)": "onKeyDown($event)",
+  },
   template: `
     <div class="tw-flex tw-h-full tw-bg-[var(--lp-bg)]">
-      <!-- 左 rail -->
       <nav class="tw-flex tw-w-[216px] tw-flex-none tw-flex-col tw-gap-1 tw-px-2 tw-py-3">
         <div class="tw-mb-2 tw-flex tw-items-center tw-gap-2 tw-px-2">
           <span
@@ -91,7 +95,6 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
         }
       </nav>
 
-      <!-- 中间列表 -->
       <section class="tw-flex tw-w-[330px] tw-flex-none tw-flex-col tw-bg-[var(--lp-card)]">
         <div class="tw-px-3.5 tw-pt-3 tw-pb-2">
           <div class="tw-text-[15px] tw-font-semibold">{{ i18n.t("vault") }}</div>
@@ -108,6 +111,7 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
             [value]="query()"
             (input)="onSearch($event)"
           />
+          <span class="tw-text-[10px] tw-text-[var(--lp-ink-3)]">&#8984;K</span>
         </div>
 
         <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-4">
@@ -130,7 +134,6 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
         </div>
       </section>
 
-      <!-- 右栏 -->
       <section class="tw-flex tw-min-w-0 tw-flex-1 tw-flex-col">
         @if (selected(); as item) {
           <lp-page-header
@@ -156,6 +159,12 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
                 bitIconButton="bwi-pencil-square"
                 [label]="i18n.t('edit')"
                 (click)="startEdit()"
+              ></button>
+              <button
+                type="button"
+                bitIconButton="bwi-trash"
+                [label]="i18n.t('delete')"
+                (click)="remove()"
               ></button>
               <button
                 type="button"
@@ -204,6 +213,16 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
                     [copyLabel]="i18n.t('password')"
                   />
                 }
+                @if (totpCode()) {
+                  <lp-row
+                    [label]="i18n.t('verificationCodeTotp')"
+                    [value]="formattedTotp()"
+                    [mono]="true"
+                    [brand]="true"
+                    [copyValue]="totpCode()"
+                    [copyLabel]="i18n.t('verificationCodeTotp')"
+                  />
+                }
               </lp-group>
 
               @if (item.login.uris.length) {
@@ -216,6 +235,16 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
                       [copyLabel]="i18n.t('uri')"
                     />
                   }
+                </lp-group>
+              }
+
+              @if (item.login.fido2Credentials.length) {
+                <lp-group label="Passkey">
+                  <lp-row
+                    [label]="i18n.t('passkey')"
+                    [value]="passkeySummary(item)"
+                    [clickable]="false"
+                  />
                 </lp-group>
               }
 
@@ -232,11 +261,23 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
                 </lp-group>
               }
 
-              @if (item.notes) {
-                <lp-group [label]="i18n.t('notes')">
+              <lp-group [label]="i18n.t('additionalOptions')">
+                @if (item.notes) {
                   <lp-row [label]="i18n.t('notes')" [sub]="item.notes" [clickable]="false" />
-                </lp-group>
-              }
+                }
+                <lp-row
+                  [label]="i18n.t('passwordReprompt')"
+                  [value]="item.reprompt ? i18n.t('enabled') : i18n.t('disabled')"
+                  [clickable]="false"
+                />
+                @if (item.attachments.length) {
+                  <lp-row
+                    [label]="i18n.t('attachments')"
+                    [value]="attachmentCount(item)"
+                    [clickable]="false"
+                  />
+                }
+              </lp-group>
             }
           </div>
         } @else {
@@ -253,8 +294,10 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
 export class VaultDesktopV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly cipherService = inject(CipherService);
+  private readonly totpService = inject(TotpService);
   private readonly accountService = inject(AccountService);
   private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
 
   protected readonly masked = "••••••••••••";
   protected readonly query = signal("");
@@ -290,6 +333,22 @@ export class VaultDesktopV2Component implements OnInit {
     );
   });
 
+  /** 选中项的 TOTP 密文；切换条目时重新订阅。 */
+  private readonly totpKey = computed(() => this.selected()?.login.totp ?? "");
+  private readonly totpResponse = toSignal(
+    toObservable(this.totpKey).pipe(
+      switchMap((key) => (key ? this.totpService.getCode$(key) : of(null))),
+      takeUntilDestroyed(),
+    ),
+    { initialValue: null },
+  );
+
+  protected readonly totpCode = computed(() => this.totpResponse()?.code ?? "");
+  protected readonly formattedTotp = computed(() => {
+    const code = this.totpCode();
+    return code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
+  });
+
   async ngOnInit(): Promise<void> {
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
     const ciphers = await this.cipherService.getAllDecrypted(userId);
@@ -304,6 +363,14 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected customFields(item: CipherView) {
     return withoutKindField(item.fields);
+  }
+
+  protected passkeySummary(item: CipherView): string {
+    return `${item.login.fido2Credentials.length}`;
+  }
+
+  protected attachmentCount(item: CipherView): string {
+    return `${item.attachments.length}`;
   }
 
   protected onSearch(event: Event): void {
@@ -357,6 +424,59 @@ export class VaultDesktopV2Component implements OnInit {
       this.errorMessage.set(this.i18n.t("unexpectedError"));
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  protected async remove(): Promise<void> {
+    const item = this.selected();
+    if (!item?.id) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteItem" },
+      content: { key: "deleteItemConfirmation" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+    await this.cipherService.softDeleteWithServer(item.id, userId);
+
+    this.items.update((items) => items.filter((entry) => entry.id !== item.id));
+    this.selectedId.set(this.items()[0]?.id ?? null);
+    this.mode.set("view");
+  }
+
+  /** ⌘N 新建、↑↓ 切条目、esc 退出编辑。 */
+  protected onKeyDown(event: KeyboardEvent): void {
+    const meta = event.metaKey || event.ctrlKey;
+
+    if (meta && event.key.toLowerCase() === "n") {
+      event.preventDefault();
+      this.go("/new-item-v2");
+      return;
+    }
+
+    if (event.key === "Escape" && this.mode() === "edit") {
+      event.preventDefault();
+      this.cancelEdit();
+      return;
+    }
+
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      const list = this.filtered();
+      if (!list.length) {
+        return;
+      }
+      event.preventDefault();
+      const index = list.findIndex((item) => item.id === this.selectedId());
+      const delta = event.key === "ArrowDown" ? 1 : -1;
+      const next = list[(index + delta + list.length) % list.length];
+      this.selectedId.set(next.id ?? null);
+      this.mode.set("view");
     }
   }
 
