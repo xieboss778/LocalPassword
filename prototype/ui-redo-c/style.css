@@ -368,3 +368,42 @@ button, .row, .d-row, .d-nav, .p-tab, .type-card { transition: background .12s v
 .d-toolbar .t.primary:hover { background: #255ee0; }
 
 .popup .p-scroll { padding-bottom: 104px; }
+
+/* ---------- 桌面端布局修复（内容溢出 / 页脚裁切 / 密度） ---------- */
+.d-main { overflow: hidden; }
+.d-main .hd { flex-wrap: wrap; gap: 10px 12px; padding: 16px 22px 8px; }
+.d-main .hd > div:first-child { min-width: 0; flex: 1 1 240px; }
+.d-main .hd h2 { font-size: 19px; }
+.d-toolbar { flex-wrap: wrap; justify-content: flex-end; flex: 0 1 auto; }
+.d-main .foot { padding: 9px 22px; font-size: 10.5px; gap: 12px; }
+.d-main .foot > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d-rows { padding-bottom: 10px; }
+.d-list { box-shadow: inset -1px 0 0 #eceef2; }
+
+/* 表单里的字段行：与详情页一致——标签在左、值在右 */
+.d-main .row .k { font-size: 12.5px; color: var(--ink2); }
+.d-main .row .k .sub { margin-top: 0; color: var(--ink); font-size: 12.5px; }
+
+/* 表单里的类型选择：4×2 紧凑网格，避免胶囊挤压换行 */
+.type-grid.compact { grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 22px 12px; }
+.type-grid.compact .type-card { padding: 8px 8px; border-radius: 10px; }
+.type-grid.compact .type-card .ico { font-size: 16px; }
+.type-grid.compact .type-card .nm { font-size: 11.5px; margin-top: 5px; }
+.type-grid.compact .type-card .bl { display: none; }
+.type-grid.compact .type-card[aria-current="true"] { border-color: var(--brand); background: var(--brand-soft); }
+
+.trash-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #0000000a; }
+.trash-row:last-child { border-bottom: 0; }
+.trash-row .t { flex: 1; font-size: 12.5px; }
+.trash-row .d { font-size: 10.5px; color: var(--ink3); margin-top: 1px; }
+.trash-row .btn { flex: none; }
+
+/* 开关缩小，与行高更协调 */
+.switch { width: 38px; height: 22px; }
+.switch::after { inset: 2px auto 2px 18px; width: 18px; }
+.switch.off::after { inset: 2px 18px 2px 2px; }
+
+/* 设置类左列：紧凑导航行（行高 44、无 emoji 大图标列） */
+.d-list.nav .d-row { min-height: 40px; padding: 7px 14px; }
+.d-list.nav .d-row .emoji { width: 22px; font-size: 14px; }
+.d-list.nav .d-row .nm { font-size: 12.5px; }

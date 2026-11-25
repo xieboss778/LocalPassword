@@ -246,7 +246,7 @@ POPUP.settings = function () {
       row({ k: "自动锁定", value: "15 分钟" })
     ) +
     pTitle("备份（手动）") + pGroup(
-      row({ k: "云备份（R2）", sub: "r2://localpassword", go: "backup" }) +
+      row({ k: "云备份（R2）", sub: "r2://localpass", go: "backup" }) +
       row({ k: "上次同步", value: "今天 14:02" }) +
       row({ k: "立即备份", value: "3 份" })
     ) +
@@ -266,7 +266,7 @@ POPUP.backup = function () {
   return pTop("云备份", "只在你点的时候联网", { back: "settings" }) +
     '<div class="p-scroll">' +
     '<div class="note-row warn">没有后台任务：改动条目不会自动上传，也没有定时器。</div>' +
-    '<div class="field"><div class="lab">存储</div><div class="val">Cloudflare R2 · r2://localpassword</div></div>' +
+    '<div class="field"><div class="lab">存储</div><div class="val">Cloudflare R2 · r2://localpass</div></div>' +
     '<div class="field"><div class="lab">上次同步</div><div class="val">今天 14:02 · 上传 1 个快照</div></div>' +
     '<div class="field"><div class="lab">上次备份</div><div class="val">今天 14:05 · 共 3 份</div></div>' +
     '<div class="p-actions">' +
@@ -284,10 +284,10 @@ POPUP["backup-config"] = function () {
     '<div class="p-scroll">' +
     '<div class="seg"><button aria-pressed="true">R2</button><button>其它 S3</button></div>' +
     '<div class="field"><div class="lab">端点</div><div class="val mono mini">https://&lt;account&gt;.r2.cloudflarestorage.com</div></div>' +
-    '<div class="field"><div class="lab">桶</div><div class="val mono">localpassword</div></div>' +
+    '<div class="field"><div class="lab">桶</div><div class="val mono">localpass</div></div>' +
     '<div class="field"><div class="lab">Access Key ID</div><div class="val mono mini">AKIA…7QX</div></div>' +
     '<div class="field"><div class="lab">Secret Access Key</div><div class="val mono">••••••••••••</div></div>' +
-    '<div class="field"><div class="lab">前缀</div><div class="val mono">localpassword</div></div>' +
+    '<div class="field"><div class="lab">前缀</div><div class="val mono">localpass</div></div>' +
     '<div class="p-actions"><button class="btn" data-go="backup">保存</button><button class="btn secondary">测试连接</button></div>' +
     "</div>";
 };
@@ -297,7 +297,7 @@ POPUP["restore-cloud"] = function () {
     '<div class="p-scroll">' +
     pHero("cloud", "把保险库拿回来", "填入存储配置和那份保险库的安全密码。") +
     '<div class="field"><div class="lab">端点</div><div class="val mono mini">https://…r2.cloudflarestorage.com</div></div>' +
-    '<div class="field"><div class="lab">桶 / 前缀</div><div class="val mono">localpassword / localpassword</div></div>' +
+    '<div class="field"><div class="lab">桶 / 前缀</div><div class="val mono">localpass / localpass</div></div>' +
     '<div class="field"><div class="lab">Access Key / Secret</div><div class="val mono">••••••••</div></div>' +
     '<div class="field"><div class="lab">安全密码</div><div class="val mono">••••••••••••</div></div>' +
     '<div class="p-actions"><button class="btn" data-go="vault">恢复</button></div>' +
@@ -389,7 +389,7 @@ POPUP["state-error"] = function () {
     '<div class="p-scroll">' +
     '<div class="note-row err">' + ic("alert", 14) + " 403 Forbidden — 密钥没有这个桶的写权限。</div>" +
     '<div class="field"><div class="lab">端点</div><div class="val mono mini">https://…r2.cloudflarestorage.com</div></div>' +
-    '<div class="field"><div class="lab">请求</div><div class="val mono mini">PUT /localpassword/manifest.json</div></div>' +
+    '<div class="field"><div class="lab">请求</div><div class="val mono mini">PUT /localpass/manifest.json</div></div>' +
     '<div class="p-actions"><button class="btn secondary" data-go="backup-config">改配置</button>' +
     '<button class="btn ghost" data-go="backup">稍后再试</button></div>' +
     '<div class="note">失败不会改动本地数据，也不会有任何重试队列在后台跑。</div>' +
@@ -423,13 +423,15 @@ function dRail(active) {
     "</div>";
 }
 
-function dList(title, sub, rows, action) {
-  return '<div class="d-list"><div class="list-head"><div><h2>' + title + "</h2>" +
+function dList(title, sub, rows, action, opts) {
+  opts = opts || {};
+  return '<div class="d-list' + (opts.nav ? " nav" : "") + '">' +
+    '<div class="list-head"><div><h2>' + title + "</h2>" +
     '<div class="sub">' + sub + "</div></div>" +
     (action ? '<div class="actions"><button class="btn primary sm" data-go="' + action.go + '">' +
       ic("plus", 13) + action.label + '<span class="kbd">⌘N</span></button></div>' : "") +
-    "</div></div>" +
-    '<div class="d-search">' + ic("search", 13) + "<span>搜索条目</span>" + '<span class="kbd">⌘K</span></div>' +
+    "</div>" +
+    (opts.hideSearch ? "" : '<div class="d-search">' + ic("search", 13) + "<span>搜索条目</span>" + '<span class="kbd">⌘K</span></div>') +
     '<div class="d-rows">' + rows + "</div></div>";
 }
 
@@ -478,7 +480,7 @@ DESK["settings-desktop"] = function () {
     '<div class="p-toast" style="margin:0 22px 10px">没有后台任务：桌面端收进托盘也不会自动上传，所有联网由你触发。</div>' +
     '<div class="gtitle">存储</div><div class="group">' +
       row({ k: "类型", value: "Cloudflare R2", chev: false }) +
-      row({ k: "端点", value: "r2://localpassword", mono: true, chev: false }) +
+      row({ k: "端点", value: "r2://localpass", mono: true, chev: false }) +
       row({ k: "上次同步", value: "今天 14:02" }) +
       row({ k: "上次备份", value: "今天 14:05 · 3 份" }) +
     "</div>" +
@@ -487,7 +489,7 @@ DESK["settings-desktop"] = function () {
       row({ k: "备份口令", sub: "用于备份文件的独立口令", value: "••••••••" }) +
     "</div></div>" +
     '<div class="foot"><span>仅手动 · 密文上传</span><span class="mono">R2 · sigv4</span></div>';
-  return dRail("settings") + dList("设置", "离线优先 · 无账号", list) + '<div class="d-main">' + main + "</div>";
+  return dRail("settings") + dList("设置", "离线优先 · 无账号", list, null, { hideSearch: true, nav: true }) + '<div class="d-main">' + main + "</div>";
 };
 
 DESK["security-desktop"] = function () {
@@ -511,7 +513,7 @@ DESK["security-desktop"] = function () {
     '<div class="note">指纹只在 macOS 的桌面端可用；浏览器扩展没有生物识别接口，所以扩展里永远不出现这一项。</div>' +
     "</div>" +
     '<div class="foot"><span>本机校验 · 无服务端</span><span class="mono">WebAuthn PRF · Keychain</span></div>';
-  return dRail("settings") + dList("设置", "离线优先 · 无账号", list) + '<div class="d-main">' + main + "</div>";
+  return dRail("settings") + dList("设置", "离线优先 · 无账号", list, null, { hideSearch: true, nav: true }) + '<div class="d-main">' + main + "</div>";
 };
 
 
@@ -564,10 +566,9 @@ function kvRow(k, v, opts) {
 }
 function inputRow(label, value, opts) {
   opts = opts || {};
-  return '<div class="row"><span class="k">' + label +
-    '<span class="sub" style="color:#11131a;font-size:12.5px;margin-top:3px' + (opts.mask ? ";letter-spacing:.16em" : "") + '">' +
-    value + "</span></span>" +
-    (opts.action ? '<span class="v brand">' + opts.action + "</span>" : "") + "</div>";
+  return '<div class="row"><span class="k">' + label + "</span>" +
+    '<span class="v' + (opts.mask ? " mono" : "") + '"' + (opts.mask ? ' style="letter-spacing:.16em"' : "") + ">" + value + "</span>" +
+    (opts.action ? '<span class="v brand" style="cursor:pointer">' + opts.action + "</span>" : "") + "</div>";
 }
 
 /* ---------- 桌面端：查看 ---------- */
@@ -614,10 +615,10 @@ DESK["d-trash"] = function () {
     { e: "🔐", n: "GitHub", d: "刚刚删除 · 29 天后清除" },
     { e: "🎮", n: "Steam", d: "3 天前删除 · 27 天后清除" },
   ].map(function (r) {
-    return '<div class="trash-row" style="background:#fff"><span class="emoji">' + r.e + "</span>" +
+    return '<div class="trash-row"><span class="emoji">' + r.e + "</span>" +
       '<div class="t">' + r.n + '<div class="d">' + r.d + "</div></div>" +
-      '<span class="mini" style="color:#2f6bff">恢复</span>' +
-      '<span class="mini" style="color:#d2483c">永久删除</span></div>';
+      '<button class="btn ghost sm">恢复</button>' +
+      '<button class="btn danger sm">永久删除</button></div>';
   }).join("");
   var main =
     '<div class="hd"><div><h2>回收站</h2><div class="meta">2 个条目 · 30 天后自动清除</div></div>' +
@@ -626,14 +627,16 @@ DESK["d-trash"] = function () {
     '<div class="body"><div class="gtitle">已删除</div><div class="group">' + rows + "</div>" +
     '<div class="note" style="padding:12px 24px">清空后无法恢复；云备份里可能有旧快照，但不包含删除前的最后一次改动。</div></div>' +
     '<div class="foot"><span>软删除 · 可恢复</span><span class="mono">回收站</span></div>';
-  var list = DATA.items.map(function (i) { return dRow({ emoji: typeOf(i.type).icon, n: i.n, sub: i.u }); }).join("");
-  return dRail("vault") +
-    '<div class="d-list"><div class="hd"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div><h2>保险库</h2>' +
-    '<div class="sub">回收站 · 2 个</div></div><button class="plus" data-go="d-pick-type">＋ 新建条目</button></div></div>' +
-    '<div class="d-search">' + ic("search", 13) + " 搜索</div>" +
-    '<div class="d-rows"><div class="d-row" data-go="vault-desktop"><span class="emoji">🗑️</span>' +
-    '<div class="main"><div class="nm">回收站</div><div class="sub">2 个条目</div></div></div>' + list + "</div></div>" +
-    '<div class="d-main">' + main + "</div>";
+  var listRows = DATA.items.map(function (i) {
+    return dRow({ emoji: typeOf(i.type).icon, n: i.n, sub: i.u }) + "";
+  }).join("");
+  var list =
+    '<div class="d-list"><div class="list-head"><div><h2>保险库</h2><div class="sub">回收站 · 2 个</div></div>' +
+    '<div class="actions"><button class="btn primary sm" data-go="d-pick-type">' + ic("plus", 13) + '新建<span class="kbd">⌘N</span></button></div></div>' +
+    '<div class="d-search">' + ic("search", 13) + '<span>搜索条目</span><span class="kbd">⌘K</span></div>' +
+    '<div class="d-rows"><div class="d-row" data-go="vault-desktop" aria-current="true"><span class="emoji">🗑️</span>' +
+    '<div class="main"><div class="nm">回收站</div><div class="sub">2 个条目</div></div></div>' + listRows + "</div></div>";
+  return dRail("vault") + list + '<div class="d-main">' + main + "</div>";
 };
 
 /* ---------- 弹窗：查看 ---------- */
@@ -707,6 +710,28 @@ POPUP.trash = function () {
     '<button class="btn danger">清空回收站</button></div>' +
     '<div class="note">清空后无法恢复；云备份里可能有旧快照。</div>' +
     "</div>";
+};
+
+/* ---------- 桌面端：删除确认（模态） ---------- */
+DESK["d-item-delete"] = function () {
+  var main =
+    '<div class="hd"><div><h2>GitHub</h2><div class="meta">github.com · 登录</div></div>' +
+    '<div class="d-toolbar"><button class="btn secondary sm" data-go="d-form-login">编辑</button>' +
+    '<button class="btn primary sm">复制密码</button></div></div>' +
+    '<div class="body"><div class="gtitle">凭据</div><div class="group">' +
+      kvRow("用户名", "bossxie", { mono: true, copy: true }) +
+      kvRow("密码", "••••••••••••", { mono: true, copy: true }) +
+    "</div></div>";
+  var modal =
+    '<div class="modal-wrap"><div class="modal narrow">' +
+      "<h3>删除「GitHub」？</h3>" +
+      '<div class="m-sub">移到回收站后 30 天内可以恢复。<b>只影响本地</b>：云端快照要等你点「立即同步」才会更新。</div>' +
+      '<div class="m-actions">' +
+        '<button class="btn danger" data-go="d-trash">移到回收站</button>' +
+        '<button class="btn secondary" data-go="vault-desktop">取消</button>' +
+      "</div></div></div>";
+  return dRail("vault") + dList("保险库", "6 个条目 · 已加密", vaultRows(0), { label: " 新建", go: "d-pick-type" }) +
+    '<div class="d-main">' + main + "</div>" + modal;
 };
 
 /* ================= 类型体系（简约 6 类，覆盖真实使用） ================= */
@@ -828,7 +853,11 @@ function deskTypeForm(key) {
     '<button class="btn secondary sm" data-go="vault-desktop">取消</button>' +
     '<button class="btn primary sm" data-go="vault-desktop">保存<span class="kbd">⌘S</span></button></div></div>' +
     '<div class="body">' +
-    '<div class="gtitle">类型</div><div class="group"><div class="row" style="cursor:default;gap:6px;flex-wrap:wrap">' + typePills(key) + "</div></div>" +
+    '<div class="gtitle">类型</div><div class="group"><div class="type-grid compact">' +
+      TYPES.map(function (x) {
+        return '<div class="type-card"' + (x.key === key ? ' aria-current="true"' : ' data-go="d-form-' + x.key + '"') + ">" +
+          '<div class="ico">' + x.icon + '</div><div class="nm">' + x.name + "</div></div>";
+      }).join("") + "</div></div>" +
     '<div class="gtitle">项目</div><div class="group">' +
       inputRow("名称", ({ server: "生产跳板机", token: "Cloudflare API", sshkey: "运维私钥 id_ed25519", license: "Sublime Text 授权", card: "招商银行 储蓄卡", identity: "本人身份证", note: "恢复码" })[key] || "GitHub") +
       inputRow("文件夹", ({ server: "运维", token: "开发", sshkey: "运维", license: "软件", card: "金融", identity: "个人", note: "个人" })[key] || "开发", { action: "选择" }) +
@@ -874,7 +903,7 @@ function popupTypeForm(key) {
   }
   return pTop("新建「" + t.name + "」", t.blurb, { back: "new-type" }) +
     '<div class="p-scroll">' +
-    pTitle("类型") + '<div class="p-scroll" style="padding:0 12px 6px;overflow:visible"><div class="type-scroll">' + typePills(key) + "</div></div>" +
+    pTitle("类型") + '<div class="type-scroll" style="padding:0 12px 6px">' + typePills(key, "form-") + "</div>" +
     pTitle("项目") + pGroup(
       row({ k: "名称", value: "GitHub", chev: false }) +
       row({ k: "文件夹", value: "开发", chev: true })

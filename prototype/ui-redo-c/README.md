@@ -34,6 +34,15 @@
 6. 颜色：底 #f2f3f6、卡片 #fff、主色 #2f6bff、成功 #34c759、危险 #d2483c；圆角 12；阴影只用 1px + 极淡。
 7. **Touch ID 只在 macOS 桌面端存在**，且入口只出现在「设置 → 安全」；首次向导与扩展弹窗里都不出现。
 
+## 自检
+
+```bash
+node prototype/ui-redo-c/check.js
+```
+
+会检查三件事：每个界面能否渲染、`<div>` 是否配对、导航里每个目标是否真的存在（这条是防「点了没反应 / 跳到错误界面」的）。
+改完界面先跑它，绿了再提交。
+
 ## 这是原型
 
 没有测试、没有错误处理、数据是假的。选中方向后按 `angular-modernization`（standalone → `@if` → signals → inject）+ `writing-client-code` 重写进
