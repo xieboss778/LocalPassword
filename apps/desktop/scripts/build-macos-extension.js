@@ -55,22 +55,18 @@ async function buildMacOs() {
   }
 
   let configuration;
-  let codeSignIdentity;
   let buildDirectory;
   const configurationArgument = process.argv[2];
   if (configurationArgument !== undefined) {
     // Use the configuration passed in to determine the configuration file.
     if (configurationArgument == "mas-dev") {
       configuration = "Debug";
-      codeSignIdentity = "Apple Development";
       buildDirectory = paths.extensionBuildDebug;
     } else if (configurationArgument == "mas") {
       configuration = "ReleaseAppStore";
-      codeSignIdentity = "3rd Party Mac Developer Application";
       buildDirectory = paths.extensionBuildReleaseAppStore;
     } else if (configurationArgument == "mac") {
       configuration = "ReleaseDeveloper";
-      codeSignIdentity = "Developer ID Application";
       buildDirectory = paths.extensionBuildReleaseDeveloper;
     } else {
       console.log("### Unable to determine configuration, skipping Autofill Extension build");

@@ -14,10 +14,10 @@ import { WindowMain } from "../window.main";
 
 import { AboutMenu } from "./menu.about";
 import { AccountMenu } from "./menu.account";
-import { LocalPassMenu } from "./menu.localpass";
 import { EditMenu } from "./menu.edit";
 import { FileMenu } from "./menu.file";
 import { HelpMenu } from "./menu.help";
+import { LocalPassMenu } from "./menu.localpass";
 import { MenuUpdateRequest } from "./menu.updater";
 import { ViewMenu } from "./menu.view";
 import { WindowMenu } from "./menu.window";
