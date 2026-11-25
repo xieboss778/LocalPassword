@@ -811,14 +811,30 @@ const safeProviders: SafeProvider[] = [
       cipherEncryptionService: CipherEncryptionService,
       stateProvider: StateProvider,
       logService: LogService,
-    ) =>
-      new DefaultLocalVaultWriter(
+      backupScheduler: VaultBackupScheduler,
+    ) => {
+      const writer = new DefaultLocalVaultWriter(
         localAccountService,
         cipherEncryptionService,
         stateProvider,
         logService,
-      ),
-    deps: [LocalAccountService, CipherEncryptionService, StateProvider, LogService],
+      );
+      // Every local write schedules an upload; the renderer keeps the scheduler alive while the
+      // app runs, including when the desktop window is hidden in the tray.
+      writer.setChangeListener((userId) => {
+        backupScheduler.trackUser(userId);
+        backupScheduler.start();
+        backupScheduler.notifyLocalChange(userId);
+      });
+      return writer;
+    },
+    deps: [
+      LocalAccountService,
+      CipherEncryptionService,
+      StateProvider,
+      LogService,
+      VaultBackupScheduler,
+    ],
   }),
   safeProvider({
     provide: LocalWebAuthnPrfEnrollmentService,
