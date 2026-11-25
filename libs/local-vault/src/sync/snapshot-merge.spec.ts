@@ -8,6 +8,40 @@ const snap = (over: Partial<Snapshot>): Snapshot => ({
   ...over,
 });
 
+describe("merging conflicts by preference", () => {
+  const local = snap({ ciphers: [{ id: "c1", revisionDate: "2026-11-24T10:00:00.000Z" }] });
+  const remote = snap({ ciphers: [{ id: "c1", revisionDate: "2026-11-24T09:00:00.000Z" }] });
+
+  it("defaults to the newer side and reports the conflict", () => {
+    const { snapshot, conflicts } = mergeSnapshots(local, remote);
+
+    expect(snapshot.ciphers[0].revisionDate).toBe("2026-11-24T10:00:00.000Z");
+    expect(conflicts).toEqual([
+      {
+        id: "c1",
+        localRevision: "2026-11-24T10:00:00.000Z",
+        remoteRevision: "2026-11-24T09:00:00.000Z",
+        winner: "local",
+      },
+    ]);
+  });
+
+  it("keeps the remote revision when the user asks for it", () => {
+    const { snapshot, conflicts } = mergeSnapshots(local, remote, null, { c1: "remote" });
+
+    expect(snapshot.ciphers[0].revisionDate).toBe("2026-11-24T09:00:00.000Z");
+    expect(conflicts[0].winner).toBe("remote");
+  });
+
+  it("ignores preferences for items that are not conflicting", () => {
+    const onlyLocal = snap({ ciphers: [{ id: "c2", revisionDate: "2026-11-24T10:00:00.000Z" }] });
+    const { snapshot, conflicts } = mergeSnapshots(onlyLocal, null, null, { c2: "remote" });
+
+    expect(conflicts).toHaveLength(0);
+    expect(snapshot.ciphers[0].id).toBe("c2");
+  });
+});
+
 describe("mergeSnapshots", () => {
   it("keeps the newer revision of the same item", () => {
     const local = snap({ ciphers: [{ id: "c1", revisionDate: "2026-11-24T10:00:00.000Z" }] });

@@ -17,7 +17,7 @@ import {
 import {
   CreateLocalVaultComponent,
   LocalVaultStartComponent,
-  RestoreVaultComponent,
+  RestoreVaultV2Component,
 } from "@localpass/angular/auth/local-vault";
 import { LoginViaWebAuthnComponent } from "@localpass/angular/auth/login-via-webauthn/login-via-webauthn.component";
 import { ChangePasswordComponent } from "@localpass/angular/auth/password-management/change-password";
@@ -623,7 +623,7 @@ const routes: Routes = [
           showBackButton: true,
           hidePageIcon: true,
         } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
-        children: [{ path: "", component: RestoreVaultComponent }],
+        children: [{ path: "", component: RestoreVaultV2Component }],
       },
       {
         path: AuthRoute.CreateLocalVault,

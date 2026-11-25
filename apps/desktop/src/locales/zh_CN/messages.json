@@ -8209,5 +8209,38 @@
   },
   "backupFieldsRequired": {
     "message": "先填端点、桶名和凭据"
+  },
+  "restoreTitle": {
+    "message": "从备份恢复"
+  },
+  "restoreSubtitle": {
+    "message": "账号文件 + 快照，全程不离开本机"
+  },
+  "restoreStart": {
+    "message": "开始恢复"
+  },
+  "restoreLoading": {
+    "message": "正在读取加密快照…"
+  },
+  "restoreLoadingHint": {
+    "message": "先验安全密码，再拉最新快照"
+  },
+  "restoreConflictTitle": {
+    "message": "两边都改过的条目"
+  },
+  "restoreConflictHint": {
+    "message": "两台设备都动过这些条目。按更新时间较新的一侧胜出，先过目再继续。"
+  },
+  "restoreConflictAccept": {
+    "message": "接受并继续"
+  },
+  "restoreWinnerLocal": {
+    "message": "保留本地"
+  },
+  "restoreWinnerRemote": {
+    "message": "保留云端"
+  },
+  "retry": {
+    "message": "重试"
   }
 }

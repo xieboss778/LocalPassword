@@ -15,7 +15,7 @@ import { LocalAccountService } from "../account/local-account.service";
 import { S3Client, S3PreconditionFailedError } from "../s3/s3-client";
 
 import { LocalAccountObject } from "./local-account-object";
-import { mergeSnapshots, Snapshot, VaultRecord } from "./snapshot-merge";
+import { MergeConflict, mergeSnapshots, Snapshot, VaultRecord } from "./snapshot-merge";
 import {
   StoredVaultBackupConfig,
   VAULT_BACKUP_BASE_SNAPSHOT,
@@ -49,6 +49,8 @@ export interface PushResult {
 export interface PullResult {
   readonly applied: number;
   readonly upToDate: boolean;
+  /** 这次拉取里两边都改过的条目；按更新时间较新的一侧胜出，界面据此给用户过目。 */
+  readonly conflicts: readonly MergeConflict[];
 }
 
 export interface SyncResult {
@@ -172,7 +174,7 @@ export class VaultBackupSyncService {
     const config = await this.getConfig(userId);
     if (config == null) {
       return {
-        pulled: { applied: 0, upToDate: true },
+        pulled: { applied: 0, upToDate: true, conflicts: [] },
         pushed: { uploaded: false, snapshotId: null },
       };
     }
@@ -190,18 +192,18 @@ export class VaultBackupSyncService {
 
     const manifestObject = await syncClient.getText(MANIFEST_OBJECT);
     if (manifestObject == null) {
-      return { applied: 0, upToDate: true };
+      return { applied: 0, upToDate: true, conflicts: [] };
     }
     const manifest = JSON.parse(manifestObject.text) as Manifest;
 
     const state = await this.getSyncState(userId);
     if (state.manifestEtag != null && manifestObject.etag === state.manifestEtag) {
-      return { applied: 0, upToDate: true };
+      return { applied: 0, upToDate: true, conflicts: [] };
     }
 
     const remote = await syncClient.getText(`${SNAPSHOT_PREFIX}${manifest.snapshot}.json`);
     if (remote == null) {
-      return { applied: 0, upToDate: true };
+      return { applied: 0, upToDate: true, conflicts: [] };
     }
 
     const remoteSnapshot = JSON.parse(remote.text) as Snapshot;
@@ -219,7 +221,7 @@ export class VaultBackupSyncService {
       pending: conflicts.length > 0,
     }));
 
-    return { applied, upToDate: false };
+    return { applied, upToDate: false, conflicts };
   }
 
   /** Uploads a new snapshot and points the manifest at it. */

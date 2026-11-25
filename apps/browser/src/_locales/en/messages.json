@@ -9814,5 +9814,35 @@
   },
   "backupFieldsRequired": {
     "message": "Fill endpoint, bucket and credentials first"
+  },
+  "restoreTitle": {
+    "message": "Restore from backup"
+  },
+  "restoreSubtitle": {
+    "message": "Account file + snapshot, nothing leaves your machine"
+  },
+  "restoreStart": {
+    "message": "Start restore"
+  },
+  "restoreLoading": {
+    "message": "Reading the encrypted snapshot…"
+  },
+  "restoreLoadingHint": {
+    "message": "Verifying the master password, then pulling the newest snapshot"
+  },
+  "restoreConflictTitle": {
+    "message": "Items changed on both sides"
+  },
+  "restoreConflictHint": {
+    "message": "Both devices changed these items. The version with the newer timestamp wins — review them before continuing."
+  },
+  "restoreConflictAccept": {
+    "message": "Accept and continue"
+  },
+  "restoreWinnerLocal": {
+    "message": "Kept local"
+  },
+  "restoreWinnerRemote": {
+    "message": "Kept remote"
   }
 }

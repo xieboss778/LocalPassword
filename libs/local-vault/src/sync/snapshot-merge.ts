@@ -40,6 +40,10 @@ export interface MergeConflict {
   readonly winner: "local" | "remote";
 }
 
+/** 用户在冲突列表上显式挑的赢家；只有真冲突时才生效。 */
+export type ConflictPreference = "local" | "remote";
+export type ConflictPreferences = Readonly<Record<string, ConflictPreference>>;
+
 export interface MergeResult {
   readonly snapshot: Snapshot;
   readonly conflicts: readonly MergeConflict[];
@@ -81,6 +85,7 @@ function mergeCollection(
   remote: Snapshot | null,
   tombstones: Map<string, Tombstone>,
   conflicts: MergeConflict[],
+  preferences: ConflictPreferences,
 ): VaultRecord[] {
   const localRecords = byId(local[kind]);
   const remoteRecords = byId(remote?.[kind] ?? []);
@@ -99,12 +104,22 @@ function mergeCollection(
     } else if (remoteRecord === undefined) {
       winner = localRecord;
     } else {
-      winner = newer(localRecord, remoteRecord);
       const bothChanged =
         baseRecord === undefined ||
         (localRecord.revisionDate !== baseRecord.revisionDate &&
           remoteRecord.revisionDate !== baseRecord.revisionDate);
-      if (bothChanged && localRecord.revisionDate !== remoteRecord.revisionDate) {
+      const isConflict = bothChanged && localRecord.revisionDate !== remoteRecord.revisionDate;
+
+      // 有冲突时先看用户选的赢家，没选就按更新时间较新的那个（默认行为不变）。
+      const preferred = isConflict ? preferences[id] : undefined;
+      winner =
+        preferred === "local"
+          ? localRecord
+          : preferred === "remote"
+            ? remoteRecord
+            : newer(localRecord, remoteRecord);
+
+      if (isConflict) {
         conflicts.push({
           id,
           localRevision: localRecord.revisionDate,
@@ -133,12 +148,29 @@ export function mergeSnapshots(
   local: Snapshot,
   remote: Snapshot | null,
   base: Snapshot | null = null,
+  preferences: ConflictPreferences = {},
 ): MergeResult {
   const tombstones = latestTombstones([base, local, remote]);
   const conflicts: MergeConflict[] = [];
 
-  const ciphers = mergeCollection("ciphers", base, local, remote, tombstones, conflicts);
-  const folders = mergeCollection("folders", base, local, remote, tombstones, conflicts);
+  const ciphers = mergeCollection(
+    "ciphers",
+    base,
+    local,
+    remote,
+    tombstones,
+    conflicts,
+    preferences,
+  );
+  const folders = mergeCollection(
+    "folders",
+    base,
+    local,
+    remote,
+    tombstones,
+    conflicts,
+    preferences,
+  );
 
   const liveIds = new Set<string>([...ciphers.map((c) => c.id), ...folders.map((f) => f.id)]);
   const tombstonesOut = [...tombstones.values()]
