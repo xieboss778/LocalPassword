@@ -9679,5 +9679,23 @@
   },
   "itemKindServerSudo": {
     "message": "sudo 备注"
+  },
+  "emptyVaultHint": {
+    "message": "新建第一条，或者从别处导入。"
+  },
+  "noResults": {
+    "message": "没有匹配项"
+  },
+  "credentials": {
+    "message": "凭据"
+  },
+  "passwordReprompt": {
+    "message": "密码重提示"
+  },
+  "enabled": {
+    "message": "开启"
+  },
+  "identityNumber": {
+    "message": "证件号"
   }
 }

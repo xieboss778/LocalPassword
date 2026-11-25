@@ -9712,5 +9712,23 @@
   },
   "itemKindServerSudo": {
     "message": "sudo note"
+  },
+  "emptyVaultHint": {
+    "message": "Add your first item, or import from another manager."
+  },
+  "noResults": {
+    "message": "No matches"
+  },
+  "credentials": {
+    "message": "Credentials"
+  },
+  "passwordReprompt": {
+    "message": "Master password re-prompt"
+  },
+  "enabled": {
+    "message": "On"
+  },
+  "identityNumber": {
+    "message": "Document number"
   }
 }

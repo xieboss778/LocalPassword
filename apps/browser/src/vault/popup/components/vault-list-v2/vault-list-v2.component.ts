@@ -12,6 +12,7 @@ import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
+  LpEmptyComponent,
   LpGroupComponent,
   LpPageHeaderComponent,
   LpRowComponent,
@@ -19,9 +20,9 @@ import {
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
-import { ButtonModule } from "@localpass/components";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { ButtonModule, IconButtonModule } from "@localpass/components";
 import { ItemKind, kindOf } from "@localpass/local-vault";
 
 /** 一个分组：同一类条目。 */
@@ -56,27 +57,56 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
     RouterModule,
     JslibModule,
     ButtonModule,
+    IconButtonModule,
+    LpEmptyComponent,
     LpGroupComponent,
     LpPageHeaderComponent,
     LpRowComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
+    <div class="tw-relative tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
       <lp-page-header [title]="i18n.t('vault')" [sub]="subtitle()">
-        <button type="button" bitButton buttonType="primary" (click)="createItem()">
-          {{ i18n.t("newItem") }}
-        </button>
+        <button
+          type="button"
+          bitIconButton="bwi-plus"
+          [label]="i18n.t('newItem')"
+          (click)="createItem()"
+        ></button>
       </lp-page-header>
+
+      <div
+        class="tw-mx-3 tw-mb-2 tw-flex tw-items-center tw-gap-2 tw-rounded-[11px] tw-border tw-border-[var(--lp-line)] tw-bg-[var(--lp-card)] tw-px-2.5 tw-py-2"
+      >
+        <span class="tw-text-[var(--lp-ink-3)]" aria-hidden="true">&#9906;</span>
+        <input
+          class="tw-min-w-0 tw-flex-1 tw-border-0 tw-bg-transparent tw-text-[11.5px] tw-outline-none"
+          [attr.placeholder]="i18n.t('searchVault')"
+          [value]="query()"
+          (input)="onSearch($event)"
+        />
+        <span class="tw-text-[10px] tw-text-[var(--lp-ink-3)]">&#8984;K</span>
+      </div>
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
         @if (loading()) {
           <p class="tw-px-4 tw-py-6 tw-text-[12px] tw-text-[var(--lp-ink-3)]">
             {{ i18n.t("loading") }}
           </p>
+        } @else if (ciphers().length === 0) {
+          <lp-empty
+            icon="&#128451;"
+            [title]="i18n.t('noItemsInVault')"
+            [text]="i18n.t('emptyVaultHint')"
+          >
+            <button type="button" bitButton buttonType="primary" (click)="createItem()">
+              {{ i18n.t("newItem") }}
+            </button>
+            <button type="button" bitButton buttonType="secondary" (click)="importItems()">
+              {{ i18n.t("importData") }}
+            </button>
+          </lp-empty>
         } @else if (groups().length === 0) {
-          <p class="tw-px-4 tw-py-8 tw-text-center tw-text-[12px] tw-text-[var(--lp-ink-3)]">
-            {{ i18n.t("noItemsInVault") }}
-          </p>
+          <lp-empty icon="&#128269;" [title]="i18n.t('noResults')" [text]="query()"></lp-empty>
         } @else {
           @for (group of groups(); track group.kind) {
             <lp-group [label]="group.label">
@@ -95,6 +125,15 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
           }
         }
       </div>
+
+      <button
+        type="button"
+        class="tw-absolute tw-bottom-[72px] tw-right-4 tw-grid tw-size-[52px] tw-place-items-center tw-rounded-full tw-bg-[var(--lp-brand)] tw-text-[22px] tw-text-[#fff] tw-shadow-[0_8px_20px_#2f6bff4d]"
+        [attr.aria-label]="i18n.t('newItem')"
+        (click)="createItem()"
+      >
+        +
+      </button>
     </div>
   `,
 })
@@ -105,10 +144,22 @@ export class VaultListV2Component implements OnInit {
   private readonly router = inject(Router);
 
   protected readonly loading = signal(true);
-  private readonly ciphers = signal<CipherView[]>([]);
+  protected readonly query = signal("");
+  protected readonly ciphers = signal<CipherView[]>([]);
 
   protected readonly subtitle = computed(() => `${this.ciphers().length} ` + this.i18n.t("items"));
-  protected readonly groups = computed<KindGroup[]>(() => this.groupByKind(this.ciphers()));
+  protected readonly groups = computed<KindGroup[]>(() => {
+    const query = this.query().trim().toLowerCase();
+    const items = query
+      ? this.ciphers().filter((cipher) =>
+          [cipher.name, cipher.login.username ?? "", cipher.subTitle ?? ""]
+            .join(" ")
+            .toLowerCase()
+            .includes(query),
+        )
+      : this.ciphers();
+    return this.groupByKind(items);
+  });
 
   async ngOnInit(): Promise<void> {
     try {
@@ -118,6 +169,14 @@ export class VaultListV2Component implements OnInit {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  protected onSearch(event: Event): void {
+    this.query.set((event.target as HTMLInputElement).value);
+  }
+
+  protected importItems(): void {
+    void this.router.navigate(["/import"]);
   }
 
   protected createItem(): void {
