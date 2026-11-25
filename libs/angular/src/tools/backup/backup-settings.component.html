@@ -38,16 +38,40 @@
       <button type="submit" bitButton bitFormButton buttonType="primary" [disabled]="busy()">
         {{ "save" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="secondary" [disabled]="busy()" (click)="testConnection()">
+      <button
+        type="button"
+        bitButton
+        buttonType="secondary"
+        [disabled]="busy()"
+        (click)="testConnection()"
+      >
         {{ "backupTest" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="secondary" [disabled]="busy()" (click)="syncNow()">
+      <button
+        type="button"
+        bitButton
+        buttonType="secondary"
+        [disabled]="busy()"
+        (click)="syncNow()"
+      >
         {{ "syncNow" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="secondary" [disabled]="busy()" (click)="backupNow()">
+      <button
+        type="button"
+        bitButton
+        buttonType="secondary"
+        [disabled]="busy()"
+        (click)="backupNow()"
+      >
         {{ "backupNow" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="danger" [disabled]="busy()" (click)="disconnect()">
+      <button
+        type="button"
+        bitButton
+        buttonType="danger"
+        [disabled]="busy()"
+        (click)="disconnect()"
+      >
         {{ "disconnectBackup" | i18n }}
       </button>
     </div>
