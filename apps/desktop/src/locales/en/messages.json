@@ -8320,5 +8320,11 @@
   },
   "importNothingFound": {
     "message": "Nothing recognised in that input"
+  },
+  "touchIdUnlock": {
+    "message": "Touch ID unlock"
+  },
+  "touchIdMacOnly": {
+    "message": "macOS only · uses the system fingerprint"
   }
 }

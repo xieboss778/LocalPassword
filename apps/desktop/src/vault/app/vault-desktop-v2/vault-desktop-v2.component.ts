@@ -311,8 +311,8 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected readonly railEntries = [
     { emoji: "🗄️", labelKey: "vault", route: "/vault-desktop-v2", active: true },
-    { emoji: "⚙️", labelKey: "generator", route: "/generator", active: false },
-    { emoji: "🎛️", labelKey: "settings", route: "/settings", active: false },
+    { emoji: "⚙️", labelKey: "generator", route: "/vault-desktop-v2", active: false },
+    { emoji: "🎛️", labelKey: "settings", route: "/settings-desktop-v2", active: false },
   ] as const;
 
   protected readonly editFields = computed<readonly FieldSpec[]>(() => FIELDS[this.editKind()]);

@@ -8293,5 +8293,11 @@
   },
   "importNothingFound": {
     "message": "这份内容里没有识别到账号"
+  },
+  "touchIdUnlock": {
+    "message": "Touch ID 解锁"
+  },
+  "touchIdMacOnly": {
+    "message": "仅 macOS · 用系统指纹"
   }
 }

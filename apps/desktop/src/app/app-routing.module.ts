@@ -84,6 +84,7 @@ import { VaultDesktopV2Component } from "../vault/app/vault-desktop-v2/vault-des
 import { VaultComponent } from "../vault/app/vault-v3/vault.component";
 
 import { DesktopLayoutComponent } from "./layout/desktop-layout.component";
+import { SettingsDesktopV2Component } from "./settings-desktop-v2/settings-desktop-v2.component";
 import { ImportShellDesktopComponent } from "./tools/import/import-shell-desktop.component";
 import { unsavedSendEditsGuard } from "./tools/send/guards/unsaved-send-edits.guard";
 import { SendComponent } from "./tools/send/send.component";
@@ -574,6 +575,12 @@ export const routes: Routes = [
             data: { vaultFilterScope: true } satisfies RouteDataProperties & VaultScopeRouteData,
           },
         ],
+      },
+      {
+        // LocalPassword：方向 C 的桌面端设置（Touch ID 只在这一页出现）。
+        path: "settings-desktop-v2",
+        component: SettingsDesktopV2Component,
+        data: { pageTitle: { key: "settings" } } satisfies RouteDataProperties,
       },
       {
         path: "folders",
