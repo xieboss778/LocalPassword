@@ -7,4 +7,6 @@ export * from "./network/local-password-api.service";
 export * from "./s3/s3-client";
 export * from "./s3/sigv4";
 export * from "./sync/snapshot-merge";
+export * from "./sync/vault-backup-config";
+export * from "./sync/vault-backup-sync.service";
 export * from "./vault/local-vault-writer.service";

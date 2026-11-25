@@ -70,6 +70,19 @@ describe("mergeSnapshots", () => {
     expect(snapshot.ciphers[0].revisionDate).toBe("2026-11-24T10:00:00.000Z");
   });
 
+  it("carries the encrypted payload of the winning record", () => {
+    const local = snap({
+      ciphers: [{ id: "c1", revisionDate: "2026-11-24T09:00:00.000Z", data: { blob: "local" } }],
+    });
+    const remote = snap({
+      ciphers: [{ id: "c1", revisionDate: "2026-11-24T10:00:00.000Z", data: { blob: "remote" } }],
+    });
+
+    const merged = mergeSnapshots(local, remote).snapshot;
+
+    expect(merged.ciphers[0].data).toEqual({ blob: "remote" });
+  });
+
   it("is deterministic for identical revisions", () => {
     const local = snap({ ciphers: [{ id: "c1", revisionDate: "2026-11-24T10:00:00.000Z" }] });
     const remote = snap({ ciphers: [{ id: "c1", revisionDate: "2026-11-24T10:00:00.000Z" }] });

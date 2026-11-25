@@ -13,6 +13,11 @@ export interface VaultRecord {
   /** ISO 8601. Compared lexicographically. */
   readonly revisionDate: string;
   readonly deletedDate?: string | null;
+  /**
+   * The encrypted payload that travels with the record, e.g. a `CipherData` or `FolderData` as
+   * JSON. The merge never inspects it — it moves with whichever side wins.
+   */
+  readonly data?: unknown;
 }
 
 export interface Tombstone {
