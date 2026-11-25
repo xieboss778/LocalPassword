@@ -1374,6 +1374,7 @@ export default class MainBackground {
       this.stateProvider,
       this.configService,
       this.sdkService,
+      this.localVaultWriter,
     );
 
     this.syncServiceListener = new SyncServiceListener(
@@ -1474,6 +1475,7 @@ export default class MainBackground {
       this.configService,
       this.sdkService,
       this.logService,
+      this.localVaultWriter,
     );
 
     this.individualVaultExportService = new IndividualVaultExportService(
