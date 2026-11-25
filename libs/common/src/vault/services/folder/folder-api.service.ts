@@ -7,14 +7,25 @@ import { Folder } from "../../../vault/models/domain/folder";
 import { FolderBulkDeleteRequest } from "../../../vault/models/request/folder-bulk-delete.request";
 import { FolderRequest } from "../../../vault/models/request/folder.request";
 import { FolderResponse } from "../../../vault/models/response/folder.response";
+import { LocalVaultWriter } from "../../abstractions/local-vault-writer.abstraction";
+import { NoopLocalVaultWriter } from "../noop-local-vault-writer.service";
 
 export class FolderApiService implements FolderApiServiceAbstraction {
   constructor(
     private folderService: InternalFolderService,
     private apiService: ApiService,
+    /** Write path for accounts that live only on this device. */
+    private localVaultWriter: LocalVaultWriter = new NoopLocalVaultWriter(),
   ) {}
 
   async save(folder: Folder, userId: UserId): Promise<FolderData> {
+    // A local vault stores the folder itself; there is no server to save it on.
+    const local = await this.localVaultWriter.saveFolder(folder, userId);
+    if (local != null) {
+      folder.id = local.id;
+      return local;
+    }
+
     const request = new FolderRequest(folder);
 
     let response: FolderResponse;
@@ -31,16 +42,26 @@ export class FolderApiService implements FolderApiServiceAbstraction {
   }
 
   async delete(id: string, userId: UserId): Promise<any> {
+    if (await this.localVaultWriter.deleteFolder([id], userId)) {
+      return;
+    }
     await this.deleteFolder(id);
     await this.folderService.delete(id, userId);
   }
 
   async deleteMany(ids: string[], userId: UserId): Promise<any> {
+    if (await this.localVaultWriter.deleteFolder(ids, userId)) {
+      return;
+    }
     await this.apiService.send("DELETE", "/folders", new FolderBulkDeleteRequest(ids), true, false);
     await this.folderService.delete(ids, userId);
   }
 
   async deleteAll(userId: UserId): Promise<void> {
+    if (await this.localVaultWriter.isLocalAccount(userId)) {
+      await this.folderService.clear(userId);
+      return;
+    }
     await this.apiService.send("DELETE", "/folders/all", null, true, false);
     await this.folderService.clear(userId);
   }

@@ -232,6 +232,7 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
 import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/vault/abstractions/search.service";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
@@ -301,6 +302,7 @@ import {
   LegacyCompatKeyService as LegacyCompatKeyServiceAbstraction,
   WebCryptoFunctionService,
 } from "@bitwarden/legacy-crypto";
+import { DefaultLocalVaultWriter, LocalAccountService } from "@bitwarden/local-vault";
 import { FlightRecorderLogRecorder, limitPerformanceMeasurements } from "@bitwarden/logging";
 import {
   DefaultManagedSettingsService,
@@ -586,6 +588,8 @@ export default class MainBackground {
   autofillTriageService: AutofillTriageService;
   taskService: TaskService;
   cipherEncryptionService: CipherEncryptionService;
+  localAccountService: LocalAccountService;
+  localVaultWriter: LocalVaultWriter;
   collectionEncryptionService: CollectionEncryptionService;
   private restrictedItemTypesService: RestrictedItemTypesService;
 
@@ -1231,6 +1235,14 @@ export default class MainBackground {
 
     this.cipherSdkService = new DefaultCipherSdkService(this.sdkService, this.logService);
 
+    this.localAccountService = new LocalAccountService(this.stateProvider);
+    this.localVaultWriter = new DefaultLocalVaultWriter(
+      this.localAccountService,
+      this.cipherEncryptionService,
+      this.stateProvider,
+      this.logService,
+    );
+
     this.cipherFileUploadService = new CipherFileUploadService(
       this.apiService,
       this.fileUploadService,
@@ -1252,6 +1264,7 @@ export default class MainBackground {
       this.logService,
       this.cipherEncryptionService,
       this.cipherSdkService,
+      this.localVaultWriter,
     );
     this.revealedCipherService =
       overrides?.revealedCipherService?.({
@@ -1275,7 +1288,11 @@ export default class MainBackground {
       this.stateProvider,
       this.logService,
     );
-    this.folderApiService = new FolderApiService(this.folderService, this.apiService);
+    this.folderApiService = new FolderApiService(
+      this.folderService,
+      this.apiService,
+      this.localVaultWriter,
+    );
 
     this.userVerificationService = new UserVerificationService(
       this.keyService,
