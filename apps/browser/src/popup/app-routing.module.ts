@@ -100,7 +100,7 @@ import { SendCreatedComponent } from "../tools/popup/send-v2/send-created/send-c
 import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
 import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-page-v2.component";
 import { ExportBrowserV2Component } from "../tools/popup/settings/export/export-browser-v2.component";
-import { GoogleAuthImportComponent } from "../tools/popup/settings/import/google-auth-import.component";
+import { GoogleAuthImportV2Component } from "../tools/popup/settings/import/google-auth-import-v2.component";
 import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { IMPORT_CONFIRMATION_ROUTE_PATH } from "../tools/popup/settings/import/import-confirmation-state.service";
 import { ImportShellBrowserComponent } from "../tools/popup/settings/import/import-shell-browser.component";
@@ -397,7 +397,7 @@ const routes: Routes = [
   {
     // LocalPass: importing Google Authenticator's migration export.
     path: "import-google-auth",
-    component: GoogleAuthImportComponent,
+    component: GoogleAuthImportV2Component,
     canActivate: [authGuard],
     data: { elevation: 1 } satisfies RouteDataProperties,
   },

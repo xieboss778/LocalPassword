@@ -9871,5 +9871,38 @@
   },
   "generatorStrength": {
     "message": "$LENGTH chars × $CLASSES sets (score $SCORE)"
+  },
+  "importPasteHint": {
+    "message": "Paste the otpauth-migration:// link, or pick the export screenshots below"
+  },
+  "importPreview": {
+    "message": "Read and preview"
+  },
+  "importFromImages": {
+    "message": "Pick images"
+  },
+  "importPreviewTitle": {
+    "message": "Accounts found"
+  },
+  "importDuplicate": {
+    "message": "Already in your vault · skipped"
+  },
+  "importSkip": {
+    "message": "Skip"
+  },
+  "importHotpSkipped": {
+    "message": "$COUNT counter-based (HOTP) entries cannot be stored and were skipped"
+  },
+  "importSelected": {
+    "message": "Import $COUNT selected"
+  },
+  "importDone": {
+    "message": "Imported $COUNT accounts"
+  },
+  "importFound": {
+    "message": "$COUNT accounts read"
+  },
+  "importNothingFound": {
+    "message": "Nothing recognised in that input"
   }
 }

@@ -9838,5 +9838,38 @@
   },
   "generatorStrength": {
     "message": "$LENGTH 位 × $CLASSES 组字符（强度分 $SCORE）"
+  },
+  "importPasteHint": {
+    "message": "粘贴 otpauth-migration:// 链接，或在下面选导出二维码的截图"
+  },
+  "importPreview": {
+    "message": "读取并预览"
+  },
+  "importFromImages": {
+    "message": "选择图片"
+  },
+  "importPreviewTitle": {
+    "message": "读到的账号"
+  },
+  "importDuplicate": {
+    "message": "保险库里已有 · 跳过"
+  },
+  "importSkip": {
+    "message": "跳过"
+  },
+  "importHotpSkipped": {
+    "message": "$COUNT 条计数器型（HOTP）条目存不了，已跳过"
+  },
+  "importSelected": {
+    "message": "导入选中的 $COUNT 条"
+  },
+  "importDone": {
+    "message": "已导入 $COUNT 个账号"
+  },
+  "importFound": {
+    "message": "读到 $COUNT 个账号"
+  },
+  "importNothingFound": {
+    "message": "这份内容里没有识别到账号"
   }
 }
