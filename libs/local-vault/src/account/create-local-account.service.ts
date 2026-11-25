@@ -121,7 +121,6 @@ export class CreateLocalAccountService {
       await this.legacyCompatKeyService.makeUserKey(masterKey);
     const [, wrappedPrivateKey] = await this.legacyCompatKeyService.makeKeyPair(userKey);
 
-
     const userId = newGuid() as UserId;
 
     return await this.writeAccount(

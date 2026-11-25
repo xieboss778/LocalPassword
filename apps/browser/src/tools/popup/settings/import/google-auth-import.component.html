@@ -32,9 +32,7 @@
   @if (accounts().length > 0) {
     <ul class="tw-flex tw-flex-col tw-gap-1 tw-mb-0">
       @for (account of accounts(); track account.totp) {
-        <li bitTypography="body2">
-          {{ account.issuer }} — {{ account.name }}
-        </li>
+        <li bitTypography="body2">{{ account.issuer }} — {{ account.name }}</li>
       }
     </ul>
 
@@ -42,13 +40,7 @@
       {{ "googleAuthPreviewCount" | i18n }}: {{ accounts().length }}
     </p>
 
-    <button
-      type="button"
-      bitButton
-      buttonType="primary"
-      [disabled]="busy()"
-      (click)="doImport()"
-    >
+    <button type="button" bitButton buttonType="primary" [disabled]="busy()" (click)="doImport()">
       {{ "googleAuthImportButton" | i18n }}
     </button>
   } @else {
