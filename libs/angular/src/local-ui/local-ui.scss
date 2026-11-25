@@ -1,0 +1,20 @@
+// LocalPass 界面语言（方向 C「分组原生」）
+// 只定义令牌；组件模板统一用 Tailwind 工具类（仓库约定：libs/**/html 里不允许自定义类名）。
+// 需要自定义类名时写 tw- 前缀的任意值，例如 tw-bg-[var(--lp-bg)]。
+
+:root {
+  --lp-bg: #f2f3f6;
+  --lp-card: #ffffff;
+  --lp-ink: #11131a;
+  --lp-ink-2: #4b515b;
+  --lp-ink-3: #8b919c;
+  --lp-line: #e5e7eb;
+  --lp-line-soft: #0000000a;
+  --lp-brand: #2f6bff;
+  --lp-brand-soft: #eef2ff;
+  --lp-brand-ink: #3352c4;
+  --lp-green: #34c759;
+  --lp-red: #d2483c;
+  --lp-amber: #f0a020;
+  --lp-ring: 0 0 0 3px #2f6bff33;
+}
