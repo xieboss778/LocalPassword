@@ -338,6 +338,10 @@ import {
   LocalAccountService,
   LocalPasswordApiService,
   LocalVaultNetworkGate,
+  TimerVaultSchedulerAdapter,
+  VaultBackupScheduler,
+  VaultBackupService,
+  VaultBackupSyncService,
 } from "@bitwarden/local-vault";
 import { CipherRiskService } from "@bitwarden/common/vault/abstractions/cipher-risk.service";
 import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
@@ -809,6 +813,69 @@ const safeProviders: SafeProvider[] = [
         logService,
       ),
     deps: [LocalAccountService, CipherEncryptionService, StateProvider, LogService],
+  }),
+  safeProvider({
+    provide: VaultBackupSyncService,
+    useFactory: (
+      localAccountService: LocalAccountService,
+      stateProvider: StateProvider,
+      keyService: KeyService,
+      encryptService: EncryptService,
+      logService: LogService,
+    ) =>
+      new VaultBackupSyncService(
+        localAccountService,
+        stateProvider,
+        keyService,
+        encryptService,
+        logService,
+      ),
+    deps: [LocalAccountService, StateProvider, KeyService, EncryptService, LogService],
+  }),
+  safeProvider({
+    provide: VaultBackupService,
+    useFactory: (
+      syncService: VaultBackupSyncService,
+      exportService: IndividualVaultExportServiceAbstraction,
+      stateProvider: StateProvider,
+      keyService: KeyService,
+      encryptService: EncryptService,
+      logService: LogService,
+    ) =>
+      new VaultBackupService(
+        syncService,
+        async (userId, password) =>
+          (await exportService.getPasswordProtectedExport(userId, password)).data as string,
+        stateProvider,
+        keyService,
+        encryptService,
+        logService,
+      ),
+    deps: [
+      VaultBackupSyncService,
+      IndividualVaultExportServiceAbstraction,
+      StateProvider,
+      KeyService,
+      EncryptService,
+      LogService,
+    ],
+  }),
+  safeProvider({
+    provide: VaultBackupScheduler,
+    useFactory: (
+      syncService: VaultBackupSyncService,
+      backupService: VaultBackupService,
+      localAccountService: LocalAccountService,
+      logService: LogService,
+    ) =>
+      new VaultBackupScheduler(
+        syncService,
+        backupService,
+        localAccountService,
+        new TimerVaultSchedulerAdapter(),
+        logService,
+      ),
+    deps: [VaultBackupSyncService, VaultBackupService, LocalAccountService, LogService],
   }),
   safeProvider({
     provide: CipherServiceAbstraction,

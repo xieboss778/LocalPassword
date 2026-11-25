@@ -79,6 +79,13 @@
       </a>
     </bit-item>
     <bit-item>
+      <a bit-item-content routerLink="/backup-settings" [truncate]="false">
+        <i slot="start" class="bwi bwi-download" aria-hidden="true"></i>
+        {{ "cloudBackup" | i18n }}
+        <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
+      </a>
+    </bit-item>
+    <bit-item>
       <a bit-item-content routerLink="/appearance" [truncate]="false">
         <i slot="start" class="bwi bwi-brush" aria-hidden="true"></i>
         {{ "appearance" | i18n }}
