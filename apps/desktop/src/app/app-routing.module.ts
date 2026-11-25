@@ -16,6 +16,7 @@ import {
 import {
   CreateLocalVaultComponent,
   LocalVaultStartComponent,
+  RestoreVaultComponent,
 } from "@bitwarden/angular/auth/local-vault";
 import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
 import { SetInitialPasswordComponent } from "@bitwarden/angular/auth/password-management/set-initial-password/set-initial-password.component";
@@ -235,6 +236,17 @@ export const routes: Routes = [
             outlet: "header-actions",
           },
         ],
+      },
+      {
+        path: "restore-vault",
+        canActivate: [maxAccountsGuardFn()],
+        data: {
+          pageTitle: {
+            key: "restoreVaultFromCloud",
+          },
+          pageIcon: VaultIcon,
+        },
+        children: [{ path: "", component: RestoreVaultComponent }],
       },
       {
         path: AuthRoute.CreateLocalVault,

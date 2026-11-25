@@ -17,6 +17,7 @@ import {
 import {
   CreateLocalVaultComponent,
   LocalVaultStartComponent,
+  RestoreVaultComponent,
 } from "@bitwarden/angular/auth/local-vault";
 import { LoginViaWebAuthnComponent } from "@bitwarden/angular/auth/login-via-webauthn/login-via-webauthn.component";
 import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
@@ -571,6 +572,19 @@ const routes: Routes = [
           heroTextAlignment: "left",
         } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
         children: [{ path: "", component: LocalVaultStartComponent }],
+      },
+      {
+        path: "restore-vault",
+        canActivate: [unauthGuardFn(unauthRouteOverrides)],
+        data: {
+          pageTitle: {
+            key: "restoreVaultFromCloud",
+          },
+          elevation: 1,
+          showBackButton: true,
+          hidePageIcon: true,
+        } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
+        children: [{ path: "", component: RestoreVaultComponent }],
       },
       {
         path: AuthRoute.CreateLocalVault,

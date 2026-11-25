@@ -1,0 +1,55 @@
+<form [formGroup]="formGroup" [bitSubmit]="submit">
+  <p bitTypography="body1" class="tw-text-main tw-mb-4">
+    {{ "restoreVaultDescription" | i18n }}
+  </p>
+
+  <bit-form-field>
+    <bit-label>{{ "backupEndpoint" | i18n }}</bit-label>
+    <input bitInput type="text" formControlName="endpoint" placeholder="https://" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "backupRegion" | i18n }}</bit-label>
+    <input bitInput type="text" formControlName="region" placeholder="auto" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "backupBucket" | i18n }}</bit-label>
+    <input bitInput type="text" formControlName="bucket" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "backupAccessKeyId" | i18n }}</bit-label>
+    <input bitInput type="text" formControlName="accessKeyId" autocomplete="off" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "backupSecretKey" | i18n }}</bit-label>
+    <input bitInput type="password" formControlName="secretAccessKey" autocomplete="off" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "backupPrefix" | i18n }}</bit-label>
+    <input bitInput type="text" formControlName="prefix" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "masterPassword" | i18n }}</bit-label>
+    <input bitInput type="password" formControlName="masterPassword" autocomplete="off" />
+  </bit-form-field>
+
+  @if (errorMessage() != null) {
+    <p bitTypography="helper" class="tw-text-danger">{{ errorMessage() }}</p>
+  }
+
+  <button
+    type="submit"
+    bitButton
+    bitFormButton
+    buttonType="primary"
+    [block]="true"
+    [disabled]="busy()"
+  >
+    {{ "restoreVaultFromCloud" | i18n }}
+  </button>
+</form>
