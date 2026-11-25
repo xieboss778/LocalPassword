@@ -14,12 +14,7 @@ import {
   FormFieldModule,
   TypographyModule,
 } from "@bitwarden/components";
-import {
-  S3Client,
-  VaultBackupScheduler,
-  VaultBackupService,
-  VaultBackupSyncService,
-} from "@bitwarden/local-vault";
+import { S3Client, VaultBackupService, VaultBackupSyncService } from "@bitwarden/local-vault";
 
 import { JslibModule } from "../../jslib.module";
 
@@ -52,7 +47,6 @@ export class BackupSettingsComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly syncService = inject(VaultBackupSyncService);
   private readonly backupService = inject(VaultBackupService);
-  private readonly scheduler = inject(VaultBackupScheduler);
   private readonly accountService = inject(AccountService);
   private readonly dialogService = inject(DialogService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
@@ -137,7 +131,8 @@ export class BackupSettingsComponent implements OnInit {
     this.busy.set(true);
     try {
       const userId = await this.userId();
-      await this.scheduler.syncNow(userId);
+      // 手动触发：只在这里，任何本地写入都不会再自动上传。
+      await this.syncService.sync(userId);
       await this.refreshStatus();
     } finally {
       this.busy.set(false);

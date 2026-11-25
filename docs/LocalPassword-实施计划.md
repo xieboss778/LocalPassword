@@ -21,7 +21,7 @@
 - **开发规则**：见 `docs/LocalPassword-开发规则.md`。硬规则：本地不做构建/打包/测试，全部在 GitHub Actions 完成。
 - **阶段 2（本地账户与本地读写）**：完成。`CreateLocalAccountService`（创建 + 从 `account.json` 恢复）、`DefaultLocalVaultWriter`、`CipherService`/`FolderApiService` 的本地分支、`DefaultSyncService` 本地分支、导入器本地分支。
 - **阶段 3（桌面端接入）**：完成。原生消息改名 `com.localpassword.desktop`、禁 SSO cookie、`data.json.bak` 滚动备份。
-- **阶段 4（R2 同步与定时备份）**：完成。SigV4 + S3 客户端、快照合并（清单 412 重试）、备份导出与保留、15 秒防抖 / 30 分钟周期调度、`account.json` 上传、云端恢复页。
+- **阶段 4（R2 同步与手动备份）**：完成。SigV4 + S3 客户端、快照合并（清单 412 重试）、备份导出与保留、`account.json` 上传、云端恢复页；调度器已移除，同步/备份改为纯手动。
 - **阶段 5（Passkey/PRF）**：代码完成。`LocalWebAuthnPrfEnrollmentService` + 安全密钥页；解锁 RP ID 回退到扩展主机名。
 - **阶段 6（TOTP）**：完成。Google Authenticator `otpauth-migration` 解码器（含单测）、导入页、条目详情二维码弹窗。
 - **阶段 7（打包）**：Windows NSIS 由 CI 成功产出；macOS 的 Safari appex 硬依赖已移除，job 为 `continue-on-error`，等 macos-15 runner 产出 dmg。
@@ -311,7 +311,7 @@
   - Cloudflare R2 预设：端点按账户 ID 和辖区拼接，region 为 `auto`。
   - 通用 S3 兼容：自定义端点、region、路径风格。MinIO、Backblaze B2、阿里云 OSS、腾讯云 COS 都走这一套。
 - `vault-backup-sync.service.ts`：同步引擎。
-- `vault-backup-scheduler.service.ts`：定时备份与保留数量，调度由平台适配器提供。
+- `vault-backup-scheduler.service.ts`：**已移除**。备份/同步只由用户手动触发，进程内不再有任何定时器。
 - 状态键 `StateDefinition("vaultBackup", "disk")`：配置（密文）、待同步队列、墓碑、同步状态、备份设置。
 
 **"授权 Cloudflare"的实际形式**

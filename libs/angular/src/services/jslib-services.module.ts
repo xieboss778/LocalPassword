@@ -415,8 +415,6 @@ import {
   LocalAccountObjectReader,
   LocalPasswordApiService,
   LocalVaultNetworkGate,
-  TimerVaultSchedulerAdapter,
-  VaultBackupScheduler,
   VaultBackupService,
   VaultBackupSyncService,
 } from "@bitwarden/local-vault";
@@ -811,30 +809,14 @@ const safeProviders: SafeProvider[] = [
       cipherEncryptionService: CipherEncryptionService,
       stateProvider: StateProvider,
       logService: LogService,
-      backupScheduler: VaultBackupScheduler,
-    ) => {
-      const writer = new DefaultLocalVaultWriter(
+    ) =>
+      new DefaultLocalVaultWriter(
         localAccountService,
         cipherEncryptionService,
         stateProvider,
         logService,
-      );
-      // Every local write schedules an upload; the renderer keeps the scheduler alive while the
-      // app runs, including when the desktop window is hidden in the tray.
-      writer.setChangeListener((userId) => {
-        backupScheduler.trackUser(userId);
-        backupScheduler.start();
-        backupScheduler.notifyLocalChange(userId);
-      });
-      return writer;
-    },
-    deps: [
-      LocalAccountService,
-      CipherEncryptionService,
-      StateProvider,
-      LogService,
-      VaultBackupScheduler,
-    ],
+      ),
+    deps: [LocalAccountService, CipherEncryptionService, StateProvider, LogService],
   }),
   safeProvider({
     provide: LocalWebAuthnPrfEnrollmentService,
@@ -929,23 +911,6 @@ const safeProviders: SafeProvider[] = [
       EncryptService,
       LogService,
     ],
-  }),
-  safeProvider({
-    provide: VaultBackupScheduler,
-    useFactory: (
-      syncService: VaultBackupSyncService,
-      backupService: VaultBackupService,
-      localAccountService: LocalAccountService,
-      logService: LogService,
-    ) =>
-      new VaultBackupScheduler(
-        syncService,
-        backupService,
-        localAccountService,
-        new TimerVaultSchedulerAdapter(),
-        logService,
-      ),
-    deps: [VaultBackupSyncService, VaultBackupService, LocalAccountService, LogService],
   }),
   safeProvider({
     provide: CipherServiceAbstraction,
