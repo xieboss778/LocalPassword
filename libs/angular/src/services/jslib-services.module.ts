@@ -313,7 +313,6 @@ import {
 } from "@bitwarden/common/provider";
 import { ProviderApiService } from "@bitwarden/common/provider/services/provider-api.service";
 import { ProviderService } from "@bitwarden/common/provider/services/provider.service";
-import { ApiService } from "@bitwarden/common/services/api.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import {
   PasswordStrengthService,
@@ -333,7 +332,13 @@ import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions
 import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
 import { CipherEncryptionService } from "@bitwarden/common/vault/abstractions/cipher-encryption.service";
 import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
-import { DefaultLocalVaultWriter, LocalAccountService } from "@bitwarden/local-vault";
+import {
+  CreateLocalAccountService,
+  DefaultLocalVaultWriter,
+  LocalAccountService,
+  LocalPasswordApiService,
+  LocalVaultNetworkGate,
+} from "@bitwarden/local-vault";
 import { CipherRiskService } from "@bitwarden/common/vault/abstractions/cipher-risk.service";
 import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -742,6 +747,54 @@ const safeProviders: SafeProvider[] = [
     deps: [StateProvider],
   }),
   safeProvider({
+    provide: CreateLocalAccountService,
+    useFactory: (
+      accountService: AccountService,
+      environmentService: EnvironmentService,
+      tokenService: TokenServiceAbstraction,
+      masterPasswordService: InternalMasterPasswordServiceAbstraction,
+      userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction,
+      billingAccountProfileStateService: BillingAccountProfileStateService,
+      vaultTimeoutSettingsService: VaultTimeoutSettingsService,
+      kdfConfigService: KdfConfigService,
+      accountCryptographicStateService: AccountCryptographicStateService,
+      unlockService: UnlockService,
+      legacyCompatKeyService: LegacyCompatKeyService,
+      localAccountService: LocalAccountService,
+      logService: LogService,
+    ) =>
+      new CreateLocalAccountService(
+        accountService,
+        environmentService,
+        tokenService,
+        masterPasswordService,
+        userDecryptionOptionsService,
+        billingAccountProfileStateService,
+        vaultTimeoutSettingsService,
+        kdfConfigService,
+        accountCryptographicStateService,
+        unlockService,
+        legacyCompatKeyService,
+        localAccountService,
+        logService,
+      ),
+    deps: [
+      AccountService,
+      EnvironmentService,
+      TokenServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
+      InternalUserDecryptionOptionsServiceAbstraction,
+      BillingAccountProfileStateService,
+      VaultTimeoutSettingsService,
+      KdfConfigService,
+      AccountCryptographicStateService,
+      UnlockService,
+      LegacyCompatKeyService,
+      LocalAccountService,
+      LogService,
+    ],
+  }),
+  safeProvider({
     provide: LocalVaultWriter,
     useFactory: (
       localAccountService: LocalAccountService,
@@ -1022,8 +1075,13 @@ const safeProviders: SafeProvider[] = [
     useValue: { createRequest: (url, request) => new Request(url, request) },
   }),
   safeProvider({
+    provide: LocalVaultNetworkGate,
+    useClass: LocalVaultNetworkGate,
+    deps: [],
+  }),
+  safeProvider({
     provide: ApiServiceAbstraction,
-    useClass: ApiService,
+    useClass: LocalPasswordApiService,
     deps: [
       TokenServiceAbstraction,
       PlatformUtilsServiceAbstraction,
@@ -1035,6 +1093,7 @@ const safeProviders: SafeProvider[] = [
       VaultTimeoutSettingsService,
       AccountService,
       HTTP_OPERATIONS,
+      LocalVaultNetworkGate,
     ],
   }),
   safeProvider({
