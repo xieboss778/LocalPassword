@@ -86,9 +86,8 @@ describe("VaultBackupScheduler", () => {
     scheduler.notifyLocalChange(userId);
     adapter.advance(VaultBackupScheduler.CHANGE_DEBOUNCE_MS);
 
-    // Let the fire-and-forget promise settle.
-    await Promise.resolve();
-    await Promise.resolve();
+    // Let the fire-and-forget sync finish (it awaits several mocked promises).
+    await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(sync).toHaveBeenCalledTimes(1);
   });

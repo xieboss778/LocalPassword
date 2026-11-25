@@ -131,7 +131,7 @@ export class CreateLocalAccountService {
         salt,
         kdfConfig,
         wrappedUserKey: masterKeyWrappedUserKey as unknown as string,
-        wrappedPrivateKey: wrappedPrivateKey.encryptedString ?? "",
+        wrappedPrivateKey: encryptedStringOf(wrappedPrivateKey),
       },
       masterPassword,
     );
@@ -254,4 +254,13 @@ export class CreateLocalAccountService {
     this.logService.info("Opened local vault", { userId });
     return userId;
   }
+}
+
+/** `EncString` and plain-string callers both end up as the stored `encryptedString`. */
+function encryptedStringOf(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+  const encrypted = (value as { encryptedString?: string } | null)?.encryptedString;
+  return encrypted ?? "";
 }
