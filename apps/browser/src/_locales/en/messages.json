@@ -9601,5 +9601,29 @@
   },
   "googleAuthHotpSkipped": {
     "message": "Counter-based (HOTP) accounts skipped"
+  },
+  "securityKey": {
+    "message": "Security key unlock"
+  },
+  "securityKeyDescription": {
+    "message": "Register a security key or passkey to unlock this vault without typing the master password. The key is bound to this extension: it will not work in another browser or on the desktop."
+  },
+  "securityKeyEnroll": {
+    "message": "Register a security key"
+  },
+  "securityKeyRemove": {
+    "message": "Remove all keys"
+  },
+  "securityKeyRegistered": {
+    "message": "Registered keys"
+  },
+  "securityKeyEnrolled": {
+    "message": "Security key registered"
+  },
+  "securityKeyEnrollFailed": {
+    "message": "The security key could not be registered"
+  },
+  "securityKeyUnsupported": {
+    "message": "This browser cannot register a security key here."
   }
 }

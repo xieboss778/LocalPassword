@@ -1,0 +1,32 @@
+<div class="tw-flex tw-flex-col tw-gap-4">
+  <p bitTypography="body1" class="tw-text-main tw-mb-0">
+    {{ "securityKeyDescription" | i18n }}
+  </p>
+
+  @if (!supported()) {
+    <p bitTypography="helper" class="tw-text-danger tw-mb-0">
+      {{ "securityKeyUnsupported" | i18n }}
+    </p>
+  } @else {
+    <p bitTypography="body2" class="tw-mb-0">
+      {{ "securityKeyRegistered" | i18n }}: {{ registeredCount() }}
+    </p>
+
+    <div class="tw-flex tw-gap-2 tw-flex-wrap">
+      <button type="button" bitButton buttonType="primary" [disabled]="busy()" (click)="enroll()">
+        {{ "securityKeyEnroll" | i18n }}
+      </button>
+      @if (registeredCount() > 0) {
+        <button
+          type="button"
+          bitButton
+          buttonType="danger"
+          [disabled]="busy()"
+          (click)="removeAll()"
+        >
+          {{ "securityKeyRemove" | i18n }}
+        </button>
+      }
+    </div>
+  }
+</div>
