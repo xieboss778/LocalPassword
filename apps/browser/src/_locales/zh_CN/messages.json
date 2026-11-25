@@ -9958,5 +9958,11 @@
   },
   "unlockSubtitle": {
     "message": "保险库已锁定 —— 数据一直在这台机器上"
+  },
+  "emptyTrash": {
+    "message": "清空回收站"
+  },
+  "emptyTrashConfirmation": {
+    "message": "清空后无法恢复。"
   }
 }

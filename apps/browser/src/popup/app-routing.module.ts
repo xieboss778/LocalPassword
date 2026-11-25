@@ -114,6 +114,7 @@ import { ItemFormV2Component } from "../vault/popup/components/item-form-v2/item
 import { VaultItemViewV2Component } from "../vault/popup/components/item-view-v2/item-view-v2.component";
 import { NewItemV2Component } from "../vault/popup/components/new-item-v2/new-item-v2.component";
 import { TotpQrV2Component } from "../vault/popup/components/totp-qr-v2/totp-qr-v2.component";
+import { TrashV2Component } from "../vault/popup/components/trash-v2/trash-v2.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit/add-edit.component";
 import { AssignCollections } from "../vault/popup/components/vault/assign-collections/assign-collections.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments/attachments.component";
@@ -136,7 +137,6 @@ import { ArchiveComponent } from "../vault/popup/settings/archive.component";
 import { DownloadLocalPassComponent } from "../vault/popup/settings/download-localpass.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { MoreFromLocalPassPageComponent } from "../vault/popup/settings/more-from-localpass-page.component";
-import { TrashComponent } from "../vault/popup/settings/trash.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
 import { RouteElevation } from "./app-routing.animations";
@@ -1005,7 +1005,7 @@ const routes: Routes = [
   },
   {
     path: "trash",
-    component: TrashComponent,
+    component: TrashV2Component,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
   },

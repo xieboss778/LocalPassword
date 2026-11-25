@@ -9991,5 +9991,11 @@
   },
   "unlockSubtitle": {
     "message": "Your vault is locked — nothing left the machine"
+  },
+  "emptyTrash": {
+    "message": "Empty trash"
+  },
+  "emptyTrashConfirmation": {
+    "message": "This cannot be undone."
   }
 }
