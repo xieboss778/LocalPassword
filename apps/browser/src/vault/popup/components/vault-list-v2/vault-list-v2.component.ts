@@ -7,7 +7,7 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { Router, RouterModule } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
@@ -24,6 +24,7 @@ import { CipherService } from "@localpass/common/vault/abstractions/cipher.servi
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { ButtonModule, IconButtonModule } from "@localpass/components";
 import { ItemKind, kindOf } from "@localpass/local-vault";
+import { MY_ITEMS_ROUTE } from "@localpass/vault";
 
 /** 一个分组：同一类条目。 */
 interface KindGroup {
@@ -142,6 +143,7 @@ export class VaultListV2Component implements OnInit {
   private readonly cipherService = inject(CipherService);
   private readonly accountService = inject(AccountService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly loading = signal(true);
   protected readonly query = signal("");
@@ -165,10 +167,27 @@ export class VaultListV2Component implements OnInit {
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       const ciphers = await this.cipherService.getAllDecrypted(userId);
-      this.ciphers.set(ciphers.filter((cipher) => !cipher.isDeleted));
+      this.ciphers.set(this.scoped(ciphers.filter((cipher) => !cipher.isDeleted)));
     } finally {
       this.loading.set(false);
     }
+  }
+
+  /**
+   * `/vault/:vaultId` 收窄到那个保险库；`…/my-items` 再收缩到「不属于任何集合」的条目。
+   * 共享文件夹（`shared-folders`）仍走旧页面，这一层不碰它。
+   */
+  private scoped(ciphers: CipherView[]): CipherView[] {
+    const vaultId = this.route.snapshot.paramMap.get("vaultId");
+    if (vaultId == null) {
+      return ciphers;
+    }
+
+    const myItemsOnly = this.router.url.includes(`/${MY_ITEMS_ROUTE}`);
+    return ciphers.filter(
+      (cipher) =>
+        cipher.organizationId === vaultId && (!myItemsOnly || cipher.collectionIds.length === 0),
+    );
   }
 
   protected onSearch(event: Event): void {

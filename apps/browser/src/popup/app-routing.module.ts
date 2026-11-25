@@ -120,7 +120,6 @@ import { AttachmentsComponent } from "../vault/popup/components/vault/attachment
 import { IntroCarouselComponent } from "../vault/popup/components/vault/intro-carousel/intro-carousel.component";
 import { NewItemPageComponent } from "../vault/popup/components/vault/new-item-page/new-item-page.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/vault-password-history/vault-password-history.component";
-import { VaultComponent } from "../vault/popup/components/vault/vault.component";
 import { WelcomePageComponent } from "../vault/popup/components/vault/welcome-page/welcome-page.component";
 import { VaultListV2Component } from "../vault/popup/components/vault-list-v2/vault-list-v2.component";
 import {
@@ -949,7 +948,7 @@ const routes: Routes = [
          * as the unscoped route: a switch is the same page narrowed, not a push or a pop.
          */
         path: "vault/:vaultId",
-        component: VaultComponent,
+        component: VaultListV2Component,
         canActivate: [authGuard, vaultScopeGuard],
         canDeactivate: [clearVaultStateGuard],
         data: { elevation: 0 } satisfies RouteDataProperties,
@@ -957,7 +956,7 @@ const routes: Routes = [
       {
         // An organization's "My items" collection, named by a static segment — see `MY_ITEMS_ROUTE`.
         path: `vault/:vaultId/${MY_ITEMS_ROUTE}`,
-        component: VaultComponent,
+        component: VaultListV2Component,
         canActivate: [authGuard, vaultScopeGuard],
         canDeactivate: [clearVaultStateGuard],
         data: { ...MY_ITEMS_ROUTE_DATA, elevation: 0 } satisfies RouteDataProperties,

@@ -5,7 +5,6 @@ import { map, take } from "rxjs";
 import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
-import { VaultComponent } from "../components/vault/vault.component";
 import { VaultPopupItemsService } from "../services/vault-popup-items.service";
 import { VaultPopupListFiltersService } from "../services/vault-popup-list-filters.service";
 
@@ -20,8 +19,8 @@ import { VaultPopupListFiltersService } from "../services/vault-popup-list-filte
  * `VaultPopupListFiltersService` path is removed, this guard becomes dead code and can be deleted
  * entirely.
  */
-export const clearVaultStateGuard: CanDeactivateFn<VaultComponent> = (
-  component: VaultComponent,
+export const clearVaultStateGuard: CanDeactivateFn<object> = (
+  _component: object,
   currentRoute,
   currentState,
   nextState,

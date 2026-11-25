@@ -4,7 +4,6 @@ import { firstValueFrom, Observable, of } from "rxjs";
 
 import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
-import { VaultComponent } from "../components/vault/vault.component";
 import { VaultPopupItemsService } from "../services/vault-popup-items.service";
 import { VaultPopupListFiltersService } from "../services/vault-popup-list-filters.service";
 
@@ -52,7 +51,7 @@ describe("clearVaultStateGuard", () => {
     const nextState = { url } as RouterStateSnapshot;
 
     const result = TestBed.runInInjectionContext(() =>
-      clearVaultStateGuard({} as VaultComponent, null, null, nextState),
+      clearVaultStateGuard({}, null, null, nextState),
     );
 
     expect(result).toBe(true);
@@ -63,7 +62,7 @@ describe("clearVaultStateGuard", () => {
     setupModule(true);
 
     const result = TestBed.runInInjectionContext(() =>
-      clearVaultStateGuard({} as VaultComponent, null, null, null),
+      clearVaultStateGuard({}, null, null, null),
     );
 
     expect(result).toBe(true);
@@ -79,7 +78,7 @@ describe("clearVaultStateGuard", () => {
         const nextState = { url } as RouterStateSnapshot;
 
         const result = TestBed.runInInjectionContext(() =>
-          clearVaultStateGuard({} as VaultComponent, null, null, nextState),
+          clearVaultStateGuard({}, null, null, nextState),
         );
 
         expect(await firstValueFrom(result as Observable<boolean>)).toBe(true);
@@ -98,7 +97,7 @@ describe("clearVaultStateGuard", () => {
         const nextState = { url } as RouterStateSnapshot;
 
         const result = TestBed.runInInjectionContext(() =>
-          clearVaultStateGuard({} as VaultComponent, null, null, nextState),
+          clearVaultStateGuard({}, null, null, nextState),
         );
 
         expect(await firstValueFrom(result as Observable<boolean>)).toBe(true);
