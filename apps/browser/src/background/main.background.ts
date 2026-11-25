@@ -231,7 +231,6 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
 import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/vault/abstractions/search.service";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
@@ -598,7 +597,7 @@ export default class MainBackground {
   taskService: TaskService;
   cipherEncryptionService: CipherEncryptionService;
   localAccountService: LocalAccountService;
-  localVaultWriter: LocalVaultWriter;
+  localVaultWriter: DefaultLocalVaultWriter;
   networkGate: LocalVaultNetworkGate;
   createLocalAccountService: CreateLocalAccountService;
   vaultBackupSyncService: VaultBackupSyncService;
