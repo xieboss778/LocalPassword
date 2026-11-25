@@ -145,16 +145,15 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 **CI 实测（首次推送）**：`verify-static` 报 19 个严格类型错误与 3 个 web 依赖残留，`Chrome 扩展` webpack 编译报 8 个同源错误；
 已在 `09af6bf` 全部修正（`creationDate: Date`、`EncString` 双重断言、WebCrypto `ArrayBuffer` 视图、状态反序列化断言、组件相对路径、故事文件删除、导入测试路径改写）。
 
-
 ## 2026-11-26 追加：阶段 2–7 全部落地
 
-| 阶段 | 交付物 | 位置 |
-|---|---|---|
-| 2 | 本地账户创建/恢复、本地写入器、网络闸门、起始页、PIN/登出/Send 护栏 | `libs/local-vault/src/account`、`src/vault`、`src/network`、`libs/angular/src/auth/local-vault` |
-| 3 | 原生消息改名、禁 SSO cookie、`data.json.bak` | `apps/desktop/src/main`、`apps/desktop/src/platform/main/storage` |
-| 4 | S3 客户端、快照推送/拉取（清单 412 重试）、备份导出与保留、调度器、设置页、`account.json` 与云端恢复 | `libs/local-vault/src/s3`、`src/sync`、`libs/angular/src/tools/backup`、`src/auth/local-vault/restore-vault.component.ts` |
-| 5 | PRF 登记服务 + 设置页；解锁路径 RP ID 回退到扩展主机名 | `libs/key-management-ui/src/lock/services/local-webauthn-prf-enrollment.service.ts`、`apps/browser/src/auth/popup/security-key` |
-| 6 | `otpauth-migration` 解码器（含单测）、导入页、TOTP 二维码组件与详情页弹窗 | `libs/importer/src/importers/google-authenticator`、`libs/vault/src/components/totp-qr`、`.../totp-qr-dialog` |
-| 7 | 扩展 zip 产物、安装与恢复文档 | `.github/workflows/localpassword.yml`、`docs/LocalPassword-安装与恢复.md` |
+| 阶段 | 交付物                                                                                               | 位置                                                                                                                            |
+| ---- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2    | 本地账户创建/恢复、本地写入器、网络闸门、起始页、PIN/登出/Send 护栏                                  | `libs/local-vault/src/account`、`src/vault`、`src/network`、`libs/angular/src/auth/local-vault`                                 |
+| 3    | 原生消息改名、禁 SSO cookie、`data.json.bak`                                                         | `apps/desktop/src/main`、`apps/desktop/src/platform/main/storage`                                                               |
+| 4    | S3 客户端、快照推送/拉取（清单 412 重试）、备份导出与保留、调度器、设置页、`account.json` 与云端恢复 | `libs/local-vault/src/s3`、`src/sync`、`libs/angular/src/tools/backup`、`src/auth/local-vault/restore-vault.component.ts`       |
+| 5    | PRF 登记服务 + 设置页；解锁路径 RP ID 回退到扩展主机名                                               | `libs/key-management-ui/src/lock/services/local-webauthn-prf-enrollment.service.ts`、`apps/browser/src/auth/popup/security-key` |
+| 6    | `otpauth-migration` 解码器（含单测）、导入页、TOTP 二维码组件与详情页弹窗                            | `libs/importer/src/importers/google-authenticator`、`libs/vault/src/components/totp-qr`、`.../totp-qr-dialog`                   |
+| 7    | 扩展 zip 产物、安装与恢复文档                                                                        | `.github/workflows/localpassword.yml`、`docs/LocalPassword-安装与恢复.md`                                                       |
 
 **CI 收敛记录**：类型检查 46 个项目多次全绿；eslint 从 19 项降到 0；prettier 基线通过一次性 `format.yml` + `chore/prettier` 分支合并建立；Chrome 扩展 webpack 构建成功。仍未跑完的是单元测试与桌面端打包（GitHub runner 排队 + 频繁推送触发 concurrency 取消）。

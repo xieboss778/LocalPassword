@@ -1,12 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import {
-  AccountCryptographicStateService,
-} from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import {
-  InternalMasterPasswordServiceAbstraction,
-} from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import { UserId } from "@bitwarden/common/types/guid";
 
 /**

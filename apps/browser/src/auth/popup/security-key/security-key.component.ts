@@ -6,9 +6,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { getUserId } from "@bitwarden/common/auth/services/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import {
-  PlatformUtilsService,
-} from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { AsyncActionsModule, ButtonModule, TypographyModule } from "@bitwarden/components";
 import { LocalWebAuthnPrfEnrollmentService } from "@bitwarden/key-management-ui";
 

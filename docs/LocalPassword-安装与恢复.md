@@ -17,11 +17,11 @@ LocalPassword 只有两个客户端：Chrome 扩展与桌面端（Electron）。
 
 CI 产出未签名安装包，首次安装会被系统拦一下：
 
-| 平台 | 产物 | 首次打开 |
-|---|---|---|
-| Windows | `LocalPassword-Setup-x.y.z.exe`（NSIS） | SmartScreen 提示时点「更多信息 → 仍要运行」 |
-| macOS | `LocalPassword-x.y.z.dmg` | 右键应用 → 打开；或「系统设置 → 隐私与安全性 → 仍要打开」 |
-| Linux | `AppImage` | `chmod +x` 后直接运行 |
+| 平台    | 产物                                    | 首次打开                                                  |
+| ------- | --------------------------------------- | --------------------------------------------------------- |
+| Windows | `LocalPassword-Setup-x.y.z.exe`（NSIS） | SmartScreen 提示时点「更多信息 → 仍要运行」               |
+| macOS   | `LocalPassword-x.y.z.dmg`               | 右键应用 → 打开；或「系统设置 → 隐私与安全性 → 仍要打开」 |
+| Linux   | `AppImage`                              | `chmod +x` 后直接运行                                     |
 
 桌面端数据在 `<userData>/data.json`（权限 0600），旁边保留一份 `data.json.bak`。
 覆盖安装不会清数据；卸载会清。
