@@ -90,6 +90,16 @@ async function doBuild(context) {
 
     let id;
 
+    // 本地未签名打包（CSC_IDENTITY_AUTO_DISCOVERY=false）不需要访问钥匙串：直接跳过代理签名，
+    // 否则 codesign 会去签名 desktop_proxy 并因钥匙串权限失败（errSecInternalComponent）。
+    if (
+      process.env.GITHUB_ACTIONS !== "true" &&
+      process.env.CSC_IDENTITY_AUTO_DISCOVERY === "false"
+    ) {
+      console.log("[macOS] 代码签名已禁用 —— 跳过 desktop_proxy 签名");
+      return;
+    }
+
     // Only use the Bitwarden Identities on CI
     if (process.env.GITHUB_ACTIONS === "true") {
       if (is_mas) {
