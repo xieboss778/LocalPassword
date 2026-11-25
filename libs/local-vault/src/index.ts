@@ -10,5 +10,6 @@ export * from "./sync/snapshot-merge";
 export * from "./sync/vault-backup-config";
 export * from "./sync/vault-backup-scheduler.service";
 export * from "./sync/vault-backup-sync.service";
+export * from "./sync/timer-scheduler.adapter";
 export * from "./sync/vault-backup.service";
 export * from "./vault/local-vault-writer.service";
