@@ -109,3 +109,19 @@ CI 的 windows / chrome / 静态检查三个 job 仍然能验证真实构建，�
 1. 写 `import` 之前先 `grep -rn "SymbolName" apps libs --include=*.ts | head`，照着已有文件的路径抄
 2. 类型不确定时看声明处，不要凭印象给参数加窄类型（`ImportOption.id` 是 `string`，不是 `ImportType`）
 3. 改已有字段前先 `grep` 出真实行再替换——`eslint --fix` 会给字段加 `readonly`，凭记忆写的补丁会连续失手
+
+## 8. 剩余屏清单（截至第 21 轮）
+
+**已完成（方向 C）**：首次设置、保险库列表（含搜索/空态/悬浮新建）、条目详情（点行复制、TOTP 实时码、二维码屏）、选类型 + 8 类表单、设置一级/安全/数据与安全、备份设置（含同步三态）、恢复向导（四态）、导入来源选择、Google 认证器导入（三步）、生成器、桌面三栏壳 + 内联表单 + 桌面设置（Touch ID）+ 桌面备份/恢复。
+
+**未完成**：
+
+| 屏 | 现状 | 说明 |
+| --- | --- | --- |
+| 自动填充确认（autofill） | 上游 AutofillConfirmationDialogComponent | 功能完整、样式沿用上游；换方向 C 需要改 dialog 壳 |
+| 导入确认/结果 | 上游 importer-ui 流程 | 只在导入后出现，方向 C 未覆盖 |
+| 组织范围保险库（/vault/:vaultId） | 旧 VaultComponent | 需要把「当前保险库」过滤搬到新列表，才能删掉 806 行旧组件 |
+| 桌面端文件夹 / Send | 上游组件 | Send 功能已从产品移除，应直接不渲染而非改样式 |
+| 解锁屏（unlock） | 上游 LockComponent | 与首次设置同源，可下一轮换 |
+
+对齐原则：能复用同一份组件的就复用到两端；不能复用的先记在这里，不假装修好了。
