@@ -44,7 +44,7 @@ export class SecurityKeyComponent implements OnInit {
       const account = await firstValueFrom(this.accountService.activeAccount$);
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
 
-      await this.enrollmentService.enroll(userId, account.email, account.name);
+      await this.enrollmentService.enroll(userId, account.email, account.name ?? account.email);
       this.platformUtilsService.showToast("success", "", this.i18nService.t("securityKeyEnrolled"));
       await this.refresh();
     } catch {
