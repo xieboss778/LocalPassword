@@ -2,6 +2,8 @@
 
 > 核查时间：2026-11-25　｜　核查方式：只读代码 + git 历史 + 依赖引用分析（未做任何本地构建，遵守 `docs/LocalPassword-开发规则.md`）
 > 核查基线：`main` @ `fb81411`（工作区干净）
+> **更新（2026-11-25 晚）**：下方结论是核查当时（实现前）的快照。此后代码已推进到 `09af6bf`，
+> 阶段 2 数据层与网络层、阶段 3 阻断项、阶段 4 核心均已落地，详见文末「2026-11-25 实施进展」。
 
 ## 一句话结论
 
@@ -126,3 +128,19 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 3. **阶段 0 遗留验证**（可与 2 并行）：`chrome.storage.local` 容量、SDK 接受本地 V1 密钥状态、PRF 状态不被清、RP ID=扩展 ID 的 WebAuthn。
 4. 阶段 2 闭环后按计划顺序推进 3 → 4 → 5 → 6 → 7。
 5. 顺手清理：`electron-builder.beta.json` / `beta-release.json` / `pack:*:beta` 脚本、多浏览器构建脚本、`publisherDisplayName`、`native-messaging` 的主机名与扩展 ID。
+
+## 2026-11-25 实施进展（覆盖上文结论）
+
+| 阶段 | 现在状态 | 主要证据 |
+|---|---|---|
+| 0 基线/改名/阻断项 | 完成 | 扩展 ID 由 manifest `key` 实算为 `gmobddgobjdhbjhedhgaeekhgchkoncm`；`updaterMain.init()` 不调用；`publish` 段已删 |
+| 1 瘦身 | 完成，另删 3 个依赖 `apps/web` 的 story 与其 mdx | `libs/auth/src/angular/input-password`、`libs/angular/.../registration-start`、`libs/vault/src/cipher-form` |
+| 2 本地保险库核心 | 完成（缺 PRF 相关） | `CreateLocalAccountService`、`DefaultLocalVaultWriter`（`CipherService` 9 处分支、`FolderApiService` 4 处、`fullSync`、`ImportService`）、`LocalPasswordApiService`、两端起始页与向导、PIN/登出/Send 护栏 |
+| 3 桌面端接入 | 阻断项完成；调度待接 | `com.localpassword.desktop` 主机名、`ssoCookieMain.init` 关闭、`data.json.bak` |
+| 4 R2 同步 + 定时备份 | 核心完成；设置页与两端接线待做 | `s3-client.ts`（SigV4/条件写/分页）、`vault-backup-sync.service.ts`（清单 412 重试合并）、`vault-backup.service.ts`（导出上传/保留）、`vault-backup-scheduler.service.ts`（15s 防抖 / 30min 检查 / 日周节奏） |
+| 5 Passkey / PRF | 未开始 | —— |
+| 6 TOTP 二维码 | 未开始 | —— |
+| 7 打包发布 | 部分（CI 出未签名产物） | `.github/workflows/localpassword.yml` |
+
+**CI 实测（首次推送）**：`verify-static` 报 19 个严格类型错误与 3 个 web 依赖残留，`Chrome 扩展` webpack 编译报 8 个同源错误；
+已在 `09af6bf` 全部修正（`creationDate: Date`、`EncString` 双重断言、WebCrypto `ArrayBuffer` 视图、状态反序列化断言、组件相对路径、故事文件删除、导入测试路径改写）。
