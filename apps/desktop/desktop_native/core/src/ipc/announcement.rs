@@ -7,8 +7,8 @@
 //!           -> {"clientType":"cli"}
 //! Chrome    chrome-extension://nngceckbapebfimnlniiiahkandclblb/ [--parent-window=1234]
 //!           -> {"clientType":"chrome","extensionId":"nngceckbapebfimnlniiiahkandclblb"}
-//! Firefox   /path/to/com.8bit.bitwarden.json {446900e4-71c2-419f-a6a7-df9c091e268b}
-//!           -> {"clientType":"firefox","extensionId":"{446900e4-...}"}
+//! Firefox   /path/to/com.localpassword.desktop.json gmobddgobjdhbjhedhgaeekhgchkoncm
+//!           -> {"clientType":"firefox","extensionId":"gmobddgobjdhbjhedhgaeekhgchkoncm"}
 //! other     -> {"clientType":"unknown"}
 //!
 //! The autofill provider does not go through the proxy; it announces itself with
@@ -157,7 +157,7 @@ mod tests {
     #[test]
     fn announces_firefox() {
         let manifest = r"C:\Users\me\AppData\Roaming\Bitwarden\browsers\firefox.json";
-        let extension = "{446900e4-71c2-419f-a6a7-df9c091e268b}";
+        let extension = "gmobddgobjdhbjhedhgaeekhgchkoncm";
 
         assert_eq!(
             announced(&[manifest, extension]),
@@ -191,7 +191,7 @@ mod tests {
         let cases = [
             args(&["--client=cli"]),
             args(&["chrome-extension://abc/"]),
-            args(&["/path/com.8bit.bitwarden.json", "{id}"]),
+            args(&["/path/com.localpassword.desktop.json", "{id}"]),
             args(&[]),
         ];
 

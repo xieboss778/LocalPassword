@@ -140,7 +140,7 @@ describe("NativeMessagingMain", () => {
   });
 
   describe("generateManifests on linux", () => {
-    const manifestName = "com.8bit.bitwarden.json";
+    const manifestName = "com.localpassword.desktop.json";
     const platform = process.platform;
 
     let home: string;
@@ -199,7 +199,7 @@ describe("NativeMessagingMain", () => {
   });
 
   describe("on macOS", () => {
-    const manifestName = "com.8bit.bitwarden.json";
+    const manifestName = "com.localpassword.desktop.json";
     const platform = process.platform;
 
     let home: string;
@@ -242,9 +242,9 @@ describe("NativeMessagingMain", () => {
 
         expect(manifestIn(mozilla)).toEqual(
           expect.objectContaining({
-            name: "com.8bit.bitwarden",
+            name: "com.localpassword.desktop",
             path: binary,
-            allowed_extensions: ["{446900e4-71c2-419f-a6a7-df9c091e268b}"],
+            allowed_extensions: ["gmobddgobjdhbjhedhgaeekhgchkoncm"],
           }),
         );
       });
@@ -321,7 +321,7 @@ describe("NativeMessagingMain", () => {
 });
 
 describe("NativeMessagingMain.generateManifests on Windows", () => {
-  const chromeKey = "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.8bit.bitwarden";
+  const chromeKey = "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.localpassword.desktop";
   const originalPlatform = process.platform;
   const originalResourcesPath = process.resourcesPath;
   const originalLocalAppData = process.env.LOCALAPPDATA;

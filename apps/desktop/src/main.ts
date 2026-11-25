@@ -420,7 +420,9 @@ export class Main {
         await this.ipcService.init();
 
         await this.windowMain.init(showWindow);
-        this.ssoCookieMain.init(this.windowMain.session);
+        // LocalPassword: there is no server to single-sign-on against, so the SSO cookie jar is
+        // never installed. Leaving it out also removes the listener that rewrites cookies.
+        // this.ssoCookieMain.init(this.windowMain.session);
         await this.i18nService.init();
         await this.messagingMain.init();
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
