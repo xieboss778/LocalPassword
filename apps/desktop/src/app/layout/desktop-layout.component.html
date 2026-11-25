@@ -19,6 +19,7 @@
           [text]="'exportNoun' | i18n"
           (mainContentClicked)="openExport()"
         />
+        <bit-nav-item icon="bwi-download" [text]="'cloudBackup' | i18n" route="backup-settings" />
       </bit-nav-section>
 
       <bit-nav-section [label]="'manage' | i18n">
@@ -37,6 +38,7 @@
         <bit-nav-item icon="bwi-import" [text]="'importNoun' | i18n" (click)="openImport()" />
       }
       <bit-nav-item icon="bwi-download" [text]="'exportNoun' | i18n" (click)="openExport()" />
+      <bit-nav-item icon="bwi-download" [text]="'cloudBackup' | i18n" route="backup-settings" />
     }
   </app-side-nav>
 

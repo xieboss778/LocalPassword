@@ -7918,5 +7918,71 @@
   },
   "localVaultLogoutWarning": {
     "message": "Logging out deletes this vault from this device. There is no server copy to restore from, so export a backup first if you have not already."
+  },
+  "cloudBackup": {
+    "message": "Cloud backup"
+  },
+  "cloudBackupDescription": {
+    "message": "Store an encrypted copy of this vault in S3-compatible storage (Cloudflare R2, MinIO, Backblaze B2…). Create an API token limited to one bucket with object read/write, then paste the values here."
+  },
+  "backupEndpoint": {
+    "message": "Endpoint"
+  },
+  "backupRegion": {
+    "message": "Region"
+  },
+  "backupBucket": {
+    "message": "Bucket"
+  },
+  "backupAccessKeyId": {
+    "message": "Access key ID"
+  },
+  "backupSecretKey": {
+    "message": "Secret access key"
+  },
+  "backupPrefix": {
+    "message": "Key prefix"
+  },
+  "backupTest": {
+    "message": "Test connection"
+  },
+  "backupNow": {
+    "message": "Back up now"
+  },
+  "disconnectBackup": {
+    "message": "Disconnect"
+  },
+  "disconnectBackupWarning": {
+    "message": "Storage settings are removed from this device. Objects already in the bucket stay there; the backup password is no longer shown."
+  },
+  "backupLastSynced": {
+    "message": "Last sync"
+  },
+  "backupPending": {
+    "message": "Changes are waiting to be uploaded"
+  },
+  "backupLastRun": {
+    "message": "Last backup"
+  },
+  "backupPassword": {
+    "message": "Backup password"
+  },
+  "backupPasswordHint": {
+    "message": "Every backup is encrypted with this password. Store it separately: restoring on another device needs it."
+  },
+  "backupSaved": {
+    "message": "Storage settings saved"
+  },
+  "backupTestOk": {
+    "message": "Connected successfully"
+  },
+  "backupTestFailed": {
+    "message": "Could not reach the bucket with these settings"
+  },
+  "backupUploaded": {
+    "message": "Backup uploaded"
+  },
+  "backupFailed": {
+    "message": "Backup upload failed"
   }
 }

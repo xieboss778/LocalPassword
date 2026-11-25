@@ -17,6 +17,7 @@ import {
   CreateLocalVaultComponent,
   LocalVaultStartComponent,
 } from "@bitwarden/angular/auth/local-vault";
+import { BackupSettingsComponent } from "@bitwarden/angular/tools/backup";
 import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
 import { SetInitialPasswordComponent } from "@bitwarden/angular/auth/password-management/set-initial-password/set-initial-password.component";
 import {
@@ -577,6 +578,13 @@ export const routes: Routes = [
         component: SendComponent,
         data: { pageTitle: { key: "send" } } satisfies RouteDataProperties,
         canDeactivate: [unsavedSendEditsGuard],
+      },
+      {
+        // LocalPassword: cloud backup settings for a local vault.
+        path: "backup-settings",
+        component: BackupSettingsComponent,
+        canActivate: [authGuard],
+        data: { pageTitle: { key: "cloudBackup" } } satisfies RouteDataProperties,
       },
       {
         path: "import",

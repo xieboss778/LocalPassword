@@ -29,6 +29,7 @@ import {
 } from "@bitwarden/angular/auth/registration";
 import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
 import { featureFlaggedRoute } from "@bitwarden/angular/platform/utils/feature-flagged-route";
+import { BackupSettingsComponent } from "@bitwarden/angular/tools/backup";
 import {
   DevicesIcon,
   ExpiredIcon,
@@ -362,6 +363,13 @@ const routes: Routes = [
     component: ExportBrowserV2Component,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPassword: cloud backup settings for a local vault.
+    path: "backup-settings",
+    component: BackupSettingsComponent,
+    canActivate: [authGuard],
+    data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
     path: "autofill",

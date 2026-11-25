@@ -7891,5 +7891,71 @@
   },
   "localVaultLogoutWarning": {
     "message": "登出会把保险库从本机删除。没有服务器副本可以恢复，如果还没备份，请先去导出。"
+  },
+  "cloudBackup": {
+    "message": "云备份"
+  },
+  "cloudBackupDescription": {
+    "message": "把这份保险库的加密副本存到 S3 兼容存储（Cloudflare R2、MinIO、Backblaze B2…）。先在控制台创建一个只授权单桶读写的 API 令牌，再把这些值填进来。"
+  },
+  "backupEndpoint": {
+    "message": "端点"
+  },
+  "backupRegion": {
+    "message": "区域"
+  },
+  "backupBucket": {
+    "message": "桶名"
+  },
+  "backupAccessKeyId": {
+    "message": "Access Key ID"
+  },
+  "backupSecretKey": {
+    "message": "Secret Access Key"
+  },
+  "backupPrefix": {
+    "message": "键前缀"
+  },
+  "backupTest": {
+    "message": "测试连接"
+  },
+  "backupNow": {
+    "message": "立即备份"
+  },
+  "disconnectBackup": {
+    "message": "断开"
+  },
+  "disconnectBackupWarning": {
+    "message": "存储配置会从本机删除。桶里已有的对象保留；备份口令不再显示。"
+  },
+  "backupLastSynced": {
+    "message": "上次同步"
+  },
+  "backupPending": {
+    "message": "有改动等待上传"
+  },
+  "backupLastRun": {
+    "message": "上次备份"
+  },
+  "backupPassword": {
+    "message": "备份口令"
+  },
+  "backupPasswordHint": {
+    "message": "每份备份都用这个口令加密。请单独保存：在别的设备上恢复时必须用到它。"
+  },
+  "backupSaved": {
+    "message": "存储配置已保存"
+  },
+  "backupTestOk": {
+    "message": "连接成功"
+  },
+  "backupTestFailed": {
+    "message": "用当前配置连不上这个桶"
+  },
+  "backupUploaded": {
+    "message": "备份已上传"
+  },
+  "backupFailed": {
+    "message": "备份上传失败"
   }
 }

@@ -308,6 +308,10 @@ import {
   LocalAccountService,
   LocalPasswordApiService,
   LocalVaultNetworkGate,
+  TimerVaultSchedulerAdapter,
+  VaultBackupScheduler,
+  VaultBackupService,
+  VaultBackupSyncService,
 } from "@bitwarden/local-vault";
 import { FlightRecorderLogRecorder, limitPerformanceMeasurements } from "@bitwarden/logging";
 import {
@@ -598,6 +602,9 @@ export default class MainBackground {
   localVaultWriter: LocalVaultWriter;
   networkGate: LocalVaultNetworkGate;
   createLocalAccountService: CreateLocalAccountService;
+  vaultBackupSyncService: VaultBackupSyncService;
+  vaultBackupService: VaultBackupService;
+  vaultBackupScheduler: VaultBackupScheduler;
   collectionEncryptionService: CollectionEncryptionService;
   private restrictedItemTypesService: RestrictedItemTypesService;
 
@@ -1534,6 +1541,39 @@ export default class MainBackground {
       this.organizationVaultExportService,
       this.accountService,
     );
+
+    // Cloud backup for a local vault: the scheduler hears about writes through the writer hook and
+    // uploads on a debounce, plus a periodic check while the worker is alive.
+    this.vaultBackupSyncService = new VaultBackupSyncService(
+      this.localAccountService,
+      this.stateProvider,
+      this.keyService,
+      this.encryptService,
+      this.logService,
+    );
+    this.vaultBackupService = new VaultBackupService(
+      this.vaultBackupSyncService,
+      async (userId, password) =>
+        (
+          await this.individualVaultExportService.getPasswordProtectedExport(userId, password)
+        ).data as string,
+      this.stateProvider,
+      this.keyService,
+      this.encryptService,
+      this.logService,
+    );
+    this.vaultBackupScheduler = new VaultBackupScheduler(
+      this.vaultBackupSyncService,
+      this.vaultBackupService,
+      this.localAccountService,
+      new TimerVaultSchedulerAdapter(),
+      this.logService,
+    );
+    this.localVaultWriter.setChangeListener((userId) => {
+      this.vaultBackupScheduler.trackUser(userId);
+      this.vaultBackupScheduler.start();
+      this.vaultBackupScheduler.notifyLocalChange(userId);
+    });
 
     this.browserInitialInstallService = new BrowserInitialInstallService(this.stateProvider);
     this.defaultPasswordManagerPromptStateAccessor = new DefaultPasswordManagerPromptStateAccessor(
