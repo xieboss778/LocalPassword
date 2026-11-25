@@ -47,10 +47,12 @@ import { UserId } from "../../types/guid";
 import { CipherService } from "../../vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "../../vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "../../vault/abstractions/local-vault-writer.abstraction";
 import { CipherData } from "../../vault/models/data/cipher.data";
 import { FolderData } from "../../vault/models/data/folder.data";
 import { CipherResponse } from "../../vault/models/response/cipher.response";
 import { FolderResponse } from "../../vault/models/response/folder.response";
+import { NoopLocalVaultWriter } from "../../vault/services/noop-local-vault-writer.service";
 import { ConfigService } from "../abstractions/config/config.service";
 import { LogService } from "../abstractions/log.service";
 import { SdkService } from "../abstractions/sdk/sdk.service";
@@ -103,6 +105,11 @@ export class DefaultSyncService extends CoreSyncService {
     stateProvider: StateProvider,
     configService: ConfigService,
     sdkService: SdkService,
+    /**
+     * Marks accounts that live only on this device. A local vault has no server to sync from, so
+     * `fullSync` only stamps the sync time.
+     */
+    protected localVaultWriter: LocalVaultWriter = new NoopLocalVaultWriter(),
   ) {
     super(
       tokenService,
@@ -137,6 +144,13 @@ export class DefaultSyncService extends CoreSyncService {
     const authStatus = await firstValueFrom(this.authService.authStatusFor$(userId));
     if (authStatus === AuthenticationStatus.LoggedOut) {
       return this.syncCompleted(false, userId);
+    }
+
+    // A local vault has no server to sync from. Every entry already lives in this device's state,
+    // so all that is left is to stamp the sync time the vault UI waits for.
+    if (userId != null && (await this.localVaultWriter.isLocalAccount(userId))) {
+      await this.setLastSync(new Date(), userId);
+      return this.syncCompleted(true, userId);
     }
 
     const syncMeasurement = this.logService.startMeasurement(PERF_TRACK_GROUP, PERF_TRACK, "total");

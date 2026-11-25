@@ -24,6 +24,8 @@ import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
+import { NoopLocalVaultWriter } from "@bitwarden/common/vault/services/noop-local-vault-writer.service";
 import { CipherType, toCipherTypeName } from "@bitwarden/common/vault/enums";
 import { CipherRequest } from "@bitwarden/common/vault/models/request/cipher.request";
 import { FolderWithOptionalIdRequest } from "@bitwarden/common/vault/models/request/folder-with-optional-id.request";
@@ -146,6 +148,8 @@ export class ImportService implements ImportServiceAbstraction {
     private configService: ConfigService,
     private sdkService: SdkService,
     protected logService: LogService,
+    /** Import target for accounts that live only on this device. */
+    private localVaultWriter: LocalVaultWriter = new NoopLocalVaultWriter(),
   ) {}
 
   getImportOptions(): ImportOption[] {
@@ -591,6 +595,10 @@ export class ImportService implements ImportServiceAbstraction {
   }
 
   private async handleIndividualImport(importResult: ImportResult, userId: UserId) {
+    if (await this.importIntoLocalVault(importResult, userId)) {
+      return;
+    }
+
     const request = new ImportCiphersRequest();
 
     const encryptedCiphers = await this.cipherService.encryptMany(importResult.ciphers, userId);
@@ -604,6 +612,46 @@ export class ImportService implements ImportServiceAbstraction {
     await this.addFolders(request, importResult, userKey);
 
     return await this.importApiService.postImportCiphers(request);
+  }
+
+  /**
+   * Writes an import straight into a local vault: folders first so the cipher relationships can
+   * point at real folder ids, then every cipher through the normal local create path.
+   *
+   * @returns true when the account is local and the import was handled here.
+   */
+  private async importIntoLocalVault(
+    importResult: ImportResult,
+    userId: UserId,
+  ): Promise<boolean> {
+    if (!(await this.localVaultWriter.isLocalAccount(userId))) {
+      return false;
+    }
+
+    const userKey = await firstValueFrom(this.keyService.userKey$(userId));
+
+    const folderIds: string[] = [];
+    for (const folderView of importResult.folders ?? []) {
+      const encryptedFolder = await this.folderService.encrypt(folderView, userKey);
+      const saved = await this.localVaultWriter.saveFolder(encryptedFolder, userId);
+      folderIds.push(saved?.id ?? null);
+    }
+
+    for (const [cipherIndex, folderIndex] of importResult.folderRelationships ?? []) {
+      const cipher = importResult.ciphers[cipherIndex];
+      if (cipher != null) {
+        cipher.folderId = folderIds[folderIndex] ?? null;
+      }
+    }
+
+    for (const cipher of importResult.ciphers) {
+      await this.cipherService.createWithServer(cipher, userId);
+    }
+
+    this.logService.info("Imported into local vault", {
+      ciphers: importResult.ciphers.length,
+    });
+    return true;
   }
 
   private async handleOrganizationalImport(

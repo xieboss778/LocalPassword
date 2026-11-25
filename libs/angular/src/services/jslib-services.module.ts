@@ -1112,6 +1112,7 @@ const safeProviders: SafeProvider[] = [
       StateProvider,
       ConfigService,
       SdkService,
+      LocalVaultWriter,
     ],
   }),
   safeProvider({
