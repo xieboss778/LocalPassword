@@ -104,6 +104,7 @@ import { GoogleAuthImportV2Component } from "../tools/popup/settings/import/goog
 import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { IMPORT_CONFIRMATION_ROUTE_PATH } from "../tools/popup/settings/import/import-confirmation-state.service";
 import { ImportShellBrowserComponent } from "../tools/popup/settings/import/import-shell-browser.component";
+import { ImportSourceV2Component } from "../tools/popup/settings/import/import-source-v2.component";
 import { DataSafetyV2Component } from "../tools/popup/settings/localpass/data-safety-v2.component";
 import { SecuritySettingsV2Component } from "../tools/popup/settings/localpass/security-settings-v2.component";
 import { SettingsListV2Component } from "../tools/popup/settings/localpass/settings-list-v2.component";
@@ -356,6 +357,13 @@ const routes: Routes = [
     path: "import",
     component: ImportBrowserV2Component,
     canActivate: [authGuard, importUpgradeRedirectGuard, filePickerPopoutGuard()],
+    data: { elevation: 1 } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPassword：方向 C 的导入来源选择（清单来自 ImportService，不是手抄的）。
+    path: "import-source-v2",
+    component: ImportSourceV2Component,
+    canActivate: [authGuard],
     data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {

@@ -8365,5 +8365,20 @@
   },
   "dataFileWarning": {
     "message": "Both files sit next to each other in the app data folder. Delete them and the vault is gone — that is why backups are manual and why the rollback copy exists."
+  },
+  "importSourceSubtitle": {
+    "message": "Pick where it comes from — nothing leaves the machine"
+  },
+  "importFeatured": {
+    "message": "Recommended sources"
+  },
+  "importAllSources": {
+    "message": "Everything else"
+  },
+  "importFromBrowser": {
+    "message": "From a browser"
+  },
+  "importSourceHint": {
+    "message": "Importing reads the file locally and writes the items straight into your vault. Nothing is uploaded; cloud backup only happens when you press it."
   }
 }

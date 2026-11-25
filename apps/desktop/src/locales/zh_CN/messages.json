@@ -8338,5 +8338,20 @@
   },
   "dataFileWarning": {
     "message": "两个文件并排放在应用数据目录里。删掉它们，保险库就没了——所以备份是手动的，也所以留了那个回滚副本。"
+  },
+  "importSourceSubtitle": {
+    "message": "选来源——文件只在本机解析"
+  },
+  "importFeatured": {
+    "message": "常用来源"
+  },
+  "importAllSources": {
+    "message": "其它全部"
+  },
+  "importFromBrowser": {
+    "message": "来自浏览器"
+  },
+  "importSourceHint": {
+    "message": "导入只在本机读文件，读到的条目直接写进保险库。不会上传；云备份只在你点的时候才发生。"
   }
 }

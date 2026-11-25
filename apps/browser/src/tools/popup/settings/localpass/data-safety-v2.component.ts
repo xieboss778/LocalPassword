@@ -69,7 +69,7 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
             [label]="i18n.t('importData')"
             [chevron]="true"
             [clickable]="true"
-            (activated)="go('/import')"
+            (activated)="go('/import-source-v2')"
           />
         </lp-group>
 
