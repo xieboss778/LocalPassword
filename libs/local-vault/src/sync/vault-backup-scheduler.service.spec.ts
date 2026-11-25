@@ -95,9 +95,19 @@ describe("VaultBackupScheduler", () => {
 
   it("skips syncing when cloud storage is not configured", async () => {
     const { sync } = setup({ backupFrequency: "off", lastBackupAt: null });
+    const unconfiguredSync = {
+      markPending: jest.fn().mockResolvedValue(undefined),
+      sync: jest.fn().mockResolvedValue(null),
+      getConfig: jest.fn().mockResolvedValue(null),
+    };
+    const unconfiguredBackup = {
+      getSettings: jest
+        .fn()
+        .mockResolvedValue({ backupFrequency: "off" as const, lastBackupAt: null }),
+    };
     const unconfigured = new VaultBackupScheduler(
-      { markPending: jest.fn(), sync: jest.fn(), getConfig: async () => null } as any,
-      { getSettings: async () => ({ backupFrequency: "off", lastBackupAt: null }) } as any,
+      unconfiguredSync as unknown as VaultBackupSyncService,
+      unconfiguredBackup as unknown as VaultBackupService,
       { isLocalAccount: async () => true } as any,
       new FakeAdapter(),
       { info: jest.fn(), error: jest.fn() } as any,

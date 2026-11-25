@@ -127,7 +127,7 @@ export class PhishingDetectionSettingsService implements PhishingDetectionSettin
         );
         return this.stateProvider.getUserState$(ENABLE_PHISHING_DETECTION, account.id);
       }),
-      map((enabled) => enabled ?? true),
+      map((enabled) => enabled ?? false),
     );
   }
 

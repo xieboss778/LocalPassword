@@ -117,7 +117,7 @@ describe("S3Client", () => {
   });
 
   it("deletes without a body", async () => {
-    const { client, requests } = clientWith(new Response("", { status: 204 }));
+    const { client, requests } = clientWith(new Response(null, { status: 204 }));
 
     await client.deleteObject("user-a/snapshots/old.json");
 
