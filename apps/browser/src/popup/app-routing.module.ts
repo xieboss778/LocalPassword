@@ -14,6 +14,10 @@ import {
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
+import {
+  CreateLocalVaultComponent,
+  LocalVaultStartComponent,
+} from "@bitwarden/angular/auth/local-vault";
 import { LoginViaWebAuthnComponent } from "@bitwarden/angular/auth/login-via-webauthn/login-via-webauthn.component";
 import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
 import { SetInitialPasswordComponent } from "@bitwarden/angular/auth/password-management/set-initial-password/set-initial-password.component";
@@ -35,9 +39,7 @@ import {
   DomainIcon,
 } from "@bitwarden/assets/svg";
 import {
-  LoginComponent,
   LoginDecryptionOptionsComponent,
-  LoginSecondaryContentComponent,
   LoginViaAuthRequestComponent,
   NewDeviceVerificationComponent,
   PasswordHintComponent,
@@ -67,7 +69,6 @@ import { ExtensionDeviceManagementComponent } from "../auth/popup/settings/exten
 import { AutofillToolsComponent } from "../autofill/popup/autofill-tools/autofill-tools.component";
 import { autofillToolsDevFlagGuard } from "../autofill/popup/autofill-tools/autofill-tools.guard";
 import { DefaultPasswordManagerPromptComponent } from "../autofill/popup/default-password-manager/default-password-manager-prompt.component";
-import { DefaultPasswordManagerPromptGuard } from "../autofill/popup/default-password-manager/default-password-manager-prompt.guard";
 import { Fido2Component } from "../autofill/popup/fido2/fido2.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
 import { BlockedDomainsComponent } from "../autofill/popup/settings/blocked-domains.component";
@@ -116,7 +117,6 @@ import {
   hasAtRiskPasswords,
 } from "../vault/popup/guards/at-risk-passwords.guard";
 import { clearVaultStateGuard } from "../vault/popup/guards/clear-vault-state.guard";
-import { IntroCarouselGuard } from "../vault/popup/guards/intro-carousel.guard";
 import { restoreVaultScopeGuard } from "../vault/popup/guards/restore-vault-scope.guard";
 import { restrictedCipherGuard } from "../vault/popup/guards/restricted-cipher.guard";
 import { AdminSettingsComponent } from "../vault/popup/settings/admin-settings.component";
@@ -532,33 +532,34 @@ const routes: Routes = [
         } satisfies RouteDataProperties,
       },
       {
+        // LocalPassword: a vault is created on this device, so the login screen becomes the start
+        // screen. The route keeps its name so the existing guards and redirects keep working.
         path: AuthRoute.Login,
-        canActivate: [
-          unauthGuardFn(unauthRouteOverrides),
-          DefaultPasswordManagerPromptGuard,
-          IntroCarouselGuard,
-        ],
+        canActivate: [unauthGuardFn(unauthRouteOverrides)],
         data: {
           pageTitle: {
-            key: "loginPageEmailEntryScreenTitle",
+            key: "localVaultStartTitle",
           },
           elevation: 1,
-          showAcctSwitcher: true,
           hidePageIcon: true,
           contentVerticalPadding: "compact",
           footerVerticalPadding: "compact",
           heroTextAlignment: "left",
-          secondaryContentLocation: "footer",
         } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
-        children: [
-          { path: "", component: LoginComponent },
-          { path: "", component: LoginSecondaryContentComponent, outlet: "secondary" },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent,
-            outlet: "environment-selector",
+        children: [{ path: "", component: LocalVaultStartComponent }],
+      },
+      {
+        path: AuthRoute.CreateLocalVault,
+        canActivate: [unauthGuardFn(unauthRouteOverrides)],
+        data: {
+          pageTitle: {
+            key: "createLocalVault",
           },
-        ],
+          elevation: 1,
+          showBackButton: true,
+          hidePageIcon: true,
+        } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
+        children: [{ path: "", component: CreateLocalVaultComponent }],
       },
       {
         path: AuthRoute.LoginWithPasskey,

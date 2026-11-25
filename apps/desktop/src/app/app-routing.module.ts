@@ -13,6 +13,10 @@ import {
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
+import {
+  CreateLocalVaultComponent,
+  LocalVaultStartComponent,
+} from "@bitwarden/angular/auth/local-vault";
 import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
 import { SetInitialPasswordComponent } from "@bitwarden/angular/auth/password-management/set-initial-password/set-initial-password.component";
 import {
@@ -34,8 +38,6 @@ import {
   DomainIcon,
 } from "@bitwarden/assets/svg";
 import {
-  LoginComponent,
-  LoginSecondaryContentComponent,
   LoginViaAuthRequestComponent,
   PasswordHintComponent,
   LoginDecryptionOptionsComponent,
@@ -214,28 +216,35 @@ export const routes: Routes = [
         ],
       },
       {
+        // LocalPassword: a vault is created on this device, so the login screen becomes the start
+        // screen. The route keeps its name so the existing guards and redirects keep working.
         path: AuthRoute.Login,
         canActivate: [maxAccountsGuardFn()],
         data: {
           pageTitle: {
-            key: "loginPageEmailEntryScreenTitle",
+            key: "localVaultStartTitle",
           },
           pageIcon: VaultIcon,
         },
         children: [
-          { path: "", component: LoginComponent },
-          { path: "", component: LoginSecondaryContentComponent, outlet: "secondary" },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent,
-            outlet: "environment-selector",
-          },
+          { path: "", component: LocalVaultStartComponent },
           {
             path: "",
             component: AccountSwitcherV2Component,
             outlet: "header-actions",
           },
         ],
+      },
+      {
+        path: AuthRoute.CreateLocalVault,
+        canActivate: [maxAccountsGuardFn()],
+        data: {
+          pageTitle: {
+            key: "createLocalVault",
+          },
+          pageIcon: VaultIcon,
+        },
+        children: [{ path: "", component: CreateLocalVaultComponent }],
       },
       {
         path: AuthRoute.LoginInitiated,
