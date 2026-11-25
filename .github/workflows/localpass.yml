@@ -118,12 +118,12 @@ jobs:
         run: |
           cd apps/browser/build
           zip -qr ../dist-chrome.zip .
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: localpass-chrome
           path: apps/browser/build
           if-no-files-found: error
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: localpass-chrome-zip
           path: apps/browser/dist-chrome.zip
@@ -151,7 +151,7 @@ jobs:
       - name: 打包（未签名）
         working-directory: apps/desktop
         run: npx electron-builder --win --x64 -p never
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: localpass-windows
           path: |
@@ -182,7 +182,7 @@ jobs:
       - name: 打包（未签名）
         working-directory: apps/desktop
         run: npx electron-builder --mac --arm64 -p never
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: localpass-macos
           path: apps/desktop/dist/*.dmg
