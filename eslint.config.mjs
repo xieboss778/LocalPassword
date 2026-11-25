@@ -718,6 +718,24 @@ export default tseslint.config(
     },
   },
   {
+    files: ["libs/local-vault/src/**/*.ts"],
+    rules: {
+      "no-restricted-imports": buildNoRestrictedImports([
+        // Local vault core is platform agnostic: no Angular, no UI, no client code.
+        // Only common, state, shared, key-management, platform and serialization are allowed.
+        "@bitwarden/admin-console",
+        "@bitwarden/angular",
+        "@bitwarden/billing",
+        "@bitwarden/components",
+        "@bitwarden/importer",
+        "@bitwarden/key-management-ui",
+        "@bitwarden/tools",
+        "@bitwarden/ui",
+        "@bitwarden/vault",
+      ]),
+    },
+  },
+  {
     files: ["libs/admin-console/src/**/*.ts"],
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
