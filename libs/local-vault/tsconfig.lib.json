@@ -4,11 +4,6 @@
     "outDir": "../../dist/libs/local-vault",
     "types": []
   },
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ],
-  "include": [
-    "src/**/*.ts"
-  ]
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
+  "include": ["src/**/*.ts"]
 }

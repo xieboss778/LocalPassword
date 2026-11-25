@@ -19,9 +19,7 @@ describe("buildLocalAccessToken", () => {
   });
 
   it("marks the account as premium and verified", () => {
-    const payload = payloadOf(
-      buildLocalAccessToken({ userId, email: "a@b.c", name: "Owner" }),
-    );
+    const payload = payloadOf(buildLocalAccessToken({ userId, email: "a@b.c", name: "Owner" }));
     expect(payload.premium).toBe(true);
     expect(payload.email_verified).toBe(true);
     expect(payload.email).toBe("a@b.c");
