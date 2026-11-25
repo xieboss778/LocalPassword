@@ -18,6 +18,7 @@ function ic(name, size) {
     alert: '<path d="M12 4l9 16H3l9-16z"/><path d="M12 10v5M12 18h.01"/>',
     wifi: '<path d="M3 9a15 15 0 0 1 18 0M6 13a10 10 0 0 1 12 0M9 17a5 5 0 0 1 6 0M12 20h.01"/>',
     gen: '<path d="M5 12h14M12 5l7 7-7 7"/>',
+    check: '<path d="M20 6L9 17l-5-5"/>',
   };
   return (
     '<svg class="icon" viewBox="0 0 24 24" width="' + s + '" height="' + s +
@@ -73,7 +74,9 @@ function pGroup(rows) { return '<div class="group">' + rows + "</div>"; }
 function pTitle(t) { return '<div class="gtitle">' + t + "</div>"; }
 
 function row(o) {
-  var attrs = ' class="row"' + (o.go ? ' data-go="' + o.go + '"' : "");
+  var attrs = ' class="row' + (o.copy ? " copyable" : "") + '"' +
+    (o.copy ? ' data-copy="' + (o.secret || o.value || "") + '" data-copy-label="' + o.k + '"' : "") +
+    (!o.copy && o.go ? ' data-go="' + o.go + '"' : "");
   var left = o.emoji ? '<span class="emoji">' + o.emoji + "</span>" : o.icon ? '<span class="muted">' + ic(o.icon) + "</span>" : "";
   var main = '<span class="k">' + o.k + (o.sub ? '<span class="sub">' + o.sub + "</span>" : "") + "</span>";
   var right = "";
@@ -81,7 +84,8 @@ function row(o) {
   if (o.badge) right += '<span class="badge">' + o.badge + "</span>";
   if (o.toggle) right += '<span class="switch' + (o.toggle === "off" ? " off" : "") + '"></span>';
   if (o.dot) right += '<span class="dot' + (o.dot === "off" ? " amber" : "") + '"></span>';
-  if (o.chev !== false && !o.toggle && !o.dot) right += '<span class="chev">' + ic("chev", 14) + "</span>";
+  if (o.copy) right = '<span class="copy-hint">' + ic("copy", 13) + "</span>" + right;
+  if (o.chev !== false && !o.toggle && !o.dot && !o.copy) right += '<span class="chev">' + ic("chev", 14) + "</span>";
   return "<div" + attrs + ">" + left + main + right + "</div>";
 }
 
@@ -552,17 +556,23 @@ function star(active) {
   return '<span class="star' + (active ? " on" : "") + '">' + (active ? "★" : "☆") + "</span>";
 }
 function copyBtn() {
-  return '<span class="v" style="color:#2f6bff">' + ic("copy", 14) + "</span>";
+  return '<span class="copy-hint">' + ic("copy", 13) + "</span>";
 }
 function uriRow(u, match) {
-  return '<div class="row"><span class="k"><span class="mono" style="font-size:12px">' + u + "</span>" +
+  return '<div class="row" data-copy="' + u + '" data-copy-label="网址"><span class="k">' +
+    '<span class="mono" style="font-size:12px">' + u + "</span>" +
     '<span class="sub">' + (match || "默认匹配") + "</span></span>" + copyBtn() + "</div>";
 }
 function kvRow(k, v, opts) {
   opts = opts || {};
-  return '<div class="row"><span class="k">' + k + "</span>" +
+  var copyable = !!opts.copy;
+  var attrs = copyable
+    ? ' data-copy="' + (opts.secret || v) + '" data-copy-label="' + k + '"'
+    : (opts.go ? ' data-go="' + opts.go + '"' : "");
+  return '<div class="row' + (copyable ? " copyable" : "") + '"' + attrs + ">" +
+    '<span class="k">' + k + "</span>" +
     '<span class="v' + (opts.mono ? " mono" : "") + (opts.brand ? " brand" : "") + '">' + v + "</span>" +
-    (opts.copy ? copyBtn() : "") + (opts.chev ? '<span class="chev">' + ic("chev", 14) + "</span>" : "") + "</div>";
+    (copyable ? copyBtn() : "") + (opts.chev ? '<span class="chev">' + ic("chev", 14) + "</span>" : "") + "</div>";
 }
 function inputRow(label, value, opts) {
   opts = opts || {};
@@ -577,14 +587,13 @@ DESK["vault-desktop"] = function () {
     '<div class="hd"><div><h2>GitHub</h2><div class="meta">github.com · 登录 · 开发</div></div>' +
     '<div class="d-toolbar">' +
       '<button class="btn secondary sm" aria-label="收藏">' + star(true) + "</button>" +
-      '<button class="btn secondary sm" data-go="d-form-login">' + ic("key", 13) + " 编辑</button>" +
-      '<button class="btn secondary sm" data-go="d-item-delete">' + ic("alert", 13) + " 删除</button>" +
-      '<button class="btn primary sm">' + ic("copy", 13) + ' 复制密码<span class="kbd">⌘C</span></button></div></div>' +
+      '<button class="btn primary sm" data-go="d-form-login">' + ic("key", 13) + " 编辑</button>" +
+      '<button class="btn danger sm" data-go="d-item-delete">' + ic("alert", 13) + " 删除</button></div></div>" +
     '<div class="body">' +
     '<div class="gtitle">凭据</div><div class="group">' +
       kvRow("用户名", "bossxie", { mono: true, copy: true }) +
-      kvRow("密码", "••••••••••••", { mono: true, copy: true }) +
-      kvRow("动态口令", "742 913 · 18s", { mono: true, brand: true, chev: true }) +
+      kvRow("密码", "••••••••••••", { mono: true, copy: true, secret: "hunter2-GitHub-2026" }) +
+      kvRow("动态口令", "742 913 · 18s", { mono: true, brand: true, copy: true, secret: "742913" }) +
     "</div>" +
     '<div class="gtitle">Passkey</div><div class="group">' +
       kvRow("webauthn.me", "2026-11-02 登记", { chev: true }) +
@@ -593,7 +602,7 @@ DESK["vault-desktop"] = function () {
       uriRow("github.com") + uriRow("gist.github.com", "精确匹配") +
     "</div>" +
     '<div class="gtitle">自定义字段（2）</div><div class="group">' +
-      kvRow("恢复码", "••••••••", { mono: true, copy: true }) +
+      kvRow("恢复码", "••••••••", { mono: true, copy: true, secret: "A1B2-C3D4-E5F6" }) +
       kvRow("备用邮箱", "backup@xie.dev", { copy: true }) +
     "</div>" +
     '<div class="gtitle">附加项</div><div class="group">' +
@@ -648,18 +657,18 @@ POPUP.item = function () {
       '<div class="p-item-main"><div class="p-item-name">GitHub</div>' +
       '<div class="p-item-sub">修改于 2026-11-26 14:02</div></div>' + star(true) + "</div>" +
     pTitle("凭据") + pGroup(
-      row({ k: "用户名", value: "bossxie", mono: true, icon: "copy", chev: false }) +
-      row({ k: "密码", value: "••••••••••••", mono: true, icon: "copy", chev: false }) +
-      row({ k: "动态口令", value: "742 913 · 18s", mono: true, brand: true, icon: "qr", go: "qr" })
+      row({ k: "用户名", value: "bossxie", mono: true, copy: true }) +
+      row({ k: "密码", value: "••••••••••••", mono: true, copy: true, secret: "hunter2-GitHub-2026" }) +
+      row({ k: "动态口令", value: "742 913 · 18s", mono: true, brand: true, copy: true, secret: "742913" })
     ) +
     pTitle("自动填充") + pGroup(
-      row({ k: "github.com", sub: "默认匹配", value: "", chev: false }) +
-      row({ k: "gist.github.com", sub: "精确匹配", value: "", chev: false })
+      row({ k: "github.com", sub: "默认匹配", value: "", copy: true, secret: "github.com" }) +
+      row({ k: "gist.github.com", sub: "精确匹配", value: "", copy: true, secret: "gist.github.com" })
     ) +
     pTitle("Passkey") + pGroup(row({ emoji: "🔑", k: "webauthn.me", sub: "2026-11-02 登记", go: "item-passkey" })) +
     pTitle("自定义字段") + pGroup(
-      row({ k: "恢复码", value: "••••••••", mono: true, icon: "copy", chev: false }) +
-      row({ k: "备用邮箱", value: "backup@xie.dev", icon: "copy", chev: false })
+      row({ k: "恢复码", value: "••••••••", mono: true, copy: true, secret: "A1B2-C3D4-E5F6" }) +
+      row({ k: "备用邮箱", value: "backup@xie.dev", copy: true })
     ) +
     pTitle("附加项") + pGroup(
       row({ k: "备注", sub: "主力开发账号；开了 2FA", chev: false }) +
@@ -716,8 +725,7 @@ POPUP.trash = function () {
 DESK["d-item-delete"] = function () {
   var main =
     '<div class="hd"><div><h2>GitHub</h2><div class="meta">github.com · 登录</div></div>' +
-    '<div class="d-toolbar"><button class="btn secondary sm" data-go="d-form-login">编辑</button>' +
-    '<button class="btn primary sm">复制密码</button></div></div>' +
+    '<div class="d-toolbar"><button class="btn secondary sm" data-go="d-form-login">编辑</button></div></div>' +
     '<div class="body"><div class="gtitle">凭据</div><div class="group">' +
       kvRow("用户名", "bossxie", { mono: true, copy: true }) +
       kvRow("密码", "••••••••••••", { mono: true, copy: true }) +
@@ -972,8 +980,8 @@ function renderFrame() {
     ? (POPUP[state.screen] || POPUP.setup)()
     : (DESK[state.screen] || DESK.setup)();
   var frame = state.device === "popup"
-    ? '<div class="popup">' + body + "</div>"
-    : '<div class="desk">' + body + "</div>";
+    ? '<div class="popup">' + body + '<div class="toast" id="toast"></div></div>'
+    : '<div class="desk">' + body + '<div class="toast" id="toast"></div></div>';
   document.getElementById("frame").innerHTML = frame;
 
   var url = new URL(location.href);
@@ -990,8 +998,36 @@ function render() {
   });
 }
 
+var toastTimer = null;
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  if (!t) return;
+  t.innerHTML = ic("check", 14) + "<span>" + msg + "</span>";
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove("show"); }, 1700);
+}
+
+function copyRow(el) {
+  var value = el.getAttribute("data-copy") || "";
+  var label = el.getAttribute("data-copy-label") || "内容";
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value);
+  } catch (e) { /* 原型：剪贴板不可用也照常给反馈 */ }
+  var hint = el.querySelector(".copy-hint");
+  if (hint) hint.innerHTML = ic("check", 13);
+  el.classList.add("copied");
+  showToast(label + " 已复制");
+  setTimeout(function () {
+    el.classList.remove("copied");
+    if (hint) hint.innerHTML = ic("copy", 13);
+  }, 1300);
+}
+
 /* navigation: any element with data-go switches screen on the current device */
 document.addEventListener("click", function (e) {
+  var copyTarget = e.target.closest("[data-copy]");
+  if (copyTarget) { copyRow(copyTarget); return; }
   var nav = e.target.closest("[data-go]");
   if (nav) {
     var target = nav.dataset.go;
