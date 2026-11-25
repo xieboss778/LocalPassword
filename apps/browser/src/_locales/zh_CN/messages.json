@@ -9955,5 +9955,8 @@
   },
   "createLocalVaultNote": {
     "message": "你在这里输入的密码是这把保险库唯一的钥匙。忘了它，就没人能打开——进去以后记得开手动备份。"
+  },
+  "unlockSubtitle": {
+    "message": "保险库已锁定 —— 数据一直在这台机器上"
   }
 }

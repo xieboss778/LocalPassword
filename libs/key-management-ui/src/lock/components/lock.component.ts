@@ -16,6 +16,7 @@ import {
 } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
+import { LpPageHeaderComponent } from "@localpass/angular/local-ui";
 import { InternalPolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
 import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -101,6 +102,7 @@ const BIOMETRIC_UNLOCK_TEMPORARY_UNAVAILABLE_STATUSES = [
   host: { "data-testid": "lock-screen" },
   imports: [
     CommonModule,
+    LpPageHeaderComponent,
     JslibModule,
     ReactiveFormsModule,
     ButtonModule,

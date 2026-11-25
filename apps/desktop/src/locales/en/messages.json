@@ -8410,5 +8410,8 @@
   },
   "createLocalVaultNote": {
     "message": "The password you type here is the only key to this vault. Forget it and nothing can open the vault — enable manual backups once you are in."
+  },
+  "unlockSubtitle": {
+    "message": "Your vault is locked — nothing left the machine"
   }
 }
