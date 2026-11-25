@@ -12,16 +12,16 @@
 
 按计划自带的工作量估算（合计 37 人日）加权计算，**整体约 19%**。
 
-| 阶段 | 计划工作量 | 实际状态 | 估算完成度 |
-|---|---:|---|---:|
-| 0 基线 / 改名 / 阻断项 | 3–4 天 | 基本完成，缺一次性验证记录 | ~95% |
-| 1 代码瘦身 | 2–3 天 | 主体完成，残留 beta/多浏览器产物 | ~85% |
-| 2 本地保险库核心 + 扩展接线 | 6–8 天 | 只有 3 个纯逻辑文件 + 1 个状态服务，零消费者 | ~12% |
-| 3 桌面端接入 | 6–8 天 | 未开始（计划内"不做 PRF"除外） | 0% |
-| 4 R2 同步 + 定时备份 | 5–7 天 | 仅 SigV4 签名与快照合并算法（含测试） | ~15% |
-| 5 Passkey / 安全密钥 | 3–5 天 | 未开始 | 0% |
-| 6 TOTP 二维码 | 3–4 天 | 未开始 | 0% |
-| 7 打包发布 | 3–4 天 | CI 能出未签名产物，发布流程未定 | ~10% |
+| 阶段                        | 计划工作量 | 实际状态                                     | 估算完成度 |
+| --------------------------- | ---------: | -------------------------------------------- | ---------: |
+| 0 基线 / 改名 / 阻断项      |     3–4 天 | 基本完成，缺一次性验证记录                   |       ~95% |
+| 1 代码瘦身                  |     2–3 天 | 主体完成，残留 beta/多浏览器产物             |       ~85% |
+| 2 本地保险库核心 + 扩展接线 |     6–8 天 | 只有 3 个纯逻辑文件 + 1 个状态服务，零消费者 |       ~12% |
+| 3 桌面端接入                |     6–8 天 | 未开始（计划内"不做 PRF"除外）               |         0% |
+| 4 R2 同步 + 定时备份        |     5–7 天 | 仅 SigV4 签名与快照合并算法（含测试）        |       ~15% |
+| 5 Passkey / 安全密钥        |     3–5 天 | 未开始                                       |         0% |
+| 6 TOTP 二维码               |     3–4 天 | 未开始                                       |         0% |
+| 7 打包发布                  |     3–4 天 | CI 能出未签名产物，发布流程未定              |       ~10% |
 
 ## 关键判断：`libs/local-vault` 是死代码
 
@@ -30,12 +30,12 @@
 
 现有全部内容（706 行，含 4 个 spec / 22 个 `it`）：
 
-| 文件 | 行数 | 性质 |
-|---|---:|---|
-| `src/account/local-account.service.ts` | 40 | 本地账户标记读取（`isLocalAccount$`），无调用者 |
-| `src/network/gate-policy.ts` | 61 | 纯函数式放行策略，**没有** `ApiService` 子类、没有挂载到两端 |
-| `src/s3/sigv4.ts` | 187 | 手写 SigV4 签名（阶段 4 的地基） |
-| `src/sync/snapshot-merge.ts` | 160 | 快照按 `revisionDate` 合并（阶段 4 的地基） |
+| 文件                                   | 行数 | 性质                                                         |
+| -------------------------------------- | ---: | ------------------------------------------------------------ |
+| `src/account/local-account.service.ts` |   40 | 本地账户标记读取（`isLocalAccount$`），无调用者              |
+| `src/network/gate-policy.ts`           |   61 | 纯函数式放行策略，**没有** `ApiService` 子类、没有挂载到两端 |
+| `src/s3/sigv4.ts`                      |  187 | 手写 SigV4 签名（阶段 4 的地基）                             |
+| `src/sync/snapshot-merge.ts`           |  160 | 快照按 `revisionDate` 合并（阶段 4 的地基）                  |
 
 计划要求的 `create-local-account.service.ts`、`local-cipher.service.ts`、`network-gate.service.ts`（`LocalPasswordApiService`）、`sync/s3-client.ts`、`sync/vault-backup-sync.service.ts`、`sync/vault-backup-scheduler.service.ts`：**全部不存在**。
 
@@ -43,41 +43,41 @@
 
 ### 阶段 0
 
-| 计划项 | 状态 | 证据 |
-|---|---|---|
-| 关闭桌面自动更新 | ✅ | `apps/desktop/src/main.ts:449-451` 短路注释、`updaterMain.init()` 已不再调用；`electron-builder.json` 的 `publish` 段为 0 处 |
-| 扩展改名 + 固定扩展 ID | ✅ | `manifest.v3.json` `short_name/author/homepage_url` 已改；`key` 在 232 行，**实算 SHA256→ID = `gmobddgobjdhbjhedhgaeekhgchkoncm`，与文档一致** |
-| 桌面改名 | ✅ | `productName: LocalPassword`、`appId: com.localpassword.desktop`、`extraMetadata.name: localpassword` |
-| 文案批量替换 | ⚠️ 部分 | 语言包已改；`apps/desktop/electron-builder.json:166` 仍是 `publisherDisplayName: "Bitwarden Inc"`，`beta` 配置整份仍是 Bitwarden |
-| 六个扩展侧一次性验证 | ❌ 无记录 | `docs/` 下没有验证结论；6 项里 2 项已实质完成（固定 ID、请求拦截策略雏形），4 项（SDK V1 密钥状态、PRF 状态不被清、RP ID=扩展 ID 的 WebAuthn、`chrome.storage.local` 容量）无证据 |
-| 四个桌面侧一次性验证 | ❌ 无记录 | 同上 |
+| 计划项                 | 状态      | 证据                                                                                                                                                                              |
+| ---------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 关闭桌面自动更新       | ✅        | `apps/desktop/src/main.ts:449-451` 短路注释、`updaterMain.init()` 已不再调用；`electron-builder.json` 的 `publish` 段为 0 处                                                      |
+| 扩展改名 + 固定扩展 ID | ✅        | `manifest.v3.json` `short_name/author/homepage_url` 已改；`key` 在 232 行，**实算 SHA256→ID = `gmobddgobjdhbjhedhgaeekhgchkoncm`，与文档一致**                                    |
+| 桌面改名               | ✅        | `productName: LocalPassword`、`appId: com.localpassword.desktop`、`extraMetadata.name: localpassword`                                                                             |
+| 文案批量替换           | ⚠️ 部分   | 语言包已改；`apps/desktop/electron-builder.json:166` 仍是 `publisherDisplayName: "Bitwarden Inc"`，`beta` 配置整份仍是 Bitwarden                                                  |
+| 六个扩展侧一次性验证   | ❌ 无记录 | `docs/` 下没有验证结论；6 项里 2 项已实质完成（固定 ID、请求拦截策略雏形），4 项（SDK V1 密钥状态、PRF 状态不被清、RP ID=扩展 ID 的 WebAuthn、`chrome.storage.local` 容量）无证据 |
+| 四个桌面侧一次性验证   | ❌ 无记录 | 同上                                                                                                                                                                              |
 
 ### 阶段 1
 
-| 计划项 | 状态 | 证据 |
-|---|---|---|
-| 删 `apps/web` / `apps/cli` / `bitwarden_license` | ✅ | `apps/` 只剩 `browser` `desktop`；`libs/` 无企业库 |
-| 语言包只留 en + zh_CN | ✅ | 两个 locales 目录各只有 `en` `zh_CN` |
-| 删无消费者库 | ✅ | 已删 `pam/billing/dirt-card`；`pricing/subscription/organization-invite-link` 有消费者，按文档保留 |
-| 清理企业版构建脚本 | ⚠️ 部分 | `dist:bit*` 已删；但 `apps/desktop/package.json:77,84` 仍有 `pack:*:beta`，`electron-builder.beta.json`、`beta-release.json` 仍在 |
-| 只留 Chrome MV3 | ❌ 未做 | `apps/browser/package.json` 仍有 `build:firefox/edge/opera/safari`、`dist:*`、`package:dev:chrome`；`project.json` 仍有 edge 目标 |
-| 瘦身护栏（每步全量 lint/types/test） | ❌ | `.github/workflows/localpassword.yml` 只有 3 个构建 job，**没有 lint / test:types / jest / lint:dep-ownership** |
-| 删除清单文档 | ✅ | `docs/removed-from-upstream.md` 已建立并记录 |
+| 计划项                                           | 状态    | 证据                                                                                                                              |
+| ------------------------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 删 `apps/web` / `apps/cli` / `bitwarden_license` | ✅      | `apps/` 只剩 `browser` `desktop`；`libs/` 无企业库                                                                                |
+| 语言包只留 en + zh_CN                            | ✅      | 两个 locales 目录各只有 `en` `zh_CN`                                                                                              |
+| 删无消费者库                                     | ✅      | 已删 `pam/billing/dirt-card`；`pricing/subscription/organization-invite-link` 有消费者，按文档保留                                |
+| 清理企业版构建脚本                               | ⚠️ 部分 | `dist:bit*` 已删；但 `apps/desktop/package.json:77,84` 仍有 `pack:*:beta`，`electron-builder.beta.json`、`beta-release.json` 仍在 |
+| 只留 Chrome MV3                                  | ❌ 未做 | `apps/browser/package.json` 仍有 `build:firefox/edge/opera/safari`、`dist:*`、`package:dev:chrome`；`project.json` 仍有 edge 目标 |
+| 瘦身护栏（每步全量 lint/types/test）             | ❌      | `.github/workflows/localpassword.yml` 只有 3 个构建 job，**没有 lint / test:types / jest / lint:dep-ownership**                   |
+| 删除清单文档                                     | ✅      | `docs/removed-from-upstream.md` 已建立并记录                                                                                      |
 
 ### 阶段 2（本地保险库核心）
 
-| 计划项 | 状态 | 证据 |
-|---|---|---|
-| 状态键 + `LocalAccountService` | ✅ | `libs/state/src/core/state-definitions.ts:311-313`（`localVault/localVaultSync/localVaultBackup`）、`local-account.service.ts` |
-| `create-local-account.service.ts`（写入登录后状态、哨兵环境、自签令牌、密钥状态、`setHasPremium`） | ❌ | 文件不存在；`setHasPremium` 全仓库仅上游登录流程在用（`login.strategy.ts:238`） |
-| `local-cipher.service.ts` | ❌ | 不存在 |
-| `cipher.service.ts` 7 处本地分支 | ❌ | 文件里 `local` 命中的全是上游 `localData`（自动填充本地字段），无本地写入分支 |
-| folder / `default-sync` / `import.service` 本地分支 | ❌ | 三个文件里 0 处本地分支 |
-| 网络闸门挂载到两端 `ApiService` | ❌ | `main.background.ts`、两端 `services.module.ts` 无任何 `local-vault` 引用 |
-| 关掉三个默认联网项 | ❌ | 钓鱼检测默认仍开（`phishing-detection-settings.service.ts:26` `?? true`）、网站图标默认仍开（`domain-settings.service.ts:55` `?? true`）、`default-cipher-risk.service.ts:63` `checkExposed = true` |
-| 登录页改起始页 / 创建向导 | ❌ | `apps/browser/src/popup/app-routing.module.ts:535` 仍是上游 `AuthRoute.Login` |
-| PIN 连错不登出 | ❌ | `libs/key-management-ui/src/lock/components/lock.component.ts`（`tryPin`）第 5 次仍 `logoutService.logout` |
-| 登出二次确认 / 隐藏 Send / 去掉强制同步 / 本地改主密码 | ❌ | 四处均未改动 |
+| 计划项                                                                                             | 状态 | 证据                                                                                                                                                                                                |
+| -------------------------------------------------------------------------------------------------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 状态键 + `LocalAccountService`                                                                     | ✅   | `libs/state/src/core/state-definitions.ts:311-313`（`localVault/localVaultSync/localVaultBackup`）、`local-account.service.ts`                                                                      |
+| `create-local-account.service.ts`（写入登录后状态、哨兵环境、自签令牌、密钥状态、`setHasPremium`） | ❌   | 文件不存在；`setHasPremium` 全仓库仅上游登录流程在用（`login.strategy.ts:238`）                                                                                                                     |
+| `local-cipher.service.ts`                                                                          | ❌   | 不存在                                                                                                                                                                                              |
+| `cipher.service.ts` 7 处本地分支                                                                   | ❌   | 文件里 `local` 命中的全是上游 `localData`（自动填充本地字段），无本地写入分支                                                                                                                       |
+| folder / `default-sync` / `import.service` 本地分支                                                | ❌   | 三个文件里 0 处本地分支                                                                                                                                                                             |
+| 网络闸门挂载到两端 `ApiService`                                                                    | ❌   | `main.background.ts`、两端 `services.module.ts` 无任何 `local-vault` 引用                                                                                                                           |
+| 关掉三个默认联网项                                                                                 | ❌   | 钓鱼检测默认仍开（`phishing-detection-settings.service.ts:26` `?? true`）、网站图标默认仍开（`domain-settings.service.ts:55` `?? true`）、`default-cipher-risk.service.ts:63` `checkExposed = true` |
+| 登录页改起始页 / 创建向导                                                                          | ❌   | `apps/browser/src/popup/app-routing.module.ts:535` 仍是上游 `AuthRoute.Login`                                                                                                                       |
+| PIN 连错不登出                                                                                     | ❌   | `libs/key-management-ui/src/lock/components/lock.component.ts`（`tryPin`）第 5 次仍 `logoutService.logout`                                                                                          |
+| 登出二次确认 / 隐藏 Send / 去掉强制同步 / 本地改主密码                                             | ❌   | 四处均未改动                                                                                                                                                                                        |
 
 ### 阶段 3（桌面端）
 
@@ -105,17 +105,17 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 
 ## 你要的功能 → 现状
 
-| 你的需求 | 现状 | 判定 |
-|---|---|---|
-| 完全离线可用、不依赖任何服务器 | 仍需登录 Bitwarden 服务器才能进入保险库；离线分支未写 | ❌ |
-| 所有付费功能免费 | `setHasPremium(true)` 未在本地账户流程调用（该流程本身不存在） | ❌ |
-| Google 动态二维码：TOTP 导入 | 解析器、页面、入口全无 | ❌ |
-| Google 动态二维码：展示（生成二维码） | 组件不存在，`qrious` 未使用 | ❌ |
-| Passkey（网站登录） | 上游能力在，但写入仍走服务器 → 离线不可用 | ❌（上游有、未本地化） |
-| 安全密钥 / PRF 解锁 | 网页端实现已随 `apps/web` 删除，移植工作未开始 | ❌ |
-| 定时备份 | 无调度、无导出集成、无保留策略 | ❌ |
-| 可选 R2 / S3 同步（断网排队、联网补传） | 只有签名与合并两个纯函数 | ❌ |
-| 两端 `account.json` / 快照格式互通 | 无 `account.json` 生成与读取代码 | ❌ |
+| 你的需求                                | 现状                                                           | 判定                   |
+| --------------------------------------- | -------------------------------------------------------------- | ---------------------- |
+| 完全离线可用、不依赖任何服务器          | 仍需登录 Bitwarden 服务器才能进入保险库；离线分支未写          | ❌                     |
+| 所有付费功能免费                        | `setHasPremium(true)` 未在本地账户流程调用（该流程本身不存在） | ❌                     |
+| Google 动态二维码：TOTP 导入            | 解析器、页面、入口全无                                         | ❌                     |
+| Google 动态二维码：展示（生成二维码）   | 组件不存在，`qrious` 未使用                                    | ❌                     |
+| Passkey（网站登录）                     | 上游能力在，但写入仍走服务器 → 离线不可用                      | ❌（上游有、未本地化） |
+| 安全密钥 / PRF 解锁                     | 网页端实现已随 `apps/web` 删除，移植工作未开始                 | ❌                     |
+| 定时备份                                | 无调度、无导出集成、无保留策略                                 | ❌                     |
+| 可选 R2 / S3 同步（断网排队、联网补传） | 只有签名与合并两个纯函数                                       | ❌                     |
+| 两端 `account.json` / 快照格式互通      | 无 `account.json` 生成与读取代码                               | ❌                     |
 
 ## 与计划文档自述的偏差
 
@@ -131,16 +131,16 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 
 ## 2026-11-25 实施进展（覆盖上文结论）
 
-| 阶段 | 现在状态 | 主要证据 |
-|---|---|---|
-| 0 基线/改名/阻断项 | 完成 | 扩展 ID 由 manifest `key` 实算为 `gmobddgobjdhbjhedhgaeekhgchkoncm`；`updaterMain.init()` 不调用；`publish` 段已删 |
-| 1 瘦身 | 完成，另删 3 个依赖 `apps/web` 的 story 与其 mdx | `libs/auth/src/angular/input-password`、`libs/angular/.../registration-start`、`libs/vault/src/cipher-form` |
-| 2 本地保险库核心 | 完成（缺 PRF 相关） | `CreateLocalAccountService`、`DefaultLocalVaultWriter`（`CipherService` 9 处分支、`FolderApiService` 4 处、`fullSync`、`ImportService`）、`LocalPasswordApiService`、两端起始页与向导、PIN/登出/Send 护栏 |
-| 3 桌面端接入 | 阻断项完成；调度待接 | `com.localpassword.desktop` 主机名、`ssoCookieMain.init` 关闭、`data.json.bak` |
-| 4 R2 同步 + 定时备份 | 核心完成；设置页与两端接线待做 | `s3-client.ts`（SigV4/条件写/分页）、`vault-backup-sync.service.ts`（清单 412 重试合并）、`vault-backup.service.ts`（导出上传/保留）、`vault-backup-scheduler.service.ts`（15s 防抖 / 30min 检查 / 日周节奏） |
-| 5 Passkey / PRF | 未开始 | —— |
-| 6 TOTP 二维码 | 未开始 | —— |
-| 7 打包发布 | 部分（CI 出未签名产物） | `.github/workflows/localpassword.yml` |
+| 阶段                 | 现在状态                                         | 主要证据                                                                                                                                                                                                      |
+| -------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 基线/改名/阻断项   | 完成                                             | 扩展 ID 由 manifest `key` 实算为 `gmobddgobjdhbjhedhgaeekhgchkoncm`；`updaterMain.init()` 不调用；`publish` 段已删                                                                                            |
+| 1 瘦身               | 完成，另删 3 个依赖 `apps/web` 的 story 与其 mdx | `libs/auth/src/angular/input-password`、`libs/angular/.../registration-start`、`libs/vault/src/cipher-form`                                                                                                   |
+| 2 本地保险库核心     | 完成（缺 PRF 相关）                              | `CreateLocalAccountService`、`DefaultLocalVaultWriter`（`CipherService` 9 处分支、`FolderApiService` 4 处、`fullSync`、`ImportService`）、`LocalPasswordApiService`、两端起始页与向导、PIN/登出/Send 护栏     |
+| 3 桌面端接入         | 阻断项完成；调度待接                             | `com.localpassword.desktop` 主机名、`ssoCookieMain.init` 关闭、`data.json.bak`                                                                                                                                |
+| 4 R2 同步 + 定时备份 | 核心完成；设置页与两端接线待做                   | `s3-client.ts`（SigV4/条件写/分页）、`vault-backup-sync.service.ts`（清单 412 重试合并）、`vault-backup.service.ts`（导出上传/保留）、`vault-backup-scheduler.service.ts`（15s 防抖 / 30min 检查 / 日周节奏） |
+| 5 Passkey / PRF      | 未开始                                           | ——                                                                                                                                                                                                            |
+| 6 TOTP 二维码        | 未开始                                           | ——                                                                                                                                                                                                            |
+| 7 打包发布           | 部分（CI 出未签名产物）                          | `.github/workflows/localpassword.yml`                                                                                                                                                                         |
 
 **CI 实测（首次推送）**：`verify-static` 报 19 个严格类型错误与 3 个 web 依赖残留，`Chrome 扩展` webpack 编译报 8 个同源错误；
 已在 `09af6bf` 全部修正（`creationDate: Date`、`EncString` 双重断言、WebCrypto `ArrayBuffer` 视图、状态反序列化断言、组件相对路径、故事文件删除、导入测试路径改写）。

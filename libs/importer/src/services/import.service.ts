@@ -620,10 +620,7 @@ export class ImportService implements ImportServiceAbstraction {
    *
    * @returns true when the account is local and the import was handled here.
    */
-  private async importIntoLocalVault(
-    importResult: ImportResult,
-    userId: UserId,
-  ): Promise<boolean> {
+  private async importIntoLocalVault(importResult: ImportResult, userId: UserId): Promise<boolean> {
     if (!(await this.localVaultWriter.isLocalAccount(userId))) {
       return false;
     }
