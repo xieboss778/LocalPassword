@@ -304,6 +304,7 @@ import {
   CreateLocalAccountService,
   DefaultLocalVaultWriter,
   LocalAccountService,
+  LocalAccountObjectReader,
   LocalPasswordApiService,
   LocalVaultNetworkGate,
   TimerVaultSchedulerAdapter,
@@ -1265,6 +1266,7 @@ export default class MainBackground {
       this.unlockService,
       this.legacyCompatKeyService,
       this.localAccountService,
+      this.encryptService,
       this.logService,
     );
     this.localVaultWriter = new DefaultLocalVaultWriter(
@@ -1542,12 +1544,20 @@ export default class MainBackground {
 
     // Cloud backup for a local vault: the scheduler hears about writes through the writer hook and
     // uploads on a debounce, plus a periodic check while the worker is alive.
+    const localAccountObjectReader = new LocalAccountObjectReader(
+      this.accountService,
+      this.masterPasswordService,
+      this.accountCryptographicStateService,
+    );
     this.vaultBackupSyncService = new VaultBackupSyncService(
       this.localAccountService,
       this.stateProvider,
       this.keyService,
       this.encryptService,
       this.logService,
+      undefined,
+      undefined,
+      (userId) => localAccountObjectReader.read(userId),
     );
     this.vaultBackupService = new VaultBackupService(
       this.vaultBackupSyncService,

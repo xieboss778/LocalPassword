@@ -54,6 +54,7 @@ function createService() {
     { unlockWithMasterPassword } as any,
     { makeMasterKey, makeUserKey, makeKeyPair } as any,
     { markAsLocalAccount } as unknown as LocalAccountService,
+    { unwrapSymmetricKey: jest.fn() } as any,
     { info } as any,
   );
 
