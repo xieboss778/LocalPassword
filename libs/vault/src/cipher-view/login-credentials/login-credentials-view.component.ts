@@ -39,8 +39,8 @@ import {
 } from "@bitwarden/components";
 
 import { BitTotpCountdownComponent } from "../../components/totp-countdown/totp-countdown.component";
-import { TotpQrDialogComponent } from "./totp-qr-dialog.component";
 import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-cipher-card.component";
+import { TotpQrDialogComponent } from "./totp-qr-dialog.component";
 
 type RiskBadge = {
   labelKey: string;
