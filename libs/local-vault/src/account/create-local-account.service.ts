@@ -108,7 +108,7 @@ export class CreateLocalAccountService {
       name,
       email,
       emailVerified: true,
-      creationDate: new Date().toISOString(),
+      creationDate: new Date(),
     });
     await this.environmentService.seedUserEnvironment(userId);
     await this.accountService.switchAccount(userId);
@@ -123,7 +123,7 @@ export class CreateLocalAccountService {
       new MasterPasswordUnlockData(
         salt,
         kdfConfig,
-        masterKeyWrappedUserKey as MasterKeyWrappedUserKey,
+        masterKeyWrappedUserKey as unknown as MasterKeyWrappedUserKey,
       ),
       userId,
     );

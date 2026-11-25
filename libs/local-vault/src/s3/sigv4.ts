@@ -61,18 +61,20 @@ function toHex(buffer: ArrayBuffer | Uint8Array): string {
 }
 
 async function sha256Hex(data: Uint8Array): Promise<string> {
-  return toHex(await globalThis.crypto.subtle.digest("SHA-256", data));
+  // The WebCrypto typings want an ArrayBuffer; a Uint8Array view is a BufferSource at runtime.
+  const buffer = data as unknown as ArrayBuffer;
+  return toHex(await globalThis.crypto.subtle.digest("SHA-256", buffer));
 }
 
 async function hmacSha256(key: Uint8Array, data: string): Promise<Uint8Array> {
   const cryptoKey = await globalThis.crypto.subtle.importKey(
     "raw",
-    key,
+    key as unknown as ArrayBuffer,
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
   );
-  const payload = new TextEncoder().encode(data);
+  const payload = new TextEncoder().encode(data) as unknown as ArrayBuffer;
   const signature = await globalThis.crypto.subtle.sign("HMAC", cryptoKey, payload);
   return new Uint8Array(signature);
 }
@@ -136,7 +138,9 @@ export async function signCanonical(params: CanonicalSignParams): Promise<Canoni
     await sha256Hex(new TextEncoder().encode(canonicalRequest)),
   ].join("\n");
 
-  let signingKey = new TextEncoder().encode("AWS4" + params.credentials.secretAccessKey);
+  let signingKey: Uint8Array = new TextEncoder().encode(
+    "AWS4" + params.credentials.secretAccessKey,
+  );
   for (const part of [dateStamp, params.region, params.service, "aws4_request"]) {
     signingKey = await hmacSha256(signingKey, part);
   }

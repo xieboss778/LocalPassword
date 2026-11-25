@@ -80,7 +80,6 @@ export class LocalPasswordApiService extends ApiService {
     httpOperations: HttpOperations,
     /** Shared with the settings page so the allowlist can change at runtime. */
     private readonly gate: LocalVaultNetworkGate = new LocalVaultNetworkGate(),
-    customUserAgent: string = null,
   ) {
     super(
       tokenService,
@@ -93,7 +92,6 @@ export class LocalPasswordApiService extends ApiService {
       vaultTimeoutSettingsService,
       accountService,
       httpOperations,
-      customUserAgent,
     );
   }
 

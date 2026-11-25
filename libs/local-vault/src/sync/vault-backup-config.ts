@@ -52,7 +52,10 @@ export interface VaultBackupSettings {
 export const VAULT_BACKUP_CONFIG = new UserKeyDefinition<StoredVaultBackupConfig | null>(
   LOCAL_VAULT_SYNC_DISK,
   "backupConfig",
-  { deserializer: (value) => value as StoredVaultBackupConfig | null, clearOn: ["logout"] },
+  {
+    deserializer: (value) => value as unknown as StoredVaultBackupConfig | null,
+    clearOn: ["logout"],
+  },
 );
 
 export const VAULT_BACKUP_SYNC_STATE = new UserKeyDefinition<VaultBackupSyncState>(
@@ -60,7 +63,7 @@ export const VAULT_BACKUP_SYNC_STATE = new UserKeyDefinition<VaultBackupSyncStat
   "backupSyncState",
   {
     deserializer: (value) =>
-      (value as VaultBackupSyncState) ?? {
+      (value as unknown as VaultBackupSyncState) ?? {
         manifestEtag: null,
         lastSyncedAt: null,
         pending: false,
@@ -73,7 +76,7 @@ export const VAULT_BACKUP_SYNC_STATE = new UserKeyDefinition<VaultBackupSyncStat
 export const VAULT_BACKUP_BASE_SNAPSHOT = new UserKeyDefinition<Snapshot | null>(
   LOCAL_VAULT_SYNC_DISK,
   "baseSnapshot",
-  { deserializer: (value) => value as Snapshot | null, clearOn: ["logout"] },
+  { deserializer: (value) => value as unknown as Snapshot | null, clearOn: ["logout"] },
 );
 
 export const VAULT_BACKUP_SETTINGS = new UserKeyDefinition<VaultBackupSettings>(
@@ -81,7 +84,7 @@ export const VAULT_BACKUP_SETTINGS = new UserKeyDefinition<VaultBackupSettings>(
   "settings",
   {
     deserializer: (value) =>
-      (value as VaultBackupSettings) ?? {
+      (value as unknown as VaultBackupSettings) ?? {
         backupFrequency: "daily",
         backupRetention: 10,
         wrappedBackupPassword: null,

@@ -6,8 +6,7 @@ import { KeyService } from "@bitwarden/key-management";
 import { LogService } from "@bitwarden/logging";
 import { StateProvider } from "@bitwarden/state";
 
-import { BACKUP_PREFIX } from "./vault-backup-sync.service";
-import { VaultBackupSyncService } from "./vault-backup-sync.service";
+import { BACKUP_PREFIX, VaultBackupSyncService } from "./vault-backup-sync.service";
 import {
   DEFAULT_BACKUP_SETTINGS,
   VAULT_BACKUP_SETTINGS,

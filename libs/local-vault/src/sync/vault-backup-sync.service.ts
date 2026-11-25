@@ -1,15 +1,14 @@
 import { firstValueFrom } from "rxjs";
 
 import { UserId } from "@bitwarden/common/types/guid";
-import { EncString } from "@bitwarden/legacy-crypto";
-import { EncryptService } from "@bitwarden/legacy-crypto";
-import { KeyService } from "@bitwarden/key-management";
-import { LogService } from "@bitwarden/logging";
-import { StateProvider } from "@bitwarden/state";
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
 import { ENCRYPTED_CIPHERS } from "@bitwarden/common/vault/services/key-state/ciphers.state";
 import { FOLDER_ENCRYPTED_FOLDERS } from "@bitwarden/common/vault/services/key-state/folder.state";
+import { KeyService } from "@bitwarden/key-management";
+import { EncString, EncryptService } from "@bitwarden/legacy-crypto";
+import { LogService } from "@bitwarden/logging";
+import { StateProvider } from "@bitwarden/state";
 
 import { LocalAccountService } from "../account/local-account.service";
 import { S3Client, S3PreconditionFailedError } from "../s3/s3-client";
@@ -29,6 +28,13 @@ export const ACCOUNT_OBJECT = "account.json";
 export const MANIFEST_OBJECT = "manifest.json";
 export const SNAPSHOT_PREFIX = "snapshots/";
 export const BACKUP_PREFIX = "backups/";
+
+/** The state a vault starts with before its first sync. */
+const EMPTY_SYNC_STATE: VaultBackupSyncState = {
+  manifestEtag: null,
+  lastSyncedAt: null,
+  pending: false,
+};
 
 /** How many times a conditional manifest update is retried after losing a race. */
 const MAX_MANIFEST_RETRIES = 3;
@@ -123,11 +129,15 @@ export class VaultBackupSyncService {
       accessKeyId: config.accessKeyId,
       prefix: config.prefix,
       forcePathStyle: config.forcePathStyle,
-      wrappedSecretAccessKey: wrappedSecretAccessKey.encryptedString,
+      wrappedSecretAccessKey: wrappedSecretAccessKey.encryptedString ?? "",
     };
 
     await this.configState(userId).update(() => stored);
-    await this.syncState(userId).update((state) => ({ ...state, pending: true }));
+    await this.syncState(userId).update((state) => ({
+      ...EMPTY_SYNC_STATE,
+      ...(state ?? {}),
+      pending: true,
+    }));
   }
 
   async disconnect(userId: UserId): Promise<void> {
@@ -141,7 +151,8 @@ export class VaultBackupSyncService {
   }
 
   async getSyncState(userId: UserId): Promise<VaultBackupSyncState> {
-    return await firstValueFrom(this.syncState(userId).state$);
+    const state = await firstValueFrom(this.syncState(userId).state$);
+    return state ?? EMPTY_SYNC_STATE;
   }
 
   /** An S3 client for the configured storage, or null when sync is not configured yet. */
@@ -152,7 +163,11 @@ export class VaultBackupSyncService {
 
   /** Flags that local changes are waiting; the scheduler calls this after every write. */
   async markPending(userId: UserId): Promise<void> {
-    await this.syncState(userId).update((state) => ({ ...state, pending: true }));
+    await this.syncState(userId).update((state) => ({
+      ...EMPTY_SYNC_STATE,
+      ...(state ?? {}),
+      pending: true,
+    }));
   }
 
   /** Pulls the remote snapshot, merges it in, then pushes the merged result back. */
@@ -182,7 +197,7 @@ export class VaultBackupSyncService {
     }
     const manifest = JSON.parse(manifestObject.text) as Manifest;
 
-    const state = await firstValueFrom(this.syncState(userId).state$);
+    const state = await this.getSyncState(userId);
     if (state.manifestEtag != null && manifestObject.etag === state.manifestEtag) {
       return { applied: 0, upToDate: true };
     }
@@ -215,7 +230,7 @@ export class VaultBackupSyncService {
     const syncClient = client ?? (await this.requireClient(userId));
 
     let snapshot = await this.buildSnapshot(userId);
-    let manifestEtag = (await firstValueFrom(this.syncState(userId).state$)).manifestEtag;
+    let manifestEtag = (await this.getSyncState(userId)).manifestEtag;
 
     for (let attempt = 0; attempt < MAX_MANIFEST_RETRIES; attempt++) {
       const snapshotId = snapshotIdFor(this.clock());
