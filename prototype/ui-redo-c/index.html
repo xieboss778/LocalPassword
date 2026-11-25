@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LocalPassword — 完整界面原型 C（分组原生）</title>
+    <!--
+      原型：方向 C「分组原生」的完整产品界面，覆盖扩展弹窗（380×620）与桌面端（1160×760）。
+      假数据、假交互；没有测试、不碰真实存储。拍板/迭代后按 angular-modernization + writing-client-code 重写。
+    -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="suite-head">
+      <div class="brand">
+        <b>LocalPassword</b> · 界面原型 C「分组原生」 — 完整流程
+      </div>
+      <div class="devices">
+        <button data-device="popup" aria-pressed="true">扩展弹窗 380×620</button>
+        <button data-device="desktop" aria-pressed="false">桌面端 1160×760</button>
+      </div>
+    </header>
+
+    <div class="suite">
+      <aside class="index" id="index"></aside>
+      <main class="stage"><div id="frame"></div></main>
+    </div>
+
+    <div class="legend-bar">
+      左侧选界面 · 界面里的行可点 · <span>这是原型，不是产品</span>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
