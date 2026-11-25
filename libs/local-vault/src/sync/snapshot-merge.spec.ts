@@ -74,6 +74,8 @@ describe("mergeSnapshots", () => {
     const local = snap({ ciphers: [{ id: "c1", revisionDate: "2026-11-24T10:00:00.000Z" }] });
     const remote = snap({ ciphers: [{ id: "c1", revisionDate: "2026-11-24T10:00:00.000Z" }] });
 
-    expect(snapshotsEqual(mergeSnapshots(local, remote).snapshot, mergeSnapshots(remote, local).snapshot)).toBe(true);
+    const forward = mergeSnapshots(local, remote).snapshot;
+    const backward = mergeSnapshots(remote, local).snapshot;
+    expect(snapshotsEqual(forward, backward)).toBe(true);
   });
 });

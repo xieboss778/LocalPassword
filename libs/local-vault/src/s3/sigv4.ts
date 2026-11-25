@@ -72,7 +72,8 @@ async function hmacSha256(key: Uint8Array, data: string): Promise<Uint8Array> {
     false,
     ["sign"],
   );
-  const signature = await globalThis.crypto.subtle.sign("HMAC", cryptoKey, new TextEncoder().encode(data));
+  const payload = new TextEncoder().encode(data);
+  const signature = await globalThis.crypto.subtle.sign("HMAC", cryptoKey, payload);
   return new Uint8Array(signature);
 }
 
@@ -83,7 +84,10 @@ export function toAmzDate(date: Date): { amzDate: string; dateStamp: string } {
 
 /** RFC 3986 encoding — differs from encodeURIComponent for `!'()*`. */
 export function encodeRfc3986(value: string): string {
-  return encodeURIComponent(value).replace(/[!'()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase());
+  return encodeURIComponent(value).replace(
+    /[!'()*]/g,
+    (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase(),
+  );
 }
 
 export function canonicalPath(pathname: string): string {
@@ -97,7 +101,9 @@ export function canonicalQuery(search: string): string {
   const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
   const pairs: Array<[string, string]> = [];
   params.forEach((value, key) => pairs.push([encodeRfc3986(key), encodeRfc3986(value)]));
-  pairs.sort(([ak, av], [bk, bv]) => (ak === bk ? (av < bv ? -1 : av > bv ? 1 : 0) : ak < bk ? -1 : 1));
+  pairs.sort(([ak, av], [bk, bv]) =>
+    ak === bk ? (av < bv ? -1 : av > bv ? 1 : 0) : ak < bk ? -1 : 1,
+  );
   return pairs.map(([k, v]) => `${k}=${v}`).join("&");
 }
 
