@@ -8326,5 +8326,17 @@
   },
   "touchIdMacOnly": {
     "message": "macOS only · uses the system fingerprint"
+  },
+  "totpQrSubtitle": {
+    "message": "Scan into an authenticator app"
+  },
+  "totpQrUri": {
+    "message": "otpauth link"
+  },
+  "totpQrWarning": {
+    "message": "This screen shows the raw seed: anyone who scans it can generate your codes. Close it when you are done."
+  },
+  "totpNotSet": {
+    "message": "This item has no TOTP key"
   }
 }

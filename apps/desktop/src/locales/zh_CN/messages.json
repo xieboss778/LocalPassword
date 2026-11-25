@@ -8299,5 +8299,17 @@
   },
   "touchIdMacOnly": {
     "message": "仅 macOS · 用系统指纹"
+  },
+  "totpQrSubtitle": {
+    "message": "扫进认证器 App"
+  },
+  "totpQrUri": {
+    "message": "otpauth 链接"
+  },
+  "totpQrWarning": {
+    "message": "这一屏显示的是密钥本体：谁扫到它，谁就能生成你的验证码。用完请关掉。"
+  },
+  "totpNotSet": {
+    "message": "这一条没有动态口令密钥"
   }
 }

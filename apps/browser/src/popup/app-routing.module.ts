@@ -111,6 +111,7 @@ import { AtRiskPasswordsComponent } from "../vault/popup/components/at-risk-pass
 import { ItemFormV2Component } from "../vault/popup/components/item-form-v2/item-form-v2.component";
 import { VaultItemViewV2Component } from "../vault/popup/components/item-view-v2/item-view-v2.component";
 import { NewItemV2Component } from "../vault/popup/components/new-item-v2/new-item-v2.component";
+import { TotpQrV2Component } from "../vault/popup/components/totp-qr-v2/totp-qr-v2.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit/add-edit.component";
 import { AssignCollections } from "../vault/popup/components/vault/assign-collections/assign-collections.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments/attachments.component";
@@ -264,6 +265,13 @@ const routes: Routes = [
     component: ItemFormV2Component,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPassword：动态口令二维码（扫码进认证器）。
+    path: "totp-qr-v2",
+    component: TotpQrV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 3 } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：方向 C 的条目详情（点行复制）。

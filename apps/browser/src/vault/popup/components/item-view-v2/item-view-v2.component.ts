@@ -49,6 +49,14 @@ import { kindOf, withoutKindField } from "@localpass/local-vault";
   template: `
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
       <lp-page-header [title]="cipher()?.name ?? ''" [sub]="subtitle()">
+        @if (cipher()?.login?.totp) {
+          <button
+            type="button"
+            bitIconButton="bwi-qr-code"
+            [label]="i18n.t('totpQrSubtitle')"
+            (click)="openTotpQr()"
+          ></button>
+        }
         <button
           type="button"
           bitIconButton="bwi-pencil-square"
@@ -192,6 +200,13 @@ export class VaultItemViewV2Component implements OnInit {
       this.watchTotp(view);
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  protected openTotpQr(): void {
+    const id = this.cipher()?.id;
+    if (id) {
+      void this.router.navigate(["/totp-qr-v2"], { queryParams: { cipherId: id } });
     }
   }
 
