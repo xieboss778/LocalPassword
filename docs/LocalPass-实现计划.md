@@ -120,7 +120,8 @@ CI 的 windows / chrome / 静态检查三个 job 仍然能验证真实构建，�
 | --- | --- | --- |
 | 自动填充确认（autofill） | 上游 AutofillConfirmationDialogComponent | 功能完整、样式沿用上游；换方向 C 需要改 dialog 壳 |
 | 导入确认/结果 | 上游 importer-ui 流程 | 只在导入后出现，方向 C 未覆盖 |
-| 组织范围保险库（/vault/:vaultId） | 旧 VaultComponent | 需要把「当前保险库」过滤搬到新列表，才能删掉 806 行旧组件 |
+| 组织范围保险库 | **已移植**（第 24 轮） | 新列表按 `organizationId` 收窄，`my-items` 再收缩到「不属于任何集合」；旧 806 行组件已删除 |
+| 集合级下钻 / 保险库切换器 | 未做 | 上游 `VaultScope` 完整语义（集合、共享文件夹下钻、vault switcher）不在这一版里；`shared-folders` 路由仍用各自组件 |
 | 桌面端文件夹 / Send | 上游组件 | Send 功能已从产品移除，应直接不渲染而非改样式 |
 | 解锁屏（unlock） | 上游 LockComponent | 与首次设置同源，可下一轮换 |
 
