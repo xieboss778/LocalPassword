@@ -16,13 +16,17 @@
 - 浏览器↔桌面通信硬编码了 `com.8bit.bitwarden` 和 Bitwarden 扩展 ID（`apps/desktop/src/main/native-messaging.main.ts:174-188`、`473-478`）。
 - 桌面端构建强制需要 Rust 工具链（`apps/desktop/desktop_native/`），本机目前没有，v1 的"没有 Rust 就停下来"必须升级为"先装工具链"。
 
-## 执行状态（2026-11-26）
+## 执行状态（2026-11-26，阶段 2–7 代码完成）
 
-- **开发规则**：见 `docs/LocalPassword-开发规则.md`。硬规则：本地不做任何构建/打包/测试，构建全部在 GitHub Actions 完成。
-- **已完成**：阶段 0（改名、关自动更新、固定扩展 ID）、阶段 1（瘦身 + CI 护栏）、阶段 2（本地账户、本地读写、网络闸门、起始页与创建向导、安全护栏）、阶段 3 阻断项（原生消息改名、禁 SSO cookie、`data.json.bak`）、阶段 4（S3 客户端、快照同步、备份与调度、云端恢复）、阶段 5（PRF 登记与解锁路径）、阶段 6（Google Authenticator 导入、TOTP 二维码）、阶段 7 的扩展产物 zip 与安装文档。
-- **进行中**：CI 收敛——静态检查（eslint + prettier + 类型）与单元测试逐轮变绿；桌面端 Windows/macOS 打包因 runner 排队尚未跑完一轮完整流程。
-- **待验证**：Passkey 保存/断言在两端的实测；桌面端从托盘运行时的定时同步实测。
-- **进度证据**：`docs/LocalPassword-进度核查.md` 记录每一步的文件与行号。
+- **开发规则**：见 `docs/LocalPassword-开发规则.md`。硬规则：本地不做构建/打包/测试，全部在 GitHub Actions 完成。
+- **阶段 2（本地账户与本地读写）**：完成。`CreateLocalAccountService`（创建 + 从 `account.json` 恢复）、`DefaultLocalVaultWriter`、`CipherService`/`FolderApiService` 的 13 处本地分支、`DefaultSyncService` 本地分支、导入器本地分支。
+- **阶段 3（桌面端接入）**：完成。原生消息改名 `com.localpassword.desktop`、禁 SSO cookie、`data.json.bak` 滚动备份。
+- **阶段 4（R2 同步与定时备份）**：完成。SigV4 + S3 客户端、快照合并（清单 412 重试）、备份导出与保留、15 秒防抖 / 30 分钟周期调度、`account.json` 上传、云端恢复页。
+- **阶段 5（Passkey/PRF）**：代码完成。`LocalWebAuthnPrfEnrollmentService` + 安全密钥页，解锁 RS ID 回退到扩展主机名。
+- **阶段 6（TOTP）**：完成。Google Authenticator `otpauth-migration` 解码器（含单测）、导入页、条目详情二维码弹窗。
+- **阶段 7（打包）**：Windows NSIS 打包由 CI 成功产出；macOS 因 GitHub macos runner 长期排队，job 设为 `continue-on-error`，Safari appex 硬依赖已移除。
+- **CI 证据**：静态检查（46 个 tsc 项目 + eslint + prettier + 语言包 + 依赖归属）与改动范围单测（local-vault/importer/key-management-ui/钓鱼检测，2158 用例）在 `main` 上稳定绿；Chrome 扩展生产构建绿；Windows 打包绿。
+- **未由 CI 覆盖**：Passkey/安全密钥的真实设备行为、macOS 安装包产出——步骤见 `docs/LocalPassword-验证清单.md`。
 
 ## Context
 

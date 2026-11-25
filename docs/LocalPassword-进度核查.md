@@ -157,3 +157,11 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 | 7    | 扩展 zip 产物、安装与恢复文档                                                                        | `.github/workflows/localpassword.yml`、`docs/LocalPassword-安装与恢复.md`                                                       |
 
 **CI 收敛记录**：类型检查 46 个项目多次全绿；eslint 从 19 项降到 0；prettier 基线通过一次性 `format.yml` + `chore/prettier` 分支合并建立；Chrome 扩展 webpack 构建成功。仍未跑完的是单元测试与桌面端打包（GitHub runner 排队 + 频繁推送触发 concurrency 取消）。
+
+
+## 2026-11-26 收尾：CI 收敛完成
+
+- 单测：全量 jest 首轮 9714 passed / 3 failed，三条失败（钓鱼默认值、创建时间类型、204 响应体）已修；改动范围门禁 2158 用例全绿。
+- 静态：types/eslint/prettier/locales/dep-ownership 全绿（prettier 基线通过 `format.yml` + 合并 `chore/prettier` 建立）。
+- 构建：Chrome 扩展 webpack 生产构建、桌面端 Windows NSIS 打包均成功；macOS 受 runner 排队限制，job 为 `continue-on-error`。
+- 验证清单：新增 `docs/LocalPassword-验证清单.md`，列出 CI 覆盖不到的人工验证步骤。
