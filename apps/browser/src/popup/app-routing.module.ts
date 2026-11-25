@@ -91,6 +91,7 @@ import { popupRouterCacheGuard } from "../platform/popup/view-cache/popup-router
 import { RouteCacheOptions } from "../platform/services/popup-view-cache-background.service";
 import { CredentialGeneratorHistoryComponent } from "../tools/popup/generator/credential-generator-history.component";
 import { CredentialGeneratorComponent } from "../tools/popup/generator/credential-generator.component";
+import { GeneratorV2Component } from "../tools/popup/generator/generator-v2.component";
 import { filePickerPopoutGuard } from "../tools/popup/guards/file-picker-popout.guard";
 import { importUpgradeRedirectGuard } from "../tools/popup/guards/import-upgrade-redirect.guard";
 import { importUpgradeRequiredGuard } from "../tools/popup/guards/import-upgrade-required.guard";
@@ -939,7 +940,7 @@ const routes: Routes = [
       },
       {
         path: "generator",
-        component: CredentialGeneratorComponent,
+        component: GeneratorV2Component,
         canActivate: [authGuard],
         data: { elevation: 0 } satisfies RouteDataProperties,
       },

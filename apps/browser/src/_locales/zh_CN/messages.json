@@ -9811,5 +9811,32 @@
   },
   "restoreWinnerRemote": {
     "message": "保留云端"
+  },
+  "generatorSubtitle": {
+    "message": "纯本地生成 · 点结果那一行复制"
+  },
+  "regenerate": {
+    "message": "重新生成"
+  },
+  "candidates": {
+    "message": "候选"
+  },
+  "uppercase": {
+    "message": "大写字母"
+  },
+  "lowercase": {
+    "message": "小写字母"
+  },
+  "numbers": {
+    "message": "数字"
+  },
+  "symbols": {
+    "message": "符号"
+  },
+  "generatorNoCharset": {
+    "message": "至少要启用一组字符"
+  },
+  "generatorStrength": {
+    "message": "$LENGTH 位 × $CLASSES 组字符（强度分 $SCORE）"
   }
 }

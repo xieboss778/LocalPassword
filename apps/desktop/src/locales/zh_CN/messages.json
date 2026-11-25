@@ -8242,5 +8242,23 @@
   },
   "retry": {
     "message": "重试"
+  },
+  "generatorSubtitle": {
+    "message": "纯本地生成 · 点结果那一行复制"
+  },
+  "regenerate": {
+    "message": "重新生成"
+  },
+  "candidates": {
+    "message": "候选"
+  },
+  "symbols": {
+    "message": "符号"
+  },
+  "generatorNoCharset": {
+    "message": "至少要启用一组字符"
+  },
+  "generatorStrength": {
+    "message": "$LENGTH 位 × $CLASSES 组字符（强度分 $SCORE）"
   }
 }

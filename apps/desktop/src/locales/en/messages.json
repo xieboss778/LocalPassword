@@ -8269,5 +8269,23 @@
   },
   "retry": {
     "message": "Try again"
+  },
+  "generatorSubtitle": {
+    "message": "Pure local generation · click a result to copy"
+  },
+  "regenerate": {
+    "message": "Regenerate"
+  },
+  "candidates": {
+    "message": "Candidates"
+  },
+  "symbols": {
+    "message": "Symbols"
+  },
+  "generatorNoCharset": {
+    "message": "Turn on at least one character set"
+  },
+  "generatorStrength": {
+    "message": "$LENGTH chars × $CLASSES sets (score $SCORE)"
   }
 }
