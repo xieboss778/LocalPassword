@@ -8338,5 +8338,32 @@
   },
   "totpNotSet": {
     "message": "This item has no TOTP key"
+  },
+  "dataAndSafety": {
+    "message": "Data and safety"
+  },
+  "dataAndSafetySubtitle": {
+    "message": "Everything lives on this machine"
+  },
+  "localData": {
+    "message": "Local data"
+  },
+  "dataFile": {
+    "message": "Vault file"
+  },
+  "dataFileBackup": {
+    "message": "Rollback copy"
+  },
+  "dataNetworkFree": {
+    "message": "No network calls"
+  },
+  "dataMove": {
+    "message": "Move data"
+  },
+  "trashHint": {
+    "message": "30 days"
+  },
+  "dataFileWarning": {
+    "message": "Both files sit next to each other in the app data folder. Delete them and the vault is gone — that is why backups are manual and why the rollback copy exists."
   }
 }

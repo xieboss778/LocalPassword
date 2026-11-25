@@ -16,7 +16,7 @@ import {
 import {
   CreateLocalVaultComponent,
   LocalVaultStartComponent,
-  RestoreVaultComponent,
+  RestoreVaultV2Component,
 } from "@localpass/angular/auth/local-vault";
 import { ChangePasswordComponent } from "@localpass/angular/auth/password-management/change-password";
 import { SetInitialPasswordComponent } from "@localpass/angular/auth/password-management/set-initial-password/set-initial-password.component";
@@ -28,7 +28,8 @@ import {
 } from "@localpass/angular/auth/registration";
 import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
-import { BackupSettingsComponent } from "@localpass/angular/tools/backup";
+import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
+import { GeneratorV2Component } from "@localpass/angular/tools/generator";
 import {
   DevicesIcon,
   RegistrationUserAddIcon,
@@ -84,7 +85,6 @@ import { VaultDesktopV2Component } from "../vault/app/vault-desktop-v2/vault-des
 import { VaultComponent } from "../vault/app/vault-v3/vault.component";
 
 import { DesktopLayoutComponent } from "./layout/desktop-layout.component";
-import { GeneratorV2Component } from "@localpass/angular/tools/generator";
 import { SettingsDesktopV2Component } from "./settings-desktop-v2/settings-desktop-v2.component";
 import { ImportShellDesktopComponent } from "./tools/import/import-shell-desktop.component";
 import { unsavedSendEditsGuard } from "./tools/send/guards/unsaved-send-edits.guard";
@@ -249,7 +249,7 @@ export const routes: Routes = [
           },
           pageIcon: VaultIcon,
         },
-        children: [{ path: "", component: RestoreVaultComponent }],
+        children: [{ path: "", component: RestoreVaultV2Component }],
       },
       {
         path: AuthRoute.CreateLocalVault,
@@ -613,9 +613,9 @@ export const routes: Routes = [
         canDeactivate: [unsavedSendEditsGuard],
       },
       {
-        // LocalPass: cloud backup settings for a local vault.
+        // LocalPassword：方向 C 的备份设置（与扩展共用同一个组件）。
         path: "backup-settings",
-        component: BackupSettingsComponent,
+        component: BackupSettingsV2Component,
         canActivate: [authGuard],
         data: { pageTitle: { key: "cloudBackup" } } satisfies RouteDataProperties,
       },

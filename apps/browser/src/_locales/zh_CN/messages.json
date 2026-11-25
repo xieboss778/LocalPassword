@@ -9883,5 +9883,32 @@
   },
   "totpNotSet": {
     "message": "这一条没有动态口令密钥"
+  },
+  "dataAndSafety": {
+    "message": "数据与安全"
+  },
+  "dataAndSafetySubtitle": {
+    "message": "所有东西都在这台机器上"
+  },
+  "localData": {
+    "message": "本地数据"
+  },
+  "dataFile": {
+    "message": "保险库文件"
+  },
+  "dataFileBackup": {
+    "message": "回滚副本"
+  },
+  "dataNetworkFree": {
+    "message": "无网络请求"
+  },
+  "dataMove": {
+    "message": "搬运数据"
+  },
+  "trashHint": {
+    "message": "30 天"
+  },
+  "dataFileWarning": {
+    "message": "两个文件并排放在应用数据目录里。删掉它们，保险库就没了——所以备份是手动的，也所以留了那个回滚副本。"
   }
 }
