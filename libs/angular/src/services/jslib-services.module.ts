@@ -332,6 +332,8 @@ import {
 import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
 import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
 import { CipherEncryptionService } from "@bitwarden/common/vault/abstractions/cipher-encryption.service";
+import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
+import { DefaultLocalVaultWriter, LocalAccountService } from "@bitwarden/local-vault";
 import { CipherRiskService } from "@bitwarden/common/vault/abstractions/cipher-risk.service";
 import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -735,6 +737,27 @@ const safeProviders: SafeProvider[] = [
     deps: [SdkService, LogService, UserCryptoDialogService],
   }),
   safeProvider({
+    provide: LocalAccountService,
+    useClass: LocalAccountService,
+    deps: [StateProvider],
+  }),
+  safeProvider({
+    provide: LocalVaultWriter,
+    useFactory: (
+      localAccountService: LocalAccountService,
+      cipherEncryptionService: CipherEncryptionService,
+      stateProvider: StateProvider,
+      logService: LogService,
+    ) =>
+      new DefaultLocalVaultWriter(
+        localAccountService,
+        cipherEncryptionService,
+        stateProvider,
+        logService,
+      ),
+    deps: [LocalAccountService, CipherEncryptionService, StateProvider, LogService],
+  }),
+  safeProvider({
     provide: CipherServiceAbstraction,
     useFactory: (
       keyService: KeyService,
@@ -751,6 +774,7 @@ const safeProviders: SafeProvider[] = [
       logService: LogService,
       cipherEncryptionService: CipherEncryptionService,
       cipherSdkService: CipherSdkService,
+      localVaultWriter: LocalVaultWriter,
     ) =>
       new CipherService(
         keyService,
@@ -767,6 +791,7 @@ const safeProviders: SafeProvider[] = [
         logService,
         cipherEncryptionService,
         cipherSdkService,
+        localVaultWriter,
       ),
     deps: [
       KeyService,
@@ -783,6 +808,7 @@ const safeProviders: SafeProvider[] = [
       LogService,
       CipherEncryptionService,
       CipherSdkService,
+      LocalVaultWriter,
     ],
   }),
   safeProvider({
@@ -814,7 +840,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: FolderApiServiceAbstraction,
     useClass: FolderApiService,
-    deps: [InternalFolderService, ApiServiceAbstraction],
+    deps: [InternalFolderService, ApiServiceAbstraction, LocalVaultWriter],
   }),
   safeProvider({
     provide: AccountApiServiceAbstraction,

@@ -42,6 +42,7 @@ import {
   RestrictedCipherWriteError,
 } from "../abstractions/cipher.service";
 import { CipherFileUploadService } from "../abstractions/file-upload/cipher-file-upload.service";
+import { LocalVaultWriter } from "../abstractions/local-vault-writer.abstraction";
 import { FieldType } from "../enums";
 import { CipherType } from "../enums/cipher-type";
 import { CipherUpdateRoute } from "../enums/cipher-update-route";
@@ -63,6 +64,7 @@ import {
   FAILED_DECRYPTED_CIPHERS,
   LOCAL_DATA_KEY,
 } from "./key-state/ciphers.state";
+import { NoopLocalVaultWriter } from "./noop-local-vault-writer.service";
 
 const PERF_TRACK_GROUP = PerfTrackGroup.Unlock;
 const PERF_TRACK = "Vault Items";
@@ -96,6 +98,11 @@ export class CipherService implements CipherServiceAbstraction {
     private logService: LogService,
     private cipherEncryptionService: CipherEncryptionService,
     private cipherSdkService: CipherSdkService,
+    /**
+     * Write path for accounts that live only on this device. Defaults to a no-op writer, which
+     * makes every method below fall through to the server path unchanged.
+     */
+    private localVaultWriter: LocalVaultWriter = new NoopLocalVaultWriter(),
   ) {}
 
   localData$(userId: UserId): Observable<Record<CipherId, LocalData>> {
@@ -819,6 +826,12 @@ export class CipherService implements CipherServiceAbstraction {
     // encrypted storage has already been updated and thus downstream consumers not getting updated data.
     await this.clearCache(userId);
 
+    // A local vault stores the cipher itself; there is no server to create it on.
+    const localResult = await this.localVaultWriter.createCipher(cipherView, userId);
+    if (localResult != null) {
+      return localResult;
+    }
+
     const resultCipherView = await this.cipherSdkService.createWithServer(
       cipherView,
       userId,
@@ -833,6 +846,13 @@ export class CipherService implements CipherServiceAbstraction {
     originalCipherView?: CipherView,
     orgAdmin?: boolean,
   ): Promise<CipherView> {
+    // A local vault has no organizations, so every save is the ordinary item route.
+    const localResult = await this.localVaultWriter.updateCipher(cipherView, userId);
+    if (localResult != null) {
+      await this.clearCache(userId);
+      return localResult;
+    }
+
     if (orgAdmin) {
       return await this.updateWithServerUsingSdk(cipherView, userId, originalCipherView, orgAdmin);
     }
@@ -1231,6 +1251,10 @@ export class CipherService implements CipherServiceAbstraction {
 
   async moveManyWithServer(ids: string[], folderId: string, userId: UserId): Promise<any> {
     await this.clearCache(userId);
+    // Refuses loudly for a local vault: there is nowhere to move items to.
+    if (await this.localVaultWriter.moveManyCiphers(ids, userId)) {
+      return;
+    }
     await this.cipherSdkService.moveManyWithServer(ids, folderId, userId);
   }
 
@@ -1258,6 +1282,9 @@ export class CipherService implements CipherServiceAbstraction {
 
   async deleteWithServer(id: string, userId: UserId, asAdmin = false): Promise<void> {
     await this.clearCache(userId);
+    if (await this.localVaultWriter.deleteCipher(id, userId)) {
+      return;
+    }
     await this.cipherSdkService.deleteWithServer(id, userId, asAdmin);
   }
 
@@ -1268,6 +1295,9 @@ export class CipherService implements CipherServiceAbstraction {
     orgId?: OrganizationId,
   ): Promise<void> {
     await this.clearCache(userId);
+    if (await this.localVaultWriter.deleteManyCiphers(ids, userId)) {
+      return;
+    }
     await this.cipherSdkService.deleteManyWithServer(ids, userId, asAdmin, orgId);
   }
 
@@ -1393,6 +1423,9 @@ export class CipherService implements CipherServiceAbstraction {
 
   async softDeleteWithServer(id: string, userId: UserId, asAdmin = false): Promise<void> {
     await this.clearCache(userId);
+    if (await this.localVaultWriter.softDeleteCipher(id, userId)) {
+      return;
+    }
     await this.cipherSdkService.softDeleteWithServer(id, userId, asAdmin);
   }
 
@@ -1403,6 +1436,9 @@ export class CipherService implements CipherServiceAbstraction {
     orgId?: OrganizationId,
   ): Promise<void> {
     await this.clearCache(userId);
+    if (await this.localVaultWriter.softDeleteManyCiphers(ids, userId)) {
+      return;
+    }
     await this.cipherSdkService.softDeleteManyWithServer(ids, userId, asAdmin, orgId);
   }
 
@@ -1441,6 +1477,9 @@ export class CipherService implements CipherServiceAbstraction {
 
   async restoreWithServer(id: string, userId: UserId, asAdmin = false): Promise<void> {
     await this.clearCache(userId);
+    if (await this.localVaultWriter.restoreCipher(id, userId)) {
+      return;
+    }
     await this.cipherSdkService.restoreWithServer(id, userId, asAdmin);
   }
 
@@ -1450,6 +1489,9 @@ export class CipherService implements CipherServiceAbstraction {
    */
   async restoreManyWithServer(ids: string[], userId: UserId, orgId?: string): Promise<void> {
     await this.clearCache(userId);
+    if (await this.localVaultWriter.restoreManyCiphers(ids, userId)) {
+      return;
+    }
     await this.cipherSdkService.restoreManyWithServer(ids, userId, orgId);
   }
 
