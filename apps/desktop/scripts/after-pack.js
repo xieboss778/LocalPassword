@@ -16,6 +16,8 @@ const IS_GITHUB_ACTIONS = process.env.GITHUB_ACTIONS == "true";
 const PROXY_ENTITLEMENTS = {
   "com.bitwarden.desktop": "entitlements.desktop_proxy.plist",
   "com.bitwarden.beta.desktop": "entitlements.desktop_proxy.beta.plist",
+  // LocalPassword reuses the same proxy entitlements.
+  "com.localpassword.desktop": "entitlements.desktop_proxy.plist",
 };
 
 /**
@@ -240,13 +242,8 @@ async function addElectronFuses(context) {
 
 function copyMacOsAutofillExtension(context) {
   const extensionPath = path.join(__dirname, "../macos/dist/autofill-extension.appex");
-  // Every macOS build ships the extension, so a missing one is a broken build rather than a
-  // configuration that leaves it out.
-  if (!fse.existsSync(extensionPath)) {
-    throw new Error(
-      `Autofill extension not found at ${extensionPath}; macOS builds must include it. Build it first with one of the "build:macos-extension:*" npm scripts.`,
-    );
-  }
+  // LocalPassword ships Chrome + Electron only, so there is no Safari autofill extension to embed.
+  // `copyMacOsPlugin` skips gracefully when the appex is absent.
   copyMacOsPlugin(context, "Autofill extension", extensionPath);
 }
 
