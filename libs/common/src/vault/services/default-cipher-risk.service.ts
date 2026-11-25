@@ -60,7 +60,8 @@ export class DefaultCipherRiskService implements CipherRiskServiceAbstraction {
   async computeCipherRiskForUser(
     cipherId: CipherId,
     userId: UserId,
-    checkExposed: boolean = true,
+    // LocalPassword: the breach check reaches a remote service, so it only runs when asked for.
+    checkExposed: boolean = false,
   ): Promise<CipherRiskResult> {
     // Get all ciphers for the user
     const allCiphers = await firstValueFrom(

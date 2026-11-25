@@ -99,10 +99,10 @@ describe("PhishingDetectionSettingsService", () => {
   const getAccess = () => firstValueFrom(service.available$);
 
   describe("enabled$", () => {
-    it("should default to true if an account is logged in", async () => {
+    it("should default to false if an account is logged in", async () => {
       activeAccountSubject.next(account);
       const result = await firstValueFrom(service.enabled$);
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
 
     it("should return the stored value", async () => {
