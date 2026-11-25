@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import qrcodeParser from "qrcode-parser";
 import { firstValueFrom } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { getUserId } from "@bitwarden/common/auth/services/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -16,19 +17,17 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import {
-  base32Encode,
-  MigrationOtp,
-  parseMigrationUri,
-  toOtpauthUri,
-} from "@bitwarden/importer-core";
-import {
   AsyncActionsModule,
   ButtonModule,
   FormFieldModule,
   TypographyModule,
 } from "@bitwarden/components";
-
-import { JslibModule } from "../../../jslib.module";
+import {
+  base32Encode,
+  MigrationOtp,
+  parseMigrationUri,
+  toOtpauthUri,
+} from "@bitwarden/importer-core";
 
 /** One account read out of a migration export, ready to be previewed. */
 type PreviewedAccount = MigrationOtp & { readonly totp: string };
@@ -85,9 +84,14 @@ export class GoogleAuthImportComponent {
     try {
       const uris: string[] = [];
       for (const file of files) {
-        const decoded = await qrcodeParser(await file.arrayBuffer());
-        if (typeof decoded === "string") {
-          uris.push(decoded);
+        const objectUrl = URL.createObjectURL(file);
+        try {
+          const decoded = await qrcodeParser(objectUrl);
+          if (typeof decoded === "string") {
+            uris.push(decoded);
+          }
+        } finally {
+          URL.revokeObjectURL(objectUrl);
         }
       }
       this.collect(uris);
