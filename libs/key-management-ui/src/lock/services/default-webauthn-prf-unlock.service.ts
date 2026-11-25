@@ -251,9 +251,11 @@ export class DefaultWebAuthnPrfUnlockService implements WebAuthnPrfUnlockService
       const environment = await firstValueFrom(this.environmentService.getEnvironment$(userId));
       const hostname = Utils.getHost(environment.getWebVaultUrl());
 
-      // The navigator.credentials.get call will fail if rpId is set but is null/empty. Undefined uses the current host.
-      if (!hostname) {
-        return undefined;
+      // LocalPassword: a local vault's environment is a placeholder (`*.invalid`), never a real
+      // RP ID. Fall back to the page's own host, which for the extension is its extension id — the
+      // same RP ID the credential was created with.
+      if (!hostname || hostname.endsWith(".invalid")) {
+        return globalThis.location?.hostname || undefined;
       }
 
       // Extract hostname using URL parsing to handle IPv6 and ports correctly
