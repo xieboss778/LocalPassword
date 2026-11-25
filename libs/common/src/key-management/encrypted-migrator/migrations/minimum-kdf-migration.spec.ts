@@ -2,10 +2,10 @@ import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfigService } from "@bitwarden/key-management";
+import { KdfConfigService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
+import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
 
 import { makeEncString } from "../../../../spec";
 import { SdkService } from "../../../platform/abstractions/sdk/sdk.service";
@@ -34,7 +34,7 @@ describe("MinimumKdfMigration", () => {
 
   const mockWrappedUserKey = makeEncString("wrappedUserKey");
   const mockUnlockData = new MasterPasswordUnlockData(
-    "test@bitwarden.com" as MasterPasswordSalt,
+    "test@local.invalid" as MasterPasswordSalt,
     new PBKDF2KdfConfig(PBKDF2KdfConfig.ITERATIONS.min),
     mockWrappedUserKey.encryptedString as unknown as MasterKeyWrappedUserKey,
   );

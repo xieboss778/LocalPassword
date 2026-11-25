@@ -5,10 +5,10 @@ import * as http from "http";
 import { ipcMain } from "electron";
 import { firstValueFrom } from "rxjs";
 
-import { SsoUrlService } from "@bitwarden/common/auth/sso-login";
-import { ClientType } from "@bitwarden/common/enums";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { MessageSender } from "@bitwarden/common/platform/messaging";
+import { SsoUrlService } from "@localpass/common/auth/sso-login";
+import { ClientType } from "@localpass/common/enums";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { MessageSender } from "@localpass/common/platform/messaging";
 
 /**
  * The SSO Localhost login service uses a local host listener as fallback in case scheme handling deeplinks does not work.
@@ -83,8 +83,8 @@ export class SSOLocalhostCallbackService {
         if (code != null && receivedState != null && this.checkState(receivedState, state)) {
           res.writeHead(200);
           res.end(
-            "<html><head><title>Success | Bitwarden Desktop</title></head><body>" +
-              "<h1>Successfully authenticated with the Bitwarden desktop app</h1>" +
+            "<html><head><title>Success | LocalPass Desktop</title></head><body>" +
+              "<h1>Successfully authenticated with the LocalPass desktop app</h1>" +
               "<p>You may now close this tab and return to the app.</p>" +
               "</body></html>",
           );
@@ -98,8 +98,8 @@ export class SSOLocalhostCallbackService {
         } else {
           res.writeHead(400);
           res.end(
-            "<html><head><title>Failed | Bitwarden Desktop</title></head><body>" +
-              "<h1>Something went wrong logging into the Bitwarden desktop app</h1>" +
+            "<html><head><title>Failed | LocalPass Desktop</title></head><body>" +
+              "<h1>Something went wrong logging into the LocalPass desktop app</h1>" +
               "<p>You may now close this tab and return to the app.</p>" +
               "</body></html>",
           );

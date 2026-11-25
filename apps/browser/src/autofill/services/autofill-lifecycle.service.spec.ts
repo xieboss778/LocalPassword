@@ -1,9 +1,9 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, Subscription } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { AutofillerCommand, AutofillLifecycleCommand } from "../enums/autofill-message.enums";

@@ -8,10 +8,10 @@ import { BehaviorSubject, firstValueFrom, of } from "rxjs";
 import {
   UserDecryptionOptionsServiceAbstraction,
   UserDecryptionOptions,
-} from "@bitwarden/auth/common";
+} from "@localpass/auth/common";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
@@ -20,8 +20,8 @@ import {
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import { FakeAccountService, mockAccountServiceWith } from "../../../../spec/fake-account-service";
 import { FakeActiveUserState } from "../../../../spec/fake-state";

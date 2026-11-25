@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { html, nothing } from "lit";
 
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
 
 import {
   NotificationBarIframeInitData,

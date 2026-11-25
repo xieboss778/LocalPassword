@@ -3,29 +3,29 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { DeactivatedOrg } from "@bitwarden/assets/svg";
+import { DeactivatedOrg } from "@localpass/assets/svg";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
   InputPasswordComponent,
   InputPasswordFlow,
   PasswordInputResult,
-} from "@bitwarden/auth/angular";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { assertNonNullish, assertTruthy } from "@bitwarden/common/auth/utils";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/auth/angular";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { PolicyApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/policy/policy-api.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { assertNonNullish, assertTruthy } from "@localpass/common/auth/utils";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 import {
   AnonLayoutWrapperDataService,
   ButtonModule,
@@ -33,8 +33,8 @@ import {
   DialogService,
   IconModule,
   ToastService,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import {
   InitializeJitPasswordCredentials,
@@ -44,7 +44,7 @@ import {
   SetInitialPasswordUserType,
 } from "./set-initial-password.service.abstraction";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   standalone: true,
@@ -328,7 +328,7 @@ export class SetInitialPasswordComponent implements OnInit {
 
       this.showSuccessToastByUserType();
 
-      // TODO: investigate refactoring logout and follow-up routing in https://bitwarden.atlassian.net/browse/PM-32660
+      // TODO: investigate refactoring logout and follow-up routing in https://localpass.atlassian.net/browse/PM-32660
       await this.logoutService.logout(this.userId, "setInitialPassword");
       // navigate to root so redirect guard can properly route next active user or null user to correct page
       await this.router.navigate(["/"]);

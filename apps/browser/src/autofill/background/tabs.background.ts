@@ -1,6 +1,6 @@
 import { concatMap, debounceTime, distinctUntilChanged, EMPTY, map, switchMap } from "rxjs";
 
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 
 import MainBackground from "../../background/main.background";
 

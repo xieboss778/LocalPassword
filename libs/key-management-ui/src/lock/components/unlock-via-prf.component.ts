@@ -2,13 +2,13 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit, input, output } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { AsyncActionsModule, ButtonModule, DialogService } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { AsyncActionsModule, ButtonModule, DialogService } from "@localpass/components";
 
 import { WebAuthnPrfUnlockService } from "../services/webauthn-prf-unlock.service";
 

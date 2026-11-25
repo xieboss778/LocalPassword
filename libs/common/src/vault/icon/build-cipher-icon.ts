@@ -50,11 +50,11 @@ export function buildCipherIcon(
         let isWebsite = false;
 
         if (hostnameUri.indexOf("androidapp://") === 0) {
-          // @TODO Re-add once we have Android icon https://bitwarden.atlassian.net/browse/PM-29028
+          // @TODO Re-add once we have Android icon https://localpass.atlassian.net/browse/PM-29028
           // icon = "bwi-android";
           image = null;
         } else if (hostnameUri.indexOf("iosapp://") === 0) {
-          // @TODO Re-add once we have iOS icon https://bitwarden.atlassian.net/browse/PM-29028
+          // @TODO Re-add once we have iOS icon https://localpass.atlassian.net/browse/PM-29028
           // icon = "bwi-apple";
           image = null;
         } else if (

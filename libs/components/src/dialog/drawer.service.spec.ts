@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { DrawerRef } from "./dialog-ref";
 import { DrawerService } from "./drawer.service";

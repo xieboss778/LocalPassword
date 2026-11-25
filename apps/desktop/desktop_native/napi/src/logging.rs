@@ -6,7 +6,7 @@ pub mod logging {
     //! # Example
     //!
     //! [Elec] 14:34:03.517 › [NAPI] [INFO] ssh_agent::server::listener::unix: Starting
-    //! SSH Agent server {socket=/Users/foo/.bitwarden-ssh-agent.sock}
+    //! SSH Agent server {socket=/Users/foo/.localpass-ssh-agent.sock}
 
     use std::{fmt::Write, sync::OnceLock};
 

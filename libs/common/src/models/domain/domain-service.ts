@@ -1,8 +1,8 @@
-import { UriMatchType } from "@bitwarden/sdk-internal";
+import { UriMatchType } from "@localpass/sdk-internal";
 
 /*
   See full documentation at:
-    https://bitwarden.com/help/uri-match-detection/#match-detection-options
+    https://github.com/xieboss778/LocalPass/tree/main/docs
 
   Domain: "the top-level domain and second-level domain of the URI match the detected resource",
   Host: "the hostname and (if specified) port of the URI matches the detected resource",

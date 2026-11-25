@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SendAccessView as SdkSendAccessView } from "@bitwarden/sdk-internal";
+import { SendAccessView as SdkSendAccessView } from "@localpass/sdk-internal";
 
 import { View } from "../../../../models/view/view";
 import { SendType } from "../../types/send-type";

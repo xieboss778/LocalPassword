@@ -38,7 +38,7 @@ sits selection — reducing a request to the single cipher the commit will place
 ## Invariants
 
 The orchestrator exists to uphold the properties below. Each is a security boundary, not an
-optimization; the [zero-knowledge model](https://contributing.bitwarden.com/architecture/security/definitions)
+optimization; the [zero-knowledge model](https://contributing.local.invalid/architecture/security/definitions)
 is what they protect.
 
 ### A credential fills only the tab the user is working in

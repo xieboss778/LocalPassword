@@ -57,16 +57,16 @@ describe("AutomationDriver", () => {
 
       sut.attachToGlobal(global);
 
-      expect(global.bitwardenAutomationDriver).toBe(sut);
+      expect(global.localpassAutomationDriver).toBe(sut);
     });
 
     it("does not replace an already attached driver", () => {
       const existing = {};
-      const global: any = { bitwardenAutomationDriver: existing };
+      const global: any = { localpassAutomationDriver: existing };
 
       new AutomationDriver([]).attachToGlobal(global);
 
-      expect(global.bitwardenAutomationDriver).toBe(existing);
+      expect(global.localpassAutomationDriver).toBe(existing);
     });
   });
 });

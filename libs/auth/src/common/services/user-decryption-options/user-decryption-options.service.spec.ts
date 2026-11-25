@@ -1,8 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
-import { FakeSingleUserStateProvider } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { newGuid } from "@bitwarden/guid";
+import { FakeSingleUserStateProvider } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { newGuid } from "@localpass/guid";
 
 import { UserDecryptionOptions } from "../../models/domain/user-decryption-options";
 
@@ -29,7 +29,7 @@ describe("UserDecryptionOptionsService", () => {
       isTdeOffboarding: false,
     },
     keyConnectorOption: {
-      keyConnectorUrl: "https://keyconnector.bitwarden.com",
+      keyConnectorUrl: "https://keyconnector.local.invalid",
     },
   };
 

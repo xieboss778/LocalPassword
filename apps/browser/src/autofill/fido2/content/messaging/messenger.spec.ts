@@ -1,4 +1,4 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { Message } from "./message";
 import { Channel, MessageWithMetadata, Messenger } from "./messenger";
@@ -14,7 +14,7 @@ describe("Messenger", () => {
     window.MessageChannel = MockMessageChannel as any;
     Object.defineProperty(window, "location", {
       value: {
-        origin: "https://bitwarden.com",
+        origin: "https://local.invalid",
       },
       writable: true,
     });
@@ -84,10 +84,10 @@ describe("Messenger", () => {
       const port = new MessageChannel().port2;
       listener({
         isTrusted: true,
-        origin: "https://bitwarden.com",
+        origin: "https://local.invalid",
         data: {
           ...createRequest(),
-          SENDER: "bitwarden-webauthn",
+          SENDER: "localpass-webauthn",
           senderId: "other",
           ...(dataOverrides ?? {}),
         },
@@ -143,8 +143,8 @@ describe("Messenger", () => {
       messengerB.handler = handlerB.handler;
 
       const event = new MessageEvent<MessageWithMetadata>("message", {
-        data: { ...createRequest(), SENDER: "bitwarden-webauthn", senderId: "other" },
-        origin: "https://bitwarden.com",
+        data: { ...createRequest(), SENDER: "localpass-webauthn", senderId: "other" },
+        origin: "https://local.invalid",
         ports: [],
       });
       listener(event);
@@ -288,7 +288,7 @@ class MockMessagePort<T> {
   postMessage(message: T, port?: MessagePort) {
     const event = {
       isTrusted: true,
-      origin: "https://bitwarden.com",
+      origin: "https://local.invalid",
       data: message,
       ports: port ? [port] : [],
     };

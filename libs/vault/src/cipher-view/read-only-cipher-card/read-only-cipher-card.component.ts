@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
-import { CardComponent } from "@bitwarden/components";
+import { CardComponent } from "@localpass/components";
 
 @Component({
   selector: "read-only-cipher-card",

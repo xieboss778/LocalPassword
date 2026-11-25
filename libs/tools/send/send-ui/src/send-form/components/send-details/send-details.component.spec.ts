@@ -5,25 +5,25 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   asDatePreset,
   isDatePreset,
   SendDeletionDatePreset,
-} from "@bitwarden/common/tools/models/send-deletion-date-preset";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { CredentialGeneratorService } from "@bitwarden/generator-core";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/tools/models/send-deletion-date-preset";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { DialogService, ToastService } from "@localpass/components";
+import { CredentialGeneratorService } from "@localpass/generator-core";
+import { LogService } from "@localpass/logging";
 
 import { SendPolicyService } from "../../../services/send-policy.service";
 import { SendFormGenerationService } from "../../abstractions/send-form-generation.service";
@@ -74,7 +74,7 @@ describe("SendDetailsComponent", () => {
 
   beforeEach(async () => {
     mockEnvironmentService.environment$ = of({
-      getSendUrl: () => "https://send.bitwarden.com/",
+      getSendUrl: () => "https://send.local.invalid/",
     } as any);
     mockAccountService.activeAccount$ = of({ id: "userId" } as Account);
     mockConfigService.getFeatureFlag$.mockReturnValue(of(false));

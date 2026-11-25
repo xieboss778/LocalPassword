@@ -1,23 +1,23 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
-import { newGuid } from "@bitwarden/guid";
-import { PasswordRepromptService } from "@bitwarden/vault";
+import { UserVerificationDialogComponent } from "@localpass/auth/angular";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { FakeAccountService, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService } from "@localpass/components";
+import { newGuid } from "@localpass/guid";
+import { PasswordRepromptService } from "@localpass/vault";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports
 import { SetPinComponent } from "./../../auth/popup/components/set-pin.component";
 import { Fido2UserVerificationService } from "./fido2-user-verification.service";
 
-jest.mock("@bitwarden/auth/angular", () => ({
+jest.mock("@localpass/auth/angular", () => ({
   UserVerificationDialogComponent: {
     open: jest.fn().mockResolvedValue({ userAction: "confirm", verificationSuccess: true }),
   },

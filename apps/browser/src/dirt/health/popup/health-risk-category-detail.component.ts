@@ -5,25 +5,25 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
-import { IconComponent as AppVaultIconComponent } from "@bitwarden/angular/vault/components/icon.component";
-import { NoCredentialsIcon, ReportExposedPasswords, LockIcon } from "@bitwarden/assets/svg";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherHealthView } from "@bitwarden/common/dirt/models/view";
+import { IconComponent as AppVaultIconComponent } from "@localpass/angular/vault/components/icon.component";
+import { NoCredentialsIcon, ReportExposedPasswords, LockIcon } from "@localpass/assets/svg";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherHealthView } from "@localpass/common/dirt/models/view";
 import {
   isRiskCategory,
   RiskCategory,
   VAULT_HEALTH_REPORT_IDLE,
   VaultHealthReportStatus,
-} from "@bitwarden/common/dirt/vault-health/models";
-import { VaultHealthReportService } from "@bitwarden/common/dirt/vault-health/services";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+} from "@localpass/common/dirt/vault-health/models";
+import { VaultHealthReportService } from "@localpass/common/dirt/vault-health/services";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 import {
   ItemModule,
   SectionComponent,
@@ -39,9 +39,9 @@ import {
   SvgComponent,
   ScrollLayoutDirective,
   CompactModeService,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { PasswordRepromptService } from "@bitwarden/vault";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";

@@ -4,9 +4,9 @@ import { AbstractControl, FormGroup, ReactiveFormsModule } from "@angular/forms"
 import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ToastService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ToastService } from "@localpass/components";
 
 import {
   ImportOnePasswordComponent,

@@ -1,5 +1,5 @@
-import { ExtensionMetadata, ExtensionStorageKey } from "@bitwarden/common/tools/extension/type";
-import { IdentityConstraint } from "@bitwarden/common/tools/state/identity-state-constraint";
+import { ExtensionMetadata, ExtensionStorageKey } from "@localpass/common/tools/extension/type";
+import { IdentityConstraint } from "@localpass/common/tools/state/identity-state-constraint";
 
 import { getForwarderConfiguration } from "../../data";
 import { Forwarder } from "../../engine/forwarder";

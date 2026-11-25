@@ -4,8 +4,8 @@ import { firstValueFrom } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LoginStrategyServiceAbstraction } from "@localpass/auth/common";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 /**
  * Guard that ensures there is an active login session before allowing access

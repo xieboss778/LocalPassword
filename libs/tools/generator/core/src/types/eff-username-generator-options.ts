@@ -1,4 +1,4 @@
-import { IntegrationRequest } from "@bitwarden/common/tools/integration/rpc";
+import { IntegrationRequest } from "@localpass/common/tools/integration/rpc";
 
 /** Settings supported when generating a username using the EFF word list */
 export type EffUsernameGenerationOptions = {

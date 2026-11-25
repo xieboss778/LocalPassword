@@ -2,31 +2,31 @@ import { Component, EventEmitter, Output } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GeneratorModule } from "@bitwarden/generator-components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GeneratorModule } from "@localpass/generator-components";
 
 import { CipherFormGeneratorComponent } from "../../..";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-password-generator",
   template: `<ng-content></ng-content>`,
 })
 class MockPasswordGeneratorComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onGenerated = new EventEmitter();
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-username-generator",
   template: `<ng-content></ng-content>`,
 })
 class MockUsernameGeneratorComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onGenerated = new EventEmitter();
 }

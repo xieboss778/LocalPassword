@@ -2,14 +2,14 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
 import {
   EnvironmentService,
   Environment,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 
@@ -17,7 +17,7 @@ import { ExtensionSsoComponentService } from "./extension-sso-component.service"
 
 describe("ExtensionSsoComponentService", () => {
   let service: ExtensionSsoComponentService;
-  const baseUrl = "https://vault.bitwarden.com";
+  const baseUrl = "https://vault.local.invalid";
 
   let syncService: MockProxy<SyncService>;
   let authService: MockProxy<AuthService>;

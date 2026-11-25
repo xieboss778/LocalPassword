@@ -27,7 +27,7 @@ import {
   DefaultOrganizationUserService,
   OrganizationUserApiService,
   OrganizationUserService,
-} from "@bitwarden/admin-console/common";
+} from "@localpass/admin-console/common";
 import {
   AuthRequestService,
   AuthRequestServiceAbstraction,
@@ -36,142 +36,142 @@ import {
   DefaultLoginStrategyCacheService,
   DefaultLoginStrategySessionTimeoutService,
   UserDecryptionOptionsService,
-} from "@bitwarden/auth/common";
+} from "@localpass/auth/common";
 import {
   AutomaticUserConfirmationService,
   DefaultAutomaticUserConfirmationService,
-} from "@bitwarden/auto-confirm";
-import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
-import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
-import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
-import { InternalPolicyService as InternalPolicyServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { DefaultOrganizationService } from "@bitwarden/common/admin-console/services/organization/default-organization.service";
-import { DefaultPolicyService } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
-import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
-import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestAnsweringService } from "@bitwarden/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
-import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
-import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
-import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
-import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { AuthServerNotificationTags } from "@bitwarden/common/auth/enums/auth-server-notification-tags";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+} from "@localpass/auto-confirm";
+import { ApiService as ApiServiceAbstraction } from "@localpass/common/abstractions/api.service";
+import { AuditService as AuditServiceAbstraction } from "@localpass/common/abstractions/audit.service";
+import { InternalOrganizationServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/policy/policy-api.service.abstraction";
+import { InternalPolicyService as InternalPolicyServiceAbstraction } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { DefaultOrganizationService } from "@localpass/common/admin-console/services/organization/default-organization.service";
+import { DefaultPolicyService } from "@localpass/common/admin-console/services/policy/default-policy.service";
+import { PolicyApiService } from "@localpass/common/admin-console/services/policy/policy-api.service";
+import { AccountService as AccountServiceAbstraction } from "@localpass/common/auth/abstractions/account.service";
+import { AuthRequestAnsweringService } from "@localpass/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
+import { AuthService as AuthServiceAbstraction } from "@localpass/common/auth/abstractions/auth.service";
+import { AvatarService as AvatarServiceAbstraction } from "@localpass/common/auth/abstractions/avatar.service";
+import { DevicesServiceAbstraction } from "@localpass/common/auth/abstractions/devices/devices.service.abstraction";
+import { DevicesApiServiceAbstraction } from "@localpass/common/auth/abstractions/devices-api.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { TokenService as TokenServiceAbstraction } from "@localpass/common/auth/abstractions/token.service";
+import { UserVerificationApiServiceAbstraction } from "@localpass/common/auth/abstractions/user-verification/user-verification-api.service.abstraction";
+import { UserVerificationService as UserVerificationServiceAbstraction } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AuthServerNotificationTags } from "@localpass/common/auth/enums/auth-server-notification-tags";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 import {
   AuthRequestApiServiceAbstraction,
   DefaultAuthRequestApiService,
-} from "@bitwarden/common/auth/login-via-auth-request";
-import { DefaultLogoutService, LogoutReason } from "@bitwarden/common/auth/logout";
-import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
-import { PendingAuthRequestsStateService } from "@bitwarden/common/auth/services/auth-request-answering/pending-auth-requests.state";
-import { AuthService } from "@bitwarden/common/auth/services/auth.service";
-import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
-import { DefaultActiveUserAccessor } from "@bitwarden/common/auth/services/default-active-user.accessor";
-import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
-import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
-import { SsoLoginService } from "@bitwarden/common/auth/services/sso-login/sso-login.service";
-import { TokenService } from "@bitwarden/common/auth/services/token.service";
-import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
-import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
+} from "@localpass/common/auth/login-via-auth-request";
+import { DefaultLogoutService, LogoutReason } from "@localpass/common/auth/logout";
+import { AccountServiceImplementation } from "@localpass/common/auth/services/account.service";
+import { PendingAuthRequestsStateService } from "@localpass/common/auth/services/auth-request-answering/pending-auth-requests.state";
+import { AuthService } from "@localpass/common/auth/services/auth.service";
+import { AvatarService } from "@localpass/common/auth/services/avatar.service";
+import { DefaultActiveUserAccessor } from "@localpass/common/auth/services/default-active-user.accessor";
+import { DevicesServiceImplementation } from "@localpass/common/auth/services/devices/devices.service.implementation";
+import { DevicesApiServiceImplementation } from "@localpass/common/auth/services/devices-api.service.implementation";
+import { SsoLoginService } from "@localpass/common/auth/services/sso-login/sso-login.service";
+import { TokenService } from "@localpass/common/auth/services/token.service";
+import { UserVerificationApiService } from "@localpass/common/auth/services/user-verification/user-verification-api.service";
+import { UserVerificationService } from "@localpass/common/auth/services/user-verification/user-verification.service";
 import {
   DefaultSsoJitProvisionFinishService,
   SsoJitProvisionFinishApiService,
   SsoJitProvisionFinishService,
-} from "@bitwarden/common/auth/sso-jit-provision-finish";
+} from "@localpass/common/auth/sso-jit-provision-finish";
 import {
   AutofillSettingsService,
   AutofillSettingsServiceAbstraction,
-} from "@bitwarden/common/autofill/services/autofill-settings.service";
+} from "@localpass/common/autofill/services/autofill-settings.service";
 import {
   BadgeSettingsService,
   BadgeSettingsServiceAbstraction,
-} from "@bitwarden/common/autofill/services/badge-settings.service";
+} from "@localpass/common/autofill/services/badge-settings.service";
 import {
   DefaultDomainSettingsService,
   DomainSettingsService,
-} from "@bitwarden/common/autofill/services/domain-settings.service";
+} from "@localpass/common/autofill/services/domain-settings.service";
 import {
   UserNotificationSettingsService,
   UserNotificationSettingsServiceAbstraction,
-} from "@bitwarden/common/autofill/services/user-notification-settings.service";
-import { isUrlInList } from "@bitwarden/common/autofill/utils";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
+} from "@localpass/common/autofill/services/user-notification-settings.service";
+import { isUrlInList } from "@localpass/common/autofill/utils";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { DefaultBillingAccountProfileStateService } from "@localpass/common/billing/services/account/billing-account-profile-state.service";
 import {
   EventUploadService as EventUploadServiceAbstraction,
   EventCollectionService as EventCollectionServiceAbstraction,
-} from "@bitwarden/common/dirt/event-logs";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs/services/event-collection.service";
-import { EventUploadService } from "@bitwarden/common/dirt/event-logs/services/event-upload.service";
-import { PhishingDetectionSettingsServiceAbstraction } from "@bitwarden/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
-import { HibpApiService } from "@bitwarden/common/dirt/services/hibp-api.service";
-import { PhishingDetectionSettingsService } from "@bitwarden/common/dirt/services/phishing-detection/phishing-detection-settings.service";
-import { ClientType } from "@bitwarden/common/enums";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { DefaultAccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/default-account-cryptographic-state.service";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { DeviceTrustService } from "@bitwarden/common/key-management/device-trust/services/device-trust.service.implementation";
-import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/services/key-connector.service";
-import { MasterPasswordUnlockService } from "@bitwarden/common/key-management/master-password/abstractions/master-password-unlock.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { DefaultMasterPasswordUnlockService } from "@bitwarden/common/key-management/master-password/services/default-master-password-unlock.service";
-import { MasterPasswordService } from "@bitwarden/common/key-management/master-password/services/master-password.service";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { PinService } from "@bitwarden/common/key-management/pin/pin.service.implementation";
-import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/process-reload";
+} from "@localpass/common/dirt/event-logs";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs/services/event-collection.service";
+import { EventUploadService } from "@localpass/common/dirt/event-logs/services/event-upload.service";
+import { PhishingDetectionSettingsServiceAbstraction } from "@localpass/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
+import { HibpApiService } from "@localpass/common/dirt/services/hibp-api.service";
+import { PhishingDetectionSettingsService } from "@localpass/common/dirt/services/phishing-detection/phishing-detection-settings.service";
+import { ClientType } from "@localpass/common/enums";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { DefaultAccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/default-account-cryptographic-state.service";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { DeviceTrustService } from "@localpass/common/key-management/device-trust/services/device-trust.service.implementation";
+import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/services/key-connector.service";
+import { MasterPasswordUnlockService } from "@localpass/common/key-management/master-password/abstractions/master-password-unlock.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { DefaultMasterPasswordUnlockService } from "@localpass/common/key-management/master-password/services/default-master-password-unlock.service";
+import { MasterPasswordService } from "@localpass/common/key-management/master-password/services/master-password.service";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { PinService } from "@localpass/common/key-management/pin/pin.service.implementation";
+import { ProcessReloadServiceAbstraction } from "@localpass/common/key-management/process-reload";
 import {
   SharedUnlockPeerService,
   SharedUnlockSettingsService,
   DefaultSharedUnlockSettingsService,
-} from "@bitwarden/common/key-management/shared-unlock";
-import { DefaultSharedUnlockPeerService } from "@bitwarden/common/key-management/shared-unlock/default-shared-unlock-peer.service";
-import { V2UpgradeTokenStateService } from "@bitwarden/common/key-management/upgrade-token/abstractions/v2-upgrade-token-state.service.abstraction";
-import { DefaultV2UpgradeTokenStateService } from "@bitwarden/common/key-management/upgrade-token/services/default-v2-upgrade-token-state.service";
+} from "@localpass/common/key-management/shared-unlock";
+import { DefaultSharedUnlockPeerService } from "@localpass/common/key-management/shared-unlock/default-shared-unlock-peer.service";
+import { V2UpgradeTokenStateService } from "@localpass/common/key-management/upgrade-token/abstractions/v2-upgrade-token-state.service.abstraction";
+import { DefaultV2UpgradeTokenStateService } from "@localpass/common/key-management/upgrade-token/services/default-v2-upgrade-token-state.service";
 import {
   DefaultVaultTimeoutSettingsService,
   VaultTimeoutSettingsService,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
+} from "@localpass/common/key-management/vault-timeout";
 import {
   AnimationControlService,
   DefaultAnimationControlService,
-} from "@bitwarden/common/platform/abstractions/animation-control.service";
-import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { AvailableRegionsService } from "@bitwarden/common/platform/abstractions/available-regions.service";
-import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { RegionConfig } from "@bitwarden/common/platform/abstractions/environment.service";
-import { Fido2ActiveRequestManager as Fido2ActiveRequestManagerAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
-import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
-import { Fido2ClientService as Fido2ClientServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
-import { Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
-import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
-import { GovModeService } from "@bitwarden/common/platform/abstractions/gov-mode.service";
-import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService as LogServiceAbstraction } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { RegisterSdkService } from "@bitwarden/common/platform/abstractions/sdk/register-sdk.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
+} from "@localpass/common/platform/abstractions/animation-control.service";
+import { AppIdService as AppIdServiceAbstraction } from "@localpass/common/platform/abstractions/app-id.service";
+import { AvailableRegionsService } from "@localpass/common/platform/abstractions/available-regions.service";
+import { ConfigApiServiceAbstraction } from "@localpass/common/platform/abstractions/config/config-api.service.abstraction";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { RegionConfig } from "@localpass/common/platform/abstractions/environment.service";
+import { Fido2ActiveRequestManager as Fido2ActiveRequestManagerAbstraction } from "@localpass/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
+import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@localpass/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
+import { Fido2ClientService as Fido2ClientServiceAbstraction } from "@localpass/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+import { Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction } from "@localpass/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
+import { FileUploadService as FileUploadServiceAbstraction } from "@localpass/common/platform/abstractions/file-upload/file-upload.service";
+import { GovModeService } from "@localpass/common/platform/abstractions/gov-mode.service";
+import { I18nService as I18nServiceAbstraction } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService as LogServiceAbstraction } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { RegisterSdkService } from "@localpass/common/platform/abstractions/sdk/register-sdk.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { StateService as StateServiceAbstraction } from "@localpass/common/platform/abstractions/state.service";
 import {
   AbstractStorageService,
   ObservableStorageService,
-} from "@bitwarden/common/platform/abstractions/storage.service";
-import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/platform/abstractions/system.service";
-import { ActionsService } from "@bitwarden/common/platform/actions/actions-service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
+} from "@localpass/common/platform/abstractions/storage.service";
+import { SystemService as SystemServiceAbstraction } from "@localpass/common/platform/abstractions/system.service";
+import { ActionsService } from "@localpass/common/platform/actions/actions-service";
+import { IpcService } from "@localpass/common/platform/ipc";
 import {
   IntraprocessMessageSender,
   MessageListener,
   MessageSender,
-} from "@bitwarden/common/platform/messaging";
-import { ServerNotificationsService } from "@bitwarden/common/platform/server-notifications";
+} from "@localpass/common/platform/messaging";
+import { ServerNotificationsService } from "@localpass/common/platform/server-notifications";
 // eslint-disable-next-line no-restricted-imports -- Needed for service creation
 import {
   DefaultServerNotificationsService,
@@ -179,100 +179,100 @@ import {
   UnsupportedWebPushConnectionService,
   WebPushNotificationsApiService,
   WorkerWebPushConnectionService,
-} from "@bitwarden/common/platform/server-notifications/internal";
-import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
-import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
-import { DefaultConfigService } from "@bitwarden/common/platform/services/config/default-config.service";
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { DefaultAvailableRegionsService } from "@bitwarden/common/platform/services/default-available-regions.service";
-import { DefaultGovModeService } from "@bitwarden/common/platform/services/default-gov-mode.service";
-import { Fido2ActiveRequestManager } from "@bitwarden/common/platform/services/fido2/fido2-active-request-manager";
-import { Fido2AuthenticatorService } from "@bitwarden/common/platform/services/fido2/fido2-authenticator.service";
-import { Fido2ClientService } from "@bitwarden/common/platform/services/fido2/fido2-client.service";
-import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
-import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
-import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
-import { DefaultSdkClientFactory } from "@bitwarden/common/platform/services/sdk/default-sdk-client-factory";
-import { DefaultSdkService } from "@bitwarden/common/platform/services/sdk/default-sdk.service";
-import { NoopSdkClientFactory } from "@bitwarden/common/platform/services/sdk/noop-sdk-client-factory";
-import { DefaultRegisterSdkService } from "@bitwarden/common/platform/services/sdk/register-sdk.service";
-import { SystemService } from "@bitwarden/common/platform/services/system.service";
-import { PrimarySecondaryStorageService } from "@bitwarden/common/platform/storage/primary-secondary-storage.service";
-import { WindowStorageService } from "@bitwarden/common/platform/storage/window-storage.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
+} from "@localpass/common/platform/server-notifications/internal";
+import { AppIdService } from "@localpass/common/platform/services/app-id.service";
+import { ConfigApiService } from "@localpass/common/platform/services/config/config-api.service";
+import { DefaultConfigService } from "@localpass/common/platform/services/config/default-config.service";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
+import { ContainerService } from "@localpass/common/platform/services/container.service";
+import { DefaultAvailableRegionsService } from "@localpass/common/platform/services/default-available-regions.service";
+import { DefaultGovModeService } from "@localpass/common/platform/services/default-gov-mode.service";
+import { Fido2ActiveRequestManager } from "@localpass/common/platform/services/fido2/fido2-active-request-manager";
+import { Fido2AuthenticatorService } from "@localpass/common/platform/services/fido2/fido2-authenticator.service";
+import { Fido2ClientService } from "@localpass/common/platform/services/fido2/fido2-client.service";
+import { FileUploadService } from "@localpass/common/platform/services/file-upload/file-upload.service";
+import { MigrationBuilderService } from "@localpass/common/platform/services/migration-builder.service";
+import { MigrationRunner } from "@localpass/common/platform/services/migration-runner";
+import { DefaultSdkClientFactory } from "@localpass/common/platform/services/sdk/default-sdk-client-factory";
+import { DefaultSdkService } from "@localpass/common/platform/services/sdk/default-sdk.service";
+import { NoopSdkClientFactory } from "@localpass/common/platform/services/sdk/noop-sdk-client-factory";
+import { DefaultRegisterSdkService } from "@localpass/common/platform/services/sdk/register-sdk.service";
+import { SystemService } from "@localpass/common/platform/services/system.service";
+import { PrimarySecondaryStorageService } from "@localpass/common/platform/storage/primary-secondary-storage.service";
+import { WindowStorageService } from "@localpass/common/platform/storage/window-storage.service";
+import { SyncService } from "@localpass/common/platform/sync";
 // eslint-disable-next-line no-restricted-imports -- Needed for service creation
-import { DefaultSyncService } from "@bitwarden/common/platform/sync/internal";
-import { SystemNotificationsService } from "@bitwarden/common/platform/system-notifications/";
-import { SystemNotificationEvent } from "@bitwarden/common/platform/system-notifications/system-notifications.service";
-import { UnsupportedSystemNotificationsService } from "@bitwarden/common/platform/system-notifications/unsupported-system-notifications.service";
-import { DefaultThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common/provider";
-import { ProviderService } from "@bitwarden/common/provider/services/provider.service";
-import { AuditService } from "@bitwarden/common/services/audit.service";
-import { KeyServiceLegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/key-service-legacy-encryptor-provider";
-import { buildExtensionRegistry } from "@bitwarden/common/tools/extension/factory";
+import { DefaultSyncService } from "@localpass/common/platform/sync/internal";
+import { SystemNotificationsService } from "@localpass/common/platform/system-notifications/";
+import { SystemNotificationEvent } from "@localpass/common/platform/system-notifications/system-notifications.service";
+import { UnsupportedSystemNotificationsService } from "@localpass/common/platform/system-notifications/unsupported-system-notifications.service";
+import { DefaultThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { ProviderService as ProviderServiceAbstraction } from "@localpass/common/provider";
+import { ProviderService } from "@localpass/common/provider/services/provider.service";
+import { AuditService } from "@localpass/common/services/audit.service";
+import { KeyServiceLegacyEncryptorProvider } from "@localpass/common/tools/cryptography/key-service-legacy-encryptor-provider";
+import { buildExtensionRegistry } from "@localpass/common/tools/extension/factory";
 import {
   PasswordStrengthService,
   PasswordStrengthServiceAbstraction,
-} from "@bitwarden/common/tools/password-strength";
-import { createSystemServiceProvider } from "@bitwarden/common/tools/providers";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
-import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { SendDecryptionService } from "@bitwarden/common/tools/send/services/send-decryption.service";
-import { SendStateProvider } from "@bitwarden/common/tools/send/services/send-state.provider";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service";
-import { InternalSendService as InternalSendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { UserId } from "@bitwarden/common/types/guid";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
-import { CipherEncryptionService } from "@bitwarden/common/vault/abstractions/cipher-encryption.service";
-import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
-import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
-import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
-import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/vault/abstractions/search.service";
-import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
-import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { ExtensionPageUrls } from "@bitwarden/common/vault/enums";
+} from "@localpass/common/tools/password-strength";
+import { createSystemServiceProvider } from "@localpass/common/tools/providers";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service";
+import { SendApiService as SendApiServiceAbstraction } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { SendDecryptionService } from "@localpass/common/tools/send/services/send-decryption.service";
+import { SendStateProvider } from "@localpass/common/tools/send/services/send-state.provider";
+import { SendService } from "@localpass/common/tools/send/services/send.service";
+import { InternalSendService as InternalSendServiceAbstraction } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { UserId } from "@localpass/common/types/guid";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
+import { CipherEncryptionService } from "@localpass/common/vault/abstractions/cipher-encryption.service";
+import { CipherSdkService } from "@localpass/common/vault/abstractions/cipher-sdk.service";
+import { CipherService as CipherServiceAbstraction } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@localpass/common/vault/abstractions/file-upload/cipher-file-upload.service";
+import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder-api.service.abstraction";
+import { InternalFolderService as InternalFolderServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { SearchService as SearchServiceAbstraction } from "@localpass/common/vault/abstractions/search.service";
+import { TotpService as TotpServiceAbstraction } from "@localpass/common/vault/abstractions/totp.service";
+import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
+import { ExtensionPageUrls } from "@localpass/common/vault/enums";
 import {
   DefaultEndUserNotificationService,
   EndUserNotificationService,
-} from "@bitwarden/common/vault/notifications";
+} from "@localpass/common/vault/notifications";
 import {
   CipherAuthorizationService,
   DefaultCipherAuthorizationService,
-} from "@bitwarden/common/vault/services/cipher-authorization.service";
-import { DefaultCipherSdkService } from "@bitwarden/common/vault/services/cipher-sdk.service";
-import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
-import { DefaultChangeLoginPasswordService } from "@bitwarden/common/vault/services/default-change-login-password.service";
-import { DefaultCipherEncryptionService } from "@bitwarden/common/vault/services/default-cipher-encryption.service";
-import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
-import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
-import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
-import { NoopRevealedCipherService } from "@bitwarden/common/vault/services/noop-revealed-cipher.service";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { SearchService } from "@bitwarden/common/vault/services/search.service";
-import { TotpService } from "@bitwarden/common/vault/services/totp.service";
-import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
-import { DefaultTaskService, TaskService } from "@bitwarden/common/vault/tasks";
+} from "@localpass/common/vault/services/cipher-authorization.service";
+import { DefaultCipherSdkService } from "@localpass/common/vault/services/cipher-sdk.service";
+import { CipherService } from "@localpass/common/vault/services/cipher.service";
+import { DefaultChangeLoginPasswordService } from "@localpass/common/vault/services/default-change-login-password.service";
+import { DefaultCipherEncryptionService } from "@localpass/common/vault/services/default-cipher-encryption.service";
+import { CipherFileUploadService } from "@localpass/common/vault/services/file-upload/cipher-file-upload.service";
+import { FolderApiService } from "@localpass/common/vault/services/folder/folder-api.service";
+import { FolderService } from "@localpass/common/vault/services/folder/folder.service";
+import { NoopRevealedCipherService } from "@localpass/common/vault/services/noop-revealed-cipher.service";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { SearchService } from "@localpass/common/vault/services/search.service";
+import { TotpService } from "@localpass/common/vault/services/totp.service";
+import { VaultSettingsService } from "@localpass/common/vault/services/vault-settings/vault-settings.service";
+import { DefaultTaskService, TaskService } from "@localpass/common/vault/tasks";
 import {
   createCredentialGeneratorService,
   createRandomizer,
   CredentialGeneratorService,
   Type,
-} from "@bitwarden/generator-core";
+} from "@localpass/generator-core";
 import {
   GeneratorHistoryService,
   LocalGeneratorHistoryService,
-} from "@bitwarden/generator-history";
+} from "@localpass/generator-history";
 import {
   legacyPasswordGenerationServiceFactory,
   legacyUsernameGenerationServiceFactory,
   PasswordGenerationServiceAbstraction,
   UsernameGenerationServiceAbstraction,
-} from "@bitwarden/generator-legacy";
+} from "@localpass/generator-legacy";
 import {
   DefaultImportMetadataService,
   ImportApiService,
@@ -280,7 +280,7 @@ import {
   ImportMetadataServiceAbstraction,
   ImportService,
   ImportServiceAbstraction,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 import {
   BiometricStateService,
   DefaultBiometricStateService,
@@ -288,7 +288,7 @@ import {
   DefaultKeyService,
   KdfConfigService,
   KeyService as KeyServiceAbstraction,
-} from "@bitwarden/key-management";
+} from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService as CryptoFunctionServiceAbstraction,
@@ -299,22 +299,22 @@ import {
   KeyGenerationService,
   LegacyCompatKeyService as LegacyCompatKeyServiceAbstraction,
   WebCryptoFunctionService,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 import {
   CreateLocalAccountService,
   DefaultLocalVaultWriter,
   LocalAccountService,
-  LocalPasswordApiService,
+  LocalPassApiService,
   LocalVaultNetworkGate,
-} from "@bitwarden/local-vault";
-import { FlightRecorderLogRecorder, limitPerformanceMeasurements } from "@bitwarden/logging";
+} from "@localpass/local-vault";
+import { FlightRecorderLogRecorder, limitPerformanceMeasurements } from "@localpass/logging";
 import {
   DefaultManagedSettingsService,
   DevManagedSettingsService,
   ManagedSettingsService,
-} from "@bitwarden/managed-settings";
-import { BackgroundSyncService } from "@bitwarden/platform/background-sync";
-import { FlightRecorderClient } from "@bitwarden/sdk-internal";
+} from "@localpass/managed-settings";
+import { BackgroundSyncService } from "@localpass/platform/background-sync";
+import { FlightRecorderClient } from "@localpass/sdk-internal";
 import {
   ActiveUserStateProvider,
   DerivedStateProvider,
@@ -322,7 +322,7 @@ import {
   SingleUserStateProvider,
   StateEventRunnerService,
   StateProvider,
-} from "@bitwarden/state";
+} from "@localpass/state";
 import {
   DefaultActiveUserStateProvider,
   DefaultGlobalStateProvider,
@@ -332,8 +332,8 @@ import {
   DefaultStateProvider,
   DefaultStateService,
   InlineDerivedStateProvider,
-} from "@bitwarden/state-internal";
-import { AutoUnlockService, DefaultAutoUnlockService, LockService } from "@bitwarden/unlock";
+} from "@localpass/state-internal";
+import { AutoUnlockService, DefaultAutoUnlockService, LockService } from "@localpass/unlock";
 import {
   IndividualVaultExportService,
   IndividualVaultExportServiceAbstraction,
@@ -343,7 +343,7 @@ import {
   VaultExportApiService,
   VaultExportService,
   VaultExportServiceAbstraction,
-} from "@bitwarden/vault-export-core";
+} from "@localpass/vault-export-core";
 
 import { ExtensionAuthRequestAnsweringService } from "../auth/services/auth-request-answering/extension-auth-request-answering.service";
 import { AuthStatusBadgeUpdaterService } from "../auth/services/auth-status-badge-updater.service";
@@ -561,7 +561,7 @@ export default class MainBackground {
   stateEventRunnerService: StateEventRunnerService;
   ssoLoginService: SsoLoginServiceAbstraction;
   billingAccountProfileStateService: BillingAccountProfileStateService;
-  // `#` rather than `private` because this instance is assigned to `self.bitwardenMain`, where
+  // `#` rather than `private` because this instance is assigned to `self.localpassMain`, where
   // an erased annotation would leave the channel ambient
   readonly #intraprocessMessageSender: IntraprocessMessageSender;
   // Retained because `OverlayBackground` is constructed lazily, outside this constructor's scope.
@@ -977,7 +977,7 @@ export default class MainBackground {
 
     this.networkGate = new LocalVaultNetworkGate();
 
-    this.apiService = new LocalPasswordApiService(
+    this.apiService = new LocalPassApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
@@ -2007,7 +2007,7 @@ export default class MainBackground {
     this.overlayNotificationsBackground.init();
     this.commandsBackground.init();
     this.contextMenusBackground?.init();
-    // Disable the side panel globally on startup so Bitwarden does not appear in
+    // Disable the side panel globally on startup so LocalPass does not appear in
     // Chrome's side panel picker. It is enabled per-tab on demand when the user
     // triggers autofill triage via the context menu.
     if (BrowserApi.isSidePanelApiSupported) {
@@ -2021,7 +2021,7 @@ export default class MainBackground {
 
     // If the user is logged out, switch to the next account
     // TODO: PM-44635 - Use AccountSwitcherService.resolveActiveAccount() from
-    // @bitwarden/common/auth/account-switcher, which never picks a logged-out account.
+    // @localpass/common/auth/account-switcher, which never picks a logged-out account.
     const active = await firstValueFrom(this.accountService.activeAccount$);
     if (active != null) {
       const authStatus = await firstValueFrom(
@@ -2165,7 +2165,7 @@ export default class MainBackground {
     await this.eventUploadService.uploadEvents(userBeingLoggedOut);
 
     // TODO: PM-44635 - Use AccountSwitcherService.nextSwitchableAccount$ from
-    // @bitwarden/common/auth/account-switcher, which never picks a logged-out account.
+    // @localpass/common/auth/account-switcher, which never picks a logged-out account.
     const newActiveUser =
       userBeingLoggedOut === activeUserId
         ? await firstValueFrom(this.accountService.nextUpAccount$.pipe(map((a) => a?.id)))

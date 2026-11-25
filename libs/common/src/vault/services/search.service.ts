@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable } from "rxjs";
 
-import { measured, PerfTrackGroup } from "@bitwarden/logging";
+import { measured, PerfTrackGroup } from "@localpass/logging";
 
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { LogService } from "../../platform/abstractions/log.service";

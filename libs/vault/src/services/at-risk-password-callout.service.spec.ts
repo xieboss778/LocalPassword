@@ -1,15 +1,15 @@
 import { TestBed } from "@angular/core/testing";
 import { firstValueFrom, of } from "rxjs";
 
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import {
   SecurityTask,
   SecurityTaskStatus,
   SecurityTaskType,
   TaskService,
-} from "@bitwarden/common/vault/tasks";
-import { StateProvider } from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/common/vault/tasks";
+import { StateProvider } from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 import { FakeSingleUserState } from "../../../common/spec/fake-state";
 

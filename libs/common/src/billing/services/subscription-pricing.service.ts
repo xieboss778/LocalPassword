@@ -11,7 +11,7 @@ import {
 } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { FeatureFlag } from "../../enums/feature-flag.enum";
 import { ListResponse } from "../../models/response/list.response";

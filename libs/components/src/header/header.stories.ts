@@ -8,9 +8,9 @@ import {
   StoryObj,
 } from "@storybook/angular";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { enabledFlags } from "@bitwarden/storybook";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { enabledFlags } from "@localpass/storybook";
 
 import {
   AvatarModule,

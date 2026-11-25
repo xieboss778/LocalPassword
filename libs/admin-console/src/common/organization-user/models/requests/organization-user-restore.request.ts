@@ -1,4 +1,4 @@
-import { EncString } from "@bitwarden/sdk-internal";
+import { EncString } from "@localpass/sdk-internal";
 
 export class OrganizationUserRestoreRequest {
   defaultUserCollectionName: EncString | undefined;

@@ -3,8 +3,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormGroupDirective } from "@angular/forms";
 import { BehaviorSubject, catchError, filter, of, switchMap } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 
 import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
 

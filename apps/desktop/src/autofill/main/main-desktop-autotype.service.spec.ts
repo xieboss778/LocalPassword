@@ -1,7 +1,7 @@
 import { globalShortcut } from "electron";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { WindowMain } from "../../main/window.main";
 import { DEFAULT_KEYBOARD_SHORTCUT } from "../models/main-autotype-keyboard-shortcut";

@@ -1,7 +1,7 @@
 //! Secure password storage and retrieval using platform keychains.
 //!
 //! Builds with the `file_secure_storage` feature swap the keychain for a plaintext file when
-//! `BITWARDEN_SECURE_STORAGE_FILE` is set, so debug runs do not overwrite the production app's
+//! `LOCALPASS_SECURE_STORAGE_FILE` is set, so debug runs do not overwrite the production app's
 //! entries:
 //!
 //! ```text
@@ -25,7 +25,7 @@ compile_error!("File secure storage is only available in debug builds");
 
 /// Env var holding the path of the debug password file.
 #[cfg(feature = "file_secure_storage")]
-const DEBUG_FILE_ENV: &str = "BITWARDEN_SECURE_STORAGE_FILE";
+const DEBUG_FILE_ENV: &str = "LOCALPASS_SECURE_STORAGE_FILE";
 
 #[cfg(feature = "file_secure_storage")]
 mod file;

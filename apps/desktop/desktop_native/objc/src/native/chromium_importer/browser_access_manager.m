@@ -20,7 +20,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _bookmarkKey = @"com.bitwarden.chromiumImporter.bookmarks";
+        _bookmarkKey = @"com.localpass.chromiumImporter.bookmarks";
         _activeURLs = [NSMutableDictionary dictionary];
     }
     return self;

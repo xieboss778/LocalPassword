@@ -4,19 +4,19 @@ import { Component, DestroyRef, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { combineLatest, lastValueFrom, map } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { SendId } from "@bitwarden/common/types/guid";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { ButtonModule, DialogRef, DialogService, ToastService } from "@bitwarden/components";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { SendId } from "@localpass/common/types/guid";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { ButtonModule, DialogRef, DialogService, ToastService } from "@localpass/components";
 import {
   NewSendDropdownV2Component,
   SendItemsService,
@@ -31,12 +31,12 @@ import {
   SendFormConfig,
   SendTableV2Component,
   removeSendAuthI18nKeys,
-} from "@bitwarden/send-ui";
+} from "@localpass/send-ui";
 
 import { DesktopPremiumUpgradePromptService } from "../../../billing/services/desktop-premium-upgrade-prompt.service";
 import { DesktopHeaderComponent } from "../../layout/header";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-send",

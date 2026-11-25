@@ -1,5 +1,5 @@
-import { OrganizationExportResponse } from "@bitwarden/common/admin-console/models/response/organization-export.response";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { OrganizationExportResponse } from "@localpass/common/admin-console/models/response/organization-export.response";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 export abstract class VaultExportApiService {
   /**

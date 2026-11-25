@@ -1,4 +1,4 @@
-import { newGuid } from "@bitwarden/guid";
+import { newGuid } from "@localpass/guid";
 
 import { CollectionId, OrganizationId } from "../../types/guid";
 import { TreeNode } from "../../vault/models/domain/tree-node";

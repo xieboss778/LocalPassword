@@ -17,7 +17,7 @@ import {
 } from "@angular/forms";
 import { EMPTY, filter, merge, Observable, switchMap } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { BitFormControlAbstraction } from "./form-control.abstraction";
 

@@ -156,7 +156,7 @@ mod tests {
 
     #[test]
     fn announces_firefox() {
-        let manifest = r"C:\Users\me\AppData\Roaming\Bitwarden\browsers\firefox.json";
+        let manifest = r"C:\Users\me\AppData\Roaming\LocalPass\browsers\firefox.json";
         let extension = "gmobddgobjdhbjhedhgaeekhgchkoncm";
 
         assert_eq!(
@@ -210,7 +210,7 @@ mod tests {
     fn rejects_other_messages() {
         assert!(ClientAnnouncement::from_string(r#"{"command":"connected"}"#).is_err());
         assert!(ClientAnnouncement::from_string(
-            r#"{"type":"bitwarden-ipc-message","message":{}}"#
+            r#"{"type":"localpass-ipc-message","message":{}}"#
         )
         .is_err());
         assert!(ClientAnnouncement::from_string(r#"{"clientType":"web"}"#).is_err());

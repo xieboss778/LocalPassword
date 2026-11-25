@@ -29,7 +29,7 @@ export class PasswordStrengthService implements PasswordStrengthServiceAbstracti
       return null;
     }
     const globalUserInputs = [
-      "bitwarden",
+      "localpass",
       "bit",
       "warden",
       ...(userInputs ?? []),

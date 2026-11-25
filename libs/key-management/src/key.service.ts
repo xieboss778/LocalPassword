@@ -13,25 +13,25 @@ import {
   switchMap,
 } from "rxjs";
 
-import { EncryptedOrganizationKeyData } from "@bitwarden/common/admin-console/models/data/encrypted-organization-key.data";
-import { BaseEncryptedOrganizationKey } from "@bitwarden/common/admin-console/models/domain/encrypted-organization-key";
-import { ProfileOrganizationResponse } from "@bitwarden/common/admin-console/models/response/profile-organization.response";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { USER_KEY } from "@bitwarden/common/key-management/state-definitions";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { asUuid, SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { convertValues } from "@bitwarden/common/platform/misc/convert-values";
-import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "@bitwarden/common/platform/services/key-state/org-keys.state";
-import { USER_ENCRYPTED_PROVIDER_KEYS } from "@bitwarden/common/platform/services/key-state/provider-keys.state";
-import { USER_EVER_HAD_USER_KEY } from "@bitwarden/common/platform/services/key-state/user-key.state";
-import { StateProvider } from "@bitwarden/common/platform/state";
+import { EncryptedOrganizationKeyData } from "@localpass/common/admin-console/models/data/encrypted-organization-key.data";
+import { BaseEncryptedOrganizationKey } from "@localpass/common/admin-console/models/domain/encrypted-organization-key";
+import { ProfileOrganizationResponse } from "@localpass/common/admin-console/models/response/profile-organization.response";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { USER_KEY } from "@localpass/common/key-management/state-definitions";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { asUuid, SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { convertValues } from "@localpass/common/platform/misc/convert-values";
+import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "@localpass/common/platform/services/key-state/org-keys.state";
+import { USER_ENCRYPTED_PROVIDER_KEYS } from "@localpass/common/platform/services/key-state/provider-keys.state";
+import { USER_EVER_HAD_USER_KEY } from "@localpass/common/platform/services/key-state/user-key.state";
+import { StateProvider } from "@localpass/common/platform/state";
 import {
   ProfileProviderOrganizationResponse,
   ProfileProviderResponse,
-} from "@bitwarden/common/provider";
-import { OrganizationId, ProviderId, UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/provider";
+import { OrganizationId, ProviderId, UserId } from "@localpass/common/types/guid";
 import {
   OrgKey,
   UserKey,
@@ -39,7 +39,7 @@ import {
   ProviderKey,
   UserPrivateKey,
   UserPublicKey,
-} from "@bitwarden/common/types/key";
+} from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
@@ -47,9 +47,9 @@ import {
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { measured, PerfTrackGroup } from "@bitwarden/logging";
-import { UnsignedSharedKey, WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { measured, PerfTrackGroup } from "@localpass/logging";
+import { UnsignedSharedKey, WrappedAccountCryptographicState } from "@localpass/sdk-internal";
 
 import {
   CipherDecryptionKeys,
@@ -67,7 +67,7 @@ export class DefaultKeyService implements KeyServiceAbstraction {
    * will NOT emit any value if there is no active user.
    *
    * @deprecated Use {@link orgKeys$} with a required {@link UserId} instead.
-   * TODO to be removed with https://bitwarden.atlassian.net/browse/PM-23623
+   * TODO to be removed with https://localpass.atlassian.net/browse/PM-23623
    */
   private readonly activeUserOrgKeys$: Observable<Record<OrganizationId, OrgKey>>;
 

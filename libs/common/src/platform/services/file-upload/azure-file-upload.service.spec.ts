@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer } from "@bitwarden/legacy-crypto";
+import { EncArrayBuffer } from "@localpass/legacy-crypto";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { UploadOptions } from "../../abstractions/file-upload/file-upload.service";

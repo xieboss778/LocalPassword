@@ -1,9 +1,9 @@
 import { Directive, ElementRef, HostBinding, Input, Renderer2 } from "@angular/core";
 
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { BitwardenIcon } from "@bitwarden/components";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { LocalPassIcon } from "@localpass/components";
 
-export function getOrgIconForTier(tier: ProductTierType): BitwardenIcon {
+export function getOrgIconForTier(tier: ProductTierType): LocalPassIcon {
   switch (tier) {
     case ProductTierType.Free:
     case ProductTierType.Families:
@@ -23,10 +23,10 @@ export type OrgIconSize = "default" | "small" | "large";
   selector: "[appOrgIcon]",
 })
 export class OrgIconDirective {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) tierType!: ProductTierType;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() size?: OrgIconSize = "default";
 
@@ -48,7 +48,7 @@ export class OrgIconDirective {
     }
   }
 
-  get orgIcon(): BitwardenIcon {
+  get orgIcon(): LocalPassIcon {
     return getOrgIconForTier(this.tierType);
   }
 

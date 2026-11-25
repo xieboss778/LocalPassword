@@ -1,4 +1,4 @@
-import { Cipher as SdkCipher } from "@bitwarden/sdk-internal";
+import { Cipher as SdkCipher } from "@localpass/sdk-internal";
 
 import { SdkRecordMapper } from "../../../platform/services/sdk/client-managed-state";
 import { UserKeyDefinition } from "../../../platform/state";

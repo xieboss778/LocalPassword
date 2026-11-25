@@ -1,5 +1,5 @@
-import { UserKey } from "@bitwarden/common/types/key";
-import { UserId } from "@bitwarden/user-core";
+import { UserKey } from "@localpass/common/types/key";
+import { UserId } from "@localpass/user-core";
 
 /**
  * Service for unlocking vault using WebAuthn PRF.

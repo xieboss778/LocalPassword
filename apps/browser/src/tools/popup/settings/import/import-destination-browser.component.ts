@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { ImportStagingServiceAbstraction } from "@bitwarden/importer-core";
+import { ImportStagingServiceAbstraction } from "@localpass/importer-core";
 import {
   ImportDestinationComponent,
   ImportUpgradeProviders,
   importTypeFromRoute,
-} from "@bitwarden/importer-ui";
+} from "@localpass/importer-ui";
 
 import {
   IMPORT_CONFIRMATION_ROUTE_PATH,

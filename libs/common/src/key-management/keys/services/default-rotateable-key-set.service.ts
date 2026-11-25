@@ -3,7 +3,7 @@ import {
   EncryptService,
   LegacyCompatKeyService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import { Utils } from "../../../platform/misc/utils";
 import { RotateableKeySet } from "../models/rotateable-key-set";

@@ -3,7 +3,7 @@ import { contextBridge } from "electron";
 import { ipc } from "./preload.base";
 
 /**
- * Bitwarden Preload script.
+ * LocalPass Preload script.
  *
  * This file contains the "glue" between the main process and the renderer process. Please ensure
  * that you have read through the following articles before modifying any preload script.

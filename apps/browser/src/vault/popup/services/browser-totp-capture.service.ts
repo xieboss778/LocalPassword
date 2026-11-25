@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import qrcodeParser from "qrcode-parser";
 
-import { TotpCaptureService } from "@bitwarden/vault";
+import { TotpCaptureService } from "@localpass/vault";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/browser/browser-popup-utils";

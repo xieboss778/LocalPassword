@@ -5,13 +5,13 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ClientType } from "@bitwarden/client-type";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserKey } from "@bitwarden/common/types/key";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ClientType } from "@localpass/client-type";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserKey } from "@localpass/common/types/key";
 import {
   AsyncActionsModule,
   BUTTON_SPINNER_DELAY_MS,
@@ -20,14 +20,14 @@ import {
   FormFieldModule,
   IconButtonModule,
   ToastService,
-} from "@bitwarden/components";
-import { BiometricsStatus, KeyService } from "@bitwarden/key-management";
+} from "@localpass/components";
+import { BiometricsStatus, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { CommandDefinition, MessageListener } from "@bitwarden/messaging";
-import { UnlockService } from "@bitwarden/unlock";
-import { UserId } from "@bitwarden/user-core";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { CommandDefinition, MessageListener } from "@localpass/messaging";
+import { UnlockService } from "@localpass/unlock";
+import { UserId } from "@localpass/user-core";
 
 import { UnlockOptions } from "../../services/lock-component.service";
 import { WebAuthnPrfUnlockService } from "../../services/webauthn-prf-unlock.service";

@@ -1,7 +1,7 @@
 import { catchError, concatMap, firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer } from "@bitwarden/legacy-crypto";
+import { EncArrayBuffer } from "@localpass/legacy-crypto";
 import {
   AuthEdit,
   PasswordManagerClient,
@@ -12,7 +12,7 @@ import {
   SendId as SdkSendId,
   SendView as SdkSendView,
   SendViewType,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { AccountService } from "../../../auth/abstractions/account.service";

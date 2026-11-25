@@ -24,23 +24,23 @@ import {
 } from "@angular/forms";
 import { concatMap, EMPTY, ObservableInput } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   DESKTOP_APP_URI_PREFIX,
   DesktopAutotypePairingUri,
-} from "@bitwarden/common/desktop-native/models/desktop-autotype-pairing-uri";
+} from "@localpass/common/desktop-native/models/desktop-autotype-pairing-uri";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
-} from "@bitwarden/common/models/domain/domain-service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+} from "@localpass/common/models/domain/domain-service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   DialogService,
   FormFieldModule,
   IconButtonModule,
   SelectComponent,
   SelectModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormHTTPAuthenticationService } from "../../services/cipher-form-http-authentication.service";
 
@@ -55,7 +55,7 @@ export const DesktopAppRow = Object.freeze({
 } as const);
 export type DesktopAppRow = (typeof DesktopAppRow)[keyof typeof DesktopAppRow];
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-autofill-uri-option",
@@ -81,12 +81,12 @@ export type DesktopAppRow = (typeof DesktopAppRow)[keyof typeof DesktopAppRow];
   ],
 })
 export class UriOptionComponent implements ControlValueAccessor {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild("uriInput")
   private inputElement: ElementRef<HTMLInputElement>;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild("matchDetectionSelect")
   private matchDetectionSelect: SelectComponent<UriMatchStrategySetting>;
@@ -122,7 +122,7 @@ export class UriOptionComponent implements ControlValueAccessor {
    * app's name, and its value is the Desktop Autotype Pairing URI string saved as the login URI.
    */
   // TODO: Add the apps that can be paired to the options for new desktop app URIs. This will be
-  // implemented in https://bitwarden.atlassian.net/browse/PM-38788
+  // implemented in https://localpass.atlassian.net/browse/PM-38788
   protected readonly appOptions = computed(() => {
     const savedAppOption = this.savedAppOption();
     return savedAppOption == null ? [] : [savedAppOption];
@@ -151,7 +151,7 @@ export class UriOptionComponent implements ControlValueAccessor {
   /**
    * Whether the option can be reordered. If false, the reorder button will be hidden.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true })
   canReorder: boolean;
@@ -159,7 +159,7 @@ export class UriOptionComponent implements ControlValueAccessor {
   /**
    * Whether the URI can be removed from the form. If false, the remove button will be hidden.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true })
   canRemove: boolean;
@@ -167,7 +167,7 @@ export class UriOptionComponent implements ControlValueAccessor {
   /**
    * The user's current default match detection strategy. Will be displayed in () after "Default"
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true })
   set defaultMatchDetection(value: UriMatchStrategySetting) {
@@ -185,7 +185,7 @@ export class UriOptionComponent implements ControlValueAccessor {
   /**
    * The index of the URI in the form. Used to render the correct label.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) index: number;
 
@@ -203,7 +203,7 @@ export class UriOptionComponent implements ControlValueAccessor {
    */
   readonly desktopAppRow = input<DesktopAppRow | null>(null);
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   onKeydown = new EventEmitter<KeyboardEvent>();
@@ -211,7 +211,7 @@ export class UriOptionComponent implements ControlValueAccessor {
   /**
    * Emits when the remove button is clicked and URI should be removed from the form.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   remove = new EventEmitter<void>();

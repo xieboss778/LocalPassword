@@ -1,6 +1,6 @@
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { UserId } from "@bitwarden/common/types/guid";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { UserId } from "@localpass/common/types/guid";
 
 import { OrganizationUserApiService } from "../abstractions";
 import {

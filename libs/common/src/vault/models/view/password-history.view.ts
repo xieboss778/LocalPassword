@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { PasswordHistoryView as SdkPasswordHistoryView } from "@bitwarden/sdk-internal";
+import { PasswordHistoryView as SdkPasswordHistoryView } from "@localpass/sdk-internal";
 
 import { View } from "../../../models/view/view";
 import { Password } from "../domain/password";

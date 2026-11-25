@@ -3,25 +3,25 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { ToastService } from "@bitwarden/components";
+import { FileDownloadService } from "@localpass/common/platform/abstractions/file-download/file-download.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { CipherSdkService } from "@localpass/common/vault/abstractions/cipher-sdk.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { AttachmentView } from "@localpass/common/vault/models/view/attachment.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { ToastService } from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { DECRYPT_ERROR, EncArrayBuffer, EncryptService } from "@bitwarden/legacy-crypto";
-import { isCipherGetAttachmentDownloadUrlError } from "@bitwarden/sdk-internal";
+import { DECRYPT_ERROR, EncArrayBuffer, EncryptService } from "@localpass/legacy-crypto";
+import { isCipherGetAttachmentDownloadUrlError } from "@localpass/sdk-internal";
 
 import { PasswordRepromptService } from "../../services/password-reprompt.service";
 
 import { DownloadAttachmentComponent } from "./download-attachment.component";
 
-jest.mock("@bitwarden/sdk-internal", () => ({
-  ...jest.requireActual("@bitwarden/sdk-internal"),
+jest.mock("@localpass/sdk-internal", () => ({
+  ...jest.requireActual("@localpass/sdk-internal"),
   isCipherAdminGetAttachmentDownloadUrlError: jest.fn().mockReturnValue(false),
   isCipherGetAttachmentDownloadUrlError: jest.fn().mockReturnValue(false),
 }));

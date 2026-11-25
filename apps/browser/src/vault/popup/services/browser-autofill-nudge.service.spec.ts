@@ -2,12 +2,12 @@ import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { NudgeStatus, NudgeType } from "@bitwarden/angular/vault";
-import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { NudgeStatus, NudgeType } from "@localpass/angular/vault";
+import { AccountInfo, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../../../libs/common/spec";
 import { BrowserApi } from "../../../platform/browser/browser-api";

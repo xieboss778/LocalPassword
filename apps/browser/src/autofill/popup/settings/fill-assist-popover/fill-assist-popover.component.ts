@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { A11yTitleDirective, IconModule, LinkModule, PopoverModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { A11yTitleDirective, IconModule, LinkModule, PopoverModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 @Component({
   selector: "autofill-fill-assist-popover",
@@ -15,6 +15,6 @@ export class FillAssistPopoverComponent {
 
   openLearnMore(e: Event) {
     e.preventDefault();
-    this.platformUtilService.launchUri("https://bitwarden.com/help/fill-assist/");
+    this.platformUtilService.launchUri("https://github.com/xieboss778/LocalPass/tree/main/docs");
   }
 }

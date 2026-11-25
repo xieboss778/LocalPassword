@@ -4,9 +4,9 @@ import { By } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalStateProvider } from "@bitwarden/state";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalStateProvider } from "@localpass/state";
 
 import { TOOLTIP_DELAY_MS } from "../tooltip";
 import { I18nMockService } from "../utils/i18n-mock.service";

@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
-import { CopyableCipherFields } from "@bitwarden/sdk-internal";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { IconButtonModule, ItemModule, MenuModule } from "@localpass/components";
+import { CopyableCipherFields } from "@localpass/sdk-internal";
 
 import { CopyFieldAction } from "../../services/copy-cipher-field.service";
 import { CopyCipherFieldDirective } from "../copy-cipher-field.directive";

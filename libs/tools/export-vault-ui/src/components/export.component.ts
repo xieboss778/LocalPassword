@@ -33,25 +33,25 @@ import {
   tap,
 } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { PasswordStrengthV2Component } from "@bitwarden/angular/tools/password-strength/password-strength-v2.component";
-import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { ClientType } from "@bitwarden/common/enums";
-import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { getById } from "@bitwarden/common/platform/misc";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { pin } from "@bitwarden/common/tools/rx";
-import { isId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionService } from "@localpass/admin-console/common";
+import { PasswordStrengthV2Component } from "@localpass/angular/tools/password-strength/password-strength-v2.component";
+import { UserVerificationDialogComponent } from "@localpass/auth/angular";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { ClientType } from "@localpass/common/enums";
+import { FileDownloadService } from "@localpass/common/platform/abstractions/file-download/file-download.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { getById } from "@localpass/common/platform/misc";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { pin } from "@localpass/common/tools/rx";
+import { isId, OrganizationId } from "@localpass/common/types/guid";
 import {
   AsyncActionsModule,
   BitSubmitDirective,
@@ -64,21 +64,21 @@ import {
   RadioButtonModule,
   SelectModule,
   ToastService,
-} from "@bitwarden/components";
-import { GeneratorServicesModule } from "@bitwarden/generator-components";
-import { CredentialGeneratorService, GenerateRequest, Type } from "@bitwarden/generator-core";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { GeneratorServicesModule } from "@localpass/generator-components";
+import { CredentialGeneratorService, GenerateRequest, Type } from "@localpass/generator-core";
+import { I18nPipe } from "@localpass/ui-common";
 import {
   ExportedVault,
   ExportFormatMetadata,
   VaultExportServiceAbstraction,
-} from "@bitwarden/vault-export-core";
+} from "@localpass/vault-export-core";
 
 import { EncryptedExportType } from "../enums/encrypted-export-type.enum";
 
 import { ExportScopeDescriptionComponent } from "./export-scope-description.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-export",
@@ -176,7 +176,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
    * Emits true when the BitSubmitDirective({@link bitSubmit} is executing {@link submit} and false when execution has completed.
    * Example: Used to show the loading state of the submit button present on the hosting component
    * */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   formLoading = new EventEmitter<boolean>();
@@ -185,7 +185,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
    * Emits true when this form gets disabled and false when enabled.
    * Example: Used to disable the submit button, which is present on the hosting component
    * */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   formDisabled = new EventEmitter<boolean>();
@@ -195,7 +195,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
    * - Emits an undefined when exporting from an individual vault
    * - Emits the organizationId when exporting from an organizational vault
    * */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   onSuccessfulExport = new EventEmitter<OrganizationId | undefined>();

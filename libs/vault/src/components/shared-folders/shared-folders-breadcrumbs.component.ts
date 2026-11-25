@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core";
 
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { BreadcrumbsModule, IconTileComponent, IconTileOptions } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { BreadcrumbsModule, IconTileComponent, IconTileOptions } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { orgIconTile } from "../../models/vault-icon-tile";
 import { vaultScopeCommands, VaultScopeType } from "../../models/vault-scope";

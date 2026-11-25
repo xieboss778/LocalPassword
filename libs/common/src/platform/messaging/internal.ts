@@ -1,1 +1,1 @@
-export { SubjectMessageSender, tagAsExternal, getCommand } from "@bitwarden/messaging";
+export { SubjectMessageSender, tagAsExternal, getCommand } from "@localpass/messaging";

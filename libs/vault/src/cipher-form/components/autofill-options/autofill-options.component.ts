@@ -16,22 +16,22 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { AbstractControl, FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { filter, map, shareReplay, Subject, switchMap, take } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { AutotypeFeatureFlagState } from "@bitwarden/common/desktop-native/enums/autotype-feature-flag-state.enum";
-import { DESKTOP_APP_URI_PREFIX } from "@bitwarden/common/desktop-native/models/desktop-autotype-pairing-uri";
-import { autotypeFeatureFlagState$ } from "@bitwarden/common/desktop-native/services/autotype-feature-flags";
-import { ClientType, DeviceType } from "@bitwarden/common/enums";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { AutotypeFeatureFlagState } from "@localpass/common/desktop-native/enums/autotype-feature-flag-state.enum";
+import { DESKTOP_APP_URI_PREFIX } from "@localpass/common/desktop-native/models/desktop-autotype-pairing-uri";
+import { autotypeFeatureFlagState$ } from "@localpass/common/desktop-native/services/autotype-feature-flags";
+import { ClientType, DeviceType } from "@localpass/common/enums";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
-} from "@bitwarden/common/models/domain/domain-service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+} from "@localpass/common/models/domain/domain-service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   CardComponent,
   FormFieldModule,
@@ -41,7 +41,7 @@ import {
   SectionHeaderComponent,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormContainer } from "../../cipher-form-container";
 import { CipherFormHTTPAuthenticationService } from "../../services/cipher-form-http-authentication.service";
@@ -59,7 +59,7 @@ interface UriField {
  */
 const DESKTOP_APP_URI_MATCH_STRATEGY: UriMatchStrategySetting = UriMatchStrategy.Exact;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-autofill-options",
@@ -84,7 +84,7 @@ export class AutofillOptionsComponent implements OnInit {
   /**
    * List of rendered UriOptionComponents. Used for focusing newly added Uri inputs.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChildren(UriOptionComponent)
   protected uriOptions: QueryList<UriOptionComponent>;

@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { VendorId } from "@bitwarden/common/tools/extension";
-import { IntegrationId } from "@bitwarden/common/tools/integration";
-import { ApiSettings } from "@bitwarden/common/tools/integration/rpc";
+import { VendorId } from "@localpass/common/tools/extension";
+import { IntegrationId } from "@localpass/common/tools/integration";
+import { ApiSettings } from "@localpass/common/tools/integration/rpc";
 
 import { ForwarderConfiguration } from "../engine";
 import { AddyIo } from "../integration/addy-io";

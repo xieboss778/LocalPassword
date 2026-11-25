@@ -1,5 +1,5 @@
-// FIXME(https://bitwarden.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
-/* eslint-disable @bitwarden/components/enforce-readonly-angular-properties */
+// FIXME(https://localpass.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
+/* eslint-disable @localpass/components/enforce-readonly-angular-properties */
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { CommonModule } from "@angular/common";
 import {
@@ -19,23 +19,23 @@ import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { catchError, distinctUntilChanged, filter, map, of, skip, Subject, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { DeactivatedOrg } from "@bitwarden/assets/svg";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { WINDOW } from "@localpass/angular/services/injection-tokens";
+import { DeactivatedOrg } from "@localpass/assets/svg";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   BitCellComponent,
   BitCellDefDirective,
@@ -60,7 +60,7 @@ import {
   StatusLockupComponent,
   SvgComponent,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   EmptyVaultComponent,
   folderValues,
@@ -80,7 +80,7 @@ import {
   VaultNavService,
   VaultScopeType,
   Vfo1I18nPipe,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import BrowserPopupUtils from "../../../../../platform/browser/browser-popup-utils";
 import { ImportUpgradeNavigationService } from "../../../../../tools/popup/settings/import/import-upgrade-navigation.service";

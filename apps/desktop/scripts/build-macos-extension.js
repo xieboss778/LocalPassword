@@ -19,12 +19,11 @@ const paths = {
 /// App ID, so each channel signs with its own profiles. The Xcode project derives the bundle
 /// identifier, App Group and display name from `appId` and `productName`.
 ///
-/// Stable signs with the entitlements the Xcode project names for each configuration; beta passes
 /// its own copy, which differs only in naming beta's App Group.
 const channels = {
   stable: {
-    appId: "com.bitwarden.desktop",
-    productName: "Bitwarden",
+    appId: "com.localpass.desktop",
+    productName: "LocalPass",
     provisioningProfiles: {
       "mas-dev": "PM Stable Desktop-ExtAutofill Testing",
       mas: "PM Stable Desktop-ExtAutofill AppStore",
@@ -32,15 +31,13 @@ const channels = {
     },
   },
   beta: {
-    appId: "com.bitwarden.beta.desktop",
-    productName: "Bitwarden Beta",
+    appId: "com.localpass.desktop.beta",
+    productName: "LocalPass Beta",
     provisioningProfiles: {
       "mas-dev": "PM Beta Desktop-ExtAutofill Testing",
       mas: "PM Beta Desktop-ExtAutofill AppStore",
       mac: "PM Beta Desktop-ExtAutofill Distrib",
     },
-    // Relative to the Xcode project, as the project's own CODE_SIGN_ENTITLEMENTS are.
-    entitlements: "autofill-extension/autofill_extension.beta.entitlements",
   },
 };
 
@@ -98,19 +95,15 @@ async function buildMacOs() {
     "-alltargets",
     "-configuration",
     configuration,
-    "CODE_SIGN_INJECT_BASE_ENTITLEMENTS=NO",
-    "OTHER_CODE_SIGN_FLAGS='--timestamp'",
 
     // While these arguments are defined in the `configuration` file above, xcodebuild has a bug in it currently that requires these arguments
     // be explicitly defined in this call.
-    `CODE_SIGN_IDENTITY=${codeSignIdentity}`,
-    `PROVISIONING_PROFILE_SPECIFIER=${channel.provisioningProfiles[configurationArgument]}`,
 
     // A setting given on the command line outranks the target's own build settings, which is
     // what retargets the whole extension at the channel's app.
-    `BITWARDEN_APP_ID=${channel.appId}`,
-    `BITWARDEN_PRODUCT_NAME=${channel.productName}`,
-    ...(channel.entitlements ? [`CODE_SIGN_ENTITLEMENTS=${channel.entitlements}`] : []),
+    `CODE_SIGNING_ALLOWED=NO`,
+    `LOCALPASS_APP_ID=${channel.appId}`,
+    `LOCALPASS_PRODUCT_NAME=${channel.productName}`,
   ]);
   stdOutProc(proc);
   await new Promise((resolve, reject) =>
@@ -127,7 +120,7 @@ async function buildMacOs() {
   fse.mkdirSync(paths.extensionDistDir);
   fse.copySync(buildDirectory, paths.extensionDist);
 
-  // Delete the build dir, otherwise MacOS will load the extension from there instead of the Bitwarden.app bundle
+  // Delete the build dir, otherwise MacOS will load the extension from there instead of the LocalPass.app bundle
   fse.removeSync(paths.macosBuild);
 }
 

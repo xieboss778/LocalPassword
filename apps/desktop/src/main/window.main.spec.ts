@@ -7,9 +7,9 @@ import { app, BrowserWindow, ipcMain, session } from "electron";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, NEVER, of } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
-import { BiometricStateService } from "@bitwarden/key-management";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { AbstractStorageService } from "@localpass/common/platform/abstractions/storage.service";
+import { BiometricStateService } from "@localpass/key-management";
 
 import { SafeShell } from "../platform/main/safe-shell.main";
 import { ModalModeState } from "../platform/models/domain/window-state";
@@ -31,7 +31,7 @@ jest.mock("electron", () => ({
 
 // window.main.ts imports processisolations, which loads a native .node
 // module at import time.
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   processisolations: {
     isolateProcess: jest.fn(),
     isCoreDumpingDisabled: jest.fn(),
@@ -465,8 +465,8 @@ describe("isConfinedSnap", () => {
     readFileSync = jest.spyOn(fs, "readFileSync");
     setPlatform("linux");
     // Only the stable snap path is a valid default; each test sets what it needs.
-    setExecPath("/snap/bitwarden/x1/opt/Bitwarden/bitwarden");
-    setCgroup(confinedCgroup("bitwarden"));
+    setExecPath("/snap/localpass/x1/opt/LocalPass/localpass");
+    setCgroup(confinedCgroup("localpass"));
   });
 
   afterEach(() => {
@@ -486,34 +486,34 @@ describe("isConfinedSnap", () => {
   });
 
   it("returns true for the stable snap", () => {
-    setExecPath("/snap/bitwarden/x1/opt/Bitwarden/bitwarden");
-    setCgroup(confinedCgroup("bitwarden"));
+    setExecPath("/snap/localpass/x1/opt/LocalPass/localpass");
+    setCgroup(confinedCgroup("localpass"));
     expect(isConfinedSnap()).toBe(true);
   });
 
   it("returns true for the beta snap", () => {
-    setExecPath("/snap/bitwarden-beta/x1/opt/Bitwarden Beta/bitwarden");
-    setCgroup(confinedCgroup("bitwarden-beta"));
+    setExecPath("/snap/localpass-beta/x1/opt/LocalPass Beta/localpass");
+    setCgroup(confinedCgroup("localpass-beta"));
     expect(isConfinedSnap()).toBe(true);
   });
 
   // Fedora, Arch and openSUSE mount snaps at /var/lib/snapd/snap; execPath is canonicalized, so
   // it carries that root rather than the /snap compatibility symlink.
   it("returns true on distros that mount snaps outside /snap", () => {
-    setExecPath("/var/lib/snapd/snap/bitwarden/x1/opt/Bitwarden/bitwarden");
-    setCgroup(confinedCgroup("bitwarden"));
+    setExecPath("/var/lib/snapd/snap/localpass/x1/opt/LocalPass/localpass");
+    setCgroup(confinedCgroup("localpass"));
     expect(isConfinedSnap()).toBe(true);
   });
 
   it("returns false when execPath is outside a snap mount", () => {
-    setExecPath("/opt/Bitwarden/bitwarden");
+    setExecPath("/opt/LocalPass/localpass");
     expect(isConfinedSnap()).toBe(false);
   });
 
   // snapd's per-user data dir is user-writable, so a copy planted there must not pass as confined.
   it("returns false for a snap-lookalike path under the user's home", () => {
-    setExecPath("/home/user/snap/bitwarden/current/opt/Bitwarden/bitwarden");
-    setCgroup(confinedCgroup("bitwarden"));
+    setExecPath("/home/user/snap/localpass/current/opt/LocalPass/localpass");
+    setCgroup(confinedCgroup("localpass"));
     expect(isConfinedSnap()).toBe(false);
   });
 
@@ -524,12 +524,12 @@ describe("isConfinedSnap", () => {
   });
 
   it("does not read the cgroup when execPath already rules out a snap", () => {
-    setExecPath("/opt/Bitwarden/bitwarden");
+    setExecPath("/opt/LocalPass/localpass");
     isConfinedSnap();
     expect(readFileSync).not.toHaveBeenCalled();
   });
 
-  it("returns false when the cgroup does not name a bitwarden snap", () => {
+  it("returns false when the cgroup does not name a localpass snap", () => {
     setCgroup("0::/user.slice/user-1000.slice/session-2.scope\n");
     expect(isConfinedSnap()).toBe(false);
   });
@@ -545,9 +545,9 @@ describe("isConfinedSnap", () => {
   });
 
   it("is not fooled by snap env vars alone, unlike isSnapStore", () => {
-    setExecPath("/opt/Bitwarden/bitwarden");
-    process.env.SNAP = "/snap/bitwarden/x1";
-    process.env.SNAP_NAME = "bitwarden";
+    setExecPath("/opt/LocalPass/localpass");
+    process.env.SNAP = "/snap/localpass/x1";
+    process.env.SNAP_NAME = "localpass";
 
     expect(isConfinedSnap()).toBe(false);
     expect(isSnapStore()).toBe(true);

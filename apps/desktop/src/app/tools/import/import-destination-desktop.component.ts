@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { ImportStagingServiceAbstraction } from "@bitwarden/importer-core";
+import { ImportStagingServiceAbstraction } from "@localpass/importer-core";
 import {
   ImportDestinationComponent,
   ImportUpgradeProviders,
   importScopeFromQuery,
   importTypeFromRoute,
   navigateCarryingImportParams,
-} from "@bitwarden/importer-ui";
-import { vaultCommandsAfterImport } from "@bitwarden/vault";
+} from "@localpass/importer-ui";
+import { vaultCommandsAfterImport } from "@localpass/vault";
 
 @Component({
   templateUrl: "import-destination-desktop.component.html",

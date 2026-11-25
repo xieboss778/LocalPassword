@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { delay, of } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ActiveUserState, StateProvider } from "@bitwarden/state";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ActiveUserState, StateProvider } from "@localpass/state";
 
 import { DialogService } from "../../dialog";
 import { StorybookStateProvider } from "../../utils";

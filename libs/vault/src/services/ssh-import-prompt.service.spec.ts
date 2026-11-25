@@ -1,19 +1,19 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SshKeyApi } from "@bitwarden/common/vault/models/api/ssh-key.api";
-import { SshKeyData } from "@bitwarden/common/vault/models/data/ssh-key.data";
-import { DialogService, ToastService } from "@bitwarden/components";
-import * as sdkInternal from "@bitwarden/sdk-internal";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SshKeyApi } from "@localpass/common/vault/models/api/ssh-key.api";
+import { SshKeyData } from "@localpass/common/vault/models/data/ssh-key.data";
+import { DialogService, ToastService } from "@localpass/components";
+import * as sdkInternal from "@localpass/sdk-internal";
 
 import { DefaultSshImportPromptService } from "./default-ssh-import-prompt.service";
 
-jest.mock("@bitwarden/sdk-internal");
+jest.mock("@localpass/sdk-internal");
 
 const exampleSshKey = {
   privateKey: "private_key",

@@ -519,7 +519,7 @@ describe("TwoFactorApiService", () => {
         const mockResponse = {
           Options: {
             challenge: "Y2hhbGxlbmdlLXN0cmluZw",
-            rp: { name: "Bitwarden" },
+            rp: { name: "LocalPass" },
             user: {
               id: "dXNlci1pZA",
               name: "user@example.com",
@@ -544,7 +544,7 @@ describe("TwoFactorApiService", () => {
         expect(result).toBeInstanceOf(TwoFactorWebAuthnChallengeResponse);
         expect(result.options).toBeDefined();
         expect(result.options.challenge).toBeDefined();
-        expect(result.options.rp).toHaveProperty("name", "Bitwarden");
+        expect(result.options.rp).toHaveProperty("name", "LocalPass");
       });
     });
 

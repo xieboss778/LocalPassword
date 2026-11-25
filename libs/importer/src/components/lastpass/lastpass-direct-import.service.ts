@@ -4,17 +4,17 @@ import { Injectable, NgZone } from "@angular/core";
 import * as oauth from "oauth4webapi";
 import { Subject, firstValueFrom } from "rxjs";
 
-import { ClientType } from "@bitwarden/common/enums";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogService } from "@bitwarden/components";
+import { ClientType } from "@localpass/common/enums";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { BroadcasterService } from "@localpass/common/platform/abstractions/broadcaster.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { DialogService } from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
 
 import { ClientInfo, Vault } from "../../importers/lastpass/access";
 import { LastpassLoginType } from "../../importers/lastpass/access/enums";
@@ -281,7 +281,7 @@ export class LastPassDirectImportService {
   private getOidcRedirectUrlWithParams(oidcCode: string, oidcState: string) {
     const redirectUri = this.oidcFlow!.redirectUri;
     const params = "code=" + oidcCode + "&state=" + oidcState;
-    if (redirectUri.indexOf("bitwarden://") === 0) {
+    if (redirectUri.indexOf("localpass://") === 0) {
       return redirectUri + "/?" + params;
     }
 
@@ -291,7 +291,7 @@ export class LastPassDirectImportService {
   private async getOidcRedirectUrl() {
     const clientType = this.platformUtilsService.getClientType();
     if (clientType === ClientType.Desktop) {
-      return "bitwarden://import-callback-lp";
+      return "localpass://import-callback-lp";
     }
     const env = await firstValueFrom(this.environmentService.environment$);
     const webUrl = env.getWebVaultUrl();

@@ -1,6 +1,6 @@
 import { ValidatorFn, Validators } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 /** Keeper's email field uses the design's copy rather than the generic messages. */
 export function keeperEmailRequiredValidator(i18nService: I18nService): ValidatorFn {

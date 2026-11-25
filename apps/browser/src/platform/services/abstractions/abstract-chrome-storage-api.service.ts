@@ -6,7 +6,7 @@ import {
   AbstractStorageService,
   ObservableStorageService,
   StorageUpdateType,
-} from "@bitwarden/common/platform/abstractions/storage.service";
+} from "@localpass/common/platform/abstractions/storage.service";
 
 import { fromChromeEvent } from "../../browser/from-chrome-event";
 

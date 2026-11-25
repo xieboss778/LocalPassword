@@ -1,4 +1,4 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType } from "@localpass/common/vault/enums";
 
 /**
  * The `key` values for each filter chip in the vault table.

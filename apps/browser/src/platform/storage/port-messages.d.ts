@@ -1,7 +1,7 @@
 import {
   AbstractStorageService,
   StorageUpdate,
-} from "@bitwarden/common/platform/abstractions/storage.service";
+} from "@localpass/common/platform/abstractions/storage.service";
 
 type MemoryStoragePortMessage = {
   id?: string;

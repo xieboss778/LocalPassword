@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Constraints, StateConstraints } from "@bitwarden/common/tools/types";
+import { Constraints, StateConstraints } from "@localpass/common/tools/types";
 
 import { CatchallGenerationOptions } from "../types";
 

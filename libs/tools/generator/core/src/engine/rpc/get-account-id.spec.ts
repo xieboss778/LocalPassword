@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { ApiSettings, IntegrationRequest } from "@bitwarden/common/tools/integration/rpc";
+import { ApiSettings, IntegrationRequest } from "@localpass/common/tools/integration/rpc";
 
 import { GetAccountIdRpcDef, ForwarderConfiguration } from "../forwarder-configuration";
 import { ForwarderContext } from "../forwarder-context";

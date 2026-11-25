@@ -1,7 +1,7 @@
 import {
   VaultTimeoutNumberType,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
+} from "@localpass/common/key-management/vault-timeout";
 
 import { DesktopSessionTimeoutTypeService } from "./desktop-session-timeout-type.service";
 

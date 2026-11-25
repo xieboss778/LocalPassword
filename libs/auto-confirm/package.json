@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/auto-confirm",
+  "name": "@localpass/auto-confirm",
   "version": "0.0.1",
   "description": "auto confirm",
   "private": true,

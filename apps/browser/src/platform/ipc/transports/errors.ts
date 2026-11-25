@@ -1,1 +1,1 @@
-export { DESTINATION_UNREACHABLE_ERROR } from "@bitwarden/common/platform/ipc";
+export { DESTINATION_UNREACHABLE_ERROR } from "@localpass/common/platform/ipc";

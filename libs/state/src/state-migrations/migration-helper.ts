@@ -1,6 +1,6 @@
-import { ClientType } from "@bitwarden/client-type";
-import { LogService } from "@bitwarden/logging";
-import { AbstractStorageService } from "@bitwarden/storage-core";
+import { ClientType } from "@localpass/client-type";
+import { LogService } from "@localpass/logging";
+import { AbstractStorageService } from "@localpass/storage-core";
 
 export type StateDefinitionLike = { name: string };
 export type KeyDefinitionLike = {

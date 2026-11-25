@@ -1,6 +1,6 @@
 import { AfterViewInit, Directive, ElementRef, OnDestroy, inject } from "@angular/core";
 
-import { MenuTriggerForDirective } from "@bitwarden/components";
+import { MenuTriggerForDirective } from "@localpass/components";
 
 /**
  * Opens a row's overflow menu on right-click, anchored at the cursor.

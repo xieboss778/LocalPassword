@@ -1,4 +1,4 @@
-//! Bitwarden SSH Agent implementation.
+//! LocalPass SSH Agent implementation.
 //!
 //! Adheres to the protocol defined in the IETF spec:
 //! <https://datatracker.ietf.org/doc/draft-ietf-sshm-ssh-agent/>
@@ -6,13 +6,13 @@
 //! # Architecture:
 //! - `crypto` provides the raw cryptographic primitive objects and operations for supported SSH
 //!   keys.
-//! - `storage` provides data structures that bridge the primitive key types to Bitwarden's business
+//! - `storage` provides data structures that bridge the primitive key types to LocalPass's business
 //!   logic, namely the concept of vault items. As well as  the implementations of the objects to
 //!   manage and store the keys used in the agent's runtime.
 //! - `server` provides the low-level implementation of the Server protocol. It uses an
 //!   implementation of an `AuthPolicy` to get authorization for the various agent operations that
 //!   are received by connections.
-//! - `authorization` provides Bitwarden's business logic for the requested authorization from the
+//! - `authorization` provides LocalPass's business logic for the requested authorization from the
 //!   server, for the various agent operations.
 //! - `approval` provides an interface for the agent itself to request approval from an external
 //!   entity (currently, Electron via napi) to approve requests.
@@ -30,9 +30,9 @@ mod server;
 mod storage;
 
 // external exports for napi
-pub use agent::BitwardenSSHAgent;
+pub use agent::LocalPassSSHAgent;
 pub use approval::{ApprovalError, ApprovalRequester, SignApprovalRequest};
-pub use authorization::BitwardenAuthPolicy;
+pub use authorization::LocalPassAuthPolicy;
 pub use crypto::PublicKey;
 pub use server::{
     AuthRequest, ConnectionContext, SIGNamespace, SessionBindContext, SignFlags, SignRequest,

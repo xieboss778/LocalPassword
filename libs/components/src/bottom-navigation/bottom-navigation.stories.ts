@@ -14,8 +14,8 @@ import {
   SettingsInactive,
   VaultActive,
   VaultInactive,
-} from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+} from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { I18nMockService } from "../utils";
 

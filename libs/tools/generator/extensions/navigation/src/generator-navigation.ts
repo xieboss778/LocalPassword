@@ -1,5 +1,5 @@
-import { VendorId } from "@bitwarden/common/tools/extension";
-import { UsernameGeneratorType, CredentialAlgorithm } from "@bitwarden/generator-core";
+import { VendorId } from "@localpass/common/tools/extension";
+import { UsernameGeneratorType, CredentialAlgorithm } from "@localpass/generator-core";
 
 /** Stores credential generator UI state. */
 export type GeneratorNavigation = {

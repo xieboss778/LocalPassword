@@ -1,10 +1,10 @@
 import { filter, map, startWith, Subject, switchMap } from "rxjs";
 
-import { MessageListener } from "@bitwarden/common/platform/messaging";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
-import { perUserCache$ } from "@bitwarden/common/vault/utils/observable-utilities";
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { MessageListener } from "@localpass/common/platform/messaging";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/services/cipher.service";
+import { perUserCache$ } from "@localpass/common/vault/utils/observable-utilities";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 

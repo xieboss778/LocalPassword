@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { UserId } from "../../types/guid";
 
 /**
- * Holds state that represents a user's account with Bitwarden.
+ * Holds state that represents a user's account with LocalPass.
  * Any additions here should be added to the equality check in the AccountService
  * to ensure that emissions are done on every change.
  *
@@ -39,7 +39,7 @@ export abstract class AccountService {
    * return a logged-out account.
    *
    * @deprecated To choose an account to switch to, use `AccountSwitcherService.nextSwitchableAccount$`
-   * from `@bitwarden/common/auth/account-switcher`, which never returns a logged-out account.
+   * from `@localpass/common/auth/account-switcher`, which never returns a logged-out account.
    */
   abstract nextUpAccount$: Observable<Account>;
   /** Observable to display the header */

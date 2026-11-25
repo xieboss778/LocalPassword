@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ToastService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ToastService } from "@localpass/components";
 
 import { LASTPASS_IMPORT_PAGE_FOCUS } from "../../../lastpass/lastpass-import-page-focus";
 

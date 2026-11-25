@@ -3,21 +3,21 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   SectionHeaderComponent,
   TypographyModule,
   FormFieldModule,
   IconButtonModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CreditCardNumberPipe } from "../../pipes/credit-card-number.pipe";
 import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-cipher-card.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-card-details-view",
@@ -34,7 +34,7 @@ import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-
   ],
 })
 export class CardDetailsComponent implements OnChanges {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() cipher: CipherView;
   EventType = EventType;

@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 import {
   CipherType as SdkCipherType,
   UriMatchType,
@@ -9,7 +9,7 @@ import {
   LoginLinkedIdType,
   Cipher as SdkCipher,
   EncString as SdkEncString,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { mockFromJson } from "../../../../spec/utils";
 import { UriMatchStrategy } from "../../../models/domain/domain-service";

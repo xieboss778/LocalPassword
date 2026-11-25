@@ -26,36 +26,36 @@ import {
 } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CipherId, CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { CipherId, CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { ViewPasswordHistoryService } from "@localpass/common/vault/abstractions/view-password-history.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@localpass/common/vault/services/cipher-authorization.service";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   RestrictedCipherAction,
   RestrictedCipherPolicy,
-} from "@bitwarden/common/vault/utils/restricted-cipher-policy";
+} from "@localpass/common/vault/utils/restricted-cipher-policy";
 import {
   AsyncActionsModule,
   BitIconButtonComponent,
@@ -71,8 +71,8 @@ import {
   IconModule,
   ItemModule,
   ToastService,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CipherFormComponent, CipherFormConfig, CipherFormModule } from "../cipher-form";
 import {
@@ -147,7 +147,7 @@ export const VaultItemDialogResult = {
 
 export type VaultItemDialogResult = UnionOfValues<typeof VaultItemDialogResult>;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-item-dialog",

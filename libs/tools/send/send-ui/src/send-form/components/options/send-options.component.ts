@@ -12,7 +12,7 @@ import {
   Validators,
 } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   TypographyModule,
   AsyncActionsModule,
@@ -24,8 +24,8 @@ import {
   SectionComponent,
   SectionHeaderComponent,
   SelectModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SendPolicyService } from "../../..";
 import { SendFormService } from "../../abstractions/send-form.service";

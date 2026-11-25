@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 
 import { OrganizationInviteLinkView } from "../models/organization-invite-link.view";
 

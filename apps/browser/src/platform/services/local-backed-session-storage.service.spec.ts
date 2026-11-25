@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { FakeStorageService, makeEncString, makeSymmetricCryptoKey } from "@bitwarden/common/spec";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { FakeStorageService, makeEncString, makeSymmetricCryptoKey } from "@localpass/common/spec";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KeyGenerationService, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { StorageService } from "@bitwarden/storage-core";
+import { EncryptService, KeyGenerationService, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { StorageService } from "@localpass/storage-core";
 
 import { BrowserApi } from "../browser/browser-api";
 import { portName } from "../storage/port-name";
@@ -73,7 +73,7 @@ describe("SessionKeyResolveService", () => {
       expect(keyGenerationService.createKeyWithPurpose).toHaveBeenCalledWith(
         128,
         "ephemeral",
-        "bitwarden-ephemeral",
+        "localpass-ephemeral",
       );
       expect(result).toEqual(mockKey);
       expect(await storageService.get("session-key")).toEqual(mockKey.toJSON());

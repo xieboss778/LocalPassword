@@ -1,9 +1,9 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { Observable } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ScheduledTaskNames } from "@bitwarden/common/platform/scheduling";
-import { GlobalState, StateProvider } from "@bitwarden/common/platform/state";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ScheduledTaskNames } from "@localpass/common/platform/scheduling";
+import { GlobalState, StateProvider } from "@localpass/common/platform/state";
 
 import { createPortSpyMock } from "../../../autofill/spec/autofill-mocks";
 import {

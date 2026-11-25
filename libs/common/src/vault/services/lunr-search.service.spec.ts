@@ -1,4 +1,4 @@
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { LogService } from "../../platform/abstractions/log.service";
 import { OrganizationId, UserId } from "../../types/guid";

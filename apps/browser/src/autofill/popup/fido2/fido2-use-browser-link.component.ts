@@ -2,18 +2,18 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { MenuModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { NeverDomains } from "@localpass/common/models/domain/domain-service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { MenuModule } from "@localpass/components";
 
 import { fido2PopoutSessionData$ } from "../../../vault/popup/utils/fido2-popout-session-data";
 import { BrowserFido2UserInterfaceSession } from "../../fido2/services/browser-fido2-user-interface.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-fido2-use-browser-link",

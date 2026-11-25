@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component, importProvidersFrom } from "@angula
 import { RouterModule } from "@angular/router";
 import { StoryObj, Meta, moduleMetadata, applicationConfig } from "@storybook/angular";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { enabledFlags } from "@bitwarden/storybook";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalStateProvider } from "@localpass/state";
+import { enabledFlags } from "@localpass/storybook";
 
 import { ChipActionComponent } from "../chips";
 import { LayoutComponent } from "../layout";

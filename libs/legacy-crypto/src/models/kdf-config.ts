@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
-import { assertNonNullish } from "@bitwarden/common/auth/utils";
-import { RangeWithDefault } from "@bitwarden/common/platform/misc/range-with-default";
-import { Kdf } from "@bitwarden/sdk-internal";
+import { assertNonNullish } from "@localpass/common/auth/utils";
+import { RangeWithDefault } from "@localpass/common/platform/misc/range-with-default";
+import { Kdf } from "@localpass/sdk-internal";
 
 import { KdfType } from "../enums/kdf-type.enum";
 

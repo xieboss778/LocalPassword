@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer, EncString } from "@bitwarden/legacy-crypto";
+import { EncArrayBuffer, EncString } from "@localpass/legacy-crypto";
 
 import { FileUploadType } from "../../enums";
 

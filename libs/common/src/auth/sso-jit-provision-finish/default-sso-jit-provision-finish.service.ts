@@ -7,7 +7,7 @@ import {
   RegistrationClient,
   TdeRegistrationResponse,
   UserId as SdkUserId,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { FeatureFlag } from "../../enums/feature-flag.enum";
 import { ConfigService } from "../../platform/abstractions/config/config.service";

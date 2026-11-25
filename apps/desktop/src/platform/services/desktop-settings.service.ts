@@ -5,7 +5,7 @@
     by the platform team. Other settings should be added to the relevant service
     owned by the team that owns the setting.
 
-    More info: https://bitwarden.atlassian.net/browse/PM-23126
+    More info: https://localpass.atlassian.net/browse/PM-23126
 */
 
 import { Observable, map } from "rxjs";
@@ -15,8 +15,8 @@ import {
   KeyDefinition,
   StateProvider,
   UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { SshAgentPromptType } from "../../autofill/models/ssh-agent-setting";
 import { isDev } from "../../utils";
@@ -87,7 +87,7 @@ export class DesktopSettingsService {
 
   private readonly runInBackground = this.stateProvider.getGlobal(RUN_IN_BACKGROUND_KEY);
   /**
-   * The application setting for whether or not Bitwarden should keep running in the background.
+   * The application setting for whether or not LocalPass should keep running in the background.
    *
    * When enabled, the system tray icon is shown and closing the window hides the
    * application to the tray (keeping background features such as the SSH agent and
@@ -175,7 +175,7 @@ export class DesktopSettingsService {
   }
 
   /**
-   * Sets the setting for whether or not Bitwarden should keep running in the background.
+   * Sets the setting for whether or not LocalPass should keep running in the background.
    * @param value `true` if the application should show the tray and hide to it when the window
    * is closed, `false` if closing the window should quit the application.
    */

@@ -4,16 +4,16 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { DialogService, ToastService } from "@localpass/components";
 
 import { Loader } from "../../metadata";
 import { ImportOption, ImportResult } from "../../models";

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { LocalUserDataKey } from "@bitwarden/legacy-crypto";
+import { LocalUserDataKey } from "@localpass/legacy-crypto";
 
 import { CRYPTO_DISK, UserKeyDefinition } from "../../state";
 

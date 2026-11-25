@@ -1,23 +1,23 @@
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestAnsweringService } from "@bitwarden/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthServerNotificationTags } from "@bitwarden/common/auth/enums/auth-server-notification-tags";
-import { DefaultAuthRequestAnsweringService } from "@bitwarden/common/auth/services/auth-request-answering/default-auth-request-answering.service";
-import { PendingAuthRequestsStateService } from "@bitwarden/common/auth/services/auth-request-answering/pending-auth-requests.state";
-import { MasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ActionsService } from "@bitwarden/common/platform/actions";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthRequestAnsweringService } from "@localpass/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthServerNotificationTags } from "@localpass/common/auth/enums/auth-server-notification-tags";
+import { DefaultAuthRequestAnsweringService } from "@localpass/common/auth/services/auth-request-answering/default-auth-request-answering.service";
+import { PendingAuthRequestsStateService } from "@localpass/common/auth/services/auth-request-answering/pending-auth-requests.state";
+import { MasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ActionsService } from "@localpass/common/platform/actions";
 import {
   ButtonLocation,
   SystemNotificationEvent,
   SystemNotificationsService,
-} from "@bitwarden/common/platform/system-notifications/system-notifications.service";
-import { LogService } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/common/platform/system-notifications/system-notifications.service";
+import { LogService } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 export class ExtensionAuthRequestAnsweringService
   extends DefaultAuthRequestAnsweringService

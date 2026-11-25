@@ -20,9 +20,9 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
 import { of } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { drawerSizeToWidthRem } from "../dialog/dialog/dialog.component";
 import { DrawerService } from "../dialog/drawer.service";
@@ -35,9 +35,9 @@ import { LayoutFooterService } from "./layout-footer.service";
 import { MAIN_CONTENT_MIN_WIDTH_REM } from "./layout-metrics";
 import { ScrollLayoutHostDirective } from "./scroll-layout.directive";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // The drawer and footer portal outlets create component views inside this template, so OnPush
-// here skips any Default-CD content they host. See https://bitwarden.atlassian.net/browse/PM-47445:
+// here skips any Default-CD content they host. See https://localpass.atlassian.net/browse/PM-47445:
 // on desktop the vault item drawer kept its loading spinner until the next UI event.
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({

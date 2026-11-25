@@ -1,8 +1,8 @@
 import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 import { resolveImportReturnDestination } from "./import-return-destination";
 

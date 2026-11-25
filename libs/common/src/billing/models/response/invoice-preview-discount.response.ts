@@ -1,4 +1,4 @@
-import type { DiscountType, InvoicePreviewDiscount } from "@bitwarden/pricing";
+import type { DiscountType, InvoicePreviewDiscount } from "@localpass/pricing";
 
 import { BaseResponse } from "../../../models/response/base.response";
 

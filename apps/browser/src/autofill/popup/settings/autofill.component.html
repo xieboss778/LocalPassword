@@ -238,7 +238,7 @@
             <a
               bitLink
               class="tw-no-underline"
-              href="https://bitwarden.com/help/auto-fill-browser/"
+              href="https://github.com/xieboss778/LocalPass/tree/main/docs"
               rel="noreferrer"
               target="_blank"
             >
@@ -294,33 +294,33 @@
               </bit-label>
             </bit-form-control>
           }
-          @if (bitwardenAutofillAttributesSettingsAreAvailable) {
+          @if (localpassAutofillAttributesSettingsAreAvailable) {
             <bit-form-control>
               <input
-                formControlName="honorBitwardenIgnoreAttribute"
+                formControlName="honorLocalPassIgnoreAttribute"
                 bitCheckbox
-                id="honor-bitwarden-ignore-attribute"
+                id="honor-localpass-ignore-attribute"
                 type="checkbox"
               />
-              <bit-label for="honor-bitwarden-ignore-attribute">
-                {{ "honorDataBitwardenIgnoreAttributeLabel" | i18n }}
+              <bit-label for="honor-localpass-ignore-attribute">
+                {{ "honorDataLocalPassIgnoreAttributeLabel" | i18n }}
               </bit-label>
               <bit-hint class="tw-text-sm">
-                {{ "honorDataBitwardenIgnoreAttributeHint" | i18n }}
+                {{ "honorDataLocalPassIgnoreAttributeHint" | i18n }}
               </bit-hint>
             </bit-form-control>
             <bit-form-control>
               <input
-                formControlName="honorBitwardenAutofillAttribute"
+                formControlName="honorLocalPassAutofillAttribute"
                 bitCheckbox
-                id="honor-bitwarden-autofill-attribute"
+                id="honor-localpass-autofill-attribute"
                 type="checkbox"
               />
-              <bit-label for="honor-bitwarden-autofill-attribute">
-                {{ "honorDataBitwardenAutofillAttributeLabel" | i18n }}
+              <bit-label for="honor-localpass-autofill-attribute">
+                {{ "honorDataLocalPassAutofillAttributeLabel" | i18n }}
               </bit-label>
               <bit-hint class="tw-text-sm">
-                {{ "honorDataBitwardenAutofillAttributeHint" | i18n }}
+                {{ "honorDataLocalPassAutofillAttributeHint" | i18n }}
               </bit-hint>
             </bit-form-control>
           }

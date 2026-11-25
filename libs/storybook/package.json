@@ -1,7 +1,7 @@
 {
-  "name": "@bitwarden/storybook",
+  "name": "@localpass/storybook",
   "version": "0.0.1",
-  "description": "Storybook addons and utilities for Bitwarden",
+  "description": "Storybook addons and utilities for LocalPass",
   "private": true,
   "type": "commonjs",
   "main": "index.js",

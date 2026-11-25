@@ -1,4 +1,4 @@
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 
 import { InlineMenuCipherData } from "../../../background/abstractions/overlay.background";
 import { InlineMenuFillType } from "../../../enums/autofill-overlay.enum";

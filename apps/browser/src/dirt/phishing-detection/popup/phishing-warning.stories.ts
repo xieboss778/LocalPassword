@@ -2,17 +2,17 @@ import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { BehaviorSubject, of } from "rxjs";
 
-import { DeactivatedOrg } from "@bitwarden/assets/svg";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs";
-import { ClientType } from "@bitwarden/common/enums";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { AnonLayoutComponent, I18nMockService } from "@bitwarden/components";
-import { MessageSender } from "@bitwarden/messaging";
+import { DeactivatedOrg } from "@localpass/assets/svg";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs";
+import { ClientType } from "@localpass/common/enums";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
+import { AnonLayoutComponent, I18nMockService } from "@localpass/components";
+import { MessageSender } from "@localpass/messaging";
 
 import { PhishingWarningComponent } from "./phishing-warning.component";
 import { ProtectedByComponent } from "./protected-by-component";
@@ -64,7 +64,7 @@ export default {
           useFactory: () =>
             new I18nMockService({
               accessing: "Accessing",
-              appLogoLabel: "Bitwarden logo",
+              appLogoLabel: "LocalPass logo",
               phishingPageTitleV2: "Phishing attempt detected",
               phishingPageCloseTabV2: "Close this tab",
               phishingPageSummary:
@@ -86,7 +86,7 @@ export default {
           useValue: {
             environment$: new BehaviorSubject({
               getHostname() {
-                return "bitwarden.com";
+                return "local.invalid";
               },
             }).asObservable(),
           },

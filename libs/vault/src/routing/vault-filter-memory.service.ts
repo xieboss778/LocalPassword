@@ -3,14 +3,14 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Params, Router } from "@angular/router";
 import { filter, firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
 import {
   StateProvider,
   UserKeyDefinition,
   VAULT_FILTER_DISK,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { scopeKey, VaultScope } from "../models/vault-scope";
 

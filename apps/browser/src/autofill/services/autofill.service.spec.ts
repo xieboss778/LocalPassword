@@ -1,57 +1,57 @@
 import { mock, MockProxy, mockReset } from "jest-mock-extended";
 import { BehaviorSubject, of, Subject } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UserVerificationService } from "@localpass/common/auth/services/user-verification/user-verification.service";
 import {
   AutofillOverlayVisibility,
   AutofillTargetingRuleTypes,
   FormPurposeCategories,
-} from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+} from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import {
   DefaultDomainSettingsService,
   DomainSettingsService,
-} from "@bitwarden/common/autofill/services/domain-settings.service";
-import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
-import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EventType } from "@bitwarden/common/dirt/event-logs";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs/services/event-collection.service";
-import { FeatureFlagValueType } from "@bitwarden/common/enums/feature-flag.enum";
+} from "@localpass/common/autofill/services/domain-settings.service";
+import { UserNotificationSettingsServiceAbstraction } from "@localpass/common/autofill/services/user-notification-settings.service";
+import { InlineMenuVisibilitySetting } from "@localpass/common/autofill/types";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EventType } from "@localpass/common/dirt/event-logs";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs/services/event-collection.service";
+import { FeatureFlagValueType } from "@localpass/common/enums/feature-flag.enum";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
-} from "@bitwarden/common/models/domain/domain-service";
-import { AnimationControlService } from "@bitwarden/common/platform/abstractions/animation-control.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+} from "@localpass/common/models/domain/domain-service";
+import { AnimationControlService } from "@localpass/common/platform/abstractions/animation-control.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { MessageListener } from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { MessageListener } from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   FakeStateProvider,
   FakeAccountService,
   mockAccountServiceWith,
   subscribeTo,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FieldType, LinkedIdType, LoginLinkedId, CipherType } from "@bitwarden/common/vault/enums";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
-import { TotpService } from "@bitwarden/common/vault/services/totp.service";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FieldType, LinkedIdType, LoginLinkedId, CipherType } from "@localpass/common/vault/enums";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { SshKeyView } from "@localpass/common/vault/models/view/ssh-key.view";
+import { TotpService } from "@localpass/common/vault/services/totp.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { BrowserScriptInjectorService } from "../../platform/services/browser-script-injector.service";
@@ -84,7 +84,7 @@ import AutofillService from "./autofill.service";
 
 const mockEquivalentDomains = [
   ["example.com", "exampleapp.com", "example.co.uk", "ejemplo.es"],
-  ["bitwarden.com", "bitwarden.co.uk", "sm-bitwarden.com"],
+  ["local.invalid", "localpass.co.uk", "sm-local.invalid"],
   ["example.co.uk", "exampleapp.co.uk"],
 ];
 
@@ -128,7 +128,7 @@ describe("AutofillService", () => {
     configService.getFeatureFlag$.mockReturnValue(fillAssistFeatureFlagMock$);
 
     const mockEnvironment = mock<Environment>();
-    mockEnvironment.getApiUrl.mockReturnValue("https://api.bitwarden.com");
+    mockEnvironment.getApiUrl.mockReturnValue("https://api.local.invalid");
     const environmentService = mock<EnvironmentService>();
     environmentService.environment$ = new BehaviorSubject(mockEnvironment);
 

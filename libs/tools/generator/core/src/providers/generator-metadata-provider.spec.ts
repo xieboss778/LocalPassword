@@ -5,29 +5,29 @@ Object.assign(global, { TextDecoder, TextEncoder });
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, ReplaySubject, firstValueFrom } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/legacy-encryptor-provider";
-import { UserEncryptor } from "@bitwarden/common/tools/cryptography/user-encryptor.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LegacyEncryptorProvider } from "@localpass/common/tools/cryptography/legacy-encryptor-provider";
+import { UserEncryptor } from "@localpass/common/tools/cryptography/user-encryptor.abstraction";
 import {
   ExtensionMetadata,
   ExtensionSite,
   Site,
   SiteId,
   SiteMetadata,
-} from "@bitwarden/common/tools/extension";
-import { ExtensionService } from "@bitwarden/common/tools/extension/extension.service";
-import { Bitwarden } from "@bitwarden/common/tools/extension/vendor/bitwarden";
-import { disabledSemanticLoggerProvider } from "@bitwarden/common/tools/log";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
-import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
-import { UserStateSubjectDependencyProvider } from "@bitwarden/common/tools/state/user-state-subject-dependency-provider";
-import { deepFreeze } from "@bitwarden/common/tools/util";
-import { UserId } from "@bitwarden/common/types/guid";
-import { BitwardenClient } from "@bitwarden/sdk-internal";
+} from "@localpass/common/tools/extension";
+import { ExtensionService } from "@localpass/common/tools/extension/extension.service";
+import { LocalPass } from "@localpass/common/tools/extension/vendor/bitwarden";
+import { disabledSemanticLoggerProvider } from "@localpass/common/tools/log";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
+import { UserStateSubject } from "@localpass/common/tools/state/user-state-subject";
+import { UserStateSubjectDependencyProvider } from "@localpass/common/tools/state/user-state-subject-dependency-provider";
+import { deepFreeze } from "@localpass/common/tools/util";
+import { UserId } from "@localpass/common/types/guid";
+import { BitwardenClient } from "@localpass/sdk-internal";
 
 import {
   FakeAccountService,
@@ -150,21 +150,21 @@ describe("GeneratorMetadataProvider", () => {
     it("returns forwarder metadata", async () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: Bitwarden },
+        product: { vendor: LocalPass },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);
 
-      const metadata = provider.metadata({ forwarder: Bitwarden.id });
+      const metadata = provider.metadata({ forwarder: LocalPass.id });
 
-      expect(metadata.id).toEqual({ forwarder: Bitwarden.id });
+      expect(metadata.id).toEqual({ forwarder: LocalPass.id });
     });
 
     it("panics when metadata not found", async () => {
@@ -220,21 +220,21 @@ describe("GeneratorMetadataProvider", () => {
     it("includes forwarder vendors in the email category's algorithms", () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: Bitwarden },
+        product: { vendor: LocalPass },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);
 
       const result = provider.algorithms({ type: Type.email });
 
-      expect(result).toEqual(expect.arrayContaining([{ forwarder: Bitwarden.id }]));
+      expect(result).toEqual(expect.arrayContaining([{ forwarder: LocalPass.id }]));
     });
 
     it.each([
@@ -254,21 +254,21 @@ describe("GeneratorMetadataProvider", () => {
     it("returns explicit forwarders", () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: Bitwarden },
+        product: { vendor: LocalPass },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);
 
-      const result = provider.algorithms({ algorithm: { forwarder: Bitwarden.id } });
+      const result = provider.algorithms({ algorithm: { forwarder: LocalPass.id } });
 
-      expect(result).toEqual(expect.arrayContaining([{ forwarder: Bitwarden.id }]));
+      expect(result).toEqual(expect.arrayContaining([{ forwarder: LocalPass.id }]));
     });
 
     it("returns an empty array when the algorithm is invalid", () => {
@@ -283,14 +283,14 @@ describe("GeneratorMetadataProvider", () => {
     it("returns an empty array when the forwarder is invalid", () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: Bitwarden },
+        product: { vendor: LocalPass },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);

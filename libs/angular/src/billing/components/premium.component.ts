@@ -3,15 +3,15 @@
 import { OnInit, Directive } from "@angular/core";
 import { firstValueFrom, Observable, switchMap } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingApiServiceAbstraction } from "@localpass/common/billing/abstractions";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogService, SimpleDialogOptions, ToastService } from "@localpass/components";
 
 @Directive()
 export class PremiumComponent implements OnInit {
@@ -67,7 +67,7 @@ export class PremiumComponent implements OnInit {
 
   async purchase() {
     const dialogOpts: SimpleDialogOptions = {
-      title: { key: "continueToBitwardenDotCom" },
+      title: { key: "continueToLocalPassDotCom" },
       content: {
         key: "premiumPurchaseAlertV2",
       },

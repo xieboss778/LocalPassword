@@ -3,17 +3,17 @@ import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { IconModule, MenuModule } from "@bitwarden/components";
-import { SendPolicyService } from "@bitwarden/send-ui";
-import { VaultFabComponent } from "@bitwarden/vault";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { IconModule, MenuModule } from "@localpass/components";
+import { SendPolicyService } from "@localpass/send-ui";
+import { VaultFabComponent } from "@localpass/vault";
 
 import { SendFabComponent } from "./send-fab.component";
 

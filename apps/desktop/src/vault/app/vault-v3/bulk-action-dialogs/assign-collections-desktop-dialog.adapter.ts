@@ -1,14 +1,14 @@
 import { Injectable, inject } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 
-import { DialogService } from "@bitwarden/components";
+import { DialogService } from "@localpass/components";
 import {
   AssignCollectionsDialogRef,
   AssignCollectionsParams,
   AssignCollectionsResult,
   CollectionAssignmentParams,
   CollectionAssignmentResult,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { AssignCollectionsDesktopComponent } from "../../vault/assign-collections";
 

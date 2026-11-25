@@ -4,9 +4,9 @@ import { ActivatedRoute } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { HeaderComponent } from "@bitwarden/components";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { HeaderComponent } from "@localpass/components";
 
 import { AccountSwitcherV2Component } from "../../../auth/components/account-switcher/account-switcher-v2.component";
 

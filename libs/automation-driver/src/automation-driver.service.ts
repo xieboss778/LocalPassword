@@ -46,8 +46,8 @@ export class AutomationDriver {
   }
 
   attachToGlobal(global: any) {
-    if (!global.bitwardenAutomationDriver) {
-      global.bitwardenAutomationDriver = this;
+    if (!global.localpassAutomationDriver) {
+      global.localpassAutomationDriver = this;
     }
   }
 }

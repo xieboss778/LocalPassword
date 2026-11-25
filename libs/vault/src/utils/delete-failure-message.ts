@@ -1,7 +1,7 @@
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 /**
  * The i18n key explaining a failed delete. The server refuses a mutation on a restricted cipher

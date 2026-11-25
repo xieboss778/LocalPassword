@@ -8,7 +8,7 @@ import { SsoJitProvisionFinishSetKeyConnectorKeyRequest } from "./sso-jit-provis
  * user. Master password and trusted device users register through the SDK, so they do not use
  * this service.
  *
- * TODO: Remove this class with https://bitwarden.atlassian.net/browse/PM-27328 (V1 Key Connector
+ * TODO: Remove this class with https://localpass.atlassian.net/browse/PM-27328 (V1 Key Connector
  * registration).
  */
 export class SsoJitProvisionFinishApiService {

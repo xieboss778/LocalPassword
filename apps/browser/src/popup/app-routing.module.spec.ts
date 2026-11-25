@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { Route, Router } from "@angular/router";
 
-import { IMPORT_DESTINATION_ROUTE_PATH } from "@bitwarden/importer-ui";
+import { IMPORT_DESTINATION_ROUTE_PATH } from "@localpass/importer-ui";
 
 import { importUpgradeRedirectGuard } from "../tools/popup/guards/import-upgrade-redirect.guard";
 import { importUpgradeRequiredGuard } from "../tools/popup/guards/import-upgrade-required.guard";

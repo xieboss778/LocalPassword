@@ -1,6 +1,6 @@
 import { ipcRenderer } from "electron";
 
-import type { chromium_importer } from "@bitwarden/desktop-napi";
+import type { chromium_importer } from "@localpass/desktop-napi";
 
 import type { OnePasswordSsoLoginOutcome } from "../../types/onepassword-sso-login-outcome";
 

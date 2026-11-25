@@ -48,7 +48,7 @@ fn init_logging(log_path: &Path, console_level: LevelFilter, file_level: LevelFi
     }
 }
 
-/// Bitwarden IPC Proxy.
+/// LocalPass IPC Proxy.
 ///
 /// This proxy allows browser extensions to communicate with a desktop application using Native
 /// Messaging. This method allows an extension to send and receive messages through the use of
@@ -74,13 +74,13 @@ async fn main() {
 
     let log_path = {
         let mut path = sock_path.clone();
-        path.set_extension("bitwarden.log");
+        path.set_extension("localpass.log");
         path
     };
 
     init_logging(&log_path, LevelFilter::INFO, LevelFilter::INFO);
 
-    info!("Starting Bitwarden IPC Proxy.");
+    info!("Starting LocalPass IPC Proxy.");
 
     // Different browsers send different arguments when the app starts:
     //

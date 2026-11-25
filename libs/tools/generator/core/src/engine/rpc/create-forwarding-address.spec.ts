@@ -4,7 +4,7 @@ import {
   ApiSettings,
   IntegrationRequest,
   TokenHeader,
-} from "@bitwarden/common/tools/integration/rpc";
+} from "@localpass/common/tools/integration/rpc";
 
 import { CreateForwardingEmailRpcDef, ForwarderConfiguration } from "../forwarder-configuration";
 import { ForwarderContext } from "../forwarder-context";

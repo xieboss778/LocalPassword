@@ -1,7 +1,7 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { ChipFilterOption } from "@bitwarden/components";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { ChipFilterOption } from "@localpass/components";
 import {
   cipherInScope,
   collectionInScope,
@@ -10,7 +10,7 @@ import {
   type VaultScope,
   VaultScopeType,
   type VaultsNavViewModel,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 /**
  * Flattens a `ChipFilterOption` tree depth-first, since scope/org visibility is decided per

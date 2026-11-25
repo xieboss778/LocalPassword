@@ -7,17 +7,17 @@ import { RouterLink } from "@angular/router";
 import {
   CollectionView,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CheckboxModule, IconModule, LinkModule, TableModule } from "@bitwarden/components";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { CheckboxModule, IconModule, LinkModule, TableModule } from "@localpass/components";
 import {
   GetOrgNameFromIdPipe,
   OrganizationNameBadgeComponent,
   Vfo1I18nPipe,
   Vfo1IconPipe,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tr[appVaultCollectionRow]",

@@ -4,8 +4,8 @@ import {
   CollectionAdminView,
   CollectionAccessSelectionView,
   CollectionDetailsResponse,
-} from "@bitwarden/common/admin-console/models/collections";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/admin-console/models/collections";
+import { UserId } from "@localpass/common/types/guid";
 
 export abstract class CollectionAdminService {
   abstract collectionAdminViews$(

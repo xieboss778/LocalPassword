@@ -1,13 +1,13 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MockSdkService } from "@bitwarden/common/platform/spec/mock-sdk.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MockSdkService } from "@localpass/common/platform/spec/mock-sdk.service";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
-import { CsprngArray, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { CsprngArray, SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { KeyService } from "../../abstractions/key.service";
 

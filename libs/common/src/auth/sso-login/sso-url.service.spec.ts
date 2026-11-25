@@ -10,12 +10,12 @@ describe("SsoUrlService", () => {
   });
 
   it("should build Desktop SSO URL correctly", () => {
-    const baseUrl = "https://web-vault.bitwarden.com";
+    const baseUrl = "https://web-vault.local.invalid";
     const clientType = ClientType.Desktop;
     const redirectUri = DESKTOP_SSO_CALLBACK;
     const state = "abc123";
     const codeChallenge = "xyz789";
-    const email = "test@bitwarden.com";
+    const email = "test@local.invalid";
 
     const expectedUrl = `${baseUrl}/#/sso?clientId=desktop&redirectUri=${encodeURIComponent(redirectUri)}&state=${state}&codeChallenge=${codeChallenge}&email=${encodeURIComponent(email)}`;
 
@@ -31,12 +31,12 @@ describe("SsoUrlService", () => {
   });
 
   it("should build Desktop localhost callback SSO URL correctly", () => {
-    const baseUrl = "https://web-vault.bitwarden.com";
+    const baseUrl = "https://web-vault.local.invalid";
     const clientType = ClientType.Desktop;
     const redirectUri = `https://localhost:1000`;
     const state = "abc123";
     const codeChallenge = "xyz789";
-    const email = "test@bitwarden.com";
+    const email = "test@local.invalid";
 
     const expectedUrl = `${baseUrl}/#/sso?clientId=desktop&redirectUri=${encodeURIComponent(redirectUri)}&state=${state}&codeChallenge=${codeChallenge}&email=${encodeURIComponent(email)}`;
 
@@ -52,12 +52,12 @@ describe("SsoUrlService", () => {
   });
 
   it("should build Extension SSO URL correctly", () => {
-    const baseUrl = "https://web-vault.bitwarden.com";
+    const baseUrl = "https://web-vault.local.invalid";
     const clientType = ClientType.Browser;
     const redirectUri = baseUrl + "/sso-connector.html";
     const state = "abc123";
     const codeChallenge = "xyz789";
-    const email = "test@bitwarden.com";
+    const email = "test@local.invalid";
 
     const expectedUrl = `${baseUrl}/#/sso?clientId=browser&redirectUri=${encodeURIComponent(redirectUri)}&state=${state}&codeChallenge=${codeChallenge}&email=${encodeURIComponent(email)}`;
 
@@ -73,12 +73,12 @@ describe("SsoUrlService", () => {
   });
 
   it("should build CLI SSO URL correctly", () => {
-    const baseUrl = "https://web-vault.bitwarden.com";
+    const baseUrl = "https://web-vault.local.invalid";
     const clientType = ClientType.Cli;
     const redirectUri = "https://localhost:1000";
     const state = "abc123";
     const codeChallenge = "xyz789";
-    const email = "test@bitwarden.com";
+    const email = "test@local.invalid";
 
     const expectedUrl = `${baseUrl}/#/sso?clientId=cli&redirectUri=${encodeURIComponent(redirectUri)}&state=${state}&codeChallenge=${codeChallenge}&email=${encodeURIComponent(email)}`;
 
@@ -94,12 +94,12 @@ describe("SsoUrlService", () => {
   });
 
   it("should build CLI SSO URL with Org SSO Identifier correctly", () => {
-    const baseUrl = "https://web-vault.bitwarden.com";
+    const baseUrl = "https://web-vault.local.invalid";
     const clientType = ClientType.Cli;
     const redirectUri = "https://localhost:1000";
     const state = "abc123";
     const codeChallenge = "xyz789";
-    const email = "test@bitwarden.com";
+    const email = "test@local.invalid";
     const orgSsoIdentifier = "test-org";
 
     const expectedUrl = `${baseUrl}/#/sso?clientId=cli&redirectUri=${encodeURIComponent(redirectUri)}&state=${state}&codeChallenge=${codeChallenge}&email=${encodeURIComponent(email)}&identifier=${encodeURIComponent(orgSsoIdentifier)}`;

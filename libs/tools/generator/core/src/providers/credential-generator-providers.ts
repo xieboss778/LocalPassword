@@ -1,4 +1,4 @@
-import { UserStateSubjectDependencyProvider } from "@bitwarden/common/tools/state/user-state-subject-dependency-provider";
+import { UserStateSubjectDependencyProvider } from "@localpass/common/tools/state/user-state-subject-dependency-provider";
 
 import { GeneratorDependencyProvider } from "./generator-dependency-provider";
 import { GeneratorMetadataProvider } from "./generator-metadata-provider";

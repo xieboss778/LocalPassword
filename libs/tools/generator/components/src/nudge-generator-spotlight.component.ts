@@ -2,14 +2,14 @@ import { AsyncPipe, CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { firstValueFrom, Observable, switchMap } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { TypographyModule, CalloutModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { UserId } from "@localpass/common/types/guid";
+import { TypographyModule, CalloutModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "nudge-generator-spotlight",

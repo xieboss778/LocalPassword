@@ -1,4 +1,4 @@
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { VaultItem } from "./vault-item";
 

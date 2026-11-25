@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { ToastService } from "@bitwarden/components";
+import { ToastService } from "@localpass/components";
 
 import {
   AutomationBiometricRequestInfo,

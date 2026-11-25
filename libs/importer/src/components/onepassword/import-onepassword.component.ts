@@ -15,13 +15,13 @@ import {
   Validators,
 } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { FormFieldModule, SelectModule, ToastService } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { FormFieldModule, SelectModule, ToastService } from "@localpass/components";
 
 import {
   OnePasswordImportSummary,

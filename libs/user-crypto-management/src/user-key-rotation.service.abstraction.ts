@@ -1,5 +1,5 @@
-import { KeyRotationMethod, PublicKey, UpgradeTokenAction } from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+import { KeyRotationMethod, PublicKey, UpgradeTokenAction } from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 /**
  * Result of the trust verification process.

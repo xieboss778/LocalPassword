@@ -19,16 +19,16 @@ import { Router, RouterLink } from "@angular/router";
 import { combineLatest, map, switchMap } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { NoFolders, NoResults } from "@bitwarden/assets/svg";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+import { CollectionService } from "@localpass/admin-console/common";
+import { NoFolders, NoResults } from "@localpass/assets/svg";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 import {
   BitCellComponent,
   BitCellDefDirective,
@@ -55,8 +55,8 @@ import {
   SvgComponent,
   TableSelectionModel,
   TooltipDirective,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { TableRowNameDirective } from "../../directives/table-row-name.directive";
 import { vaultScopeCommands, VaultScopeType } from "../../models/vault-scope";

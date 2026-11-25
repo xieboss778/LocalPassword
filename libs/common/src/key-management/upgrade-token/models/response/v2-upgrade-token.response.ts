@@ -1,4 +1,4 @@
-import { EncString, V2UpgradeToken } from "@bitwarden/sdk-internal";
+import { EncString, V2UpgradeToken } from "@localpass/sdk-internal";
 
 import { BaseResponse } from "../../../../models/response/base.response";
 

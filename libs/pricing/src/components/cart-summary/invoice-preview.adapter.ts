@@ -1,4 +1,4 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { Cart, CartItem } from "../../types/cart";
 import {

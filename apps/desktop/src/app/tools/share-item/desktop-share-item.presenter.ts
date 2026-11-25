@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { DialogService } from "@bitwarden/components";
-import { ShareItemPresenter } from "@bitwarden/tools-share";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { DialogService } from "@localpass/components";
+import { ShareItemPresenter } from "@localpass/tools-share";
 
 import { ShareItemDesktopComponent } from "./share-item-desktop.component";
 

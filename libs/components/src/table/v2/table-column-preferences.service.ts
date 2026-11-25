@@ -2,8 +2,8 @@ import { Injectable, Signal, inject } from "@angular/core";
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { map, of, switchMap } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { StateProvider } from "@bitwarden/state";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { StateProvider } from "@localpass/state";
 
 import { TABLE_COLUMN_PREFERENCES, TableColumnPreferences } from "./table-column-preferences.state";
 import { TABLE_STATE_KEYS, TableStateKey } from "./table-state-keys";

@@ -1,6 +1,6 @@
 import { map, Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { ActiveUserAccessor } from "../../platform/state";
 import { AccountService } from "../abstractions/account.service";

@@ -4,7 +4,7 @@ Object.assign(global, { TextDecoder, TextEncoder });
 
 import { mock } from "jest-mock-extended";
 
-import { IdentityConstraint } from "@bitwarden/common/tools/state/identity-state-constraint";
+import { IdentityConstraint } from "@localpass/common/tools/state/identity-state-constraint";
 
 import { UsernameRandomizer } from "../../engine";
 import { GeneratorDependencyProvider } from "../../providers";

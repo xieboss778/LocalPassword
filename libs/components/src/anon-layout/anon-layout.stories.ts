@@ -2,11 +2,11 @@ import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { BehaviorSubject, of } from "rxjs";
 
-import { BitSvg, LockIcon } from "@bitwarden/assets/svg";
-import { ClientType } from "@bitwarden/common/enums";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { BitSvg, LockIcon } from "@localpass/assets/svg";
+import { ClientType } from "@localpass/common/enums";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { AvatarModule } from "../avatar";
 import { ButtonModule } from "../button";
@@ -51,7 +51,7 @@ export default {
           useValue: {
             environment$: new BehaviorSubject({
               getHostname() {
-                return "bitwarden.com";
+                return "local.invalid";
               },
             }).asObservable(),
           },

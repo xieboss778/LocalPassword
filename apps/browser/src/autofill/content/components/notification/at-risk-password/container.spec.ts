@@ -1,6 +1,6 @@
 import { nothing } from "lit";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { mockI18n } from "../../lit-stories/mock-data";
 

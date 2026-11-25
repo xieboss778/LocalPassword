@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@ang
 import { outputFromObservable } from "@angular/core/rxjs-interop";
 import { Subject } from "rxjs";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { IconButtonModule } from "../icon-button";
 

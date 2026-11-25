@@ -8,7 +8,7 @@ import { Migrator } from "../migrator";
 // Local declarations of `OrganizationData` and the types of it's properties.
 // Duplicated to remain frozen in time when migration occurs.
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum OrganizationUserStatusType {
   Invited = 0,
   Accepted = 1,
@@ -17,7 +17,7 @@ enum OrganizationUserStatusType {
 }
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum OrganizationUserType {
   Owner = 0,
   Admin = 1,
@@ -45,14 +45,14 @@ type PermissionsApi = {
 };
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum ProviderType {
   Msp = 0,
   Reseller = 1,
 }
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum ProductType {
   Free = 0,
   Families = 1,

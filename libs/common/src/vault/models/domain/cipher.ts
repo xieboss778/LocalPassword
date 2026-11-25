@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
-import { Cipher as SdkCipher } from "@bitwarden/sdk-internal";
+import { EncString } from "@localpass/legacy-crypto";
+import { Cipher as SdkCipher } from "@localpass/sdk-internal";
 
 import { asUuid, uuidAsString } from "../../../platform/abstractions/sdk/sdk.service";
 import Domain from "../../../platform/models/domain/domain-base";
@@ -45,7 +45,7 @@ type SdkCipherWithPartialData = SdkCipher & { partialData?: string };
  * - Blob format: these fields are `undefined`; all sensitive data is sealed in `data`.
  *
  * Decrypt to a `CipherView` / `CipherListView` to inspect item contents (e.g. whether a login has
- * a TOTP or passkey). See bitwarden/sdk-internal#1535.
+ * a TOTP or passkey). See localpass/sdk-internal#1535.
  */
 export class Cipher extends Domain {
   readonly initializerKey = InitializerKey.Cipher;

@@ -3,21 +3,21 @@ import { CommonModule } from "@angular/common";
 import { Component, Inject } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   AsyncActionsModule,
   ButtonModule,
   DialogModule,
   DialogService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 type KeyRotationTrustDialogData = {
   orgName?: string;
   numberOfEmergencyAccessUsers: number;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "key-rotation-trust-info",

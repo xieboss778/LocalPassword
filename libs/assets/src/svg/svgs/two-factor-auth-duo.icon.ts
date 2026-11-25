@@ -1,6 +1,6 @@
-/* eslint-disable @bitwarden/components/require-theme-colors-in-svg */
+/* eslint-disable @localpass/components/require-theme-colors-in-svg */
 
-// this svg includes the Duo logo, which contains colors not part of our bitwarden theme colors
+// this svg includes the Duo logo, which contains colors not part of our localpass theme colors
 
 import { svg } from "../svg";
 

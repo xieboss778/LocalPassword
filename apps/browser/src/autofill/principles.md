@@ -29,7 +29,7 @@ access to user data, so our content scripts should minimize their third-party de
   what it adds to the bundle.
   [Lit](https://lit.dev/) is the established choice for injected UI; prefer it over introducing
   another rendering library.
-- **Prefer importing from Bitwarden libraries with tree shaking support.** When a library supports
+- **Prefer importing from LocalPass libraries with tree shaking support.** When a library supports
   tree shaking, prefer a narrow import. When a library does not, import from a barrel file.
 
 ## Keep the injected data footprint small
@@ -56,11 +56,11 @@ and only at the moment they need it.
   opt-in, with the risk clearly explained, is a legitimate way to meet the burden, within the limits
   on what risk users may accept (see
   [Users have different risk tolerances](#users-have-different-risk-tolerances)).
-- **Avoid identifying ourselves to the page.** What a page can observe about Bitwarden is exposure
-  too, even when no vault data is involved. Stable, Bitwarden-specific markers (element and attribute
-  names, globals, message shapes, timing) allow adversarial scripts to target Bitwarden experiences.
+- **Avoid identifying ourselves to the page.** What a page can observe about LocalPass is exposure
+  too, even when no vault data is involved. Stable, LocalPass-specific markers (element and attribute
+  names, globals, message shapes, timing) allow adversarial scripts to target LocalPass experiences.
   Avoid such markers where possible.
-- **Assume an attacker has read the source.** Bitwarden is open source, so any obfuscation of the
+- **Assume an attacker has read the source.** LocalPass is open source, so any obfuscation of the
   live experience must hold up when the code is fully transparent. A fixed name or pattern that is
   merely unusual is still a marker once it appears in the source. Prefer values generated at runtime
   and behavior that is absent rather than hidden. Do not detail vulnerable or weak surfaces in code
@@ -81,7 +81,7 @@ Respect the user's resources, including their attention.
 
 ## We are delegates of the user's intent
 
-Bitwarden acts on behalf of the user, not the host page. A page may describe itself (its fields,
+LocalPass acts on behalf of the user, not the host page. A page may describe itself (its fields,
 their purpose, its structure), and autofill uses those descriptions as hints. A page does not get to
 own how the user interacts with the page. A website that restricts assistive technologies, or only
 allows mobile devices, would be considered user-antagonistic; the same applies to blocking the user's
@@ -98,7 +98,7 @@ chosen autofill experience.
   not a page capability.
 - **Organizations may decide on behalf of their members.** An organization administers the vault and
   account its members use, so organization policy may set or constrain autofill behavior for those
-  members. Policy comes from the organization through Bitwarden, never from the host page.
+  members. Policy comes from the organization through LocalPass, never from the host page.
 - **Organization authority follows ownership.** Items an organization owns are the organization's;
   items in a user's personal vault are owned by the user, not the organization. Organization policy
   may govern how autofill behaves for a member, but autofill does not give an organization visibility
@@ -121,7 +121,7 @@ one-size-fits-all security decisions.
   only option.
 - **Do not remove a user's ability to accept a risk** solely because most users should not. Make the
   risk clear and leave the decision with the user, or with their organization's policy.
-- **User choice has limits.** Some dangers are severe enough that Bitwarden will not offer them as an
+- **User choice has limits.** Some dangers are severe enough that LocalPass will not offer them as an
   option, and granular control over every behavior is not always practical. Granular control remains
   the goal; a coarser or fixed behavior is a trade-off to be justified, not a default.
 
@@ -158,7 +158,7 @@ situation, and is not always served by disabling features.
 
 A page whose own scripts are compromised or intentionally adversarial to autofill features is
 generally beyond what autofill can defend against: a script running in the page can read whatever the
-user types or Bitwarden fills into it, and a compromised legitimate site is usually indistinguishable
+user types or LocalPass fills into it, and a compromised legitimate site is usually indistinguishable
 from the uncompromised one. Autofill does not guarantee protection from such a page.
 
 Autofill still makes a basic, best-effort attempt to resist hostile pages, provided the cost of defense is

@@ -4,29 +4,29 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { EMPTY, of } from "rxjs";
 
-import { DeviceTrustToastService } from "@bitwarden/angular/auth/services/device-trust-toast.service.abstraction";
-import { DocumentLangSetter } from "@bitwarden/angular/platform/i18n";
+import { DeviceTrustToastService } from "@localpass/angular/auth/services/device-trust-toast.service.abstraction";
+import { DocumentLangSetter } from "@localpass/angular/platform/i18n";
 import {
   AuthRequestServiceAbstraction,
   UserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/auth/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestAnsweringService } from "@bitwarden/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { PendingAuthRequestsStateService } from "@bitwarden/common/auth/services/auth-request-answering/pending-auth-requests.state";
-import { PremiumCheckoutPendingService } from "@bitwarden/common/billing/abstractions/account/premium-checkout-pending.service";
-import { AnimationControlService } from "@bitwarden/common/platform/abstractions/animation-control.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { MessageListener } from "@bitwarden/common/platform/messaging";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { BiometricsService, BiometricStateService, KeyService } from "@bitwarden/key-management";
+} from "@localpass/auth/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthRequestAnsweringService } from "@localpass/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { PendingAuthRequestsStateService } from "@localpass/common/auth/services/auth-request-answering/pending-auth-requests.state";
+import { PremiumCheckoutPendingService } from "@localpass/common/billing/abstractions/account/premium-checkout-pending.service";
+import { AnimationControlService } from "@localpass/common/platform/abstractions/animation-control.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { MessageListener } from "@localpass/common/platform/messaging";
+import { SyncService } from "@localpass/common/platform/sync";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { DialogService, ToastService } from "@localpass/components";
+import { BiometricsService, BiometricStateService, KeyService } from "@localpass/key-management";
 
 import { PopupCompactModeService } from "../platform/popup/layout/popup-compact-mode.service";
 import { PopupSizeService } from "../platform/popup/layout/popup-size.service";

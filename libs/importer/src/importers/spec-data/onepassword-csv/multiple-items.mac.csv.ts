@@ -5,11 +5,11 @@ export const data = `"account number(accountNo)","address(address)","address(bra
 )}",,"🎉 Welcome to 1Password!","Secure Note",,,,,,,,,,,,,,,,,,,,
 ,"address
 city state zip
-United States",,,,,,,,,,,,,,"12/2/20",,,,,,"bitwarden",,,,,"1606923754",,,,"12/2/20","8005555555","department",,"email@bitwarden.com",,,,"first name",,,,,,,,,"mi",,,,,,,"job title","last name",,,,,,,,,"1607390191",,,,,,"It’s you! 🖐 Select Edit to fill in more details, like your address and contact information.",,,"occupation",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"{(
+United States",,,,,,,,,,,,,,"12/2/20",,,,,,"localpass",,,,,"1606923754",,,,"12/2/20","8005555555","department",,"email@local.invalid",,,,"first name",,,,,,,,,"mi",,,,,,,"job title","last name",,,,,,,,,"1607390191",,,,,,"It’s you! 🖐 Select Edit to fill in more details, like your address and contact information.",,,"occupation",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"{(
     \\"Starter Kit\\"
 )}",,"Identity Item","Identity",,,,,,,"userNam3",,,"userNam3",,,,,,,,,,
 ,,,,,,,,,,,,,,,,,"test",,,,,,,,,"1606923869",,,,,,,,,,,"01/2030",,,,,,,,,,,,,,,,,,,,,,,,,,,"1607355631",,,,,,"","4111111111111111",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"{(
 )}",,"test card","Credit Card",,,,"laser",,,,,,,,,"111",,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,"1606923754",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"1607020972",,,,,,"You can use this login to sign in to your account on 1password.com.",,,,,,"the account's password",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"{(
     \\"Starter Kit\\"
-)}",,"1Password Account","Login",,,,,"https://my.1password.com",,"email@bitwarden.com",,,,,,,,,,,,,`;
+)}",,"1Password Account","Login",,,,,"https://my.1password.com",,"email@local.invalid",,,,,,,,,,,,,`;

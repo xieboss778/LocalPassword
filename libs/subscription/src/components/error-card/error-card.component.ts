@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   ButtonModule,
   CardComponent,
   IconTileComponent,
   IconTileVariant,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 /**
  * A generic billing error card: an icon badge, a title, a description, and an optional action
@@ -34,7 +34,7 @@ export class ErrorCardComponent {
   readonly loading = input<boolean>(false);
 
   /** Icon shown in the header badge. */
-  readonly icon = input<BitwardenIcon>("bwi-error");
+  readonly icon = input<LocalPassIcon>("bwi-error");
 
   /** Badge color theme. Moves the fill, border, and icon color together (e.g. `warning`, `danger`). */
   readonly variant = input<IconTileVariant>("warning");

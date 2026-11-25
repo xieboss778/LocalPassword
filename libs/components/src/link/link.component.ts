@@ -8,7 +8,7 @@ import {
   ElementRef,
 } from "@angular/core";
 
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { ariaDisableElement } from "../utils";
 
 export const LinkTypes = [
@@ -150,12 +150,12 @@ export class LinkComponent {
    * The leading icon to display within the link
    * @default undefined
    */
-  readonly startIcon = input<BitwardenIcon | undefined>(undefined);
+  readonly startIcon = input<LocalPassIcon | undefined>(undefined);
   /**
    * The trailing icon to display within the link
    * @default undefined
    */
-  readonly endIcon = input<BitwardenIcon | undefined>(undefined);
+  readonly endIcon = input<LocalPassIcon | undefined>(undefined);
   /**
    * Whether the button is disabled
    * @default false

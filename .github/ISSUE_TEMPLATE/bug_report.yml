@@ -97,7 +97,7 @@ body:
     id: offline
     attributes:
       label: 网络状态
-      description: LocalPassword 以离线为核心，网络相关问题请说明测试时的网络条件
+      description: LocalPass 以离线为核心，网络相关问题请说明测试时的网络条件
       options:
         - label: 完全断网时也能复现
         - label: 只在联网时出现

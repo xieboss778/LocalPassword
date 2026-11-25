@@ -1,8 +1,8 @@
 import { ipcMain, powerMonitor } from "electron";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessageSender } from "@bitwarden/common/platform/messaging";
-import { powermonitors } from "@bitwarden/desktop-napi";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessageSender } from "@localpass/common/platform/messaging";
+import { powermonitors } from "@localpass/desktop-napi";
 
 import { isSnapStore } from "./platform-utils.main";
 

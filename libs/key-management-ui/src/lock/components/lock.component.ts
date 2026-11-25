@@ -15,27 +15,27 @@ import {
   tap,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ClientType, DeviceType } from "@bitwarden/common/enums";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { EncryptedMigrator } from "@bitwarden/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { InternalPolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClientType, DeviceType } from "@localpass/common/enums";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { EncryptedMigrator } from "@localpass/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { BroadcasterService } from "@localpass/common/platform/abstractions/broadcaster.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 import {
   TooltipDirective,
   AsyncActionsModule,
@@ -45,16 +45,16 @@ import {
   FormFieldModule,
   IconButtonModule,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   KeyService,
   BiometricStateService,
   BiometricsService,
   BiometricsStatus,
   UserAsymmetricKeysRegenerationService,
-} from "@bitwarden/key-management";
-import { measured, PerfTrackGroup } from "@bitwarden/logging";
-import { UnlockMethod, UnlockService } from "@bitwarden/unlock";
+} from "@localpass/key-management";
+import { measured, PerfTrackGroup } from "@localpass/logging";
+import { UnlockMethod, UnlockService } from "@localpass/unlock";
 
 import {
   UnlockOption,
@@ -93,7 +93,7 @@ const BIOMETRIC_UNLOCK_TEMPORARY_UNAVAILABLE_STATUSES = [
   BiometricsStatus.NotEnabledInConnectedDesktopApp,
 ];
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "bit-lock",
@@ -534,7 +534,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
     const MAX_INVALID_PIN_ENTRY_ATTEMPTS = 5;
 
-    // LocalPassword: a local vault has no recovery path, so repeated wrong PINs must never log the
+    // LocalPass: a local vault has no recovery path, so repeated wrong PINs must never log the
     // user out. Past the threshold they instead lock the form for a growing pause.
     if (this.pinLockedUntil == null || Date.now() >= this.pinLockedUntil) {
       this.pinLockedUntil = null;

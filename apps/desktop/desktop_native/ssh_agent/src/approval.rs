@@ -1,4 +1,4 @@
-//! An abstraction layer that allows the `[BitwardenSSHAgent]`
+//! An abstraction layer that allows the `[LocalPassSSHAgent]`
 //! to be able to externally request approval for ssh
 //! authorization requests.
 

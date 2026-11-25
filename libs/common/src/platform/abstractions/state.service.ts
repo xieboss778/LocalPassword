@@ -1,1 +1,1 @@
-export { StateService } from "@bitwarden/state";
+export { StateService } from "@localpass/state";

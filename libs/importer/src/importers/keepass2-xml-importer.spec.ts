@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { FieldType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { FieldType } from "@localpass/common/vault/enums";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { KeePass2XmlImporter } from "./keepass2-xml-importer";
 import {

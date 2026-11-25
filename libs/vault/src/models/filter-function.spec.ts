@@ -1,7 +1,7 @@
-import { Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { Unassigned } from "@localpass/common/admin-console/models/collections";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { createFilterFunction } from "./filter-function";
 import { All } from "./routed-vault-filter.model";

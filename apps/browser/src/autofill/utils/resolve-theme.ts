@@ -1,4 +1,4 @@
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
 
 export function resolveTheme(theme: Theme | string | undefined): Theme {
   if (theme === ThemeTypes.System) {

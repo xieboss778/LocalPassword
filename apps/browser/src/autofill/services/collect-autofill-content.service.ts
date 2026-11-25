@@ -1,9 +1,9 @@
-import { AUTOFILL_ATTRIBUTES } from "@bitwarden/common/autofill/constants";
+import { AUTOFILL_ATTRIBUTES } from "@localpass/common/autofill/constants";
 import {
   AutofillTargetingRuleType,
   FormContent,
   FormPurposeCategory,
-} from "@bitwarden/common/autofill/types";
+} from "@localpass/common/autofill/types";
 
 import AutofillField from "../models/autofill-field";
 import AutofillForm from "../models/autofill-form";
@@ -113,8 +113,8 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
    * attributes. Both stay `false` until {@link attributeSettingsFetched} resolves,
    * so an unanswered or failed fetch leaves the attributes unhonored.
    */
-  private honorBitwardenIgnoreAttribute = false;
-  private honorBitwardenAutofillAttribute = false;
+  private honorLocalPassIgnoreAttribute = false;
+  private honorLocalPassAutofillAttribute = false;
   private readonly attributeSettingsFetched: Promise<void>;
 
   private readonly nonInputFormFieldTags = new Set(["textarea", "select"]);
@@ -142,7 +142,7 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
     private autofillOverlayContentService?: AutofillOverlayContentService,
   ) {
     this.formFieldQueryString = this.buildFormFieldQueryString();
-    this.attributeSettingsFetched = this.fetchAndSetBitwardenAttributeSettings();
+    this.attributeSettingsFetched = this.fetchAndSetLocalPassAttributeSettings();
 
     this.mutationObserver = new MutationObserver(this.handleMutationObserverMutation);
     this.intersectionObserver = new IntersectionObserver(this.handleFormElementIntersection, {
@@ -171,7 +171,7 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
    * the user has opted into honoring them.
    */
   private buildFormFieldQueryString(): string {
-    const ignoreAttributeFilter = this.honorBitwardenIgnoreAttribute ? ":not([data-bwignore])" : "";
+    const ignoreAttributeFilter = this.honorLocalPassIgnoreAttribute ? ":not([data-bwignore])" : "";
 
     let inputQuery = `input${ignoreAttributeFilter}`;
     for (const type of this.ignoredInputTypes) {
@@ -184,7 +184,7 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
       `select${ignoreAttributeFilter}`,
     ];
 
-    if (this.honorBitwardenAutofillAttribute) {
+    if (this.honorLocalPassAutofillAttribute) {
       selectors.push("span[data-bwautofill]");
     }
 
@@ -192,13 +192,13 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
   }
 
   /**
-   * Reads the Bitwarden-attribute opt-in settings once per content-script lifetime.
+   * Reads the LocalPass-attribute opt-in settings once per content-script lifetime.
    * A change to either setting takes effect on the next page load.
    */
-  private async fetchAndSetBitwardenAttributeSettings(): Promise<void> {
+  private async fetchAndSetLocalPassAttributeSettings(): Promise<void> {
     let settings;
     try {
-      settings = (await this.sendExtensionMessage("getBitwardenAutofillAttributeSettings"))?.result;
+      settings = (await this.sendExtensionMessage("getLocalPassAutofillAttributeSettings"))?.result;
     } catch {
       return;
     }
@@ -207,8 +207,8 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
       return;
     }
 
-    this.honorBitwardenIgnoreAttribute = settings.honorBitwardenIgnoreAttribute === true;
-    this.honorBitwardenAutofillAttribute = settings.honorBitwardenAutofillAttribute === true;
+    this.honorLocalPassIgnoreAttribute = settings.honorLocalPassIgnoreAttribute === true;
+    this.honorLocalPassAutofillAttribute = settings.honorLocalPassAutofillAttribute === true;
     this.formFieldQueryString = this.buildFormFieldQueryString();
   }
 
@@ -1623,7 +1623,7 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
     const nodeTagName = element.tagName.toLowerCase();
 
     const nodeIsSpanElementWithAutofillAttribute =
-      this.honorBitwardenAutofillAttribute &&
+      this.honorLocalPassAutofillAttribute &&
       nodeTagName === "span" &&
       element.hasAttribute("data-bwautofill");
     if (nodeIsSpanElementWithAutofillAttribute) {
@@ -1631,7 +1631,7 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
     }
 
     const nodeHasBwIgnoreAttribute =
-      this.honorBitwardenIgnoreAttribute && element.hasAttribute("data-bwignore");
+      this.honorLocalPassIgnoreAttribute && element.hasAttribute("data-bwignore");
     const nodeIsValidInputElement =
       nodeTagName === "input" && !this.ignoredInputTypes.has((element as HTMLInputElement).type);
     if (nodeIsValidInputElement && !nodeHasBwIgnoreAttribute) {

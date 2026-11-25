@@ -3,15 +3,15 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { map, of, switchMap } from "rxjs";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { IconModule, MenuModule } from "@bitwarden/components";
-import { SendPolicyService } from "@bitwarden/send-ui";
-import { VaultFabComponent } from "@bitwarden/vault";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { IconModule, MenuModule } from "@localpass/components";
+import { SendPolicyService } from "@localpass/send-ui";
+import { VaultFabComponent } from "@localpass/vault";
 
 @Component({
   selector: "app-send-fab",

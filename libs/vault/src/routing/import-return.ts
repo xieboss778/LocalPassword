@@ -1,11 +1,11 @@
 import { ActivatedRoute } from "@angular/router";
 
-import { isId } from "@bitwarden/common/types/guid";
+import { isId } from "@localpass/common/types/guid";
 import {
   ImportStartedFrom,
   importScopeFromQuery,
   importStartedFromQuery,
-} from "@bitwarden/importer-ui";
+} from "@localpass/importer-ui";
 
 import { VaultsNavViewModel } from "../models/vault-nav-view-model";
 import {

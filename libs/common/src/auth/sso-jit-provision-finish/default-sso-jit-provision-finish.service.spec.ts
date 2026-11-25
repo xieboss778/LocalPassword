@@ -10,7 +10,7 @@ import {
   JitMasterPasswordRegistrationResponse,
   KeyConnectorRegistrationResult,
   TdeRegistrationResponse,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { FakeGlobalStateProvider } from "../../../spec";
 import { FeatureFlag } from "../../enums/feature-flag.enum";

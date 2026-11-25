@@ -2,9 +2,9 @@
 // @ts-strict-ignore
 import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 
-import { AllowedFeatureFlagTypes, FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { AllowedFeatureFlagTypes, FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 /**
  * Directive that conditionally renders the element when the feature flag is enabled and/or
@@ -19,7 +19,7 @@ export class IfFeatureDirective implements OnInit {
   /**
    * The feature flag to check.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() appIfFeature: FeatureFlag;
 
@@ -27,7 +27,7 @@ export class IfFeatureDirective implements OnInit {
    * Optional value to compare against the value of the feature flag in the config service.
    * @default true
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() appIfFeatureValue: AllowedFeatureFlagTypes = true;
 

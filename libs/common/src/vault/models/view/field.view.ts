@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { FieldView as SdkFieldView, FieldType as SdkFieldType } from "@bitwarden/sdk-internal";
+import { FieldView as SdkFieldView, FieldType as SdkFieldType } from "@localpass/sdk-internal";
 
 import { View } from "../../../models/view/view";
 import { FieldType, LinkedIdType } from "../../enums";

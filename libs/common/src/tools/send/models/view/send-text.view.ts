@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SendTextView as SdkSendTextView } from "@bitwarden/sdk-internal";
+import { SendTextView as SdkSendTextView } from "@localpass/sdk-internal";
 
 import { View } from "../../../../models/view/view";
 import { DeepJsonify } from "../../../../types/deep-jsonify";

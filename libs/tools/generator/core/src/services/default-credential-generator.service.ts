@@ -17,13 +17,13 @@ import {
   zip,
 } from "rxjs";
 
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { BoundDependency, OnDependency } from "@bitwarden/common/tools/dependencies";
-import { VendorId } from "@bitwarden/common/tools/extension";
-import { SemanticLogger } from "@bitwarden/common/tools/log";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
-import { anyComplete, memoizedMap } from "@bitwarden/common/tools/rx";
-import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { BoundDependency, OnDependency } from "@localpass/common/tools/dependencies";
+import { VendorId } from "@localpass/common/tools/extension";
+import { SemanticLogger } from "@localpass/common/tools/log";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
+import { anyComplete, memoizedMap } from "@localpass/common/tools/rx";
+import { UserStateSubject } from "@localpass/common/tools/state/user-state-subject";
 
 import { CredentialGeneratorService } from "../abstractions";
 import {

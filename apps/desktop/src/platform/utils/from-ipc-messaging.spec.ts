@@ -1,4 +1,4 @@
-import { Message } from "@bitwarden/common/platform/messaging";
+import { Message } from "@localpass/common/platform/messaging";
 
 import { fromIpcMessaging } from "./from-ipc-messaging";
 

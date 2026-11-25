@@ -1,4 +1,4 @@
-import { ClientLocations } from "@bitwarden/storage-core";
+import { ClientLocations } from "@localpass/storage-core";
 
 import { StateDefinition } from "./state-definition";
 import * as stateDefinitionsRecord from "./state-definitions";

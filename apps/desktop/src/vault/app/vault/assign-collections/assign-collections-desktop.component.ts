@@ -3,17 +3,17 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
 
-import { PluralizePipe } from "@bitwarden/angular/pipes/pluralize.pipe";
-import { ButtonModule, DialogConfig, DialogModule, DialogService } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { PluralizePipe } from "@localpass/angular/pipes/pluralize.pipe";
+import { ButtonModule, DialogConfig, DialogModule, DialogService } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 import {
   AssignCollectionsComponent,
   CollectionAssignmentParams,
   CollectionAssignmentResult,
   Vfo1I18nPipe,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   standalone: true,

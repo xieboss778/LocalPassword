@@ -1,10 +1,10 @@
 import { BehaviorSubject, firstValueFrom, map, merge, NEVER, of, Subject } from "rxjs";
 import { TestScheduler } from "rxjs/testing";
 
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { accountEvents$ } from "./account-events.rx";
 import { TabState } from "./enums";

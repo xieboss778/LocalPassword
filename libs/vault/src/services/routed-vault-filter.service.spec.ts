@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { ActivatedRoute, convertToParamMap, ParamMap } from "@angular/router";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { CollectionId } from "@bitwarden/common/types/guid";
+import { CollectionId } from "@localpass/common/types/guid";
 
 import { RoutedVaultFilterModel } from "../models/routed-vault-filter.model";
 

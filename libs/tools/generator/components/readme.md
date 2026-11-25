@@ -5,7 +5,7 @@
 The components within this module require the following import.
 
 ```ts
-import { GeneratorModule } from "@bitwarden/generator-components";
+import { GeneratorModule } from "@localpass/generator-components";
 ```
 
 The credential generator provides access to all generator features.

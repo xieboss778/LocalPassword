@@ -686,25 +686,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bitwarden_chromium_import_helper"
-version = "0.0.0"
-dependencies = [
- "aes-gcm 0.11.0",
- "anyhow",
- "base64 0.22.1",
- "chacha20poly1305",
- "chromium_importer",
- "clap",
- "embed-resource",
- "scopeguard",
- "sysinfo",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "windows 0.62.2",
-]
-
-[[package]]
 name = "blake2"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2872,6 +2853,25 @@ name = "litemap"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "47d9d19d1d6efa0109d2f65ff4c85cddd50bd572e5a00127ab10987290bcefae"
+
+[[package]]
+name = "localpass_chromium_import_helper"
+version = "0.0.0"
+dependencies = [
+ "aes-gcm 0.11.0",
+ "anyhow",
+ "base64 0.22.1",
+ "chacha20poly1305",
+ "chromium_importer",
+ "clap",
+ "embed-resource",
+ "scopeguard",
+ "sysinfo",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "windows 0.62.2",
+]
 
 [[package]]
 name = "lock_api"

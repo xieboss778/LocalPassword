@@ -1,10 +1,10 @@
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
 import {
   AUTOFILL_CARD_ID,
   AUTOFILL_ID,
@@ -20,13 +20,13 @@ import {
   ExtensionCommand,
   GENERATE_PASSWORD_ID,
   NOOP_COMMAND_SUFFIX,
-} from "@bitwarden/common/autofill/constants";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { IntraprocessMessageSender } from "@bitwarden/common/platform/messaging";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+} from "@localpass/common/autofill/constants";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { IntraprocessMessageSender } from "@localpass/common/platform/messaging";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports

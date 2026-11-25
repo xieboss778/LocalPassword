@@ -5,16 +5,16 @@ import { Component, inject, OnInit, output, computed, signal } from "@angular/co
 import { toSignal } from "@angular/core/rxjs-interop";
 import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
-import { singleOrganizationPolicyApplies$ } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { NavigationModule, DialogService, A11yTitleDirective } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { singleOrganizationPolicyApplies$ } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { UserId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { NavigationModule, DialogService, A11yTitleDirective } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 import {
   FolderFilter,
   VaultFilter,
@@ -23,7 +23,7 @@ import {
   RoutedVaultFilterBridgeService,
   Vfo1I18nPipe,
   Vfo1IconPipe,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { DesktopPremiumUpgradePromptService } from "../../../../billing/services/desktop-premium-upgrade-prompt.service";
 
@@ -33,7 +33,7 @@ import { OrganizationFilterComponent } from "./filters/organization-filter.compo
 import { StatusFilterComponent } from "./filters/status-filter.component";
 import { TypeFilterComponent } from "./filters/type-filter.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-filter",

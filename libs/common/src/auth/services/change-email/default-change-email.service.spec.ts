@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
+import { newGuid } from "@localpass/guid";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // Marked for removal when PM-30811 feature flag is unwound.
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   CsprngArray,
@@ -13,7 +13,7 @@ import {
   KdfConfig,
   LegacyCompatKeyService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { FakeMasterPasswordService } from "../../../key-management/master-password/services/fake-master-password.service";
@@ -364,7 +364,7 @@ describe("DefaultChangeEmailService", () => {
     });
 
     /**
-     * When email changes, the salt changes (email IS the salt in Bitwarden).
+     * When email changes, the salt changes (email IS the salt in LocalPass).
      * This means the master key changes, so we must:
      * 1. Compute new authentication hash with new salt
      * 2. Re-wrap the user key with the new master key

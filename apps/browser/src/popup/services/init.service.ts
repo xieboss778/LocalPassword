@@ -1,15 +1,15 @@
 import { inject, Inject, Injectable, DOCUMENT } from "@angular/core";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { AutomationDriver } from "@bitwarden/automation-driver";
-import { TwoFactorService } from "@bitwarden/common/auth/two-factor";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService as LogServiceAbstraction } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
-import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
-import { limitPerformanceMeasurements } from "@bitwarden/logging";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { AutomationDriver } from "@localpass/automation-driver";
+import { TwoFactorService } from "@localpass/common/auth/two-factor";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService as LogServiceAbstraction } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { IpcService } from "@localpass/common/platform/ipc";
+import { MigrationRunner } from "@localpass/common/platform/services/migration-runner";
+import { limitPerformanceMeasurements } from "@localpass/logging";
 
 import { ForegroundUnlockService } from "../../key-management/unlock/foreground-unlock.service";
 import BrowserPopupUtils from "../../platform/browser/browser-popup-utils";

@@ -1,16 +1,16 @@
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { DeviceRequest } from "@bitwarden/common/auth/models/request/identity-token/device.request";
-import { PasswordTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/password-token.request";
-import { SsoTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/sso-token.request";
-import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
-import { UserApiTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/user-api-token.request";
-import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/webauthn-login-token.request";
-import { WebAuthnLoginAssertionResponseRequest } from "@bitwarden/common/auth/services/webauthn-login/request/webauthn-login-assertion-response.request";
-import { DeviceType } from "@bitwarden/common/enums";
-import { MasterKey, PrfKey, UserKey } from "@bitwarden/common/types/key";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { DeviceRequest } from "@localpass/common/auth/models/request/identity-token/device.request";
+import { PasswordTokenRequest } from "@localpass/common/auth/models/request/identity-token/password-token.request";
+import { SsoTokenRequest } from "@localpass/common/auth/models/request/identity-token/sso-token.request";
+import { TokenTwoFactorRequest } from "@localpass/common/auth/models/request/identity-token/token-two-factor.request";
+import { UserApiTokenRequest } from "@localpass/common/auth/models/request/identity-token/user-api-token.request";
+import { WebAuthnLoginTokenRequest } from "@localpass/common/auth/models/request/identity-token/webauthn-login-token.request";
+import { WebAuthnLoginAssertionResponseRequest } from "@localpass/common/auth/services/webauthn-login/request/webauthn-login-assertion-response.request";
+import { DeviceType } from "@localpass/common/enums";
+import { MasterKey, PrfKey, UserKey } from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { AuthRequestLoginStrategyData } from "../../login-strategies/auth-request-login.strategy";
 import { PasswordLoginStrategyData } from "../../login-strategies/password-login.strategy";

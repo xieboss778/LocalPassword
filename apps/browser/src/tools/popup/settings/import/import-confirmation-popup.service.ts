@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService } from "@bitwarden/components";
-import { ImportConfirmationDialogComponent } from "@bitwarden/importer-ui";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService } from "@localpass/components";
+import { ImportConfirmationDialogComponent } from "@localpass/importer-ui";
 
 import { ImportConfirmationStateService } from "./import-confirmation-state.service";
 

@@ -2,19 +2,19 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { toSignal } from "@angular/core/rxjs-interop";
 import { switchMap, take } from "rxjs";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
-import { ButtonModule, CalloutComponent, LinkModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
+import { ButtonModule, CalloutComponent, LinkModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 import {
   CipherRowMenuHandlers,
   CipherRowMenuService,
@@ -25,7 +25,7 @@ import {
   VaultItemsTableRowAction,
   VaultScope,
   VaultScopeType,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultItemEvent } from "../vault-items/vault-item-event";
 

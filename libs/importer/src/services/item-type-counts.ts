@@ -1,4 +1,4 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType } from "@localpass/common/vault/enums";
 
 export type ItemTypeCounts = Partial<Record<CipherType, number>>;
 

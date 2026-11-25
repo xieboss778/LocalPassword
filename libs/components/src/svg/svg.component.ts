@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
-import { BitSvg, isBitSvg } from "@bitwarden/assets/svg";
+import { BitSvg, isBitSvg } from "@localpass/assets/svg";
 
 @Component({
   selector: "bit-svg",

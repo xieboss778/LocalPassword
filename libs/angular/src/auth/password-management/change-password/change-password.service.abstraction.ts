@@ -1,9 +1,9 @@
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { PasswordInputResult } from "@bitwarden/auth/angular";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { PasswordInputResult } from "@localpass/auth/angular";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { UserId } from "@localpass/common/types/guid";
 
 export class InvalidCurrentPasswordError extends Error {
   constructor() {

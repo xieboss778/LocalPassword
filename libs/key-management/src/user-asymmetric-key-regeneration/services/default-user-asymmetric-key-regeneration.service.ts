@@ -1,11 +1,11 @@
 import { firstValueFrom, map } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { measured, PerfTrackGroup } from "@bitwarden/logging";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { UserId } from "@localpass/common/types/guid";
+import { measured, PerfTrackGroup } from "@localpass/logging";
 
 import { KeyService } from "../../abstractions/key.service";
 import { UserAsymmetricKeysRegenerationService } from "../abstractions/user-asymmetric-key-regeneration.service";

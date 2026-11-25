@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { BitInputDirective, SectionHeaderComponent } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { BitInputDirective, SectionHeaderComponent } from "@localpass/components";
 
 import { ViewIdentitySectionsComponent } from "./view-identity-sections.component";
 

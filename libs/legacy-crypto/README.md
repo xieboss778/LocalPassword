@@ -6,7 +6,7 @@ Deprecated crypto primitives being retired in favour of the SDK.
 
 ## Do not import this package
 
-`@bitwarden/legacy-crypto` is a **restricted import**, enforced by `no-restricted-imports` in the
+`@localpass/legacy-crypto` is a **restricted import**, enforced by `no-restricted-imports` in the
 root `eslint.config.mjs`. Nothing new may depend on it. If you need a cryptographic operation,
 implement it in the SDK and/or contact the Key Management team.
 

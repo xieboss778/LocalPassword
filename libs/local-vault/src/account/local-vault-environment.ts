@@ -1,4 +1,4 @@
-import { Region, Urls } from "@bitwarden/common/platform/abstractions/environment.service";
+import { Region, Urls } from "@localpass/common/platform/abstractions/environment.service";
 
 /**
  * Every server URL of a local-only account points at this host. The network gate refuses to let
@@ -33,4 +33,4 @@ export const LOCAL_VAULT_URLS: Urls = Object.freeze({
 export const LOCAL_VAULT_REGION: Region = Region.SelfHosted;
 
 /** Default display name for the account record when the user does not type one. */
-export const DEFAULT_LOCAL_ACCOUNT_NAME = "LocalPassword";
+export const DEFAULT_LOCAL_ACCOUNT_NAME = "LocalPass";

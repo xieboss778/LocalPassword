@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/state",
+  "name": "@localpass/state",
   "version": "0.0.1",
   "description": "Centralized application state management",
   "private": true,

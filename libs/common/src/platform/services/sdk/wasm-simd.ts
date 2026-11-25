@@ -40,11 +40,11 @@ const wasmSupported = instantiates(WASM_PROBE);
  */
 export async function importSdkWasm(jsFallback?: () => Promise<unknown>): Promise<unknown> {
   if (wasmSimdSupported) {
-    return import("@bitwarden/sdk-internal/bitwarden_wasm_internal_bg.wasm");
+    return import("@localpass/sdk-internal/bitwarden_wasm_internal_bg.wasm");
   }
 
   if (wasmSupported) {
-    return import("@bitwarden/sdk-internal/bitwarden_wasm_internal_bg.mvp.wasm");
+    return import("@localpass/sdk-internal/bitwarden_wasm_internal_bg.mvp.wasm");
   }
 
   if (jsFallback == null) {

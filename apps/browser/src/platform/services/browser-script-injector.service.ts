@@ -1,11 +1,11 @@
 import { firstValueFrom } from "rxjs";
 
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { isUrlInList } from "@bitwarden/common/autofill/utils";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { isUrlInList } from "@localpass/common/autofill/utils";
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { BrowserApi } from "../browser/browser-api";
 

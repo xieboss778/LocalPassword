@@ -1,6 +1,6 @@
 import { switchMap, filter, map, first, of } from "rxjs";
 
-import { GlobalStateProvider } from "@bitwarden/common/platform/state";
+import { GlobalStateProvider } from "@localpass/common/platform/state";
 
 import { BrowserApi } from "../browser/browser-api";
 import { fromChromeEvent } from "../browser/from-chrome-event";

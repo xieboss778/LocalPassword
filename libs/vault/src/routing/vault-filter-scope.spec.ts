@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
 
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 
 import {
   ALL_ITEMS_SCOPE,

@@ -2,7 +2,7 @@ import { ReadableStream as NodeReadableStream } from "stream/web";
 
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { PhishingIndexedDbService } from "./phishing-indexeddb.service";
 

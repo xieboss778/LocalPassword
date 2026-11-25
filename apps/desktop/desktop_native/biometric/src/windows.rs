@@ -37,7 +37,7 @@ use std::{
 mod encryption;
 
 use anyhow::{anyhow, Result};
-use bitwarden_crypto::{BitwardenLegacyKeyBytes, SymmetricCryptoKey};
+use localpass_crypto::{LocalPassLegacyKeyBytes, SymmetricCryptoKey};
 use desktop_core::password::{self, PASSWORD_NOT_FOUND};
 use secure_memory::*;
 use tokio::sync::Mutex;
@@ -68,8 +68,8 @@ use self::encryption::{
 use super::windows_focus::{focus_security_prompt, restore_focus};
 
 const AUTHENTICATE_AVAILABLE_CACHE_TTL: Duration = Duration::from_secs(30);
-const KEYCHAIN_SERVICE_NAME: &str = "BitwardenBiometricsV2";
-const CREDENTIAL_NAME: &HSTRING = h!("BitwardenBiometricsV2");
+const KEYCHAIN_SERVICE_NAME: &str = "LocalPassBiometricsV2";
+const CREDENTIAL_NAME: &HSTRING = h!("LocalPassBiometricsV2");
 
 /// The Windows OS implementation of the biometric trait.
 pub struct BiometricLockSystem {
@@ -186,7 +186,7 @@ impl super::BiometricTrait for BiometricLockSystem {
         // `SecretProtectedKeyEnvelope`. The bundle of challenge and serialized envelope are stored
         // to the keychain.
 
-        let user_key = SymmetricCryptoKey::try_from(&BitwardenLegacyKeyBytes::from(key.to_vec()))
+        let user_key = SymmetricCryptoKey::try_from(&LocalPassLegacyKeyBytes::from(key.to_vec()))
             .map_err(|e| anyhow!("Failed to parse user key: {e}"))?;
 
         // Reuse the Windows Hello challenge and key from the last prompt, so re-enrolling right
@@ -352,7 +352,7 @@ async fn windows_hello_authenticate(message: String) -> Result<bool> {
     let userconsent_result: IAsyncOperation<UserConsentVerificationResult> = unsafe {
         // Windows Hello prompt must be in foreground, focused, otherwise the face or fingerprint
         // unlock will not work. We get the current foreground window, which will either be the
-        // Bitwarden desktop app or the browser extension.
+        // LocalPass desktop app or the browser extension.
         let foreground_window = GetForegroundWindow();
         factory::<UserConsentVerifier, IUserConsentVerifierInterop>()?
             .RequestVerificationForWindowAsync(foreground_window, &HSTRING::from(message))?
@@ -395,7 +395,7 @@ async fn windows_hello_authenticate_with_crypto(challenge: &Challenge) -> Result
         stop_focusing.store(true, std::sync::atomic::Ordering::Relaxed);
     });
 
-    // First create or replace the Bitwarden Biometrics signing key
+    // First create or replace the LocalPass Biometrics signing key
     let credential = {
         let key_credential_creation_result = KeyCredentialManager::RequestCreateAsync(
             CREDENTIAL_NAME,
@@ -494,7 +494,7 @@ unsafe fn as_mut_bytes(buffer: &mut IBuffer) -> Result<&mut [u8]> {
 #[cfg(test)]
 #[allow(clippy::print_stdout)]
 mod tests {
-    use bitwarden_crypto::{BitwardenLegacyKeyBytes, SymmetricCryptoKey};
+    use localpass_crypto::{LocalPassLegacyKeyBytes, SymmetricCryptoKey};
     use rand_core::Rng;
 
     use super::{
@@ -544,7 +544,7 @@ mod tests {
     async fn test_double_unenroll() {
         let user_id = String::from("test_user");
         let mut key = [0u8; PSEUDORANDOM_WINDOWS_HELLO_OUTPUT_LENGTH];
-        bitwarden_random::rng().fill_bytes(&mut key);
+        localpass_random::rng().fill_bytes(&mut key);
 
         let windows_hello_lock_system = BiometricLockSystem::new();
 
@@ -587,7 +587,7 @@ mod tests {
     async fn test_enroll_unlock_unenroll() {
         let user_id = String::from("test_user");
         let mut key = [0u8; PSEUDORANDOM_WINDOWS_HELLO_OUTPUT_LENGTH];
-        bitwarden_random::rng().fill_bytes(&mut key);
+        localpass_random::rng().fill_bytes(&mut key);
 
         let windows_hello_lock_system = BiometricLockSystem::new();
 
@@ -624,9 +624,9 @@ mod tests {
     async fn test_enroll_after_unlock_reuses_windows_hello_challenge_and_key() {
         let user_id = String::from("test_user");
         let mut key = [0u8; PSEUDORANDOM_WINDOWS_HELLO_OUTPUT_LENGTH];
-        bitwarden_random::rng().fill_bytes(&mut key);
+        localpass_random::rng().fill_bytes(&mut key);
         let mut rotated_key = [0u8; PSEUDORANDOM_WINDOWS_HELLO_OUTPUT_LENGTH];
-        bitwarden_random::rng().fill_bytes(&mut rotated_key);
+        localpass_random::rng().fill_bytes(&mut rotated_key);
 
         println!("Enrolling user (prompts)");
         BiometricLockSystem::new()
@@ -664,20 +664,20 @@ mod tests {
     async fn test_legacy_entry_migrates_on_unlock() {
         let user_id = String::from("test_user");
         let mut key = [0u8; PSEUDORANDOM_WINDOWS_HELLO_OUTPUT_LENGTH];
-        bitwarden_random::rng().fill_bytes(&mut key);
+        localpass_random::rng().fill_bytes(&mut key);
 
         let windows_hello_lock_system = BiometricLockSystem::new();
 
         // Write a legacy (pre-envelope) keychain entry directly, simulating a user enrolled with an
         // older build.
         let mut challenge_bytes = [0u8; CHALLENGE_LENGTH];
-        bitwarden_random::rng().fill_bytes(&mut challenge_bytes);
+        localpass_random::rng().fill_bytes(&mut challenge_bytes);
         let challenge = Challenge::from_bytes(challenge_bytes);
         let windows_hello_key = windows_hello_authenticate_with_crypto(&challenge)
             .await
             .unwrap();
         let user_key =
-            SymmetricCryptoKey::try_from(&BitwardenLegacyKeyBytes::from(key.to_vec())).unwrap();
+            SymmetricCryptoKey::try_from(&LocalPassLegacyKeyBytes::from(key.to_vec())).unwrap();
         let legacy =
             WindowsHelloKeychainEntryV1::seal(challenge, &windows_hello_key, &user_key).unwrap();
         desktop_core::password::set_password(

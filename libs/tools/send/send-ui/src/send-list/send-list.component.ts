@@ -1,16 +1,16 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, effect, input, output } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NoResults, NoSendsIcon } from "@bitwarden/assets/svg";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NoResults, NoSendsIcon } from "@localpass/assets/svg";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
 import {
   ButtonModule,
   StatusLockupComponent,
   SpinnerComponent,
   SvgComponent,
   TableDataSource,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { SendSearchComponent } from "../send-search/send-search.component";
 import { SendTableComponent } from "../send-table/send-table.component";

@@ -1,8 +1,8 @@
-import { SendItemView } from "@bitwarden/common/tools/send/models/view/send-item.view";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { SendItemView } from "@localpass/common/tools/send/models/view/send-item.view";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { getSendItemIcon } from "./send-item-icon";
 

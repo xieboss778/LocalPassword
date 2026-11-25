@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { ProfileOrganizationResponse } from "../../admin-console/models/response/profile-organization.response";
 import { PrivateKeysResponseModel } from "../../key-management/keys/response/private-keys.response";
@@ -23,7 +23,7 @@ export class ProfileResponse extends BaseResponse {
   creationDate: string;
   // Cleanup: Can be removed after moving to accountKeys
   privateKey: string;
-  // Cleanup: This should be non-optional after the server has been released for a while https://bitwarden.atlassian.net/browse/PM-21768
+  // Cleanup: This should be non-optional after the server has been released for a while https://localpass.atlassian.net/browse/PM-21768
   accountKeys: PrivateKeysResponseModel | null = null;
   securityStamp: string;
   forcePasswordReset: boolean;
@@ -55,7 +55,7 @@ export class ProfileResponse extends BaseResponse {
     if (key) {
       this.key = new EncString(key);
     }
-    // Cleanup: This should be non-optional after the server has been released for a while https://bitwarden.atlassian.net/browse/PM-21768
+    // Cleanup: This should be non-optional after the server has been released for a while https://localpass.atlassian.net/browse/PM-21768
     if (this.getResponseProperty("AccountKeys") != null) {
       this.accountKeys = new PrivateKeysResponseModel(this.getResponseProperty("AccountKeys"));
     }

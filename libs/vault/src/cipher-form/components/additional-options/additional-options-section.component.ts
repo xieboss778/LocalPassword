@@ -6,11 +6,11 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { combineLatest, concatMap, filter, firstValueFrom, map, shareReplay } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { devFlagEnabled } from "@bitwarden/common/platform/misc/flags";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { devFlagEnabled } from "@localpass/common/platform/misc/flags";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
 import {
   CardComponent,
   CheckboxModule,
@@ -18,16 +18,16 @@ import {
   LinkModule,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { PasswordRepromptService } from "../../../services/password-reprompt.service";
 import { CipherFormContainer } from "../../cipher-form-container";
 import { CipherFormHTTPAuthenticationService } from "../../services/cipher-form-http-authentication.service";
 import { CustomFieldsComponent } from "../custom-fields/custom-fields.component";
 
-const HTTP_AUTHENTICATION_HELP_ARTICLE_URL = "https://bitwarden.com/help/basic-auth-autofill/";
+const HTTP_AUTHENTICATION_HELP_ARTICLE_URL = "https://github.com/xieboss778/LocalPass/tree/main/docs";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-additional-options-section",
@@ -47,7 +47,7 @@ const HTTP_AUTHENTICATION_HELP_ARTICLE_URL = "https://bitwarden.com/help/basic-a
   ],
 })
 export class AdditionalOptionsSectionComponent implements OnInit {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(CustomFieldsComponent) customFieldsComponent: CustomFieldsComponent;
 
@@ -101,7 +101,7 @@ export class AdditionalOptionsSectionComponent implements OnInit {
   /** True when the form is in `partial-edit` mode */
   isPartialEdit = false;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() disableSectionMargin: boolean;
 

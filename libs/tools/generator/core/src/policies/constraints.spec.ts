@@ -1,4 +1,4 @@
-import { Constraint } from "@bitwarden/common/tools/types";
+import { Constraint } from "@localpass/common/tools/types";
 
 import {
   atLeast,

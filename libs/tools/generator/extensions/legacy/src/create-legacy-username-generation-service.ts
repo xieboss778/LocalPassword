@@ -1,15 +1,15 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { RestClient } from "@bitwarden/common/tools/integration/rpc";
-import { engine, services, strategies, Integrations } from "@bitwarden/generator-core";
-import { DefaultGeneratorNavigationService } from "@bitwarden/generator-navigation";
-import { KeyService } from "@bitwarden/key-management";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { RestClient } from "@localpass/common/tools/integration/rpc";
+import { engine, services, strategies, Integrations } from "@localpass/generator-core";
+import { DefaultGeneratorNavigationService } from "@localpass/generator-navigation";
+import { KeyService } from "@localpass/key-management";
 
 import { LegacyUsernameGenerationService } from "./legacy-username-generation.service";
 import { UsernameGenerationServiceAbstraction } from "./username-generation.service.abstraction";

@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Constraint } from "@bitwarden/common/tools/types";
+import { Constraint } from "@localpass/common/tools/types";
 
 import { sum } from "../util";
 

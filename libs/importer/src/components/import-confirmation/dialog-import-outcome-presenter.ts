@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { DialogService } from "@bitwarden/components";
+import { DialogService } from "@localpass/components";
 
 import { ImportedFile } from "../../models";
 import { ImportSkippedItemsDialogComponent, ImportSuccessDialogComponent } from "../dialog";

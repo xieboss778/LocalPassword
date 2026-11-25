@@ -1,4 +1,4 @@
-import { SendAccessTokenApiErrorResponse } from "@bitwarden/sdk-internal";
+import { SendAccessTokenApiErrorResponse } from "@localpass/sdk-internal";
 
 export type InvalidRequest = Extract<SendAccessTokenApiErrorResponse, { error: "invalid_request" }>;
 

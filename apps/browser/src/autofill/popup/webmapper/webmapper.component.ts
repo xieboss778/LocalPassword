@@ -12,8 +12,8 @@ import {
 import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
 import { of, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   BadgeModule,
   ButtonModule,
@@ -23,7 +23,7 @@ import {
   SectionComponent,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/browser/browser-popup-utils";

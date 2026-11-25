@@ -1,8 +1,8 @@
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
+import { EncryptService, LegacyCompatKeyService } from "@localpass/legacy-crypto";
 
 export class ContainerService {
   constructor(
@@ -12,8 +12,8 @@ export class ContainerService {
   ) {}
 
   attachToGlobal(global: any) {
-    if (!global.bitwardenContainerService) {
-      global.bitwardenContainerService = this;
+    if (!global.localpassContainerService) {
+      global.localpassContainerService = this;
     }
   }
 

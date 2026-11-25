@@ -1,4 +1,4 @@
-import { OpenOrgInviteAcceptError } from "@bitwarden/common/auth/organization-invite";
+import { OpenOrgInviteAcceptError } from "@localpass/common/auth/organization-invite";
 
 /**
  * Accept-endpoint error kinds that render a full error UI (title + body + icon + button).

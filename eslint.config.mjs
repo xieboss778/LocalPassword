@@ -15,54 +15,54 @@ import jest from "eslint-plugin-jest";
 import platformPlugins from "./libs/eslint/platform/index.mjs";
 import componentPlugins from "./libs/eslint/components/index.mjs";
 
-/// @bitwarden/legacy-crypto is a holding pen for crypto primitives being retired in favour of the
+/// @localpass/legacy-crypto is a holding pen for crypto primitives being retired in favour of the
 /// SDK
 const LEGACY_CRYPTO_RESTRICTED_PATTERN = {
-  group: ["@bitwarden/legacy-crypto", "@bitwarden/legacy-crypto/**"],
+  group: ["@localpass/legacy-crypto", "@localpass/legacy-crypto/**"],
   message:
-    "@bitwarden/legacy-crypto holds crypto primitives that are being retired in favour of the SDK. " +
+    "@localpass/legacy-crypto holds crypto primitives that are being retired in favour of the SDK. " +
     "Do not add new imports if possible — implement the operation in the SDK and contact the Key Management team.",
 };
 
 // Common is at the base level - should not import from other libs except shared
 const COMMON_FORBIDDEN_PACKAGES = [
-  "@bitwarden/admin-console",
-  "@bitwarden/angular",
-  "@bitwarden/auth",
-  "@bitwarden/billing",
-  "@bitwarden/components",
-  "@bitwarden/importer",
-  "@bitwarden/key-management",
-  "@bitwarden/key-management-ui",
-  "@bitwarden/node",
-  "@bitwarden/platform",
-  "@bitwarden/tools",
-  "@bitwarden/ui",
-  "@bitwarden/vault",
+  "@localpass/admin-console",
+  "@localpass/angular",
+  "@localpass/auth",
+  "@localpass/billing",
+  "@localpass/components",
+  "@localpass/importer",
+  "@localpass/key-management",
+  "@localpass/key-management-ui",
+  "@localpass/node",
+  "@localpass/platform",
+  "@localpass/tools",
+  "@localpass/ui",
+  "@localpass/vault",
 ];
 
 // Key management can depend on common, node, angular, components, eslint, platform, ui
 const KEY_MANAGEMENT_FORBIDDEN_PACKAGES = [
-  "@bitwarden/auth",
-  "@bitwarden/admin-console",
-  "@bitwarden/billing",
-  "@bitwarden/importer",
-  "@bitwarden/key-management-ui",
-  "@bitwarden/tools",
-  "@bitwarden/vault",
+  "@localpass/auth",
+  "@localpass/admin-console",
+  "@localpass/billing",
+  "@localpass/importer",
+  "@localpass/key-management-ui",
+  "@localpass/tools",
+  "@localpass/vault",
 ];
 
 // Node can depend on common, shared, auth
 const NODE_FORBIDDEN_PACKAGES = [
-  "@bitwarden/admin-console",
-  "@bitwarden/angular",
-  "@bitwarden/components",
-  "@bitwarden/importer",
-  "@bitwarden/key-management-ui",
-  "@bitwarden/platform",
-  "@bitwarden/tools",
-  "@bitwarden/ui",
-  "@bitwarden/vault",
+  "@localpass/admin-console",
+  "@localpass/angular",
+  "@localpass/components",
+  "@localpass/importer",
+  "@localpass/key-management-ui",
+  "@localpass/platform",
+  "@localpass/tools",
+  "@localpass/ui",
+  "@localpass/vault",
 ];
 
 export default tseslint.config(
@@ -85,8 +85,8 @@ export default tseslint.config(
     plugins: {
       rxjs: fixupPluginRules(rxjs),
       "rxjs-angular": fixupPluginRules(angularRxjs),
-      "@bitwarden/platform": platformPlugins,
-      "@bitwarden/components": componentPlugins,
+      "@localpass/platform": platformPlugins,
+      "@localpass/components": componentPlugins,
     },
     languageOptions: {
       parserOptions: {
@@ -130,11 +130,11 @@ export default tseslint.config(
       "@angular-eslint/use-lifecycle-interface": "error",
       "@angular-eslint/use-pipe-transform-interface": 0,
 
-      "@bitwarden/platform/required-using": "error",
-      "@bitwarden/platform/no-enums": "error",
-      "@bitwarden/platform/no-page-script-url-leakage": "error",
-      "@bitwarden/platform/no-unawaited-using-return": "error",
-      "@bitwarden/components/require-theme-colors-in-svg": "error",
+      "@localpass/platform/required-using": "error",
+      "@localpass/platform/no-enums": "error",
+      "@localpass/platform/no-page-script-url-leakage": "error",
+      "@localpass/platform/no-unawaited-using-return": "error",
+      "@localpass/components/require-theme-colors-in-svg": "error",
 
       "@typescript-eslint/explicit-member-accessibility": ["error", { accessibility: "no-public" }],
       "@typescript-eslint/no-explicit-any": "off", // TODO: This should be re-enabled
@@ -156,7 +156,7 @@ export default tseslint.config(
           "newlines-between": "always",
           pathGroups: [
             {
-              pattern: "@bitwarden/**",
+              pattern: "@localpass/**",
               group: "external",
               position: "after",
             },
@@ -181,8 +181,8 @@ export default tseslint.config(
             },
             {
               target: ["libs/**/*"],
-              from: ["bitwarden_license/**/*"],
-              message: "Libs should not import licensed code from bitwarden_license/.",
+              from: ["localpass_license/**/*"],
+              message: "Libs should not import licensed code from localpass_license/.",
             },
             {
               // avoid specific frameworks or large dependencies in common
@@ -232,7 +232,7 @@ export default tseslint.config(
   {
     files: ["**/*.component.ts", "**/*.directive.ts", "**/*.service.ts"],
     rules: {
-      "@bitwarden/components/enforce-readonly-angular-properties": ["error", { onlyOnPush: true }],
+      "@localpass/components/enforce-readonly-angular-properties": ["error", { onlyOnPush: true }],
     },
   },
   {
@@ -251,7 +251,7 @@ export default tseslint.config(
     plugins: {
       "@angular-eslint/template": angular.templatePlugin,
       tailwindcss: eslintPluginTailwindCSS,
-      "@bitwarden/components": componentPlugins,
+      "@localpass/components": componentPlugins,
     },
     rules: {
       "@angular-eslint/template/button-has-type": "error",
@@ -272,13 +272,13 @@ export default tseslint.config(
       "tailwindcss/enforces-negative-arbitrary-values": "error",
       "tailwindcss/enforces-shorthand": "error",
       "tailwindcss/no-contradicting-classname": "error",
-      "@bitwarden/components/require-label-on-biticonbutton": [
+      "@localpass/components/require-label-on-biticonbutton": [
         "error",
         { ignoreIfHas: ["bitPasswordInputToggle"] },
       ],
-      "@bitwarden/components/no-bwi-class-usage": "warn",
-      "@bitwarden/components/no-icon-children-in-bit-button": "warn",
-      "@bitwarden/components/no-bit-dialog-wrapper": "error",
+      "@localpass/components/no-bwi-class-usage": "warn",
+      "@localpass/components/no-icon-children-in-bit-button": "warn",
+      "@localpass/components/no-bit-dialog-wrapper": "error",
     },
   },
 
@@ -415,39 +415,39 @@ export default tseslint.config(
     },
   },
   {
-    files: ["bitwarden_license/bit-common/src/**/*.ts"],
+    files: ["localpass_license/bit-common/src/**/*.ts"],
     rules: {
-      "no-restricted-imports": buildNoRestrictedImports(["@bitwarden/bit-common/*"]),
+      "no-restricted-imports": buildNoRestrictedImports(["@localpass/bit-common/*"]),
     },
   },
   // bit-pam stays free of Angular so background scripts can use it; UI code goes in bit-pam-components.
   {
-    files: ["bitwarden_license/bit-pam/src/**/*.ts"],
+    files: ["localpass_license/bit-pam/src/**/*.ts"],
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
-        "@bitwarden/bit-pam",
-        "@bitwarden/bit-pam-components",
+        "@localpass/bit-pam",
+        "@localpass/bit-pam-components",
         "@angular",
-        "@bitwarden/angular",
-        "@bitwarden/components",
-        "@bitwarden/ui-common",
-        "@bitwarden/vault",
+        "@localpass/angular",
+        "@localpass/components",
+        "@localpass/ui-common",
+        "@localpass/vault",
       ]),
     },
   },
   {
-    files: ["bitwarden_license/bit-pam-components/src/**/*.ts"],
+    files: ["localpass_license/bit-pam-components/src/**/*.ts"],
     rules: {
-      "no-restricted-imports": buildNoRestrictedImports(["@bitwarden/bit-pam-components"]),
+      "no-restricted-imports": buildNoRestrictedImports(["@localpass/bit-pam-components"]),
     },
   },
   {
-    files: ["bitwarden_license/bit-sm/src/**/*.ts"],
+    files: ["localpass_license/bit-sm/src/**/*.ts"],
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
-        "@bitwarden/bit-sm",
-        "@bitwarden/bit-web/*",
-        "@bitwarden/bit-cli/*",
+        "@localpass/bit-sm",
+        "@localpass/bit-web/*",
+        "@localpass/bit-cli/*",
       ]),
     },
   },
@@ -456,13 +456,13 @@ export default tseslint.config(
     rules: {
       // Catches static imports
       "no-restricted-imports": buildNoRestrictedImports([
-        "bitwarden_license/**",
-        "@bitwarden/bit-common/*",
-        "@bitwarden/bit-sm",
-        "@bitwarden/bit-pam",
-        "@bitwarden/bit-pam-components",
-        "@bitwarden/bit-web/*",
-        "@bitwarden/bit-cli/*",
+        "localpass_license/**",
+        "@localpass/bit-common/*",
+        "@localpass/bit-sm",
+        "@localpass/bit-pam",
+        "@localpass/bit-pam-components",
+        "@localpass/bit-web/*",
+        "@localpass/bit-cli/*",
       ]),
     },
   },
@@ -470,12 +470,12 @@ export default tseslint.config(
     files: ["apps/web/src/**/*.ts"],
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
-        "bitwarden_license/**",
-        "@bitwarden/bit-common/*",
-        "@bitwarden/bit-sm",
-        "@bitwarden/bit-pam",
-        "@bitwarden/bit-pam-components",
-        "@bitwarden/bit-web/*",
+        "localpass_license/**",
+        "@localpass/bit-common/*",
+        "@localpass/bit-sm",
+        "@localpass/bit-pam",
+        "@localpass/bit-pam-components",
+        "@localpass/bit-web/*",
 
         "**/app/core/*",
         "**/reports/*",
@@ -491,12 +491,12 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         "@angular",
-        "bitwarden_license/**",
-        "@bitwarden/bit-common/*",
-        "@bitwarden/bit-sm",
-        "@bitwarden/bit-pam",
-        "@bitwarden/bit-pam-components",
-        "@bitwarden/bit-web/*",
+        "localpass_license/**",
+        "@localpass/bit-common/*",
+        "@localpass/bit-sm",
+        "@localpass/bit-pam",
+        "@localpass/bit-pam-components",
+        "@localpass/bit-web/*",
 
         "**/popup/*",
       ]),
@@ -507,13 +507,13 @@ export default tseslint.config(
     files: ["apps/browser/src/**/popup/**/*.ts"],
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
-        "bitwarden_license/**",
-        "@bitwarden/bit-common/*",
-        "@bitwarden/bit-sm",
-        "@bitwarden/bit-pam",
-        "@bitwarden/bit-pam-components",
-        "@bitwarden/bit-web/*",
-        "@bitwarden/bit-cli/*",
+        "localpass_license/**",
+        "@localpass/bit-common/*",
+        "@localpass/bit-sm",
+        "@localpass/bit-pam",
+        "@localpass/bit-pam-components",
+        "@localpass/bit-web/*",
+        "@localpass/bit-cli/*",
       ]),
     },
   },
@@ -523,7 +523,7 @@ export default tseslint.config(
   {
     files: [
       "apps/browser/src/popup/main.ts",
-      "bitwarden_license/bit-browser/src/popup/main.ts",
+      "localpass_license/bit-browser/src/popup/main.ts",
       "apps/browser/src/platform/popup/shell/popup-shell.ts",
       "apps/browser/src/platform/browser/popup-view.ts",
     ],
@@ -534,7 +534,7 @@ export default tseslint.config(
           patterns: [
             {
               regex:
-                "^(?!(\\.\\./platform/popup/shell/popup-shell|@bitwarden/browser/platform/popup/shell/popup-shell|\\./scss|@bitwarden/browser/popup/scss|\\.\\./\\.\\./browser/popup-view)$)",
+                "^(?!(\\.\\./platform/popup/shell/popup-shell|@localpass/browser/platform/popup/shell/popup-shell|\\./scss|@localpass/browser/popup/scss|\\.\\./\\.\\./browser/popup-view)$)",
               message:
                 "Runs before the popup is shown. Import app code from popup/bootstrap.ts instead.",
             },
@@ -554,8 +554,8 @@ export default tseslint.config(
     files: [
       "apps/web/**/*.html",
       "apps/browser/**/*.html",
-      "bitwarden_license/bit-web/**/*.html",
-      "bitwarden_license/bit-pam-components/**/*.html",
+      "localpass_license/bit-web/**/*.html",
+      "localpass_license/bit-pam-components/**/*.html",
       "libs/**/*.html",
     ],
     rules: {
@@ -589,20 +589,20 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Shared shouldnt have deps
-        "@bitwarden/admin-console",
-        "@bitwarden/angular",
-        "@bitwarden/auth",
-        "@bitwarden/billing",
-        "@bitwarden/common",
-        "@bitwarden/components",
-        "@bitwarden/importer",
-        "@bitwarden/key-management",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/node",
-        "@bitwarden/platform",
-        "@bitwarden/tools",
-        "@bitwarden/ui",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/angular",
+        "@localpass/auth",
+        "@localpass/billing",
+        "@localpass/common",
+        "@localpass/components",
+        "@localpass/importer",
+        "@localpass/key-management",
+        "@localpass/key-management-ui",
+        "@localpass/node",
+        "@localpass/platform",
+        "@localpass/tools",
+        "@localpass/ui",
+        "@localpass/vault",
       ]),
     },
   },
@@ -611,14 +611,14 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Auth can only depend on common, shared, angular, node, platform, eslint
-        "@bitwarden/admin-console",
-        "@bitwarden/billing",
-        "@bitwarden/components",
-        "@bitwarden/importer",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/tools",
-        "@bitwarden/ui",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/billing",
+        "@localpass/components",
+        "@localpass/importer",
+        "@localpass/key-management-ui",
+        "@localpass/tools",
+        "@localpass/ui",
+        "@localpass/vault",
       ]),
     },
   },
@@ -633,11 +633,11 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Billing can depend on auth, common, angular, components, eslint, node, platform, ui
-        "@bitwarden/admin-console",
-        "@bitwarden/importer",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/tools",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/importer",
+        "@localpass/key-management-ui",
+        "@localpass/tools",
+        "@localpass/vault",
       ]),
     },
   },
@@ -646,15 +646,15 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Components can depend on common, shared
-        "@bitwarden/admin-console",
-        "@bitwarden/auth",
-        "@bitwarden/billing",
-        "@bitwarden/eslint",
-        "@bitwarden/importer",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/node",
-        "@bitwarden/tools",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/auth",
+        "@localpass/billing",
+        "@localpass/eslint",
+        "@localpass/importer",
+        "@localpass/key-management-ui",
+        "@localpass/node",
+        "@localpass/tools",
+        "@localpass/vault",
       ]),
     },
   },
@@ -663,14 +663,14 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // UI can depend on common, shared, auth
-        "@bitwarden/admin-console",
-        "@bitwarden/billing",
-        "@bitwarden/importer",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/node",
-        "@bitwarden/platform",
-        "@bitwarden/tools",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/billing",
+        "@localpass/importer",
+        "@localpass/key-management-ui",
+        "@localpass/node",
+        "@localpass/platform",
+        "@localpass/tools",
+        "@localpass/vault",
       ]),
     },
   },
@@ -679,13 +679,13 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Key-management-ui can depend on key-management, common, angular, shared, auth, components, ui, eslint
-        "@bitwarden/admin-console",
-        "@bitwarden/billing",
-        "@bitwarden/importer",
-        "@bitwarden/node",
-        "@bitwarden/platform",
-        "@bitwarden/tools",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/billing",
+        "@localpass/importer",
+        "@localpass/node",
+        "@localpass/platform",
+        "@localpass/tools",
+        "@localpass/vault",
       ]),
     },
   },
@@ -694,15 +694,15 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Angular can depend on common, shared, components, ui
-        "@bitwarden/admin-console",
-        "@bitwarden/auth",
-        "@bitwarden/billing",
-        "@bitwarden/importer",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/node",
-        "@bitwarden/platform",
-        "@bitwarden/tools",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/auth",
+        "@localpass/billing",
+        "@localpass/importer",
+        "@localpass/key-management-ui",
+        "@localpass/node",
+        "@localpass/platform",
+        "@localpass/tools",
+        "@localpass/vault",
       ]),
     },
   },
@@ -711,9 +711,9 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Vault can depend on most libs
-        "@bitwarden/admin-console",
-        "@bitwarden/importer",
-        "@bitwarden/tools",
+        "@localpass/admin-console",
+        "@localpass/importer",
+        "@localpass/tools",
       ]),
     },
   },
@@ -723,15 +723,15 @@ export default tseslint.config(
       "no-restricted-imports": buildNoRestrictedImports([
         // Local vault core is platform agnostic: no Angular, no UI, no client code.
         // Only common, state, shared, key-management, platform and serialization are allowed.
-        "@bitwarden/admin-console",
-        "@bitwarden/angular",
-        "@bitwarden/billing",
-        "@bitwarden/components",
-        "@bitwarden/importer",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/tools",
-        "@bitwarden/ui",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/angular",
+        "@localpass/billing",
+        "@localpass/components",
+        "@localpass/importer",
+        "@localpass/key-management-ui",
+        "@localpass/tools",
+        "@localpass/ui",
+        "@localpass/vault",
       ]),
     },
   },
@@ -748,7 +748,7 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Tools can depend on most libs
-        "@bitwarden/admin-console",
+        "@localpass/admin-console",
       ]),
     },
   },
@@ -757,14 +757,14 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Platform cant depend on most libs
-        "@bitwarden/admin-console",
-        "@bitwarden/auth",
-        "@bitwarden/billing",
-        "@bitwarden/importer",
-        "@bitwarden/key-management",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/tools",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/auth",
+        "@localpass/billing",
+        "@localpass/importer",
+        "@localpass/key-management",
+        "@localpass/key-management-ui",
+        "@localpass/tools",
+        "@localpass/vault",
       ]),
     },
   },
@@ -773,8 +773,8 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // Importer can depend on most libs but not other domain libs
-        "@bitwarden/admin-console",
-        "@bitwarden/tools",
+        "@localpass/admin-console",
+        "@localpass/tools",
       ]),
     },
   },
@@ -783,19 +783,19 @@ export default tseslint.config(
     rules: {
       "no-restricted-imports": buildNoRestrictedImports([
         // ESLint should not depend on app code
-        "@bitwarden/admin-console",
-        "@bitwarden/angular",
-        "@bitwarden/auth",
-        "@bitwarden/billing",
-        "@bitwarden/components",
-        "@bitwarden/importer",
-        "@bitwarden/key-management",
-        "@bitwarden/key-management-ui",
-        "@bitwarden/node",
-        "@bitwarden/platform",
-        "@bitwarden/tools",
-        "@bitwarden/ui",
-        "@bitwarden/vault",
+        "@localpass/admin-console",
+        "@localpass/angular",
+        "@localpass/auth",
+        "@localpass/billing",
+        "@localpass/components",
+        "@localpass/importer",
+        "@localpass/key-management",
+        "@localpass/key-management-ui",
+        "@localpass/node",
+        "@localpass/platform",
+        "@localpass/tools",
+        "@localpass/ui",
+        "@localpass/vault",
       ]),
     },
   },
@@ -811,18 +811,18 @@ export default tseslint.config(
       "no-restricted-imports": buildNoRestrictedImports(
         [
           // Legacy crypto can only depend on common, logging, key-management
-          "@bitwarden/admin-console",
-          "@bitwarden/angular",
-          "@bitwarden/auth",
-          "@bitwarden/billing",
-          "@bitwarden/components",
-          "@bitwarden/importer",
-          "@bitwarden/key-management-ui",
-          "@bitwarden/node",
-          "@bitwarden/platform",
-          "@bitwarden/tools",
-          "@bitwarden/ui",
-          "@bitwarden/vault",
+          "@localpass/admin-console",
+          "@localpass/angular",
+          "@localpass/auth",
+          "@localpass/billing",
+          "@localpass/components",
+          "@localpass/importer",
+          "@localpass/key-management-ui",
+          "@localpass/node",
+          "@localpass/platform",
+          "@localpass/tools",
+          "@localpass/ui",
+          "@localpass/vault",
         ],
         false,
         true,
@@ -831,18 +831,18 @@ export default tseslint.config(
   },
 
   // Within a package, import sibling code via relative paths rather than the package's own
-  // `@bitwarden/*` alias. Scoped to libs here; the rule self-limits to the file's owning package.
-  // https://contributing.bitwarden.com/contributing/code-style/web/typescript#imports-within-the-same-package
+  // `@localpass/*` alias. Scoped to libs here; the rule self-limits to the file's owning package.
+  // https://contributing.local.invalid/contributing/code-style/web/typescript#imports-within-the-same-package
   {
     files: [
       "libs/**/*.ts",
-      "bitwarden_license/bit-common/src/**/*.ts",
-      "bitwarden_license/bit-sm/src/**/*.ts",
-      "bitwarden_license/bit-pam/src/**/*.ts",
-      "bitwarden_license/bit-pam-components/src/**/*.ts",
+      "localpass_license/bit-common/src/**/*.ts",
+      "localpass_license/bit-sm/src/**/*.ts",
+      "localpass_license/bit-pam/src/**/*.ts",
+      "localpass_license/bit-pam-components/src/**/*.ts",
     ],
     rules: {
-      "@bitwarden/platform/no-self-package-import": "error",
+      "@localpass/platform/no-self-package-import": "error",
     },
   },
 
@@ -851,9 +851,9 @@ export default tseslint.config(
     files: [
       "apps/cli/src/admin-console/**/*.ts",
       "apps/web/src/app/admin-console/**/*.ts",
-      "bitwarden_license/bit-cli/src/admin-console/**/*.ts",
-      "bitwarden_license/bit-web/src/app/admin-console/**/*.ts",
-      "bitwarden_license/bit-web/src/app/providers/**/*.ts",
+      "localpass_license/bit-cli/src/admin-console/**/*.ts",
+      "localpass_license/bit-web/src/app/admin-console/**/*.ts",
+      "localpass_license/bit-web/src/app/providers/**/*.ts",
       "libs/admin-console/src/**/*.ts",
     ],
     rules: {
@@ -970,8 +970,8 @@ function buildNoRestrictedImports(
     {
       paths: [
         {
-          name: "@bitwarden/commercial-sdk-internal",
-          message: "Use @bitwarden/sdk-internal instead.",
+          name: "@localpass/commercial-sdk-internal",
+          message: "Use @localpass/sdk-internal instead.",
         },
       ],
       // Object form rather than plain strings so the legacy-crypto group can carry its own message.

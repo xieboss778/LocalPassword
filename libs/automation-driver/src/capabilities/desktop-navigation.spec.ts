@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 import { DesktopNavigationCapability } from "./desktop-navigation";
 

@@ -1,6 +1,6 @@
 import { globalShortcut } from "electron";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { WindowMain } from "../../main/window.main";
 import { AutotypeKeyboardShortcut } from "../models/main-autotype-keyboard-shortcut";

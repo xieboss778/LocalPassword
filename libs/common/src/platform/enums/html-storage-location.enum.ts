@@ -1,1 +1,1 @@
-export { HtmlStorageLocation } from "@bitwarden/storage-core";
+export { HtmlStorageLocation } from "@localpass/storage-core";

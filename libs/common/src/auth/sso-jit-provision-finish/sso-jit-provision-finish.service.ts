@@ -2,7 +2,7 @@ import {
   JitMasterPasswordRegistrationResponse,
   KeyConnectorRegistrationResult,
   TdeRegistrationResponse,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { OrganizationId } from "../../types/guid";
 
@@ -32,7 +32,7 @@ export abstract class SsoJitProvisionFinishService {
    * The finish methods call this method. Call it directly only for the V1 Key Connector path,
    * which posts through `SsoJitProvisionFinishApiService`.
    *
-   * TODO: Remove from the public API with https://bitwarden.atlassian.net/browse/PM-27328 (V1 Key
+   * TODO: Remove from the public API with https://localpass.atlassian.net/browse/PM-27328 (V1 Key
    * Connector registration).
    *
    * @param orgId The organization that provisions the user.

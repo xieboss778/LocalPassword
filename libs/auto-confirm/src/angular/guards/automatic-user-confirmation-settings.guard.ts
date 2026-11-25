@@ -2,11 +2,11 @@ import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { map, switchMap } from "rxjs";
 
-import { AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
-import { ToastService } from "@bitwarden/components";
+import { AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
+import { ToastService } from "@localpass/components";
 
 export const canAccessAutoConfirmSettings: CanActivateFn = () => {
   const accountService = inject(AccountService);

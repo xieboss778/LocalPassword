@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType, SecureNoteType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherType, SecureNoteType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 
 import { BitwardenCsvImporter } from "./bitwarden-csv-importer";
 

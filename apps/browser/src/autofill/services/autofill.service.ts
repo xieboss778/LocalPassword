@@ -10,40 +10,40 @@ import {
 } from "rxjs";
 import { map, pairwise, share, takeUntil } from "rxjs/operators";
 
-import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { AccountInfo, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 import {
   AutofillOverlayVisibility,
   AutofillTargetingRuleTypes,
   CardExpiryDateDelimiters,
   FormPurposeCategories,
-} from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
-import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
-import { normalizeExpiryYearFormat } from "@bitwarden/common/autofill/utils";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
+} from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { UserNotificationSettingsServiceAbstraction } from "@localpass/common/autofill/services/user-notification-settings.service";
+import { InlineMenuVisibilitySetting } from "@localpass/common/autofill/types";
+import { normalizeExpiryYearFormat } from "@localpass/common/autofill/utils";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
 import {
   UriMatchStrategySetting,
   UriMatchStrategy,
-} from "@bitwarden/common/models/domain/domain-service";
-import { AnimationControlService } from "@bitwarden/common/platform/abstractions/animation-control.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessageListener } from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
+} from "@localpass/common/models/domain/domain-service";
+import { AnimationControlService } from "@localpass/common/platform/abstractions/animation-control.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessageListener } from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { FieldType, CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";

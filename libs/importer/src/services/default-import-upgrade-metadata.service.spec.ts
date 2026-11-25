@@ -1,9 +1,9 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { Subject, firstValueFrom } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
+import { ClientType } from "@localpass/client-type";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
 
 import { Loader } from "../metadata";
 import { ImportOption, UpgradeImportType } from "../models";

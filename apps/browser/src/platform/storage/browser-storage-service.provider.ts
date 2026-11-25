@@ -4,7 +4,7 @@ import {
   ObservableStorageService,
   PossibleLocation,
   StorageServiceProvider,
-} from "@bitwarden/storage-core";
+} from "@localpass/storage-core";
 
 export class BrowserStorageServiceProvider extends StorageServiceProvider {
   constructor(

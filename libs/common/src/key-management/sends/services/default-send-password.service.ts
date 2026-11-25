@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { SEND_KDF_ITERATIONS } from "../../../tools/send/send-kdf";
 import { SendPasswordService } from "../abstractions/send-password.service";

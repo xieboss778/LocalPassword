@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { UpgradeImportType } from "@bitwarden/importer-core";
+import { UpgradeImportType } from "@localpass/importer-core";
 import {
   ImportSourceSelectComponent,
   importSourceFromQuery,
   navigateCarryingImportParams,
-} from "@bitwarden/importer-ui";
+} from "@localpass/importer-ui";
 
 @Component({
   templateUrl: "import-source-select-desktop.component.html",

@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { PremiumUpgradeDialogComponent } from "@bitwarden/angular/billing/components";
-import { DialogService } from "@bitwarden/components";
+import { PremiumUpgradeDialogComponent } from "@localpass/angular/billing/components";
+import { DialogService } from "@localpass/components";
 
 import { BrowserPremiumUpgradePromptService } from "./browser-premium-upgrade-prompt.service";
 

@@ -1,5 +1,5 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { SdkImportContext } from "./sdk-vault-importer";
 

@@ -1,4 +1,4 @@
-import { EVENTS } from "@bitwarden/common/autofill/constants";
+import { EVENTS } from "@localpass/common/autofill/constants";
 
 import AutofillPageDetails from "../models/autofill-page-details";
 import { AutofillInlineMenuContentService } from "../overlay/inline-menu/abstractions/autofill-inline-menu-content.service";

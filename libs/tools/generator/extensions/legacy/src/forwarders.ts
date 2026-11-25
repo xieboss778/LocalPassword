@@ -1,4 +1,4 @@
-import { IntegrationId } from "@bitwarden/common/tools/integration";
+import { IntegrationId } from "@localpass/common/tools/integration";
 
 export type ForwarderId = IntegrationId;
 
@@ -10,7 +10,7 @@ export type ForwarderMetadata = {
   /** The name of the service the forwarder queries. */
   name: string;
 
-  /** Whether the forwarder is valid for self-hosted instances of Bitwarden. */
+  /** Whether the forwarder is valid for self-hosted instances of LocalPass. */
   validForSelfHosted: boolean;
 };
 

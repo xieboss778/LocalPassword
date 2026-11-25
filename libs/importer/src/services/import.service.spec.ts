@@ -8,29 +8,29 @@ import { of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
+import { CollectionService } from "@localpass/admin-console/common";
 import {
   CollectionView,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { Folder } from "@bitwarden/common/vault/models/domain/folder";
-import { FolderWithOptionalIdRequest } from "@bitwarden/common/vault/models/request/folder-with-optional-id.request";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { Folder } from "@localpass/common/vault/models/domain/folder";
+import { FolderWithOptionalIdRequest } from "@localpass/common/vault/models/request/folder-with-optional-id.request";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString, KeyGenerationService } from "@bitwarden/legacy-crypto";
+import { EncryptService, EncString, KeyGenerationService } from "@localpass/legacy-crypto";
 
 import { BitwardenPasswordProtectedImporter } from "../importers";
 import { Importer } from "../importers/importer";
@@ -134,7 +134,7 @@ describe("ImportService", () => {
 
       beforeEach(() => {
         importer = importService.getImporter(
-          "bitwardenpasswordprotected",
+          "localpasspasswordprotected",
           promptForPassword_callback,
           organizationId,
         );
@@ -311,7 +311,7 @@ describe("ImportService", () => {
     });
 
     it("passing importTarget assigns it to ciphers whose folderId has no folder relationship", async () => {
-      // Bitwarden JSON exports keep the source vault's folder id on each item
+      // LocalPass JSON exports keep the source vault's folder id on each item
       importResult.ciphers.push(createCipher({ name: "cipher1", folderId: "source-folder-id" }));
 
       await importService["setImportTarget"](importResult, undefined, mockImportTargetFolder);
@@ -608,7 +608,7 @@ describe("ImportService", () => {
 
     it("throws for an unregistered SDK importer", async () => {
       await expect(
-        importService.importWithSdk("bitwardencsv", file, credentials, null, null, false),
+        importService.importWithSdk("localpasscsv", file, credentials, null, null, false),
       ).rejects.toThrow("No SDK importer registered");
     });
 

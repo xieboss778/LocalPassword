@@ -18,13 +18,13 @@ if(Test-Path -Path $distChocoDir) {
 
 Copy-Item -Path $chocoDir -Destination $distChocoDir –Recurse
 
-$exe = $distChocoDir + "\Bitwarden-Installer-" + $version + ".exe";
-$uri = "https://github.com/bitwarden/clients/releases/download/desktop-v" + $version + "/Bitwarden-Installer-" + $version + ".exe";
+$exe = $distChocoDir + "\LocalPass-Installer-" + $version + ".exe";
+$uri = "https://github.com/localpass/clients/releases/download/desktop-v" + $version + "/LocalPass-Installer-" + $version + ".exe";
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-RestMethod -Uri $uri -OutFile $exe
 
 $checksum = checksum -t sha256 $exe
-$nuspec = $distChocoDir + "\bitwarden.nuspec";
+$nuspec = $distChocoDir + "\localpass.nuspec";
 $chocoInstall = $distChocoDir + "\tools\chocolateyinstall.ps1";
 
 (Get-Content $chocoInstall).replace('__version__', $version).replace('__checksum__', $checksum) | Set-Content $chocoInstall

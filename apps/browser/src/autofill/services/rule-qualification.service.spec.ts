@@ -1,6 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { FormContent, FormPurposeCategory } from "@bitwarden/common/autofill/types";
+import { FormContent, FormPurposeCategory } from "@localpass/common/autofill/types";
 
 import AutofillPageDetails from "../models/autofill-page-details";
 
@@ -488,7 +488,7 @@ describe("DefaultRuleQualificationService", () => {
     });
 
     it("flags a span[data-bwautofill] inside an in-scope form as in_scope_extras", async () => {
-      // When honorBitwardenAutofillAttribute is on, the heuristic treats
+      // When honorLocalPassAutofillAttribute is on, the heuristic treats
       // span[data-bwautofill] as a fillable field. An undeclared one inside
       // an in-scope form must be flagged as an extra.
       const form = document.createElement("form");

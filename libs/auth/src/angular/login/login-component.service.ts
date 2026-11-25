@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { Params } from "@angular/router";
 
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
 
 import { HandleQueryParamErrorsResult } from "./handle-query-param-errors-result.type";
 

@@ -1,7 +1,7 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { getNestedCollectionTree } from "@bitwarden/common/admin-console/utils/collection-utils";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { getNestedCollectionTree } from "@localpass/common/admin-console/utils/collection-utils";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
 
 /** A pinned shared folder as the side nav renders it, with the folders nested beneath it. */
 export type PinnedFolderNode = {

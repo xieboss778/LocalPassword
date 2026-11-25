@@ -24,28 +24,28 @@ describe("validateRpId", () => {
     });
 
     it("should not be valid when rpId is more specific than origin", async () => {
-      const rpId = "sub.login.bitwarden.com";
-      const origin = "https://login.bitwarden.com:1337";
+      const rpId = "sub.login.local.invalid";
+      const origin = "https://login.local.invalid:1337";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(false);
     });
 
     it("should not be valid when effective domains of rpId and origin do not match", async () => {
       const rpId = "passwordless.dev";
-      const origin = "https://login.bitwarden.com:1337";
+      const origin = "https://login.local.invalid:1337";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(false);
     });
 
     it("should not be valid when subdomains are the same but effective domains of rpId and origin do not match", async () => {
       const rpId = "login.passwordless.dev";
-      const origin = "https://login.bitwarden.com:1337";
+      const origin = "https://login.local.invalid:1337";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(false);
     });
 
     it("should not be valid when rpId and origin are both different TLD", async () => {
-      const rpId = "bitwarden";
+      const rpId = "localpass";
       const origin = "localhost";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(false);
@@ -54,8 +54,8 @@ describe("validateRpId", () => {
     // Only allow localhost for rpId, need to properly investigate the implications of
     // adding support for ip-addresses and other TLDs
     it("should not be valid when rpId and origin are both the same TLD", async () => {
-      const rpId = "bitwarden";
-      const origin = "bitwarden";
+      const rpId = "localpass";
+      const origin = "localpass";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(false);
     });
@@ -75,29 +75,29 @@ describe("validateRpId", () => {
     });
 
     it("should be valid when domains of rpId and origin are the same", async () => {
-      const rpId = "bitwarden.com";
-      const origin = "https://bitwarden.com";
+      const rpId = "local.invalid";
+      const origin = "https://local.invalid";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(true);
     });
 
     it("should be valid when origin is a subdomain of rpId", async () => {
-      const rpId = "bitwarden.com";
-      const origin = "https://login.bitwarden.com:1337";
+      const rpId = "local.invalid";
+      const origin = "https://login.local.invalid:1337";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(true);
     });
 
     it("should be valid when domains of rpId and origin are the same and they are both subdomains", async () => {
-      const rpId = "login.bitwarden.com";
-      const origin = "https://login.bitwarden.com:1337";
+      const rpId = "login.local.invalid";
+      const origin = "https://login.local.invalid:1337";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(true);
     });
 
     it("should be valid when origin is a subdomain of rpId and they are both subdomains", async () => {
-      const rpId = "login.bitwarden.com";
-      const origin = "https://sub.login.bitwarden.com:1337";
+      const rpId = "login.local.invalid";
+      const origin = "https://sub.login.local.invalid:1337";
 
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(true);
     });
@@ -235,8 +235,8 @@ describe("validateRpId", () => {
     });
 
     it("should not call ROR endpoint when classic validation succeeds", async () => {
-      const rpId = "bitwarden.com";
-      const origin = "https://bitwarden.com";
+      const rpId = "local.invalid";
+      const origin = "https://local.invalid";
 
       // Classic validation succeeds, so ROR should not be called
       expect(await isValidRpId(rpId, origin, mockFetch)).toBe(true);

@@ -4,8 +4,8 @@
  */
 import { Subject, firstValueFrom } from "rxjs";
 
-import { awaitAsync, trackEmissions } from "@bitwarden/core-test-utils";
-import { DeriveDefinition, StateDefinition } from "@bitwarden/state";
+import { awaitAsync, trackEmissions } from "@localpass/core-test-utils";
+import { DeriveDefinition, StateDefinition } from "@localpass/state";
 
 import { DefaultDerivedState } from "./default-derived-state";
 import { DefaultDerivedStateProvider } from "./default-derived-state.provider";

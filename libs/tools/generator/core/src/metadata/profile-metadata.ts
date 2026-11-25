@@ -1,8 +1,8 @@
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { ExtensionProfileMetadata } from "@bitwarden/common/tools/extension/type";
-import { ObjectKey } from "@bitwarden/common/tools/state/object-key";
-import { Constraints } from "@bitwarden/common/tools/types";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { ExtensionProfileMetadata } from "@localpass/common/tools/extension/type";
+import { ObjectKey } from "@localpass/common/tools/state/object-key";
+import { Constraints } from "@localpass/common/tools/types";
 
 import { GeneratorConstraints } from "../types";
 

@@ -7,9 +7,9 @@ import {
   EmailCodeSentIcon,
   TwoFactorAuthWebAuthnIcon,
   TwoFactorAuthYubicoIcon,
-} from "@bitwarden/assets/svg";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
-import { SvgModule } from "@bitwarden/components";
+} from "@localpass/assets/svg";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
+import { SvgModule } from "@localpass/components";
 
 /**
  * Displays an icon for a given two-factor authentication provider.

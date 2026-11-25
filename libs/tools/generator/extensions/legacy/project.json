@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/generator-legacy",
+  "name": "@localpass/generator-legacy",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tools/generator/extensions/legacy/src",
   "projectType": "library",

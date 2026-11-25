@@ -1,8 +1,8 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { ObservedValueOf, of } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
-import { UserId } from "@bitwarden/user-core";
+import { newGuid } from "@localpass/guid";
+import { UserId } from "@localpass/user-core";
 
 import { mockAccountInfoWith } from "../../spec";
 import { AccountService } from "../auth/abstractions/account.service";

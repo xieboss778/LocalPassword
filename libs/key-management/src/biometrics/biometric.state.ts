@@ -2,8 +2,8 @@ import {
   KeyDefinition,
   BIOMETRIC_SETTINGS_DISK,
   UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 /**
  * Indicates whether the user elected to store a biometric key to unlock their vault.

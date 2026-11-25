@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, viewChild } from "@angular/core";
 
-import { DIALOG_DATA, DialogModule, DialogRef, DialogService } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { DIALOG_DATA, DialogModule, DialogRef, DialogService } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { AddItemGridComponent, AddItemGridResult } from "../add-item-grid/add-item-grid.component";
 

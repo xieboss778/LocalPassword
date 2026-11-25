@@ -14,9 +14,9 @@ import { Subject, firstValueFrom, take, filter, takeUntil } from "rxjs";
 import {
   EnvironmentService,
   Region,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   DialogRef,
   AsyncActionsModule,
@@ -27,7 +27,7 @@ import {
   IconModule,
   LinkModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { JslibModule } from "../../jslib.module";
 
@@ -84,7 +84,7 @@ function onlyHttpsValidator(): ValidatorFn {
 /**
  * Dialog for configuring self-hosted environment settings.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "self-hosted-env-config-dialog",

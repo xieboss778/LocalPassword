@@ -4,18 +4,18 @@ import { FormBuilder, FormGroupDirective, ReactiveFormsModule, Validators } from
 import { Router } from "@angular/router";
 import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LoginSuccessHandlerService,
   LoginStrategySessionTimeoutService,
-} from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { MasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+} from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { MasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -24,7 +24,7 @@ import {
   FormFieldModule,
   IconButtonModule,
   LinkModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { LoginStrategyServiceAbstraction } from "../../common/abstractions/login-strategy.service";
 
@@ -33,7 +33,7 @@ import { NewDeviceVerificationComponentService } from "./new-device-verification
 /**
  * Component for verifying a new device via a one-time password (OTP).
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-new-device-verification",

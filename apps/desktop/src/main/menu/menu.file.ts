@@ -1,8 +1,8 @@
 import { BrowserWindow, MenuItemConstructorOptions } from "electron";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CipherType } from "@bitwarden/sdk-internal";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { CipherType } from "@localpass/sdk-internal";
 
 import { isMac, isMacAppStore } from "../platform-utils.main";
 import { UpdaterMain } from "../updater.main";
@@ -39,7 +39,7 @@ export class FileMenu extends FirstMenu implements IMenubarMenu {
           this.lockAll,
           this.logOut,
           this.separator,
-          this.quitBitwarden,
+          this.quitLocalPass,
         ],
       ];
     }
@@ -172,10 +172,10 @@ export class FileMenu extends FirstMenu implements IMenubarMenu {
     };
   }
 
-  private get quitBitwarden(): MenuItemConstructorOptions {
+  private get quitLocalPass(): MenuItemConstructorOptions {
     return {
-      id: "quitBitwarden",
-      label: this.localize("quitBitwarden"),
+      id: "quitLocalPass",
+      label: this.localize("quitLocalPass"),
       visible: !isMacAppStore(),
       role: "quit",
     };

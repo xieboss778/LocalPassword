@@ -2,21 +2,21 @@ import { fakeAsync, flush } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
 import {
   MaximumSessionTimeoutPolicyData,
   SessionTimeoutTypeService,
-} from "@bitwarden/common/key-management/session-timeout";
+} from "@localpass/common/key-management/session-timeout";
 import {
   VaultTimeout,
   VaultTimeoutOption,
   VaultTimeoutNumberType,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
 
 import { SessionTimeoutSettingsComponentService } from "./session-timeout-settings-component.service";
 

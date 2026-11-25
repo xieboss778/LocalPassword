@@ -14,9 +14,9 @@ import {
   LinkModule,
   CalloutComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { MessageSender } from "@bitwarden/messaging";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { MessageSender } from "@localpass/messaging";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import {

@@ -1,8 +1,8 @@
 import {
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/admin-console/models/collections";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 
 import { PinnedFolderNode, resolvePinnedFolderNodes } from "./pinned-shared-folder-nodes";
 

@@ -1,7 +1,7 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { VaultScope, VaultScopeType } from "../../models/vault-scope";
 

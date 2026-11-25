@@ -9,16 +9,16 @@ import {
 } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { uuidAsString } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { uuidAsString } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { MenuItemComponent, BitIconButtonComponent } from "@bitwarden/components";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { MenuItemComponent, BitIconButtonComponent } from "@localpass/components";
 
 import { CopyAction, CopyCipherFieldService } from "../services/copy-cipher-field.service";
 
@@ -39,7 +39,7 @@ import { CopyAction, CopyCipherFieldService } from "../services/copy-cipher-fiel
   selector: "[appCopyField]",
 })
 export class CopyCipherFieldDirective implements OnChanges {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({
     alias: "appCopyField",
@@ -47,7 +47,7 @@ export class CopyCipherFieldDirective implements OnChanges {
   })
   action!: CopyAction;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true })
   cipher!: CipherViewLike;
@@ -59,7 +59,7 @@ export class CopyCipherFieldDirective implements OnChanges {
    * otherwise clobber the disabled state this directive owns — an external re-enable could make a
    * button with no value to copy clickable again.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ transform: booleanAttribute })
   disabled = false;

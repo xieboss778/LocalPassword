@@ -5,7 +5,7 @@ import {
   DerivedState,
   DerivedStateDependencies,
   DerivedStateProvider,
-} from "@bitwarden/state";
+} from "@localpass/state";
 
 export class InlineDerivedStateProvider implements DerivedStateProvider {
   get<TFrom, TTo, TDeps extends DerivedStateDependencies>(

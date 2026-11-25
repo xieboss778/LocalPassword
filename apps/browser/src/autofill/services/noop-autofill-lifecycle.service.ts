@@ -1,6 +1,6 @@
 import { EMPTY, of } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { AutofillLifecycleService } from "./abstractions/autofill-lifecycle.service";
 

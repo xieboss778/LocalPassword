@@ -2,11 +2,11 @@
 // @ts-strict-ignore
 import { Observable } from "rxjs";
 
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
-import { BrowserClientVendor } from "@bitwarden/common/autofill/types";
-import { DeviceType } from "@bitwarden/common/enums";
-import { LogService } from "@bitwarden/logging";
-import { isBrowserSafariApi, urlOriginsMatch } from "@bitwarden/platform";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
+import { BrowserClientVendor } from "@localpass/common/autofill/types";
+import { DeviceType } from "@localpass/common/enums";
+import { LogService } from "@localpass/logging";
+import { isBrowserSafariApi, urlOriginsMatch } from "@localpass/platform";
 
 import { TabMessage } from "../../types/tab-messages";
 import { BrowserPlatformUtilsService } from "../services/platform-utils/browser-platform-utils.service";
@@ -845,7 +845,7 @@ export class BrowserApi {
   static reloadExtension() {
     // If we do `chrome.runtime.reload` on safari they will send an onInstalled reason of install
     // and that prompts us to show a new tab, this apparently doesn't happen on sideloaded
-    // extensions and only shows itself production scenarios. See: https://bitwarden.atlassian.net/browse/PM-12298
+    // extensions and only shows itself production scenarios. See: https://localpass.atlassian.net/browse/PM-12298
     if (this.isSafariApi) {
       return self.location.reload();
     }

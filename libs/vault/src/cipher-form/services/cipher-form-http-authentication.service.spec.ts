@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
-import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
-import { DialogService } from "@bitwarden/components";
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
+import { DialogService } from "@localpass/components";
 
 import { CipherFormHTTPAuthenticationService } from "./cipher-form-http-authentication.service";
 

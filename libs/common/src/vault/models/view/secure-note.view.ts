@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { SecureNoteView as SdkSecureNoteView } from "@bitwarden/sdk-internal";
+import { SecureNoteView as SdkSecureNoteView } from "@localpass/sdk-internal";
 
 import { SecureNoteType } from "../../enums";
 import { SecureNote } from "../domain/secure-note";

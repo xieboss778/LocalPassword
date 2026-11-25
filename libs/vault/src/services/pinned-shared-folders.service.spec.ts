@@ -2,14 +2,14 @@ import { TestBed } from "@angular/core/testing";
 import {
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/../spec/fake-account-service";
-import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+} from "@localpass/common/../spec/fake-account-service";
+import { FakeStateProvider } from "@localpass/common/../spec/fake-state-provider";
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { CollectionId, UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { StateProvider } from "@localpass/common/platform/state";
+import { CollectionId, UserId } from "@localpass/common/types/guid";
 
 import { PinnedSharedFoldersService } from "./pinned-shared-folders.service";
 

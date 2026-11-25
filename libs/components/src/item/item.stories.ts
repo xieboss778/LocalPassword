@@ -9,9 +9,9 @@ import {
   moduleMetadata,
 } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalStateProvider } from "@localpass/state";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { AvatarModule } from "../avatar";
 import { BadgeModule } from "../badge";
@@ -148,9 +148,9 @@ export const ContentSlots: Story = {
             text="Foo"
             size="lg"
           ></bit-avatar>
-          foo&#64;bitwarden.com
+          foo&#64;local.invalid
           <ng-container slot="secondary">
-            <div>Bitwarden.com</div>
+            <div>LocalPass.com</div>
             <div><em>locked</em></div>
           </ng-container>
           <i slot="end" class="bwi bwi-lock" aria-hidden="true"></i>

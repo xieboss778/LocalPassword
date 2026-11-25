@@ -3,10 +3,10 @@
  * @jest-environment ../../libs/shared/test.environment.ts
  */
 
-import { trackEmissions } from "@bitwarden/common/../spec/utils";
+import { trackEmissions } from "@localpass/common/../spec/utils";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { mockPorts } from "../../../spec/mock-port.spec-util";
 

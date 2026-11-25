@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { Message } from "@bitwarden/common/platform/messaging";
+import { Message } from "@localpass/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports -- applies the tag an ingest boundary applies
-import { tagAsExternal } from "@bitwarden/common/platform/messaging/internal";
+import { tagAsExternal } from "@localpass/common/platform/messaging/internal";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import {

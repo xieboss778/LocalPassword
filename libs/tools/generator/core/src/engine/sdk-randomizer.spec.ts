@@ -1,14 +1,14 @@
-import { SdkRandomNumberClient } from "@bitwarden/sdk-internal";
+import { SdkRandomNumberClient } from "@localpass/sdk-internal";
 
 import { SdkRandomizer } from "./sdk-randomizer";
 
 const mockGenRange = jest.fn();
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   SdkRandomNumberClient: jest.fn(),
 }));
 
-jest.mock("@bitwarden/common/platform/abstractions/sdk/sdk-load.service", () => ({
+jest.mock("@localpass/common/platform/abstractions/sdk/sdk-load.service", () => ({
   SdkLoadService: {
     Ready: Promise.resolve(),
   },

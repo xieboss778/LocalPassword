@@ -1,17 +1,17 @@
 import { firstValueFrom, Observable, map, BehaviorSubject } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { SsoTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/sso-token.request";
-import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
-import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
-import { HttpStatusCode } from "@bitwarden/common/enums";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UnlockService } from "@bitwarden/unlock";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { SsoTokenRequest } from "@localpass/common/auth/models/request/identity-token/sso-token.request";
+import { AuthRequestResponse } from "@localpass/common/auth/models/response/auth-request.response";
+import { IdentityTokenResponse } from "@localpass/common/auth/models/response/identity-token.response";
+import { HttpStatusCode } from "@localpass/common/enums";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { UserId } from "@localpass/common/types/guid";
+import { UnlockService } from "@localpass/unlock";
 
 import { AuthRequestServiceAbstraction } from "../abstractions";
 import { SsoLoginCredentials } from "../models/domain/login-credentials";

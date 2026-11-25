@@ -3,4 +3,4 @@ export {
   StorageUpdate,
   ObservableStorageService,
   AbstractStorageService,
-} from "@bitwarden/storage-core";
+} from "@localpass/storage-core";

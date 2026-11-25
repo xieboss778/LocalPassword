@@ -3,12 +3,12 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { isActive, QueryParamsHandling, Router } from "@angular/router";
 import { firstValueFrom, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { ChipActionComponent, NavigationModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { ChipActionComponent, NavigationModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { vaultScopeCommands, VaultScopeType } from "../../models/vault-scope";
 import { EXACT_PATH } from "../../routing/exact-path";

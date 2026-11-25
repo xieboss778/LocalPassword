@@ -1,5 +1,5 @@
-import { LogService } from "@bitwarden/logging";
-import { createManagementProfile, ManagedSettingsService } from "@bitwarden/managed-settings";
+import { LogService } from "@localpass/logging";
+import { createManagementProfile, ManagedSettingsService } from "@localpass/managed-settings";
 
 import { BrowserApi } from "../browser/browser-api";
 

@@ -19,29 +19,29 @@ import {
   throwError,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/auth/common";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { SsoJitProvisionFinishService } from "@bitwarden/common/auth/sso-jit-provision-finish";
-import { ClientType } from "@bitwarden/common/enums";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { SharedUnlockSettingsService } from "@bitwarden/common/key-management/shared-unlock";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { DeviceKey } from "@bitwarden/common/types/key";
+} from "@localpass/auth/common";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { SsoJitProvisionFinishService } from "@localpass/common/auth/sso-jit-provision-finish";
+import { ClientType } from "@localpass/common/enums";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { SharedUnlockSettingsService } from "@localpass/common/key-management/shared-unlock";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { DeviceKey } from "@localpass/common/types/key";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -54,15 +54,15 @@ import {
   FormFieldModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { UnlockService } from "@bitwarden/unlock";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { UnlockService } from "@localpass/unlock";
 
 import { LoginDecryptionOptionsService } from "./login-decryption-options.service";
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum State {
   // A user who has an account created on the server, but does not yet have cryptographic keys
   // This is the case after JIT provisioning
@@ -72,7 +72,7 @@ enum State {
   ExistingUserUntrustedDevice,
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "./login-decryption-options.component.html",

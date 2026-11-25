@@ -10,8 +10,8 @@ module.exports = {
   displayName: "libs/key management ui tests",
   setupFilesAfterEnv: ["<rootDir>/test.setup.ts"],
   moduleNameMapper: pathsToModuleNameMapper(
-    // lets us use @bitwarden/common/spec in tests
-    { "@bitwarden/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
+    // lets us use @localpass/common/spec in tests
+    { "@localpass/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
     {
       prefix: "<rootDir>/../../",
     },

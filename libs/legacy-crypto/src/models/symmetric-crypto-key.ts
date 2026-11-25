@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SymmetricKey } from "@bitwarden/sdk-internal";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { SymmetricKey } from "@localpass/sdk-internal";
 
 import { EncryptionType } from "../enums/encryption-type.enum";
 

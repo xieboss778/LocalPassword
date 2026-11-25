@@ -94,17 +94,17 @@ const SHOW_INLINE_MENU_SSH_KEYS = new UserKeyDefinition(
   },
 );
 
-const HONOR_BITWARDEN_IGNORE_ATTRIBUTE = new KeyDefinition(
+const HONOR_LOCALPASS_IGNORE_ATTRIBUTE = new KeyDefinition(
   AUTOFILL_SETTINGS_DISK_LOCAL,
-  "honorBitwardenIgnoreAttribute",
+  "honorLocalPassIgnoreAttribute",
   {
     deserializer: (value: boolean) => value ?? false,
   },
 );
 
-const HONOR_BITWARDEN_AUTOFILL_ATTRIBUTE = new KeyDefinition(
+const HONOR_LOCALPASS_AUTOFILL_ATTRIBUTE = new KeyDefinition(
   AUTOFILL_SETTINGS_DISK_LOCAL,
-  "honorBitwardenAutofillAttribute",
+  "honorLocalPassAutofillAttribute",
   {
     deserializer: (value: boolean) => value ?? false,
   },
@@ -170,10 +170,10 @@ export abstract class AutofillSettingsServiceAbstraction {
   setShowInlineMenuCards: (newValue: boolean) => Promise<void>;
   showInlineMenuSshKeys$: Observable<boolean>;
   setShowInlineMenuSshKeys: (newValue: boolean) => Promise<void>;
-  honorBitwardenIgnoreAttribute$: Observable<boolean>;
-  setHonorBitwardenIgnoreAttribute: (newValue: boolean) => Promise<void>;
-  honorBitwardenAutofillAttribute$: Observable<boolean>;
-  setHonorBitwardenAutofillAttribute: (newValue: boolean) => Promise<void>;
+  honorLocalPassIgnoreAttribute$: Observable<boolean>;
+  setHonorLocalPassIgnoreAttribute: (newValue: boolean) => Promise<void>;
+  honorLocalPassAutofillAttribute$: Observable<boolean>;
+  setHonorLocalPassAutofillAttribute: (newValue: boolean) => Promise<void>;
   /**
    * User-controlled setting for whether or not HTTP auth challenges should be
    * answered with a matching vault credential.
@@ -240,11 +240,11 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
   private showInlineMenuSshKeysState: ActiveUserState<boolean>;
   readonly showInlineMenuSshKeys$: Observable<boolean>;
 
-  private honorBitwardenIgnoreAttributeState: GlobalState<boolean>;
-  readonly honorBitwardenIgnoreAttribute$: Observable<boolean>;
+  private honorLocalPassIgnoreAttributeState: GlobalState<boolean>;
+  readonly honorLocalPassIgnoreAttribute$: Observable<boolean>;
 
-  private honorBitwardenAutofillAttributeState: GlobalState<boolean>;
-  readonly honorBitwardenAutofillAttribute$: Observable<boolean>;
+  private honorLocalPassAutofillAttributeState: GlobalState<boolean>;
+  readonly honorLocalPassAutofillAttribute$: Observable<boolean>;
 
   private enableBasicAuthResponseState: ActiveUserState<boolean>;
   readonly enableBasicAuthResponse$: Observable<boolean>;
@@ -338,17 +338,17 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
       ),
     );
 
-    this.honorBitwardenIgnoreAttributeState = this.stateProvider.getGlobal(
-      HONOR_BITWARDEN_IGNORE_ATTRIBUTE,
+    this.honorLocalPassIgnoreAttributeState = this.stateProvider.getGlobal(
+      HONOR_LOCALPASS_IGNORE_ATTRIBUTE,
     );
-    this.honorBitwardenIgnoreAttribute$ = this.honorBitwardenIgnoreAttributeState.state$.pipe(
+    this.honorLocalPassIgnoreAttribute$ = this.honorLocalPassIgnoreAttributeState.state$.pipe(
       map((x) => x ?? false),
     );
 
-    this.honorBitwardenAutofillAttributeState = this.stateProvider.getGlobal(
-      HONOR_BITWARDEN_AUTOFILL_ATTRIBUTE,
+    this.honorLocalPassAutofillAttributeState = this.stateProvider.getGlobal(
+      HONOR_LOCALPASS_AUTOFILL_ATTRIBUTE,
     );
-    this.honorBitwardenAutofillAttribute$ = this.honorBitwardenAutofillAttributeState.state$.pipe(
+    this.honorLocalPassAutofillAttribute$ = this.honorLocalPassAutofillAttributeState.state$.pipe(
       map((x) => x ?? false),
     );
 
@@ -453,12 +453,12 @@ export class AutofillSettingsService implements AutofillSettingsServiceAbstracti
     await this.showInlineMenuSshKeysState.update(() => newValue);
   }
 
-  async setHonorBitwardenIgnoreAttribute(newValue: boolean): Promise<void> {
-    await this.honorBitwardenIgnoreAttributeState.update(() => newValue);
+  async setHonorLocalPassIgnoreAttribute(newValue: boolean): Promise<void> {
+    await this.honorLocalPassIgnoreAttributeState.update(() => newValue);
   }
 
-  async setHonorBitwardenAutofillAttribute(newValue: boolean): Promise<void> {
-    await this.honorBitwardenAutofillAttributeState.update(() => newValue);
+  async setHonorLocalPassAutofillAttribute(newValue: boolean): Promise<void> {
+    await this.honorLocalPassAutofillAttributeState.update(() => newValue);
   }
 
   /**

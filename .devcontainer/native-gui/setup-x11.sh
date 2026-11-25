@@ -9,7 +9,7 @@ if grep -qi microsoft /proc/version 2>/dev/null; then
     echo "Detected Windows (WSL2) - configuring WSLg..."
     cat > "$OVERRIDE_FILE" << 'EOF'
 services:
-  bitwarden_clients:
+  localpass_clients:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /mnt/wslg:/mnt/wslg
@@ -23,7 +23,7 @@ else
     echo "Detected Linux - configuring X11..."
     cat > "$OVERRIDE_FILE" << 'EOF'
 services:
-  bitwarden_clients:
+  localpass_clients:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
     environment:

@@ -2,21 +2,21 @@ import { TestBed } from "@angular/core/testing";
 import { MockProxy, mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { DefaultLoginComponentService } from "@bitwarden/auth/angular";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { SsoUrlService } from "@bitwarden/common/auth/sso-login";
-import { ClientType } from "@bitwarden/common/enums";
+import { DefaultLoginComponentService } from "@localpass/auth/angular";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { SsoUrlService } from "@localpass/common/auth/sso-login";
+import { ClientType } from "@localpass/common/enums";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ToastService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ToastService } from "@localpass/components";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { ElectronPlatformUtilsService } from "../../platform/services/electron-platform-utils.service";
 
@@ -50,11 +50,11 @@ describe("DesktopLoginComponentService", () => {
     cryptoFunctionService = mock<CryptoFunctionService>();
     environmentService = mock<EnvironmentService>();
     environmentService.environment$ = of({
-      getWebVaultUrl: () => "https://webvault.bitwarden.com",
+      getWebVaultUrl: () => "https://webvault.local.invalid",
       getRegion: () => "US",
       getUrls: () => ({}),
       isCloud: () => true,
-      getApiUrl: () => "https://api.bitwarden.com",
+      getApiUrl: () => "https://api.local.invalid",
     } as Environment);
 
     passwordGenerationService = mock<PasswordGenerationServiceAbstraction>();
@@ -121,7 +121,7 @@ describe("DesktopLoginComponentService", () => {
         (global as any).ipc.platform.isAppImage = isAppImage;
         (global as any).ipc.platform.isDev = isDev;
 
-        const email = "test@bitwarden.com";
+        const email = "test@local.invalid";
         const state = "testState";
         const codeVerifier = "testCodeVerifier";
         const codeChallenge = "testCodeChallenge";
@@ -162,7 +162,7 @@ describe("DesktopLoginComponentService", () => {
         (global as any).ipc.platform.isAppImage = isAppImage;
         (global as any).ipc.platform.isDev = isDev;
 
-        const email = "test@bitwarden.com";
+        const email = "test@local.invalid";
         const state = "testState";
         const codeVerifier = "testCodeVerifier";
         const codeChallenge = "testCodeChallenge";

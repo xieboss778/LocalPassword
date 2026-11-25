@@ -5,8 +5,8 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { Subject, firstValueFrom } from "rxjs";
 
-import { ExpiredIcon } from "@bitwarden/assets/svg";
-import { ButtonModule, SvgModule } from "@bitwarden/components";
+import { ExpiredIcon } from "@localpass/assets/svg";
+import { ButtonModule, SvgModule } from "@localpass/components";
 
 import { JslibModule } from "../../../jslib.module";
 
@@ -18,7 +18,7 @@ export interface RegistrationLinkExpiredComponentData {
   loginRoute: string;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "auth-registration-link-expired",

@@ -3,8 +3,8 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { NavigationEnd, Router } from "@angular/router";
 import { Subject, Subscription } from "rxjs";
 
-import { ScrollLayoutService } from "@bitwarden/components";
-import { VAULT_BASE_ROUTE } from "@bitwarden/vault";
+import { ScrollLayoutService } from "@localpass/components";
+import { VAULT_BASE_ROUTE } from "@localpass/vault";
 
 import { VaultPopupScrollPositionService } from "./vault-popup-scroll-position.service";
 

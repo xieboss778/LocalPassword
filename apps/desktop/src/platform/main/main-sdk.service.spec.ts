@@ -4,13 +4,13 @@ import { BehaviorSubject, firstValueFrom, take, toArray } from "rxjs";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { mockManagedSettingsService } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { ManagedSettingsService } from "@bitwarden/managed-settings";
-import { PasswordManagerClient, TokenProvider } from "@bitwarden/sdk-internal";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { SdkClientFactory } from "@localpass/common/platform/abstractions/sdk/sdk-client-factory";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { mockManagedSettingsService } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { ManagedSettingsService } from "@localpass/managed-settings";
+import { PasswordManagerClient, TokenProvider } from "@localpass/sdk-internal";
 
 import { MainSdkService } from "./main-sdk.service";
 

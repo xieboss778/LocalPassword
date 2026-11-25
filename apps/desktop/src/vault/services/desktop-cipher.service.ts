@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherService } from "@localpass/common/vault/services/cipher.service";
 
 /**
  * Desktop always decrypts full views on unlock (autofill, SSH agent, autotype), so list views

@@ -10,7 +10,7 @@ describe("DefaultImportStagingService", () => {
 
   const parsed = (): StagedImport => ({
     kind: "parsed",
-    importType: "bitwarden",
+    importType: "localpass",
     result: new ImportResult(),
   });
 

@@ -11,7 +11,7 @@ import {
   SignInMethods as OnePasswordSignInMethods,
   SsoCredentials as OnePasswordSsoCredentials,
   isImportError,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 export {
   OnePasswordCredentials,

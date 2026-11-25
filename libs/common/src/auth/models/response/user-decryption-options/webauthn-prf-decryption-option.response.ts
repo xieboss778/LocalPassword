@@ -1,11 +1,11 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 import {
   UnsignedSharedKey,
   WebAuthnPrfUnlockOption as SdkWebAuthnPrfUnlockOption,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { BaseResponse } from "../../../../models/response/base.response";
 

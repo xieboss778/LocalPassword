@@ -6,13 +6,13 @@ import {
   VAULT_HEALTH_REPORT_IDLE,
   VaultHealthReportState,
   VaultHealthReportStatus,
-} from "@bitwarden/common/dirt/vault-health/models";
-import { VaultHealthReportService } from "@bitwarden/common/dirt/vault-health/services";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { newGuid } from "@bitwarden/guid";
+} from "@localpass/common/dirt/vault-health/models";
+import { VaultHealthReportService } from "@localpass/common/dirt/vault-health/services";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { newGuid } from "@localpass/guid";
 
 import { HealthScanService } from "./health-scan.service";
 

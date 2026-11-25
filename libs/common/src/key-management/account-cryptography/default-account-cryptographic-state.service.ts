@@ -1,8 +1,8 @@
 import { distinctUntilChanged, Observable } from "rxjs";
 
-import { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
-import { StateProvider } from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+import { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
+import { StateProvider } from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 import { ACCOUNT_CRYPTOGRAPHIC_STATE } from "../state-definitions";
 

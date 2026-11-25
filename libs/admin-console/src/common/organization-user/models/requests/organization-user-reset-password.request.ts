@@ -1,7 +1,7 @@
 import {
   MasterPasswordAuthenticationData,
   MasterPasswordUnlockData,
-} from "@bitwarden/common/key-management/master-password/types/master-password.types";
+} from "@localpass/common/key-management/master-password/types/master-password.types";
 
 export class OrganizationUserResetPasswordRequest {
   constructor(

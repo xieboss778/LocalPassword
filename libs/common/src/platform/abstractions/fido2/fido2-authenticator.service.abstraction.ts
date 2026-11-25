@@ -45,14 +45,14 @@ export abstract class Fido2AuthenticatorService<ParentWindowReference> {
 }
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum Fido2AlgorithmIdentifier {
   ES256 = -7,
   RS256 = -257,
 }
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum Fido2AuthenticatorErrorCode {
   Unknown = "UnknownError",
   NotSupported = "NotSupportedError",
@@ -109,7 +109,7 @@ export interface Fido2AuthenticatorMakeCredentialsParams {
     uvm?: boolean;
   };
   /** A Boolean value that indicates that individually-identifying attestation MAY be returned by the authenticator. */
-  enterpriseAttestationPossible?: boolean; // Ignored by bitwarden at the moment
+  enterpriseAttestationPossible?: boolean; // Ignored by localpass at the moment
   /** The effective resident key requirement for credential creation, a Boolean value determined by the client. Resident is synonymous with discoverable. */
   requireResidentKey: boolean;
   requireUserVerification: boolean;

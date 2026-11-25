@@ -1,6 +1,6 @@
 import { ParamMap } from "@angular/router";
 
-import { isId, OrganizationId } from "@bitwarden/common/types/guid";
+import { isId, OrganizationId } from "@localpass/common/types/guid";
 
 /** The route param that makes an import an organization's own, from its admin console. */
 export const IMPORT_ORGANIZATION_ID_ROUTE_PARAM = "organizationId";

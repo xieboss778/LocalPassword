@@ -2,8 +2,8 @@ import { Observable } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { UserKeyRotationDataProvider } from "@bitwarden/key-management";
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { UserKeyRotationDataProvider } from "@localpass/key-management";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { UriMatchStrategySetting } from "../../models/domain/domain-service";
 import { UploadOptions } from "../../platform/abstractions/file-upload/file-upload.service";

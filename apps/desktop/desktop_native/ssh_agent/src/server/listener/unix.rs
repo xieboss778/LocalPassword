@@ -10,11 +10,11 @@ use super::Listener;
 use crate::server::{connection::Connection, peer_info::PeerInfo};
 
 /// Environment variable that overrides the default socket path
-const ENV_BITWARDEN_SSH_AUTH_SOCK: &str = "BITWARDEN_SSH_AUTH_SOCK";
+const ENV_LOCALPASS_SSH_AUTH_SOCK: &str = "LOCALPASS_SSH_AUTH_SOCK";
 
-const FLATPAK_DATA_DIR: &str = ".var/app/com.bitwarden.desktop/data";
+const FLATPAK_DATA_DIR: &str = ".var/app/com.localpass.desktop/data";
 
-const SOCKFILE_NAME: &str = ".bitwarden-ssh-agent.sock";
+const SOCKFILE_NAME: &str = ".localpass-ssh-agent.sock";
 
 /// Unix domain socket listener for the SSH agent server
 pub(crate) struct UnixListener {
@@ -24,8 +24,8 @@ pub(crate) struct UnixListener {
 impl UnixListener {
     /// Creates a new [`UnixListener`], binding to the resolved socket path.
     ///
-    /// The socket path is resolved from the `BITWARDEN_SSH_AUTH_SOCK` environment variable if set,
-    /// otherwise it defaults to `$HOME/.bitwarden-ssh-agent.sock`.
+    /// The socket path is resolved from the `LOCALPASS_SSH_AUTH_SOCK` environment variable if set,
+    /// otherwise it defaults to `$HOME/.localpass-ssh-agent.sock`.
     /// Any stale socket file at that path is removed before binding.
     /// Permissions are set to `0o600` so only the current user can access the socket.
     ///
@@ -79,11 +79,11 @@ fn get_peer_info(stream: &UnixStream) -> Option<PeerInfo> {
 }
 
 fn get_socket_path() -> Result<PathBuf> {
-    if let Ok(path) = std::env::var(ENV_BITWARDEN_SSH_AUTH_SOCK) {
+    if let Ok(path) = std::env::var(ENV_LOCALPASS_SSH_AUTH_SOCK) {
         Ok(PathBuf::from(path))
     } else {
         debug!(
-            socket_path_env_var = ENV_BITWARDEN_SSH_AUTH_SOCK,
+            socket_path_env_var = ENV_LOCALPASS_SSH_AUTH_SOCK,
             "not set, using default path"
         );
         get_default_socket_path()
@@ -144,11 +144,11 @@ mod tests {
     fn test_socket_path_env_var_override() {
         let custom_path = "/tmp/bw-ssh-agent-custom-test.sock";
         // SAFETY: tests touching env vars are serialized via #[serial]
-        unsafe { std::env::set_var(ENV_BITWARDEN_SSH_AUTH_SOCK, custom_path) };
+        unsafe { std::env::set_var(ENV_LOCALPASS_SSH_AUTH_SOCK, custom_path) };
 
         let path = get_socket_path().unwrap();
 
-        unsafe { std::env::remove_var(ENV_BITWARDEN_SSH_AUTH_SOCK) };
+        unsafe { std::env::remove_var(ENV_LOCALPASS_SSH_AUTH_SOCK) };
         assert_eq!(path, PathBuf::from(custom_path));
     }
 

@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { V2UpgradeToken } from "@bitwarden/sdk-internal";
+import { V2UpgradeToken } from "@localpass/sdk-internal";
 
 import { UserId } from "../../../types/guid";
 

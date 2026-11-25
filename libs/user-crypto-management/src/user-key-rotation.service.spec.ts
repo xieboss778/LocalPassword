@@ -1,10 +1,10 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { LogService } from "@bitwarden/logging";
-import { PublicKey, UpgradeTokenAction } from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { LogService } from "@localpass/logging";
+import { PublicKey, UpgradeTokenAction } from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 import { UserCryptoDialogService } from "./user-crypto-dialog.service.abstraction";
 import { DefaultUserKeyRotationService } from "./user-key-rotation.service";

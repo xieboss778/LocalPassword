@@ -106,21 +106,21 @@ mod tests {
 
     #[tokio::test]
     async fn test() {
-        set_password("BitwardenTest", "BitwardenTest", "Random")
+        set_password("LocalPassTest", "LocalPassTest", "Random")
             .await
             .unwrap();
         assert_eq!(
             "Random",
-            get_password("BitwardenTest", "BitwardenTest")
+            get_password("LocalPassTest", "LocalPassTest")
                 .await
                 .unwrap()
         );
-        delete_password("BitwardenTest", "BitwardenTest")
+        delete_password("LocalPassTest", "LocalPassTest")
             .await
             .unwrap();
 
         // Ensure password is deleted
-        match get_password("BitwardenTest", "BitwardenTest").await {
+        match get_password("LocalPassTest", "LocalPassTest").await {
             Ok(_) => {
                 panic!("Got a result")
             }

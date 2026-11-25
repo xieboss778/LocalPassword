@@ -36,7 +36,7 @@ describe("Utils Service", () => {
       expect(Utils.getDomain(undefined)).toBeNull();
       expect(Utils.getDomain(" ")).toBeNull();
       expect(Utils.getDomain('https://bit!:"_&ward.com')).toBeNull();
-      expect(Utils.getDomain("bitwarden")).toBeNull();
+      expect(Utils.getDomain("localpass")).toBeNull();
     });
 
     it("should fail for data urls", () => {
@@ -54,46 +54,46 @@ describe("Utils Service", () => {
     });
 
     it("should handle urls without protocol", () => {
-      expect(Utils.getDomain("bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("wrong://bitwarden.com")).toBe("bitwarden.com");
+      expect(Utils.getDomain("local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("wrong://local.invalid")).toBe("local.invalid");
     });
 
     it("should handle valid urls", () => {
-      expect(Utils.getDomain("bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("http://bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("https://bitwarden.com")).toBe("bitwarden.com");
+      expect(Utils.getDomain("local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://local.invalid")).toBe("local.invalid");
 
-      expect(Utils.getDomain("www.bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("http://www.bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("https://www.bitwarden.com")).toBe("bitwarden.com");
+      expect(Utils.getDomain("www.local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://www.local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://www.local.invalid")).toBe("local.invalid");
 
-      expect(Utils.getDomain("vault.bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("http://vault.bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("https://vault.bitwarden.com")).toBe("bitwarden.com");
+      expect(Utils.getDomain("vault.local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://vault.local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://vault.local.invalid")).toBe("local.invalid");
 
-      expect(Utils.getDomain("www.vault.bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("http://www.vault.bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getDomain("https://www.vault.bitwarden.com")).toBe("bitwarden.com");
+      expect(Utils.getDomain("www.vault.local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://www.vault.local.invalid")).toBe("local.invalid");
+      expect(Utils.getDomain("https://www.vault.local.invalid")).toBe("local.invalid");
 
       expect(
-        Utils.getDomain("user:password@bitwarden.com:8080/password/sites?and&query#hash"),
-      ).toBe("bitwarden.com");
+        Utils.getDomain("user:password@local.invalid:8080/password/sites?and&query#hash"),
+      ).toBe("local.invalid");
       expect(
-        Utils.getDomain("http://user:password@bitwarden.com:8080/password/sites?and&query#hash"),
-      ).toBe("bitwarden.com");
+        Utils.getDomain("http://user:password@local.invalid:8080/password/sites?and&query#hash"),
+      ).toBe("local.invalid");
       expect(
-        Utils.getDomain("https://user:password@bitwarden.com:8080/password/sites?and&query#hash"),
-      ).toBe("bitwarden.com");
+        Utils.getDomain("https://user:password@local.invalid:8080/password/sites?and&query#hash"),
+      ).toBe("local.invalid");
 
-      expect(Utils.getDomain("bitwarden.unknown")).toBe("bitwarden.unknown");
-      expect(Utils.getDomain("http://bitwarden.unknown")).toBe("bitwarden.unknown");
-      expect(Utils.getDomain("https://bitwarden.unknown")).toBe("bitwarden.unknown");
+      expect(Utils.getDomain("localpass.unknown")).toBe("localpass.unknown");
+      expect(Utils.getDomain("http://localpass.unknown")).toBe("localpass.unknown");
+      expect(Utils.getDomain("https://localpass.unknown")).toBe("localpass.unknown");
     });
 
     it("should handle valid urls with an underscore in subdomain", () => {
-      expect(Utils.getDomain("my_vault.bitwarden.com/")).toBe("bitwarden.com");
-      expect(Utils.getDomain("http://my_vault.bitwarden.com/")).toBe("bitwarden.com");
-      expect(Utils.getDomain("https://my_vault.bitwarden.com/")).toBe("bitwarden.com");
+      expect(Utils.getDomain("my_vault.local.invalid/")).toBe("local.invalid");
+      expect(Utils.getDomain("http://my_vault.local.invalid/")).toBe("local.invalid");
+      expect(Utils.getDomain("https://my_vault.local.invalid/")).toBe("local.invalid");
     });
 
     it("should support urls containing umlauts", () => {
@@ -158,7 +158,7 @@ describe("Utils Service", () => {
 
     it("should not treat '!' in query string as an invalid url", () => {
       expect(Utils.getHostname("http://localhost:8080?a=!")).toBe("localhost");
-      expect(Utils.getHostname("https://bitwarden.com?q=!")).toBe("bitwarden.com");
+      expect(Utils.getHostname("https://local.invalid?q=!")).toBe("local.invalid");
     });
 
     it("should fail for data urls", () => {
@@ -176,39 +176,39 @@ describe("Utils Service", () => {
     });
 
     it("should handle valid urls", () => {
-      expect(Utils.getHostname("bitwarden")).toBe("bitwarden");
-      expect(Utils.getHostname("http://bitwarden")).toBe("bitwarden");
-      expect(Utils.getHostname("https://bitwarden")).toBe("bitwarden");
+      expect(Utils.getHostname("localpass")).toBe("localpass");
+      expect(Utils.getHostname("http://localpass")).toBe("localpass");
+      expect(Utils.getHostname("https://localpass")).toBe("localpass");
 
-      expect(Utils.getHostname("bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getHostname("http://bitwarden.com")).toBe("bitwarden.com");
-      expect(Utils.getHostname("https://bitwarden.com")).toBe("bitwarden.com");
+      expect(Utils.getHostname("local.invalid")).toBe("local.invalid");
+      expect(Utils.getHostname("https://local.invalid")).toBe("local.invalid");
+      expect(Utils.getHostname("https://local.invalid")).toBe("local.invalid");
 
-      expect(Utils.getHostname("www.bitwarden.com")).toBe("www.bitwarden.com");
-      expect(Utils.getHostname("http://www.bitwarden.com")).toBe("www.bitwarden.com");
-      expect(Utils.getHostname("https://www.bitwarden.com")).toBe("www.bitwarden.com");
+      expect(Utils.getHostname("www.local.invalid")).toBe("www.local.invalid");
+      expect(Utils.getHostname("https://www.local.invalid")).toBe("www.local.invalid");
+      expect(Utils.getHostname("https://www.local.invalid")).toBe("www.local.invalid");
 
-      expect(Utils.getHostname("vault.bitwarden.com")).toBe("vault.bitwarden.com");
-      expect(Utils.getHostname("http://vault.bitwarden.com")).toBe("vault.bitwarden.com");
-      expect(Utils.getHostname("https://vault.bitwarden.com")).toBe("vault.bitwarden.com");
+      expect(Utils.getHostname("vault.local.invalid")).toBe("vault.local.invalid");
+      expect(Utils.getHostname("https://vault.local.invalid")).toBe("vault.local.invalid");
+      expect(Utils.getHostname("https://vault.local.invalid")).toBe("vault.local.invalid");
 
-      expect(Utils.getHostname("www.vault.bitwarden.com")).toBe("www.vault.bitwarden.com");
-      expect(Utils.getHostname("http://www.vault.bitwarden.com")).toBe("www.vault.bitwarden.com");
-      expect(Utils.getHostname("https://www.vault.bitwarden.com")).toBe("www.vault.bitwarden.com");
+      expect(Utils.getHostname("www.vault.local.invalid")).toBe("www.vault.local.invalid");
+      expect(Utils.getHostname("https://www.vault.local.invalid")).toBe("www.vault.local.invalid");
+      expect(Utils.getHostname("https://www.vault.local.invalid")).toBe("www.vault.local.invalid");
 
       expect(
-        Utils.getHostname("user:password@bitwarden.com:8080/password/sites?and&query#hash"),
-      ).toBe("bitwarden.com");
+        Utils.getHostname("user:password@local.invalid:8080/password/sites?and&query#hash"),
+      ).toBe("local.invalid");
       expect(
-        Utils.getHostname("https://user:password@bitwarden.com:8080/password/sites?and&query#hash"),
-      ).toBe("bitwarden.com");
-      expect(Utils.getHostname("https://bitwarden.unknown")).toBe("bitwarden.unknown");
+        Utils.getHostname("https://user:password@local.invalid:8080/password/sites?and&query#hash"),
+      ).toBe("local.invalid");
+      expect(Utils.getHostname("https://localpass.unknown")).toBe("localpass.unknown");
     });
 
     it("should handle valid urls with an underscore in subdomain", () => {
-      expect(Utils.getHostname("my_vault.bitwarden.com/")).toBe("my_vault.bitwarden.com");
-      expect(Utils.getHostname("http://my_vault.bitwarden.com/")).toBe("my_vault.bitwarden.com");
-      expect(Utils.getHostname("https://my_vault.bitwarden.com/")).toBe("my_vault.bitwarden.com");
+      expect(Utils.getHostname("my_vault.local.invalid/")).toBe("my_vault.local.invalid");
+      expect(Utils.getHostname("http://my_vault.local.invalid/")).toBe("my_vault.local.invalid");
+      expect(Utils.getHostname("https://my_vault.local.invalid/")).toBe("my_vault.local.invalid");
     });
 
     it("should support urls containing umlauts", () => {

@@ -1,4 +1,4 @@
-import { ANON_LAYOUT_DEFAULTS, AnonLayoutWrapperData } from "@bitwarden/components";
+import { ANON_LAYOUT_DEFAULTS, AnonLayoutWrapperData } from "@localpass/components";
 
 import { EXTENSION_ANON_LAYOUT_DEFAULTS } from "./extension-anon-layout-defaults";
 import { ExtensionAnonLayoutWrapperDataService } from "./extension-anon-layout-wrapper-data.service";

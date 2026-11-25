@@ -1,11 +1,11 @@
 import { mock } from "jest-mock-extended";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { FieldType, CipherType, BankAccountType } from "@bitwarden/common/vault/enums";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { FieldType, CipherType, BankAccountType } from "@localpass/common/vault/enums";
 
 import { assertCustomFieldsStructure } from "../spec-data/importer-test-utils";
 import { testData as dedicatedItemsTestData } from "../spec-data/protonpass-json/protonpass-dedicated-types.json";
@@ -198,11 +198,11 @@ describe("Protonpass Json Importer", () => {
       expect(cipher.identity.lastName).toBe("1");
       expect(cipher.identity.email).toBe("test@gmail.com");
       expect(cipher.identity.phone).toBe("7507951789");
-      expect(cipher.identity.company).toBe("Bitwarden");
+      expect(cipher.identity.company).toBe("LocalPass");
       expect(cipher.identity.ssn).toBe("98378264782");
       expect(cipher.identity.passportNumber).toBe("7173716378612");
       expect(cipher.identity.licenseNumber).toBe("21234");
-      expect(cipher.identity.address1).toBe("Bitwarden");
+      expect(cipher.identity.address1).toBe("LocalPass");
       expect(cipher.identity.address2).toBe("23 Street");
       expect(cipher.identity.address3).toBe("12th Floor Test County");
       expect(cipher.identity.city).toBe("New York");
@@ -264,11 +264,11 @@ describe("Protonpass Json Importer", () => {
       expect(identityCipher.identity.lastName).toBe("1");
       expect(identityCipher.identity.email).toBe("test@gmail.com");
       expect(identityCipher.identity.phone).toBe("7507951789");
-      expect(identityCipher.identity.company).toBe("Bitwarden");
+      expect(identityCipher.identity.company).toBe("LocalPass");
       expect(identityCipher.identity.ssn).toBe("98378264782");
       expect(identityCipher.identity.passportNumber).toBeUndefined();
       expect(identityCipher.identity.licenseNumber).toBeUndefined();
-      expect(identityCipher.identity.address1).toBe("Bitwarden");
+      expect(identityCipher.identity.address1).toBe("LocalPass");
       expect(identityCipher.identity.address2).toBe("23 Street");
       expect(identityCipher.identity.address3).toBe("12th Floor Test County");
       expect(identityCipher.identity.city).toBe("New York");

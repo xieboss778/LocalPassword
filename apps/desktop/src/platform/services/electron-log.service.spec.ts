@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogLevelType } from "@bitwarden/common/platform/enums/log-level-type.enum";
-import { LogRecorder } from "@bitwarden/logging";
+import { LogLevelType } from "@localpass/common/platform/enums/log-level-type.enum";
+import { LogRecorder } from "@localpass/logging";
 
 import { ElectronLogMainService } from "./electron-log.main.service";
 import { ElectronLogRendererService } from "./electron-log.renderer.service";
@@ -12,7 +12,7 @@ jest.mock("electron", () => ({
   ipcMain: { handle: jest.fn(), on: jest.fn() },
 }));
 
-jest.mock("@bitwarden/desktop-napi", () => {
+jest.mock("@localpass/desktop-napi", () => {
   return {
     logging: {
       initNapiLog: jest.fn(),

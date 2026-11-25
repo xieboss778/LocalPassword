@@ -1,7 +1,7 @@
 # 依赖自动更新
 #
 # 每周检查一次 npm 依赖与 GitHub Actions。
-# Bitwarden SDK（@bitwarden/sdk-internal）与 Rust 相关依赖手工升级：加密格式的变化
+# LocalPass SDK（@localpass/sdk-internal）与 Rust 相关依赖手工升级：加密格式的变化
 # 需要人工验证保险库的加解密兼容性，不能让机器人直接合并。
 
 version: 2
@@ -32,8 +32,8 @@ updates:
           - "patch"
     ignore:
       # 加密相关的包不自动升级
-      - dependency-name: "@bitwarden/sdk-internal"
-      - dependency-name: "@bitwarden/sdk-zstd"
+      - dependency-name: "@localpass/sdk-internal"
+      - dependency-name: "@localpass/sdk-zstd"
       # Nx / Angular 大版本升级需要单独安排
       - dependency-name: "nx"
         update-types: ["version-update:semver-major"]
@@ -62,4 +62,4 @@ updates:
       - "dependencies"
     ignore:
       # Rust SDK 由上游控制，手工跟进
-      - dependency-name: "bitwarden-*"
+      - dependency-name: "localpass-*"

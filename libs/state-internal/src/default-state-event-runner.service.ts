@@ -7,9 +7,9 @@ import {
   StateDefinition,
   StateEventRunnerService,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { StorageLocation, StorageServiceProvider } from "@bitwarden/storage-core";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { StorageLocation, StorageServiceProvider } from "@localpass/storage-core";
+import { UserId } from "@localpass/user-core";
 
 import {
   STATE_LOCK_EVENT,

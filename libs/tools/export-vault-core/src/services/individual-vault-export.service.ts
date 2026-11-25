@@ -4,27 +4,27 @@ import * as JSZip from "jszip";
 import * as papa from "papaparse";
 import { firstValueFrom } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CipherWithIdExport, FolderWithIdExport } from "@bitwarden/common/models/export";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { Folder } from "@bitwarden/common/vault/models/domain/folder";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { CipherWithIdExport, FolderWithIdExport } from "@localpass/common/models/export";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CipherId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { Folder } from "@localpass/common/vault/models/domain/folder";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KeyGenerationService } from "@bitwarden/legacy-crypto";
+import { EncryptService, KeyGenerationService } from "@localpass/legacy-crypto";
 
 import {
-  BitwardenCsvIndividualExportType,
-  BitwardenEncryptedIndividualJsonExport,
-  BitwardenUnEncryptedIndividualJsonExport,
+  LocalPassCsvIndividualExportType,
+  LocalPassEncryptedIndividualJsonExport,
+  LocalPassUnEncryptedIndividualJsonExport,
   ExportedVault,
   ExportedVaultAsBlob,
   ExportedVaultAsString,
@@ -268,7 +268,7 @@ export class IndividualVaultExportService
     const userKey = await firstValueFrom(this.keyService.userKey$(activeUserId));
     const encKeyValidation = await this.encryptService.encryptString(Utils.newGuid(), userKey);
 
-    const jsonDoc: BitwardenEncryptedIndividualJsonExport = {
+    const jsonDoc: LocalPassEncryptedIndividualJsonExport = {
       encrypted: true,
       encKeyValidation_DO_NOT_EDIT: encKeyValidation.encryptedString,
       folders: [],
@@ -309,7 +309,7 @@ export class IndividualVaultExportService
       }
     });
 
-    const exportCiphers: BitwardenCsvIndividualExportType[] = [];
+    const exportCiphers: LocalPassCsvIndividualExportType[] = [];
     decCiphers.forEach((c) => {
       // only export logins and secure notes
       if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
@@ -319,7 +319,7 @@ export class IndividualVaultExportService
         return;
       }
 
-      const cipher = {} as BitwardenCsvIndividualExportType;
+      const cipher = {} as LocalPassCsvIndividualExportType;
       cipher.folder =
         c.folderId != null && foldersMap.has(c.folderId) ? foldersMap.get(c.folderId).name : null;
       cipher.favorite = c.favorite ? 1 : null;
@@ -331,7 +331,7 @@ export class IndividualVaultExportService
   }
 
   private buildJsonExport(decFolders: FolderView[], decCiphers: CipherView[]): string {
-    const jsonDoc: BitwardenUnEncryptedIndividualJsonExport = {
+    const jsonDoc: LocalPassUnEncryptedIndividualJsonExport = {
       encrypted: false,
       folders: [],
       items: [],

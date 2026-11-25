@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, map, shareReplay, startWith, switchMap } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { VaultCopyButtonsService } from "@bitwarden/vault";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { VaultCopyButtonsService } from "@localpass/vault";
 
 import { VaultPopupItemsService } from "./vault-popup-items.service";
 import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";

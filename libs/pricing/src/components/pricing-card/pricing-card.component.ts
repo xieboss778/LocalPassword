@@ -4,15 +4,15 @@ import { ChangeDetectionStrategy, Component, input, output } from "@angular/core
 import {
   BadgeModule,
   BadgeVariant,
-  BitwardenIcon,
+  LocalPassIcon,
   ButtonModule,
   ButtonType,
   CardComponent,
   IconModule,
   SvgModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * A reusable UI-only component that displays pricing information in a card format.
@@ -45,7 +45,7 @@ export class PricingCardComponent {
     type: ButtonType;
     text: string;
     disabled?: boolean;
-    icon?: { type: BitwardenIcon; position: "before" | "after" };
+    icon?: { type: LocalPassIcon; position: "before" | "after" };
   }>();
   readonly features = input<string[]>();
   readonly activeBadge = input<{ text: string; variant?: BadgeVariant }>();

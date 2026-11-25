@@ -1,10 +1,10 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, Subject } from "rxjs";
 
-import { Message, MessageListener } from "@bitwarden/common/platform/messaging";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { Message, MessageListener } from "@localpass/common/platform/messaging";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/services/cipher.service";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 

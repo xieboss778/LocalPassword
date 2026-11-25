@@ -1,6 +1,6 @@
 import { Observable, map, shareReplay, switchMap, timer } from "rxjs";
 
-import { TotpResponse } from "@bitwarden/sdk-internal";
+import { TotpResponse } from "@localpass/sdk-internal";
 
 import { SdkService } from "../../platform/abstractions/sdk/sdk.service";
 import { TotpService as TotpServiceAbstraction } from "../abstractions/totp.service";

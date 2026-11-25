@@ -6,7 +6,7 @@ import {
   input,
 } from "@angular/core";
 
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 @Component({
   selector: "bit-icon",
@@ -21,9 +21,9 @@ import { BitwardenIcon } from "../shared/icon";
 })
 export class IconComponent {
   /**
-   * The Bitwarden icon name (e.g., "bwi-lock", "bwi-user")
+   * The LocalPass icon name (e.g., "bwi-lock", "bwi-user")
    */
-  readonly name = input.required<BitwardenIcon>();
+  readonly name = input.required<LocalPassIcon>();
 
   /**
    * Accessible label for the icon

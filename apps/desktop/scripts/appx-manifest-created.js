@@ -46,12 +46,12 @@ const NAMESPACES = {
   virtualization: "http://schemas.microsoft.com/appx/manifest/virtualization/windows10",
 };
 const NATIVE_MESSAGING_HOST_KEYS = [
-  "SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.localpassword.desktop",
-  "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.localpassword.desktop",
-  "SOFTWARE\\Chromium\\NativeMessagingHosts\\com.localpassword.desktop",
-  "SOFTWARE\\Microsoft\\Edge\\NativeMessagingHosts\\com.localpassword.desktop",
-  "SOFTWARE\\Vivaldi\\NativeMessagingHosts\\com.localpassword.desktop",
-  "SOFTWARE\\BraveSoftware\\Brave-Browser\\NativeMessagingHosts\\com.localpassword.desktop",
+  "SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.localpass.desktop",
+  "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.localpass.desktop",
+  "SOFTWARE\\Chromium\\NativeMessagingHosts\\com.localpass.desktop",
+  "SOFTWARE\\Microsoft\\Edge\\NativeMessagingHosts\\com.localpass.desktop",
+  "SOFTWARE\\Vivaldi\\NativeMessagingHosts\\com.localpass.desktop",
+  "SOFTWARE\\BraveSoftware\\Brave-Browser\\NativeMessagingHosts\\com.localpass.desktop",
 ];
 
 function readClsid(configFile) {

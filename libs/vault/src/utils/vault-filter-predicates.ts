@@ -1,8 +1,8 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 /**
  * Sentinel for the Vault chip's "my vault" option — organizations are identified by id, and the

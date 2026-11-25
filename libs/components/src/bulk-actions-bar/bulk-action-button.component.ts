@@ -13,7 +13,7 @@ import {
 
 import { setA11yTitleAndAriaLabel } from "../a11y/set-a11y-title-and-aria-label";
 import { IconComponent } from "../icon/icon.component";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TooltipDirective } from "../tooltip/tooltip.directive";
 
 /** @internal Used only by `BulkActionsBarComponent` to render its toolbar buttons. */
@@ -33,7 +33,7 @@ export class BulkActionButtonComponent implements FocusableOption {
   readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly tooltip = inject(TooltipDirective, { self: true });
 
-  readonly icon = input.required<BitwardenIcon>();
+  readonly icon = input.required<LocalPassIcon>();
   readonly compact = input(false);
 
   // Driven by the parent bar's FocusKeyManager to implement the toolbar

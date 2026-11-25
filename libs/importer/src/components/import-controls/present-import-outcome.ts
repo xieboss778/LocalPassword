@@ -1,5 +1,5 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
 
 import {
   ImportOutcomeContext,

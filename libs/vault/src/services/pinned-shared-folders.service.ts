@@ -2,13 +2,13 @@ import { Injectable, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Observable, map, of, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   StateProvider,
   UserKeyDefinition,
   VAULT_PINNED_SHARED_FOLDERS_DISK,
-} from "@bitwarden/common/platform/state";
-import { CollectionId, UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { CollectionId, UserId } from "@localpass/common/types/guid";
 
 /**
  * The shared folders the user pinned to the side nav, in the order they were pinned. Ids only,

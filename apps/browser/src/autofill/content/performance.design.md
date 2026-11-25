@@ -2,7 +2,7 @@
 
 ## The problem
 
-Bitwarden's autofill content scripts run inside every page a user visits. They observe DOM mutations, query shadow roots, manage overlays, and coordinate with the extension background — all on the browser's main thread, in the same execution context as the page's own JavaScript.
+LocalPass's autofill content scripts run inside every page a user visits. They observe DOM mutations, query shadow roots, manage overlays, and coordinate with the extension background — all on the browser's main thread, in the same execution context as the page's own JavaScript.
 
 On dynamic pages — think Jupyter notebooks, SPAs with aggressive virtual scrolling, or pages with heavy shadow DOM usage — the mutation observer callback can fire hundreds of times per second. Each callback does synchronous work: traversing parent chains, checking prototype chains, scheduling follow-up operations. When this work takes too long, the page janks. The user sees it. The page author (rightfully) blames our observers.
 

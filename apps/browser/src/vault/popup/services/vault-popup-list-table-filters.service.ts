@@ -13,42 +13,42 @@ import {
   take,
 } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dynamic-tree-node.model";
-import { sortDefaultCollections } from "@bitwarden/angular/vault/vault-filter/services/vault-filter.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
+import { CollectionService } from "@localpass/admin-console/common";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { DynamicTreeNode } from "@localpass/angular/vault/vault-filter/models/dynamic-tree-node.model";
+import { sortDefaultCollections } from "@localpass/angular/vault/vault-filter/services/vault-filter.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { ITreeNodeObject, TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import {
   CIPHER_MENU_ITEMS,
   DIALOG_CIPHER_MENU_ITEMS,
-} from "@bitwarden/common/vault/types/cipher-menu-items";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { getNestedFolderTree } from "@bitwarden/common/vault/utils/folder-utils";
-import { ChipFilterOption, getAvatarDefaultColor } from "@bitwarden/components";
+} from "@localpass/common/vault/types/cipher-menu-items";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { getNestedFolderTree } from "@localpass/common/vault/utils/folder-utils";
+import { ChipFilterOption, getAvatarDefaultColor } from "@localpass/components";
 import {
   StateProvider,
   UserKeyDefinition,
   VAULT_TABLE_FILTERS_DISK,
   VAULT_TABLE_FILTERS_MEMORY,
-} from "@bitwarden/state";
+} from "@localpass/state";
 import {
   ALL_ITEMS_SCOPE,
   idString,
@@ -58,7 +58,7 @@ import {
   personalIconTile,
   scopeKey,
   type VaultScope,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 interface CachedTableFilterState {
   organizationIds?: string[];

@@ -41,7 +41,7 @@ import { Fido2Utils } from "./fido2-utils";
 import { guidToRawFormat } from "./guid-utils";
 
 /**
- * Bitwarden implementation of the Web Authentication API as described by W3C
+ * LocalPass implementation of the Web Authentication API as described by W3C
  * https://www.w3.org/TR/webauthn-3/#sctn-api
  *
  * It is highly recommended that the W3C specification is used a reference when reading this code.
@@ -101,8 +101,8 @@ export class Fido2ClientService<
     }
 
     const serverConfig = await firstValueFrom(this.configService.serverConfig$);
-    const isOriginEqualBitwardenVault = origin === serverConfig.environment?.vault;
-    if (isOriginEqualBitwardenVault) {
+    const isOriginEqualLocalPassVault = origin === serverConfig.environment?.vault;
+    if (isOriginEqualLocalPassVault) {
       return false;
     }
 
@@ -325,7 +325,7 @@ export class Fido2ClientService<
     ) {
       // Spec reference: https://www.w3.org/TR/webauthn-3/#sctn-discover-from-external-source step 20.
       // The spec says the client should determine if "no authenticator will become available" by
-      // examining transports. Since Bitwarden is an internal-only authenticator, if all
+      // examining transports. Since LocalPass is an internal-only authenticator, if all
       // allowCredentials entries specify only non-internal transports, we cannot satisfy the
       // request. We throw FallbackRequestedError (instead of the spec's NotAllowedError) to let
       // the browser's native WebAuthn handler contact the hardware authenticator.

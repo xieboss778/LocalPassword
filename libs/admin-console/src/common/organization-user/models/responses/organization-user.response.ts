@@ -2,12 +2,12 @@ import {
   OrganizationUserStatusType,
   OrganizationUserType,
   RevocationReasonType,
-} from "@bitwarden/common/admin-console/enums";
-import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
-import { SelectionReadOnlyResponse } from "@bitwarden/common/admin-console/models/response/selection-read-only.response";
-import { BaseResponse } from "@bitwarden/common/models/response/base.response";
+} from "@localpass/common/admin-console/enums";
+import { PermissionsApi } from "@localpass/common/admin-console/models/api/permissions.api";
+import { SelectionReadOnlyResponse } from "@localpass/common/admin-console/models/response/selection-read-only.response";
+import { BaseResponse } from "@localpass/common/models/response/base.response";
 // eslint-disable-next-line no-restricted-imports
-import { KdfType } from "@bitwarden/legacy-crypto";
+import { KdfType } from "@localpass/legacy-crypto";
 
 export class OrganizationUserResponse extends BaseResponse {
   id: string;

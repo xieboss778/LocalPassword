@@ -2,14 +2,14 @@ import { SafeUrls, UrlType } from "./safe-urls";
 
 describe("SafeUrls service", () => {
   it("should allow valid URLs", () => {
-    expect(SafeUrls.canLaunch("https://bitwarden.com", UrlType.CipherUri)).toBe(true);
-    expect(SafeUrls.canLaunch("http://bitwarden.com", UrlType.CipherUri)).toBe(true);
+    expect(SafeUrls.canLaunch("https://local.invalid", UrlType.CipherUri)).toBe(true);
+    expect(SafeUrls.canLaunch("https://local.invalid", UrlType.CipherUri)).toBe(true);
     expect(SafeUrls.canLaunch("ssh://my-server", UrlType.CipherUri)).toBe(true);
   });
 
   it.each([
-    "HTTPS://bitwarden.com",
-    "HtTp://bitwarden.com",
+    "HTTPS://local.invalid",
+    "HtTp://local.invalid",
     "SSH://my-server",
     "MS-RD:full address=s:server.example.com",
   ])("should allow URI schemes regardless of case: %s", (url) => {
@@ -17,7 +17,7 @@ describe("SafeUrls service", () => {
   });
 
   it("should fail invalid URLs", () => {
-    expect(SafeUrls.canLaunch("bitwarden.com", UrlType.CipherUri)).toBe(false);
+    expect(SafeUrls.canLaunch("local.invalid", UrlType.CipherUri)).toBe(false);
     expect(SafeUrls.canLaunch("", UrlType.CipherUri)).toBe(false);
     expect(SafeUrls.canLaunch(null, UrlType.CipherUri)).toBe(false);
   });
@@ -30,9 +30,9 @@ describe("SafeUrls service", () => {
   });
 
   it("should only allow https for WebUrl", () => {
-    expect(SafeUrls.canLaunch("https://bitwarden.com", UrlType.WebUrl)).toBe(true);
-    expect(SafeUrls.canLaunch("HTTPS://bitwarden.com", UrlType.WebUrl)).toBe(true);
-    expect(SafeUrls.canLaunch("http://bitwarden.com", UrlType.WebUrl)).toBe(false);
-    expect(SafeUrls.canLaunch("HTTP://bitwarden.com", UrlType.WebUrl)).toBe(false);
+    expect(SafeUrls.canLaunch("https://local.invalid", UrlType.WebUrl)).toBe(true);
+    expect(SafeUrls.canLaunch("HTTPS://local.invalid", UrlType.WebUrl)).toBe(true);
+    expect(SafeUrls.canLaunch("https://local.invalid", UrlType.WebUrl)).toBe(false);
+    expect(SafeUrls.canLaunch("HTTP://local.invalid", UrlType.WebUrl)).toBe(false);
   });
 });

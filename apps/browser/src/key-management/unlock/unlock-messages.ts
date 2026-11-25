@@ -1,5 +1,5 @@
-import { CommandDefinition } from "@bitwarden/common/platform/messaging";
-import { UnlockCompletedMessage } from "@bitwarden/unlock";
+import { CommandDefinition } from "@localpass/common/platform/messaging";
+import { UnlockCompletedMessage } from "@localpass/unlock";
 
 /**
  * Sent by the popup after it unlocked a user, so the background can run the on-unlock actions

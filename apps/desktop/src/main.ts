@@ -5,36 +5,36 @@ import * as path from "path";
 import { app } from "electron";
 import { Subject, firstValueFrom } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { DefaultOrganizationService } from "@bitwarden/common/admin-console/services/organization/default-organization.service";
-import { DefaultPolicyService } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
-import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
-import { DefaultActiveUserAccessor } from "@bitwarden/common/auth/services/default-active-user.accessor";
-import { SsoUrlService } from "@bitwarden/common/auth/sso-login";
-import { ClientType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { DefaultOrganizationService } from "@localpass/common/admin-console/services/organization/default-organization.service";
+import { DefaultPolicyService } from "@localpass/common/admin-console/services/policy/default-policy.service";
+import { AccountServiceImplementation } from "@localpass/common/auth/services/account.service";
+import { DefaultActiveUserAccessor } from "@localpass/common/auth/services/default-active-user.accessor";
+import { SsoUrlService } from "@localpass/common/auth/sso-login";
+import { ClientType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 import {
   SharedUnlockSettingsService,
   DefaultSharedUnlockSettingsService,
-} from "@bitwarden/common/key-management/shared-unlock";
-import { RegionConfig } from "@bitwarden/common/platform/abstractions/environment.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
-import { Message, MessageSender } from "@bitwarden/common/platform/messaging";
+} from "@localpass/common/key-management/shared-unlock";
+import { RegionConfig } from "@localpass/common/platform/abstractions/environment.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { IpcService } from "@localpass/common/platform/ipc";
+import { Message, MessageSender } from "@localpass/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports -- For dependency creation
-import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
-import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
-import { DefaultGovModeService } from "@bitwarden/common/platform/services/default-gov-mode.service";
-import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
-import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
-import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
-import { DefaultSdkClientFactory } from "@bitwarden/common/platform/services/sdk/default-sdk-client-factory";
-import { DefaultBiometricStateService } from "@bitwarden/key-management";
+import { SubjectMessageSender } from "@localpass/common/platform/messaging/internal";
+import { DefaultEnvironmentService } from "@localpass/common/platform/services/default-environment.service";
+import { DefaultGovModeService } from "@localpass/common/platform/services/default-gov-mode.service";
+import { MemoryStorageService } from "@localpass/common/platform/services/memory-storage.service";
+import { MigrationBuilderService } from "@localpass/common/platform/services/migration-builder.service";
+import { MigrationRunner } from "@localpass/common/platform/services/migration-runner";
+import { DefaultSdkClientFactory } from "@localpass/common/platform/services/sdk/default-sdk-client-factory";
+import { DefaultBiometricStateService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { NodeCryptoFunctionService } from "@bitwarden/legacy-crypto/node";
-import { FlightRecorderLogRecorder } from "@bitwarden/logging";
-import { DefaultManagedSettingsService } from "@bitwarden/managed-settings";
-import { FlightRecorderClient } from "@bitwarden/sdk-internal";
+import { NodeCryptoFunctionService } from "@localpass/legacy-crypto/node";
+import { FlightRecorderLogRecorder } from "@localpass/logging";
+import { DefaultManagedSettingsService } from "@localpass/managed-settings";
+import { FlightRecorderClient } from "@localpass/sdk-internal";
 import {
   DefaultActiveUserStateProvider,
   DefaultDerivedStateProvider,
@@ -42,8 +42,8 @@ import {
   DefaultSingleUserStateProvider,
   DefaultStateEventRegistrarService,
   DefaultStateProvider,
-} from "@bitwarden/state-internal";
-import { SerializedMemoryStorageService, StorageServiceProvider } from "@bitwarden/storage-core";
+} from "@localpass/state-internal";
+import { SerializedMemoryStorageService, StorageServiceProvider } from "@localpass/storage-core";
 
 import { SSOLocalhostCallbackService } from "./auth/services/sso-localhost-callback.service";
 import { DesktopAutofillMain } from "./autofill/main/main-desktop-autofill.service";
@@ -124,10 +124,10 @@ export class Main {
   constructor() {
     // Set paths for portable builds
     let appDataPath = null;
-    if (process.env.BITWARDEN_APPDATA_DIR != null) {
-      appDataPath = process.env.BITWARDEN_APPDATA_DIR;
+    if (process.env.LOCALPASS_APPDATA_DIR != null) {
+      appDataPath = process.env.LOCALPASS_APPDATA_DIR;
     } else if (process.platform === "win32" && process.env.PORTABLE_EXECUTABLE_DIR != null) {
-      appDataPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, "bitwarden-appdata");
+      appDataPath = path.join(process.env.PORTABLE_EXECUTABLE_DIR, "localpass-appdata");
     } else if (process.platform === "linux" && process.env.SNAP_USER_DATA != null) {
       appDataPath = path.join(process.env.SNAP_USER_DATA, "appdata");
     }
@@ -414,13 +414,13 @@ export class Main {
         // autostart is enabled.
         const showWindow = !isAutostart;
 
-        // Main-process bitwarden-ipc handlers should be registered after `ipcService.init()` and
+        // Main-process localpass-ipc handlers should be registered after `ipcService.init()` and
         // before `windowMain.init()`, so the renderer always finds main's IPC client and handlers ready.
         await this.sdkLoadService.loadAndInit();
         await this.ipcService.init();
 
         await this.windowMain.init(showWindow);
-        // LocalPassword: there is no server to single-sign-on against, so the SSO cookie jar is
+        // LocalPass: there is no server to single-sign-on against, so the SSO cookie jar is
         // never installed. Leaving it out also removes the listener that rewrites cookies.
         // this.ssoCookieMain.init(this.windowMain.session);
         await this.i18nService.init();
@@ -429,7 +429,7 @@ export class Main {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.menuMain.init();
         const trayName = this.i18nService.t(
-          flagEnabled("prereleaseBuild") ? "bitwardenBeta" : "bitwarden",
+          flagEnabled("prereleaseBuild") ? "localpassBeta" : "localpass",
         );
         await this.trayMain.init(trayName, [
           {
@@ -448,8 +448,8 @@ export class Main {
         }
 
         this.powerMonitorMain.init();
-        // LocalPassword: self-update stays off. electron-updater is configured for
-        // artifacts.bitwarden.com and would replace this build with Bitwarden.
+        // LocalPass: self-update stays off. electron-updater is configured for
+        // artifacts.local.invalid and would replace this build with LocalPass.
         // Re-enable only after pointing it at our own release feed.
 
         const [ddgIntegrationEnabled] = await Promise.all([
@@ -474,15 +474,15 @@ export class Main {
           this.logService.error("Error while setting up native messaging:", err);
         }
 
-        app.removeAsDefaultProtocolClient("bitwarden");
+        app.removeAsDefaultProtocolClient("localpass");
         if (process.env.NODE_ENV === "development" && process.platform === "win32") {
           // Fix development build on Windows requiring a different protocol client
-          app.setAsDefaultProtocolClient("bitwarden", process.execPath, [
+          app.setAsDefaultProtocolClient("localpass", process.execPath, [
             process.argv[1],
             path.resolve(process.argv[2]),
           ]);
         } else {
-          app.setAsDefaultProtocolClient("bitwarden");
+          app.setAsDefaultProtocolClient("localpass");
         }
 
         // Process protocol for macOS
@@ -507,7 +507,7 @@ export class Main {
 
   private processDeepLink(argv: string[]): void {
     argv
-      .filter((s) => s.indexOf("bitwarden://") === 0)
+      .filter((s) => s.indexOf("localpass://") === 0)
       .forEach((s) => {
         this.messagingService.send("deepLink", { urlString: s });
       });

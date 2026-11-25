@@ -1,6 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
-import { V2UpgradeToken } from "@bitwarden/sdk-internal";
+import { V2UpgradeToken } from "@localpass/sdk-internal";
 
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { UserId } from "../../../types/guid";

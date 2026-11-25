@@ -142,7 +142,7 @@ export class SwitchComponent implements ControlValueAccessor, BitFormControlAbst
   );
 
   // TODO migrate to computed signal when Angular adds signal support to reactive forms
-  // https://bitwarden.atlassian.net/browse/CL-819
+  // https://localpass.atlassian.net/browse/CL-819
   get disabled() {
     return this.disabledInput() || this._formsDisabled() || false;
   }

@@ -55,7 +55,7 @@ case "$DISPLAY_MODE" in
   # A bug in Electron 39 (which now enables Wayland by default) causes a crash on
   # systems using Wayland with hardware acceleration. Platform decided to
   # configure Electron to use X11 (with an opt-out) until the upstream bug is
-  # fixed. The follow-up task is https://bitwarden.atlassian.net/browse/PM-31080.
+  # fixed. The follow-up task is https://localpass.atlassian.net/browse/PM-31080.
   AUTO) PARAMS="--enable-features=UseOzonePlatform --ozone-platform=x11" ;;
   *)
     echo "Unknown DISPLAY_MODE '$DISPLAY_MODE', falling back to X11" >&2
@@ -64,7 +64,7 @@ case "$DISPLAY_MODE" in
 esac
 
 if [ -n "$FLATPAK_ID" ]; then
-  exec zypak-wrapper "$APP_PATH/bitwarden-app" "$@" $PARAMS
+  exec zypak-wrapper "$APP_PATH/localpass-app" "$@" $PARAMS
 else
-  exec "$APP_PATH/bitwarden-app" $PARAMS "$@"
+  exec "$APP_PATH/localpass-app" $PARAMS "$@"
 fi

@@ -3,22 +3,22 @@ import { Component, computed, inject, input, output } from "@angular/core";
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { combineLatest, map, shareReplay } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { CIPHER_MENU_ITEMS } from "@bitwarden/common/vault/types/cipher-menu-items";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { CIPHER_MENU_ITEMS } from "@localpass/common/vault/types/cipher-menu-items";
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   ButtonModule,
   ButtonType,
   IconModule,
   MenuModule,
   PopoverModule,
   TooltipDirective,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { Vfo1I18nPipe } from "../../pipes/vfo1-i18n.pipe";
 import { Vfo1IconPipe } from "../../pipes/vfo1-icon.pipe";
@@ -26,7 +26,7 @@ import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service"
 import { CoachmarkComponent } from "../coachmark/coachmark.component";
 import { CoachmarkService } from "../coachmark/coachmark.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-new-cipher-menu",
@@ -50,7 +50,7 @@ export class NewCipherMenuComponent {
   readonly canCreateFolder = input(false);
   readonly canCreateCollection = input(false);
   readonly canCreateSshKey = input(false);
-  readonly icon = input<BitwardenIcon>("bwi-plus");
+  readonly icon = input<LocalPassIcon>("bwi-plus");
   readonly buttonType = input<ButtonType>("primary");
   readonly id = input<string>();
 

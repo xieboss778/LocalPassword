@@ -1,4 +1,4 @@
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
 
 import { LogUtils } from "./log-utils";
 
@@ -9,8 +9,8 @@ import { LogUtils } from "./log-utils";
  */
 export class TestRunnerSdkLoadService extends SdkLoadService {
   async load(): Promise<void> {
-    // In Node.js, @bitwarden/sdk-internal automatically loads the WASM file
-    // from node/bitwarden_wasm_internal_bg.wasm using fs.readFileSync.
+    // In Node.js, @localpass/sdk-internal automatically loads the WASM file
+    // from the SDK package's wasm binary using fs.readFileSync.
     // No explicit loading is required.
   }
 

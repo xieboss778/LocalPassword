@@ -1,8 +1,8 @@
 import { inject, Injectable, WritableSignal } from "@angular/core";
 import { Jsonify } from "type-fest";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
 
 const TWO_FACTOR_AUTH_COMPONENT_CACHE_KEY = "two-factor-auth-component-cache";
 

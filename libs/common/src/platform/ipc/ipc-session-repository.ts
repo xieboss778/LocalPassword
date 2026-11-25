@@ -4,7 +4,7 @@ import {
   Endpoint,
   HostId,
   IpcSessionRepository as SdkIpcSessionRepository,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { GlobalState, IPC_MEMORY, KeyDefinition, StateProvider } from "../state";
 

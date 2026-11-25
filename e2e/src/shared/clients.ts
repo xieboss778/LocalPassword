@@ -18,7 +18,7 @@ export const LOCK_URL = /#\/lock/;
 export const SYNC_TIMEOUT_MS = 30_000;
 
 // Logged by the extension's DesktopIpcTransport once the handshake with desktop completed.
-const DESKTOP_CONNECTED_LOG = "[IPC] Connected to Bitwarden Desktop App with version";
+const DESKTOP_CONNECTED_LOG = "[IPC] Connected to LocalPass Desktop App with version";
 const DESKTOP_CONNECT_TIMEOUT_MS = 30_000;
 
 /** The extension popup, and its URL to reopen it after the extension restarts. */

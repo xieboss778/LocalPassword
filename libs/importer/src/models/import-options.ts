@@ -1,4 +1,4 @@
-import { deepFreeze } from "@bitwarden/common/tools/util";
+import { deepFreeze } from "@localpass/common/tools/util";
 
 import { DataLoader, Loader } from "../metadata/data";
 import { CredentialKind } from "../sdk/credential-kind";
@@ -61,8 +61,8 @@ export interface ImportOption {
  *  for consumers that need a plain array of full `ImportOption` objects. */
 export type ImportOptionData = Omit<ImportOption, "id">;
 
-const bitwardenExportHelp = "https://bitwarden.com/help/export-your-data/";
-const chromeImportHelp = "https://bitwarden.com/help/import-from-chrome/";
+const localpassExportHelp = "https://github.com/xieboss778/LocalPass/tree/main/docs";
+const chromeImportHelp = "https://github.com/xieboss778/LocalPass/tree/main/docs";
 
 /** Every supported importer, keyed by id. This is the canonical, exhaustively-checked source —
  *  `ImportType` is derived from its keys, and `importOptions` (the ordered array the dropdown
@@ -80,29 +80,29 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: true,
     loaders: [],
     sourceName: "1Password",
-    instructionLink: "https://bitwarden.com/help/import-from-1password/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
-  bitwardenjson: {
-    name: "Bitwarden (json)",
+  localpassjson: {
+    name: "LocalPass (json)",
     featuredImporter: true,
     isBrowser: false,
     acceptedFileTypes: ["json"],
     pasteFormats: ["json"],
     hasDirectImporter: false,
     loaders: [Loader.file],
-    sourceName: "Bitwarden",
-    instructionLink: bitwardenExportHelp,
+    sourceName: "LocalPass",
+    instructionLink: localpassExportHelp,
   },
-  bitwardencsv: {
-    name: "Bitwarden (csv)",
+  localpasscsv: {
+    name: "LocalPass (csv)",
     featuredImporter: true,
     isBrowser: false,
     acceptedFileTypes: ["csv"],
     pasteFormats: ["csv"],
     hasDirectImporter: false,
     loaders: [Loader.file],
-    sourceName: "Bitwarden",
-    instructionLink: bitwardenExportHelp,
+    sourceName: "LocalPass",
+    instructionLink: localpassExportHelp,
   },
   // `loaders` here is `[Loader.file]` for chromecsv and every other Chromium-family entry
   // below, deliberately: this static baseline is what web/browser/cli see. On Desktop,
@@ -138,7 +138,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: false,
     loaders: [Loader.file],
     sourceName: "Firefox",
-    instructionLink: "https://bitwarden.com/help/import-from-firefox/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   keepass2xml: {
     name: "KeePass 2 (xml)",
@@ -165,7 +165,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: true,
     loaders: [Loader.file],
     sourceName: "Keeper",
-    instructionLink: "https://bitwarden.com/help/import-from-keeper/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   lastpasscsv: {
     name: "LastPass",
@@ -178,7 +178,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: true,
     loaders: [Loader.file],
     sourceName: "LastPass",
-    instructionLink: "https://bitwarden.com/help/import-from-lastpass/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   safaricsv: {
     name: "Safari and macOS (csv)",
@@ -189,7 +189,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: false,
     loaders: [Loader.file],
     sourceName: "Safari",
-    instructionLink: "https://bitwarden.com/help/import-from-safari/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   "1password1pux": {
     name: "1Password (1pux/json)",
@@ -204,7 +204,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: false,
     loaders: [Loader.file],
     sourceName: "1Password",
-    instructionLink: "https://bitwarden.com/help/import-from-1password/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   keepasskdbx: {
     name: "KeePass (kdbx)",
@@ -216,7 +216,7 @@ export const importOptionsById = deepFreeze({
     loaders: [Loader.file],
     sdk: { fileTypes: ["kdbx"], credentialKind: CredentialKind.passwordWithKeyFile },
     sourceName: "KeePass",
-    instructionLink: "https://bitwarden.com/help/import-from-keepass/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   keepassxcsv: {
     name: "KeePassX (csv)",
@@ -238,7 +238,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: false,
     loaders: [Loader.file],
     sourceName: "1Password",
-    instructionLink: "https://bitwarden.com/help/import-from-1password/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   "1passwordwincsv": {
     name: "1Password 6 and 7 Windows (csv)",
@@ -249,7 +249,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: false,
     loaders: [Loader.file],
     sourceName: "1Password",
-    instructionLink: "https://bitwarden.com/help/import-from-1password/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   "1passwordmaccsv": {
     name: "1Password 6 and 7 Mac (csv)",
@@ -260,7 +260,7 @@ export const importOptionsById = deepFreeze({
     hasDirectImporter: false,
     loaders: [Loader.file],
     sourceName: "1Password",
-    instructionLink: "https://bitwarden.com/help/import-from-1password/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   },
   dashlanejson: {
     name: "Dashlane (json)",

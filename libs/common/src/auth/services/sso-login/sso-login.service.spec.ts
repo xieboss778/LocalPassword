@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
+import { newGuid } from "@localpass/guid";
 
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { PolicyService } from "../../../admin-console/abstractions/policy/policy.service.abstraction";
@@ -26,7 +26,7 @@ import {
 } from "./sso-login.state";
 
 const email = "user1@example.com";
-const webVaultUrl = "https://vault.bitwarden.com";
+const webVaultUrl = "https://vault.local.invalid";
 const userId = newGuid() as UserId;
 
 function entry(email: string, webVaultUrl: string): SsoRequiredCacheEntry {
@@ -196,7 +196,7 @@ describe("SSOLoginService ", () => {
 
       it("should add an entry to the cache when there already exists an entry in the cache that has the same email but a different webVaultUrl", async () => {
         // Arrange
-        const euUrl = "https://vault.bitwarden.eu";
+        const euUrl = "https://vault.local.invalid";
         mockStateProvider.global
           .getFake(SSO_REQUIRED_CACHE)
           .stateSubject.next([entry(email, euUrl)]);
@@ -366,7 +366,7 @@ describe("SSOLoginService ", () => {
 
     it("should NOT remove an entry when the email matches but the resolved webVaultUrl differs", async () => {
       // Arrange
-      const euUrl = "https://vault.bitwarden.eu";
+      const euUrl = "https://vault.local.invalid";
       mockEnvironmentService.getEnvironment$.mockReturnValue(
         of({ getWebVaultUrl: () => euUrl } as Environment),
       );

@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
-import type { CipherRiskResult } from "@bitwarden/sdk-internal";
+import type { CipherRiskResult } from "@localpass/sdk-internal";
 
 import { LogService } from "../../../../platform/abstractions/log.service";
 import { UserId } from "../../../../types/guid";

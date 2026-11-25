@@ -1,4 +1,4 @@
-# Overview of Authentication at Bitwarden
+# Overview of Authentication at LocalPass
 
 > **Table of Contents**
 >
@@ -13,13 +13,13 @@
 
 ## Authentication Methods
 
-Bitwarden provides 5 methods for logging in to Bitwarden, as defined in our [`AuthenticationType`](https://github.com/bitwarden/clients/blob/main/libs/common/src/auth/enums/authentication-type.ts) enum. They are:
+LocalPass provides 5 methods for logging in to LocalPass, as defined in our [`AuthenticationType`](https://github.com/xieboss778/LocalPassword/blob/main/libs/common/src/auth/enums/authentication-type.ts) enum. They are:
 
-1. [Login with Master Password](https://bitwarden.com/help/bitwarden-security-white-paper/#authentication-and-decryption)
-2. [Login with Auth Request](https://bitwarden.com/help/log-in-with-device/) (aka Login with Device) &mdash; authenticate with a one-time access code
-3. [Login with Single Sign-On](https://bitwarden.com/help/about-sso/) &mdash; authenticate with an SSO Identity Provider (IdP) through SAML or OpenID Connect (OIDC)
-4. [Login with Passkey](https://bitwarden.com/help/login-with-passkeys/) (WebAuthn)
-5. [Login with User API Key](https://bitwarden.com/help/personal-api-key/) &mdash; authenticate with an API key and secret
+1. [Login with Master Password](https://github.com/xieboss778/LocalPass/tree/main/docs
+2. [Login with Auth Request](https://github.com/xieboss778/LocalPass/tree/main/docs (aka Login with Device) &mdash; authenticate with a one-time access code
+3. [Login with Single Sign-On](https://github.com/xieboss778/LocalPass/tree/main/docs &mdash; authenticate with an SSO Identity Provider (IdP) through SAML or OpenID Connect (OIDC)
+4. [Login with Passkey](https://github.com/xieboss778/LocalPass/tree/main/docs (WebAuthn)
+5. [Login with User API Key](https://github.com/xieboss778/LocalPass/tree/main/docs &mdash; authenticate with an API key and secret
 
 <br>
 
@@ -84,7 +84,7 @@ export class PasswordLoginCredentials {
 
 Notice that the `type` is automatically set to `AuthenticationType.Password`, and the `PasswordLoginCredentials` object simply requires an `email` and `masterPassword` to initiate the login method.
 
-Each authentication method builds its own type of credentials object. These are defined in [`login-credentials.ts`](https://github.com/bitwarden/clients/blob/main/libs/auth/src/common/models/domain/login-credentials.ts).
+Each authentication method builds its own type of credentials object. These are defined in [`login-credentials.ts`](https://github.com/xieboss778/LocalPassword/blob/main/libs/auth/src/common/models/domain/login-credentials.ts).
 
 - `PasswordLoginCredentials`
 - `AuthRequestLoginCredentials`
@@ -98,10 +98,10 @@ After building the credentials object, we then call the `logIn()` method on the 
 
 ## The `LoginStrategyService` and our Login Strategies
 
-The [`LoginStrategyService`](https://github.com/bitwarden/clients/blob/main/libs/auth/src/common/services/login-strategies/login-strategy.service.ts) acts as an orchestrator that determines which of our specific **login strategies** should be initialized and used for the login process.
+The [`LoginStrategyService`](https://github.com/xieboss778/LocalPassword/blob/main/libs/auth/src/common/services/login-strategies/login-strategy.service.ts) acts as an orchestrator that determines which of our specific **login strategies** should be initialized and used for the login process.
 
 > [!IMPORTANT]
-> Our authentication methods are handled by different [login strategies](https://github.com/bitwarden/clients/tree/main/libs/auth/src/common/login-strategies), making use of the [Strategy Design Pattern](https://refactoring.guru/design-patterns/strategy). Those strategies are:
+> Our authentication methods are handled by different [login strategies](https://github.com/xieboss778/LocalPassword/tree/main/libs/auth/src/common/login-strategies), making use of the [Strategy Design Pattern](https://refactoring.guru/design-patterns/strategy). Those strategies are:
 >
 > - `PasswordLoginStrategy`
 > - `AuthRequestLoginStrategy`
@@ -109,7 +109,7 @@ The [`LoginStrategyService`](https://github.com/bitwarden/clients/blob/main/libs
 > - `WebAuthnLoginStrategy`
 > - `UserApiLoginStrategy`
 >
-> Each of those strategies extend the base [`LoginStrategy`](https://github.com/bitwarden/clients/blob/main/libs/auth/src/common/login-strategies/login.strategy.ts), which houses common login logic.
+> Each of those strategies extend the base [`LoginStrategy`](https://github.com/xieboss778/LocalPassword/blob/main/libs/auth/src/common/login-strategies/login.strategy.ts), which houses common login logic.
 
 More specifically, within its `logIn()` method, the `LoginStrategyService` uses the `type` property on the credentials object to determine which specific login strategy to initialize.
 
@@ -187,7 +187,7 @@ Here are those steps in more detail:
 
    Each of the `LoginStrategyData` types have varying properties, but one property common to all is the `tokenRequest` property.
 
-   The `tokenRequest` property holds some type of [`TokenRequest`](https://github.com/bitwarden/clients/tree/main/libs/common/src/auth/models/request/identity-token) object based on the strategy:
+   The `tokenRequest` property holds some type of [`TokenRequest`](https://github.com/xieboss778/LocalPassword/tree/main/libs/common/src/auth/models/request/identity-token) object based on the strategy:
    - `PasswordTokenRequest` &mdash; used by both `PasswordLoginStrategy` and `AuthRequestLoginStrategy`
    - `SsoTokenRequest`
    - `WebAuthnLoginTokenRequest`
@@ -218,7 +218,7 @@ Here are those steps in more detail:
       - `RESPONSE`
 
         The Identity Server validates the request and then generates some type of `IdentityResponse`, which can be one of three types:
-        - [`IdentityTokenResponse`](https://github.com/bitwarden/clients/blob/main/libs/common/src/auth/models/response/identity-token.response.ts)
+        - [`IdentityTokenResponse`](https://github.com/xieboss778/LocalPassword/blob/main/libs/common/src/auth/models/response/identity-token.response.ts)
           - Meaning: the user has been authenticated
           - Response Contains:
             - Authentication information, such as:
@@ -231,19 +231,19 @@ Here are those steps in more detail:
               - A flag that indicates if the user is required to set or change their master password
               - Any master password policies the user is required to adhere to
 
-        - [`IdentityTwoFactorResponse`](https://github.com/bitwarden/clients/blob/main/libs/common/src/auth/models/response/identity-two-factor.response.ts)
+        - [`IdentityTwoFactorResponse`](https://github.com/xieboss778/LocalPassword/blob/main/libs/common/src/auth/models/response/identity-two-factor.response.ts)
           - Meaning: the user needs to complete Two Factor Authentication
           - Response Contains:
             - A list of which 2FA providers the user has configured
             - Any master password policies the user is required to adhere to
 
-        - [`IdentityDeviceVerificationResponse`](https://github.com/bitwarden/clients/blob/main/libs/common/src/auth/models/response/identity-device-verification.response.ts)
-          - Meaning: the user needs to verify their new device via [new device verification](https://bitwarden.com/help/new-device-verification/)
+        - [`IdentityDeviceVerificationResponse`](https://github.com/xieboss778/LocalPassword/blob/main/libs/common/src/auth/models/response/identity-device-verification.response.ts)
+          - Meaning: the user needs to verify their new device via [new device verification](https://github.com/xieboss778/LocalPass/tree/main/docs
           - Response Contains: a simple boolean property that states whether or not the device has been verified
 
    2. **Calls one of the `process[IdentityType]Response()` methods**
 
-      Each of these methods builds and returns an [`AuthResult`](https://github.com/bitwarden/clients/blob/main/libs/common/src/auth/models/domain/auth-result.ts) object, which gets used later to determine how to direct the user after an authentication attempt.
+      Each of these methods builds and returns an [`AuthResult`](https://github.com/xieboss778/LocalPassword/blob/main/libs/common/src/auth/models/domain/auth-result.ts) object, which gets used later to determine how to direct the user after an authentication attempt.
 
       The specific method that gets called depends on the type of the `IdentityResponse`:
       - If `IdentityTokenResponse` &rarr; call `processTokenResponse()`

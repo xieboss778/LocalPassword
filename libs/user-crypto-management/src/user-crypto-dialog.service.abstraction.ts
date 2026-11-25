@@ -1,4 +1,4 @@
-import { V1EmergencyAccessMembership, V1OrganizationMembership } from "@bitwarden/sdk-internal";
+import { V1EmergencyAccessMembership, V1OrganizationMembership } from "@localpass/sdk-internal";
 
 import { TrustVerificationResult } from "./user-key-rotation.service.abstraction";
 

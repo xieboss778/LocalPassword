@@ -5,12 +5,12 @@ import {
   Collection,
   CollectionTypes,
   CollectionData,
-} from "@bitwarden/common/admin-console/models/collections";
-import { makeSymmetricCryptoKey } from "@bitwarden/common/spec";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { OrgKey } from "@bitwarden/common/types/key";
+} from "@localpass/common/admin-console/models/collections";
+import { makeSymmetricCryptoKey } from "@localpass/common/spec";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { OrgKey } from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString } from "@bitwarden/legacy-crypto";
+import { EncryptService, EncString } from "@localpass/legacy-crypto";
 
 describe("Collection", () => {
   let data: CollectionData;

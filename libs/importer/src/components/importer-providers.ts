@@ -2,32 +2,32 @@
 // @ts-strict-ignore
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { safeProvider, SafeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { KeyServiceLegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/key-service-legacy-encryptor-provider";
-import { LegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/legacy-encryptor-provider";
-import { ExtensionRegistry } from "@bitwarden/common/tools/extension/extension-registry.abstraction";
-import { buildExtensionRegistry } from "@bitwarden/common/tools/extension/factory";
+import { CollectionService } from "@localpass/admin-console/common";
+import { safeProvider, SafeProvider } from "@localpass/angular/platform/utils/safe-provider";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { KeyServiceLegacyEncryptorProvider } from "@localpass/common/tools/cryptography/key-service-legacy-encryptor-provider";
+import { LegacyEncryptorProvider } from "@localpass/common/tools/cryptography/legacy-encryptor-provider";
+import { ExtensionRegistry } from "@localpass/common/tools/extension/extension-registry.abstraction";
+import { buildExtensionRegistry } from "@localpass/common/tools/extension/factory";
 import {
   createSystemServiceProvider,
   SystemServiceProvider,
-} from "@bitwarden/common/tools/providers";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/tools/providers";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KeyGenerationService } from "@bitwarden/legacy-crypto";
-import { StateProvider } from "@bitwarden/state";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { EncryptService, KeyGenerationService } from "@localpass/legacy-crypto";
+import { StateProvider } from "@localpass/state";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 import {
   ImportApiService,

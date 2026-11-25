@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/unlock",
+  "name": "@localpass/unlock",
   "version": "0.0.1",
   "description": "Unlock the account of a user",
   "private": true,

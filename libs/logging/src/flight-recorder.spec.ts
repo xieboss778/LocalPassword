@@ -1,11 +1,11 @@
-import { FlightRecorderEvent } from "@bitwarden/sdk-internal";
+import { FlightRecorderEvent } from "@localpass/sdk-internal";
 
 import { FlightRecorder } from "./flight-recorder";
 
 const mockRead = jest.fn();
 const mockCount = jest.fn();
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   FlightRecorderClient: jest.fn().mockImplementation(() => ({
     read: mockRead,
     count: mockCount,
@@ -26,7 +26,7 @@ describe("FlightRecorder", () => {
         {
           timestamp: 1000,
           level: "INFO",
-          target: "bitwarden_core::client",
+          target: "localpass_core::client",
           message: "Client initialized",
           fields: {},
         },
@@ -79,7 +79,7 @@ describe("FlightRecorder", () => {
       const countPromise = recorder.count();
 
       // The client shouldn't have been created yet
-      const { FlightRecorderClient: MockClient } = jest.requireMock("@bitwarden/sdk-internal");
+      const { FlightRecorderClient: MockClient } = jest.requireMock("@localpass/sdk-internal");
       expect(MockClient).not.toHaveBeenCalled();
 
       resolve!();
@@ -96,7 +96,7 @@ describe("FlightRecorder", () => {
       await recorder.count();
       await recorder.read();
 
-      const { FlightRecorderClient: MockClient } = jest.requireMock("@bitwarden/sdk-internal");
+      const { FlightRecorderClient: MockClient } = jest.requireMock("@localpass/sdk-internal");
       expect(MockClient).toHaveBeenCalledTimes(1);
     });
 
@@ -114,7 +114,7 @@ describe("FlightRecorder", () => {
       resolve!();
       await Promise.all([p1, p2]);
 
-      const { FlightRecorderClient: MockClient } = jest.requireMock("@bitwarden/sdk-internal");
+      const { FlightRecorderClient: MockClient } = jest.requireMock("@localpass/sdk-internal");
       expect(MockClient).toHaveBeenCalledTimes(1);
     });
 

@@ -1,7 +1,7 @@
 import { map, Observable } from "rxjs";
 
-import { SemanticLogger } from "@bitwarden/common/tools/log";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
+import { SemanticLogger } from "@localpass/common/tools/log";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
 
 import { importOptionsById, ImportOptionData, ImportType } from "../models/import-options";
 import { availableLoaders } from "../util";

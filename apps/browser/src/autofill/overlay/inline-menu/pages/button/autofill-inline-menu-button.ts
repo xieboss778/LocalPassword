@@ -1,7 +1,7 @@
 import "@webcomponents/custom-elements";
 import "lit/polyfill-support.js";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { EVENTS } from "@bitwarden/common/autofill/constants";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { EVENTS } from "@localpass/common/autofill/constants";
 
 import { buildSvgDomElement } from "../../../../utils";
 import { logoIcon, logoLockedIcon } from "../../../../utils/svg-icons";
@@ -64,7 +64,7 @@ export class AutofillInlineMenuButton extends AutofillInlineMenuPageElement {
     this.buttonElement.classList.add("inline-menu-button");
     this.buttonElement.setAttribute(
       "aria-label",
-      this.getTranslation("toggleBitwardenVaultOverlay"),
+      this.getTranslation("toggleLocalPassVaultOverlay"),
     );
     this.buttonElement.addEventListener(EVENTS.CLICK, this.handleButtonElementClick);
 

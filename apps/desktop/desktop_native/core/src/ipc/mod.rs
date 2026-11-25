@@ -54,7 +54,7 @@ fn internal_ipc_codec<T: AsyncRead + AsyncWrite>(inner: T) -> Framed<T, LengthDe
 }
 
 #[cfg(debug_assertions)]
-const ENV_BITWARDEN_IPC_SOCKET_DIR: &str = "BITWARDEN_IPC_SOCKET_DIR";
+const ENV_LOCALPASS_IPC_SOCKET_DIR: &str = "LOCALPASS_IPC_SOCKET_DIR";
 
 /// The debug-only socket directory override, used to isolate a debug instance from an installed
 /// client.
@@ -63,7 +63,7 @@ const ENV_BITWARDEN_IPC_SOCKET_DIR: &str = "BITWARDEN_IPC_SOCKET_DIR";
 /// container, so the override is compiled out entirely.
 #[cfg(debug_assertions)]
 fn socket_dir_override() -> Option<std::path::PathBuf> {
-    std::env::var_os(ENV_BITWARDEN_IPC_SOCKET_DIR).map(std::path::PathBuf::from)
+    std::env::var_os(ENV_LOCALPASS_IPC_SOCKET_DIR).map(std::path::PathBuf::from)
 }
 
 #[cfg(not(debug_assertions))]
@@ -103,7 +103,7 @@ fn app_group_container() -> Option<std::path::PathBuf> {
 fn cache_dir_name() -> String {
     #[cfg(target_os = "macos")]
     {
-        // A packaged Bitwarden bundle -- one that declares its App Group in its Info.plist --
+        // A packaged LocalPass bundle -- one that declares its App Group in its Info.plist --
         // is named after its own bundle identifier, so beta and stable do not share a socket.
         // Anything else, such as an `npm start` dev build running inside Electron.app or a dev
         // proxy outside any bundle, keeps the stable name so the dev app and dev proxy still
@@ -116,7 +116,7 @@ fn cache_dir_name() -> String {
         }
     }
 
-    "com.bitwarden.desktop".to_owned()
+    "com.localpass.desktop".to_owned()
 }
 
 /// The main path to the IPC socket.

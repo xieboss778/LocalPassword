@@ -1,22 +1,22 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { NeverDomains } from "@localpass/common/models/domain/domain-service";
 import {
   ActiveRequest,
   Fido2ActiveRequestManager,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
+} from "@localpass/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
 import {
   AssertCredentialParams,
   CreateCredentialParams,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Fido2ClientService } from "@bitwarden/common/platform/services/fido2/fido2-client.service";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
+} from "@localpass/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Fido2ClientService } from "@localpass/common/platform/services/fido2/fido2-client.service";
+import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
 
 import { createPortSpyMock } from "../../../autofill/spec/autofill-mocks";
 import {

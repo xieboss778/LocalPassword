@@ -1,8 +1,8 @@
 import { inject, Injectable } from "@angular/core";
 import { Jsonify } from "type-fest";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 const CIPHER_FORM_CACHE_KEY = "cipher-form-cache";
 

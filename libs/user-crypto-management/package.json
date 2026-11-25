@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/user-crypto-management",
+  "name": "@localpass/user-crypto-management",
   "version": "0.0.1",
   "description": "Manage a user&#39;s cryptography and cryptographic settings",
   "private": true,

@@ -25,7 +25,7 @@ export const credentialsDataEnclosedInQuotes = `"Organisationseinheit;""DataTags
 
 // English "Organisational unit" header, enclosed in an extra layer of quotes.
 export const credentialsDataEnclosedInQuotesEnglishOrgUnit = `"Organisational unit;""DataTags"";""Beschreibung"";""Benutzername"";""Passwort"";""Internetadresse"";""EMail-Adresse"";""Kommentare"";""Webseite"";""Webseite1"""
-"Bohn, Markus;"""";""TESTING"";""myUser"";""test"";""example.org"";""blabla@blablablablub.org"";""Noitzen....."";""example.org"";""bitwarden.com"""`;
+"Bohn, Markus;"""";""TESTING"";""myUser"";""test"";""example.org"";""blabla@blablablablub.org"";""Noitzen....."";""example.org"";""local.invalid"""`;
 
 // Enclosed-in-quotes export whose only row is empty. The re-parse collapses to just the header,
 // which must not crash the importer.

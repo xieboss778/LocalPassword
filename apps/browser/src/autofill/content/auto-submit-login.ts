@@ -1,4 +1,4 @@
-import { EVENTS } from "@bitwarden/common/autofill/constants";
+import { EVENTS } from "@localpass/common/autofill/constants";
 
 import { AutofillMessageCommand } from "../enums/autofill-message.enums";
 import AutofillScript from "../models/autofill-script";

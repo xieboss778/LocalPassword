@@ -1,5 +1,5 @@
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SecurityTask } from "@bitwarden/common/vault/tasks";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { SecurityTask } from "@localpass/common/vault/tasks";
 
 import AutofillPageDetails from "../../models/autofill-page-details";
 import { NotificationTypes } from "../../notification/abstractions/notification-bar";

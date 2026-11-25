@@ -2,16 +2,16 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { map, Observable, of } from "rxjs";
 import { action } from "storybook/actions";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogService, I18nMockService, ToastService } from "@bitwarden/components";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { DialogService, I18nMockService, ToastService } from "@localpass/components";
 
 import { DataLoader, Loader } from "../../metadata";
 import { CredentialKind, ImportOption, UpgradeImportType } from "../../models";
@@ -51,7 +51,7 @@ const options: Record<string, ImportOption> = {
     acceptedFileTypes: ["csv", "json"],
     pasteFormats: ["csv", "json"],
     sourceName: "Keeper",
-    instructionLink: "https://bitwarden.com/help/import-from-keeper/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   keepercsv: buildOption({
     id: "keepercsv",
@@ -72,7 +72,7 @@ const options: Record<string, ImportOption> = {
     acceptedFileTypes: ["csv", "html"],
     pasteFormats: ["csv"],
     sourceName: "LastPass",
-    instructionLink: "https://bitwarden.com/help/import-from-lastpass/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   chromecsv: buildOption({
     id: "chromecsv",
@@ -80,7 +80,7 @@ const options: Record<string, ImportOption> = {
     isBrowser: true,
     hasDirectImporter: true,
     sourceName: "Chrome",
-    instructionLink: "https://bitwarden.com/help/import-from-chrome/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   dashlane: buildOption({
     id: "dashlane",
@@ -109,7 +109,7 @@ const options: Record<string, ImportOption> = {
     acceptedFileTypes: ["1pux", "json", "1pif", "csv"],
     pasteFormats: ["json", "1pif", "csv"],
     sourceName: "1Password",
-    instructionLink: "https://bitwarden.com/help/import-from-1password/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   "1password1pux": buildOption({
     id: "1password1pux",
@@ -117,7 +117,7 @@ const options: Record<string, ImportOption> = {
     acceptedFileTypes: ["1pux", "json"],
     pasteFormats: ["json"],
     sourceName: "1Password",
-    instructionLink: "https://bitwarden.com/help/import-from-1password/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   "1password1pif": buildOption({
     id: "1password1pif",
@@ -143,7 +143,7 @@ const options: Record<string, ImportOption> = {
     acceptedFileTypes: ["kdbx", "xml", "csv"],
     pasteFormats: ["xml", "csv"],
     sourceName: "KeePass",
-    instructionLink: "https://bitwarden.com/help/import-from-keepass/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   keepass2xml: buildOption({
     id: "keepass2xml",
@@ -151,7 +151,7 @@ const options: Record<string, ImportOption> = {
     acceptedFileTypes: ["xml"],
     pasteFormats: ["xml"],
     sourceName: "KeePass",
-    instructionLink: "https://bitwarden.com/help/import-from-keepass/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   keepasskdbx: buildOption({
     id: "keepasskdbx",
@@ -161,7 +161,7 @@ const options: Record<string, ImportOption> = {
     // Matches production; without it KdbxCredentials would exercise the wrong (file) branch.
     sdk: { fileTypes: ["kdbx"], credentialKind: CredentialKind.passwordWithKeyFile },
     sourceName: "KeePass",
-    instructionLink: "https://bitwarden.com/help/import-from-keepass/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
   keepassxcsv: buildOption({
     id: "keepassxcsv",
@@ -169,7 +169,7 @@ const options: Record<string, ImportOption> = {
     acceptedFileTypes: ["csv"],
     pasteFormats: ["csv"],
     sourceName: "KeePass",
-    instructionLink: "https://bitwarden.com/help/import-from-keepass/",
+    instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   }),
 };
 

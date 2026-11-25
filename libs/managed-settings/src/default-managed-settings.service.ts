@@ -1,6 +1,6 @@
 import { BehaviorSubject, defer, distinctUntilChanged, map, Observable } from "rxjs";
 
-import { ManagedSettingsClient, ManagementProfile } from "@bitwarden/sdk-internal";
+import { ManagedSettingsClient, ManagementProfile } from "@localpass/sdk-internal";
 
 import { ManagedSettingsService } from "./managed-settings.service";
 
@@ -21,7 +21,7 @@ export class DefaultManagedSettingsService extends ManagedSettingsService {
   /**
    * @param sdkReady - A promise that resolves when the SDK WASM has been loaded and initialized.
    *   Pass `SdkLoadService.Ready` in DI-enabled contexts. Taking the promise rather than importing
-   *   `SdkLoadService` keeps this library off `@bitwarden/common`, which depends on it in turn.
+   *   `SdkLoadService` keeps this library off `@localpass/common`, which depends on it in turn.
    */
   constructor(private readonly sdkReady: Promise<void>) {
     super();

@@ -4,47 +4,47 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IsActiveMatchOptions, Router, RouterModule } from "@angular/router";
 import { Observable, firstValueFrom, map } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   AuthRequestLoginCredentials,
   AuthRequestServiceAbstraction,
   LoginEmailServiceAbstraction,
   LoginStrategyServiceAbstraction,
   LoginSuccessHandlerService,
-} from "@bitwarden/auth/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { AuthRequestApiServiceAbstraction } from "@bitwarden/common/auth/login-via-auth-request";
-import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { AuthRequest } from "@bitwarden/common/auth/models/request/auth.request";
-import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
-import { LoginViaAuthRequestView } from "@bitwarden/common/auth/models/view/login-via-auth-request.view";
-import { ClientType, HttpStatusCode } from "@bitwarden/common/enums";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/auth/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AnonymousHubService } from "@localpass/common/auth/abstractions/anonymous-hub.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthRequestType } from "@localpass/common/auth/enums/auth-request-type";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { AuthRequestApiServiceAbstraction } from "@localpass/common/auth/login-via-auth-request";
+import { AdminAuthRequestStorable } from "@localpass/common/auth/models/domain/admin-auth-req-storable";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { AuthRequest } from "@localpass/common/auth/models/request/auth.request";
+import { AuthRequestResponse } from "@localpass/common/auth/models/response/auth-request.response";
+import { LoginViaAuthRequestView } from "@localpass/common/auth/models/view/login-via-auth-request.view";
+import { ClientType, HttpStatusCode } from "@localpass/common/enums";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { ButtonModule, LinkModule, IconModule, ToastService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { ButtonModule, LinkModule, IconModule, ToastService } from "@localpass/components";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { LoginViaAuthRequestCacheService } from "../../common/services/auth-request/default-login-via-auth-request-cache.service";
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum Flow {
   StandardAuthRequest, // when user clicks "Login with device" from /login or "Approve from your other device" from /login-initiated
   AdminAuthRequest, // when user clicks "Request admin approval" from /login-initiated
@@ -57,7 +57,7 @@ const matchOptions: IsActiveMatchOptions = {
   matrixParams: "ignored",
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "./login-via-auth-request.component.html",

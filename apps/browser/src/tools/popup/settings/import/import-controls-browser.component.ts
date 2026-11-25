@@ -5,15 +5,15 @@ import {
   DefaultImportUpgradeMetadataService,
   ImportStagingServiceAbstraction,
   ImportUpgradeMetadataServiceAbstraction,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 import {
   IMPORT_DESTINATION_SEGMENT,
   ImportControlsComponent,
   ImportUpgradeProviders,
   importTypeFromRoute,
   SYSTEM_SERVICE_PROVIDER,
-} from "@bitwarden/importer-ui";
-import { safeProvider } from "@bitwarden/ui-common";
+} from "@localpass/importer-ui";
+import { safeProvider } from "@localpass/ui-common";
 
 import {
   IMPORT_CONFIRMATION_ROUTE_PATH,

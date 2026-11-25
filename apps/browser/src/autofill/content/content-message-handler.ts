@@ -1,5 +1,5 @@
-import { ExtensionPageUrls } from "@bitwarden/common/vault/enums";
-import { VaultMessages } from "@bitwarden/common/vault/enums/vault-messages.enum";
+import { ExtensionPageUrls } from "@localpass/common/vault/enums";
+import { VaultMessages } from "@localpass/common/vault/enums/vault-messages.enum";
 
 import { EventSecurity } from "../utils/event-security";
 

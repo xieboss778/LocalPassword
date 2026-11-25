@@ -2,7 +2,7 @@
 const path = require("path");
 
 const config = require("./libs/components/tailwind.config.base");
-// LocalPassword: the web app was removed in phase 1, so nothing pulls its content paths in.
+// LocalPass: the web app was removed in phase 1, so nothing pulls its content paths in.
 const browserConfig = require("./apps/browser/tailwind.config");
 const desktopConfig = require("./apps/desktop/tailwind.config");
 

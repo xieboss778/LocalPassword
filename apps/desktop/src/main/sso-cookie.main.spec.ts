@@ -1,8 +1,8 @@
 import { BehaviorSubject } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { GlobalState, GlobalStateProvider } from "@bitwarden/common/platform/state";
-import { ServerCommunicationConfig } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { GlobalState, GlobalStateProvider } from "@localpass/common/platform/state";
+import { ServerCommunicationConfig } from "@localpass/sdk-internal";
 
 import { SERVER_COMMUNICATION_CONFIGS } from "../platform/services/server-communication-config";
 

@@ -1,9 +1,9 @@
 import {
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 
 import { sharedFolderDisplayName, sharedFolderName } from "./shared-folder-name";
 

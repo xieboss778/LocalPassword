@@ -3,14 +3,14 @@
 
 import { firstValueFrom, shareReplay } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { LegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/legacy-encryptor-provider";
-import { RestClient } from "@bitwarden/common/tools/integration/rpc";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
-import { UserStateSubjectDependencyProvider } from "@bitwarden/common/tools/state/user-state-subject-dependency-provider";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { LegacyEncryptorProvider } from "@localpass/common/tools/cryptography/legacy-encryptor-provider";
+import { RestClient } from "@localpass/common/tools/integration/rpc";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
+import { UserStateSubjectDependencyProvider } from "@localpass/common/tools/state/user-state-subject-dependency-provider";
 
 import { CredentialGeneratorService, Randomizer } from "./abstractions";
 import { SdkRandomizer } from "./engine/sdk-randomizer";

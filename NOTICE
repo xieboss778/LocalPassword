@@ -1,5 +1,5 @@
-LocalPassword
-Copyright (C) 2026 LocalPassword contributors
+LocalPass
+Copyright (C) 2026 LocalPass contributors
 
 This product is a derivative work of Bitwarden clients.
 
@@ -10,9 +10,9 @@ This product is a derivative work of Bitwarden clients.
     Bitwarden License v1.0 (the latter applies only to code inside the
     bitwarden_license/ directory of the upstream repository).
 
-The upstream source code has been modified for the LocalPassword project.
+The upstream source code has been modified for the LocalPass project.
 A summary of the modifications is available in the project's git history and
-in docs/LocalPassword-实施计划.md.
+in docs/LocalPass-实施计划.md.
 
 This distribution is licensed as a whole under the GNU General Public
 License v3.0 (see LICENSE). It does not include any code that upstream

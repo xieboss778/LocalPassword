@@ -28,7 +28,7 @@ describe("MigrateSsoRequiredCache", () => {
     });
 
     it("does not modify the cache when it already contains the new SsoRequiredCacheEntry[] format", async () => {
-      const cache = [{ email: "user@example.com", webVaultUrl: "https://vault.bitwarden.com" }];
+      const cache = [{ email: "user@example.com", webVaultUrl: "https://vault.local.invalid" }];
 
       const output = await runMigrator(sut, {
         global_ssoLoginLocal_ssoRequiredCache: cache,

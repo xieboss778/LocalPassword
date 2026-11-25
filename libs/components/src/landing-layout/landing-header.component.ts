@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { BitwardenLogo, BitwardenLogoBeta } from "@bitwarden/assets/svg";
-import { flagEnabled } from "@bitwarden/common/platform/misc/flags";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { LocalPassLogo, LocalPassLogoBeta } from "@localpass/assets/svg";
+import { flagEnabled } from "@localpass/common/platform/misc/flags";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SvgModule } from "../svg";
 
 /**
- * Header component for landing pages with optional Bitwarden logo and header actions slot.
+ * Header component for landing pages with optional LocalPass logo and header actions slot.
  *
  * @remarks
  * This component provides:
- * - Optional Bitwarden logo with link to home page (left-aligned)
+ * - Optional LocalPass logo with link to home page (left-aligned)
  * - Default content projection slot for header actions (right-aligned, auto-margin left)
  * - Consistent header styling across landing pages
  * - Responsive layout that adapts logo size
@@ -39,5 +39,5 @@ import { SvgModule } from "../svg";
 })
 export class LandingHeaderComponent {
   readonly hideLogo = input<boolean>(false);
-  protected readonly logo = flagEnabled("prereleaseBuild") ? BitwardenLogoBeta : BitwardenLogo;
+  protected readonly logo = flagEnabled("prereleaseBuild") ? LocalPassLogoBeta : LocalPassLogo;
 }

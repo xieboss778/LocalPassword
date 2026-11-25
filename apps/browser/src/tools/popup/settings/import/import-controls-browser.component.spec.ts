@@ -5,17 +5,17 @@ import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 import {
   DefaultImportStagingService,
   ImportResult,
   ImportStagingServiceAbstraction,
   ImportType,
-} from "@bitwarden/importer-core";
-import { StateProvider } from "@bitwarden/state";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/importer-core";
+import { StateProvider } from "@localpass/state";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportConfirmationStateService } from "./import-confirmation-state.service";
 import { ImportControlsBrowserComponent } from "./import-controls-browser.component";

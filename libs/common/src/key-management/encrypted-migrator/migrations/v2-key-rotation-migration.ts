@@ -1,11 +1,11 @@
 import { firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptionType } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { UserKeyRotationServiceAbstraction } from "@bitwarden/user-crypto-management";
+import { EncryptionType } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { UserKeyRotationServiceAbstraction } from "@localpass/user-crypto-management";
 
 import { assertNonNullish } from "../../../auth/utils";
 import { FeatureFlag } from "../../../enums/feature-flag.enum";

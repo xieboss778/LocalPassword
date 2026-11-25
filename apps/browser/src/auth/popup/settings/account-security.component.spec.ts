@@ -5,39 +5,39 @@ import { ActivatedRoute } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of, BehaviorSubject } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { NudgesService } from "@bitwarden/angular/vault";
-import { AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { PhishingDetectionSettingsServiceAbstraction } from "@bitwarden/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { SharedUnlockSettingsService } from "@bitwarden/common/key-management/shared-unlock";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { ProfileResponse } from "@bitwarden/common/models/response/profile.response";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { MessageSender } from "@bitwarden/common/platform/messaging";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { PolicyId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { DialogRef, DialogService, ToastService } from "@bitwarden/components";
-import { newGuid } from "@bitwarden/guid";
-import { BiometricStateService, KeyService } from "@bitwarden/key-management";
-import { SessionTimeoutSettingsComponent } from "@bitwarden/key-management-ui";
+import { CollectionService } from "@localpass/admin-console/common";
+import { NudgesService } from "@localpass/angular/vault";
+import { AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { PhishingDetectionSettingsServiceAbstraction } from "@localpass/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { SharedUnlockSettingsService } from "@localpass/common/key-management/shared-unlock";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { ProfileResponse } from "@localpass/common/models/response/profile.response";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { MessageSender } from "@localpass/common/platform/messaging";
+import { StateProvider } from "@localpass/common/platform/state";
+import { FakeAccountService, mockAccountServiceWith } from "@localpass/common/spec";
+import { PolicyId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { DialogRef, DialogService, ToastService } from "@localpass/components";
+import { newGuid } from "@localpass/guid";
+import { BiometricStateService, KeyService } from "@localpass/key-management";
+import { SessionTimeoutSettingsComponent } from "@localpass/key-management-ui";
 // eslint-disable-next-line no-restricted-imports
-import { LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-import { LockService } from "@bitwarden/unlock";
+import { LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { LockService } from "@localpass/unlock";
 
 import { NativeMessagingPermissionDialogComponent } from "../../../key-management/shared-unlock/popup/native-messaging-permission-dialog.component";
 import { BrowserApi } from "../../../platform/browser/browser-api";
@@ -47,7 +47,7 @@ import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popu
 
 import { AccountSecurityComponent } from "./account-security.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-pop-out",

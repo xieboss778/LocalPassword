@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 
-import { I18nMockService } from "@bitwarden/components";
+import { I18nMockService } from "@localpass/components";
 
 import { LastPassInlineScreen } from "./direct/lastpass/lastpass-inline-auth-ui";
 import { ImportControlsLastPassLoginComponent } from "./import-controls-lastpass-login.component";

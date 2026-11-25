@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { LogService } from "../../platform/abstractions/log.service";

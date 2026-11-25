@@ -3,11 +3,11 @@ import { of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { PasswordInputResult } from "@bitwarden/auth/angular";
-import { MasterPasswordSalt } from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
+import { PasswordInputResult } from "@localpass/auth/angular";
+import { MasterPasswordSalt } from "@localpass/common/key-management/master-password/types/master-password.types";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 // eslint-disable-next-line no-restricted-imports
-import { DEFAULT_KDF_CONFIG } from "@bitwarden/legacy-crypto";
+import { DEFAULT_KDF_CONFIG } from "@localpass/legacy-crypto";
 
 import { DefaultRegistrationFinishService } from "./default-registration-finish.service";
 

@@ -1,16 +1,16 @@
 import { switchMap, delay, filter, concatMap, map, first, of } from "rxjs";
 
-import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
+import { CommandDefinition, MessageListener } from "@localpass/common/platform/messaging";
 import {
   ScheduledTaskNames,
   TaskSchedulerService,
   toScheduler,
-} from "@bitwarden/common/platform/scheduling";
+} from "@localpass/common/platform/scheduling";
 import {
   POPUP_VIEW_MEMORY,
   KeyDefinition,
   GlobalStateProvider,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 import { BrowserApi } from "../browser/browser-api";
 import { fromChromeEvent } from "../browser/from-chrome-event";

@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 
 import { IconComponent } from "../icon";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TooltipDirective } from "../tooltip/tooltip.directive";
 
 /**
@@ -75,7 +75,7 @@ const commonStyles = [
   "tw-cursor-default",
 ];
 
-const defaultIconMap: Record<BadgeVariant, BitwardenIcon | null> = {
+const defaultIconMap: Record<BadgeVariant, LocalPassIcon | null> = {
   info: null,
   subtle: null,
   secondary: null,
@@ -149,7 +149,7 @@ export class BadgeComponent {
    */
   readonly maxWidthClass = input<`tw-max-w-${string}`>("tw-max-w-[calc(25ch_-_theme(spacing.2))]");
 
-  readonly startIcon = input<BitwardenIcon | null | undefined>(undefined);
+  readonly startIcon = input<LocalPassIcon | null | undefined>(undefined);
 
   protected readonly computedIcon = computed(() => {
     if (this.startIcon() === null) {

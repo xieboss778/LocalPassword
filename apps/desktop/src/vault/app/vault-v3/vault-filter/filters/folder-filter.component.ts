@@ -1,11 +1,11 @@
 import { Component, input, computed, output } from "@angular/core";
 
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { IconButtonModule, NavigationModule, A11yTitleDirective } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { VaultFilter, FolderFilter } from "@bitwarden/vault";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { IconButtonModule, NavigationModule, A11yTitleDirective } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { VaultFilter, FolderFilter } from "@localpass/vault";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-folder-filter",

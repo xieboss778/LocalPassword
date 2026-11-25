@@ -2,11 +2,11 @@ import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { BiometricStateService, BiometricsService, KeyService } from "@bitwarden/key-management";
+import { BiometricStateService, BiometricsService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { CryptoClient } from "@bitwarden/sdk-internal";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { CryptoClient } from "@localpass/sdk-internal";
 
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";
@@ -17,13 +17,13 @@ import { UserKey } from "../../../types/key";
 import { BiometricPersistentMigration } from "./biometric-persistent-encryption-migration";
 
 // Mock the SDK CryptoClient
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   CryptoClient: {
     get_key_id_for_symmetric_key: jest.fn(),
   },
 }));
 
-jest.mock("@bitwarden/common/platform/abstractions/sdk/sdk-load.service", () => ({
+jest.mock("@localpass/common/platform/abstractions/sdk/sdk-load.service", () => ({
   SdkLoadService: { Ready: Promise.resolve() },
 }));
 

@@ -9,7 +9,7 @@ import {
 } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { FormControlModule } from "../form-control/form-control.module";
 import { BitLabelComponent } from "../form-control/label.component";

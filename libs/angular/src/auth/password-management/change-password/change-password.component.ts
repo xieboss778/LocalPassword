@@ -3,31 +3,31 @@ import { Component, Input, OnInit, output } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { LockIcon } from "@bitwarden/assets/svg";
+import { LockIcon } from "@localpass/assets/svg";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
   InputPasswordComponent,
   InputPasswordFlow,
   PasswordInputResult,
-} from "@bitwarden/auth/angular";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { OrganizationInviteService } from "@bitwarden/common/auth/organization-invite";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/auth/angular";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { OrganizationInviteService } from "@localpass/common/auth/organization-invite";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
 import {
   AnonLayoutWrapperDataService,
   CalloutComponent,
   DialogService,
   IconModule,
   ToastService,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import {
   ChangePasswordService,
@@ -42,7 +42,7 @@ import {
  *
  * Both of these flows include showing the current password field to the user.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "auth-change-password",
@@ -50,7 +50,7 @@ import {
   imports: [CalloutComponent, CommonModule, IconModule, InputPasswordComponent, I18nPipe],
 })
 export class ChangePasswordComponent implements OnInit {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() inputPasswordFlow: InputPasswordFlow = InputPasswordFlow.ChangePassword;
 
@@ -179,7 +179,7 @@ export class ChangePasswordComponent implements OnInit {
 
         this.passwordChanged.emit();
 
-        // TODO: investigate refactoring logout and follow-up routing in https://bitwarden.atlassian.net/browse/PM-32660
+        // TODO: investigate refactoring logout and follow-up routing in https://localpass.atlassian.net/browse/PM-32660
         await this.logoutService.logout(this.userId, "passwordChanged");
 
         const shouldNavigateToRoot = this.changePasswordService.shouldNavigateToRoot();

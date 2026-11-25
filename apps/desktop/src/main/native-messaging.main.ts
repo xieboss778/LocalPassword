@@ -7,13 +7,13 @@ import * as path from "path";
 import { ipcMain } from "electron";
 import { Subject } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   DesktopIpcPeerClientType,
   IpcClientTypeMessage,
   isIpcClientTypeMessage,
-} from "@bitwarden/common/platform/ipc";
-import { ipc, windows_registry } from "@bitwarden/desktop-napi";
+} from "@localpass/common/platform/ipc";
+import { ipc, windows_registry } from "@localpass/desktop-napi";
 
 import { isDev } from "../utils";
 
@@ -171,8 +171,8 @@ export class NativeMessagingMain {
 
   private async generateChromeJson(binaryPath: string) {
     return {
-      name: "com.localpassword.desktop",
-      description: "Bitwarden desktop <-> browser bridge",
+      name: "com.localpass.desktop",
+      description: "LocalPass desktop <-> browser bridge",
       path: binaryPath,
       type: "stdio",
       allowed_origins: await this.loadChromeIds(),
@@ -181,8 +181,8 @@ export class NativeMessagingMain {
 
   private async generateFirefoxJson(binaryPath: string) {
     return {
-      name: "com.localpassword.desktop",
-      description: "Bitwarden desktop <-> browser bridge",
+      name: "com.localpass.desktop",
+      description: "LocalPass desktop <-> browser bridge",
       path: binaryPath,
       type: "stdio",
       allowed_extensions: ["gmobddgobjdhbjhedhgaeekhgchkoncm"],
@@ -235,7 +235,7 @@ export class NativeMessagingMain {
             )
           ) {
             const nmhsPath = path.join(browserDirectory, "NativeMessagingHosts");
-            const manifestPath = path.join(nmhsPath, "com.localpassword.desktop.json");
+            const manifestPath = path.join(nmhsPath, "com.localpass.desktop.json");
 
             try {
               let manifest: any = await this.generateChromeJson(binaryPath);
@@ -271,7 +271,7 @@ export class NativeMessagingMain {
             if (key === "Firefox") {
               nhmsPath = path.join(browserDirectory, "native-messaging-hosts");
             }
-            const browserBinaryPath = path.join(nhmsPath, ".bitwarden_desktop_proxy");
+            const browserBinaryPath = path.join(nhmsPath, ".localpass_desktop_proxy");
 
             // Only generate the NMHS dir if the browser directory exists
             await fs.mkdir(nhmsPath, { recursive: true });
@@ -283,12 +283,12 @@ export class NativeMessagingMain {
 
             if (key === "Firefox") {
               await this.writeManifest(
-                path.join(nhmsPath, "com.localpassword.desktop.json"),
+                path.join(nhmsPath, "com.localpass.desktop.json"),
                 await this.generateFirefoxJson(browserBinaryPath),
               );
             } else {
               await this.writeManifest(
-                path.join(nhmsPath, "com.localpassword.desktop.json"),
+                path.join(nhmsPath, "com.localpass.desktop.json"),
                 await this.generateChromeJson(browserBinaryPath),
               );
             }
@@ -303,7 +303,7 @@ export class NativeMessagingMain {
         );
         for (const [key, value] of Object.entries(this.getFlatpakNMHS())) {
           if (existsSync(value)) {
-            const sandboxedProxyBinaryPath = path.join(value, ".bitwarden_desktop_proxy");
+            const sandboxedProxyBinaryPath = path.join(value, ".localpass_desktop_proxy");
             await this.linkOrCopy(binaryPath, sandboxedProxyBinaryPath);
             this.logService.info(
               `[Native messaging] Hard-linked ${binaryPath} to ${sandboxedProxyBinaryPath}`,
@@ -311,12 +311,12 @@ export class NativeMessagingMain {
 
             if (key === "Firefox") {
               await this.writeManifest(
-                path.join(value, "com.localpassword.desktop.json"),
+                path.join(value, "com.localpass.desktop.json"),
                 await this.generateFirefoxJson(sandboxedProxyBinaryPath),
               );
             } else if (key === "Chrome" || key === "Chromium" || key === "Microsoft Edge") {
               await this.writeManifest(
-                path.join(value, "com.localpassword.desktop.json"),
+                path.join(value, "com.localpass.desktop.json"),
                 await this.generateChromeJson(sandboxedProxyBinaryPath),
               );
             } else {
@@ -338,7 +338,7 @@ export class NativeMessagingMain {
   // on Windows it discovers hosts through the registry, which is shared with the
   // installed client, so the debug profile is not supported there.
   private debugChromeProfileDir(): string | null {
-    const profileDir = process.env.BITWARDEN_CHROME_PROFILE_DIR;
+    const profileDir = process.env.LOCALPASS_CHROME_PROFILE_DIR;
 
     if (!profileDir) {
       return null;
@@ -346,7 +346,7 @@ export class NativeMessagingMain {
 
     if (process.platform === "win32") {
       this.logService.warning(
-        "[Native messaging] BITWARDEN_CHROME_PROFILE_DIR is not supported on Windows, ignoring it",
+        "[Native messaging] LOCALPASS_CHROME_PROFILE_DIR is not supported on Windows, ignoring it",
       );
       return null;
     }
@@ -366,15 +366,15 @@ export class NativeMessagingMain {
     await fs.mkdir(nmhsPath, { recursive: true });
 
     await this.writeManifest(
-      path.join(nmhsPath, "com.localpassword.desktop.json"),
+      path.join(nmhsPath, "com.localpass.desktop.json"),
       await this.generateChromeJson(binaryPath),
     );
   }
 
   async generateDdgManifests() {
     const manifest = {
-      name: "com.localpassword.desktop",
-      description: "Bitwarden desktop <-> DuckDuckGo bridge",
+      name: "com.localpass.desktop",
+      description: "LocalPass desktop <-> DuckDuckGo bridge",
       path: this.binaryPath(),
       type: "stdio",
     };
@@ -386,7 +386,7 @@ export class NativeMessagingMain {
     switch (process.platform) {
       case "darwin": {
         /* eslint-disable-next-line no-useless-escape */
-        const path = `${this.homedir()}/Library/Containers/com.duckduckgo.macos.browser/Data/Library/Application\ Support/NativeMessagingHosts/com.localpassword.desktop.json`;
+        const path = `${this.homedir()}/Library/Containers/com.duckduckgo.macos.browser/Data/Library/Application\ Support/NativeMessagingHosts/com.localpass.desktop.json`;
         await this.writeManifest(path, manifest);
         break;
       }
@@ -412,7 +412,7 @@ export class NativeMessagingMain {
         const nmhs = this.getDarwinNMHS();
         for (const [, value] of Object.entries(nmhs)) {
           await this.removeIfExists(
-            path.join(value, "NativeMessagingHosts", "com.localpassword.desktop.json"),
+            path.join(value, "NativeMessagingHosts", "com.localpass.desktop.json"),
           );
         }
         break;
@@ -421,18 +421,18 @@ export class NativeMessagingMain {
         for (const [key, value] of Object.entries(this.getLinuxNMHS())) {
           if (key === "Firefox") {
             await this.removeIfExists(
-              path.join(value, "native-messaging-hosts", "com.localpassword.desktop.json"),
+              path.join(value, "native-messaging-hosts", "com.localpass.desktop.json"),
             );
           } else {
             await this.removeIfExists(
-              path.join(value, "NativeMessagingHosts", "com.localpassword.desktop.json"),
+              path.join(value, "NativeMessagingHosts", "com.localpass.desktop.json"),
             );
           }
         }
 
         for (const [, value] of Object.entries(this.getFlatpakNMHS())) {
-          await this.removeIfExists(path.join(value, "com.localpassword.desktop.json"));
-          await this.removeIfExists(path.join(value, ".bitwarden_desktop_proxy"));
+          await this.removeIfExists(path.join(value, "com.localpass.desktop.json"));
+          await this.removeIfExists(path.join(value, ".localpass_desktop_proxy"));
         }
 
         break;
@@ -446,7 +446,7 @@ export class NativeMessagingMain {
     switch (process.platform) {
       case "darwin": {
         /* eslint-disable-next-line no-useless-escape */
-        const path = `${this.homedir()}/Library/Containers/com.duckduckgo.macos.browser/Data/Library/Application\ Support/NativeMessagingHosts/com.localpassword.desktop.json`;
+        const path = `${this.homedir()}/Library/Containers/com.duckduckgo.macos.browser/Data/Library/Application\ Support/NativeMessagingHosts/com.localpass.desktop.json`;
         await this.removeIfExists(path);
         break;
       }
@@ -470,17 +470,17 @@ export class NativeMessagingMain {
 
   private getWindowsNMHS() {
     return {
-      Firefox: ["HKCU", "SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.localpassword.desktop"],
-      Chrome: ["HKCU", "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.localpassword.desktop"],
-      Chromium: ["HKCU", "SOFTWARE\\Chromium\\NativeMessagingHosts\\com.localpassword.desktop"],
+      Firefox: ["HKCU", "SOFTWARE\\Mozilla\\NativeMessagingHosts\\com.localpass.desktop"],
+      Chrome: ["HKCU", "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.localpass.desktop"],
+      Chromium: ["HKCU", "SOFTWARE\\Chromium\\NativeMessagingHosts\\com.localpass.desktop"],
       "Microsoft Edge": [
         "HKCU",
-        "SOFTWARE\\Microsoft\\Edge\\NativeMessagingHosts\\com.localpassword.desktop",
+        "SOFTWARE\\Microsoft\\Edge\\NativeMessagingHosts\\com.localpass.desktop",
       ],
-      Vivaldi: ["HKCU", "SOFTWARE\\Vivaldi\\NativeMessagingHosts\\com.localpassword.desktop"],
+      Vivaldi: ["HKCU", "SOFTWARE\\Vivaldi\\NativeMessagingHosts\\com.localpass.desktop"],
       Brave: [
         "HKCU",
-        "SOFTWARE\\BraveSoftware\\Brave-Browser\\NativeMessagingHosts\\com.localpassword.desktop",
+        "SOFTWARE\\BraveSoftware\\Brave-Browser\\NativeMessagingHosts\\com.localpass.desktop",
       ],
     };
   }
@@ -626,7 +626,7 @@ export class NativeMessagingMain {
               );
               const commands: Map<string, any> = prefs.extensions?.commands;
 
-              // If one of the commands is autofill_login or generate_password, we know it's probably the Bitwarden extension
+              // If one of the commands is autofill_login or generate_password, we know it's probably the LocalPass extension
               for (const { command_name, extension } of Object.values(commands ?? {})) {
                 if (command_name === "autofill_login" || command_name === "generate_password") {
                   ids.add(`chrome-extension://${extension}/`);
@@ -710,9 +710,9 @@ export class NativeMessagingMain {
 
   /** The proxy's execution alias, as declared in custom-appx-extensions.*.xml. */
   private appxProxyAliasPath() {
-    const alias = process.resourcesPath.includes("8bitSolutionsLLC.BitwardenBeta_")
-      ? "bitwarden_beta_desktop_proxy.exe"
-      : "bitwarden_desktop_proxy.exe";
+    const alias = process.resourcesPath.includes("8bitSolutionsLLC.LocalPassBeta_")
+      ? "localpass_beta_desktop_proxy.exe"
+      : "localpass_desktop_proxy.exe";
     return path.join(process.env.LOCALAPPDATA, "Microsoft", "WindowsApps", alias);
   }
 

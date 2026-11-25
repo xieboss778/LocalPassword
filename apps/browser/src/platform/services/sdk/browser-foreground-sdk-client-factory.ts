@@ -1,5 +1,5 @@
-import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
-import type { PasswordManagerClient } from "@bitwarden/sdk-internal";
+import { SdkClientFactory } from "@localpass/common/platform/abstractions/sdk/sdk-client-factory";
+import type { PasswordManagerClient } from "@localpass/sdk-internal";
 
 /**
  * SDK client factory for the extension's foreground: popup, sidebar and extension pages.

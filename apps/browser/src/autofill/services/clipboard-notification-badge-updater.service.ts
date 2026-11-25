@@ -1,7 +1,7 @@
 import { combineLatest, distinctUntilChanged, map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 
 import { BadgeService } from "../../platform/badge/badge.service";
 import { BadgeStatePriority } from "../../platform/badge/priority";

@@ -4,9 +4,9 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogRef } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogRef } from "@localpass/components";
 
 import { ShareItemService } from "../../services/share-item.service";
 import { ShareLinkService } from "../../services/share-link.service";

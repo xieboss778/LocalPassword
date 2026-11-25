@@ -5,42 +5,42 @@ import { Component, OnDestroy, OnInit, signal } from "@angular/core";
 import { ActivatedRoute, Params, Router, RouterModule } from "@angular/router";
 import { Subject, firstValueFrom } from "rxjs";
 
-import { ExpiredIcon } from "@bitwarden/assets/svg";
+import { ExpiredIcon } from "@localpass/assets/svg";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
   InputPasswordComponent,
   InputPasswordFlow,
   PasswordInputResult,
-} from "@bitwarden/auth/angular";
+} from "@localpass/auth/angular";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
   LoginStrategyServiceAbstraction,
   LoginSuccessHandlerService,
   PasswordLoginCredentials,
-} from "@bitwarden/auth/common";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-api.service";
-import { DeepLinkRedirectService } from "@bitwarden/common/auth/deep-link-redirect";
-import { RegisterVerificationEmailClickedRequest } from "@bitwarden/common/auth/models/request/registration/register-verification-email-clicked.request";
+} from "@localpass/auth/common";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { AccountApiService } from "@localpass/common/auth/abstractions/account-api.service";
+import { DeepLinkRedirectService } from "@localpass/common/auth/deep-link-redirect";
+import { RegisterVerificationEmailClickedRequest } from "@localpass/common/auth/models/request/registration/register-verification-email-clicked.request";
 import {
   OpenOrganizationInvite,
   OpenOrgInviteLinkData,
   OrganizationInviteService,
   OpenOrgInviteUnsealError,
-} from "@bitwarden/common/auth/organization-invite";
-import { HttpStatusCode } from "@bitwarden/common/enums";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+} from "@localpass/common/auth/organization-invite";
+import { HttpStatusCode } from "@localpass/common/enums";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 import {
   AnonLayoutWrapperDataService,
   ButtonModule,
   ToastService,
   IconModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { PremiumInterestStateService } from "../../../billing/services/premium-interest/premium-interest-state.service.abstraction";
 import { JslibModule } from "../../../jslib.module";
@@ -74,7 +74,7 @@ export const RegistrationFinishViewState = Object.freeze({
 export type RegistrationFinishViewState =
   (typeof RegistrationFinishViewState)[keyof typeof RegistrationFinishViewState];
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "auth-registration-finish",

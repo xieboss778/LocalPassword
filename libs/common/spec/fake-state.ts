@@ -3,4 +3,4 @@ export {
   FakeSingleUserState,
   FakeActiveUserState,
   FakeDerivedState,
-} from "@bitwarden/state-test-utils";
+} from "@localpass/state-test-utils";

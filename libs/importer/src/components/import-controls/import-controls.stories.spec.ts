@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
 
-import { DialogService, I18nMockService } from "@bitwarden/components";
+import { DialogService, I18nMockService } from "@localpass/components";
 
 import { ImportUpgradeServiceAbstraction } from "../../services";
 import { ImportErrorDialogComponent } from "../dialog";

@@ -1,8 +1,8 @@
 import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { applicationConfig, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { FormFieldModule } from "../form-field";
 import { IconButtonModule } from "../icon-button";

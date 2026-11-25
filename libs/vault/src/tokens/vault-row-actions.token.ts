@@ -1,5 +1,5 @@
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 import { VaultItemsTableRowAction } from "../components/vault-items-table/vault-items-table-row-action";
 

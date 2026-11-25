@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { AnonLayoutWrapperData } from "@bitwarden/components";
+import { AnonLayoutWrapperData } from "@localpass/components";
 
 /**
  * Result of `LoginComponentService.handleQueryParamErrors`.

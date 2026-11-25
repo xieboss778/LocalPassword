@@ -1,7 +1,7 @@
 import { BehaviorSubject, of } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
 
 import { LocalAccountService } from "../account/local-account.service";
 import { S3PreconditionFailedError } from "../s3/s3-client";
@@ -121,7 +121,7 @@ describe("VaultBackupSyncService", () => {
       bucket: "vault",
       accessKeyId: "AKIA",
       secretAccessKey: "top-secret",
-      prefix: "localpassword",
+      prefix: "localpass",
       forcePathStyle: false,
     });
 

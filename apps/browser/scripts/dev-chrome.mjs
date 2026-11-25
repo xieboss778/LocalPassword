@@ -115,7 +115,7 @@ async function launch(puppeteer, executablePath) {
     executablePath,
     headless: false,
     userDataDir: PROFILE_DIR,
-    env: { ...process.env, BITWARDEN_IPC_SOCKET_DIR: IPC_SOCKET_DIR },
+    env: { ...process.env, LOCALPASS_IPC_SOCKET_DIR: IPC_SOCKET_DIR },
     defaultViewport: null,
     args: [
       `--load-extension=${BUILD_DIR}`,

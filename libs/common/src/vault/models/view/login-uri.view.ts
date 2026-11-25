@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { LoginUriView as SdkLoginUriView } from "@bitwarden/sdk-internal";
+import { LoginUriView as SdkLoginUriView } from "@localpass/sdk-internal";
 
 import { punycodeToUnicode } from "../../../autofill/utils/punycode";
 import { UriMatchStrategy, UriMatchStrategySetting } from "../../../models/domain/domain-service";

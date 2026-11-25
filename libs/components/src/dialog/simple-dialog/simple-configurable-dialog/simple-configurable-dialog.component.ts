@@ -2,7 +2,7 @@ import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { SimpleDialogOptions, SimpleDialogType, Translation } from "../..";
 import { BitSubmitDirective } from "../../../async-actions/bit-submit.directive";

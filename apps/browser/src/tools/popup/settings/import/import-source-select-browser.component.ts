@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { UpgradeImportType } from "@bitwarden/importer-core";
-import { ImportSourceSelectComponent, importSourceFromQuery } from "@bitwarden/importer-ui";
+import { UpgradeImportType } from "@localpass/importer-core";
+import { ImportSourceSelectComponent, importSourceFromQuery } from "@localpass/importer-ui";
 
 @Component({
   templateUrl: "import-source-select-browser.component.html",

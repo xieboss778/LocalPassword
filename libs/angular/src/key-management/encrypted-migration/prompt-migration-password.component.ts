@@ -3,9 +3,9 @@ import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { filter, firstValueFrom, map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { MasterPasswordUnlockService } from "@bitwarden/common/key-management/master-password/abstractions/master-password-unlock.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { MasterPasswordUnlockService } from "@localpass/common/key-management/master-password/abstractions/master-password-unlock.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   LinkModule,
   AsyncActionsModule,
@@ -16,7 +16,7 @@ import {
   FormFieldModule,
   IconButtonModule,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { JslibModule } from "../../jslib.module";
 

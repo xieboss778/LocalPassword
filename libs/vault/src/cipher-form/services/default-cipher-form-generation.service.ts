@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import {
   PasswordGenerationServiceAbstraction,
   UsernameGenerationServiceAbstraction,
-} from "@bitwarden/generator-legacy";
+} from "@localpass/generator-legacy";
 
 import { CipherFormGenerationService } from "../abstractions/cipher-form-generation.service";
 

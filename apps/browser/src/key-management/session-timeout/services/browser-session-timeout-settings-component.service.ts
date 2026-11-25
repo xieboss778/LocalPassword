@@ -1,12 +1,12 @@
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { SessionTimeoutTypeService } from "@bitwarden/common/key-management/session-timeout";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { SessionTimeoutTypeService } from "@localpass/common/key-management/session-timeout";
 import {
   VaultTimeout,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { SessionTimeoutSettingsComponentService } from "@bitwarden/key-management-ui";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { SessionTimeoutSettingsComponentService } from "@localpass/key-management-ui";
 
 export class BrowserSessionTimeoutSettingsComponentService extends SessionTimeoutSettingsComponentService {
   constructor(

@@ -1,7 +1,7 @@
 #[napi]
 pub mod autofill {
     use autofill_provider::{
-        BitwardenError, ExtensionRequest, ExtensionRequestMessage, LockStatusResponse,
+        LocalPassError, ExtensionRequest, ExtensionRequestMessage, LockStatusResponse,
         NativeStatus, PasskeyAssertionRequest, PasskeyAssertionResponse,
         PasskeyAssertionWithoutUserInterfaceRequest, PasskeyRegistrationRequest,
         PasskeyRegistrationResponse, WindowHandleQueryResponse,
@@ -23,7 +23,7 @@ pub mod autofill {
     #[serde(bound = "T: Serialize + DeserializeOwned")]
     pub struct PasskeyMessage<T: Serialize + DeserializeOwned> {
         pub sequence_number: u32,
-        pub value: Result<T, BitwardenError>,
+        pub value: Result<T, LocalPassError>,
     }
 
     #[napi]
@@ -295,7 +295,7 @@ pub mod autofill {
         ) -> napi::Result<u32> {
             let message: PasskeyMessage<()> = PasskeyMessage {
                 sequence_number,
-                value: Err(BitwardenError::Internal(error)),
+                value: Err(LocalPassError::Internal(error)),
             };
             self.send(client_id, serde_json::to_string(&message).unwrap())
         }
@@ -310,7 +310,7 @@ pub mod autofill {
         ) -> napi::Result<u32> {
             let message: PasskeyMessage<()> = PasskeyMessage {
                 sequence_number,
-                value: Err(BitwardenError::ExcludedCredentialMatched),
+                value: Err(LocalPassError::ExcludedCredentialMatched),
             };
             self.send(client_id, serde_json::to_string(&message).unwrap())
         }
@@ -325,7 +325,7 @@ pub mod autofill {
         ) -> napi::Result<u32> {
             let message: PasskeyMessage<()> = PasskeyMessage {
                 sequence_number,
-                value: Err(BitwardenError::CredentialNotFound),
+                value: Err(LocalPassError::CredentialNotFound),
             };
             self.send(client_id, serde_json::to_string(&message).unwrap())
         }

@@ -1,7 +1,7 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherIconDetails } from "@bitwarden/common/vault/icon/build-cipher-icon";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { CipherIconDetails } from "@localpass/common/vault/icon/build-cipher-icon";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { InlineMenuFillType } from "../../enums/autofill-overlay.enum";
 import AutofillField from "../../models/autofill-field";

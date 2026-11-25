@@ -9,7 +9,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { action } from "storybook/actions";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { BadgeModule } from "../badge";
 import { ButtonModule } from "../button";

@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { Subject } from "rxjs";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
-import { MessageListener } from "@bitwarden/messaging";
-import { AcquiredCookie } from "@bitwarden/sdk-internal";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
+import { MessageListener } from "@localpass/messaging";
+import { AcquiredCookie } from "@localpass/sdk-internal";
 
 import { ServerCommunicationConfigPlatformApiService } from "./server-communication-config-platform-api.service";
 
@@ -63,7 +63,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
       );
 
       // Resolve the promise via callback
-      callbackSubject.next({ urlString: "bitwarden://sso-cookie-vendor?testCookie=value123" });
+      callbackSubject.next({ urlString: "localpass://sso-cookie-vendor?testCookie=value123" });
       await promise;
     });
 
@@ -85,7 +85,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
         "https://vault.acme.com/proxy-cookie-redirect-connector.html",
       );
 
-      callbackSubject.next({ urlString: "bitwarden://sso-cookie-vendor?cookie=val" });
+      callbackSubject.next({ urlString: "localpass://sso-cookie-vendor?cookie=val" });
       await promise;
     });
 
@@ -95,7 +95,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
       await flushDialog();
 
       callbackSubject.next({
-        urlString: "bitwarden://sso-cookie-vendor?AWSELBAuthSessionCookie=abc123",
+        urlString: "localpass://sso-cookie-vendor?AWSELBAuthSessionCookie=abc123",
       });
 
       const result = await promise;
@@ -110,7 +110,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
 
       callbackSubject.next({
         urlString:
-          "bitwarden://sso-cookie-vendor?AWSELBAuthSessionCookie-0=part1&AWSELBAuthSessionCookie-1=part2&AWSELBAuthSessionCookie-2=part3",
+          "localpass://sso-cookie-vendor?AWSELBAuthSessionCookie-0=part1&AWSELBAuthSessionCookie-1=part2&AWSELBAuthSessionCookie-2=part3",
       });
 
       const result = await promise;
@@ -129,7 +129,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
 
       callbackSubject.next({
         urlString:
-          "bitwarden://sso-cookie-vendor?AWSELBAuthSessionCookie=abc123&d=integrity_marker_value",
+          "localpass://sso-cookie-vendor?AWSELBAuthSessionCookie=abc123&d=integrity_marker_value",
       });
 
       const result = await promise;
@@ -145,7 +145,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
 
       // Simulate callback with only 'd' parameter (which is excluded)
       callbackSubject.next({
-        urlString: "bitwarden://sso-cookie-vendor?d=integrity",
+        urlString: "localpass://sso-cookie-vendor?d=integrity",
       });
 
       const result = await promise;
@@ -183,7 +183,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
       await flushDialog();
 
       callbackSubject.next({
-        urlString: "bitwarden://sso-cookie-vendor?cookie=value",
+        urlString: "localpass://sso-cookie-vendor?cookie=value",
       });
 
       const [result1, result2] = await Promise.all([promise1, promise2]);
@@ -224,7 +224,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
       );
 
       callbackSubject.next({
-        urlString: "bitwarden://sso-cookie-vendor?cookie=value2",
+        urlString: "localpass://sso-cookie-vendor?cookie=value2",
       });
 
       const result2 = await promise2;
@@ -254,7 +254,7 @@ describe("ServerCommunicationConfigPlatformApiService", () => {
 
     it("ignores callback when no acquisition pending", () => {
       callbackSubject.next({
-        urlString: "bitwarden://sso-cookie-vendor?cookie=value",
+        urlString: "localpass://sso-cookie-vendor?cookie=value",
       });
 
       expect(logService.warning).toHaveBeenCalledWith(

@@ -2,7 +2,7 @@ import { inject, Injectable, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Subject, debounceTime, first, map } from "rxjs";
 
-import { BIT_SIDE_NAV_DISK, GlobalStateProvider, KeyDefinition } from "@bitwarden/state";
+import { BIT_SIDE_NAV_DISK, GlobalStateProvider, KeyDefinition } from "@localpass/state";
 
 export const BIT_SIDE_NAV_WIDTH_KEY_DEF = new KeyDefinition<number>(
   BIT_SIDE_NAV_DISK,

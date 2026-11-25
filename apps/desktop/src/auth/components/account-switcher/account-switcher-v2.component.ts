@@ -5,14 +5,14 @@ import { Component, input } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom, map, Observable } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   AccountSwitcherEntries,
   AccountSwitcherService,
-} from "@bitwarden/common/auth/account-switcher";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
+} from "@localpass/common/auth/account-switcher";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { CommandDefinition, MessageListener } from "@localpass/common/platform/messaging";
 import {
   AvatarModule,
   IconButtonModule,
@@ -20,14 +20,14 @@ import {
   MenuPositionIdentifier,
   IconComponent,
   BadgeComponent,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { DesktopBiometricsService } from "../../../key-management/biometrics/desktop.biometrics.service";
 
 type SwitcherView = AccountSwitcherEntries & { showSwitcher: boolean };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-account-switcher-v2",

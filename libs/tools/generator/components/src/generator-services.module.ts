@@ -1,33 +1,33 @@
 import { NgModule } from "@angular/core";
 import { firstValueFrom, shareReplay } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
-import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { KeyServiceLegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/key-service-legacy-encryptor-provider";
-import { LegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/legacy-encryptor-provider";
-import { Site } from "@bitwarden/common/tools/extension";
-import { ExtensionRegistry } from "@bitwarden/common/tools/extension/extension-registry.abstraction";
-import { ExtensionService } from "@bitwarden/common/tools/extension/extension.service";
-import { DefaultFields, DefaultSites, Extension } from "@bitwarden/common/tools/extension/metadata";
-import { RuntimeExtensionRegistry } from "@bitwarden/common/tools/extension/runtime-extension-registry";
-import { VendorExtensions, Vendors } from "@bitwarden/common/tools/extension/vendor";
-import { RestClient } from "@bitwarden/common/tools/integration/rpc";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { safeProvider } from "@localpass/angular/platform/utils/safe-provider";
+import { SafeInjectionToken } from "@localpass/angular/services/injection-tokens";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { KeyServiceLegacyEncryptorProvider } from "@localpass/common/tools/cryptography/key-service-legacy-encryptor-provider";
+import { LegacyEncryptorProvider } from "@localpass/common/tools/cryptography/legacy-encryptor-provider";
+import { Site } from "@localpass/common/tools/extension";
+import { ExtensionRegistry } from "@localpass/common/tools/extension/extension-registry.abstraction";
+import { ExtensionService } from "@localpass/common/tools/extension/extension.service";
+import { DefaultFields, DefaultSites, Extension } from "@localpass/common/tools/extension/metadata";
+import { RuntimeExtensionRegistry } from "@localpass/common/tools/extension/runtime-extension-registry";
+import { VendorExtensions, Vendors } from "@localpass/common/tools/extension/vendor";
+import { RestClient } from "@localpass/common/tools/integration/rpc";
 import {
   LogProvider,
   disabledSemanticLoggerProvider,
   enableLogForTypes,
-} from "@bitwarden/common/tools/log";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
-import { UserStateSubjectDependencyProvider } from "@bitwarden/common/tools/state/user-state-subject-dependency-provider";
+} from "@localpass/common/tools/log";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
+import { UserStateSubjectDependencyProvider } from "@localpass/common/tools/state/user-state-subject-dependency-provider";
 import {
   BuiltIn,
   createRandomizer,
@@ -35,10 +35,10 @@ import {
   Randomizer,
   providers,
   DefaultCredentialGeneratorService,
-} from "@bitwarden/generator-core";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/generator-core";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService } from "@bitwarden/legacy-crypto";
+import { EncryptService } from "@localpass/legacy-crypto";
 
 export const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
 const GENERATOR_SERVICE_PROVIDER = new SafeInjectionToken<providers.CredentialGeneratorProviders>(

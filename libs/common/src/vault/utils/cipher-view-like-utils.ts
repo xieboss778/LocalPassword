@@ -6,7 +6,7 @@ import {
   CopyableCipherFields,
   LoginListView,
   LoginUriView as LoginListUriView,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { UriMatchStrategy, UriMatchStrategySetting } from "../../models/domain/domain-service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
@@ -410,7 +410,7 @@ export class CipherViewLikeUtils {
 
   /**
    * Returns the `decryptionFailure` property from the cipher when available.
-   * TODO: https://bitwarden.atlassian.net/browse/PM-22515 - alter for `CipherListView` if needed
+   * TODO: https://localpass.atlassian.net/browse/PM-22515 - alter for `CipherListView` if needed
    */
   static decryptionFailure = (cipher: CipherViewLike): boolean => {
     return "decryptionFailure" in cipher ? cipher.decryptionFailure : false;

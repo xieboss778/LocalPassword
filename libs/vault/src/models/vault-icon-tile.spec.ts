@@ -1,6 +1,6 @@
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { BitwardenIcon } from "@bitwarden/components";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { LocalPassIcon } from "@localpass/components";
 
 import {
   ALL_ITEMS_ICON_TILE,
@@ -52,7 +52,7 @@ describe("orgIconTile", () => {
 describe("navIconTile", () => {
   const navItem = (
     type: VaultNavItemType,
-    icon: BitwardenIcon,
+    icon: LocalPassIcon,
     color?: string,
   ): VaultNavItemViewModel => ({ id: "1", label: "Vault", type, color, icon, enabled: true });
 

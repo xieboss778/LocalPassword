@@ -1,14 +1,14 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
+import { newGuid } from "@localpass/guid";
 // eslint-disable-next-line no-restricted-imports
-import { LegacyCompatKeyService, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { LegacyCompatKeyService, SymmetricCryptoKey } from "@localpass/legacy-crypto";
 import {
   SendClient,
   SendView as SdkSendView,
   SendAccessView as SdkSendAccessView,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { SdkService } from "../../../platform/abstractions/sdk/sdk.service";
 import { Utils } from "../../../platform/misc/utils";

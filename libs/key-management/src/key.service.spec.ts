@@ -9,24 +9,24 @@ import {
   take,
 } from "rxjs";
 
-import { EncryptedOrganizationKeyData } from "@bitwarden/common/admin-console/models/data/encrypted-organization-key.data";
-import { ProfileOrganizationResponse } from "@bitwarden/common/admin-console/models/response/profile-organization.response";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { USER_KEY } from "@bitwarden/common/key-management/state-definitions";
-import { VaultTimeoutStringType } from "@bitwarden/common/key-management/vault-timeout";
-import { VAULT_TIMEOUT } from "@bitwarden/common/key-management/vault-timeout/services/vault-timeout-settings.state";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "@bitwarden/common/platform/services/key-state/org-keys.state";
-import { USER_ENCRYPTED_PROVIDER_KEYS } from "@bitwarden/common/platform/services/key-state/provider-keys.state";
-import { USER_EVER_HAD_USER_KEY } from "@bitwarden/common/platform/services/key-state/user-key.state";
-import { UserKeyDefinition } from "@bitwarden/common/platform/state";
-import { ProfileProviderOrganizationResponse } from "@bitwarden/common/provider";
+import { EncryptedOrganizationKeyData } from "@localpass/common/admin-console/models/data/encrypted-organization-key.data";
+import { ProfileOrganizationResponse } from "@localpass/common/admin-console/models/response/profile-organization.response";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { USER_KEY } from "@localpass/common/key-management/state-definitions";
+import { VaultTimeoutStringType } from "@localpass/common/key-management/vault-timeout";
+import { VAULT_TIMEOUT } from "@localpass/common/key-management/vault-timeout/services/vault-timeout-settings.state";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { KeySuffixOptions } from "@localpass/common/platform/enums";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "@localpass/common/platform/services/key-state/org-keys.state";
+import { USER_ENCRYPTED_PROVIDER_KEYS } from "@localpass/common/platform/services/key-state/provider-keys.state";
+import { USER_EVER_HAD_USER_KEY } from "@localpass/common/platform/services/key-state/user-key.state";
+import { UserKeyDefinition } from "@localpass/common/platform/state";
+import { ProfileProviderOrganizationResponse } from "@localpass/common/provider";
 import {
   makeEncString,
   makeStaticByteArray,
@@ -35,9 +35,9 @@ import {
   mockAccountServiceWith,
   FakeStateProvider,
   FakeSingleUserState,
-} from "@bitwarden/common/spec";
-import { OrganizationId, ProviderId, UserId } from "@bitwarden/common/types/guid";
-import { UserKey, ProviderKey } from "@bitwarden/common/types/key";
+} from "@localpass/common/spec";
+import { OrganizationId, ProviderId, UserId } from "@localpass/common/types/guid";
+import { UserKey, ProviderKey } from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
@@ -47,9 +47,9 @@ import {
   EncString,
   SymmetricCryptoKey,
   UnsignedPublicKey,
-} from "@bitwarden/legacy-crypto";
-import { Measurement } from "@bitwarden/logging";
-import { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { Measurement } from "@localpass/logging";
+import { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
 
 import { CipherDecryptionKeys } from "./abstractions/key.service";
 import { BiometricsService } from "./biometrics/biometric.service";

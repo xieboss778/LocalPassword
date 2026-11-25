@@ -2,13 +2,13 @@ import { CommonModule } from "@angular/common";
 import { Component, OnDestroy } from "@angular/core";
 import { Observable, Subject, map } from "rxjs";
 
-import { AvailableRegionsService } from "@bitwarden/common/platform/abstractions/available-regions.service";
+import { AvailableRegionsService } from "@localpass/common/platform/abstractions/available-regions.service";
 import {
   EnvironmentService,
   Region,
   RegionConfig,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   DialogService,
   IconModule,
@@ -16,12 +16,12 @@ import {
   MenuModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SelfHostedEnvConfigDialogComponent } from "../self-hosted-env-config-dialog";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "environment-selector",

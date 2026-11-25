@@ -3,7 +3,7 @@
 import { CommonModule } from "@angular/common";
 import { Inject, Component } from "@angular/core";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -12,8 +12,8 @@ import {
   DIALOG_DATA,
   DialogRef,
   DialogConfig,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { PasswordHistoryViewComponent } from "../..";
 
@@ -27,7 +27,7 @@ export interface ViewPasswordHistoryDialogParams {
 /**
  * A dialog component that displays the password history for a cipher.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-password-history",

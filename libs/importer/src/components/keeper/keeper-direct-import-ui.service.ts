@@ -1,8 +1,8 @@
 import { Injectable, inject, signal } from "@angular/core";
 
-import { ClientType } from "@bitwarden/common/enums";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogRef, DialogService } from "@bitwarden/components";
+import { ClientType } from "@localpass/common/enums";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogRef, DialogService } from "@localpass/components";
 
 import {
   Cancel,

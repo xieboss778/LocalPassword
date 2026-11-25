@@ -1,4 +1,4 @@
-/* eslint-disable @bitwarden/components/require-theme-colors-in-svg */
+/* eslint-disable @localpass/components/require-theme-colors-in-svg */
 
 // This marketing illustration is a verbatim export of the source artwork, so it
 // keeps its literal colors (including the background gradient) rather than

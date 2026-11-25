@@ -1,18 +1,18 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/legacy-crypto";
+import { UserId } from "@localpass/user-core";
 
 import { BrowserApi } from "../platform/browser/browser-api";
 
@@ -265,7 +265,7 @@ describe("NativeMessagingBackground", () => {
           expect(sut.connected).toBe(true);
           expect((sut as any).connecting).toBe(false);
           expect(logService.info).toHaveBeenCalledWith(
-            "[Native Messaging IPC] Connection to Bitwarden Desktop app established!",
+            "[Native Messaging IPC] Connection to LocalPass Desktop app established!",
           );
         });
       });
@@ -275,7 +275,7 @@ describe("NativeMessagingBackground", () => {
           await messageListener({ command: "disconnected" });
 
           expect(logService.info).toHaveBeenCalledWith(
-            "[Native Messaging IPC] Disconnected from Bitwarden Desktop app.",
+            "[Native Messaging IPC] Disconnected from LocalPass Desktop app.",
           );
         });
 
@@ -542,7 +542,7 @@ describe("NativeMessagingBackground", () => {
           await expect(sut.send({ command: "test" })).resolves.toBeUndefined();
 
           expect(logService.info).toHaveBeenCalledWith(
-            "[Native Messaging IPC] Disconnected from Bitwarden Desktop app because of the native port disconnecting.",
+            "[Native Messaging IPC] Disconnected from LocalPass Desktop app because of the native port disconnecting.",
           );
           expectDisconnectedState();
           expect(mockPort.disconnect).toHaveBeenCalled();

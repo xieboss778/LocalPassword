@@ -8,16 +8,16 @@ import {
   CollectionType,
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService, ToastService } from "@bitwarden/components";
+} from "@localpass/common/admin-console/models/collections";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService, ToastService } from "@localpass/components";
 
 import {
   ImportDestinationKind,
@@ -47,7 +47,7 @@ import {
 
 import { ImportDestinationComponent } from "./import-destination.component";
 
-const POLICY_URL = "https://bitwarden.com/help/policies/#manage-item-types";
+const POLICY_URL = "https://github.com/xieboss778/LocalPass/tree/main/docs";
 
 function folder(id: string, orgId: string, name: string, type: CollectionType = 0): CollectionView {
   const view = new CollectionView({

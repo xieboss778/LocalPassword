@@ -3,10 +3,10 @@ import {
   StateDefinition,
   StorageKey,
   UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { globalKeyBuilder } from "@bitwarden/state-internal";
-import { StorageLocation, StorageServiceProvider } from "@bitwarden/storage-core";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
+import { globalKeyBuilder } from "@localpass/state-internal";
+import { StorageLocation, StorageServiceProvider } from "@localpass/storage-core";
 
 import { AutomationCapability } from "../automation-capability";
 

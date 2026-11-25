@@ -2,12 +2,12 @@
 
 <#
 .SYNOPSIS
-Validates that the signed bitwarden_chromium_import_helper.exe thumbprint matches
+Validates that the signed localpass_chromium_import_helper.exe thumbprint matches
 the hardcoded value in signature.rs.
 
 .DESCRIPTION
 After signing, the SHA256 thumbprint of the certificate used to sign
-bitwarden_chromium_import_helper.exe must match the EXPECTED_SIGNATURE_SHA256_THUMBPRINT
+localpass_chromium_import_helper.exe must match the EXPECTED_SIGNATURE_SHA256_THUMBPRINT
 constant in chromium_importer/src/chromium/platform/windows/signature.rs.
 This script verifies that invariant holds, and fails if there is a mismatch.
 
@@ -19,7 +19,7 @@ $ErrorActionPreference = "Stop"
 
 $appDesktopDir = Split-Path $PSScriptRoot -Parent
 $distDir = Join-Path $appDesktopDir "dist"
-$helperExe = "bitwarden_chromium_import_helper.exe"
+$helperExe = "localpass_chromium_import_helper.exe"
 $helperPath = Get-ChildItem -Path $distDir -Recurse -Filter $helperExe | Select-Object -First 1 -ExpandProperty FullName
 if ($null -eq $helperPath) {
     Write-Error "Could not find $helperExe in $distDir"

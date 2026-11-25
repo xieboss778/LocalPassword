@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { DialogService } from "../../../dialog";
 import { I18nMockService } from "../../../utils/i18n-mock.service";
@@ -112,7 +112,7 @@ import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
       </bit-form-control>
 
       <bit-radio-group formControlName="current">
-        <bit-label>Do you currently use Bitwarden?</bit-label>
+        <bit-label>Do you currently use LocalPass?</bit-label>
         <bit-radio-button value="yes">
           <bit-label>Yes</bit-label>
         </bit-radio-button>

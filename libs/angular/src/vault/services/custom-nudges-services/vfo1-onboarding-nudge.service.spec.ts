@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/user-core";
+import { AccountInfo, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/user-core";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../../../libs/common/spec";
 import { NUDGE_DISMISSED_DISK_KEY, NudgeType } from "../nudges.service";

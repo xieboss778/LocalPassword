@@ -298,7 +298,7 @@ describe("isUrlInList", () => {
 
   it("returns true if the URL hostname is on the passed URL list", () => {
     mockUrlList = {
-      ["bitwarden.com"]: { bannerIsDismissed: true },
+      ["local.invalid"]: { bannerIsDismissed: true },
       ["duckduckgo.com"]: null,
       [".lan"]: null,
       [".net"]: null,
@@ -307,7 +307,7 @@ describe("isUrlInList", () => {
     };
 
     const testPages = [
-      "https://www.bitwarden.com/landing-page?some_query_string_key=1&another_one=1",
+      "https://www.local.invalid/landing-page?some_query_string_key=1&another_one=1",
       " https://duckduckgo.com/pro  ", // Note: embedded whitespacing is intentional
       "https://network-private-domain.lan/homelabs-dashboard",
       "https://jsfiddle.net/",
@@ -331,7 +331,7 @@ describe("isUrlInList", () => {
   });
 
   it("returns false if the URL hostname is not on the passed URL list", () => {
-    const testPages = ["https://archive.org/", "bitwarden.com.some.otherdomain.com"];
+    const testPages = ["https://archive.org/", "local.invalid.some.otherdomain.com"];
 
     for (const pageUrl of testPages) {
       const urlIsInList = isUrlInList(pageUrl, mockUrlList);

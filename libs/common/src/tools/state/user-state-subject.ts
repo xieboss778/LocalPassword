@@ -30,7 +30,7 @@ import {
 } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { Account } from "../../auth/abstractions/account.service";
 import { SingleUserState, UserKeyDefinition } from "../../platform/state";

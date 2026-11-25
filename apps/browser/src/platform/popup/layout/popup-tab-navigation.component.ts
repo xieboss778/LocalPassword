@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-import { BottomNavigationButton, BottomNavigationComponent } from "@bitwarden/components";
+import { BottomNavigationButton, BottomNavigationComponent } from "@localpass/components";
 
 @Component({
   selector: "popup-tab-navigation",

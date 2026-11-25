@@ -4,27 +4,27 @@ import { Router } from "@angular/router";
 import qrcodeParser from "qrcode-parser";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   AsyncActionsModule,
   ButtonModule,
   FormFieldModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   base32Encode,
   MigrationOtp,
   parseMigrationUri,
   toOtpauthUri,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 
 /** One account read out of a migration export, ready to be previewed. */
 type PreviewedAccount = MigrationOtp & { readonly totp: string };
@@ -156,7 +156,7 @@ export class GoogleAuthImportComponent {
       }
 
       for (const otp of parsed) {
-        // Bitwarden cannot store counter-based HOTP entries; they are reported, not imported.
+        // LocalPass cannot store counter-based HOTP entries; they are reported, not imported.
         if (otp.type === "HOTP") {
           hotp++;
           continue;

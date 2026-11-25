@@ -1,8 +1,8 @@
 import { BrowserWindow, ipcMain } from "electron";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { autofill, passkey_authenticator } from "@bitwarden/desktop-napi";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { autofill, passkey_authenticator } from "@localpass/desktop-napi";
 
 import { WindowMain } from "../../main/window.main";
 import { AutofillIpcChannelControl } from "../models/autofill-ipc-channels";
@@ -21,7 +21,7 @@ jest.mock("electron", () => ({
 }));
 
 // The napi native binding can't load in jest; only the shape used by the service is needed.
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   autofill: {
     AutofillIpcServer: {
       listen: jest.fn(),

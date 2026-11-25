@@ -3,7 +3,7 @@ import { of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
+import { Argon2KdfConfig, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
 
 import { ApiService } from "../../abstractions/api.service";
 import { KdfConfigResponse } from "../../key-management/models/response/kdf-config.response";
@@ -91,7 +91,7 @@ describe("PasswordPreloginApiService", () => {
     });
 
     it("uses the identity url from the environment", async () => {
-      const customIdentityUrl = "https://custom.identity.bitwarden.com";
+      const customIdentityUrl = "https://custom.identity.local.invalid";
       environmentService.environment$ = of({
         getIdentityUrl: () => customIdentityUrl,
       } satisfies Partial<Environment> as Environment);

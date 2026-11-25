@@ -2,15 +2,15 @@ import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { CollectionId, UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { CollectionId, UserId } from "@localpass/common/types/guid";
 import {
   VAULT_BASE_ROUTE,
   VaultNavItemType,
   VaultNavService,
   VaultsNavViewModel,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultPopupListTableFiltersService } from "../services/vault-popup-list-table-filters.service";
 

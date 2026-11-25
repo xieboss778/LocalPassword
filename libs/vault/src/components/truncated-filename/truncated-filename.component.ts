@@ -10,7 +10,7 @@ import {
   viewChild,
 } from "@angular/core";
 
-import { TooltipDirective } from "@bitwarden/components";
+import { TooltipDirective } from "@localpass/components";
 
 import { truncateFilename } from "./truncate-filename";
 

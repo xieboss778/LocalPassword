@@ -1,18 +1,18 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
-import { BankAccountView } from "@bitwarden/common/vault/models/view/bank-account.view";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DriversLicenseView } from "@bitwarden/common/vault/models/view/drivers-license.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SecureNoteType, CipherType } from "@localpass/common/vault/enums";
+import { BankAccountView } from "@localpass/common/vault/models/view/bank-account.view";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DriversLicenseView } from "@localpass/common/vault/models/view/drivers-license.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 
 import { ImportResult } from "../../models/import-result";
 import { BaseImporter } from "../base-importer";

@@ -10,7 +10,7 @@ import {
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { switchMap } from "rxjs";
 
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { ShareItemService } from "../../services/share-item.service";
 import { ShareLinkService } from "../../services/share-link.service";

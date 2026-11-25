@@ -4,9 +4,9 @@ import { applicationConfig, Decorator, Meta, moduleMetadata, StoryObj } from "@s
 import { defer, of } from "rxjs";
 import { action } from "storybook/actions";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { I18nMockService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { I18nMockService } from "@localpass/components";
 
 import { ImportDestinationKind } from "../../models";
 import { ImportDestinationServiceAbstraction } from "../../services";

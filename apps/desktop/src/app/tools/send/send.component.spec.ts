@@ -7,25 +7,25 @@ import { ActivatedRoute } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { SendDecryptionService } from "@bitwarden/common/tools/send/services/send-decryption.service";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { SendDecryptionService } from "@localpass/common/tools/send/services/send-decryption.service";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { DialogService, ToastService } from "@localpass/components";
 import {
   SendItemsService,
   SendListFiltersService,
@@ -33,7 +33,7 @@ import {
   SendAddEditDialogComponent,
   SendFormConfig,
   SendFormService,
-} from "@bitwarden/send-ui";
+} from "@localpass/send-ui";
 
 import { DesktopHeaderComponent } from "../../layout/header";
 
@@ -87,7 +87,7 @@ describe("SendComponent", () => {
 
     // Setup environmentService mock
     environmentService.getEnvironment.mockResolvedValue({
-      getSendUrl: () => "https://send.bitwarden.com/#/",
+      getSendUrl: () => "https://send.local.invalid/#/",
     } as any);
 
     // Setup i18nService mock
@@ -278,7 +278,7 @@ describe("SendComponent", () => {
 
       expect(environmentService.getEnvironment).toHaveBeenCalled();
       expect(platformUtilsService.copyToClipboard).toHaveBeenCalledWith(
-        "https://send.bitwarden.com/#/test-access-id/test-key",
+        "https://send.local.invalid/#/test-access-id/test-key",
       );
       expect(toastService.showToast).toHaveBeenCalledWith({
         variant: "success",

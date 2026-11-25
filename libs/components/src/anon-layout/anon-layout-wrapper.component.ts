@@ -3,8 +3,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { filter, of, switchMap, tap } from "rxjs";
 
-import { BitSvg } from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { BitSvg } from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { Translation } from "../dialog";
 import {
@@ -103,7 +103,7 @@ interface AnonLayoutWrapperState {
 
 const EMPTY_STATE: AnonLayoutWrapperState = { pageIcon: null };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush once routed pages no longer rely on Default CD
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush once routed pages no longer rely on Default CD
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "anon-layout-wrapper.component.html",

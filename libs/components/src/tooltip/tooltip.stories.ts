@@ -2,8 +2,8 @@ import { signal } from "@angular/core";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { getByRole, userEvent } from "storybook/test";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { ButtonComponent } from "../button";
 import { BitIconButtonComponent } from "../icon-button";

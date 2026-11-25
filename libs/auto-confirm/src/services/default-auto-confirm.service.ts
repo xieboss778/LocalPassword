@@ -16,19 +16,19 @@ import {
   OrganizationUserApiService,
   OrganizationUserBulkConfirmRequest,
   OrganizationUserService,
-} from "@bitwarden/admin-console/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/admin-console/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { InternalOrganizationServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 import { AutomaticUserConfirmationService } from "../abstractions/auto-confirm.service.abstraction";
 import { AUTO_CONFIRM_STATE, AutoConfirmState } from "../models/auto-confirm-state.model";

@@ -1,6 +1,6 @@
 import { ActivatedRoute, NavigationExtras, Params, Router } from "@angular/router";
 
-import { CollectionId, isId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionId, isId, OrganizationId } from "@localpass/common/types/guid";
 
 /** Where an organization import was started from, for the result dialog's return button. */
 export const IMPORT_RETURN_TO_PARAM = "returnTo";

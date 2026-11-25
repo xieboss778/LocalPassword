@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-import { SpinnerComponent, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { SpinnerComponent, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** The spinner card shown while Keeper waits on an approver rather than the user. */
 @Component({

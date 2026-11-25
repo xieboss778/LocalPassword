@@ -5,7 +5,7 @@ import * as stories from "./item.stories";
 <Meta of={stories} />
 
 ```ts
-import { ItemModule } from "@bitwarden/components";
+import { ItemModule } from "@localpass/components";
 ```
 
 # Item
@@ -61,10 +61,10 @@ The content can be a button, anchor, or static container.
 <bit-item>
   <button bit-item-content type="button">
     <bit-avatar slot="start" text="Foo"></bit-avatar>
-    foo&#64;bitwarden.com
+    foo&#64;localpass.com
     <span bitBadge variant="primary" slot="default-trailing">Auto-fill</span>
     <ng-container slot="secondary">
-      <div>Bitwarden.com</div>
+      <div>LocalPass.com</div>
       <div><em>locked</em></div>
     </ng-container>
     <i slot="end" class="bwi bwi-lock" aria-hidden="true"></i>

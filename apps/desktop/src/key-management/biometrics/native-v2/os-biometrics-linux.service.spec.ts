@@ -1,12 +1,12 @@
-import { UserId } from "@bitwarden/common/types/guid";
-import { biometrics, passwords } from "@bitwarden/desktop-napi";
-import { BiometricsStatus } from "@bitwarden/key-management";
+import { UserId } from "@localpass/common/types/guid";
+import { biometrics, passwords } from "@localpass/desktop-napi";
+import { BiometricsStatus } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import OsBiometricsServiceLinux from "./os-biometrics-linux.service";
 
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   biometrics: {
     initBiometricSystem: jest.fn(() => "mockSystem"),
     provideKey: jest.fn(),

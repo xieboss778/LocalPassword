@@ -5,8 +5,8 @@ import {
   GlobalStateProvider,
   KeyDefinition,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { PossibleLocation, StorageServiceProvider } from "@bitwarden/storage-core";
+} from "@localpass/state";
+import { PossibleLocation, StorageServiceProvider } from "@localpass/storage-core";
 
 export type StateEventInfo = {
   state: string;

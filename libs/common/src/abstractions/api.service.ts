@@ -1,6 +1,6 @@
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CreateCollectionRequest, UpdateCollectionRequest } from "@bitwarden/admin-console/common";
+import { CreateCollectionRequest, UpdateCollectionRequest } from "@localpass/admin-console/common";
 
 import { OrganizationConnectionType } from "../admin-console/enums";
 import {
@@ -77,7 +77,7 @@ import { CipherResponse } from "../vault/models/response/cipher.response";
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
  * api services. The `send` method is still allowed to be used within api services. For background
- * of this decision please read https://contributing.bitwarden.com/architecture/adr/refactor-api-service.
+ * of this decision please read https://contributing.local.invalid/architecture/adr/refactor-api-service.
  */
 export abstract class ApiService {
   /** @deprecated Use the overload accepting the user you want the request authenticated for. */

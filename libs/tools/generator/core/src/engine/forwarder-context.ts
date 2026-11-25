@@ -1,6 +1,6 @@
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { IntegrationContext } from "@bitwarden/common/tools/integration/integration-context";
-import { ApiSettings } from "@bitwarden/common/tools/integration/rpc";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { IntegrationContext } from "@localpass/common/tools/integration/integration-context";
+import { ApiSettings } from "@localpass/common/tools/integration/rpc";
 
 import { ForwarderConfiguration } from "./forwarder-configuration";
 import { EmailDomainSettings, EmailPrefixSettings } from "./settings";

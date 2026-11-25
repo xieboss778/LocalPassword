@@ -1,15 +1,15 @@
 import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService, ToastService } from "@localpass/components";
 
 import { mockAccountServiceWith } from "../../../common/spec";
 

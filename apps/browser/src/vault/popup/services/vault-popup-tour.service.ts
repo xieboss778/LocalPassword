@@ -1,9 +1,9 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
-import { CoachmarkService, offersVaultChoice, VaultNavService } from "@bitwarden/vault";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
+import { CoachmarkService, offersVaultChoice, VaultNavService } from "@localpass/vault";
 
 import { extensionVaultTour } from "../tours/extension-vault-tour";
 import { collectionOptionsInScope, folderOptionsInScope } from "../utils/filter-options";

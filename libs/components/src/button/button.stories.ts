@@ -1,7 +1,7 @@
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { ButtonType, ButtonTypes } from "../shared/button-like.abstraction";
 import { TypographyModule } from "../typography";

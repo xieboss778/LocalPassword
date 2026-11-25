@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { SendAccessTokenResponse } from "@bitwarden/sdk-internal";
+import { SendAccessTokenResponse } from "@localpass/sdk-internal";
 
 export class SendAccessToken {
   constructor(

@@ -36,15 +36,15 @@ allow = [
 # To see how to mark a crate as unpublished (to the official registry),
 # visit https://doc.rust-lang.org/cargo/reference/manifest.html#the-publish-field.
 ignore = true
-# First-party Bitwarden crates pulled from sdk-internal ship without license
+# First-party LocalPass crates pulled from sdk-internal ship without license
 # metadata, so treat that git source as private and skip license checking.
-ignore-sources = ["https://github.com/bitwarden/sdk-internal"]
+ignore-sources = ["https://github.com/localpass/sdk-internal"]
 
 # This section is considered when running `cargo deny check bans`.
 # More documentation about the 'bans' section can be found here:
 # https://embarkstudios.github.io/cargo-deny/checks/bans/cfg.html
 [bans]
 deny = [
-# TODO: enable after https://github.com/bitwarden/clients/pull/16761 is merged
+# TODO: enable after https://github.com/localpass/clients/pull/16761 is merged
 #    { name = "log", wrappers = [], reason = "Use `tracing` and `tracing-subscriber` for observability needs." },
 ]

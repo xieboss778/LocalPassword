@@ -1,8 +1,8 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { PasswordManagerClient } from "@bitwarden/sdk-internal";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { PasswordManagerClient } from "@localpass/sdk-internal";
 
 import { SdkImportCredentials } from "./sdk-import-credentials";
 import { SdkImportSummary } from "./sdk-import-summary";

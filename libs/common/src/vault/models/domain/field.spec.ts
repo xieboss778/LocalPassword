@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncryptedString, EncString } from "@bitwarden/legacy-crypto";
+import { EncryptedString, EncString } from "@localpass/legacy-crypto";
 import {
   Field as SdkField,
   FieldType,
   LoginLinkedIdType,
   CardLinkedIdType,
   IdentityLinkedIdType,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { mockContainerService, mockFromJson } from "../../../../spec";
 import { CardLinkedId, IdentityLinkedId, LoginLinkedId } from "../../enums";

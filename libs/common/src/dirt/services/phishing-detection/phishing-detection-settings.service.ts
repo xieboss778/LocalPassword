@@ -1,8 +1,8 @@
 import { combineLatest, Observable, of, switchMap } from "rxjs";
 import { catchError, distinctUntilChanged, map, shareReplay, tap } from "rxjs/operators";
 
-import { LogService } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+import { LogService } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 import { OrganizationService } from "../../../admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "../../../admin-console/models/domain/organization";
@@ -19,7 +19,7 @@ const ENABLE_PHISHING_DETECTION = new UserKeyDefinition(
   PHISHING_DETECTION_DISK,
   "enablePhishingDetection",
   {
-    // LocalPassword: the phishing list is downloaded from Bitwarden's CDN, so it stays off.
+    // LocalPass: the phishing list is downloaded from LocalPass's CDN, so it stays off.
     deserializer: (value: boolean) => value ?? false, // Default: disabled
     clearOn: [],
   },

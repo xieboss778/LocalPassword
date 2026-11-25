@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { ClientType } from "@bitwarden/client-type";
-import { LogService, Measurement } from "@bitwarden/logging";
+import { ClientType } from "@localpass/client-type";
+import { LogService, Measurement } from "@localpass/logging";
 
 import { MigrationBuilder } from "./migration-builder";
 import { MigrationHelper } from "./migration-helper";

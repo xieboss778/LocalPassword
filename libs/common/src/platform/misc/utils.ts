@@ -12,9 +12,9 @@ import "core-js/proposals/array-buffer-base64";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
+import { EncryptService, LegacyCompatKeyService } from "@localpass/legacy-crypto";
 
 import { I18nService } from "../abstractions/i18n.service";
 
@@ -48,10 +48,10 @@ const queryDangerousPatterns = [
 ];
 
 declare global {
-  var bitwardenContainerService: BitwardenContainerService;
+  var localpassContainerService: LocalPassContainerService;
 }
 
-interface BitwardenContainerService {
+interface LocalPassContainerService {
   getKeyService: () => KeyService;
   getEncryptService: () => EncryptService;
   getLegacyCompatKeyService: () => LegacyCompatKeyService;
@@ -424,7 +424,7 @@ export class Utils {
   }
 
   // ref: http://stackoverflow.com/a/2117523/1090359
-  /** @deprecated Use newGuid from @bitwarden/guid instead */
+  /** @deprecated Use newGuid from @localpass/guid instead */
   static newGuid(): string {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
       const r = (Math.random() * 16) | 0;
@@ -433,10 +433,10 @@ export class Utils {
     });
   }
 
-  /** @deprecated Use guidRegex from @bitwarden/guid instead */
+  /** @deprecated Use guidRegex from @localpass/guid instead */
   static guidRegex = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/;
 
-  /** @deprecated Use isGuid from @bitwarden/guid instead */
+  /** @deprecated Use isGuid from @localpass/guid instead */
   static isGuid(id: string) {
     return RegExp(Utils.guidRegex, "i").test(id);
   }
@@ -634,11 +634,11 @@ export class Utils {
   /**
    * @throws Will throw an error if the ContainerService has not been attached to the window object
    */
-  static getContainerService(): BitwardenContainerService {
-    if (this.global.bitwardenContainerService == null) {
-      throw new Error("global bitwardenContainerService not initialized.");
+  static getContainerService(): LocalPassContainerService {
+    if (this.global.localpassContainerService == null) {
+      throw new Error("global localpassContainerService not initialized.");
     }
-    return this.global.bitwardenContainerService;
+    return this.global.localpassContainerService;
   }
 
   static validateHexColor(color: string) {

@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { DeviceType } from "@bitwarden/common/enums";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { DeviceType } from "@localpass/common/enums";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/browser/browser-popup-utils";

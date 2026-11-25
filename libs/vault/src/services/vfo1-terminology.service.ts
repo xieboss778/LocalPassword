@@ -1,15 +1,15 @@
 import { inject, Injectable, Signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { BitwardenIcon } from "@bitwarden/components";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LocalPassIcon } from "@localpass/components";
 
 /**
  * Legacy icon class → VFO1 replacement, applied when the terminology flag is on.
  * Icon classes not present here are returned unchanged.
  */
-const VFO1_ICON_MAP: Readonly<Partial<Record<BitwardenIcon, BitwardenIcon>>> = Object.freeze({
+const VFO1_ICON_MAP: Readonly<Partial<Record<LocalPassIcon, LocalPassIcon>>> = Object.freeze({
   "bwi-collection-shared": "bwi-shared-folder",
   "bwi-collection": "bwi-shared-folder",
 });
@@ -27,7 +27,7 @@ export class Vfo1TerminologyService {
    * `iconClass` unchanged. Icon classes without a mapping are passed through as-is.
    * Text terms are handled separately by the `vfo1I18n` pipe.
    */
-  iconClass(iconClass: BitwardenIcon): BitwardenIcon {
+  iconClass(iconClass: LocalPassIcon): LocalPassIcon {
     return this.enabled() ? (VFO1_ICON_MAP[iconClass] ?? iconClass) : iconClass;
   }
 

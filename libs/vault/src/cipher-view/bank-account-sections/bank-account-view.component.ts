@@ -1,20 +1,20 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from "@angular/core";
 
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   BankAccountType,
   BankAccountTypeI18nKeys,
-} from "@bitwarden/common/vault/enums/bank-account-type";
-import { BankAccountView } from "@bitwarden/common/vault/models/view/bank-account.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+} from "@localpass/common/vault/enums/bank-account-type";
+import { BankAccountView } from "@localpass/common/vault/models/view/bank-account.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   SectionHeaderComponent,
   TypographyModule,
   FormFieldModule,
   IconButtonModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CopyCipherFieldDirective } from "../../components/copy-cipher-field.directive";
 import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-cipher-card.component";

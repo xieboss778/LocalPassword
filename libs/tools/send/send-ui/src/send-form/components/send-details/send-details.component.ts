@@ -23,22 +23,22 @@ import {
 } from "@angular/forms";
 import { combineLatest, map, startWith, switchMap, tap } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   asDatePreset,
   isDatePreset,
   SendDeletionDatePreset,
-} from "@bitwarden/common/tools/models/send-deletion-date-preset";
-import { WhoCanAccessType } from "@bitwarden/common/tools/models/send-who-can-access-type";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+} from "@localpass/common/tools/models/send-deletion-date-preset";
+import { WhoCanAccessType } from "@localpass/common/tools/models/send-who-can-access-type";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 import {
   SectionComponent,
   SectionHeaderComponent,
@@ -52,8 +52,8 @@ import {
   ButtonModule,
   CopyClickDirective,
   Option,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SendPolicyService } from "../../..";
 import { removeSendAuthI18nKeys } from "../../../send-auth/remove-send-auth-i18n";
@@ -83,7 +83,7 @@ export class AuthTypeNamePipe implements PipeTransform {
   }
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-send-details",

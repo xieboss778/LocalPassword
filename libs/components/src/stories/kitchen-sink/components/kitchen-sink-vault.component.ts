@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { ButtonGroupComponent } from "../../../button-group";
 import { DialogService } from "../../../dialog";
@@ -65,7 +65,7 @@ import { KitchenSinkTourService } from "./kitchen-sink-tour.service";
       </bit-menu>
     </bit-section>
     <bit-section>
-      <h2 bitTypography="h2" class="tw-mb-6">Companies using Bitwarden</h2>
+      <h2 bitTypography="h2" class="tw-mb-6">Companies using LocalPass</h2>
       <bit-kitchen-sink-toggle-list></bit-kitchen-sink-toggle-list>
     </bit-section>
     <bit-section

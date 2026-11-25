@@ -1,20 +1,20 @@
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { FieldType, SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
-import { BankAccountView } from "@bitwarden/common/vault/models/view/bank-account.view";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DriversLicenseView } from "@bitwarden/common/vault/models/view/drivers-license.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
-import { PasswordHistoryView } from "@bitwarden/common/vault/models/view/password-history.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { FieldType, SecureNoteType, CipherType } from "@localpass/common/vault/enums";
+import { BankAccountView } from "@localpass/common/vault/models/view/bank-account.view";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DriversLicenseView } from "@localpass/common/vault/models/view/drivers-license.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
+import { PasswordHistoryView } from "@localpass/common/vault/models/view/password-history.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 import {
   BankAccountView as SdkBankAccountView,
   PassportView as SdkPassportView,
   DriversLicenseView as SdkDriversLicenseView,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { ImportResult } from "../../models/import-result";
 import { BaseImporter } from "../base-importer";

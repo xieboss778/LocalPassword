@@ -8,7 +8,7 @@ describe("ImportShellStagingService", () => {
   it("clears what was staged when the injector providing it is destroyed", () => {
     TestBed.configureTestingModule({ providers: [ImportShellStagingService] });
     const sut = TestBed.inject(ImportShellStagingService);
-    sut.stage({ kind: "parsed", importType: "bitwarden", result: new ImportResult() });
+    sut.stage({ kind: "parsed", importType: "localpass", result: new ImportResult() });
 
     TestBed.resetTestingModule();
 

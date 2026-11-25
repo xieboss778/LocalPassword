@@ -2,17 +2,17 @@ import { DatePipe } from "@angular/common";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
-import { ToastService } from "@bitwarden/components";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherType } from "@localpass/common/vault/enums/cipher-type";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
+import { ToastService } from "@localpass/components";
 
 import { PasswordRepromptService } from "../../services/password-reprompt.service";
 

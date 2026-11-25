@@ -2,20 +2,20 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { CipherId, EmergencyAccessId, UserId } from "@bitwarden/common/types/guid";
-import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { AsyncActionsModule, IconButtonModule, ToastService } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { FileDownloadService } from "@localpass/common/platform/abstractions/file-download/file-download.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { CipherId, EmergencyAccessId, UserId } from "@localpass/common/types/guid";
+import { CipherSdkService } from "@localpass/common/vault/abstractions/cipher-sdk.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { AttachmentView } from "@localpass/common/vault/models/view/attachment.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { AsyncActionsModule, IconButtonModule, ToastService } from "@localpass/components";
 import {
   isCipherAdminGetAttachmentDownloadUrlError,
   isCipherGetAttachmentDownloadUrlError,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 type DownloadOptions = { asAdmin?: boolean; emergencyAccessId?: EmergencyAccessId };
 

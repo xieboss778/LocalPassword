@@ -1,7 +1,7 @@
 import { nothing } from "lit";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { litValues } from "../../lit-stories/lit-values";
 import {

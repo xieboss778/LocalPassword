@@ -8,11 +8,11 @@ import { BehaviorSubject, firstValueFrom, map, of } from "rxjs";
 import {
   FakeUserDecryptionOptions as UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/auth/common";
+} from "@localpass/auth/common";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { BiometricStateService } from "@bitwarden/key-management";
-import { AutoUnlockService } from "@bitwarden/unlock";
+import { BiometricStateService } from "@localpass/key-management";
+import { AutoUnlockService } from "@localpass/unlock";
 
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { PolicyService } from "../../../admin-console/abstractions/policy/policy.service.abstraction";

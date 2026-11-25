@@ -39,7 +39,7 @@ export type AlgorithmInfo = {
   /** When true, credential generation must be explicitly requested.
    *  @remarks this property is useful when credential generation
    *   carries side effects, such as configuring a service external
-   *   to Bitwarden.
+   *   to LocalPass.
    */
   onlyOnRequest: boolean;
 

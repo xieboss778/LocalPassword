@@ -3,14 +3,14 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { of } from "rxjs";
 
-import { PasswordManagerLogo } from "@bitwarden/assets/svg";
-import { DeviceType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService, LayoutComponent, NavigationModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { VaultManageNavComponent, VaultNavSectionComponent } from "@bitwarden/vault";
+import { PasswordManagerLogo } from "@localpass/assets/svg";
+import { DeviceType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogService, LayoutComponent, NavigationModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { VaultManageNavComponent, VaultNavSectionComponent } from "@localpass/vault";
 
 import { VaultFilterComponent } from "../../vault/app/vault-v3/vault-filter/vault-filter.component";
 import { ExportDesktopComponent } from "../tools/export/export-desktop.component";
@@ -20,7 +20,7 @@ import { SendFiltersNavComponent } from "../tools/send/send-filters-nav.componen
 
 import { DesktopSideNavComponent } from "./desktop-side-nav.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-layout",
@@ -45,7 +45,7 @@ export class DesktopLayoutComponent {
 
   protected readonly logo = PasswordManagerLogo;
 
-  // LocalPassword: Send relays a secret through a server, so a local vault never offers it.
+  // LocalPass: Send relays a secret through a server, so a local vault never offers it.
   protected readonly sendEnabled = toSignal(of(false), { initialValue: false });
 
   protected readonly vfo1Foundation = toSignal(

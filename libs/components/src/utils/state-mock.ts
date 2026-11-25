@@ -12,8 +12,8 @@ import {
   StateProvider,
   UserKeyDefinition,
   activeMarker,
-} from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 /** The single account every Storybook story runs as. */
 const STORYBOOK_USER_ID = "storybook-user" as UserId;

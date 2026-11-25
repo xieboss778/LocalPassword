@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
+import { AuthenticationType } from "@localpass/common/auth/enums/authentication-type";
 
 import { CacheData } from "../services/login-strategies/login-strategy.state";
 

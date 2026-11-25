@@ -1,10 +1,10 @@
 import { BehaviorSubject, Observable, firstValueFrom, map } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { distinctIfShallowMatch, reduceCollection } from "@bitwarden/common/tools/rx";
-import { UserId } from "@bitwarden/common/types/guid";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { StateProvider } from "@localpass/common/platform/state";
+import { distinctIfShallowMatch, reduceCollection } from "@localpass/common/tools/rx";
+import { UserId } from "@localpass/common/types/guid";
 
 import { DefaultGeneratorNavigation } from "./default-generator-navigation";
 import { GeneratorNavigation } from "./generator-navigation";

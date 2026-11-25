@@ -1,14 +1,14 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { LogMeOnceCsvImporter } from "./logmeonce-csv-importer";
 
 const oldFormatCSV = `"name","url","username","password","group","extra"
-"Facebook (auser)","https://www.facebook.com/","auser","123456","Favorites",""`;
+"Facebook (auser)","https://github.com/xieboss778/LocalPass","auser","123456","Favorites",""`;
 
 const newFormatCSV = `"name","url","note","group","username","password","passkey","extra"
-"Facebook (auser)","https://www.facebook.com/","","Favorites","auser","123456","",""`;
+"Facebook (auser)","https://github.com/xieboss778/LocalPass","","Favorites","auser","123456","",""`;
 
 describe("LogMeOnce CSV Importer", () => {
   let importer: LogMeOnceCsvImporter;
@@ -27,7 +27,7 @@ describe("LogMeOnce CSV Importer", () => {
       const cipher = result.ciphers[0];
       expect(cipher.name).toEqual("Facebook (auser)");
       expect(cipher.login.uris.length).toEqual(1);
-      expect(cipher.login.uris[0].uri).toEqual("https://www.facebook.com/");
+      expect(cipher.login.uris[0].uri).toEqual("https://github.com/xieboss778/LocalPass");
       expect(cipher.login.username).toEqual("auser");
       expect(cipher.login.password).toEqual("123456");
 

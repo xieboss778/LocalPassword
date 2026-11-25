@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { EVENTS } from "@bitwarden/common/autofill/constants";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { EVENTS } from "@localpass/common/autofill/constants";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { AutofillOverlayPort } from "../../../enums/autofill-overlay.enum";
 import { createPortSpyMock } from "../../../spec/autofill-mocks";

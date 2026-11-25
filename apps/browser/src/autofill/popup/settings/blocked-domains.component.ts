@@ -17,11 +17,11 @@ import {
 import { RouterModule } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { NeverDomains } from "@localpass/common/models/domain/domain-service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   ButtonModule,
   CardComponent,
@@ -33,7 +33,7 @@ import {
   SectionHeaderComponent,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupFooterComponent } from "../../../platform/popup/layout/popup-footer.component";
@@ -41,7 +41,7 @@ import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-heade
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popup-router-cache.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-blocked-domains",
@@ -68,7 +68,7 @@ import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popu
   ],
 })
 export class BlockedDomainsComponent implements AfterViewInit, OnDestroy {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChildren("uriInput") uriInputElements: QueryList<ElementRef<HTMLInputElement>> =
     new QueryList();

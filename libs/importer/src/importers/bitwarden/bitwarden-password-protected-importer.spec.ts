@@ -1,18 +1,18 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { emptyGuid, OrganizationId } from "@bitwarden/common/types/guid";
-import { OrgKey, UserKey } from "@bitwarden/common/types/key";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { KeyService } from "@bitwarden/key-management";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { emptyGuid, OrganizationId } from "@localpass/common/types/guid";
+import { OrgKey, UserKey } from "@localpass/common/types/key";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KdfType, KeyGenerationService } from "@bitwarden/legacy-crypto";
-import { UserId } from "@bitwarden/user-core";
+import { EncryptService, KdfType, KeyGenerationService } from "@localpass/legacy-crypto";
+import { UserId } from "@localpass/user-core";
 
 import { emptyAccountEncrypted } from "../spec-data/bitwarden-json/account-encrypted.json";
 import {

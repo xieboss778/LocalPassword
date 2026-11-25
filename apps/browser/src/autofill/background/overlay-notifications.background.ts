@@ -1,9 +1,9 @@
 import { firstValueFrom, Subject, switchMap, timer } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
-import { CLEAR_NOTIFICATION_LOGIN_DATA_DURATION } from "@bitwarden/common/autofill/constants";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
+import { CLEAR_NOTIFICATION_LOGIN_DATA_DURATION } from "@localpass/common/autofill/constants";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { FillCipherPolicy } from "../services/abstractions/fill-cipher-policy";

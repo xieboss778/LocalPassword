@@ -2,20 +2,20 @@
 // @ts-strict-ignore
 import { Observable, Subject } from "rxjs";
 
-import { LogoutReason } from "@bitwarden/common/auth/logout";
-import { ClientType } from "@bitwarden/common/enums";
-import { VaultTimeout } from "@bitwarden/common/key-management/vault-timeout";
-import { RegionConfig } from "@bitwarden/common/platform/abstractions/environment.service";
+import { LogoutReason } from "@localpass/common/auth/logout";
+import { ClientType } from "@localpass/common/enums";
+import { VaultTimeout } from "@localpass/common/key-management/vault-timeout";
+import { RegionConfig } from "@localpass/common/platform/abstractions/environment.service";
 import {
   AbstractStorageService,
   ObservableStorageService,
-} from "@bitwarden/common/platform/abstractions/storage.service";
-import { Theme } from "@bitwarden/common/platform/enums";
-import { Message } from "@bitwarden/common/platform/messaging";
-import { HttpOperations } from "@bitwarden/common/services/api.service";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+} from "@localpass/common/platform/abstractions/storage.service";
+import { Theme } from "@localpass/common/platform/enums";
+import { Message } from "@localpass/common/platform/messaging";
+import { HttpOperations } from "@localpass/common/services/api.service";
+import { SafeInjectionToken } from "@localpass/ui-common";
 // Re-export the SafeInjectionToken from ui-common
-export { SafeInjectionToken } from "@bitwarden/ui-common";
+export { SafeInjectionToken } from "@localpass/ui-common";
 
 export const WINDOW = new SafeInjectionToken<Window>("WINDOW");
 export const DOCUMENT = new SafeInjectionToken<Document>("DOCUMENT");

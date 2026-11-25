@@ -8,7 +8,7 @@ import { ServerConfig } from "../platform/abstractions/config/server-config";
  * Flags should be grouped by team to have visibility of ownership and cleanup.
  */
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum FeatureFlag {
   /* Admin Console Team */
   InviteLinkAutoConfirm = "pm-34429-invite-link-auto-confirm",

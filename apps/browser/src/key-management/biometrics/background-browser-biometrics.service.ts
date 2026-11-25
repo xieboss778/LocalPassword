@@ -1,31 +1,31 @@
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { toTsBiometricsStatus } from "@bitwarden/common/key-management/biometrics-status-mapper";
-import { fromTsUserId } from "@bitwarden/common/key-management/utils";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { toTsBiometricsStatus } from "@localpass/common/key-management/biometrics-status-mapper";
+import { fromTsUserId } from "@localpass/common/key-management/utils";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { IpcService } from "@localpass/common/platform/ipc";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 import {
   BiometricsService,
   BiometricsCommands,
   BiometricsStatus,
   KeyService,
   BiometricStateService,
-} from "@bitwarden/key-management";
+} from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 import {
   BiometricsStatus as SdkBiometricsStatus,
   ipcRequestAuthenticateBiometrics,
   ipcRequestGetBiometricsStatus,
   ipcRequestUnlockBiometrics,
-} from "@bitwarden/sdk-internal";
-import { UnlockMethod } from "@bitwarden/unlock";
+} from "@localpass/sdk-internal";
+import { UnlockMethod } from "@localpass/unlock";
 
 import { NativeMessagingBackground } from "../../background/nativeMessaging.background";
 import { BrowserApi } from "../../platform/browser/browser-api";

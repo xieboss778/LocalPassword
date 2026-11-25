@@ -1,4 +1,4 @@
-import { ToastService } from "@bitwarden/components";
+import { ToastService } from "@localpass/components";
 
 import { AutomationCapability } from "../automation-capability";
 

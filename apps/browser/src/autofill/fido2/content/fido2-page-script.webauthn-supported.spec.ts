@@ -16,9 +16,9 @@ const mockGlobalThisDocument = {
   contentType: "text/html",
   location: {
     ...originalGlobalThis.document.location,
-    href: "https://bitwarden.com",
-    origin: "https://bitwarden.com",
-    hostname: "bitwarden.com",
+    href: "https://local.invalid",
+    origin: "https://local.invalid",
+    hostname: "local.invalid",
     protocol: "https:",
   },
 };
@@ -197,7 +197,7 @@ describe("Fido2 page script with native WebAuthn support", () => {
   describe("destroy", () => {
     it("should destroy the message listener when receiving a disconnect request", async () => {
       jest.spyOn(globalThis.top, "removeEventListener");
-      const SENDER = "bitwarden-webauthn";
+      const SENDER = "localpass-webauthn";
       void messenger.handler({ type: MessageTypes.DisconnectRequest, SENDER, senderId: "1" });
 
       expect(globalThis.top.removeEventListener).toHaveBeenCalledWith("focus", undefined);
@@ -233,8 +233,8 @@ describe("Fido2 page script with native WebAuthn support", () => {
         ...mockGlobalThisDocument,
         location: {
           ...mockGlobalThisDocument.location,
-          href: "http://bitwarden.com",
-          origin: "http://bitwarden.com",
+          href: "https://local.invalid",
+          origin: "https://local.invalid",
           protocol: "http:",
         },
       }));

@@ -1,21 +1,21 @@
 import { combineLatest, defer, switchMap, map, Observable } from "rxjs";
 
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { SharedUnlockSettingsService } from "@bitwarden/common/key-management/shared-unlock";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { SharedUnlockSettingsService } from "@localpass/common/key-management/shared-unlock";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { UserId } from "@localpass/common/types/guid";
 import {
   BiometricsService,
   BiometricsStatus,
   BiometricStateService,
-} from "@bitwarden/key-management";
+} from "@localpass/key-management";
 import {
   LockComponentService,
   UnlockOptions,
   WebAuthnPrfUnlockService,
-} from "@bitwarden/key-management-ui";
+} from "@localpass/key-management-ui";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/browser/browser-popup-utils";

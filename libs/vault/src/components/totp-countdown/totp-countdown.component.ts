@@ -10,12 +10,12 @@ import {
 } from "@angular/core";
 import { Observable, map, tap } from "rxjs";
 
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { TotpInfo } from "@bitwarden/common/vault/services/totp.service";
-import { TypographyModule } from "@bitwarden/components";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { TotpInfo } from "@localpass/common/vault/services/totp.service";
+import { TypographyModule } from "@localpass/components";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "[bitTotpCountdown]",
@@ -23,10 +23,10 @@ import { TypographyModule } from "@bitwarden/components";
   imports: [CommonModule, TypographyModule],
 })
 export class BitTotpCountdownComponent implements OnInit, OnChanges {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) cipher!: CipherView;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() sendCopyCode = new EventEmitter();
 

@@ -2,23 +2,23 @@
 // @ts-strict-ignore
 import { Subject } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   AbstractStorageService,
   ObservableStorageService,
   StorageUpdate,
-} from "@bitwarden/common/platform/abstractions/storage.service";
-import { compareValues } from "@bitwarden/common/platform/misc/compare-values";
-import { StorageOptions } from "@bitwarden/common/platform/models/domain/storage-options";
+} from "@localpass/common/platform/abstractions/storage.service";
+import { compareValues } from "@localpass/common/platform/misc/compare-values";
+import { StorageOptions } from "@localpass/common/platform/models/domain/storage-options";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptService,
   EncString,
   KeyGenerationService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { StorageService } from "@bitwarden/storage-core";
+} from "@localpass/legacy-crypto";
+import { StorageService } from "@localpass/storage-core";
 
 import { BrowserApi } from "../browser/browser-api";
 import { MemoryStoragePortMessage } from "../storage/port-messages";
@@ -71,7 +71,7 @@ export class SessionKeyResolveService {
     const { derivedKey } = await this.keyGenerationService.createKeyWithPurpose(
       128,
       "ephemeral",
-      "bitwarden-ephemeral",
+      "localpass-ephemeral",
     );
     await this.storageService.save("session-key", derivedKey.toJSON());
     return derivedKey;

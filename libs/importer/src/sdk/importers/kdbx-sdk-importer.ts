@@ -1,5 +1,5 @@
-import { asUuid } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { ImportOptions, PasswordManagerClient, isImportError } from "@bitwarden/sdk-internal";
+import { asUuid } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { ImportOptions, PasswordManagerClient, isImportError } from "@localpass/sdk-internal";
 
 import { toSdkCipherType } from "../sdk-cipher-type";
 import { toSdkCollectionType } from "../sdk-collection-type";

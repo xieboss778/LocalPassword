@@ -1,51 +1,51 @@
 import { EMPTY, filter, firstValueFrom, switchMap, map, of } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
+import { CollectionService } from "@localpass/admin-console/common";
 import {
   getOrganizationById,
   OrganizationService,
-} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { getOptionalUserId, getUserId } from "@bitwarden/common/auth/services/account.service";
+} from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { getOptionalUserId, getUserId } from "@localpass/common/auth/services/account.service";
 import {
   ExtensionCommand,
   ExtensionCommandType,
   NOTIFICATION_BAR_LIFESPAN_MS,
   UPDATE_PASSWORD,
-} from "@bitwarden/common/autofill/constants";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums/product-tier-type.enum";
-import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { ServerConfig } from "@bitwarden/common/platform/abstractions/config/server-config";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+} from "@localpass/common/autofill/constants";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { UserNotificationSettingsServiceAbstraction } from "@localpass/common/autofill/services/user-notification-settings.service";
+import { ProductTierType } from "@localpass/common/billing/enums/product-tier-type.enum";
+import { NeverDomains } from "@localpass/common/models/domain/domain-service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { ServerConfig } from "@localpass/common/platform/abstractions/config/server-config";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 import {
   IntraprocessMessageSender,
   isExternalMessage,
   MessageListener,
-} from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { VaultMessages } from "@bitwarden/common/vault/enums/vault-messages.enum";
-import { buildCipherIcon } from "@bitwarden/common/vault/icon/build-cipher-icon";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { TaskService } from "@bitwarden/common/vault/tasks";
-import { SecurityTaskStatus, SecurityTaskType } from "@bitwarden/common/vault/tasks/enums";
-import { SecurityTask } from "@bitwarden/common/vault/tasks/models/security-task";
+} from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { UserId } from "@localpass/common/types/guid";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { VaultMessages } from "@localpass/common/vault/enums/vault-messages.enum";
+import { buildCipherIcon } from "@localpass/common/vault/icon/build-cipher-icon";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { TaskService } from "@localpass/common/vault/tasks";
+import { SecurityTaskStatus, SecurityTaskType } from "@localpass/common/vault/tasks/enums";
+import { SecurityTask } from "@localpass/common/vault/tasks/models/security-task";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports

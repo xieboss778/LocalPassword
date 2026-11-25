@@ -1,7 +1,7 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
 
 export const ImportDestinationKind = Object.freeze({
   MyVault: "myVault",

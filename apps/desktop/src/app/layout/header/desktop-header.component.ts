@@ -3,11 +3,11 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { HeaderComponent, BannerModule, HeaderContext, BitwardenIcon } from "@bitwarden/components";
-import { safeProvider } from "@bitwarden/ui-common";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { HeaderComponent, BannerModule, HeaderContext, LocalPassIcon } from "@localpass/components";
+import { safeProvider } from "@localpass/ui-common";
 
 import { AccountSwitcherV2Component } from "../../../auth/components/account-switcher/account-switcher-v2.component";
 
@@ -44,7 +44,7 @@ export class DesktopHeaderComponent {
   /**
    * Icon to show before the title
    */
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
 
   private readonly routeData = toSignal(
     this.route.data.pipe(

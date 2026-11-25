@@ -110,7 +110,7 @@ entitlement to verification codes for that cipher. A denial forbids the release 
 > Autofill performs TOTP fill operations onto the page. The outcome of a fill should not be
 > used to perform a secondary fill operation. It is permitted, however, to copy the code into
 > a different structure, such as the system clipboard,
-> [as governed by our security principles](https://contributing.bitwarden.com/architecture/security/principles/).
+> [as governed by our security principles](https://contributing.local.invalid/architecture/security/principles/).
 
 ## The autofill service
 

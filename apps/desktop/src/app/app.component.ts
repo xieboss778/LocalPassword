@@ -5,65 +5,65 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { filter, firstValueFrom, lastValueFrom, map, Subject, takeUntil, timeout } from "rxjs";
 
-import { AccountDeletionDialogService } from "@bitwarden/angular/auth/account-deletion";
-import { FingerprintDialogComponent } from "@bitwarden/angular/auth/fingerprint-dialog";
-import { LoginApprovalDialogComponent } from "@bitwarden/angular/auth/login-approval";
-import { DeviceTrustToastService } from "@bitwarden/angular/auth/services/device-trust-toast.service.abstraction";
-import { DocumentLangSetter } from "@bitwarden/angular/platform/i18n";
-import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { AccountDeletionDialogService } from "@localpass/angular/auth/account-deletion";
+import { FingerprintDialogComponent } from "@localpass/angular/auth/fingerprint-dialog";
+import { LoginApprovalDialogComponent } from "@localpass/angular/auth/login-approval";
+import { DeviceTrustToastService } from "@localpass/angular/auth/services/device-trust-toast.service.abstraction";
+import { DocumentLangSetter } from "@localpass/angular/platform/i18n";
+import { ModalService } from "@localpass/angular/services/modal.service";
 import {
   AuthRequestServiceAbstraction,
   UserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/auth/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestAnsweringService } from "@bitwarden/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { AccountSwitcherService } from "@bitwarden/common/auth/account-switcher";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogoutReason } from "@bitwarden/common/auth/logout";
-import { getOptionalUserId, getUserId } from "@bitwarden/common/auth/services/account.service";
-import { PendingAuthRequestsStateService } from "@bitwarden/common/auth/services/auth-request-answering/pending-auth-requests.state";
-import { DESKTOP_SSO_CALLBACK } from "@bitwarden/common/auth/sso-login";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { PremiumCheckoutPendingService } from "@bitwarden/common/billing/abstractions/account/premium-checkout-pending.service";
-import { EventUploadService } from "@bitwarden/common/dirt/event-logs";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/process-reload";
+} from "@localpass/auth/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthRequestAnsweringService } from "@localpass/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AccountSwitcherService } from "@localpass/common/auth/account-switcher";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogoutReason } from "@localpass/common/auth/logout";
+import { getOptionalUserId, getUserId } from "@localpass/common/auth/services/account.service";
+import { PendingAuthRequestsStateService } from "@localpass/common/auth/services/auth-request-answering/pending-auth-requests.state";
+import { DESKTOP_SSO_CALLBACK } from "@localpass/common/auth/sso-login";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { PremiumCheckoutPendingService } from "@localpass/common/billing/abstractions/account/premium-checkout-pending.service";
+import { EventUploadService } from "@localpass/common/dirt/event-logs";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { ProcessReloadServiceAbstraction } from "@localpass/common/key-management/process-reload";
 import {
   VaultTimeout,
   VaultTimeoutAction,
   VaultTimeoutSettingsService,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
-import { ServerNotificationsService } from "@bitwarden/common/platform/server-notifications";
-import { StateEventRunnerService } from "@bitwarden/common/platform/state";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { DialogRef, DialogService, ToastOptions, ToastService } from "@bitwarden/components";
-import { CredentialGeneratorHistoryDialogComponent } from "@bitwarden/generator-components";
-import { KeyService, BiometricStateService } from "@bitwarden/key-management";
+} from "@localpass/common/key-management/vault-timeout";
+import { BroadcasterService } from "@localpass/common/platform/abstractions/broadcaster.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { SystemService } from "@localpass/common/platform/abstractions/system.service";
+import { ServerNotificationsService } from "@localpass/common/platform/server-notifications";
+import { StateEventRunnerService } from "@localpass/common/platform/state";
+import { SyncService } from "@localpass/common/platform/sync";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { InternalFolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { DialogRef, DialogService, ToastOptions, ToastService } from "@localpass/components";
+import { CredentialGeneratorHistoryDialogComponent } from "@localpass/generator-components";
+import { KeyService, BiometricStateService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-import { TroubleshootingDialogComponent } from "@bitwarden/logging-angular";
-import { LockService, LockSource } from "@bitwarden/unlock";
-import { AddEditFolderDialogComponent, AddEditFolderDialogResult } from "@bitwarden/vault";
+import { LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { TroubleshootingDialogComponent } from "@localpass/logging-angular";
+import { LockService, LockSource } from "@localpass/unlock";
+import { AddEditFolderDialogComponent, AddEditFolderDialogResult } from "@localpass/vault";
 
 import { DeviceManagementDialogComponent } from "../auth/device-management/device-management-dialog.component";
 import { ChangePasswordDialogComponent } from "../auth/password-management/change-password-dialog.component";
@@ -79,7 +79,7 @@ const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes
 const SyncInterval = 6 * 60 * 60 * 1000; // 6 hours
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-root",
@@ -346,7 +346,7 @@ export class AppComponent implements OnInit, OnDestroy {
             });
             if (emailVerificationConfirmed) {
               this.platformUtilsService.launchUri(
-                "https://bitwarden.com/help/create-bitwarden-account/",
+                "https://github.com/xieboss778/LocalPass/tree/main/docs",
               );
             }
             break;
@@ -894,7 +894,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // Process the sso callback links
   private processDeepLink(urlString: string) {
     // Handle SSO cookie vendor callback
-    if (urlString.indexOf("bitwarden://sso-cookie-vendor") === 0) {
+    if (urlString.indexOf("localpass://sso-cookie-vendor") === 0) {
       this.messagingService.send(SSO_COOKIE_VENDOR_CALLBACK_COMMAND, { urlString });
       return;
     }
@@ -908,13 +908,13 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (urlString.indexOf("bitwarden://duo-callback") === 0) {
+    if (urlString.indexOf("localpass://duo-callback") === 0) {
       message = "duoCallback";
     } else if (receivedState === null) {
       return;
     }
 
-    if (urlString.indexOf("bitwarden://import-callback-lp") === 0) {
+    if (urlString.indexOf("localpass://import-callback-lp") === 0) {
       message = "importCallbackLastPass";
     } else if (urlString.indexOf(DESKTOP_SSO_CALLBACK) === 0) {
       message = "ssoCallback";

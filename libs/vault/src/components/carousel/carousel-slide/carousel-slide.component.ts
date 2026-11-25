@@ -11,7 +11,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-carousel-slide",
@@ -20,10 +20,10 @@ import {
 })
 export class VaultCarouselSlideComponent implements OnInit {
   /** `aria-label` that is assigned to the carousel toggle. */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) label!: string;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ transform: booleanAttribute }) disablePadding = false;
 
@@ -35,11 +35,11 @@ export class VaultCarouselSlideComponent implements OnInit {
    *
    * @remarks See note 4 of https://www.w3.org/WAI/ARIA/apg/patterns/tabpanel/
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ transform: coerceBooleanProperty }) noFocusableChildren?: true;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(TemplateRef, { static: true }) implicitContent!: TemplateRef<unknown>;
 

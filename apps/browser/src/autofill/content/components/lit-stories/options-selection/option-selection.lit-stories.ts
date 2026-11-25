@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/web-components";
 import { html } from "lit";
 
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums/theme-type.enum";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 
 import { Option } from "../../common-types";
 import { themes } from "../../constants/styles";

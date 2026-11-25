@@ -1,5 +1,5 @@
-import { measured, PerfTrackGroup } from "@bitwarden/logging";
-import { init_sdk, LogLevel } from "@bitwarden/sdk-internal";
+import { measured, PerfTrackGroup } from "@localpass/logging";
+import { init_sdk, LogLevel } from "@localpass/sdk-internal";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in docs
 import type { SdkService } from "./sdk.service";
@@ -22,7 +22,7 @@ export abstract class SdkLoadService {
    *
    * @example
    * ```typescript
-   * import { pureFunction } from "@bitwarden/sdk-internal";
+   * import { pureFunction } from "@localpass/sdk-internal";
    *
    * async function myFunction() {
    *   await SdkLoadService.Ready;

@@ -1,16 +1,16 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { toSdkBiometricsStatus } from "@bitwarden/common/key-management/biometrics-status-mapper";
-import { fromSdkUserId } from "@bitwarden/common/key-management/utils";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserKey } from "@bitwarden/common/types/key";
-import { BiometricsStatus, BiometricStateService } from "@bitwarden/key-management";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { toSdkBiometricsStatus } from "@localpass/common/key-management/biometrics-status-mapper";
+import { fromSdkUserId } from "@localpass/common/key-management/utils";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { IpcService } from "@localpass/common/platform/ipc";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserKey } from "@localpass/common/types/key";
+import { BiometricsStatus, BiometricStateService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 import {
   CryptoClient,
   ipcRegisterBiometricsHandlers,
@@ -18,9 +18,9 @@ import {
   UserId as SdkUserId,
   BiometricsUnlock,
   BiometricsStatus as SdkBiometricsStatus,
-} from "@bitwarden/sdk-internal";
-import { UnlockMethod, UnlockService } from "@bitwarden/unlock";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/sdk-internal";
+import { UnlockMethod, UnlockService } from "@localpass/unlock";
+import { UserId } from "@localpass/user-core";
 
 import { DesktopBiometricsService } from "./desktop.biometrics.service";
 

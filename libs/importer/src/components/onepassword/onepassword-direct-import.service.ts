@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy, inject } from "@angular/core";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DialogRef, DialogService } from "@bitwarden/components";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { DialogRef, DialogService } from "@localpass/components";
 
 import {
   OnePasswordErrorField,

@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserId } from "@localpass/common/types/guid";
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfig } from "@bitwarden/legacy-crypto";
+import { KdfConfig } from "@localpass/legacy-crypto";
 
 export abstract class KdfConfigService {
   abstract setKdfConfig(userId: UserId, KdfConfig: KdfConfig): Promise<void>;

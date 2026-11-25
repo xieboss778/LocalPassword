@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
-import { PasswordHistory } from "@bitwarden/sdk-internal";
+import { EncString } from "@localpass/legacy-crypto";
+import { PasswordHistory } from "@localpass/sdk-internal";
 
 import Domain from "../../../platform/models/domain/domain-base";
 import { PasswordHistoryData } from "../data/password-history.data";

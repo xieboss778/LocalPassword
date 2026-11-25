@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
-import { KeyDefinition, StateUpdateOptions, StorageKey } from "@bitwarden/state";
-import { AbstractStorageService } from "@bitwarden/storage-core";
+import { KeyDefinition, StateUpdateOptions, StorageKey } from "@localpass/state";
+import { AbstractStorageService } from "@localpass/storage-core";
 
 export async function getStoredValue<T>(
   key: string,

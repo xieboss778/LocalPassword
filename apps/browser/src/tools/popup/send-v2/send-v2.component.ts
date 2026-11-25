@@ -4,24 +4,24 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { combineLatest, distinctUntilChanged, map, shareReplay } from "rxjs";
 
-import { NoResults, NoSendsIcon } from "@bitwarden/assets/svg";
-import { BrowserPremiumUpgradePromptService } from "@bitwarden/browser/billing/popup/services/browser-premium-upgrade-prompt.service";
-import { VaultLoadingSkeletonComponent } from "@bitwarden/browser/vault/popup/components/vault-loading-skeleton/vault-loading-skeleton.component";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { skeletonLoadingDelay } from "@bitwarden/common/vault/utils/skeleton-loading.operator";
+import { NoResults, NoSendsIcon } from "@localpass/assets/svg";
+import { BrowserPremiumUpgradePromptService } from "@localpass/browser/billing/popup/services/browser-premium-upgrade-prompt.service";
+import { VaultLoadingSkeletonComponent } from "@localpass/browser/vault/popup/components/vault-loading-skeleton/vault-loading-skeleton.component";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { skeletonLoadingDelay } from "@localpass/common/vault/utils/skeleton-loading.operator";
 import {
   ButtonModule,
   CalloutModule,
   StatusLockupComponent,
   SvgComponent,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   NewSendDropdownComponent,
   SendItemsService,
@@ -31,8 +31,8 @@ import {
   SendPolicyService,
   SendSearchComponent,
   SendTableV2Component,
-} from "@bitwarden/send-ui";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/send-ui";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
@@ -53,7 +53,7 @@ export const SendState = Object.freeze({
 /** A state of the Send list UI. */
 export type SendState = (typeof SendState)[keyof typeof SendState];
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "send-v2.component.html",

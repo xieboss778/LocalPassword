@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { KeyDefinition, SEND_ACCESS_DISK } from "@bitwarden/state";
+import { KeyDefinition, SEND_ACCESS_DISK } from "@localpass/state";
 
 import { SendAccessToken } from "../models/send-access-token";
 

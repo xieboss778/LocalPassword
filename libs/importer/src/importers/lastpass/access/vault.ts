@@ -2,11 +2,11 @@
 // @ts-strict-ignore
 import * as papa from "papaparse";
 
-import { decodeJwtTokenToJson } from "@bitwarden/common/auth/jwt";
-import { HttpStatusCode } from "@bitwarden/common/enums";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { decodeJwtTokenToJson } from "@localpass/common/auth/jwt";
+import { HttpStatusCode } from "@localpass/common/enums";
+import { Utils } from "@localpass/common/platform/misc/utils";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { IdpProvider } from "./enums";
 import {

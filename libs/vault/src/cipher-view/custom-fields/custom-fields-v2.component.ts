@@ -1,16 +1,16 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherType, FieldType, LinkedIdType } from "@bitwarden/common/vault/enums";
-import { LinkedMetadata } from "@bitwarden/common/vault/linked-field-option.decorator";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherType, FieldType, LinkedIdType } from "@localpass/common/vault/enums";
+import { LinkedMetadata } from "@localpass/common/vault/linked-field-option.decorator";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   CardComponent,
   IconButtonModule,
@@ -20,11 +20,11 @@ import {
   TypographyModule,
   CheckboxModule,
   ColorPasswordModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { VaultAutosizeReadOnlyTextArea } from "../../directives/readonly-textarea.directive";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-custom-fields-v2",
@@ -44,7 +44,7 @@ import { VaultAutosizeReadOnlyTextArea } from "../../directives/readonly-textare
   ],
 })
 export class CustomFieldV2Component implements OnInit, OnChanges {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) cipher!: CipherView;
   fieldType = FieldType;

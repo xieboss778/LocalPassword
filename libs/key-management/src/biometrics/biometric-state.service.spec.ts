@@ -6,8 +6,8 @@ import {
   FakeGlobalState,
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { BiometricStateService, DefaultBiometricStateService } from "./biometric-state.service";
 import {

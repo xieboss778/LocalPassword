@@ -1,12 +1,12 @@
-# `@bitwarden/scheduling`
+# `@localpass/scheduling`
 
 Owned by: platform
 
-Background task scheduling infrastructure for Bitwarden clients.
+Background task scheduling infrastructure for LocalPass clients.
 
 ## Overview
 
-This library provides the shared abstractions for scheduling recurring and one-shot background tasks across Bitwarden client platforms. It defines a common contract that each platform implements according to its own execution model — for example, browser extensions use `chrome.alarms` because service workers can be killed at any time, while desktop and CLI clients use standard `setTimeout`/`setInterval`.
+This library provides the shared abstractions for scheduling recurring and one-shot background tasks across LocalPass client platforms. It defines a common contract that each platform implements according to its own execution model — for example, browser extensions use `chrome.alarms` because service workers can be killed at any time, while desktop and CLI clients use standard `setTimeout`/`setInterval`.
 
 ## Key Abstractions
 
@@ -24,4 +24,4 @@ Platform-specific scheduler implementations live outside this library in their r
 
 ## Backward Compatibility
 
-The original source location at `libs/common/src/platform/scheduling/` has been retained as a re-export shim so that existing imports continue to resolve without requiring a bulk migration. New code should import directly from `@bitwarden/scheduling`.
+The original source location at `libs/common/src/platform/scheduling/` has been retained as a re-export shim so that existing imports continue to resolve without requiring a bulk migration. New code should import directly from `@localpass/scheduling`.

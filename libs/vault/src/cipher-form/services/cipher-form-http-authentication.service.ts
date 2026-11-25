@@ -2,9 +2,9 @@ import { inject, Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { BehaviorSubject, distinctUntilChanged } from "rxjs";
 
-import { everyUriHasExplicitMatchStrategy } from "@bitwarden/common/autofill/utils/http-authentication-eligibility";
-import { UriMatchStrategySetting } from "@bitwarden/common/models/domain/domain-service";
-import { DialogService } from "@bitwarden/components";
+import { everyUriHasExplicitMatchStrategy } from "@localpass/common/autofill/utils/http-authentication-eligibility";
+import { UriMatchStrategySetting } from "@localpass/common/models/domain/domain-service";
+import { DialogService } from "@localpass/components";
 
 /**
  * Coordinates the HTTP authentication (browser login prompt) setting across the cipher form sections.

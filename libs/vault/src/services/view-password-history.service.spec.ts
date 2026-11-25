@@ -1,8 +1,8 @@
 import { Overlay } from "@angular/cdk/overlay";
 import { TestBed } from "@angular/core/testing";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService } from "@localpass/components";
 
 import { openPasswordHistoryDialog } from "../components/password-history/password-history.component";
 

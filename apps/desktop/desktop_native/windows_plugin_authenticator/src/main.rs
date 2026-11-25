@@ -37,7 +37,7 @@ fn main() {
     unimplemented!("Not implemented on non-Windows platforms.");
 }
 
-/// Handles initialization and registration for the Bitwarden desktop app as a
+/// Handles initialization and registration for the LocalPass desktop app as a
 /// For now, also adds the authenticator
 #[cfg(target_os = "windows")]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -152,18 +152,18 @@ fn open_log_file() -> Result<std::fs::File, Box<dyn std::error::Error>> {
     };
 
     // These match the `userData` overrides in apps/desktop/src/main.ts.
-    if let Ok(app_data_path) = std::env::var("BITWARDEN_APPDATA_DIR") {
+    if let Ok(app_data_path) = std::env::var("LOCALPASS_APPDATA_DIR") {
         return Ok(open(PathBuf::from(app_data_path))?);
     }
     if let Ok(portable_path) = std::env::var("PORTABLE_EXECUTABLE_DIR") {
         return Ok(open(
-            PathBuf::from(portable_path).join("bitwarden-appdata"),
+            PathBuf::from(portable_path).join("localpass-appdata"),
         )?);
     }
 
     // The plugin name matches the Electron `productName` that names the `userData` folder.
     let product_name =
-        read_plugin_config_file()?.map_or_else(|| "Bitwarden".to_string(), |config| config.name);
+        read_plugin_config_file()?.map_or_else(|| "LocalPass".to_string(), |config| config.name);
 
     let unsandboxed_path =
         PathBuf::from(std::env::var("APPDATA").expect("%APPDATA% to be defined"))

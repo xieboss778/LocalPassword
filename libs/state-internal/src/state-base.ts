@@ -15,9 +15,9 @@ import {
 } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { LogService } from "@bitwarden/logging";
-import { DebugOptions, StateUpdateOptions, StorageKey } from "@bitwarden/state";
-import { AbstractStorageService, ObservableStorageService } from "@bitwarden/storage-core";
+import { LogService } from "@localpass/logging";
+import { DebugOptions, StateUpdateOptions, StorageKey } from "@localpass/state";
+import { AbstractStorageService, ObservableStorageService } from "@localpass/storage-core";
 
 import { getStoredValue, populateOptionsWithDefault } from "./util";
 

@@ -1,15 +1,15 @@
 import { combineLatest, filter, from, map, Observable, switchMap } from "rxjs";
 
-import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { KeyService } from "@bitwarden/key-management";
+import { OrganizationUserType } from "@localpass/common/admin-console/enums";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService } from "@bitwarden/legacy-crypto";
+import { EncryptService } from "@localpass/legacy-crypto";
 
 import {
   OrganizationUserApiService,

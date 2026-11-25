@@ -1,6 +1,6 @@
 import { InjectionToken, inject } from "@angular/core";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 /**
  * Launches the Keeper SSO flow and, where the client supports it, captures the

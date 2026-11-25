@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { VaultMessages } from "@bitwarden/common/vault/enums/vault-messages.enum";
+import { VaultMessages } from "@localpass/common/vault/enums/vault-messages.enum";
 
 import { postWindowMessage, sendMockExtensionMessage } from "../spec/testing-utils";
 import { EventSecurity } from "../utils/event-security";
@@ -45,14 +45,14 @@ describe("ContentMessageHandler", () => {
     it("forwards the install check to the background with the page referrer", () => {
       postWindowMessage(
         { command: VaultMessages.checkBwInstalled },
-        "https://vault.bitwarden.com/",
+        "https://vault.local.invalid/",
         window,
       );
 
       expect(sendMessageSpy).toHaveBeenCalledWith(
         {
           command: VaultMessages.checkBwInstalled,
-          referrer: "vault.bitwarden.com",
+          referrer: "vault.local.invalid",
         },
         expect.any(Function),
       );
@@ -65,7 +65,7 @@ describe("ContentMessageHandler", () => {
 
       postWindowMessage(
         { command: VaultMessages.checkBwInstalled },
-        "https://vault.bitwarden.com/",
+        "https://vault.local.invalid/",
         window,
       );
 

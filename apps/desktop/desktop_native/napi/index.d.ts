@@ -440,7 +440,7 @@ export declare namespace sshagent {
   /** Wrapper for Electron to be able to interface with the agent directly. */
   export class SshAgentState {
     /**
-     * Creates a new [`BitwardenSSHAgent`] and starts the server.
+     * Creates a new [`LocalPassSSHAgent`] and starts the server.
      *
      * # Arguments
      *

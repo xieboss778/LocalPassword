@@ -1,4 +1,4 @@
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 import { IconProps } from "../common-types";
 

@@ -1,4 +1,4 @@
-import { SendAccessTokenResponse } from "@bitwarden/sdk-internal";
+import { SendAccessTokenResponse } from "@localpass/sdk-internal";
 
 import { SendAccessToken } from "./send-access-token";
 

@@ -97,7 +97,7 @@ impl IpcClient for RealIpcClient {
     }
 }
 
-/// Factory + I/O operations that `BitwardenPluginAuthenticator` needs when
+/// Factory + I/O operations that `LocalPassPluginAuthenticator` needs when
 /// (re-)connecting to the desktop app.  Separating these from [`IpcClient`]
 /// lets tests inject a no-op connector that never touches real IPC or Windows
 /// APIs.
@@ -110,7 +110,7 @@ pub(crate) trait IpcConnector: Send + Sync + 'static {
     /// Open a new connection and return the client.
     fn connect(&self) -> Self::Client;
 
-    /// Launch the Bitwarden desktop app via its custom URI scheme so it can
+    /// Launch the LocalPass desktop app via its custom URI scheme so it can
     /// open the IPC socket.
     fn launch_desktop_app(&self);
 
@@ -138,20 +138,20 @@ impl IpcConnector for RealIpcConnector {
 
     fn launch_desktop_app(&self) {
         use windows::{core::HSTRING, Foundation::Uri, System::Launcher};
-        let uri = Uri::CreateUri(&HSTRING::from("bitwarden://webauthn")).expect("valid URI");
+        let uri = Uri::CreateUri(&HSTRING::from("localpass://webauthn")).expect("valid URI");
         _ = Launcher::LaunchUriAsync(&uri);
     }
 }
 
 #[cfg(test)]
 pub(crate) mod test_util {
-    use autofill_provider::BitwardenError;
+    use autofill_provider::LocalPassError;
 
     use super::*;
 
     /// Answers every registration and assertion request with `error`.
     pub(crate) struct FailingIpcClient {
-        pub(crate) error: fn() -> BitwardenError,
+        pub(crate) error: fn() -> LocalPassError,
     }
 
     impl IpcClient for FailingIpcClient {

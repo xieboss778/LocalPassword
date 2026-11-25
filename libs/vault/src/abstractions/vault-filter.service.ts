@@ -5,11 +5,11 @@ import { Observable } from "rxjs";
 import {
   CollectionAdminView,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { UserId } from "@bitwarden/common/types/guid";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { UserId } from "@localpass/common/types/guid";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import {
   CipherTypeFilter,

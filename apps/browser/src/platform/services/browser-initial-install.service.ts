@@ -1,17 +1,17 @@
 import { Observable, map } from "rxjs";
 
-import { devFlagEnabled, flagEnabled } from "@bitwarden/common/platform/misc/flags";
+import { devFlagEnabled, flagEnabled } from "@localpass/common/platform/misc/flags";
 import {
   GlobalState,
   EXTENSION_INITIAL_INSTALL_DISK,
   KeyDefinition,
   StateProvider,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 import { BrowserApi } from "../browser/browser-api";
 import { ExtensionInstallType } from "../browser/extension-install-type";
 
-const WELCOME_PAGE_URL = "https://bitwarden.com/browser-start/";
+const WELCOME_PAGE_URL = "https://local.invalid/browser-start/";
 
 const EXTENSION_INSTALLED = new KeyDefinition<boolean>(
   EXTENSION_INITIAL_INSTALL_DISK,

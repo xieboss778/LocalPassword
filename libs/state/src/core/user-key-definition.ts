@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { isGuid } from "@bitwarden/guid";
-import { array, record } from "@bitwarden/serialization";
-import { UserId } from "@bitwarden/user-core";
+import { isGuid } from "@localpass/guid";
+import { array, record } from "@localpass/serialization";
+import { UserId } from "@localpass/user-core";
 
 import { StorageKey } from "../types/state";
 

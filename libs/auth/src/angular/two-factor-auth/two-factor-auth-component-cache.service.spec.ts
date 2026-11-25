@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
 
 import {
   TwoFactorAuthComponentCache,

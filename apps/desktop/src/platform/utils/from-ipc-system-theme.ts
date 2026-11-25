@@ -1,6 +1,6 @@
 import { defer, merge, Observable } from "rxjs";
 
-import { ThemeType } from "@bitwarden/common/platform/enums";
+import { ThemeType } from "@localpass/common/platform/enums";
 
 /**
  * @returns An observable watching the system theme via IPC channels

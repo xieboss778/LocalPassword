@@ -1,6 +1,6 @@
 import { combineLatest, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
 
-import { OrganizationUserPolicyContext } from "@bitwarden/sdk-internal";
+import { OrganizationUserPolicyContext } from "@localpass/sdk-internal";
 
 import { AccountService } from "../../../auth/abstractions/account.service";
 import { getUserId } from "../../../auth/services/account.service";

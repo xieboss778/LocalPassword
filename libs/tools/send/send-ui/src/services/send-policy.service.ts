@@ -1,17 +1,17 @@
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, firstValueFrom, map, Observable, shareReplay, switchMap } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { SendDeletionDatePreset } from "@bitwarden/common/tools/models/send-deletion-date-preset";
-import { SendDisabledReason } from "@bitwarden/common/tools/models/send-disabled-reason";
-import { WhoCanAccessType } from "@bitwarden/common/tools/models/send-who-can-access-type";
-import { Send } from "@bitwarden/common/tools/send/models/domain/send";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { SendDeletionDatePreset } from "@localpass/common/tools/models/send-deletion-date-preset";
+import { SendDisabledReason } from "@localpass/common/tools/models/send-disabled-reason";
+import { WhoCanAccessType } from "@localpass/common/tools/models/send-who-can-access-type";
+import { Send } from "@localpass/common/tools/send/models/domain/send";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 /**
  * Service for evaluating Send-related policy restrictions for the current user.

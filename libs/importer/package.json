@@ -1,15 +1,15 @@
 {
-  "name": "@bitwarden/importer",
+  "name": "@localpass/importer",
   "version": "0.0.0",
-  "description": "Home for all Bitwarden importers.",
+  "description": "Home for all LocalPass importers.",
   "keywords": [
-    "bitwarden"
+    "localpass"
   ],
-  "author": "Bitwarden Inc.",
-  "homepage": "https://bitwarden.com",
+  "author": "LocalPass Inc.",
+  "homepage": "https://github.com/xieboss778/LocalPass",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitwarden/clients"
+    "url": "https://github.com/xieboss778/LocalPassword"
   },
   "license": "GPL-3.0",
   "sideEffects": false,

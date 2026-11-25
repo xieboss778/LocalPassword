@@ -2,9 +2,9 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/user-core";
+import { AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/user-core";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../../../libs/common/spec";
 import { NUDGE_DISMISSED_DISK_KEY, NudgeType } from "../nudges.service";

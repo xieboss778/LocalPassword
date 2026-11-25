@@ -16,16 +16,16 @@ import {
   tap,
 } from "rxjs";
 
-import { ClientType } from "@bitwarden/common/enums";
-import { AvailableRegionsService } from "@bitwarden/common/platform/abstractions/available-regions.service";
+import { ClientType } from "@localpass/common/enums";
+import { AvailableRegionsService } from "@localpass/common/platform/abstractions/available-regions.service";
 import {
   EnvironmentService,
   Region,
   RegionConfig,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService, FormFieldModule, SelectModule, ToastService } from "@bitwarden/components";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogService, FormFieldModule, SelectModule, ToastService } from "@localpass/components";
 
 import { JslibModule } from "../../../jslib.module";
 import { SelfHostedEnvConfigDialogComponent } from "../../self-hosted-env-config-dialog";
@@ -34,7 +34,7 @@ import { SelfHostedEnvConfigDialogComponent } from "../../self-hosted-env-config
  * Component for selecting the environment to register with in the email verification registration flow.
  * Outputs the selected region to the parent component so it can respond as necessary.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "auth-registration-env-selector",
@@ -42,7 +42,7 @@ import { SelfHostedEnvConfigDialogComponent } from "../../self-hosted-env-config
   imports: [CommonModule, JslibModule, ReactiveFormsModule, FormFieldModule, SelectModule],
 })
 export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() selectedRegionChange = new EventEmitter<
     RegionConfig | typeof Region.SelfHosted | null

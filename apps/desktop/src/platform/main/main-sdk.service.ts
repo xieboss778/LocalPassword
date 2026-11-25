@@ -1,13 +1,13 @@
 import { concatMap, firstValueFrom, map, Observable, shareReplay, throwError } from "rxjs";
 
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Rc } from "@bitwarden/common/platform/misc/reference-counting/rc";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { ManagedSettingsService } from "@bitwarden/managed-settings";
-import { PasswordManagerClient, UnsignedSharedKey } from "@bitwarden/sdk-internal";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { SdkClientFactory } from "@localpass/common/platform/abstractions/sdk/sdk-client-factory";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Rc } from "@localpass/common/platform/misc/reference-counting/rc";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { ManagedSettingsService } from "@localpass/managed-settings";
+import { PasswordManagerClient, UnsignedSharedKey } from "@localpass/sdk-internal";
 
 /**
  * Main process {@link SdkService} limited to the stateless client.

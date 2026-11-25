@@ -11,13 +11,13 @@ import {
   switchMap,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { SearchTextDebounceInterval } from "@bitwarden/common/vault/services/search.service";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { SearchTextDebounceInterval } from "@localpass/common/vault/services/search.service";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 /**
  * The ids of the ciphers matching the active search term, or `undefined` when no searchable term is

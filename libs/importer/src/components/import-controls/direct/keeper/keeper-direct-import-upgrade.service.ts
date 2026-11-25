@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { ClientOptions, KeeperRegion, Ui, Vault } from "../../../../importers/keeper/access";
 import {

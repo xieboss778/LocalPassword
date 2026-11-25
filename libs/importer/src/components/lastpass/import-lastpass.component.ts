@@ -12,20 +12,20 @@ import {
 } from "@angular/forms";
 import { map } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   CalloutModule,
   CheckboxModule,
   FormFieldModule,
   IconButtonModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { LastPassDirectImportService } from "./lastpass-direct-import.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "import-lastpass",
@@ -62,7 +62,7 @@ export class ImportLastPassComponent implements OnInit, OnDestroy {
     }),
   );
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() csvDataLoaded = new EventEmitter<string>();
 

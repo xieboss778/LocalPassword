@@ -3,9 +3,9 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { delay, of } from "rxjs";
 import { action } from "storybook/actions";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 
 import { ButtonModule } from "../button";
 import { IconButtonModule } from "../icon-button";

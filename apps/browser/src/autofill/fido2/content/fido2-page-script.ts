@@ -152,7 +152,7 @@ import { Messenger } from "./messaging/messenger";
 
     if (options?.mediation && options.mediation === "conditional") {
       const internalAbortControllers = [new AbortController(), new AbortController()];
-      const bitwardenResponse = async (internalAbortController: AbortController) => {
+      const localpassResponse = async (internalAbortController: AbortController) => {
         try {
           const abortListener = () =>
             messenger.request({
@@ -185,7 +185,7 @@ import { Messenger } from "./messaging/messenger";
       abortSignal.addEventListener("abort", abortListener);
 
       const response = await Promise.race([
-        bitwardenResponse(internalAbortControllers[0]),
+        localpassResponse(internalAbortControllers[0]),
         browserResponse(internalAbortControllers[1]),
       ]);
       abortSignal.removeEventListener("abort", abortListener);

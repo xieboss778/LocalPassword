@@ -10,20 +10,20 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { firstValueFrom, map } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { BitwardenLogo } from "@bitwarden/assets/svg";
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { LocalPassLogo } from "@localpass/assets/svg";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 import {
   BaseCardComponent,
   ButtonModule,
   DialogService,
   SvgModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/browser/browser-popup-utils";
@@ -91,7 +91,7 @@ export class DefaultPasswordManagerPromptComponent implements OnInit {
     { initialValue: false },
   );
 
-  protected readonly logo = BitwardenLogo;
+  protected readonly logo = LocalPassLogo;
   protected readonly backgroundIllustration = computed(() =>
     this.isDarkTheme() ? DefaultPasswordBackgroundDark : DefaultPasswordBackgroundLight,
   );

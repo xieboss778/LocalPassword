@@ -3,22 +3,22 @@
 import { map, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
-import { UserKeyEncryptor } from "@bitwarden/common/tools/cryptography/user-key-encryptor";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { SingleUserState, StateProvider } from "@localpass/common/platform/state";
+import { UserKeyEncryptor } from "@localpass/common/tools/cryptography/user-key-encryptor";
 import {
   ApiSettings,
   IntegrationRequest,
   RestClient,
-} from "@bitwarden/common/tools/integration/rpc";
-import { BufferedState } from "@bitwarden/common/tools/state/buffered-state";
-import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
-import { SecretKeyDefinition } from "@bitwarden/common/tools/state/secret-key-definition";
-import { SecretState } from "@bitwarden/common/tools/state/secret-state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/tools/integration/rpc";
+import { BufferedState } from "@localpass/common/tools/state/buffered-state";
+import { PaddedDataPacker } from "@localpass/common/tools/state/padded-data-packer";
+import { SecretKeyDefinition } from "@localpass/common/tools/state/secret-key-definition";
+import { SecretState } from "@localpass/common/tools/state/secret-state";
+import { UserId } from "@localpass/common/types/guid";
+import { KeyService } from "@localpass/key-management";
 
 import { GeneratorStrategy } from "../abstractions";
 import { ForwarderConfiguration, AccountRequest, ForwarderContext } from "../engine";

@@ -5,7 +5,7 @@ import {
   CipherView as SdkCipherView,
   CreateAttachmentRequest,
   EncString,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { LogService } from "../../platform/abstractions/log.service";
 import { SdkService } from "../../platform/abstractions/sdk/sdk.service";

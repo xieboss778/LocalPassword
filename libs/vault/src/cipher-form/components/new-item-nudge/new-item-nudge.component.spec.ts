@@ -4,11 +4,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/sdk-internal";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/sdk-internal";
 
 import { FakeAccountService, mockAccountServiceWith } from "../../../../../common/spec";
 
@@ -90,7 +90,7 @@ describe("NewItemNudgeComponent", () => {
     expect(component.nudgeTitle).toBe("newSshNudgeTitle");
     expect(component.nudgeBody).toBe("newSshNudgeBodyOne");
     expect(component.nudgeBodyLinkText).toBe("newSshNudgeBodyTwo");
-    expect(component.nudgeBodyLinkUrl).toBe("https://bitwarden.com/help/ssh-agent");
+    expect(component.nudgeBodyLinkUrl).toBe("https://github.com/xieboss778/LocalPass/tree/main/docs");
     expect(component.nudgeBodyBold).toBe("");
     expect(component.nudgeBodySuffix).toBe("");
     expect(component.dismissalNudgeType).toBe(NudgeType.NewSshItemStatus);

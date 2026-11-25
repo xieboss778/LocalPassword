@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
-import { SshKey as SdkSshKey } from "@bitwarden/sdk-internal";
+import { EncString } from "@localpass/legacy-crypto";
+import { SshKey as SdkSshKey } from "@localpass/sdk-internal";
 
 import Domain from "../../../platform/models/domain/domain-base";
 import { SshKeyData } from "../data/ssh-key.data";

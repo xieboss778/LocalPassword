@@ -1,9 +1,9 @@
 import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { CipherFormCacheService } from "./default-cipher-form-cache.service";
 

@@ -1,9 +1,9 @@
 import { combineLatest, concatMap, map, of, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 
 import { BadgeService } from "../../platform/badge/badge.service";
 import { BadgeIcon } from "../../platform/badge/icon";

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { PasswordManagerLogo } from "@bitwarden/assets/svg";
+import { PasswordManagerLogo } from "@localpass/assets/svg";
 
 import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
 
@@ -16,7 +16,7 @@ import { KitchenSinkTourService } from "./kitchen-sink-tour.service";
         <bit-nav-logo [openIcon]="logo" route="." [label]="'Kitchen Sink'"></bit-nav-logo>
         <bit-nav-item
           text="Home"
-          route="bitwarden"
+          route="localpass"
           icon="bwi-vault"
           [bitPopoverAnchorFor]="tourStep4"
           [popoverOpen]="tourService.tourStep() === 4"

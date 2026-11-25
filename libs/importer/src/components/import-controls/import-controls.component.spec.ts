@@ -5,18 +5,18 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, map, of, Subject, throwError } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService, ToastService } from "@localpass/components";
 
 import { KeeperAuthError, KeeperAuthErrorCode } from "../../importers/keeper/access";
 import { Loader } from "../../metadata";
@@ -163,7 +163,7 @@ describe("ImportControlsComponent", () => {
         hasDirectImporter: true,
         acceptedFileTypes: ["csv", "json"],
         pasteFormats: ["csv", "json"],
-        instructionLink: "https://bitwarden.com/help/import-from-keeper/",
+        instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
       }),
       keepercsv: buildOption({
         id: "keepercsv",
@@ -271,7 +271,7 @@ describe("ImportControlsComponent", () => {
         isBrowser: true,
         hasDirectImporter: true,
         instructionKey: "importChromiumAliasPreamble",
-        instructionLink: "https://bitwarden.com/help/import-from-chrome/",
+        instructionLink: "https://github.com/xieboss778/LocalPass/tree/main/docs",
       }),
       delinea: buildOption({
         id: "delinea",
@@ -289,21 +289,21 @@ describe("ImportControlsComponent", () => {
         id: "delineacsv",
         name: "Delinea (csv)",
       }),
-      bitwarden: buildOption({
-        id: "bitwarden",
-        name: "Bitwarden",
+      localpass: buildOption({
+        id: "localpass",
+        name: "LocalPass",
         acceptedFileTypes: ["json", "csv"],
         pasteFormats: ["json", "csv"],
       }),
-      bitwardenjson: buildOption({
-        id: "bitwardenjson",
-        name: "Bitwarden (json)",
+      localpassjson: buildOption({
+        id: "localpassjson",
+        name: "LocalPass (json)",
         acceptedFileTypes: ["json"],
         pasteFormats: ["json"],
       }),
-      bitwardencsv: buildOption({
-        id: "bitwardencsv",
-        name: "Bitwarden (csv)",
+      localpasscsv: buildOption({
+        id: "localpasscsv",
+        name: "LocalPass (csv)",
         acceptedFileTypes: ["csv"],
         pasteFormats: ["csv"],
       }),
@@ -786,8 +786,8 @@ describe("ImportControlsComponent", () => {
       );
     });
 
-    it("lists Bitwarden's accepted types as .csv, .json, matching the acceptance criteria", async () => {
-      await setup("bitwarden", ClientType.Web);
+    it("lists LocalPass's accepted types as .csv, .json, matching the acceptance criteria", async () => {
+      await setup("localpass", ClientType.Web);
       expect(component().acceptedFileTypesHint()).toBe(".csv, .json");
     });
 
@@ -1999,7 +1999,7 @@ describe("ImportControlsComponent", () => {
       expect(fixture.nativeElement.textContent).toContain("importChromiumAliasPreamble");
       const link = fixture.debugElement.query(By.css("bit-callout a"));
       expect(link.nativeElement.getAttribute("href")).toBe(
-        "https://bitwarden.com/help/import-from-chrome/",
+        "https://github.com/xieboss778/LocalPass/tree/main/docs",
       );
     });
 
@@ -2025,7 +2025,7 @@ describe("ImportControlsComponent", () => {
       expect(fixture.nativeElement.textContent).toContain("importChromiumAliasPreamble");
       const link = fixture.debugElement.query(By.css("bit-callout a"));
       expect(link.nativeElement.getAttribute("href")).toBe(
-        "https://bitwarden.com/help/import-from-chrome/",
+        "https://github.com/xieboss778/LocalPass/tree/main/docs",
       );
     });
   });
@@ -2197,7 +2197,7 @@ describe("ImportControlsComponent", () => {
     });
   });
 
-  describe("Bitwarden file password", () => {
+  describe("LocalPass file password", () => {
     const accountEncrypted = JSON.stringify({
       encrypted: true,
       encKeyValidation_DO_NOT_EDIT: "enc-key-validation",
@@ -2225,7 +2225,7 @@ describe("ImportControlsComponent", () => {
     };
 
     it("needs no password for an account-encrypted export", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([accountEncrypted], "export.json"));
       fixture.detectChanges();
       await flushFileRead();
@@ -2238,7 +2238,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("shows a toast, not the generic error dialog, when an account-encrypted export can't be decrypted by the current account", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([accountEncrypted], "export.json"));
       fixture.detectChanges();
       await flushFileRead();
@@ -2268,7 +2268,7 @@ describe("ImportControlsComponent", () => {
       // neither is specifically an account mismatch — BitwardenEncryptedJsonImporter throws a
       // plain ImportResultError (no errorKey) for both, which must fall through to the generic
       // dialog rather than the account-mismatch toast.
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([accountEncrypted], "export.json"));
       fixture.detectChanges();
       await flushFileRead();
@@ -2308,11 +2308,11 @@ describe("ImportControlsComponent", () => {
       expect((config.data as Error).message).toBe("plain string rejection");
     });
 
-    it("skips the password-protection peek entirely for a Bitwarden CSV file, not just failing it silently", async () => {
-      // The Bitwarden picker card covers both bitwardenjson and bitwardencsv — the peek must key
+    it("skips the password-protection peek entirely for a LocalPass CSV file, not just failing it silently", async () => {
+      // The LocalPass picker card covers both localpassjson and localpasscsv — the peek must key
       // off the resolved sub-format, not the picker card's importType(), or a CSV pick triggers a
       // doomed read+parse attempt on every file selection.
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(
         new File(["url,username,password\nhttps://example.com,me,hunter2"], "export.csv"),
       );
@@ -2320,7 +2320,7 @@ describe("ImportControlsComponent", () => {
       await flushFileRead();
       fixture.detectChanges();
 
-      expect(component().resolvedFormat()).toBe("bitwardencsv");
+      expect(component().resolvedFormat()).toBe("localpasscsv");
       expect(component().needsFilePassword()).toBe(false);
       expect(logService.error).not.toHaveBeenCalled();
     });
@@ -2340,7 +2340,7 @@ describe("ImportControlsComponent", () => {
       // fail loudly here instead of silently passing for the wrong reason.
       expect(parseErrorMessage).toContain(fileContent.slice(0, 10));
 
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([fileContent], "export.json"));
       fixture.detectChanges();
       await flushFileRead();
@@ -2355,7 +2355,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("blocks submit() and disables Continue while the password-protection peek hasn't resolved yet", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([passwordProtected], "export.json"));
       fixture.detectChanges();
 
@@ -2392,7 +2392,7 @@ describe("ImportControlsComponent", () => {
       // The race finding 1 closes: without a pending gate, needsFilePassword() is read after an
       // await, so the peek can flip from false to true mid-submit and the empty inline field value
       // gets submitted as the password instead of being blocked outright.
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([passwordProtected], "export.json"));
       fixture.detectChanges();
       expect(component().filePasswordCheckPending()).toBe(true);
@@ -2409,7 +2409,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("keeps the upload control when a protected file is picked, then replaces it with an inline password field on Continue", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([passwordProtected], "export.json"));
       fixture.detectChanges();
       await flushFileRead();
@@ -2430,7 +2430,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("caps the file password field at the bounded-input width (tw-max-w-md)", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       component().formGroup.controls.file.setValue(new File([passwordProtected], "export.json"));
       fixture.detectChanges();
       await flushFileRead();
@@ -2443,7 +2443,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("swaps the subtitle on the password card and shows no hint under the field", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       const subtitle = () =>
         fixture.debugElement.query(By.css('p[bitTypography="body1"]')).nativeElement.textContent;
       component().formGroup.controls.file.setValue(new File([passwordProtected], "export.json"));
@@ -2460,14 +2460,14 @@ describe("ImportControlsComponent", () => {
     });
 
     it("announces the upload-to-password-field swap for screen readers, politely rather than interrupting", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       await chooseProtectedFileAndContinue();
 
       expect(liveAnnouncer.announce).toHaveBeenCalledWith("filePassword", "polite");
     });
 
     it("hides the method radio group once the inline password field appears, per Figma — only heading, callout, the field, and Back/Continue remain", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       expect(byId("importer-controls_radio_file")).toBeTruthy();
 
       await chooseProtectedFileAndContinue();
@@ -2477,7 +2477,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("shows a fresh step 2, not step 1 or the upload page as left, when Back is pressed on the password card", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       const backSpy = jest.fn();
       component().back.subscribe(backSpy);
       await chooseProtectedFileAndContinue();
@@ -2499,7 +2499,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("shows the specific 'file password is required' error, not the generic required message, on an empty submit", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       await chooseProtectedFileAndContinue();
 
       await component().submit();
@@ -2517,7 +2517,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("resets the password field and re-shows the upload control once a non-protected file replaces the protected one", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       await chooseProtectedFileAndContinue();
       component().formGroup.controls.filePassword.setValue("hunter2");
 
@@ -2532,7 +2532,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("passes the inline field's value directly to the importer, not the dialog-based prompt", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       await chooseProtectedFileAndContinue();
       component().formGroup.controls.filePassword.setValue("hunter2");
 
@@ -2550,7 +2550,7 @@ describe("ImportControlsComponent", () => {
     });
 
     it("shows an inline error and doesn't open the generic error dialog when the password is wrong", async () => {
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       await chooseProtectedFileAndContinue();
       component().formGroup.controls.filePassword.setValue("wrong-password");
 
@@ -2584,7 +2584,7 @@ describe("ImportControlsComponent", () => {
       // A same-message but keyless error (the realistic shape every OTHER importer's errorMessage
       // produces) must NOT be treated as a wrong password — proves the check is structural
       // (ImportResultError.errorKey), not a coincidental string match against translated text.
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       await chooseProtectedFileAndContinue();
       component().formGroup.controls.filePassword.setValue("hunter2");
 
@@ -2608,7 +2608,7 @@ describe("ImportControlsComponent", () => {
       // the signal stays true after switching to paste, enabling a required field that the
       // template never renders in paste mode — permanently deadlocking submit() with zero
       // feedback, since markAllAsTouched() has nothing in the DOM to show an error on.
-      await setup("bitwarden", ClientType.Web);
+      await setup("localpass", ClientType.Web);
       await chooseProtectedFileAndContinue();
       expect(component().needsFilePassword()).toBe(true);
 

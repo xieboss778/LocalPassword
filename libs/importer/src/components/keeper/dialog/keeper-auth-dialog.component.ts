@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { DialogRef, DialogService } from "@bitwarden/components";
+import { DialogRef, DialogService } from "@localpass/components";
 
 import { KeeperDirectImportUIService } from "../keeper-direct-import-ui.service";
 

@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# This script tests the memory isolation status of bitwarden-desktop processes. The script will print "isolated"
+# This script tests the memory isolation status of localpass-desktop processes. The script will print "isolated"
 # if the memory is not accessible by other processes.
 
 CURRENT_USER=$(whoami)
 
-# Find processes with "bitwarden" in the command
-pids=$(pgrep -f bitwarden)
+# Find processes with "localpass" in the command
+pids=$(pgrep -f localpass)
 
 if [[ -z "$pids" ]]; then
-    echo "No bitwarden processes found."
+    echo "No localpass processes found."
     exit 0
 fi
 
@@ -17,8 +17,8 @@ for pid in $pids; do
     # Get process info: command, PPID, RSS memory
     read cmd ppid rss <<<$(ps -o comm=,ppid=,rss= -p "$pid")
 
-    # Explicitly skip if the command line does not contain "bitwarden"
-    if ! grep -q "bitwarden" <<<"$cmd"; then
+    # Explicitly skip if the command line does not contain "localpass"
+    if ! grep -q "localpass" <<<"$cmd"; then
         continue
     fi
 

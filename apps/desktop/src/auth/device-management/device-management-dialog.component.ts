@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 
-import { DeviceManagementComponent } from "@bitwarden/angular/auth/device-management/device-management.component";
-import { DialogModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { DeviceManagementComponent } from "@localpass/angular/auth/device-management/device-management.component";
+import { DialogModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * Temporary dialog wrapper for device management until desktop UI refresh adds proper settings routes.

@@ -1,7 +1,7 @@
-import { AllowedFeatureFlagTypes, FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { GLOBAL_FEATURE_FLAG_OVERRIDES } from "@bitwarden/common/platform/services/config/default-config.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
+import { AllowedFeatureFlagTypes, FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { GLOBAL_FEATURE_FLAG_OVERRIDES } from "@localpass/common/platform/services/config/default-config.service";
+import { StateProvider } from "@localpass/common/platform/state";
 
 import { AutomationCapability } from "../automation-capability";
 

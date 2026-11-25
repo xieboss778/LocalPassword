@@ -1,10 +1,10 @@
-// webmapper context-menu items, nested under the Bitwarden root menu and gated
+// webmapper context-menu items, nested under the LocalPass root menu and gated
 // by the same dev flag as autofill triage. IDs encode the action so a click
 // routes without extra lookup. Plain-English titles match the triage menu's
 // convention — both are developer-facing tools behind the fillAssistDevTools
 // dev flag (dev builds only).
 
-import { ROOT_ID } from "@bitwarden/common/autofill/constants";
+import { ROOT_ID } from "@localpass/common/autofill/constants";
 
 import { DevFlags } from "../../platform/flags";
 import { InitContextMenuItems } from "../browser/abstractions/main-context-menu-handler";

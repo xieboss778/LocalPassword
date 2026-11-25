@@ -1,8 +1,8 @@
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { DIALOG_DATA, DialogRef, I18nMockService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { DIALOG_DATA, DialogRef, I18nMockService } from "@localpass/components";
 
 import {
   ImportConfirmationDialogComponent,
@@ -43,8 +43,8 @@ export default {
             new I18nMockService({
               importSuccessful: "Import successful",
               importConfirmationBody: (count?: string) =>
-                `You’ve successfully imported ${count} items into Bitwarden.`,
-              importConfirmationBodySingular: "You’ve successfully imported 1 item into Bitwarden.",
+                `You’ve successfully imported ${count} items into LocalPass.`,
+              importConfirmationBodySingular: "You’ve successfully imported 1 item into LocalPass.",
               importConfirmationTipLabel: "Tip:",
               importDeleteFileTip: (name?: string) =>
                 `Don't forget to delete ${name}. It contains sensitive data and may be unencrypted.`,

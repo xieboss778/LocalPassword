@@ -2,8 +2,8 @@ import { DestroyRef, Directive, HostListener, inject, model, Optional } from "@a
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { BehaviorSubject, finalize, tap } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";

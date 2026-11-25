@@ -28,7 +28,7 @@
         "targetName": "lint"
       }
     },
-    "@bitwarden/nx-plugin"
+    "@localpass/nx-plugin"
   ],
   "parallel": 4,
   "targetDefaults": {

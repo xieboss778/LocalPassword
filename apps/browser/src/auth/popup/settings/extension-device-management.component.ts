@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
 
-import { DeviceManagementComponent } from "@bitwarden/angular/auth/device-management/device-management.component";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { DeviceManagementComponent } from "@localpass/angular/auth/device-management/device-management.component";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   standalone: true,

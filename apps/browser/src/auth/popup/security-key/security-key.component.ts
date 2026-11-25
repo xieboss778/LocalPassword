@@ -2,13 +2,13 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { AsyncActionsModule, ButtonModule, TypographyModule } from "@bitwarden/components";
-import { LocalWebAuthnPrfEnrollmentService } from "@bitwarden/key-management-ui";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { AsyncActionsModule, ButtonModule, TypographyModule } from "@localpass/components";
+import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui";
 
 /**
  * Registers a security key (PRF) as an unlock method for the extension. The vault must be

@@ -18,8 +18,8 @@ import {
   Validators,
 } from "@angular/forms";
 
-import { InputVerbatimDirective } from "@bitwarden/angular/directives/input-verbatim.directive";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { InputVerbatimDirective } from "@localpass/angular/directives/input-verbatim.directive";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   A11yTitleDirective,
   FormFieldModule,
@@ -27,8 +27,8 @@ import {
   LinkModule,
   PopoverModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import {
   DeviceApprovalChannel,

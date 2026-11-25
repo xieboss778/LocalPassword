@@ -1,5 +1,5 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
 
 import { buildLocalAccessToken } from "./local-access-token";
 

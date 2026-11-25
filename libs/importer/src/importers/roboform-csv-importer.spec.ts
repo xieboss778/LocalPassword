@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { RoboFormCsvImporter } from "./roboform-csv-importer";
 import { data as dataNoFolder } from "./spec-data/roboform-csv/empty-folders";
@@ -20,8 +20,8 @@ describe("Roboform CSV Importer", () => {
 
     expect(result.folders.length).toBe(0);
     expect(result.ciphers.length).toBe(4);
-    expect(result.ciphers[0].name).toBe("Bitwarden");
-    expect(result.ciphers[0].login.username).toBe("user@bitwarden.com");
+    expect(result.ciphers[0].name).toBe("LocalPass");
+    expect(result.ciphers[0].login.username).toBe("user@local.invalid");
     expect(result.ciphers[0].login.password).toBe("password");
   });
 

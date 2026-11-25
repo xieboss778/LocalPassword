@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 
 import { IconComponent } from "../icon";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 import { NavGroupComponent } from "./nav-group.component";
 import { NavToggleScope } from "./nav-toggle-scope";
@@ -32,7 +32,7 @@ export class NavSectionComponent {
   readonly label = input.required<string>();
 
   /** Optional icon rendered before the label, e.g. "bwi-folder". */
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
 
   /** Unique id linking the heading to the group via aria-labelledby. */
   protected readonly labelId = `bit-nav-section-${nextId++}`;

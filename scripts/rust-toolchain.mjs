@@ -10,11 +10,11 @@
 //                     it exists so Renovate can manage the nightly date.
 //
 // Both keys are updated by the shared Renovate preset this repo extends
-// (github>bitwarden/renovate-config), which matches them in any
+// (github>localpass/renovate-config), which matches them in any
 // rust-toolchain.toml. Nothing else should hardcode either value -- CI reads
 // them from here so a Renovate bump can't leave a workflow literal behind.
 //
-// The equivalent in bitwarden/sdk-internal is a `grep -oP` in each workflow,
+// The equivalent in localpass/sdk-internal is a `grep -oP` in each workflow,
 // which we can't reuse: our Rust lint matrix includes macOS, whose BSD grep
 // has no -P.
 //

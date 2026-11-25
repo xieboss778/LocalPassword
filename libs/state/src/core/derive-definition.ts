@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { DerivedStateDependencies, StorageKey } from "../types/state";
 

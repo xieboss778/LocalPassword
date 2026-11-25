@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from "@angular/core";
 
-import { ProgressBarComponent, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { ProgressBarComponent, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** Where the indicator starts, so a fast scan still shows a filled bar rather than an empty track. */
 const START = 10;

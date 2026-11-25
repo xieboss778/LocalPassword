@@ -1,6 +1,6 @@
-import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { SecureNoteType, CipherType } from "@localpass/common/vault/enums";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 
 import { ImportResult } from "../models/import-result";
 

@@ -1,12 +1,12 @@
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { LogoutReason } from "@bitwarden/common/auth/logout";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ApiService, HttpOperations } from "@bitwarden/common/services/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { LogoutReason } from "@localpass/common/auth/logout";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ApiService, HttpOperations } from "@localpass/common/services/api.service";
 
 import { GateDecision, NetworkGatePolicy } from "./gate-policy";
 
@@ -66,7 +66,7 @@ export class LocalVaultNetworkGate {
  * blocked request throws `NetworkGateBlockedError` rather than returning a 401/403, because the
  * client treats those as a server rejection and logs the user out.
  */
-export class LocalPasswordApiService extends ApiService {
+export class LocalPassApiService extends ApiService {
   constructor(
     tokenService: TokenService,
     platformUtilsService: PlatformUtilsService,

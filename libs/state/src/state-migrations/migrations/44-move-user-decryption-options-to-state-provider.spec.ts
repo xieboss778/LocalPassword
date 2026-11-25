@@ -20,7 +20,7 @@ function exampleJSON() {
           hasManageResetPasswordPermission: true,
         },
         keyConnectorOption: {
-          keyConnectorUrl: "https://keyconnector.bitwarden.com",
+          keyConnectorUrl: "https://keyconnector.local.invalid",
         },
       },
       profile: {
@@ -37,7 +37,7 @@ function exampleJSON() {
           hasManageResetPasswordPermission: true,
         },
         keyConnectorOption: {
-          keyConnectorUrl: "https://selfhosted.bitwarden.com",
+          keyConnectorUrl: "https://selfhosted.local.invalid",
         },
       },
       profile: {
@@ -58,7 +58,7 @@ function rollbackJSON() {
         hasManageResetPasswordPermission: true,
       },
       keyConnectorOption: {
-        keyConnectorUrl: "https://keyconnector.bitwarden.com",
+        keyConnectorUrl: "https://keyconnector.local.invalid",
       },
     },
     user_SecondAccount_decryptionOptions_userDecryptionOptions: {
@@ -69,7 +69,7 @@ function rollbackJSON() {
         hasManageResetPasswordPermission: true,
       },
       keyConnectorOption: {
-        keyConnectorUrl: "https://selfhosted.bitwarden.com",
+        keyConnectorUrl: "https://selfhosted.local.invalid",
       },
     },
     user_ThirdAccount_decryptionOptions_userDecryptionOptions: {},
@@ -86,7 +86,7 @@ function rollbackJSON() {
           hasManageResetPasswordPermission: true,
         },
         keyConnectorOption: {
-          keyConnectorUrl: "https://keyconnector.bitwarden.com",
+          keyConnectorUrl: "https://keyconnector.local.invalid",
         },
       },
       profile: {
@@ -103,7 +103,7 @@ function rollbackJSON() {
           hasManageResetPasswordPermission: true,
         },
         keyConnectorOption: {
-          keyConnectorUrl: "https://selfhosted.bitwarden.com",
+          keyConnectorUrl: "https://selfhosted.local.invalid",
         },
       },
       profile: {
@@ -157,7 +157,7 @@ describe("UserDecryptionOptionsMigrator", () => {
           hasManageResetPasswordPermission: true,
         },
         keyConnectorOption: {
-          keyConnectorUrl: "https://keyconnector.bitwarden.com",
+          keyConnectorUrl: "https://keyconnector.local.invalid",
         },
       });
 
@@ -169,7 +169,7 @@ describe("UserDecryptionOptionsMigrator", () => {
           hasManageResetPasswordPermission: true,
         },
         keyConnectorOption: {
-          keyConnectorUrl: "https://selfhosted.bitwarden.com",
+          keyConnectorUrl: "https://selfhosted.local.invalid",
         },
       });
     });
@@ -202,7 +202,7 @@ describe("UserDecryptionOptionsMigrator", () => {
             hasManageResetPasswordPermission: true,
           },
           keyConnectorOption: {
-            keyConnectorUrl: "https://keyconnector.bitwarden.com",
+            keyConnectorUrl: "https://keyconnector.local.invalid",
           },
         },
         profile: {
@@ -219,7 +219,7 @@ describe("UserDecryptionOptionsMigrator", () => {
             hasManageResetPasswordPermission: true,
           },
           keyConnectorOption: {
-            keyConnectorUrl: "https://selfhosted.bitwarden.com",
+            keyConnectorUrl: "https://selfhosted.local.invalid",
           },
         },
         profile: {

@@ -5,8 +5,8 @@ Object.assign(global, { TextDecoder, TextEncoder });
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { VendorId } from "@bitwarden/common/tools/extension";
-import { UserId } from "@bitwarden/common/types/guid";
+import { VendorId } from "@localpass/common/tools/extension";
+import { UserId } from "@localpass/common/types/guid";
 import {
   GeneratorService,
   DefaultPassphraseGenerationOptions,
@@ -16,19 +16,19 @@ import {
   PasswordGenerationOptions,
   PasswordGeneratorPolicy,
   policies,
-} from "@bitwarden/generator-core";
+} from "@localpass/generator-core";
 import {
   GeneratedCredential,
   GeneratorHistoryService,
   GeneratedPasswordHistory,
-} from "@bitwarden/generator-history";
+} from "@localpass/generator-history";
 import {
   GeneratorNavigationService,
   DefaultGeneratorNavigation,
   GeneratorNavigation,
   GeneratorNavigationEvaluator,
   GeneratorNavigationPolicy,
-} from "@bitwarden/generator-navigation";
+} from "@localpass/generator-navigation";
 
 import { mockAccountServiceWith } from "../../../../../common/spec";
 

@@ -3,7 +3,7 @@ import { Jsonify } from "type-fest";
 import {
   Fido2CredentialView as SdkFido2CredentialView,
   Fido2CredentialFullView,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { ItemView } from "./item.view";
 

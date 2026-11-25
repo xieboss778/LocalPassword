@@ -1,4 +1,4 @@
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/app-id.service";

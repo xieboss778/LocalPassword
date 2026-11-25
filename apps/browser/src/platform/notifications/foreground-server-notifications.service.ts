@@ -1,9 +1,9 @@
 import { Observable, Subscription } from "rxjs";
 
-import { NotificationResponse } from "@bitwarden/common/models/response/notification.response";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ServerNotificationsService } from "@bitwarden/common/platform/server-notifications";
-import { UserId } from "@bitwarden/common/types/guid";
+import { NotificationResponse } from "@localpass/common/models/response/notification.response";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ServerNotificationsService } from "@localpass/common/platform/server-notifications";
+import { UserId } from "@localpass/common/types/guid";
 
 // Eventually if we want to support listening to server notifications from browser foreground we
 // will only ever create a single SignalR connection, likely messaging to the background to reuse its connection.

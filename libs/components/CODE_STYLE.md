@@ -1,4 +1,4 @@
-# Code Style for `@bitwarden/components`
+# Code Style for `@localpass/components`
 
 How we write components in this library. For what belongs in the library and PR requirements, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 

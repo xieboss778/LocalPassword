@@ -1,8 +1,8 @@
 import { FormsModule, ReactiveFormsModule, FormControl, FormGroup } from "@angular/forms";
 import { Meta, moduleMetadata, StoryObj, componentWrapperDecorator } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { FormControlModule } from "../form-control";
 import { FormControlCardComponent } from "../form-control/form-control-card.component";

@@ -1,12 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, Inject, signal } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
-import { DIALOG_DATA, DialogRef, ButtonModule, DialogModule } from "@bitwarden/components";
-import { AlgorithmInfo } from "@bitwarden/generator-core";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { CipherFormGeneratorComponent } from "@bitwarden/vault";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
+import { DIALOG_DATA, DialogRef, ButtonModule, DialogModule } from "@localpass/components";
+import { AlgorithmInfo } from "@localpass/generator-core";
+import { I18nPipe } from "@localpass/ui-common";
+import { CipherFormGeneratorComponent } from "@localpass/vault";
 
 export interface SendGeneratorDialogParams {
   type: "password" | "username";

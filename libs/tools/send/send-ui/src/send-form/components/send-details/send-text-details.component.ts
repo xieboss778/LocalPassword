@@ -10,8 +10,8 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormControl, Validators, ReactiveFormsModule } from "@angular/forms";
 
-import { CheckboxModule, FormFieldModule, SectionComponent } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { CheckboxModule, FormFieldModule, SectionComponent } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SendFormService } from "../../abstractions/send-form.service";
 

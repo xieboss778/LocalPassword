@@ -5,16 +5,16 @@ Object.assign(global, { TextDecoder, TextEncoder });
 import { mock } from "jest-mock-extended";
 import { of, firstValueFrom } from "rxjs";
 
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { RestClient } from "@bitwarden/common/tools/integration/rpc";
-import { BufferedState } from "@bitwarden/common/tools/state/buffered-state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService } from "@bitwarden/key-management";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { RestClient } from "@localpass/common/tools/integration/rpc";
+import { BufferedState } from "@localpass/common/tools/state/buffered-state";
+import { UserId } from "@localpass/common/types/guid";
+import { KeyService } from "@localpass/key-management";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../../common/spec";
 import { AddyIo, Fastmail, FirefoxRelay } from "../integration";

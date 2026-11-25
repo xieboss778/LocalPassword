@@ -1,7 +1,7 @@
-import { VerificationWithSecret } from "@bitwarden/common/auth/types/verification";
+import { VerificationWithSecret } from "@localpass/common/auth/types/verification";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { ButtonType } from "@bitwarden/components";
+import { ButtonType } from "@localpass/components";
 
 /**
  * @typedef {Object} UserVerificationCalloutOptions - Configuration options for the callout displayed in the dialog body.

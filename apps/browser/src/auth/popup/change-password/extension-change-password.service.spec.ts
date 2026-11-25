@@ -1,13 +1,13 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
-import { ChangePasswordService } from "@bitwarden/angular/auth/password-management/change-password";
-import BrowserPopupUtils from "@bitwarden/browser/platform/browser/browser-popup-utils";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { MasterPasswordApiService } from "@bitwarden/common/auth/abstractions/master-password-api.service.abstraction";
-import { OrganizationInviteService } from "@bitwarden/common/auth/organization-invite";
-import { MasterPasswordUnlockService } from "@bitwarden/common/key-management/master-password/abstractions/master-password-unlock.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { KeyService } from "@bitwarden/key-management";
+import { ChangePasswordService } from "@localpass/angular/auth/password-management/change-password";
+import BrowserPopupUtils from "@localpass/browser/platform/browser/browser-popup-utils";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordApiService } from "@localpass/common/auth/abstractions/master-password-api.service.abstraction";
+import { OrganizationInviteService } from "@localpass/common/auth/organization-invite";
+import { MasterPasswordUnlockService } from "@localpass/common/key-management/master-password/abstractions/master-password-unlock.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { KeyService } from "@localpass/key-management";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 

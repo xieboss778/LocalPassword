@@ -1,10 +1,10 @@
 import { spawn } from "child_process";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { biometrics, passwords } from "@bitwarden/desktop-napi";
-import { BiometricsStatus } from "@bitwarden/key-management";
+import { UserId } from "@localpass/common/types/guid";
+import { biometrics, passwords } from "@localpass/desktop-napi";
+import { BiometricsStatus } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { isSnapStore, isFlatpak, isLinux } from "../../../main/platform-utils.main";
 import { OsBiometricService } from "../os-biometrics.service";
@@ -15,9 +15,9 @@ const polkitPolicy = `<?xml version="1.0" encoding="UTF-8"?>
  "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 
 <policyconfig>
-    <action id="com.bitwarden.Bitwarden.unlock">
-      <description>Unlock Bitwarden</description>
-      <message>Authenticate to unlock Bitwarden</message>
+    <action id="com.localpass.LocalPass.unlock">
+      <description>Unlock LocalPass</description>
+      <message>Authenticate to unlock LocalPass</message>
       <defaults>
         <allow_any>no</allow_any>
         <allow_inactive>no</allow_inactive>
@@ -25,7 +25,7 @@ const polkitPolicy = `<?xml version="1.0" encoding="UTF-8"?>
       </defaults>
     </action>
 </policyconfig>`;
-const policyFileName = "com.bitwarden.Bitwarden.policy";
+const policyFileName = "com.localpass.LocalPass.policy";
 const policyPath = "/usr/share/polkit-1/actions/";
 
 export default class OsBiometricsServiceLinux implements OsBiometricService {
@@ -58,7 +58,7 @@ export default class OsBiometricsServiceLinux implements OsBiometricService {
 
   async supportsBiometrics(): Promise<boolean> {
     // We assume all linux distros have some polkit implementation
-    // that either has bitwarden set up or not, which is reflected in osBiomtricsNeedsSetup.
+    // that either has localpass set up or not, which is reflected in osBiomtricsNeedsSetup.
     // Snap does not have access at the moment to polkit
     // This could be dynamically detected on dbus in the future.
     // We should check if a libsecret implementation is available on the system

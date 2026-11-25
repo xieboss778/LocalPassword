@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { Importer } from "../importers/importer";
 import { ImportOption, ImportType } from "../models/import-options";
@@ -31,7 +31,7 @@ export abstract class ImportServiceAbstraction {
     canAccessImportExport?: boolean,
   ) => Promise<ImportResult>;
   getImporter: (
-    format: ImportType | "bitwardenpasswordprotected",
+    format: ImportType | "localpasspasswordprotected",
     promptForPassword_callback: () => Promise<string>,
     organizationId: string,
   ) => Importer;

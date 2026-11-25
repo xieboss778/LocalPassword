@@ -1,6 +1,6 @@
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import type { chromium_importer } from "@bitwarden/desktop-napi";
-import { ImporterProfile } from "@bitwarden/importer-core";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import type { chromium_importer } from "@localpass/desktop-napi";
+import { ImporterProfile } from "@localpass/importer-core";
 
 /** Requests OS-level access to the given browser's profile directory (a no-op outside a
  *  sandboxed build), then reads its available profiles. Used by

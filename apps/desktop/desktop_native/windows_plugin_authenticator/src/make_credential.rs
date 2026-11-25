@@ -5,7 +5,7 @@ use std::{
 };
 
 use autofill_provider::{
-    BitwardenError, CallbackError, PasskeyRegistrationRequest, PasskeyRegistrationResponse,
+    LocalPassError, CallbackError, PasskeyRegistrationRequest, PasskeyRegistrationResponse,
     Position, TimedCallback, UserVerification, WindowDetails,
 };
 use desktop_core::autofill::create_context_string;
@@ -133,7 +133,7 @@ fn send_registration_request(
         })?
         .map_err(|err| -> Box<dyn std::error::Error> {
             match err {
-                BitwardenError::ExcludedCredentialMatched => {
+                LocalPassError::ExcludedCredentialMatched => {
                     Box::new(PluginError::ExcludedCredentialMatched)
                 }
                 err => format!("Registration request failed: {err}").into(),
@@ -146,7 +146,7 @@ fn send_registration_request(
     response
 }
 
-/// Creates a CTAP2 authenticatorMakeCredential response from Bitwarden's
+/// Creates a CTAP2 authenticatorMakeCredential response from LocalPass's
 /// WebAuthn registration response.
 fn create_make_credential_response(
     attestation_object: Vec<u8>,
@@ -220,7 +220,7 @@ mod tests {
         }
     }
 
-    fn send_failing_registration(error: fn() -> BitwardenError) -> Box<dyn std::error::Error> {
+    fn send_failing_registration(error: fn() -> LocalPassError) -> Box<dyn std::error::Error> {
         let (_cancel_tx, cancel_rx) = mpsc::channel();
         send_registration_request(
             &FailingIpcClient { error },
@@ -232,7 +232,7 @@ mod tests {
 
     #[test]
     fn reports_an_excluded_credential_match_as_a_plugin_error() {
-        let err = send_failing_registration(|| BitwardenError::ExcludedCredentialMatched);
+        let err = send_failing_registration(|| LocalPassError::ExcludedCredentialMatched);
 
         assert!(matches!(
             err.downcast_ref::<PluginError>(),
@@ -242,7 +242,7 @@ mod tests {
 
     #[test]
     fn reports_other_registration_failures_as_generic_errors() {
-        let err = send_failing_registration(|| BitwardenError::Internal("boom".to_string()));
+        let err = send_failing_registration(|| LocalPassError::Internal("boom".to_string()));
 
         assert!(err.downcast_ref::<PluginError>().is_none());
         assert!(err.to_string().contains("boom"));

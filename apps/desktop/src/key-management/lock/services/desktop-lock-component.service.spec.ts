@@ -2,14 +2,14 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { DeviceType } from "@bitwarden/common/enums";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService, BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
-import { UnlockOptions } from "@bitwarden/key-management-ui";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { DeviceType } from "@localpass/common/enums";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
+import { KeyService, BiometricsService, BiometricsStatus } from "@localpass/key-management";
+import { UnlockOptions } from "@localpass/key-management-ui";
 
 import { DesktopLockComponentService } from "./desktop-lock-component.service";
 

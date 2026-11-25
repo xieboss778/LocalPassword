@@ -1,6 +1,6 @@
 import { Meta } from "@storybook/angular";
 
-import * as SvgIcons from "@bitwarden/assets/svg";
+import * as SvgIcons from "@localpass/assets/svg";
 
 import { SvgComponent } from "./svg.component";
 

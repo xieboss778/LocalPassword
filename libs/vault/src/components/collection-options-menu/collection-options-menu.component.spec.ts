@@ -6,12 +6,12 @@ import { Observable, of, Subject } from "rxjs";
 import {
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { ToastService } from "@bitwarden/components";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { ToastService } from "@localpass/components";
 
 import { PinnedSharedFoldersService } from "../../services/pinned-shared-folders.service";
 import {

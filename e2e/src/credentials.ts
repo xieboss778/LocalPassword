@@ -186,7 +186,7 @@ function readSection(name: string, required: string[]): Record<string, string> {
   return section;
 }
 
-/** Accepts a bare host, e.g. `vault.usdev.bitwarden.pw`, as its https URL. */
+/** Accepts a bare host, e.g. `vault.usdev.localpass.pw`, as its https URL. */
 function vaultUrl(server: string): string {
   return /^https?:\/\//.test(server) ? server : `https://${server}`;
 }

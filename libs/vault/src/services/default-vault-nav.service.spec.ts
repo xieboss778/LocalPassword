@@ -3,19 +3,19 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { buildTestOrganization } from "@bitwarden/common/spec";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { getAvatarDefaultColor } from "@bitwarden/components";
-import { newGuid } from "@bitwarden/guid";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { buildTestOrganization } from "@localpass/common/spec";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { getAvatarDefaultColor } from "@localpass/components";
+import { newGuid } from "@localpass/guid";
 
 import { VaultNavItemType } from "../models/vault-nav-view-model";
 

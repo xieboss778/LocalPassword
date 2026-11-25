@@ -1,11 +1,11 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, ParamMap, Router, createUrlTreeFromSnapshot } from "@angular/router";
 
-import { Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { isGuid } from "@bitwarden/guid";
+import { Unassigned } from "@localpass/common/admin-console/models/collections";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { isGuid } from "@localpass/guid";
 
 import {
   VAULT_FILTER_KEYS,

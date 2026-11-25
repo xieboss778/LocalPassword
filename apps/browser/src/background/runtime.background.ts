@@ -2,24 +2,24 @@
 // @ts-strict-ignore
 import { filter, firstValueFrom, map, mergeMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AutofillOverlayVisibility, ExtensionCommand } from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AutofillOverlayVisibility, ExtensionCommand } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 import {
   IntraprocessMessageSender,
   MessageListener,
   isExternalMessage,
-} from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { VaultMessages } from "@bitwarden/common/vault/enums/vault-messages.enum";
-import { BiometricsCommands } from "@bitwarden/key-management";
-import { LockService, LockSource } from "@bitwarden/unlock";
+} from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CipherType } from "@localpass/common/vault/enums";
+import { VaultMessages } from "@localpass/common/vault/enums/vault-messages.enum";
+import { BiometricsCommands } from "@localpass/key-management";
+import { LockService, LockSource } from "@localpass/unlock";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports
@@ -91,7 +91,7 @@ export default class RuntimeBackground {
     const onPrivacyPermissionAdded = (
       permissions: chrome.permissions.Permissions | browser.permissions.Permissions,
     ) => {
-      void this.handleSetBitwardenAsDefaultPasswordManager(permissions);
+      void this.handleSetLocalPassAsDefaultPasswordManager(permissions);
     };
 
     if (BrowserApi.isWebExtensionsApi && browser?.permissions?.onAdded) {
@@ -123,7 +123,7 @@ export default class RuntimeBackground {
         "getUrlAutofillTargetingRules",
         "collectPageDetailsForPopup",
         "fillCipherForPopup",
-        "getBitwardenAutofillAttributeSettings",
+        "getLocalPassAutofillAttributeSettings",
         VaultMessages.checkBwInstalled,
         GET_CIPHER_LIST_VIEWS,
       ];
@@ -301,13 +301,13 @@ export default class RuntimeBackground {
 
         return { targetingRules, ruleFailureFallback };
       }
-      case "getBitwardenAutofillAttributeSettings": {
-        const [honorBitwardenIgnoreAttribute, honorBitwardenAutofillAttribute] = await Promise.all([
-          firstValueFrom(this.autofillSettingsService.honorBitwardenIgnoreAttribute$),
-          firstValueFrom(this.autofillSettingsService.honorBitwardenAutofillAttribute$),
+      case "getLocalPassAutofillAttributeSettings": {
+        const [honorLocalPassIgnoreAttribute, honorLocalPassAutofillAttribute] = await Promise.all([
+          firstValueFrom(this.autofillSettingsService.honorLocalPassIgnoreAttribute$),
+          firstValueFrom(this.autofillSettingsService.honorLocalPassAutofillAttribute$),
         ]);
 
-        return { honorBitwardenIgnoreAttribute, honorBitwardenAutofillAttribute };
+        return { honorLocalPassIgnoreAttribute, honorLocalPassAutofillAttribute };
       }
       case "fillAssistEmit": {
         // Trusted-sender gate: only the content-script emitter routes this message.
@@ -415,7 +415,7 @@ export default class RuntimeBackground {
     }
   }
 
-  private async handleSetBitwardenAsDefaultPasswordManager(
+  private async handleSetLocalPassAsDefaultPasswordManager(
     permissions: chrome.permissions.Permissions | browser.permissions.Permissions,
   ) {
     if (!(permissions.permissions as string[] | undefined)?.includes("privacy")) {

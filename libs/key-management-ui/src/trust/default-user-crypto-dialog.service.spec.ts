@@ -1,9 +1,9 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogService } from "@bitwarden/components";
-import { PublicKey } from "@bitwarden/sdk-internal";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { DialogService } from "@localpass/components";
+import { PublicKey } from "@localpass/sdk-internal";
 
 import { KeyRotationTrustInfoComponent } from "../key-rotation/key-rotation-trust-info.component";
 

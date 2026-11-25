@@ -6,9 +6,9 @@ import {
   BiometricsService,
   KdfConfigService,
   KeyService,
-} from "@bitwarden/key-management";
-import { LogService, Measurement } from "@bitwarden/logging";
-import { UserKeyRotationServiceAbstraction } from "@bitwarden/user-crypto-management";
+} from "@localpass/key-management";
+import { LogService, Measurement } from "@localpass/logging";
+import { UserKeyRotationServiceAbstraction } from "@localpass/user-crypto-management";
 
 import { ClientType } from "../../enums";
 import { ConfigService } from "../../platform/abstractions/config/config.service";

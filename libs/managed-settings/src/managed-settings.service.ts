@@ -1,13 +1,13 @@
 import { Observable } from "rxjs";
 
-import { ManagedSettingsClient, ManagementProfile } from "@bitwarden/sdk-internal";
+import { ManagedSettingsClient, ManagementProfile } from "@localpass/sdk-internal";
 
 /**
  * Read access to the settings an administrator forces onto this client through the operating
  * system's Unified Endpoint Management (UEM/MDM) channel.
  *
  * A managed setting is not Vault Data and involves no cryptography. Values originate from the host
- * operating system rather than a Bitwarden server, so they are readable before login and before
+ * operating system rather than a LocalPass server, so they are readable before login and before
  * unlock.
  *
  * A setting is only managed if a consumer explicitly opts in by reading it. Consumers reconcile the

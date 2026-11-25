@@ -1,4 +1,4 @@
-import { FlightRecorderClient, FlightRecorderEvent } from "@bitwarden/sdk-internal";
+import { FlightRecorderClient, FlightRecorderEvent } from "@localpass/sdk-internal";
 
 /**
  * Framework-agnostic wrapper around the SDK's {@link FlightRecorderClient}.

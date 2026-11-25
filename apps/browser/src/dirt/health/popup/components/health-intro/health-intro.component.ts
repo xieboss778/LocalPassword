@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, output } from "@a
 import { toSignal } from "@angular/core/rxjs-interop";
 import { map } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { TypographyModule, ButtonModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { TypographyModule, ButtonModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * Extension-root paths for the intro images. `src/images` is copied to `/images`

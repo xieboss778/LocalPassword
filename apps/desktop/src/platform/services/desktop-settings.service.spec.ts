@@ -1,6 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
-import { FakeAccountService, FakeStateProvider } from "@bitwarden/common/spec";
+import { FakeAccountService, FakeStateProvider } from "@localpass/common/spec";
 
 import { isDev } from "../../utils";
 

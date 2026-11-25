@@ -1,7 +1,7 @@
 {
-  "name": "@bitwarden/logging-angular",
+  "name": "@localpass/logging-angular",
   "version": "0.0.1",
-  "description": "Angular wrapper for @bitwarden/logging",
+  "description": "Angular wrapper for @localpass/logging",
   "private": true,
   "type": "commonjs",
   "main": "index.js",

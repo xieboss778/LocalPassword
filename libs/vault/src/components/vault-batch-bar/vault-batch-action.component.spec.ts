@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/cor
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LayoutFooterService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LayoutFooterService } from "@localpass/components";
 
 import { VaultBatchBarService } from "../../services/vault-batch-bar.service";
 import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service";

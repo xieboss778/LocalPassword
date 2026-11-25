@@ -2,7 +2,7 @@ import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import { AutofillBrowserSettingsService } from "../../services/autofill-browser-settings.service";

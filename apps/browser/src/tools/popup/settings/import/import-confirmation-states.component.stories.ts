@@ -1,7 +1,7 @@
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nMockService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nMockService } from "@localpass/components";
 
 import { ImportConfirmationStatesComponent } from "./import-confirmation-states.component";
 
@@ -21,10 +21,10 @@ export default {
               openedExtensionTitle: "Opened the browser extension",
               somethingWentWrong: "Something went wrong...",
               openingExtensionError:
-                "We had trouble opening the Bitwarden browser extension. Click the button to open it now.",
+                "We had trouble opening the LocalPass browser extension. Click the button to open it now.",
               openExtension: "Open extension",
               openingExtensionToolbarErrorPart1:
-                "We had trouble opening the Bitwarden browser extension. Open the Bitwarden icon ",
+                "We had trouble opening the LocalPass browser extension. Open the LocalPass icon ",
               openingExtensionToolbarErrorPart2: " from the toolbar.",
               loading: "Loading",
             }),

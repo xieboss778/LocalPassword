@@ -9,8 +9,8 @@ import {
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import {
   VaultTimeout,
@@ -50,7 +50,7 @@ import {
 } from "./token.state";
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum TokenStorageLocation {
   Disk = "disk",
   SecureStorage = "secureStorage",
@@ -58,7 +58,7 @@ export enum TokenStorageLocation {
 }
 
 /**
- * Type representing the structure of a standard Bitwarden decoded access token.
+ * Type representing the structure of a standard LocalPass decoded access token.
  * src: https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
  * Note: all claims are technically optional so we must verify their existence before using them.
  * Note 2: NumericDate is a number representing a date in seconds since the Unix epoch.

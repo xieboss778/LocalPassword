@@ -1,17 +1,17 @@
 import { Component, Input } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   FormFieldModule,
   IconButtonModule,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-cipher-card.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-view-identity-sections",
@@ -26,7 +26,7 @@ import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-
   ],
 })
 export class ViewIdentitySectionsComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) cipher: CipherView | null = null;
 

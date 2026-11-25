@@ -21,7 +21,7 @@ module.exports = {
         // Further workaround for memory leak, recommended here:
         // https://github.com/kulshekhar/ts-jest/issues/1967#issuecomment-697494014
         // Makes tests run faster and reduces size/rate of leak, but loses typechecking on test code
-        // See https://bitwarden.atlassian.net/browse/EC-497 for more info
+        // See https://localpass.atlassian.net/browse/EC-497 for more info
         isolatedModules: true,
         astTransformers: {
           before: ["<rootDir>/../../libs/shared/es2020-transformer.ts"],

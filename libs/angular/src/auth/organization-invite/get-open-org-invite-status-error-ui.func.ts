@@ -1,5 +1,5 @@
-import { AccountWarning, ReportBreach, ExpiredIcon } from "@bitwarden/assets/svg";
-import { OpenOrgInviteStatusError } from "@bitwarden/common/auth/organization-invite";
+import { AccountWarning, ReportBreach, ExpiredIcon } from "@localpass/assets/svg";
+import { OpenOrgInviteStatusError } from "@localpass/common/auth/organization-invite";
 
 import { AuthRoute } from "../constants";
 

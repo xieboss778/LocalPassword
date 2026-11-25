@@ -1,1 +1,1 @@
-export type { StorageOptions } from "@bitwarden/storage-core";
+export type { StorageOptions } from "@localpass/storage-core";

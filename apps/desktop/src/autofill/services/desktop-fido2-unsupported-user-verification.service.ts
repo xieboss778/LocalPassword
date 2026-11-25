@@ -1,4 +1,4 @@
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { DesktopFido2UserVerificationService } from "./desktop-fido2-user-verification.service.abstraction";
 

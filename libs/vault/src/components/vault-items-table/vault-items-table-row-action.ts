@@ -1,5 +1,5 @@
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { BitwardenIcon } from "@bitwarden/components";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { LocalPassIcon } from "@localpass/components";
 
 /**
  * A client-supplied action for a row's overflow menu.
@@ -23,7 +23,7 @@ export type VaultItemsTableRowAction<C extends CipherViewLike> = {
   /** Already-translated label. */
   label: string;
 
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
 
   /** Executes the action for `item` when the menu item is chosen. */
   run: (item: C) => void | Promise<void>;

@@ -1,6 +1,6 @@
 import { merge, Observable } from "rxjs";
 
-import { StateProvider } from "@bitwarden/state";
+import { StateProvider } from "@localpass/state";
 
 import { usingDisposable } from "../../rx/using-disposable";
 

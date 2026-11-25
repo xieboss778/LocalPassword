@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import "module-alias/register";
 
-import { NativeMessagingVersion } from "@bitwarden/common/enums";
+import { NativeMessagingVersion } from "@localpass/common/enums";
 
 // eslint-disable-next-line no-restricted-imports
 import { CredentialUpdatePayload } from "../../../src/models/native-messaging/encrypted-message-payloads/credential-update-payload";

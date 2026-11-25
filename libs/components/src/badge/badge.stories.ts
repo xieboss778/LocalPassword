@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { TooltipDirective } from "../tooltip";
 

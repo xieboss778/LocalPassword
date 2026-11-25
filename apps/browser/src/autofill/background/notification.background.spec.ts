@@ -1,39 +1,39 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of, Subject } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { AuthService } from "@bitwarden/common/auth/services/auth.service";
-import { ExtensionCommand } from "@bitwarden/common/autofill/constants";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { AuthService } from "@localpass/common/auth/services/auth.service";
+import { ExtensionCommand } from "@localpass/common/autofill/constants";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { UserNotificationSettingsServiceAbstraction } from "@localpass/common/autofill/services/user-notification-settings.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 import {
   IntraprocessMessageSender,
   Message,
   MessageListener,
-} from "@bitwarden/common/platform/messaging";
-import { SelfHostedEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
-import { TaskService, SecurityTask } from "@bitwarden/common/vault/tasks";
-import { SecurityTaskStatus, SecurityTaskType } from "@bitwarden/common/vault/tasks/enums";
+} from "@localpass/common/platform/messaging";
+import { SelfHostedEnvironment } from "@localpass/common/platform/services/default-environment.service";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { CipherId, UserId } from "@localpass/common/types/guid";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { CipherService } from "@localpass/common/vault/services/cipher.service";
+import { FolderService } from "@localpass/common/vault/services/folder/folder.service";
+import { TaskService, SecurityTask } from "@localpass/common/vault/tasks";
+import { SecurityTaskStatus, SecurityTaskType } from "@localpass/common/vault/tasks/enums";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { NotificationType } from "../enums/notification-type.enum";

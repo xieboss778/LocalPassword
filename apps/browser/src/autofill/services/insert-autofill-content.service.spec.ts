@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { EVENTS } from "@bitwarden/common/autofill/constants";
+import { EVENTS } from "@localpass/common/autofill/constants";
 
 import AutofillScript, { FillScript, FillScriptActionTypes } from "../models/autofill-script";
 import { mockQuerySelectorAllDefinedCall } from "../spec/testing-utils";
@@ -232,7 +232,7 @@ describe("InsertAutofillContentService", () => {
   });
 
   describe("userCancelledInsecureUrlAutofill", () => {
-    const currentHostname = "bitwarden.com";
+    const currentHostname = "local.invalid";
 
     describe("returns false if Autofill occurring...", () => {
       it("when the fill script does not require insecure page confirmation", () => {
@@ -883,10 +883,10 @@ describe("InsertAutofillContentService", () => {
           insertAutofillContentService["domElementVisibilityService"].isElementHiddenByCss,
         ).toHaveBeenCalledWith(testElement);
         expect(testElement.classList.add).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
         expect(testElement.classList.remove).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
       });
 
@@ -902,10 +902,10 @@ describe("InsertAutofillContentService", () => {
         jest.advanceTimersByTime(200);
 
         expect(testElement.classList.add).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
         expect(testElement.classList.remove).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
       });
 
@@ -921,10 +921,10 @@ describe("InsertAutofillContentService", () => {
         jest.advanceTimersByTime(200);
 
         expect(testElement.classList.add).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
         expect(testElement.classList.remove).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
       });
 
@@ -940,10 +940,10 @@ describe("InsertAutofillContentService", () => {
         jest.advanceTimersByTime(200);
 
         expect(testElement.classList.add).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
         expect(testElement.classList.remove).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
       });
 
@@ -957,10 +957,10 @@ describe("InsertAutofillContentService", () => {
         jest.advanceTimersByTime(200);
 
         expect(testElement.classList.add).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
         expect(testElement.classList.remove).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
       });
 
@@ -974,10 +974,10 @@ describe("InsertAutofillContentService", () => {
         jest.advanceTimersByTime(200);
 
         expect(testElement.classList.add).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
         expect(testElement.classList.remove).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
       });
 
@@ -991,10 +991,10 @@ describe("InsertAutofillContentService", () => {
         jest.advanceTimersByTime(200);
 
         expect(testElement.classList.add).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
         expect(testElement.classList.remove).toHaveBeenCalledWith(
-          "com-bitwarden-browser-animated-fill",
+          "com-localpass-browser-animated-fill",
         );
       });
     });

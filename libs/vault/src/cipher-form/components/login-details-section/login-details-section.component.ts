@@ -6,12 +6,12 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { firstValueFrom, map } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AuditService } from "@localpass/common/abstractions/audit.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   AsyncActionsModule,
   CardComponent,
@@ -23,7 +23,7 @@ import {
   SectionHeaderComponent,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormGenerationService } from "../../abstractions/cipher-form-generation.service";
 import { TotpCaptureService } from "../../abstractions/totp-capture.service";
@@ -35,7 +35,7 @@ import {
   DeletePasskeyDialogResult,
 } from "./delete-passkey-dialog/delete-passkey-dialog.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-login-details-section",

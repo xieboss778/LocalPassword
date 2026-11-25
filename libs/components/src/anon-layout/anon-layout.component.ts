@@ -4,11 +4,11 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
 import { from, map } from "rxjs";
 
-import { BitSvg } from "@bitwarden/assets/svg";
-import { ClientType } from "@bitwarden/common/enums";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { BitSvg } from "@localpass/assets/svg";
+import { ClientType } from "@localpass/common/enums";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import {
   ContentVerticalPaddingType,
@@ -79,8 +79,14 @@ export class AnonLayoutComponent {
   protected readonly year = new Date().getFullYear().toString();
   protected readonly hideYearAndVersion =
     this.platformUtilsService.getClientType() !== ClientType.Web;
+  // Offline build: the only host is the non-resolvable sentinel, so there is nothing to show.
   protected readonly hostname = toSignal(
-    this.environmentService.environment$.pipe(map((env) => env.getHostname())),
+    this.environmentService.environment$.pipe(
+      map((env) => {
+        const host = env.getHostname();
+        return host === "local.invalid" ? "" : host;
+      }),
+    ),
   );
   protected readonly version = toSignal(from(this.platformUtilsService.getApplicationVersion()));
 }

@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { WebAuthnLoginPrfKeyService } from "./webauthn-login-prf-key.service";
 

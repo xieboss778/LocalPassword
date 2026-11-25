@@ -14,8 +14,8 @@ import {
   StateUpdateOptions,
   UserKeyDefinition,
   activeMarker,
-} from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 import { MinimalAccountService } from "./fake-state-provider";
 

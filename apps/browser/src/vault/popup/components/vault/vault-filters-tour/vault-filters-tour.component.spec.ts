@@ -2,9 +2,9 @@ import { ElementRef, signal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { BitTableToolbarComponent, PopoverRef, PopoverService } from "@bitwarden/components";
-import { CoachmarkService, CoachmarkStepId } from "@bitwarden/vault";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { BitTableToolbarComponent, PopoverRef, PopoverService } from "@localpass/components";
+import { CoachmarkService, CoachmarkStepId } from "@localpass/vault";
 
 import {
   SharedFoldersRow,

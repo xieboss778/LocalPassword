@@ -2,10 +2,10 @@ import { inject, Injectable } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { combineLatest, firstValueFrom, map, Observable } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { UserId } from "@localpass/common/types/guid";
 
 import { CoachmarkStep } from "../components/coachmark/coachmark-step";
 import { CoachmarkService } from "../components/coachmark/coachmark.service";

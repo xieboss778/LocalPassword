@@ -1,5 +1,5 @@
-import "@bitwarden/ui-common/setup-jest";
-import { addCustomMatchers } from "@bitwarden/common/spec";
+import "@localpass/ui-common/setup-jest";
+import { addCustomMatchers } from "@localpass/common/spec";
 
 addCustomMatchers();
 

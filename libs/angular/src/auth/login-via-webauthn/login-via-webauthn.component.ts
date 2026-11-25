@@ -5,34 +5,34 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { SecurityKeyIcon, SecurityKeyWarningIcon } from "@bitwarden/assets/svg";
+import { SecurityKeyIcon, SecurityKeyWarningIcon } from "@localpass/assets/svg";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { LoginSuccessHandlerService } from "@bitwarden/auth/common";
-import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
-import { WebAuthnLoginCredentialAssertionView } from "@bitwarden/common/auth/models/view/webauthn-login/webauthn-login-credential-assertion.view";
-import { ClientType } from "@bitwarden/common/enums";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { LoginSuccessHandlerService } from "@localpass/auth/common";
+import { WebAuthnLoginServiceAbstraction } from "@localpass/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
+import { WebAuthnLoginCredentialAssertionView } from "@localpass/common/auth/models/view/webauthn-login/webauthn-login-credential-assertion.view";
+import { ClientType } from "@localpass/common/enums";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 import {
   AnonLayoutWrapperDataService,
   ButtonModule,
   SvgModule,
   LinkModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/components";
+import { KeyService } from "@localpass/key-management";
 
 import { JslibModule } from "../../jslib.module";
 
 import { LoginViaWebAuthnComponentService } from "./login-via-webauthn-component.service";
 
 export type State = "assert" | "assertFailed";
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-login-via-webauthn",

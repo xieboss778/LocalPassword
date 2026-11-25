@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ButtonModule, DialogModule, IconButtonModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ButtonModule, DialogModule, IconButtonModule } from "@localpass/components";
 
 @Component({
   selector: "keeper-stage-shell",

@@ -1,6 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { DefaultTaskSchedulerService } from "./default-task-scheduler.service";
 import { ScheduledTaskNames } from "./scheduled-task-name.enum";

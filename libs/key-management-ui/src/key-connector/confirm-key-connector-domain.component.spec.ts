@@ -2,20 +2,20 @@ import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationAutoEnrollStatusResponse } from "@bitwarden/common/admin-console/models/response/organization-auto-enroll-status.response";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { KeyConnectorApiService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector-api.service";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { KeyConnectorDomainConfirmation } from "@bitwarden/common/key-management/key-connector/models/key-connector-domain-confirmation";
-import { KeyConnectorConfirmationDetailsResponse } from "@bitwarden/common/key-management/key-connector/models/response/key-connector-confirmation-details.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { AnonLayoutWrapperDataService, ToastService } from "@bitwarden/components";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationAutoEnrollStatusResponse } from "@localpass/common/admin-console/models/response/organization-auto-enroll-status.response";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { KeyConnectorApiService } from "@localpass/common/key-management/key-connector/abstractions/key-connector-api.service";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { KeyConnectorDomainConfirmation } from "@localpass/common/key-management/key-connector/models/key-connector-domain-confirmation";
+import { KeyConnectorConfirmationDetailsResponse } from "@localpass/common/key-management/key-connector/models/response/key-connector-confirmation-details.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { AnonLayoutWrapperDataService, ToastService } from "@localpass/components";
 
 import { ConfirmKeyConnectorDomainComponent } from "./confirm-key-connector-domain.component";
 

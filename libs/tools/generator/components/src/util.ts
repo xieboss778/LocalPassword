@@ -1,7 +1,7 @@
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nKeyOrLiteral } from "@bitwarden/common/tools/types";
-import { isI18nKey } from "@bitwarden/common/tools/util";
-import { AlgorithmInfo, AlgorithmMetadata } from "@bitwarden/generator-core";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nKeyOrLiteral } from "@localpass/common/tools/types";
+import { isI18nKey } from "@localpass/common/tools/util";
+import { AlgorithmInfo, AlgorithmMetadata } from "@localpass/generator-core";
 
 /** Adapts {@link AlgorithmMetadata} to legacy {@link AlgorithmInfo} structure. */
 export function toAlgorithmInfo(metadata: AlgorithmMetadata, i18n: I18nService) {

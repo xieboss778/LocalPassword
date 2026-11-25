@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { GlobalState, StateProvider } from "@bitwarden/common/platform/state";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { GlobalState, StateProvider } from "@localpass/common/platform/state";
 
 import {
   DEFAULT_PASSWORD_MANAGER_PROMPT_DISMISSED,

@@ -24,12 +24,12 @@ import {
   SettingsInactive,
   VaultActive,
   VaultInactive,
-} from "@bitwarden/assets/svg";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
+} from "@localpass/assets/svg";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
 import {
   AvatarModule,
   BannerModule,
@@ -57,9 +57,9 @@ import {
   SvgComponent,
   IconTileComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { enabledFlags } from "@bitwarden/storybook";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { enabledFlags } from "@localpass/storybook";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { VaultLoadingSkeletonComponent } from "../../../vault/popup/components/vault-loading-skeleton/vault-loading-skeleton.component";
 import { PopupRouterCacheService } from "../view-cache/popup-router-cache.service";
@@ -918,7 +918,7 @@ const popupLayoutI18nProvider = {
       back: "Back",
       loading: "Loading",
       search: "Search",
-      appLogoLabel: "Bitwarden",
+      appLogoLabel: "LocalPass",
       popOutNewWindow: "Pop out to a new window",
       vault: "Vault",
       generator: "Generator",

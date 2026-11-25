@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
 
-import { Collection } from "@bitwarden/common/admin-console/models/collections/collection";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections/collection.view";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Collection } from "@localpass/common/admin-console/models/collections/collection";
+import { CollectionView } from "@localpass/common/admin-console/models/collections/collection.view";
+import { UserId } from "@localpass/common/types/guid";
 
 /**
  * Service responsible for encrypting and decrypting collections using the Rust SDK.

@@ -7,7 +7,7 @@ set -euo pipefail
 
 if [ $# -lt 3 ]; then
     echo "Usage: $0 <repo> <current-ref> <new-ref>"
-    echo "Example: $0 bitwarden/sdk-internal 9fe3aeda fix-wasm-import"
+    echo "Example: $0 localpass/sdk-internal 9fe3aeda fix-wasm-import"
     exit 1
 fi
 

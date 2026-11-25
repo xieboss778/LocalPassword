@@ -3,9 +3,9 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { UserId } from "@localpass/common/types/guid";
 
 import { CoachmarkService } from "../components/coachmark/coachmark.service";
 import {

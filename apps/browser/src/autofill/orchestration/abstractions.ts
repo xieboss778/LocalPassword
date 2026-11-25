@@ -1,5 +1,5 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { AutoFillOptions, PageDetail } from "../services/abstractions/autofill.service";
 import { AutofillTriageResponse } from "../types/autofill-triage";

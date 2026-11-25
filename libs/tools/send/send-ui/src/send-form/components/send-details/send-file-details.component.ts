@@ -2,16 +2,16 @@ import { ChangeDetectionStrategy, Component, inject, input, OnInit } from "@angu
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, Validators, ReactiveFormsModule } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MAX_SDK_FILE_SEND_SIZE_BYTES } from "@bitwarden/common/tools/send/services/send-api.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MAX_SDK_FILE_SEND_SIZE_BYTES } from "@localpass/common/tools/send/services/send-api.service";
 import {
   FileUploadComponent,
   FormFieldModule,
   SectionComponent,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SendFormService } from "../../abstractions/send-form.service";
 

@@ -1,4 +1,4 @@
-import { CipherIconDetails } from "@bitwarden/common/vault/icon/build-cipher-icon";
+import { CipherIconDetails } from "@localpass/common/vault/icon/build-cipher-icon";
 
 export const CipherTypes = {
   Login: 1,

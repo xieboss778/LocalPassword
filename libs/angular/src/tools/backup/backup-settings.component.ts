@@ -3,18 +3,18 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   AsyncActionsModule,
   ButtonModule,
   DialogService,
   FormFieldModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { S3Client, VaultBackupService, VaultBackupSyncService } from "@bitwarden/local-vault";
+} from "@localpass/components";
+import { S3Client, VaultBackupService, VaultBackupSyncService } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
 
@@ -59,7 +59,7 @@ export class BackupSettingsComponent implements OnInit {
     bucket: ["", [Validators.required]],
     accessKeyId: ["", [Validators.required]],
     secretAccessKey: ["", [Validators.required]],
-    prefix: ["localpassword"],
+    prefix: ["localpass"],
     forcePathStyle: [false],
   });
 
@@ -167,7 +167,7 @@ export class BackupSettingsComponent implements OnInit {
 
     const userId = await this.userId();
     await this.syncService.disconnect(userId);
-    this.formGroup.reset({ provider: "r2", region: "auto", prefix: "localpassword" });
+    this.formGroup.reset({ provider: "r2", region: "auto", prefix: "localpass" });
     this.status.set({ lastSyncedAt: null, pending: false, lastBackupAt: null });
   }
 

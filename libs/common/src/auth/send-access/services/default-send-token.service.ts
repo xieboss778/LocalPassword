@@ -4,8 +4,8 @@ import {
   BitwardenClient,
   SendAccessTokenRequest,
   SendAccessTokenResponse,
-} from "@bitwarden/sdk-internal";
-import { GlobalState, GlobalStateProvider } from "@bitwarden/state";
+} from "@localpass/sdk-internal";
+import { GlobalState, GlobalStateProvider } from "@localpass/state";
 
 import { SendPasswordService } from "../../../key-management/sends/abstractions/send-password.service";
 import {

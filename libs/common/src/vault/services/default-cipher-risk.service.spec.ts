@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, Observable } from "rxjs";
 
-import type { CipherRiskOptions, CipherRiskResult } from "@bitwarden/sdk-internal";
+import type { CipherRiskOptions, CipherRiskResult } from "@localpass/sdk-internal";
 
 import { asUuid } from "../../platform/abstractions/sdk/sdk.service";
 import { MockSdkService } from "../../platform/spec/mock-sdk.service";

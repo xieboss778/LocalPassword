@@ -1,4 +1,4 @@
-import { CrossContextUnlockService } from "@bitwarden/unlock";
+import { CrossContextUnlockService } from "@localpass/unlock";
 
 import { BACKGROUND_UNLOCK_COMPLETED, FOREGROUND_UNLOCK_COMPLETED } from "./unlock-messages";
 

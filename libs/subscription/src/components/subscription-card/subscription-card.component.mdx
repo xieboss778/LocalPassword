@@ -46,7 +46,7 @@ The subscription card component is designed to display comprehensive subscriptio
 billing pages, account management interfaces, and subscription dashboards.
 
 ```ts
-import { SubscriptionCardComponent, SubscriptionPreview } from "@bitwarden/subscription";
+import { SubscriptionCardComponent, SubscriptionPreview } from "@localpass/subscription";
 ```
 
 ```html
@@ -95,7 +95,7 @@ The component uses the `SubscriptionPreview` type, which is a discriminated unio
 type SubscriptionPreview = HasCart & HasStorage & (Suspension | Billable | Canceled);
 
 type HasCart = {
-  cart: Cart; // From @bitwarden/pricing
+  cart: Cart; // From @localpass/pricing
 };
 
 type HasStorage = {
@@ -152,7 +152,7 @@ Each state displays an appropriate badge, callout message, and relevant action b
 
 ## Design
 
-The component follows the Bitwarden design system with:
+The component follows the LocalPass design system with:
 
 - **Status Badge**: Color-coded badges (success, warning, danger) indicating subscription state
 - **Cart Summary**: Integrated cart summary showing pricing details

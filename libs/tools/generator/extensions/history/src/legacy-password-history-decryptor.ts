@@ -1,7 +1,7 @@
 import { firstValueFrom, map } from "rxjs";
 
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { UserId } from "@localpass/common/types/guid";
 
 import { GeneratedPasswordHistory } from "./generated-password-history";
 

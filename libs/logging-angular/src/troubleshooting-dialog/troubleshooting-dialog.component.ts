@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
+import { FileDownloadService } from "@localpass/common/platform/abstractions/file-download/file-download.service";
 import {
   ButtonModule,
   CenterPositionStrategy,
@@ -9,9 +9,9 @@ import {
   DialogService,
   IconModule,
   LinkModule,
-} from "@bitwarden/components";
-import { buildFlightRecorderCsvExport } from "@bitwarden/logging";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { buildFlightRecorderCsvExport } from "@localpass/logging";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { FlightRecorderService } from "../flight-recorder.service";
 

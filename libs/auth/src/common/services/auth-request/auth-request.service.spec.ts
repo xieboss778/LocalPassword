@@ -1,27 +1,27 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DefaultAuthRequestApiService } from "@bitwarden/common/auth/login-via-auth-request";
-import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
-import { FakeMasterPasswordService } from "@bitwarden/common/key-management/master-password/services/fake-master-password.service";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { newGuid } from "@bitwarden/guid";
-import { KeyService } from "@bitwarden/key-management";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { DefaultAuthRequestApiService } from "@localpass/common/auth/login-via-auth-request";
+import { AuthRequestResponse } from "@localpass/common/auth/models/response/auth-request.response";
+import { FakeMasterPasswordService } from "@localpass/common/key-management/master-password/services/fake-master-password.service";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { AuthRequestPushNotification } from "@localpass/common/models/response/notification.response";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { newGuid } from "@localpass/guid";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptService,
   EncString,
   LegacyCompatKeyService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { UnlockService } from "@bitwarden/unlock";
+} from "@localpass/legacy-crypto";
+import { UnlockService } from "@localpass/unlock";
 
 import { AuthRequestService } from "./auth-request.service";
 

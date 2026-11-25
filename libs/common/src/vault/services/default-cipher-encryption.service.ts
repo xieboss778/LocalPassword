@@ -1,6 +1,6 @@
 import { EMPTY, catchError, concatMap, firstValueFrom, map, throwError } from "rxjs";
 
-import { CipherListView, DecryptCipherListResult } from "@bitwarden/sdk-internal";
+import { CipherListView, DecryptCipherListResult } from "@localpass/sdk-internal";
 
 import { LogService } from "../../platform/abstractions/log.service";
 import { SdkService, asUuid, uuidAsString } from "../../platform/abstractions/sdk/sdk.service";

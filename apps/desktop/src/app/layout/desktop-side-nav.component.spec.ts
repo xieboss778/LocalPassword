@@ -3,11 +3,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { NavigationModule } from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { NavigationModule } from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
 
 import { AccountSwitcherV2Component } from "../../auth/components/account-switcher/account-switcher-v2.component";
 

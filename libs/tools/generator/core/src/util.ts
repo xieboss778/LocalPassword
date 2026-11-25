@@ -6,8 +6,8 @@ import {
   SingleUserState,
   StateProvider,
   UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import {
   DefaultPassphraseBoundaries,

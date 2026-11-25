@@ -1,4 +1,4 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { countAfterRemoval, countCipherTypes } from "./item-type-counts";
 

@@ -6,35 +6,35 @@ import { of } from "rxjs";
 import {
   OrganizationUserApiService,
   OrganizationUserResetPasswordEnrollmentRequest,
-} from "@bitwarden/admin-console/common";
+} from "@localpass/admin-console/common";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
   FakeUserDecryptionOptions as UserDecryptionOptions,
   InternalUserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationKeysResponse } from "@bitwarden/common/admin-console/models/response/organization-keys.response";
-import { MasterPasswordApiService } from "@bitwarden/common/auth/abstractions/master-password-api.service.abstraction";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { SetPasswordRequest } from "@bitwarden/common/auth/models/request/set-password.request";
-import { UpdateTdeOffboardingPasswordRequest } from "@bitwarden/common/auth/models/request/update-tde-offboarding-password.request";
-import { SsoJitProvisionFinishService } from "@bitwarden/common/auth/sso-jit-provision-finish";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
+} from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationKeysResponse } from "@localpass/common/admin-console/models/response/organization-keys.response";
+import { MasterPasswordApiService } from "@localpass/common/auth/abstractions/master-password-api.service.abstraction";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { SetPasswordRequest } from "@localpass/common/auth/models/request/set-password.request";
+import { UpdateTdeOffboardingPasswordRequest } from "@localpass/common/auth/models/request/update-tde-offboarding-password.request";
+import { SsoJitProvisionFinishService } from "@localpass/common/auth/sso-jit-provision-finish";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import {
   MasterKeyWrappedUserKey,
   MasterPasswordAuthenticationData,
   MasterPasswordAuthenticationHash,
   MasterPasswordSalt,
   MasterPasswordUnlockData,
-} from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { makeEncString, makeSymmetricCryptoKey } from "@bitwarden/common/spec";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/key-management/master-password/types/master-password.types";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { makeEncString, makeSymmetricCryptoKey } from "@localpass/common/spec";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   DEFAULT_KDF_CONFIG,
@@ -42,13 +42,13 @@ import {
   EncString,
   fromSdkKdfConfig,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 import {
   JitMasterPasswordRegistrationResponse,
   SignedPublicKey,
   WrappedAccountCryptographicState,
-} from "@bitwarden/sdk-internal";
-import { UnlockService } from "@bitwarden/unlock";
+} from "@localpass/sdk-internal";
+import { UnlockService } from "@localpass/unlock";
 
 import { DefaultSetInitialPasswordService } from "./default-set-initial-password.service.implementation";
 import {

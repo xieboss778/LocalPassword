@@ -5,7 +5,7 @@ import {
   GlobalStateProvider,
   KeyDefinition,
   VAULT_APPEARANCE,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 export type CopyButtonDisplayMode = "combined" | "quick";
 

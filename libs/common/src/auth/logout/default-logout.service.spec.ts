@@ -1,6 +1,6 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { SdkService } from "../../platform/abstractions/sdk/sdk.service";

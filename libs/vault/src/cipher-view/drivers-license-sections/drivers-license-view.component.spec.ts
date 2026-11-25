@@ -3,13 +3,13 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DriversLicenseView } from "@bitwarden/common/vault/models/view/drivers-license.view";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DriversLicenseView } from "@localpass/common/vault/models/view/drivers-license.view";
 
 import { CopyCipherFieldService } from "../../services/copy-cipher-field.service";
 import { PasswordRepromptService } from "../../services/password-reprompt.service";

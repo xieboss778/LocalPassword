@@ -12,22 +12,22 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   SemanticLogger,
   disabledSemanticLoggerProvider,
   ifEnabledSemanticLoggerProvider,
-} from "@bitwarden/common/tools/log";
-import { UserId } from "@bitwarden/common/types/guid";
-import { ButtonModule, DialogModule, DialogService } from "@bitwarden/components";
-import { GeneratorHistoryService } from "@bitwarden/generator-history";
+} from "@localpass/common/tools/log";
+import { UserId } from "@localpass/common/types/guid";
+import { ButtonModule, DialogModule, DialogService } from "@localpass/components";
+import { GeneratorHistoryService } from "@localpass/generator-history";
 
 import { CredentialGeneratorHistoryComponent as CredentialGeneratorHistoryToolsComponent } from "./credential-generator-history.component";
 import { EmptyCredentialHistoryComponent } from "./empty-credential-history.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "credential-generator-history-dialog.component.html",
@@ -51,7 +51,7 @@ export class CredentialGeneratorHistoryDialogComponent implements OnChanges, OnI
     private logService: LogService,
   ) {}
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   account: Account | null;
@@ -63,7 +63,7 @@ export class CredentialGeneratorHistoryDialogComponent implements OnChanges, OnI
    *
    *  @warning this may reveal sensitive information in plaintext.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   debug: boolean = false;

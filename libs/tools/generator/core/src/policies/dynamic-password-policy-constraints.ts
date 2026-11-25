@@ -5,7 +5,7 @@ import {
   DynamicStateConstraints,
   PolicyConstraints,
   StateConstraints,
-} from "@bitwarden/common/tools/types";
+} from "@localpass/common/tools/types";
 
 import { PasswordGeneratorPolicy, PasswordGeneratorSettings } from "../types";
 

@@ -1,13 +1,13 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService, ToastService } from "@localpass/components";
 
 import { ArchiveCipherUtilitiesService } from "./archive-cipher-utilities.service";
 import { PasswordRepromptService } from "./password-reprompt.service";

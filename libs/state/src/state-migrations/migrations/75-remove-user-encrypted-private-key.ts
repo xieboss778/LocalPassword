@@ -3,7 +3,7 @@ import {
   WrappedAccountCryptographicState,
   EncString,
   SignedSecurityState,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { IRREVERSIBLE, Migrator } from "../migrator";

@@ -1,17 +1,17 @@
 import { firstValueFrom } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId, CipherId } from "@bitwarden/common/types/guid";
-import { CipherEncryptionService } from "@bitwarden/common/vault/abstractions/cipher-encryption.service";
-import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
-import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { Folder } from "@bitwarden/common/vault/models/domain/folder";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { ENCRYPTED_CIPHERS } from "@bitwarden/common/vault/services/key-state/ciphers.state";
-import { FOLDER_ENCRYPTED_FOLDERS } from "@bitwarden/common/vault/services/key-state/folder.state";
-import { newGuid } from "@bitwarden/guid";
-import { StateProvider } from "@bitwarden/state";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId, CipherId } from "@localpass/common/types/guid";
+import { CipherEncryptionService } from "@localpass/common/vault/abstractions/cipher-encryption.service";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
+import { FolderData } from "@localpass/common/vault/models/data/folder.data";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { Folder } from "@localpass/common/vault/models/domain/folder";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { ENCRYPTED_CIPHERS } from "@localpass/common/vault/services/key-state/ciphers.state";
+import { FOLDER_ENCRYPTED_FOLDERS } from "@localpass/common/vault/services/key-state/folder.state";
+import { newGuid } from "@localpass/guid";
+import { StateProvider } from "@localpass/state";
 
 import { LocalAccountService } from "../account/local-account.service";
 

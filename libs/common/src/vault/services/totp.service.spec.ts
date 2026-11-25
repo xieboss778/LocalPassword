@@ -1,6 +1,6 @@
 import { take } from "rxjs";
 
-import { TotpResponse } from "@bitwarden/sdk-internal";
+import { TotpResponse } from "@localpass/sdk-internal";
 
 import { MockSdkService } from "../../platform/spec/mock-sdk.service";
 

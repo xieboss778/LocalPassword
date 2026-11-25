@@ -3,7 +3,7 @@ import {
   KeyDefinition,
   StateProvider,
   VAULT_BROWSER_DEFAULT_PASSWORD_MANAGER_PROMPT,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 export const DEFAULT_PASSWORD_MANAGER_PROMPT_DISMISSED = new KeyDefinition<boolean>(
   VAULT_BROWSER_DEFAULT_PASSWORD_MANAGER_PROMPT,

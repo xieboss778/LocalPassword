@@ -1,4 +1,4 @@
-# LocalPassword - Claude Code Configuration
+# LocalPass - Claude Code Configuration
 
 ## Project Context Files
 
@@ -10,10 +10,10 @@
 
 ## Critical Rules
 
-- **CRITICAL**: This project (`LocalPassword`) is independent and has **no relationship** with the official Bitwarden repository (`bitwarden/clients`, https://github.com/bitwarden/clients).
+- **CRITICAL**: This project (`LocalPass`) is independent and has **no relationship** with the official Bitwarden repository (`bitwarden/clients`, https://github.com/bitwarden/clients).
   - **NEVER** add an `upstream` remote, and **NEVER** fetch, merge, rebase, or cherry-pick official Bitwarden code.
   - **NEVER** suggest syncing, aligning, or updating this project from the official repository.
-  - All `git pull` / `git fetch` operations must target `origin` only (`https://github.com/xieboss778/LocalPassword.git`).
+  - All `git pull` / `git fetch` operations must target `origin` only (`https://github.com/xieboss778/LocalPass.git`).
 - **NEVER** use code regions: If complexity suggests regions, refactor for better readability
 - **CRITICAL**: new encryption logic should not be added to this repo.
   - If significant encryption related logic is added or changed, make sure @bitwarden/team-key-management-dev is aware of the PR

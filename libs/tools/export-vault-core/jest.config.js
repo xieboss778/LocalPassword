@@ -9,7 +9,7 @@ module.exports = {
   testEnvironment: "jsdom",
   setupFiles: ["<rootDir>/../../../libs/shared/polyfill-node-globals.ts"],
   moduleNameMapper: pathsToModuleNameMapper(
-    { "@bitwarden/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
+    { "@localpass/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
     {
       prefix: "<rootDir>/../../../",
     },

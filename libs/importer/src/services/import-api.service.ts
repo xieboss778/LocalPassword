@@ -1,6 +1,6 @@
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ImportCiphersRequest } from "@bitwarden/common/models/request/import-ciphers.request";
-import { ImportOrganizationCiphersRequest } from "@bitwarden/common/models/request/import-organization-ciphers.request";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { ImportCiphersRequest } from "@localpass/common/models/request/import-ciphers.request";
+import { ImportOrganizationCiphersRequest } from "@localpass/common/models/request/import-organization-ciphers.request";
 
 import { ImportApiServiceAbstraction } from "./import-api.service.abstraction";
 

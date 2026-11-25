@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { PremiumInterestStateService } from "./premium-interest-state.service.abstraction";
 

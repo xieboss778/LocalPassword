@@ -2,9 +2,9 @@
 import { TextEncoder, TextDecoder } from "util";
 Object.assign(global, { TextDecoder, TextEncoder });
 
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { PolicyId } from "@bitwarden/common/types/guid";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { PolicyId } from "@localpass/common/types/guid";
 
 import { Algorithm, Algorithms, AlgorithmsByType } from "../metadata";
 

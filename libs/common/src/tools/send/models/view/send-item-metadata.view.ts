@@ -1,4 +1,4 @@
-import { SendItemMetadataView as SdkSendItemMetadataView } from "@bitwarden/sdk-internal";
+import { SendItemMetadataView as SdkSendItemMetadataView } from "@localpass/sdk-internal";
 
 import { View } from "../../../../models/view/view";
 import { uuidAsString } from "../../../../platform/abstractions/sdk/sdk.service";

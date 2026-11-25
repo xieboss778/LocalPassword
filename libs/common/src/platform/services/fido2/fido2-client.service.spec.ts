@@ -34,9 +34,9 @@ import { guidToRawFormat } from "./guid-utils";
 
 type ParentWindowReference = string;
 
-const RpId = "bitwarden.com";
-const Origin = "https://bitwarden.com";
-const VaultUrl = "https://vault.bitwarden.com";
+const RpId = "local.invalid";
+const Origin = "https://local.invalid";
+const VaultUrl = "https://vault.local.invalid";
 
 describe("FidoAuthenticatorService", () => {
   let authenticator!: MockProxy<Fido2AuthenticatorService<ParentWindowReference>>;
@@ -174,7 +174,7 @@ describe("FidoAuthenticatorService", () => {
       it("should throw error if rp.id is not valid for this origin", async () => {
         const params = createParams({
           origin: "https://passwordless.dev",
-          rp: { id: "bitwarden.com", name: "Bitwarden" },
+          rp: { id: "local.invalid", name: "LocalPass" },
         });
 
         const result = async () => await client.createCredential(params, windowReference);
@@ -200,10 +200,10 @@ describe("FidoAuthenticatorService", () => {
 
       it("should fallback if origin hostname is found in neverDomains", async () => {
         const params = createParams({
-          origin: "https://bitwarden.com",
-          rp: { id: "bitwarden.com", name: "Bitwarden" },
+          origin: "https://local.invalid",
+          rp: { id: "local.invalid", name: "LocalPass" },
         });
-        domainSettingsService.neverDomains$ = of({ "bitwarden.com": null });
+        domainSettingsService.neverDomains$ = of({ "local.invalid": null });
 
         const result = async () => await client.createCredential(params, windowReference);
 
@@ -213,7 +213,7 @@ describe("FidoAuthenticatorService", () => {
       it("should throw error if origin is not an https domain", async () => {
         const params = createParams({
           origin: "http://passwordless.dev",
-          rp: { id: "bitwarden.com", name: "Bitwarden" },
+          rp: { id: "local.invalid", name: "LocalPass" },
         });
 
         const result = async () => await client.createCredential(params, windowReference);
@@ -373,7 +373,7 @@ describe("FidoAuthenticatorService", () => {
         await rejects.toThrow(FallbackRequestedError);
       });
 
-      it("should throw FallbackRequestedError if origin equals the bitwarden vault", async () => {
+      it("should throw FallbackRequestedError if origin equals the localpass vault", async () => {
         const params = createParams({ origin: VaultUrl });
 
         const result = async () => await client.createCredential(params, windowReference);
@@ -385,7 +385,7 @@ describe("FidoAuthenticatorService", () => {
 
     function createParams(params: Partial<CreateCredentialParams> = {}): CreateCredentialParams {
       return {
-        origin: params.origin ?? "https://bitwarden.com",
+        origin: params.origin ?? "https://local.invalid",
         sameOriginWithAncestors: params.sameOriginWithAncestors ?? true,
         attestation: params.attestation,
         authenticatorSelection: params.authenticatorSelection,
@@ -400,7 +400,7 @@ describe("FidoAuthenticatorService", () => {
         ],
         rp: params.rp ?? {
           id: RpId,
-          name: "Bitwarden",
+          name: "LocalPass",
         },
         user: params.user ?? {
           id: "YmFzZTY0LWVuY29kZWQtdXNlci1pZA",
@@ -447,7 +447,7 @@ describe("FidoAuthenticatorService", () => {
       it("should throw error if rp.id is not valid for this origin", async () => {
         const params = createParams({
           origin: "https://passwordless.dev",
-          rpId: "bitwarden.com",
+          rpId: "local.invalid",
         });
 
         const result = async () => await client.assertCredential(params, windowReference);
@@ -473,10 +473,10 @@ describe("FidoAuthenticatorService", () => {
 
       it("should fallback if origin hostname is found in neverDomains", async () => {
         const params = createParams({
-          origin: "https://bitwarden.com",
+          origin: "https://local.invalid",
         });
 
-        domainSettingsService.neverDomains$ = of({ "bitwarden.com": null });
+        domainSettingsService.neverDomains$ = of({ "local.invalid": null });
 
         const result = async () => await client.assertCredential(params, windowReference);
 
@@ -486,7 +486,7 @@ describe("FidoAuthenticatorService", () => {
       it("should throw error if origin is not an http domain", async () => {
         const params = createParams({
           origin: "http://passwordless.dev",
-          rpId: "bitwarden.com",
+          rpId: "local.invalid",
         });
 
         const result = async () => await client.assertCredential(params, windowReference);
@@ -560,7 +560,7 @@ describe("FidoAuthenticatorService", () => {
         await rejects.toThrow(FallbackRequestedError);
       });
 
-      it("should throw FallbackRequestedError if origin equals the bitwarden vault", async () => {
+      it("should throw FallbackRequestedError if origin equals the localpass vault", async () => {
         const params = createParams({ origin: VaultUrl });
 
         const result = async () => await client.assertCredential(params, windowReference);
@@ -782,7 +782,7 @@ describe("FidoAuthenticatorService", () => {
     });
 
     it("returns true when no `blockedInteractionsUris` entry matches the hostname", async () => {
-      domainSettingsService.blockedInteractionsUris$ = of({ "bitwarden.com": null });
+      domainSettingsService.blockedInteractionsUris$ = of({ "local.invalid": null });
 
       const result = await client.isFido2FeatureEnabled(hostname, origin);
 

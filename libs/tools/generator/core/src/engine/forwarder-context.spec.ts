@@ -4,8 +4,8 @@ Object.assign(global, { TextDecoder, TextEncoder });
 
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ApiSettings } from "@bitwarden/common/tools/integration/rpc";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ApiSettings } from "@localpass/common/tools/integration/rpc";
 
 import { ForwarderConfiguration } from "./forwarder-configuration";
 import { ForwarderContext } from "./forwarder-context";

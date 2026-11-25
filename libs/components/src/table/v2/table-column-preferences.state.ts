@@ -1,4 +1,4 @@
-import { TABLE_COLUMN_PREFERENCES_DISK, UserKeyDefinition } from "@bitwarden/state";
+import { TABLE_COLUMN_PREFERENCES_DISK, UserKeyDefinition } from "@localpass/state";
 
 /**
  * Hidden column names per table, keyed by the table's `stateKey`.

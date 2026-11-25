@@ -1,16 +1,16 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 import {
   KeyDefinition,
   StateDefinition,
   StateEventRegistrarService,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { FakeActiveUserAccessor } from "@bitwarden/state-test-utils";
-import { StorageServiceProvider } from "@bitwarden/storage-core";
-import { FakeStorageService } from "@bitwarden/storage-test-utils";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { FakeActiveUserAccessor } from "@localpass/state-test-utils";
+import { StorageServiceProvider } from "@localpass/storage-core";
+import { FakeStorageService } from "@localpass/storage-test-utils";
+import { UserId } from "@localpass/user-core";
 
 import { DefaultActiveUserState } from "./default-active-user-state";
 import { DefaultActiveUserStateProvider } from "./default-active-user-state.provider";

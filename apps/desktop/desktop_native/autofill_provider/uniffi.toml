@@ -1,4 +1,4 @@
 [bindings.swift]
-ffi_module_name = "BitwardenMacosProviderFFI"
-module_name = "BitwardenMacosProvider"
+ffi_module_name = "LocalPassMacosProviderFFI"
+module_name = "LocalPassMacosProvider"
 generate_immutable_records = true

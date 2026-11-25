@@ -6,9 +6,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        提建议前，请先看一眼 [实施计划](../blob/main/docs/LocalPassword-实施计划.md) 和「不在本次范围」一节，避免和既定路线重复或冲突。
+        提建议前，请先看一眼 [实施计划](../blob/main/docs/LocalPass-实施计划.md) 和「不在本次范围」一节，避免和既定路线重复或冲突。
 
-        LocalPassword 的核心约束是**离线可用**。任何依赖服务器、账号或云端服务的功能，都需要先说明它在断网时的降级行为。
+        LocalPass 的核心约束是**离线可用**。任何依赖服务器、账号或云端服务的功能，都需要先说明它在断网时的降级行为。
   - type: checkboxes
     id: preflight
     attributes:

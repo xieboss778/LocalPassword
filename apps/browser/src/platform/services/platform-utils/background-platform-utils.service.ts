@@ -1,4 +1,4 @@
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 import { OffscreenDocumentService } from "../../offscreen-document/abstractions/offscreen-document";
 

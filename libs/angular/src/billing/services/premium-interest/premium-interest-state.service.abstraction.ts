@@ -1,9 +1,9 @@
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 /**
  * A service that manages state which conveys whether or not a user has expressed interest
  * in setting up a premium subscription. This applies for users who began the registration
- * process on https://bitwarden.com/go/start-premium/, which is a marketing page designed
+ * process on https://local.invalid/go/start-premium/, which is a marketing page designed
  * to streamline users who intend to setup a premium subscription after registration.
  * - Implemented in Web only. No-op for other clients.
  */

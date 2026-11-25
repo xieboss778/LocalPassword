@@ -24,7 +24,7 @@ import {
 } from "@angular/router";
 import { filter } from "rxjs";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { HoverRevealBoundaryDirective } from "../hover-reveal";
 import { IconComponent } from "../icon";

@@ -3,15 +3,15 @@
 import { Component, effect, input } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { getById } from "@bitwarden/common/platform/misc/rxjs-operators";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { getById } from "@localpass/common/platform/misc/rxjs-operators";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-export-scope-description",

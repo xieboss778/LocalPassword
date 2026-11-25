@@ -1,5 +1,5 @@
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { AutofillOverlayElementType } from "../../enums/autofill-overlay.enum";
 import AutofillScript from "../../models/autofill-script";

@@ -11,18 +11,18 @@ import {
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { map, ReplaySubject, skip, Subject, takeUntil, withLatestFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { FormControlModule, FormFieldModule, RadioInputComponent } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { FormControlModule, FormFieldModule, RadioInputComponent } from "@localpass/components";
 import {
   CatchallGenerationOptions,
   CredentialGeneratorService,
   BuiltIn,
-} from "@bitwarden/generator-core";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/generator-core";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** Options group for catchall emails */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-catchall-settings",
@@ -50,7 +50,7 @@ export class CatchallSettingsComponent implements OnInit, OnDestroy, OnChanges {
    *  @remarks this is initialized to null but since it's a required input it'll
    *     never have that value in practice.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true })
   account!: Account;
@@ -62,7 +62,7 @@ export class CatchallSettingsComponent implements OnInit, OnDestroy, OnChanges {
    *   to receive live settings updates including the initial update,
    *   use `CredentialGeneratorService.settings(...)` instead.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   readonly onUpdated = new EventEmitter<CatchallGenerationOptions>();

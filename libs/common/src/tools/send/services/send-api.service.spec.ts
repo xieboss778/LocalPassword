@@ -2,7 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { of, Subject } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer } from "@bitwarden/legacy-crypto";
+import { EncArrayBuffer } from "@localpass/legacy-crypto";
 import {
   AuthEdit,
   CreateFileSendResponse,
@@ -11,7 +11,7 @@ import {
   SendAuthType,
   SendEditRequest,
   SendView as SdkSendView,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { mockAccountServiceWith } from "../../../../spec";
 import { ApiService } from "../../../abstractions/api.service";

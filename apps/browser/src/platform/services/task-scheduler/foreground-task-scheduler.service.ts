@@ -1,8 +1,8 @@
 import { Subscription } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ScheduledTaskName } from "@bitwarden/common/platform/scheduling";
-import { StateProvider } from "@bitwarden/common/platform/state";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ScheduledTaskName } from "@localpass/common/platform/scheduling";
+import { StateProvider } from "@localpass/common/platform/state";
 
 import {
   BrowserTaskSchedulerPortActions,

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/cor
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { Meta, StoryObj, applicationConfig } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { SimpleDialogOptions, DialogService } from "../..";
 import { ButtonModule } from "../../../button";

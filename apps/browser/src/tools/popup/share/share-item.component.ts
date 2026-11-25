@@ -4,12 +4,12 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, of, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { AsyncActionsModule, ButtonModule, IconModule } from "@bitwarden/components";
-import { ShareItemFormComponent } from "@bitwarden/tools-share";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { AsyncActionsModule, ButtonModule, IconModule } from "@localpass/components";
+import { ShareItemFormComponent } from "@localpass/tools-share";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { PopupFooterComponent } from "../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";

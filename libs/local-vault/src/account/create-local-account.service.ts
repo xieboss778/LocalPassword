@@ -3,23 +3,23 @@ import { firstValueFrom } from "rxjs";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
   UserDecryptionOptions,
-} from "@bitwarden/auth/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
+} from "@localpass/auth/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import {
   MasterKeyWrappedUserKey,
   MasterPasswordSalt,
   MasterPasswordUnlockData,
-} from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { newGuid } from "@bitwarden/guid";
-import { KdfConfigService } from "@bitwarden/key-management";
+} from "@localpass/common/key-management/master-password/types/master-password.types";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { newGuid } from "@localpass/guid";
+import { KdfConfigService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   DEFAULT_KDF_CONFIG,
@@ -27,9 +27,9 @@ import {
   EncryptService,
   KdfConfig,
   LegacyCompatKeyService,
-} from "@bitwarden/legacy-crypto";
-import type { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
-import { UnlockService } from "@bitwarden/unlock";
+} from "@localpass/legacy-crypto";
+import type { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
+import { UnlockService } from "@localpass/unlock";
 
 import { buildLocalAccessToken } from "./local-access-token";
 import { LocalAccountService } from "./local-account.service";

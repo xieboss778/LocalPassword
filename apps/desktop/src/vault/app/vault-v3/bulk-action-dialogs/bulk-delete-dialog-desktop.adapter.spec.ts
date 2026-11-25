@@ -2,12 +2,12 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { BulkDeleteService } from "@bitwarden/vault";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherId, CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { DialogService, ToastService } from "@localpass/components";
+import { BulkDeleteService } from "@localpass/vault";
 
 import { BulkDeleteDialogDesktopAdapter } from "./bulk-delete-dialog-desktop.adapter";
 

@@ -5,7 +5,7 @@ import {
   GlobalState,
   KeyDefinition,
   StateProvider,
-} from "@bitwarden/state";
+} from "@localpass/state";
 
 import type { TabEdge } from "../types";
 

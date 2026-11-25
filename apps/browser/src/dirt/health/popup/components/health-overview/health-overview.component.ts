@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from "@angular/core";
 
-import { RiskCategory, VaultHealthReportView } from "@bitwarden/common/dirt/vault-health/models";
+import { RiskCategory, VaultHealthReportView } from "@localpass/common/dirt/vault-health/models";
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   ButtonModule,
   CardComponent,
   IconTileVariant,
   ItemModule,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { RiskCategoryNavItemComponent } from "../risk-category-nav-item/risk-category-nav-item.component";
 import { AtRiskGaugeComponent } from "../shared/at-risk-gauge/at-risk-gauge.component";
@@ -27,7 +27,7 @@ const RISK_CATEGORY_ROWS: readonly {
   labelKeyPlural: string;
   descriptionKey: string;
   descriptionKeyNone: string;
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
   variant: IconTileVariant;
   route: string;
 }[] = [

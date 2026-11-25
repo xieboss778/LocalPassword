@@ -4,9 +4,9 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { isActive, IsActiveMatchOptions, QueryParamsHandling, Router } from "@angular/router";
 import { switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { OrganizationId } from "@localpass/common/types/guid";
 import {
   A11yTitleDirective,
   HoverRevealContainerDirective,
@@ -16,8 +16,8 @@ import {
   IconTileOptions,
   NavigationModule,
   PopoverModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ALL_ITEMS_ICON_TILE, navIconTile } from "../../models/vault-icon-tile";
 import { VaultNavItemType, VaultNavItemViewModel } from "../../models/vault-nav-view-model";

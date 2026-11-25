@@ -1,10 +1,10 @@
 import { InputSignal, Type } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { CipherId } from "@localpass/common/types/guid";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 import { VaultScope } from "../models/vault-scope";
 

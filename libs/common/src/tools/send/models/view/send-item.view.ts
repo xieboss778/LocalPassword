@@ -1,4 +1,4 @@
-import { SendItemView as SdkSendItemView } from "@bitwarden/sdk-internal";
+import { SendItemView as SdkSendItemView } from "@localpass/sdk-internal";
 
 import { View } from "../../../../models/view/view";
 import { DeepJsonify } from "../../../../types/deep-jsonify";

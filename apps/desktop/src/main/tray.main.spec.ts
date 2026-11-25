@@ -4,9 +4,9 @@ import { BrowserWindow } from "electron";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { BiometricsService } from "@bitwarden/key-management";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { BiometricsService } from "@localpass/key-management";
 
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
 
@@ -58,7 +58,7 @@ describe("TrayMain", () => {
         mock<MessagingService>(),
         mock<BiometricsService>(),
       );
-      await sut.init("Bitwarden");
+      await sut.init("LocalPass");
       sut.setupWindowListeners(win as unknown as BrowserWindow);
     });
 

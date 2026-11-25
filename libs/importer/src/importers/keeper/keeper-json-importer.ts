@@ -1,16 +1,16 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FieldType } from "@bitwarden/common/vault/enums/field-type.enum";
-import { BankAccountView } from "@bitwarden/common/vault/models/view/bank-account.view";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DriversLicenseView } from "@bitwarden/common/vault/models/view/drivers-license.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
-import { import_ssh_key, SshKeyView } from "@bitwarden/sdk-internal";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
+import { BankAccountView } from "@localpass/common/vault/models/view/bank-account.view";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DriversLicenseView } from "@localpass/common/vault/models/view/drivers-license.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
+import { import_ssh_key, SshKeyView } from "@localpass/sdk-internal";
 
 import { ImportResult } from "../../models/import-result";
 import { Importer } from "../importer";
@@ -85,7 +85,7 @@ export class KeeperJsonImporter extends KeeperImporter implements Importer {
           this.importPassport(record, cipher, useNewDedicatedTypes);
           break;
         case "sshKeys":
-          // In Bitwarden the ssh key is supposed to be valid.
+          // In LocalPass the ssh key is supposed to be valid.
           // So we only set the type if we can actually import a key.
           if (!this.importSshKey(record, cipher)) {
             // Otherwise, fallback to secure note
@@ -715,7 +715,7 @@ export class KeeperJsonImporter extends KeeperImporter implements Importer {
   }
 
   private sanitizeFolderName(name: string): string {
-    // `\` and `/` are reserved characters in Bitwarden, but valid in Keeper, replace them with `-`.
+    // `\` and `/` are reserved characters in LocalPass, but valid in Keeper, replace them with `-`.
     return name.replaceAll("\\\\", "-").replaceAll("/", "-");
   }
 }

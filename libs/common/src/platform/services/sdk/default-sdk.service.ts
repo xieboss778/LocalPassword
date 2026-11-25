@@ -20,11 +20,11 @@ import {
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService, KdfConfigService } from "@bitwarden/key-management";
+import { KeyService, KdfConfigService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
-import { PerfTrackGroup } from "@bitwarden/logging";
-import { ManagedSettingsService } from "@bitwarden/managed-settings";
+import { EncString } from "@localpass/legacy-crypto";
+import { PerfTrackGroup } from "@localpass/logging";
+import { ManagedSettingsService } from "@localpass/managed-settings";
 import {
   PasswordManagerClient,
   ClientSettings,
@@ -33,7 +33,7 @@ import {
   WrappedAccountCryptographicState,
   Kdf,
   V2UpgradeToken,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { AccountInfo, AccountService } from "../../../auth/abstractions/account.service";

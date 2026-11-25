@@ -2,7 +2,7 @@
 //!
 //! On GNOME/Wayland the direct `arboard` does not work because GNOME does not implement
 //! `zwlr_data_control_manager_v1`. This implementation works via the RemoteDesktop
-//! portal instead. Essentially, Bitwarden starts a RemoteDesktop session and gets
+//! portal instead. Essentially, LocalPass starts a RemoteDesktop session and gets
 //! persistent rights to restart it, resulting in a single permission prompt. This
 //! is subsequently used to read and write the clipboard.
 
@@ -280,7 +280,7 @@ fn clear_session_token() -> Result<()> {
 fn token_path() -> Result<std::path::PathBuf> {
     let mut path =
         dirs::config_dir().ok_or_else(|| anyhow!("could not resolve config directory"))?;
-    path.push("Bitwarden");
+    path.push("LocalPass");
     Ok(path)
 }
 

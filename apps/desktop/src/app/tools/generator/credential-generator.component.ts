@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
 
-import { ButtonModule, DialogModule, DialogService, ItemModule } from "@bitwarden/components";
+import { ButtonModule, DialogModule, DialogService, ItemModule } from "@localpass/components";
 import {
   CredentialGeneratorHistoryDialogComponent,
   GeneratorModule,
-} from "@bitwarden/generator-components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/generator-components";
+import { I18nPipe } from "@localpass/ui-common";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "credential-generator",

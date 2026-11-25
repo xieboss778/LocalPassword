@@ -1,5 +1,5 @@
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { StateProvider } from "@bitwarden/common/platform/state";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { StateProvider } from "@localpass/common/platform/state";
 
 import { GeneratorStrategy } from "../abstractions";
 import { DefaultPasswordGenerationOptions } from "../data";

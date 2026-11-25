@@ -1,7 +1,7 @@
 import { webcrypto } from "crypto";
 
-import { addCustomMatchers } from "@bitwarden/common/spec";
-import "@bitwarden/ui-common/setup-jest";
+import { addCustomMatchers } from "@localpass/common/spec";
+import "@localpass/ui-common/setup-jest";
 
 // jsdom does not expose Symbol.dispose / Symbol.asyncDispose, but TypeScript's compiled
 // output for `using` declarations requires them. Polyfill here so specs that test code

@@ -4,9 +4,9 @@ import * as path from "path";
 
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { DesktopIpcPeerClientType } from "@bitwarden/common/platform/ipc";
-import { ipc, windows_registry } from "@bitwarden/desktop-napi";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { DesktopIpcPeerClientType } from "@localpass/common/platform/ipc";
+import { ipc, windows_registry } from "@localpass/desktop-napi";
 
 import { NativeMessagingMain } from "./native-messaging.main";
 import { isWindowsStore } from "./platform-utils.main";
@@ -17,7 +17,7 @@ jest.mock("electron", () => ({
 }));
 
 // native-messaging.main.ts loads a native .node module at import time.
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   ipc: {
     NativeIpcServer: { listen: jest.fn() },
     IpcMessageType: { Connected: 0, Disconnected: 1, Message: 2 },
@@ -111,7 +111,7 @@ describe("NativeMessagingMain", () => {
     const relayed = jest.fn();
     sut.messages$.subscribe(relayed);
 
-    receive({ type: "bitwarden-ipc-message" });
+    receive({ type: "localpass-ipc-message" });
 
     expect(relayed).toHaveBeenCalled();
   });
@@ -140,7 +140,7 @@ describe("NativeMessagingMain", () => {
   });
 
   describe("generateManifests on linux", () => {
-    const manifestName = "com.localpassword.desktop.json";
+    const manifestName = "com.localpass.desktop.json";
     const platform = process.platform;
 
     let home: string;
@@ -199,7 +199,7 @@ describe("NativeMessagingMain", () => {
   });
 
   describe("on macOS", () => {
-    const manifestName = "com.localpassword.desktop.json";
+    const manifestName = "com.localpass.desktop.json";
     const platform = process.platform;
 
     let home: string;
@@ -242,7 +242,7 @@ describe("NativeMessagingMain", () => {
 
         expect(manifestIn(mozilla)).toEqual(
           expect.objectContaining({
-            name: "com.localpassword.desktop",
+            name: "com.localpass.desktop",
             path: binary,
             allowed_extensions: ["gmobddgobjdhbjhedhgaeekhgchkoncm"],
           }),
@@ -321,7 +321,7 @@ describe("NativeMessagingMain", () => {
 });
 
 describe("NativeMessagingMain.generateManifests on Windows", () => {
-  const chromeKey = "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.localpassword.desktop";
+  const chromeKey = "SOFTWARE\\Google\\Chrome\\NativeMessagingHosts\\com.localpass.desktop";
   const originalPlatform = process.platform;
   const originalResourcesPath = process.resourcesPath;
   const originalLocalAppData = process.env.LOCALAPPDATA;
@@ -356,9 +356,9 @@ describe("NativeMessagingMain.generateManifests on Windows", () => {
     jest.clearAllMocks();
     Object.defineProperty(process, "platform", { value: "win32" });
 
-    // %APPDATA%\Bitwarden is left uncreated: the Appx may be installed without it.
-    root = mkdtempSync(path.join(tmpdir(), "bitwarden-"));
-    userPath = path.join(root, "Roaming", "Bitwarden");
+    // %APPDATA%\LocalPass is left uncreated: the Appx may be installed without it.
+    root = mkdtempSync(path.join(tmpdir(), "localpass-"));
+    userPath = path.join(root, "Roaming", "LocalPass");
     localAppData = path.join(root, "Local");
     installPath = path.join(root, "install");
     process.env.LOCALAPPDATA = localAppData;
@@ -369,7 +369,7 @@ describe("NativeMessagingMain.generateManifests on Windows", () => {
       mock<LogService>(),
       mock<WindowMain>(),
       userPath,
-      path.join(installPath, "Bitwarden.exe"),
+      path.join(installPath, "LocalPass.exe"),
       "app",
     );
   });
@@ -400,8 +400,8 @@ describe("NativeMessagingMain.generateManifests on Windows", () => {
 
   it("registers a manifest in the package folder pointing at the proxy's execution alias in the Appx", async () => {
     await runFromAppx(
-      "8bitSolutionsLLC.bitwardendesktop_1.0.0.0_x64__h4e712dmw3xyy",
-      "8bitSolutionsLLC.bitwardendesktop_h4e712dmw3xyy",
+      "8bitSolutionsLLC.localpassdesktop_1.0.0.0_x64__h4e712dmw3xyy",
+      "8bitSolutionsLLC.localpassdesktop_h4e712dmw3xyy",
     );
 
     await sut.generateManifests();
@@ -412,21 +412,21 @@ describe("NativeMessagingMain.generateManifests on Windows", () => {
       path.join(
         localAppData,
         "Packages",
-        "8bitSolutionsLLC.bitwardendesktop_h4e712dmw3xyy",
+        "8bitSolutionsLLC.localpassdesktop_h4e712dmw3xyy",
         "LocalState",
         "browsers",
         "chrome.json",
       ),
     );
     expect(readRegisteredChromeManifest().path).toBe(
-      path.join(localAppData, "Microsoft", "WindowsApps", "bitwarden_desktop_proxy.exe"),
+      path.join(localAppData, "Microsoft", "WindowsApps", "localpass_desktop_proxy.exe"),
     );
   });
 
   it("registers a manifest in the package folder pointing at the Beta proxy's execution alias in the Beta Appx", async () => {
     await runFromAppx(
-      "8bitSolutionsLLC.BitwardenBeta_1.0.0.0_x64__h4e712dmw3xyy",
-      "8bitSolutionsLLC.BitwardenBeta_h4e712dmw3xyy",
+      "8bitSolutionsLLC.LocalPassBeta_1.0.0.0_x64__h4e712dmw3xyy",
+      "8bitSolutionsLLC.LocalPassBeta_h4e712dmw3xyy",
     );
 
     await sut.generateManifests();
@@ -437,14 +437,14 @@ describe("NativeMessagingMain.generateManifests on Windows", () => {
       path.join(
         localAppData,
         "Packages",
-        "8bitSolutionsLLC.BitwardenBeta_h4e712dmw3xyy",
+        "8bitSolutionsLLC.LocalPassBeta_h4e712dmw3xyy",
         "LocalState",
         "browsers",
         "chrome.json",
       ),
     );
     expect(readRegisteredChromeManifest().path).toBe(
-      path.join(localAppData, "Microsoft", "WindowsApps", "bitwarden_beta_desktop_proxy.exe"),
+      path.join(localAppData, "Microsoft", "WindowsApps", "localpass_beta_desktop_proxy.exe"),
     );
   });
 });

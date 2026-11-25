@@ -1,10 +1,10 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { KeyService } from "@bitwarden/key-management";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptService,
@@ -12,12 +12,12 @@ import {
   KdfConfig,
   KeyGenerationService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 import {
-  BitwardenJsonExport,
-  BitwardenPasswordProtectedFileFormat,
+  LocalPassJsonExport,
+  LocalPassPasswordProtectedFileFormat,
   isPasswordProtected,
-} from "@bitwarden/vault-export-core";
+} from "@localpass/vault-export-core";
 
 import { ImportResult } from "../../models/import-result";
 import { Importer } from "../importer";
@@ -46,7 +46,7 @@ export class BitwardenPasswordProtectedImporter
 
   async parse(data: string): Promise<ImportResult> {
     const result = new ImportResult();
-    const parsedData: BitwardenPasswordProtectedFileFormat | BitwardenJsonExport = JSON.parse(data);
+    const parsedData: LocalPassPasswordProtectedFileFormat | LocalPassJsonExport = JSON.parse(data);
 
     if (!parsedData) {
       result.success = false;
@@ -84,7 +84,7 @@ export class BitwardenPasswordProtectedImporter
   }
 
   private async checkPassword(
-    jdoc: BitwardenPasswordProtectedFileFormat,
+    jdoc: LocalPassPasswordProtectedFileFormat,
     password: string,
     kdfConfig: KdfConfig,
   ): Promise<boolean> {
@@ -108,7 +108,7 @@ export class BitwardenPasswordProtectedImporter
    * Checks the fields that are not KDF parameters; those are validated by
    * {@link kdfConfigFromPasswordProtectedExport}.
    */
-  private cannotParseFile(jdoc: BitwardenPasswordProtectedFileFormat): boolean {
+  private cannotParseFile(jdoc: LocalPassPasswordProtectedFileFormat): boolean {
     return (
       !jdoc ||
       !jdoc.encrypted ||

@@ -2,13 +2,13 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 
-import { consumeDefaultPasswordManagerSuccessToast } from "@bitwarden/browser/autofill/default-password-manager-session.util";
-import { IntroCarouselComponent } from "@bitwarden/browser/vault/popup/components/vault/intro-carousel/intro-carousel.component";
-import { IntroCarouselService } from "@bitwarden/browser/vault/popup/services/intro-carousel.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ToastService } from "@bitwarden/components";
+import { consumeDefaultPasswordManagerSuccessToast } from "@localpass/browser/autofill/default-password-manager-session.util";
+import { IntroCarouselComponent } from "@localpass/browser/vault/popup/components/vault/intro-carousel/intro-carousel.component";
+import { IntroCarouselService } from "@localpass/browser/vault/popup/services/intro-carousel.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ToastService } from "@localpass/components";
 
-jest.mock("@bitwarden/browser/autofill/default-password-manager-session.util", () => ({
+jest.mock("@localpass/browser/autofill/default-password-manager-session.util", () => ({
   consumeDefaultPasswordManagerSuccessToast: jest.fn().mockResolvedValue(false),
 }));
 
@@ -57,12 +57,12 @@ describe("IntroCarouselComponent", () => {
     jest.mocked(consumeDefaultPasswordManagerSuccessToast).mockResolvedValue(true);
     jest
       .spyOn(mockI18nService, "t")
-      .mockReturnValue("Made Bitwarden your default browser password manager");
+      .mockReturnValue("Made LocalPass your default browser password manager");
     await component.ngOnInit();
 
     expect(mockToastService.showToast).toHaveBeenCalledWith({
       variant: "success",
-      message: "Made Bitwarden your default browser password manager",
+      message: "Made LocalPass your default browser password manager",
     });
   });
 

@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
 
-import { UriMatchStrategySetting } from "@bitwarden/common/models/domain/domain-service";
-import { CommandDefinition } from "@bitwarden/common/platform/messaging";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { UriMatchStrategySetting } from "@localpass/common/models/domain/domain-service";
+import { CommandDefinition } from "@localpass/common/platform/messaging";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { AutofillMessageCommand } from "../../enums/autofill-message.enums";
 import { InlineMenuFillType } from "../../enums/autofill-overlay.enum";

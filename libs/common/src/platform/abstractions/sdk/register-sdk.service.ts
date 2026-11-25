@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { BitwardenClient, Uuid } from "@bitwarden/sdk-internal";
+import { BitwardenClient, Uuid } from "@localpass/sdk-internal";
 
 import { UserId } from "../../../types/guid";
 import { Rc } from "../../misc/reference-counting/rc";

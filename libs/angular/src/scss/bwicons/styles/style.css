@@ -7,10 +7,10 @@
 @font-face {
   font-family: "bwi-font";
   src:
-    url("~@bitwarden/angular/src/scss/bwicons/fonts/bwi-font.svg") format("svg"),
-    url("~@bitwarden/angular/src/scss/bwicons/fonts/bwi-font.ttf") format("truetype"),
-    url("~@bitwarden/angular/src/scss/bwicons/fonts/bwi-font.woff") format("woff"),
-    url("~@bitwarden/angular/src/scss/bwicons/fonts/bwi-font.woff2") format("woff2");
+    url("~@localpass/angular/src/scss/bwicons/fonts/bwi-font.svg") format("svg"),
+    url("~@localpass/angular/src/scss/bwicons/fonts/bwi-font.ttf") format("truetype"),
+    url("~@localpass/angular/src/scss/bwicons/fonts/bwi-font.woff") format("woff"),
+    url("~@localpass/angular/src/scss/bwicons/fonts/bwi-font.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -185,7 +185,7 @@
   content: "\f16a";
 }
 
-.bwi-bitwarden-shield:before {
+.bwi-localpass-shield:before {
   content: "\f169";
 }
 

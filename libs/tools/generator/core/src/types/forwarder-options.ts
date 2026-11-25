@@ -1,9 +1,9 @@
-import { IntegrationId } from "@bitwarden/common/tools/integration";
+import { IntegrationId } from "@localpass/common/tools/integration";
 import {
   ApiSettings,
   IntegrationRequest,
   SelfHostedApiSettings,
-} from "@bitwarden/common/tools/integration/rpc";
+} from "@localpass/common/tools/integration/rpc";
 
 import { EmailDomainSettings, EmailPrefixSettings } from "../engine";
 
@@ -41,7 +41,7 @@ export type EmailPrefixOptions = EmailDomainSettings & EmailPrefixSettings;
  */
 export type ForwarderOptions = Partial<
   {
-    /** bearer token that authenticates bitwarden to the forwarder.
+    /** bearer token that authenticates localpass to the forwarder.
      *  This is required to issue an API request.
      */
     token: string;
@@ -53,7 +53,7 @@ export type ForwarderOptions = Partial<
 
     /** The domain part of the generated email address.
      *  @remarks The domain should be authorized by the forwarder before
-     *           submitting a request through bitwarden.
+     *           submitting a request through localpass.
      *  @example If the domain is `domain.io` and the generated username
      *  is `jd`, then the generated email address will be `jd@domain.io`
      */

@@ -9,12 +9,12 @@ import * as url from "url";
 import { app, BrowserWindow, ipcMain, nativeTheme, screen, session, protocol, net } from "electron";
 import { concatMap, firstValueFrom, pairwise } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
-import { ThemeTypes, Theme } from "@bitwarden/common/platform/enums";
-import { UrlType } from "@bitwarden/common/platform/misc/safe-urls";
-import { processisolations } from "@bitwarden/desktop-napi";
-import { BiometricStateService } from "@bitwarden/key-management";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { AbstractStorageService } from "@localpass/common/platform/abstractions/storage.service";
+import { ThemeTypes, Theme } from "@localpass/common/platform/enums";
+import { UrlType } from "@localpass/common/platform/misc/safe-urls";
+import { processisolations } from "@localpass/desktop-napi";
+import { BiometricStateService } from "@localpass/key-management";
 
 import { SafeShell } from "../platform/main/safe-shell.main";
 import { WindowState } from "../platform/models/domain/window-state";
@@ -51,12 +51,12 @@ const mainWindowSizeKey = "mainWindowSize";
 const WindowEventHandlingDelay = 100;
 
 /**
- * Every path prefix a Bitwarden snap's real binary can sit under — one per snap name per snapd
- * mount root, e.g. `/snap/bitwarden/` and `/var/lib/snapd/snap/bitwarden-beta/`. See
+ * Every path prefix a LocalPass snap's real binary can sit under — one per snap name per snapd
+ * mount root, e.g. `/snap/localpass/` and `/var/lib/snapd/snap/localpass-beta/`. See
  * {@link SNAP_MOUNT_DIRS} for why there is more than one root.
  *
- * The trailing slash matters: without it, `bitwarden` would also match a hypothetical
- * `bitwarden-evil` snap. (The cgroup check below guards the same edge with `(?![\w-])`.)
+ * The trailing slash matters: without it, `localpass` would also match a hypothetical
+ * `localpass-evil` snap. (The cgroup check below guards the same edge with `(?![\w-])`.)
  */
 const SNAP_EXEC_PATH_PREFIXES = SNAP_MOUNT_DIRS.flatMap((dir) =>
   SNAP_STORE_NAMES.map((name) => `${dir}/${name}/`),
@@ -272,7 +272,7 @@ export class WindowMain {
         // Some APIs can only be used after this event occurs.
         // `whenReady()` also covers callers that run after the `ready` event has already fired.
         this.startup = app.whenReady().then(async () => {
-          this.session = session.fromPartition("persist:bitwarden");
+          this.session = session.fromPartition("persist:localpass");
           this.setupAppProtocol();
 
           if (!isDev()) {
@@ -354,7 +354,7 @@ export class WindowMain {
     // TODO(PM-33211): The custom file scheme only works on servers that support it for CORS (>=2026.3.0).
     // We have it disabled by default until self-hosted users are updated to maintain compatibility.
     // When removing this, remember to disable the [FuseV1Options.GrantFileProtocolExtraPrivileges] fuse in after-pack.js.
-    if (process.env.BITWARDEN_USE_CUSTOM_FILE_SCHEME !== "true") {
+    if (process.env.LOCALPASS_USE_CUSTOM_FILE_SCHEME !== "true") {
       return url.format({
         protocol: "file:",
         pathname: path.join(__dirname, "/index.html"),

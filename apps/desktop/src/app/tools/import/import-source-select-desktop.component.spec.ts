@@ -4,7 +4,7 @@ import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { ImportType } from "@bitwarden/importer-core";
+import { ImportType } from "@localpass/importer-core";
 
 import { ImportSourceSelectDesktopComponent } from "./import-source-select-desktop.component";
 

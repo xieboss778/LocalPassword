@@ -6,13 +6,13 @@ import {
   OrganizationUserAcceptInitRequest,
   OrganizationUserAcceptRequest,
   OrganizationUserApiService,
-} from "@bitwarden/admin-console/common";
+} from "@localpass/admin-console/common";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-// @bitwarden/organization-invite-link imports back from @bitwarden/common (BaseResponse,
+import { EncryptService, LegacyCompatKeyService } from "@localpass/legacy-crypto";
+// @localpass/organization-invite-link imports back from @localpass/common (BaseResponse,
 // ApiService, etc.), so this is a circular dependency in the static import graph. It
 // resolves at runtime because both libraries reach each other only through abstractions
 // that are bound at DI time. Acknowledged here per the same pattern used for the AC API
@@ -20,7 +20,7 @@ import { EncryptService, LegacyCompatKeyService } from "@bitwarden/legacy-crypto
 import {
   OrganizationInviteLinkApiService,
   OrganizationInviteLinkValidateEmailDomainRequest,
-} from "@bitwarden/organization-invite-link";
+} from "@localpass/organization-invite-link";
 import {
   AcceptInviteLinkError,
   HighEntropySecret,
@@ -31,8 +31,8 @@ import {
   PasswordManagerClient,
   SealedOpenOrgInvite,
   SealedOpenOrgInviteData,
-} from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 import { ApiService } from "../../../../abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "../../../../admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -338,7 +338,7 @@ export class DefaultOrganizationInviteService implements OrganizationInviteServi
    * Revisit once PM-43102 ships and the `/accept` endpoint returns coded errors.
    */
   private classifyOpenOrgInviteLegacyApiError(e: AcceptInviteLinkError): OpenOrgInviteAcceptError {
-    // Fragile client-side coupling to the SDK's `bitwarden-api-base::Error::Response`
+    // Fragile client-side coupling to the SDK's `localpass-api-base::Error::Response`
     // Display format; accepted for MVP. Planned follow-up in next milestones: refactor
     // the SDK to expose a better typed error variant. If any extraction step fails,
     // the caller drops to `unexpected` with the raw string.

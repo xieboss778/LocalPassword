@@ -3,19 +3,19 @@ import { mock, MockProxy } from "jest-mock-extended";
 import * as oauth from "oauth4webapi";
 import { of, Subject } from "rxjs";
 
-import { ClientType } from "@bitwarden/common/enums";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
+import { ClientType } from "@localpass/common/enums";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { BroadcasterService } from "@localpass/common/platform/abstractions/broadcaster.service";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService } from "@bitwarden/components";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogService } from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
 
 import { LastPassPasswordPromptComponent } from "./dialog/lastpass-password-prompt.component";
 import { LastPassDirectImportUIService } from "./lastpass-direct-import-ui.service";
@@ -148,7 +148,7 @@ describe("LastPassDirectImportService", () => {
 
       const { url } = await (service as any).createOidcSigninRequest("user@example.com");
 
-      expect(new URL(url).searchParams.get("redirect_uri")).toBe("bitwarden://import-callback-lp");
+      expect(new URL(url).searchParams.get("redirect_uri")).toBe("localpass://import-callback-lp");
     });
 
     it("stores flow state for the matching processOidcSigninResponse call", async () => {

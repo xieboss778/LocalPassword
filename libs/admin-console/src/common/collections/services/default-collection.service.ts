@@ -18,19 +18,19 @@ import {
   CollectionView,
   Collection,
   CollectionData,
-} from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { OrgKey } from "@bitwarden/common/types/key";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { SingleUserState, StateProvider } from "@localpass/common/platform/state";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { OrgKey } from "@localpass/common/types/key";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService } from "@bitwarden/legacy-crypto";
-import { PerfTrackGroup } from "@bitwarden/logging";
+import { EncryptService } from "@localpass/legacy-crypto";
+import { PerfTrackGroup } from "@localpass/logging";
 
 import { CollectionEncryptionService } from "../abstractions/collection-encryption.service";
 import { CollectionService } from "../abstractions/collection.service";
@@ -226,7 +226,7 @@ export class DefaultCollectionService implements CollectionService {
   }
 
   // TODO: this should be private.
-  // See https://bitwarden.atlassian.net/browse/PM-12375
+  // See https://localpass.atlassian.net/browse/PM-12375
   decryptMany$(
     collections: Collection[] | null,
     orgKeys: Record<OrganizationId, OrgKey>,

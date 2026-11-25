@@ -1,0 +1,45 @@
+<popup-page>
+  <popup-header slot="header" pageTitle="{{ 'moreFromLocalPass' | i18n }}" showBackButton>
+    <ng-container slot="end">
+      <app-pop-out></app-pop-out>
+    </ng-container>
+  </popup-header>
+
+  <bit-item-group>
+    @if (
+      (familySponsorshipAvailable$ | async) &&
+      !((isFreeFamilyPolicyEnabled$ | async) && (hasSingleEnterpriseOrg$ | async))
+    ) {
+      <bit-item>
+        <button type="button" bit-item-content (click)="openFreeLocalPassFamiliesPage()">
+          {{ "freeLocalPassFamilies" | i18n }}
+          <i slot="end" class="bwi bwi-external-link" aria-hidden="true"></i>
+        </button>
+      </bit-item>
+    }
+    <bit-item>
+      <button type="button" bit-item-content (click)="openLocalPassForBusinessPage()">
+        {{ "localpassForBusiness" | i18n }}
+        <i slot="end" class="bwi bwi-external-link" aria-hidden="true"></i>
+      </button>
+    </bit-item>
+    <bit-item>
+      <button type="button" bit-item-content (click)="openAuthenticatorPage()">
+        {{ "localpassAuthenticator" | i18n }}
+        <i slot="end" class="bwi bwi-external-link" aria-hidden="true"></i>
+      </button>
+    </bit-item>
+    <bit-item>
+      <button type="button" bit-item-content (click)="openSecretsManagerPage()">
+        {{ "localpassSecretsManager" | i18n }}
+        <i slot="end" class="bwi bwi-external-link" aria-hidden="true"></i>
+      </button>
+    </bit-item>
+    <bit-item>
+      <button type="button" bit-item-content (click)="openPasswordlessDotDevPage()">
+        {{ "passwordlessDotDev" | i18n }}
+        <i slot="end" class="bwi bwi-external-link" aria-hidden="true"></i>
+      </button>
+    </bit-item>
+  </bit-item-group>
+</popup-page>

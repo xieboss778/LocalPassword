@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { Passport as PassportDomain } from "../../vault/models/domain/passport";
 import { PassportView } from "../../vault/models/view/passport.view";

@@ -1,1 +1,1 @@
-export { MemoryStorageService } from "@bitwarden/storage-core";
+export { MemoryStorageService } from "@localpass/storage-core";

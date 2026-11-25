@@ -1,13 +1,13 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { isGuid } from "@bitwarden/guid";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { isGuid } from "@localpass/guid";
 
 import { sharedFolderName } from "../utils/shared-folder-name";
 

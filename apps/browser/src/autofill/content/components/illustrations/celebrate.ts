@@ -1,6 +1,6 @@
 import { html } from "lit";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { IconProps } from "../common-types";
 

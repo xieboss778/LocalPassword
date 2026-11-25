@@ -1,10 +1,10 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { EncryptedMigrator } from "@bitwarden/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserAsymmetricKeysRegenerationService } from "@bitwarden/key-management";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { EncryptedMigrator } from "@localpass/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
+import { SyncService } from "@localpass/common/platform/sync";
+import { UserId } from "@localpass/common/types/guid";
+import { UserAsymmetricKeysRegenerationService } from "@localpass/key-management";
 
 import { LoginEmailService } from "../login-email/login-email.service";
 
@@ -20,7 +20,7 @@ describe("DefaultLoginSuccessHandlerService", () => {
   let encryptedMigrator: MockProxy<EncryptedMigrator>;
 
   const userId = "USER_ID" as UserId;
-  const testEmail = "test@bitwarden.com";
+  const testEmail = "test@local.invalid";
 
   beforeEach(() => {
     loginEmailService = mock<LoginEmailService>();

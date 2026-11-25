@@ -4,9 +4,9 @@ import * as path from "path";
 
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, nativeImage, Tray } from "electron";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { BiometricsService } from "@bitwarden/key-management";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { BiometricsService } from "@localpass/key-management";
 
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
 import { isDev } from "../utils";

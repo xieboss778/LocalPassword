@@ -1,5 +1,5 @@
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UserId } from "@bitwarden/common/types/guid";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UserId } from "@localpass/common/types/guid";
 
 import { AccountEventKind } from "./enums";
 import type { AccountEvent, AccountReduction, AccountStatuses } from "./types";

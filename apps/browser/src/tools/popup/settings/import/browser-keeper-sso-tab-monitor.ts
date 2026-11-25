@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { isSsoCallbackUrl, KeeperSsoTabMonitor } from "@bitwarden/importer-ui";
+import { isSsoCallbackUrl, KeeperSsoTabMonitor } from "@localpass/importer-ui";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 

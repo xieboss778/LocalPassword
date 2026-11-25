@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { array, record } from "@bitwarden/serialization";
+import { array, record } from "@localpass/serialization";
 
 import { StateDefinition } from "./state-definition";
 

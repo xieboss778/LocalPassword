@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { DialogService, DirtyFormService } from "@bitwarden/components";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { DialogService, DirtyFormService } from "@localpass/components";
 
 /**
  * Handles the update-restart flow by checking for unsaved changes

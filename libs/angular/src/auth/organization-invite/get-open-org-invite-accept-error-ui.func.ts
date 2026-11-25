@@ -1,4 +1,4 @@
-import { AccountWarning, ReportBreach, ExpiredIcon } from "@bitwarden/assets/svg";
+import { AccountWarning, ReportBreach, ExpiredIcon } from "@localpass/assets/svg";
 
 import { OpenOrgInviteAcceptRenderableErrorKind } from "./open-org-invite-accept-renderable-error-kind.type";
 import { OpenOrgInviteErrorButton } from "./open-org-invite-error-button.type";

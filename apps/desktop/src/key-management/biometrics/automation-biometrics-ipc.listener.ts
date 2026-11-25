@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { BiometricsStatus } from "@bitwarden/key-management";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { BiometricsStatus } from "@localpass/key-management";
 
 import { WindowMain } from "../../main/window.main";
 

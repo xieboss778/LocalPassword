@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 
-import { I18nMockService } from "@bitwarden/components";
+import { I18nMockService } from "@localpass/components";
 
 import { KeeperInlineScreen } from "./direct/keeper/keeper-inline-auth-ui";
 import { ImportControlsKeeperLoginComponent } from "./import-controls-keeper-login.component";

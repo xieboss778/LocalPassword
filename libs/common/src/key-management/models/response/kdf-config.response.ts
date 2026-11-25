@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, KdfConfig, KdfType, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
+import { Argon2KdfConfig, KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
 
 import { BaseResponse } from "../../../models/response/base.response";
 

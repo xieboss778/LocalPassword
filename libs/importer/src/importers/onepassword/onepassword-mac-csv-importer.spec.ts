@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { data as creditCardData } from "../spec-data/onepassword-csv/credit-card.mac.csv";
 import { data as identityData } from "../spec-data/onepassword-csv/identity.mac.csv";
@@ -19,9 +19,9 @@ function expectIdentity(cipher: CipherView) {
       middleName: "mi",
       lastName: "last name",
       username: "userNam3",
-      company: "bitwarden",
+      company: "localpass",
       phone: "8005555555",
-      email: "email@bitwarden.com",
+      email: "email@local.invalid",
     }),
   );
 

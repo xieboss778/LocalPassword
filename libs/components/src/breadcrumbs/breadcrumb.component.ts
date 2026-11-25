@@ -24,7 +24,7 @@ import { filter } from "rxjs";
 
 import { IconModule } from "../icon";
 import { IconTileComponent } from "../icon-tile";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 /**
  * Individual breadcrumb item used within the `bit-breadcrumbs` component.
@@ -43,7 +43,7 @@ export class BreadcrumbComponent implements OnInit {
   /**
    * Optional icon to display before the breadcrumb text.
    */
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
 
   /**
    * Router link for the breadcrumb. Can be a string or an array of route segments.

@@ -2,14 +2,14 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
-import { PasswordPreloginData } from "@bitwarden/common/auth/password-prelogin";
-import { WebAuthnLoginAssertionResponseRequest } from "@bitwarden/common/auth/services/webauthn-login/request/webauthn-login-assertion-response.request";
-import { UserKey } from "@bitwarden/common/types/key";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { AuthenticationType } from "@localpass/common/auth/enums/authentication-type";
+import { TokenTwoFactorRequest } from "@localpass/common/auth/models/request/identity-token/token-two-factor.request";
+import { PasswordPreloginData } from "@localpass/common/auth/password-prelogin";
+import { WebAuthnLoginAssertionResponseRequest } from "@localpass/common/auth/services/webauthn-login/request/webauthn-login-assertion-response.request";
+import { UserKey } from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 export class PasswordLoginCredentials {
   readonly type = AuthenticationType.Password;

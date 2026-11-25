@@ -5,10 +5,10 @@ export const SETUP_EXTENSION_URL = /#\/setup-extension/;
 
 /** Onboarding modals that pop up over the vault after login, and the button dismissing each. */
 const ONBOARDING_DIALOGS = [
-  { heading: "You're in! Welcome to Bitwarden", dismiss: "Skip" },
+  { heading: "You're in! Welcome to LocalPass", dismiss: "Skip" },
   { heading: "Get the extension for easy vault access", dismiss: "Skip" },
   // Introduces the redesigned vault to existing accounts (libs/vault new-experience-dialog).
-  { heading: "Bitwarden has a new look", dismiss: "Close" },
+  { heading: "LocalPass has a new look", dismiss: "Close" },
   // Tours invite links to an organization's admins in the Admin Console.
   { heading: "Invite your whole team with a single link", dismiss: "Skip" },
 ];

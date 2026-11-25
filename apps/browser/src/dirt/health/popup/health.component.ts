@@ -2,17 +2,17 @@ import { Component, ChangeDetectionStrategy, computed, inject, effect } from "@a
 import { takeUntilDestroyed, toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { filter, map, of, switchMap, take } from "rxjs";
 
-import { PremiumUpgradeDialogComponent } from "@bitwarden/angular/billing/components";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { PremiumUpgradeDialogComponent } from "@localpass/angular/billing/components";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
 import {
   VAULT_HEALTH_REPORT_IDLE,
   VaultHealthReportStatus,
-} from "@bitwarden/common/dirt/vault-health/models";
-import { VaultHealthReportService } from "@bitwarden/common/dirt/vault-health/services";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
-import { DialogService } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/common/dirt/vault-health/models";
+import { VaultHealthReportService } from "@localpass/common/dirt/vault-health/services";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
+import { DialogService } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";

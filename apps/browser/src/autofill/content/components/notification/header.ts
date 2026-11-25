@@ -1,7 +1,7 @@
 import createEmotion from "@emotion/css/create-instance";
 import { html } from "lit";
 
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
 
 import { CloseButton } from "../buttons/close-button";
 import { I18n } from "../common-types";

@@ -1,9 +1,9 @@
 import { ipcMain } from "electron";
 import { mock } from "jest-mock-extended";
 
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { BiometricAction } from "../../types/biometric-message";
 

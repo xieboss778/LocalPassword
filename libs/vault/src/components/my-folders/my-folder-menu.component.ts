@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { IconButtonModule, IconModule, MenuModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { IconButtonModule, IconModule, MenuModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { foldersListCommands } from "../../models/vault-scope";
 import { MyFolderActionsService } from "../../services/my-folder-actions.service";

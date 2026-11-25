@@ -2,8 +2,8 @@
 
 import { ipcMain, globalShortcut } from "electron";
 
-import { autotype_mvp } from "@bitwarden/desktop-napi";
-import { LogService } from "@bitwarden/logging";
+import { autotype_mvp } from "@localpass/desktop-napi";
+import { LogService } from "@localpass/logging";
 
 import { WindowMain } from "../../main/window.main";
 import { stringIsNotUndefinedNullAndEmpty } from "../../utils";

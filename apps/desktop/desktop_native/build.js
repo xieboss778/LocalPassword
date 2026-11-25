@@ -124,7 +124,7 @@ function buildWindowsPluginBin(target, release = true) {
 function buildImporterBinaries(target, release = true) {
     // These binaries are only built for Windows, so we can skip them on other platforms
     if (effectivePlatform(target) == "win32") {
-        cargoBuild("bitwarden_chromium_import_helper", target, release)
+        cargoBuild("localpass_chromium_import_helper", target, release)
     }
 }
 

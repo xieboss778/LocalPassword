@@ -1,4 +1,4 @@
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
 
 /** i18n keys used by the "remove Send authentication" flow. */
 export type RemoveSendAuthI18nKeys = Readonly<{

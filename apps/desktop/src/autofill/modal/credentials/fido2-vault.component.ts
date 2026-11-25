@@ -3,14 +3,14 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterModule, Router } from "@angular/router";
 import { map, combineLatest, of, Observable, switchMap, catchError } from "rxjs";
 
-import { IconComponent } from "@bitwarden/angular/vault/components/icon.component";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { IconComponent } from "@localpass/angular/vault/components/icon.component";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   BadgeModule,
   ButtonModule,
@@ -21,8 +21,8 @@ import {
   TableModule,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { DesktopSettingsService } from "../../../platform/services/desktop-settings.service";
 import { DesktopFido2UserInterfaceService } from "../../services/desktop-fido2-user-interface.service";
@@ -68,7 +68,7 @@ export class Fido2VaultComponent {
     if (!this.session) {
       await this.dialogService.openSimpleDialog({
         title: { key: "unexpectedErrorShort" },
-        content: { key: "closeThisBitwardenWindow" },
+        content: { key: "closeThisLocalPassWindow" },
         type: "danger",
         acceptButtonText: { key: "closeThisWindow" },
         cancelButtonText: null,

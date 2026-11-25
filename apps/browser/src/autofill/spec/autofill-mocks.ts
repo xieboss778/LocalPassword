@@ -1,11 +1,11 @@
 import { mock } from "jest-mock-extended";
 
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import {
   FocusedFieldData,
@@ -161,7 +161,7 @@ export function createAutofillScriptMock(
 const overlayPagesTranslations = {
   locale: "en",
   opensInANewWindow: "opensInANewWindow",
-  toggleBitwardenVaultOverlay: "toggleBitwardenVaultOverlay",
+  toggleLocalPassVaultOverlay: "toggleLocalPassVaultOverlay",
   unlockYourAccountToViewAutofillSuggestions: "unlockYourAccountToViewAutofillSuggestions",
   unlockAccount: "unlockAccount",
   fillCredentialsFor: "fillCredentialsFor",

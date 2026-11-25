@@ -81,7 +81,7 @@ async function launch(
     // Lets suites that also drive the web vault use relative URLs in this context.
     baseURL,
     recordVideo: { dir: recordVideoDir },
-    env: { ...process.env, BITWARDEN_IPC_SOCKET_DIR: IPC_SOCKET_DIR },
+    env: { ...process.env, LOCALPASS_IPC_SOCKET_DIR: IPC_SOCKET_DIR },
     args: [`--load-extension=${extensionDir}`, `--disable-extensions-except=${extensionDir}`],
   });
 }
@@ -204,7 +204,7 @@ export async function reopenPopup(
 }
 
 /**
- * A fresh install walks through onboarding — the "make Bitwarden your default password
+ * A fresh install walks through onboarding — the "make LocalPass your default password
  * manager" prompt, then the intro carousel — before it offers the login page.
  * Also arms the handlers for the modals that open over the vault after login.
  */

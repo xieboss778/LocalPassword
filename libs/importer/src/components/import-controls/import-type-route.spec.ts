@@ -63,7 +63,7 @@ describe("canActivateImportType", () => {
 
   it("redirects for a format id that used to double as its vendor's picker id", () => {
     void activate("keepass2xml");
-    void activate("bitwardenjson");
+    void activate("localpassjson");
 
     expect(router.createUrlTree).toHaveBeenCalledTimes(2);
   });

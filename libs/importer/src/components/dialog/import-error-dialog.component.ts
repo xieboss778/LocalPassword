@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   DialogRef,
   DIALOG_DATA,
@@ -9,14 +9,14 @@ import {
   DialogModule,
   TableDataSource,
   TableModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export interface ErrorListItem {
   type: string;
   message: string;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "./import-error-dialog.component.html",

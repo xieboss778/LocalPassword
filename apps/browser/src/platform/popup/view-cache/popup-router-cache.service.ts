@@ -13,7 +13,7 @@ import {
 } from "@angular/router";
 import { filter, first, firstValueFrom, map, Observable, of, switchMap, tap } from "rxjs";
 
-import { GlobalStateProvider, StateProvider } from "@bitwarden/common/platform/state";
+import { GlobalStateProvider, StateProvider } from "@localpass/common/platform/state";
 
 import {
   POPUP_ROUTE_HISTORY_KEY,

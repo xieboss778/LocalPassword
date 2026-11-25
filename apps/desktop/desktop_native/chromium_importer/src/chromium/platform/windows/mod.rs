@@ -70,7 +70,7 @@ pub(crate) fn get_crypto_service(
 // Private
 //
 
-const ADMIN_EXE_FILENAME: &str = "bitwarden_chromium_import_helper.exe";
+const ADMIN_EXE_FILENAME: &str = "localpass_chromium_import_helper.exe";
 
 //
 // CryptoService
@@ -257,7 +257,7 @@ fn get_admin_exe_path() -> Result<PathBuf> {
         get_dist_admin_exe_path(&current_exe_full_path)?
     };
 
-    // check if bitwarden_chromium_import_helper.exe exists
+    // check if localpass_chromium_import_helper.exe exists
     if !admin_exe_full_path.exists() {
         return Err(anyhow!(
             "{} not found at path: {:?}",
@@ -278,7 +278,7 @@ fn get_dist_admin_exe_path(current_exe_full_path: &Path) -> Result<PathBuf> {
     Ok(admin_exe)
 }
 
-// Try to find bitwarden_chromium_import_helper.exe in debug build folders. This might not cover all
+// Try to find localpass_chromium_import_helper.exe in debug build folders. This might not cover all
 // the cases. Tested on `npm run electron` from apps/desktop and apps/desktop/desktop_native.
 fn get_debug_admin_exe_path() -> Result<PathBuf> {
     let current_dir = std::env::current_dir()?;

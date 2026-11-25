@@ -1,4 +1,4 @@
-import { FormContent } from "@bitwarden/common/autofill/types";
+import { FormContent } from "@localpass/common/autofill/types";
 
 import { FillAssistMissReason } from "../../background/fill-assist-event-receiver";
 import AutofillPageDetails from "../../models/autofill-page-details";

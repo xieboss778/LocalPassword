@@ -4,7 +4,7 @@ import { EncString } from "./enc-string";
 
 describe("EncString", () => {
   afterEach(() => {
-    (window as any).bitwardenContainerService = undefined;
+    (window as any).localpassContainerService = undefined;
   });
 
   describe("Rsa2048_OaepSha256_B64", () => {

@@ -1,35 +1,35 @@
 import { mock } from "jest-mock-extended";
 
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
-import { makeSymmetricCryptoKey } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { IpcService } from "@localpass/common/platform/ipc";
+import { makeSymmetricCryptoKey } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 import {
   KeyService,
   BiometricStateService,
   BiometricsCommands,
   BiometricsStatus,
-} from "@bitwarden/key-management";
+} from "@localpass/key-management";
 import {
   BiometricsStatus as SdkBiometricsStatus,
   ipcRequestAuthenticateBiometrics,
   ipcRequestGetBiometricsStatus,
   ipcRequestUnlockBiometrics,
-} from "@bitwarden/sdk-internal";
-import { UnlockMethod, UnlockService } from "@bitwarden/unlock";
+} from "@localpass/sdk-internal";
+import { UnlockMethod, UnlockService } from "@localpass/unlock";
 
 import { NativeMessagingBackground } from "../../background/nativeMessaging.background";
 import { BrowserApi } from "../../platform/browser/browser-api";
 
 import { BackgroundBrowserBiometricsService } from "./background-browser-biometrics.service";
 
-jest.mock("@bitwarden/sdk-internal", () => ({
-  ...jest.requireActual("@bitwarden/sdk-internal"),
+jest.mock("@localpass/sdk-internal", () => ({
+  ...jest.requireActual("@localpass/sdk-internal"),
   ipcRequestAuthenticateBiometrics: jest.fn(),
   ipcRequestGetBiometricsStatus: jest.fn(),
   ipcRequestUnlockBiometrics: jest.fn(),

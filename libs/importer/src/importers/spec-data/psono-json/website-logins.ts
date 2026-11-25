@@ -9,7 +9,7 @@ export const WebsiteLoginsData: PsonoJsonExport = {
       autosubmit: true,
       urlfilter: "filter",
       website_password_title: "TestEntry",
-      website_password_url: "bitwarden.com",
+      website_password_url: "local.invalid",
       website_password_username: "testUser",
       website_password_password: "testPassword",
       website_password_notes: "some notes",

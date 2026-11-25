@@ -58,7 +58,7 @@ const vaultTimeoutTypeRollbackRecord: Record<VaultTimeout, any> = {
 };
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum ClientType {
   Web = "web",
   Browser = "browser",

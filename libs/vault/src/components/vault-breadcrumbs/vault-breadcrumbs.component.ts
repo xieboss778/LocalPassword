@@ -4,19 +4,19 @@ import { QueryParamsHandling } from "@angular/router";
 import { switchMap } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { getNestedCollectionTree } from "@bitwarden/common/admin-console/utils/collection-utils";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
+import { CollectionService } from "@localpass/admin-console/common";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { getNestedCollectionTree } from "@localpass/common/admin-console/utils/collection-utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   BreadcrumbsModule,
   IconTileComponent,
   IconTileOptions,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { navIconTile } from "../../models/vault-icon-tile";
 import {
@@ -30,7 +30,7 @@ import { sharedFolderName } from "../../utils/shared-folder-name";
 
 type TrailCrumb = {
   key: string;
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
   label: string;
   route: string[];
   queryParamsHandling?: QueryParamsHandling;
@@ -166,7 +166,7 @@ export class VaultBreadcrumbsComponent {
     ];
   });
 
-  private currentCrumb(key: string, icon: BitwardenIcon, label: string): TrailCrumb {
+  private currentCrumb(key: string, icon: LocalPassIcon, label: string): TrailCrumb {
     return { key, icon, label, route: [], queryParamsHandling: "preserve" };
   }
 

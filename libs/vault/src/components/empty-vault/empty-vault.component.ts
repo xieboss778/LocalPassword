@@ -15,10 +15,10 @@ import {
   NoFolders,
   SearchFolder,
   EmptyTrash,
-} from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ButtonModule, StatusLockupComponent, SvgComponent } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ButtonModule, StatusLockupComponent, SvgComponent } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { VaultScope, VaultScopeType } from "../../models/vault-scope";
 import {

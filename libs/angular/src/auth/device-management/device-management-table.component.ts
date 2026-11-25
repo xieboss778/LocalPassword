@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 
-import { DevicePendingAuthRequest } from "@bitwarden/common/auth/abstractions/devices/responses/device.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { DevicePendingAuthRequest } from "@localpass/common/auth/abstractions/devices/responses/device.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   BadgeModule,
   ButtonModule,
@@ -11,7 +11,7 @@ import {
   SortFn,
   TableDataSource,
   TableModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { JslibModule } from "../../jslib.module";
 
@@ -19,7 +19,7 @@ import { DeviceDisplayData } from "./device-management.component";
 import { recentlyActiveSortFn } from "./utils/device-sort.utils";
 
 /** Displays user devices in a sortable table view */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   standalone: true,
@@ -36,10 +36,10 @@ import { recentlyActiveSortFn } from "./utils/device-sort.utils";
   ],
 })
 export class DeviceManagementTableComponent implements OnChanges {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() devices: DeviceDisplayData[] = [];
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onAuthRequestAnswered = new EventEmitter<DevicePendingAuthRequest>();
 

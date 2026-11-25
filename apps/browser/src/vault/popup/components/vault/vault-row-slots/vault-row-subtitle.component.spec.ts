@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BehaviorSubject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { VaultRowSubtitleComponent } from "./vault-row-subtitle.component";
 import { VAULT_ROW_SUBTITLE } from "./vault-row-subtitle.token";

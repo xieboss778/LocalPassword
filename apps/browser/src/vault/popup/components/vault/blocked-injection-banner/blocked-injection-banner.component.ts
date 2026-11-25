@@ -3,19 +3,19 @@ import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Observable } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   BannerModule,
   IconButtonModule,
   LinkModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
 
 const blockedURISettingsRoute = "/blocked-domains";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   imports: [
@@ -30,7 +30,7 @@ const blockedURISettingsRoute = "/blocked-domains";
   selector: "blocked-injection-banner",
   templateUrl: "blocked-injection-banner.component.html",
 })
-// FIXME(https://bitwarden.atlassian.net/browse/PM-28231): Use Component suffix
+// FIXME(https://localpass.atlassian.net/browse/PM-28231): Use Component suffix
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class BlockedInjectionBanner implements OnInit {
   /**

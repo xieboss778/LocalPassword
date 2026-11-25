@@ -1,12 +1,12 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Subject } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs";
-import { PhishingDetectionSettingsServiceAbstraction } from "@bitwarden/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessageListener } from "@bitwarden/messaging";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs";
+import { PhishingDetectionSettingsServiceAbstraction } from "@localpass/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessageListener } from "@localpass/messaging";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import { fromChromeEvent } from "../../../platform/browser/from-chrome-event";

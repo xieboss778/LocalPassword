@@ -1,10 +1,10 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
   DANGEROUS_aesCbcDecryptLastpassImport,
   DANGEROUS_aesEcbDecryptLastpassImport,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 export class CryptoUtils {
   constructor(private cryptoFunctionService: CryptoFunctionService) {}

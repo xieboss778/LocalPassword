@@ -4,10 +4,10 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { DialogService } from "@bitwarden/components";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { DialogService } from "@localpass/components";
 
 jest.mock("../../default-password-manager-session.util", () => ({
   applyDefaultPasswordManagerOverride: jest.fn().mockResolvedValue(undefined),

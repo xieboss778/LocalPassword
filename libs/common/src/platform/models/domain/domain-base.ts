@@ -1,7 +1,7 @@
 import { ConditionalExcept, ConditionalKeys } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { DECRYPT_ERROR, EncString, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { DECRYPT_ERROR, EncString, SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { View } from "../../../models/view/view";
 import { Utils } from "../../misc/utils";
@@ -26,7 +26,7 @@ type ViewEncryptableKeys<V extends View> = {
   [key in ConditionalKeys<V, string | null | undefined>]?: string | null | undefined;
 };
 
-// https://contributing.bitwarden.com/architecture/clients/data-model#domain
+// https://contributing.local.invalid/architecture/clients/data-model#domain
 export default class Domain {
   protected buildDomainModel<D extends Domain>(
     domain: D,

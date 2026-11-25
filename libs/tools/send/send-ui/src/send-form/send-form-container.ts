@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
 
 import { SendFormConfig } from "./abstractions/send-form-config.service";
 import { SendOptionsComponent } from "./components/options/send-options.component";

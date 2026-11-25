@@ -82,7 +82,7 @@ function updateTsConfigPath(tree: Tree, name: string, srcRoot: string) {
   updateJson(tree, "tsconfig.base.json", (json) => {
     const paths = json.compilerOptions.paths || {};
 
-    paths[`@bitwarden/${name}`] = [`./${srcRoot}/index.ts`];
+    paths[`@localpass/${name}`] = [`./${srcRoot}/index.ts`];
 
     json.compilerOptions.paths = paths;
     return json;
@@ -106,19 +106,19 @@ function updateCodeowners(tree: Tree, directory: string, name: string, team: str
   }
 
   const teamHandleMap: Record<string, string> = {
-    "admin-console": "@bitwarden/team-admin-console-dev",
-    auth: "@bitwarden/team-auth-dev",
-    autofill: "@bitwarden/team-autofill-dev",
-    billing: "@bitwarden/team-billing-dev",
-    "data-insights-and-reporting": "@bitwarden/team-data-insights-and-reporting-dev",
-    "key-management": "@bitwarden/team-key-management-dev",
-    platform: "@bitwarden/team-platform-dev",
-    tools: "@bitwarden/team-tools-dev",
-    "ui-foundation": "@bitwarden/team-ui-foundation",
-    vault: "@bitwarden/team-vault-dev",
+    "admin-console": "@localpass/team-admin-console-dev",
+    auth: "@localpass/team-auth-dev",
+    autofill: "@localpass/team-autofill-dev",
+    billing: "@localpass/team-billing-dev",
+    "data-insights-and-reporting": "@localpass/team-data-insights-and-reporting-dev",
+    "key-management": "@localpass/team-key-management-dev",
+    platform: "@localpass/team-platform-dev",
+    tools: "@localpass/team-tools-dev",
+    "ui-foundation": "@localpass/team-ui-foundation",
+    vault: "@localpass/team-vault-dev",
   };
 
-  const teamHandle = teamHandleMap[team] || `@bitwarden/team-${team}-dev`;
+  const teamHandle = teamHandleMap[team] || `@localpass/team-${team}-dev`;
   const libPath = `${directory}/${name}`;
 
   const newLine = `${libPath} ${teamHandle}\n`;

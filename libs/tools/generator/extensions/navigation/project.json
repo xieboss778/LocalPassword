@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/generator-navigation",
+  "name": "@localpass/generator-navigation",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tools/generator/extensions/navigation/src",
   "projectType": "library",

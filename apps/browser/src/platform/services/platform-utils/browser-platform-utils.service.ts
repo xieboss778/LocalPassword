@@ -1,12 +1,12 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { ExtensionCommand } from "@bitwarden/common/autofill/constants";
-import { ClientType, DeviceType } from "@bitwarden/common/enums";
+import { ExtensionCommand } from "@localpass/common/autofill/constants";
+import { ClientType, DeviceType } from "@localpass/common/enums";
 import {
   ClipboardOptions,
   PlatformUtilsService,
-} from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { hasUserAgentBrand } from "@bitwarden/common/platform/misc/user-agent-data";
+} from "@localpass/common/platform/abstractions/platform-utils.service";
+import { hasUserAgentBrand } from "@localpass/common/platform/misc/user-agent-data";
 
 import { SafariApp } from "../../../browser/safariApp";
 import { BrowserApi } from "../../browser/browser-api";
@@ -230,7 +230,7 @@ export abstract class BrowserPlatformUtilsService implements PlatformUtilsServic
 
   /**
    * Copies the passed text to the clipboard. For Safari, this will use
-   * the native messaging API to send the text to the Bitwarden app. If
+   * the native messaging API to send the text to the LocalPass app. If
    * the extension is using manifest v3 and the calling context does not
    * have direct DOM access (e.g. a service worker), the offscreen document
    * API will be used to copy the text to the clipboard. Otherwise, the
@@ -275,7 +275,7 @@ export abstract class BrowserPlatformUtilsService implements PlatformUtilsServic
 
   /**
    * Reads the text from the clipboard. For Safari, this will use the
-   * native messaging API to request the text from the Bitwarden app. If
+   * native messaging API to request the text from the LocalPass app. If
    * the extension is using manifest v3 and the calling context does not
    * have direct DOM access (e.g. a service worker), the offscreen document
    * API will be used to read the text from the clipboard. Otherwise, the

@@ -3,10 +3,10 @@ import { firstValueFrom } from "rxjs";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // Marked for removal when PM-30811 feature flag is unwound.
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-import { UserId } from "@bitwarden/user-core";
+import { LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { UserId } from "@localpass/user-core";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { FeatureFlag } from "../../../enums/feature-flag.enum";
@@ -50,7 +50,7 @@ export class DefaultChangeEmailService implements ChangeEmailService {
       request = EmailTokenRequest.forNewEmail(authenticationData, newEmail);
     } else {
       // Legacy path: marked for removal when PM-30811 flag is unwound.
-      // See: https://bitwarden.atlassian.net/browse/PM-30811
+      // See: https://localpass.atlassian.net/browse/PM-30811
 
       request = new EmailTokenRequest();
       request.newEmail = newEmail;
@@ -114,7 +114,7 @@ export class DefaultChangeEmailService implements ChangeEmailService {
       request.authenticateWith(existingAuthData);
     } else {
       // Legacy path: marked for removal when PM-30811 flag is unwound.
-      // See: https://bitwarden.atlassian.net/browse/PM-30811
+      // See: https://localpass.atlassian.net/browse/PM-30811
 
       request = new EmailRequest();
       request.token = token;

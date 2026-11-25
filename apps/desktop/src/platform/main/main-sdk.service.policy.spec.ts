@@ -16,23 +16,23 @@ import {
   OrganizationUserStatusType,
   OrganizationUserType,
   PolicyType,
-} from "@bitwarden/common/admin-console/enums";
-import { OrganizationData } from "@bitwarden/common/admin-console/models/data/organization.data";
-import { PolicyData } from "@bitwarden/common/admin-console/models/data/policy.data";
-import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
-import { ProfileOrganizationResponse } from "@bitwarden/common/admin-console/models/response/profile-organization.response";
-import { DefaultOrganizationService } from "@bitwarden/common/admin-console/services/organization/default-organization.service";
-import { DefaultPolicyService } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
-import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
-import { DefaultActiveUserAccessor } from "@bitwarden/common/auth/services/default-active-user.accessor";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
-import { DefaultSdkClientFactory } from "@bitwarden/common/platform/services/sdk/default-sdk-client-factory";
-import { PolicyId, UserId } from "@bitwarden/common/types/guid";
-import { LogService } from "@bitwarden/logging";
-import { DefaultManagedSettingsService } from "@bitwarden/managed-settings";
+} from "@localpass/common/admin-console/enums";
+import { OrganizationData } from "@localpass/common/admin-console/models/data/organization.data";
+import { PolicyData } from "@localpass/common/admin-console/models/data/policy.data";
+import { PolicyResponse } from "@localpass/common/admin-console/models/response/policy.response";
+import { ProfileOrganizationResponse } from "@localpass/common/admin-console/models/response/profile-organization.response";
+import { DefaultOrganizationService } from "@localpass/common/admin-console/services/organization/default-organization.service";
+import { DefaultPolicyService } from "@localpass/common/admin-console/services/policy/default-policy.service";
+import { AccountServiceImplementation } from "@localpass/common/auth/services/account.service";
+import { DefaultActiveUserAccessor } from "@localpass/common/auth/services/default-active-user.accessor";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { DefaultEnvironmentService } from "@localpass/common/platform/services/default-environment.service";
+import { DefaultSdkClientFactory } from "@localpass/common/platform/services/sdk/default-sdk-client-factory";
+import { PolicyId, UserId } from "@localpass/common/types/guid";
+import { LogService } from "@localpass/logging";
+import { DefaultManagedSettingsService } from "@localpass/managed-settings";
 import {
   DefaultActiveUserStateProvider,
   DefaultDerivedStateProvider,
@@ -40,8 +40,8 @@ import {
   DefaultSingleUserStateProvider,
   DefaultStateEventRegistrarService,
   DefaultStateProvider,
-} from "@bitwarden/state-internal";
-import { SerializedMemoryStorageService, StorageServiceProvider } from "@bitwarden/storage-core";
+} from "@localpass/state-internal";
+import { SerializedMemoryStorageService, StorageServiceProvider } from "@localpass/storage-core";
 
 import { ElectronRendererStorageService } from "../services/electron-renderer-storage.service";
 

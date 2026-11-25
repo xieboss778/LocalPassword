@@ -1,4 +1,4 @@
-import { GENERATOR_DISK, UserKeyDefinition } from "@bitwarden/common/platform/state";
+import { GENERATOR_DISK, UserKeyDefinition } from "@localpass/common/platform/state";
 
 import { GeneratorNavigation } from "./generator-navigation";
 

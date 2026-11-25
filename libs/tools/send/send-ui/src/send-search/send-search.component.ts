@@ -3,8 +3,8 @@ import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { debounceTime, filter } from "rxjs";
 
-import { SearchModule, AutofocusDirective } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { SearchModule, AutofocusDirective } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SendItemsService } from "../services/send-items.service";
 

@@ -3,10 +3,10 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { Measurement } from "@bitwarden/logging";
+import { EncryptService, EncString, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { Measurement } from "@localpass/logging";
 
 import { makeEncString } from "../../../../spec";
 import { FakeAccountService, mockAccountServiceWith } from "../../../../spec/fake-account-service";

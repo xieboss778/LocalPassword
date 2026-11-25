@@ -16,8 +16,8 @@ import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/an
 import { filter as rxFilter, map } from "rxjs";
 import { screen, userEvent, within } from "storybook/test";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalStateProvider, StateProvider } from "@bitwarden/state";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalStateProvider, StateProvider } from "@localpass/state";
 
 import { AsyncActionsModule } from "../../async-actions";
 import { BulkActionComponent } from "../../bulk-actions-bar/bulk-action.component";
@@ -966,7 +966,7 @@ class DemoFormTableComponent {
 type LongLabelRow = { id: number; name: string; collectionIds: string[]; folderId: string };
 type LongLabelFilters = { search?: string; collection?: string[]; folder?: string[] };
 
-const LONG_LABEL_ORG = "Bitwarden Design System and Component Library";
+const LONG_LABEL_ORG = "LocalPass Design System and Component Library";
 
 const LONG_LABEL_COLLECTIONS = [
   { id: "onboarding", name: "Onboarding materials for new design system contributors" },

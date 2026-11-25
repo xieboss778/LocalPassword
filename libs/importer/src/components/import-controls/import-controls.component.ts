@@ -23,17 +23,17 @@ import {
 } from "@angular/forms";
 import { catchError, defer, firstValueFrom, map, of, startWith, switchMap } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { BitSvg } from "@bitwarden/assets/svg";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { BitSvg } from "@localpass/assets/svg";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -42,9 +42,9 @@ import {
   SegmentedCardComponent,
   SpinnerComponent,
   ToastService,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { isPasswordProtected } from "@bitwarden/vault-export-core";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { isPasswordProtected } from "@localpass/vault-export-core";
 
 import { KeeperRegion } from "../../importers/keeper/access";
 import { Loader } from "../../metadata";
@@ -509,7 +509,7 @@ export class ImportControlsComponent {
     ],
     keyFile: [{ value: null as File | null, disabled: true }],
 
-    // Only for password-protected Bitwarden JSON.
+    // Only for password-protected LocalPass JSON.
     filePassword: [
       { value: "", disabled: true },
       [this.filePasswordRequiredValidator, Validators.required],
@@ -670,16 +670,16 @@ export class ImportControlsComponent {
   // Starts hidden behind an "Add key file" link — most kdbx imports don't need it.
   protected readonly showKeyFile = signal(false);
 
-  // Peeks a chosen bitwardenjson file to detect password protection before Continue. "pending"
+  // Peeks a chosen localpassjson file to detect password protection before Continue. "pending"
   // holds Continue until the read settles.
   private readonly filePasswordCheck = toSignal(
     toObservable(this.chosenFile).pipe(
       switchMap((file) => {
-        // resolvedFormat(), not importType(): the Bitwarden card also covers CSV, which can't be JSON-parsed.
-        if (this.resolvedFormat() !== "bitwardenjson" || file == null) {
+        // resolvedFormat(), not importType(): the LocalPass card also covers CSV, which can't be JSON-parsed.
+        if (this.resolvedFormat() !== "localpassjson" || file == null) {
           return of("not-protected" as const);
         }
-        return defer(() => readImportFileContents("bitwardenjson", file)).pipe(
+        return defer(() => readImportFileContents("localpassjson", file)).pipe(
           map((contents) =>
             isPasswordProtected(JSON.parse(contents))
               ? ("protected" as const)
@@ -709,7 +709,7 @@ export class ImportControlsComponent {
   private readonly isFilePasswordProtected = computed(
     () =>
       this.method() === "file" &&
-      this.resolvedFormat() === "bitwardenjson" &&
+      this.resolvedFormat() === "localpassjson" &&
       this.filePasswordCheck() === "protected",
   );
 

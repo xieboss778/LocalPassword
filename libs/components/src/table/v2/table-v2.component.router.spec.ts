@@ -4,7 +4,7 @@ import { By } from "@angular/platform-browser";
 import { Router, provideRouter } from "@angular/router";
 import { RouterTestingHarness } from "@angular/router/testing";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { DialogService } from "../../dialog";
 import { FilterMenuModule } from "../../filter-menu";

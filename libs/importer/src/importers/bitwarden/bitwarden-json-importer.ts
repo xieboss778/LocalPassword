@@ -4,16 +4,16 @@ import {
   CipherWithIdExport,
   CollectionWithIdExport,
   FolderWithIdExport,
-} from "@bitwarden/common/models/export";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+} from "@localpass/common/models/export";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
-  BitwardenJsonExport,
-  BitwardenUnEncryptedIndividualJsonExport,
-  BitwardenUnEncryptedJsonExport,
-  BitwardenUnEncryptedOrgJsonExport,
+  LocalPassJsonExport,
+  LocalPassUnEncryptedIndividualJsonExport,
+  LocalPassUnEncryptedJsonExport,
+  LocalPassUnEncryptedOrgJsonExport,
   isOrgUnEncrypted,
   isUnencrypted,
-} from "@bitwarden/vault-export-core";
+} from "@localpass/vault-export-core";
 
 import { ImportResult } from "../../models/import-result";
 import { BaseImporter } from "../base-importer";
@@ -25,7 +25,7 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
   }
 
   async parse(data: string): Promise<ImportResult> {
-    const results: BitwardenJsonExport = JSON.parse(data);
+    const results: LocalPassJsonExport = JSON.parse(data);
     if (results == null || results.items == null) {
       const result = new ImportResult();
       result.success = false;
@@ -38,7 +38,7 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
     return await this.parseDecrypted(results);
   }
 
-  private async parseDecrypted(results: BitwardenUnEncryptedJsonExport): Promise<ImportResult> {
+  private async parseDecrypted(results: LocalPassUnEncryptedJsonExport): Promise<ImportResult> {
     const importResult = new ImportResult();
 
     const groupingsMap = isOrgUnEncrypted(results)
@@ -83,7 +83,7 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
   }
 
   private async parseFolders(
-    data: BitwardenUnEncryptedIndividualJsonExport,
+    data: LocalPassUnEncryptedIndividualJsonExport,
     importResult: ImportResult,
   ): Promise<Map<string, number>> {
     const groupingsMap = new Map<string, number>();
@@ -102,7 +102,7 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
   }
 
   private async parseCollections(
-    data: BitwardenUnEncryptedOrgJsonExport,
+    data: LocalPassUnEncryptedOrgJsonExport,
     importResult: ImportResult,
   ): Promise<Map<string, number>> {
     const groupingsMap = new Map<string, number>();

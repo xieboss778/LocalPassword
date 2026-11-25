@@ -1,7 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
-import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { emptyDraft, WebmapperDraft } from "../webmapper/draft";
 

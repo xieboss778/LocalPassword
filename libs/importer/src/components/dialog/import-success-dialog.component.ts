@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   DialogRef,
   DIALOG_DATA,
@@ -10,8 +10,8 @@ import {
   DialogModule,
   TableDataSource,
   TableModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportResult, SdkImportSummary } from "../../models";
 
@@ -30,7 +30,7 @@ export interface ResultList {
   count: number;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "./import-success-dialog.component.html",

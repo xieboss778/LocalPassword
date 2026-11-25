@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/logging",
+  "name": "@localpass/logging",
   "version": "0.0.1",
   "description": "Logging primitives",
   "private": true,

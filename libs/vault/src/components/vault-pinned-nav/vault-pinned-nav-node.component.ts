@@ -2,13 +2,13 @@ import { NgTemplateOutlet } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { isActive, Router } from "@angular/router";
 
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CollectionId } from "@bitwarden/common/types/guid";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { CollectionId } from "@localpass/common/types/guid";
 import {
   HoverRevealContainerDirective,
   HoverRevealDirective,
   NavigationModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { EXACT_PATH } from "../../routing/exact-path";
 import { CollectionOptionsMenuComponent } from "../collection-options-menu";

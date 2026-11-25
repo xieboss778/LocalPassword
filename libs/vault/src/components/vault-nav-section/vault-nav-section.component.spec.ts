@@ -6,21 +6,21 @@ import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { CollectionId, UserId } from "@bitwarden/common/types/guid";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { CollectionId, UserId } from "@localpass/common/types/guid";
 import {
   HoverRevealDirective,
   NavigationModule,
   PopoverAnchorForDirective,
   SideNavService,
   ToastService,
-} from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
+} from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
 
 import {
   VaultNavItemType,

@@ -10,7 +10,7 @@ export class EmailTokenRequest extends SecretVerificationRequest {
   /**
    * Creates an EmailTokenRequest using new KM data types.
    * This will eventually become the primary constructor once all callers are updated.
-   * @see https://bitwarden.atlassian.net/browse/PM-30811
+   * @see https://localpass.atlassian.net/browse/PM-30811
    */
   static forNewEmail(
     authenticationData: MasterPasswordAuthenticationData,

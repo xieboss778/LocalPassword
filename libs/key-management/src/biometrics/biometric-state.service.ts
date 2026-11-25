@@ -1,8 +1,8 @@
 import { Observable, firstValueFrom, map } from "rxjs";
 
-import { assertNonNullish } from "@bitwarden/common/auth/utils";
-import { GlobalState, StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { assertNonNullish } from "@localpass/common/auth/utils";
+import { GlobalState, StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import {
   BIOMETRIC_UNLOCK_ENABLED,

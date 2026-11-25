@@ -5,15 +5,15 @@ import { of } from "rxjs";
 import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
-} from "@bitwarden/auth/common";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { MasterPasswordUnlockService } from "@bitwarden/common/key-management/master-password/abstractions/master-password-unlock.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { ToastService } from "@bitwarden/components";
-import { UserId } from "@bitwarden/user-core";
-import { UserKeyRotationServiceAbstraction } from "@bitwarden/user-crypto-management";
+} from "@localpass/auth/common";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { MasterPasswordUnlockService } from "@localpass/common/key-management/master-password/abstractions/master-password-unlock.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { ToastService } from "@localpass/components";
+import { UserId } from "@localpass/user-core";
+import { UserKeyRotationServiceAbstraction } from "@localpass/user-crypto-management";
 
 import { KeyRotationDialogService } from "./key-rotation-dialog.service";
 

@@ -2,10 +2,10 @@ import { TestBed } from "@angular/core/testing";
 import { Route, UrlSegment } from "@angular/router";
 import { firstValueFrom, of } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { IMPORT_DESTINATION_ROUTE_PATH } from "@bitwarden/importer-ui";
-import { vaultFilterRestoreGuard, VAULT_FILTER_SCOPE } from "@bitwarden/vault";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { IMPORT_DESTINATION_ROUTE_PATH } from "@localpass/importer-ui";
+import { vaultFilterRestoreGuard, VAULT_FILTER_SCOPE } from "@localpass/vault";
 
 import { routes } from "./app-routing.module";
 

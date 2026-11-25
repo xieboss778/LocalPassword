@@ -11,11 +11,11 @@ import {
   findByTestId,
 } from "storybook/test";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { enabledFlags } from "@bitwarden/storybook";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { GlobalStateProvider } from "@localpass/state";
+import { enabledFlags } from "@localpass/storybook";
 
 import { I18nMockService } from "../../utils/i18n-mock.service";
 import { StorybookGlobalStateProvider } from "../../utils/state-mock";
@@ -62,8 +62,8 @@ export default {
                 path: "",
                 component: KitchenSinkMainComponent,
                 children: [
-                  { path: "", redirectTo: "bitwarden", pathMatch: "full" },
-                  { path: "bitwarden", component: KitchenSinkVaultComponent },
+                  { path: "", redirectTo: "localpass", pathMatch: "full" },
+                  { path: "localpass", component: KitchenSinkVaultComponent },
                   { path: "empty", component: KitchenSinkEmptyComponent },
                   { path: "virtual-scroll", component: DialogVirtualScrollBlockComponent },
                 ],
@@ -141,7 +141,7 @@ export default {
 
 type Story = StoryObj<KitchenSinkAppComponent>;
 
-type KitchenSinkRoute = "/bitwarden" | "/virtual-scroll";
+type KitchenSinkRoute = "/localpass" | "/virtual-scroll";
 
 async function navigateTo(path: KitchenSinkRoute) {
   window.location.hash = path;
@@ -202,7 +202,7 @@ export const DefaultVfo1NoBanner: Story = {
 export const MenuOpen: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     const table = getByRole(canvas, "table");
     const menuButton = getAllByLabelText(table, "Options")[0];
     await userEvent.click(menuButton);
@@ -215,7 +215,7 @@ export const MenuOpen: Story = {
 export const DialogOpen: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     const dialogButton = getByRole(canvas, "button", {
       name: "Open Dialog",
     });
@@ -228,7 +228,7 @@ export const DialogOpen: Story = {
 export const DrawerOpen: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     const drawerButton = getByRole(canvas, "button", {
       name: "Open Drawer",
     });
@@ -241,7 +241,7 @@ export const DrawerOpen: Story = {
 export const PopoverOpen: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     const popoverLink = getByRole(canvas, "button", {
       name: "Popover trigger link",
     });
@@ -253,7 +253,7 @@ export const PopoverOpen: Story = {
 export const SimpleDialogOpen: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     const submitButton = getByRole(canvas, "button", {
       name: "Submit",
     });
@@ -266,7 +266,7 @@ export const SimpleDialogOpen: Story = {
 export const EmptyTab: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     await new Promise((resolve) => setTimeout(resolve, 200)); // wait for ResizeObserver to settle
 
     const emptyTab = queryByRole(canvas, "link", { name: "Empty" });
@@ -300,7 +300,7 @@ export const SideNavOpen: Story = {
   render: Default.render,
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     await openSideNav(canvas);
   },
   parameters: {
@@ -315,7 +315,7 @@ export const DrawerOpenBeforeSideNavOpen: Story = {
     // workaround for userEvent not firing in FF https://github.com/testing-library/user-event/issues/1075
     await fireEvent.click(getByRole(canvas, "button", { name: "Open Drawer" }));
 
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     await openSideNav(canvas);
   },
   parameters: {
@@ -334,7 +334,7 @@ export const ResponsiveSidebar: Story = {
 export const GuidedTour: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
 
     const tourButton = getByRole(canvas, "button", {
       name: "Start Tour",

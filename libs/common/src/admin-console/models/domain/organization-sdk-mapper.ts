@@ -3,7 +3,7 @@ import {
   OrganizationUserId as SdkOrganizationUserId,
   ProfileOrganization as SdkProfileOrganization,
   UserId as SdkUserId,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { asUuid, uuidAsString } from "../../../platform/abstractions/sdk/sdk.service";
 import { SdkRecordMapper } from "../../../platform/services/sdk/client-managed-state";

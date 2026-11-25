@@ -2,9 +2,9 @@ import { inject, NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { map } from "rxjs";
 
-import { AuthenticationTimeoutComponent } from "@bitwarden/angular/auth/components/authentication-timeout.component";
-import { AuthRoute } from "@bitwarden/angular/auth/constants";
-import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/environment-selector/environment-selector.component";
+import { AuthenticationTimeoutComponent } from "@localpass/angular/auth/components/authentication-timeout.component";
+import { AuthRoute } from "@localpass/angular/auth/constants";
+import { EnvironmentSelectorComponent } from "@localpass/angular/auth/environment-selector/environment-selector.component";
 import {
   authGuard,
   lockGuard,
@@ -12,23 +12,23 @@ import {
   redirectGuard,
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
-} from "@bitwarden/angular/auth/guards";
+} from "@localpass/angular/auth/guards";
 import {
   CreateLocalVaultComponent,
   LocalVaultStartComponent,
   RestoreVaultComponent,
-} from "@bitwarden/angular/auth/local-vault";
-import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
-import { SetInitialPasswordComponent } from "@bitwarden/angular/auth/password-management/set-initial-password/set-initial-password.component";
+} from "@localpass/angular/auth/local-vault";
+import { ChangePasswordComponent } from "@localpass/angular/auth/password-management/change-password";
+import { SetInitialPasswordComponent } from "@localpass/angular/auth/password-management/set-initial-password/set-initial-password.component";
 import {
   RegistrationFinishComponent,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
   RegistrationStartSecondaryComponentData,
-} from "@bitwarden/angular/auth/registration";
-import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
-import { featureFlaggedRoute } from "@bitwarden/angular/platform/utils/feature-flagged-route";
-import { BackupSettingsComponent } from "@bitwarden/angular/tools/backup";
+} from "@localpass/angular/auth/registration";
+import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
+import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
+import { BackupSettingsComponent } from "@localpass/angular/tools/backup";
 import {
   DevicesIcon,
   RegistrationUserAddIcon,
@@ -38,7 +38,7 @@ import {
   VaultIcon,
   LockIcon,
   DomainIcon,
-} from "@bitwarden/assets/svg";
+} from "@localpass/assets/svg";
 import {
   LoginViaAuthRequestComponent,
   PasswordHintComponent,
@@ -47,16 +47,16 @@ import {
   TwoFactorAuthComponent,
   TwoFactorAuthGuard,
   NewDeviceVerificationComponent,
-} from "@bitwarden/auth/angular";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/components";
-import { canActivateImportType, IMPORT_DESTINATION_ROUTE_PATH } from "@bitwarden/importer-ui";
+} from "@localpass/auth/angular";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@localpass/components";
+import { canActivateImportType, IMPORT_DESTINATION_ROUTE_PATH } from "@localpass/importer-ui";
 import {
   LockComponent,
   ConfirmKeyConnectorDomainComponent,
   RemovePasswordComponent,
-} from "@bitwarden/key-management-ui";
+} from "@localpass/key-management-ui";
 import {
   FOLDER_ID_PARAM,
   FOLDERS_ROUTE,
@@ -68,7 +68,7 @@ import {
   vaultFilterRestoreGuard,
   vaultScopeGuard,
   type VaultScopeRouteData,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { AccountSwitcherV2Component } from "../auth/components/account-switcher/account-switcher-v2.component";
 import { maxAccountsGuardFn } from "../auth/guards/max-accounts.guard";
@@ -218,7 +218,7 @@ export const routes: Routes = [
         ],
       },
       {
-        // LocalPassword: a vault is created on this device, so the login screen becomes the start
+        // LocalPass: a vault is created on this device, so the login screen becomes the start
         // screen. The route keeps its name so the existing guards and redirects keep working.
         path: AuthRoute.Login,
         canActivate: [maxAccountsGuardFn()],
@@ -592,7 +592,7 @@ export const routes: Routes = [
         canDeactivate: [unsavedSendEditsGuard],
       },
       {
-        // LocalPassword: cloud backup settings for a local vault.
+        // LocalPass: cloud backup settings for a local vault.
         path: "backup-settings",
         component: BackupSettingsComponent,
         canActivate: [authGuard],

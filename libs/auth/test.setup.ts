@@ -1,5 +1,5 @@
 import { webcrypto } from "crypto";
-import "@bitwarden/ui-common/setup-jest";
+import "@localpass/ui-common/setup-jest";
 
 Object.defineProperty(window, "CSS", { value: null });
 Object.defineProperty(window, "getComputedStyle", {

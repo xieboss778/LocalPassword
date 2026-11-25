@@ -1,8 +1,8 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { FakeAccountService, mockAccountServiceWith } from "@localpass/common/spec";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 
 import { IndividualVaultExportServiceAbstraction } from "./individual-vault-export.service.abstraction";
 import { OrganizationVaultExportServiceAbstraction } from "./org-vault-export.service.abstraction";

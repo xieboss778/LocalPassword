@@ -9,14 +9,14 @@ import {
 } from "@storybook/angular";
 import { of } from "rxjs";
 
-import { LockIcon, RegistrationCheckEmailIcon } from "@bitwarden/assets/svg";
-import { ClientType } from "@bitwarden/common/enums";
+import { LockIcon, RegistrationCheckEmailIcon } from "@localpass/assets/svg";
+import { ClientType } from "@localpass/common/enums";
 import {
   EnvironmentService,
   Environment,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { ButtonModule } from "../button";
 import { I18nMockService } from "../utils";
@@ -65,7 +65,7 @@ const decorators = (options: {
           provide: EnvironmentService,
           useValue: {
             environment$: of({
-              getHostname: () => options.hostName || "storybook.bitwarden.com",
+              getHostname: () => options.hostName || "storybook.local.invalid",
             } as Partial<Environment>),
           } as Partial<EnvironmentService>,
         },

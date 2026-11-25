@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { UserId } from "@bitwarden/common/types/guid";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { UserId } from "@localpass/common/types/guid";
 
 import { vfo1WalkthroughTour } from "./vfo1-walkthrough-tour";
 

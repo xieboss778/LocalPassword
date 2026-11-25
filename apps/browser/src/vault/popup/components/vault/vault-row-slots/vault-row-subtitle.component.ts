@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from "@an
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { of, switchMap } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { VAULT_ROW_SUBTITLE, VaultRowSubtitle } from "./vault-row-subtitle.token";
 

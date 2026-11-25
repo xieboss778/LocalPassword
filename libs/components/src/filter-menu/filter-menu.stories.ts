@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, viewChildren } from "@angul
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 import { expect, findByLabelText, getAllByRole, userEvent, waitFor, within } from "storybook/test";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { ButtonModule } from "../button";
 import { DialogModule, DialogService } from "../dialog";
@@ -293,7 +293,7 @@ class FilterMenuEmptyDemoComponent {
   template: `
     <div class="tw-flex tw-flex-wrap tw-items-start tw-gap-2 tw-p-4">
       <bit-filter-menu key="collection" placeholderText="Shared folders" multiple>
-        <bit-filter-section label="Bitwarden Design System and Component Library" collapsible>
+        <bit-filter-section label="LocalPass Design System and Component Library" collapsible>
           <bit-filter-option [value]="'onboarding'" expanded>
             Onboarding materials for new design system contributors
             <bit-filter-option [value]="'tokens'">
@@ -326,7 +326,7 @@ class FilterMenuLongLabelsDemoComponent {
   template: `
     <div class="tw-flex tw-flex-wrap tw-items-start tw-gap-2 tw-p-4">
       <bit-filter-menu key="collection" placeholderText="Shared folders" multiple>
-        <bit-filter-section label="Bitwarden Design System and Component Library" collapsible>
+        <bit-filter-section label="LocalPass Design System and Component Library" collapsible>
           <bit-filter-option [value]="'onboarding'" [count]="128" expanded>
             Onboarding materials for new design system contributors
             <bit-filter-option [value]="'tokens'" [count]="1024">

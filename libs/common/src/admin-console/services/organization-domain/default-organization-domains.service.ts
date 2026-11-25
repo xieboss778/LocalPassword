@@ -1,6 +1,6 @@
 import { Observable, switchMap } from "rxjs";
 
-import { OrganizationId as SdkOrganizationId } from "@bitwarden/sdk-internal";
+import { OrganizationId as SdkOrganizationId } from "@localpass/sdk-internal";
 
 import { asUuid, SdkService } from "../../../platform/abstractions/sdk/sdk.service";
 import { OrganizationId, UserId } from "../../../types/guid";

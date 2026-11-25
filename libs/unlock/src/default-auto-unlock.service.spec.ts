@@ -1,19 +1,19 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
+import { ClientType } from "@localpass/client-type";
 import {
   VAULT_TIMEOUT,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/key-management/vault-timeout";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { CsprngArray, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { StateProvider, StateService } from "@bitwarden/state";
+import { CsprngArray, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { StateProvider, StateService } from "@localpass/state";
 
 import { DefaultAutoUnlockService } from "./default-auto-unlock.service";
 

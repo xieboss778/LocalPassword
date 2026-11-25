@@ -4,9 +4,9 @@ import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ImportType } from "@bitwarden/importer-core";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ImportType } from "@localpass/importer-core";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportSourceSelectBrowserComponent } from "./import-source-select-browser.component";
 

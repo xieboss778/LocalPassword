@@ -29,7 +29,7 @@ import { ToastComponent } from "./toast.component";
   ],
   imports: [ToastComponent],
 })
-export class BitwardenToastrComponent extends BaseToastrComponent {
+export class LocalPassToastrComponent extends BaseToastrComponent {
   constructor(toastrService: ToastrService, toastPackage: ToastPackage) {
     super(toastrService, toastPackage);
   }

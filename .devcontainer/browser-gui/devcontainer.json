@@ -1,7 +1,7 @@
 {
-  "name": "Bitwarden Clients (macOS / GitHub Codespaces)",
+  "name": "LocalPass Clients (macOS / GitHub Codespaces)",
   "dockerComposeFile": "../common/docker-compose.yml",
-  "service": "bitwarden_clients",
+  "service": "localpass_clients",
   "workspaceFolder": "/workspace",
   "features": {
     "ghcr.io/devcontainers/features/rust:1": {},

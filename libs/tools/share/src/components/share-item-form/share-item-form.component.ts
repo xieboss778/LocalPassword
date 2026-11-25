@@ -20,24 +20,24 @@ import {
 } from "@angular/forms";
 import { combineLatest, switchMap } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SendDeletionDatePreset } from "@bitwarden/common/tools/models/send-deletion-date-preset";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SendDeletionDatePreset } from "@localpass/common/tools/models/send-deletion-date-preset";
+import { CipherId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 import {
   AccordionComponent,
-  BitwardenIcon,
+  LocalPassIcon,
   ButtonModule,
   CheckboxModule,
   FormControlModule,
@@ -51,10 +51,10 @@ import {
   SelectModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
-import { SendPolicyService } from "@bitwarden/send-ui";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { LogService } from "@localpass/logging";
+import { SendPolicyService } from "@localpass/send-ui";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ShareLinkService } from "../../services/share-link.service";
 import type { ShareLink } from "../../services/share-link.service";
@@ -104,7 +104,7 @@ export class ShareItemFormComponent implements OnDestroy {
     () => this.collections().length > 0 || this.folder() != null,
   );
 
-  protected readonly cipherTypeIcon = computed<BitwardenIcon>(() => {
+  protected readonly cipherTypeIcon = computed<LocalPassIcon>(() => {
     const currentCipher = this.cipher();
     switch (currentCipher?.type) {
       case CipherType.Login:

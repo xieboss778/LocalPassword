@@ -1,4 +1,4 @@
-import { BitwardenIcon, ButtonType } from "@bitwarden/components";
+import { LocalPassIcon, ButtonType } from "@localpass/components";
 
 export type SubscriptionPricingCardDetails = {
   title: string;
@@ -11,7 +11,7 @@ export type SubscriptionPricingCardDetails = {
   button: {
     text: string;
     type: ButtonType;
-    icon?: { type: BitwardenIcon; position: "before" | "after" };
+    icon?: { type: LocalPassIcon; position: "before" | "after" };
   };
   features: string[];
 };

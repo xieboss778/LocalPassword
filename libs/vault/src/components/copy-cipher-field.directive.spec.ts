@@ -1,11 +1,11 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { BitIconButtonComponent, MenuItemComponent } from "@bitwarden/components";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { BitIconButtonComponent, MenuItemComponent } from "@localpass/components";
 
 import { CopyCipherFieldService } from "..";
 

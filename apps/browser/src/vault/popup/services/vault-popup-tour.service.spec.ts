@@ -3,15 +3,15 @@ import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
 import {
   ALL_ITEMS_SCOPE,
   CoachmarkService,
   VaultNavService,
   type VaultScope,
   VaultScopeType,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultPopupItemsService } from "./vault-popup-items.service";
 import { VaultPopupListTableFiltersService } from "./vault-popup-list-table-filters.service";

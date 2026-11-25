@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, firstValueFrom, map, of, throwError } from
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CipherDecryptionKeys, KeyService } from "@bitwarden/key-management";
+import { CipherDecryptionKeys, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncArrayBuffer,
@@ -11,9 +11,9 @@ import {
   EncString,
   LegacyCompatKeyService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { Measurement } from "@bitwarden/logging";
-import { CipherListView } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { Measurement } from "@localpass/logging";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
@@ -130,7 +130,7 @@ describe("Cipher Service", () => {
       resolvedOptions: jest.fn().mockReturnValue({}),
     } as any;
 
-    (window as any).bitwardenContainerService = new ContainerService(
+    (window as any).localpassContainerService = new ContainerService(
       keyService,
       encryptService,
       legacyCompatKeyService,

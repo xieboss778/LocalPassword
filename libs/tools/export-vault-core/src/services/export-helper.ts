@@ -21,7 +21,7 @@ export class ExportHelper {
       this.padNumber(now.getMinutes(), 2) +
       this.padNumber(now.getSeconds(), 2);
 
-    return "bitwarden" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + format;
+    return "localpass" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + format;
   }
 
   private static padNumber(num: number, width: number, padCharacter = "0"): string {

@@ -1,6 +1,6 @@
 import type { Observable } from "rxjs";
 
-import type { UserId } from "@bitwarden/common/types/guid";
+import type { UserId } from "@localpass/common/types/guid";
 
 import type { TabEdge } from "../types";
 

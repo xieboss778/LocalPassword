@@ -1,6 +1,6 @@
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { RestrictedCipherType } from "@bitwarden/common/vault/services/restricted-item-types.service";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { RestrictedCipherType } from "@localpass/common/vault/services/restricted-item-types.service";
 
 import { ImportDestinationRestriction } from "../models/import-destination";
 import { ImportResult } from "../models/import-result";

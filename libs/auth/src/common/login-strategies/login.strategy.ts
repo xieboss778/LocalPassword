@@ -1,39 +1,39 @@
 import { BehaviorSubject, filter, firstValueFrom, timeout, Observable } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { DeviceRequest } from "@bitwarden/common/auth/models/request/identity-token/device.request";
-import { PasswordTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/password-token.request";
-import { SsoTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/sso-token.request";
-import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
-import { UserApiTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/user-api-token.request";
-import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/webauthn-login-token.request";
-import { IdentityDeviceVerificationResponse } from "@bitwarden/common/auth/models/response/identity-device-verification.response";
-import { IdentitySsoRequiredResponse } from "@bitwarden/common/auth/models/response/identity-sso-required.response";
-import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
-import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
-import { TwoFactorService } from "@bitwarden/common/auth/two-factor";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { DeviceRequest } from "@localpass/common/auth/models/request/identity-token/device.request";
+import { PasswordTokenRequest } from "@localpass/common/auth/models/request/identity-token/password-token.request";
+import { SsoTokenRequest } from "@localpass/common/auth/models/request/identity-token/sso-token.request";
+import { TokenTwoFactorRequest } from "@localpass/common/auth/models/request/identity-token/token-two-factor.request";
+import { UserApiTokenRequest } from "@localpass/common/auth/models/request/identity-token/user-api-token.request";
+import { WebAuthnLoginTokenRequest } from "@localpass/common/auth/models/request/identity-token/webauthn-login-token.request";
+import { IdentityDeviceVerificationResponse } from "@localpass/common/auth/models/response/identity-device-verification.response";
+import { IdentitySsoRequiredResponse } from "@localpass/common/auth/models/response/identity-sso-required.response";
+import { IdentityTokenResponse } from "@localpass/common/auth/models/response/identity-token.response";
+import { IdentityTwoFactorResponse } from "@localpass/common/auth/models/response/identity-two-factor.response";
+import { TwoFactorService } from "@localpass/common/auth/two-factor";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import {
   VaultTimeoutAction,
   VaultTimeoutSettingsService,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService, KdfConfigService } from "@bitwarden/key-management";
+} from "@localpass/common/key-management/vault-timeout";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
+import { KeyService, KdfConfigService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService } from "@bitwarden/legacy-crypto";
+import { EncryptService } from "@localpass/legacy-crypto";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import {
@@ -191,7 +191,7 @@ export abstract class LoginStrategy<TData extends LoginStrategyData = LoginStrat
       name: accountInformation.name,
       email: accountInformation.email ?? "",
       emailVerified: accountInformation.email_verified ?? false,
-      creationDate: undefined, // We don't get a creation date in the token. See https://bitwarden.atlassian.net/browse/PM-29551 for consolidation plans.
+      creationDate: undefined, // We don't get a creation date in the token. See https://localpass.atlassian.net/browse/PM-29551 for consolidation plans.
     });
 
     // User env must be seeded from currently set env before switching to the account
@@ -271,7 +271,7 @@ export abstract class LoginStrategy<TData extends LoginStrategyData = LoginStrat
 
     this.messagingService.send("loggedIn");
     // There is an import cycle between PasswordLoginStrategyData and LoginStrategy, which means this cast is necessary, which is solved by extracting the data classes.
-    // TODO: https://bitwarden.atlassian.net/browse/PM-27573
+    // TODO: https://localpass.atlassian.net/browse/PM-27573
     result.masterPassword = (this.cache.value as any)["masterPassword"] ?? null;
 
     return result;

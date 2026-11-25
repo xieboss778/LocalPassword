@@ -4,7 +4,7 @@ use std::sync::Arc;
 use napi_derive::napi;
 use serde::{Deserialize, Serialize};
 
-use crate::{BitwardenError, Callback, TimedCallback, UserVerification, WindowDetails};
+use crate::{LocalPassError, Callback, TimedCallback, UserVerification, WindowDetails};
 
 /// Request to assert a credential.
 #[cfg_attr(feature = "napi", napi(object, namespace = "autofill"))]
@@ -119,7 +119,7 @@ pub trait PreparePasskeyAssertionCallback: Send + Sync {
     fn on_complete(&self, credential: PasskeyAssertionResponse);
 
     /// Function to call if an error response is returned.
-    fn on_error(&self, error: BitwardenError);
+    fn on_error(&self, error: LocalPassError);
 }
 
 impl Callback for Arc<dyn PreparePasskeyAssertionCallback> {
@@ -129,7 +129,7 @@ impl Callback for Arc<dyn PreparePasskeyAssertionCallback> {
         Ok(())
     }
 
-    fn error(&self, error: BitwardenError) {
+    fn error(&self, error: LocalPassError) {
         PreparePasskeyAssertionCallback::on_error(self.as_ref(), error);
     }
 }
@@ -139,7 +139,7 @@ impl PreparePasskeyAssertionCallback for TimedCallback<PasskeyAssertionResponse>
         self.send(Ok(credential));
     }
 
-    fn on_error(&self, error: BitwardenError) {
+    fn on_error(&self, error: LocalPassError) {
         self.send(Err(error));
     }
 }

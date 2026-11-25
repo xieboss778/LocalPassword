@@ -2,8 +2,8 @@
 // In the fully migrated version, the typescript biometrics status is removed entirely.
 
 // eslint-disable-next-line no-restricted-imports
-import { BiometricsStatus } from "@bitwarden/key-management";
-import { BiometricsStatus as SdkBiometricsStatus } from "@bitwarden/sdk-internal";
+import { BiometricsStatus } from "@localpass/key-management";
+import { BiometricsStatus as SdkBiometricsStatus } from "@localpass/sdk-internal";
 
 export function toSdkBiometricsStatus(status: BiometricsStatus): SdkBiometricsStatus {
   switch (status) {

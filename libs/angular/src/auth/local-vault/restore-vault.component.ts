@@ -3,24 +3,24 @@ import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 import {
   AsyncActionsModule,
   ButtonModule,
   FormFieldModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
+import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
 import {
   ACCOUNT_OBJECT,
   CreateLocalAccountService,
   LocalAccountObject,
   S3Client,
   VaultBackupSyncService,
-} from "@bitwarden/local-vault";
+} from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
 
@@ -57,7 +57,7 @@ export class RestoreVaultComponent {
     bucket: ["", [Validators.required]],
     accessKeyId: ["", [Validators.required]],
     secretAccessKey: ["", [Validators.required]],
-    prefix: ["localpassword"],
+    prefix: ["localpass"],
     masterPassword: ["", [Validators.required]],
   });
 

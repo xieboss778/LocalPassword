@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NoCredentialsIcon } from "@bitwarden/assets/svg";
-import { StatusLockupComponent, SvgComponent } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NoCredentialsIcon } from "@localpass/assets/svg";
+import { StatusLockupComponent, SvgComponent } from "@localpass/components";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "bit-empty-credential-history",

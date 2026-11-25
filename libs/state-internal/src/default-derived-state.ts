@@ -1,6 +1,6 @@
 import { Observable, ReplaySubject, Subject, concatMap, merge, share, timer } from "rxjs";
 
-import { DeriveDefinition, DerivedState, DerivedStateDependencies } from "@bitwarden/state";
+import { DeriveDefinition, DerivedState, DerivedStateDependencies } from "@localpass/state";
 
 /**
  * Default derived state

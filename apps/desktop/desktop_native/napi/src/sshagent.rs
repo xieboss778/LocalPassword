@@ -13,7 +13,7 @@ pub mod sshagent {
         threadsafe_function::ThreadsafeFunction,
     };
     use ssh_agent::{
-        ApprovalError, ApprovalRequester, BitwardenSSHAgent, InMemoryEncryptedKeyStore,
+        ApprovalError, ApprovalRequester, LocalPassSSHAgent, InMemoryEncryptedKeyStore,
         SIGNamespace as SSHSIGNamespace, SignApprovalRequest as SSHSignApprovalRequest,
         UnparsedSSHKeyData,
     };
@@ -109,7 +109,7 @@ pub mod sshagent {
     /// Wrapper for Electron to be able to interface with the agent directly.
     #[napi]
     pub struct SSHAgentState {
-        agent: BitwardenSSHAgent<InMemoryEncryptedKeyStore, ElectronApprovalRequester>,
+        agent: LocalPassSSHAgent<InMemoryEncryptedKeyStore, ElectronApprovalRequester>,
     }
 
     /// Interface for the agent to request approval for ssh operations from Electron.
@@ -165,7 +165,7 @@ pub mod sshagent {
 
     #[napi]
     impl SSHAgentState {
-        /// Creates a new [`BitwardenSSHAgent`] and starts the server.
+        /// Creates a new [`LocalPassSSHAgent`] and starts the server.
         ///
         /// # Arguments
         ///
@@ -186,7 +186,7 @@ pub mod sshagent {
 
             let keystore = InMemoryEncryptedKeyStore::default();
 
-            let mut agent = ssh_agent::BitwardenSSHAgent::new(keystore, approval_handler);
+            let mut agent = ssh_agent::LocalPassSSHAgent::new(keystore, approval_handler);
 
             // TODO after PM-31827 is merged, can use simplified error conversion
             agent.start().map_err(|error| {

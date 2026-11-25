@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { UserKeyDefinition } from "./user-key-definition";
 import { ActiveUserState, SingleUserState } from "./user-state";

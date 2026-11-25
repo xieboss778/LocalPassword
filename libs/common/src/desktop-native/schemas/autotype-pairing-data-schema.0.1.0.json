@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/bitwarden/clients/refs/heads/main/libs/common/src/desktop-native/schemas/autotype-pairing-data-schema.0.1.0.json",
+  "$id": "https://raw.githubusercontent.com/localpass/clients/refs/heads/main/libs/common/src/desktop-native/schemas/autotype-pairing-data-schema.0.1.0.json",
   "title": "Autotype Pairing Data Schema",
-  "description": "The app pairing data saved for Bitwarden's Autotype implementation must adhere to this schema.",
+  "description": "The app pairing data saved for LocalPass's Autotype implementation must adhere to this schema.",
   "type": "object",
   "properties": {
     "metadata": {
@@ -58,7 +58,7 @@
       "type": "object",
       "properties": {
         "packagingType": {
-          "description": "The type of packaging of the Bitwarden client this pairing was made on. Informs the operating system and potential sandboxing requirements.",
+          "description": "The type of packaging of the LocalPass client this pairing was made on. Informs the operating system and potential sandboxing requirements.",
           "enum": ["windows-msix", "windows-exe"]
         }
       },

@@ -12,9 +12,9 @@ import {
 import {
   autotypeGaShortcutFromText,
   isAutotypeGaShortcut,
-} from "@bitwarden/common/desktop-native/models/autotype-ga-policy.data";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+} from "@localpass/common/desktop-native/models/autotype-ga-policy.data";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -23,8 +23,8 @@ import {
   DialogService,
   FormFieldModule,
   IconButtonModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 // Electron's "Super" is the Windows key on Windows and the Command key on macOS.
 const DISPLAY_KEY_NAMES: Record<string, string> = {
@@ -76,7 +76,7 @@ export function captureAutotypeShortcut(event: KeyboardEvent): string[] | null {
   return isAutotypeGaShortcut(keys) ? keys : null;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-autotype-shortcut",

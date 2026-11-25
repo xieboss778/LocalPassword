@@ -1,7 +1,7 @@
 import {
   DEFAULT_AUTOTYPE_GA_KEYBOARD_SHORTCUT,
   isAutotypeGaShortcut,
-} from "@bitwarden/common/desktop-native/models/autotype-ga-policy.data";
+} from "@localpass/common/desktop-native/models/autotype-ga-policy.data";
 
 /**
  Electron's representation of modifier keys

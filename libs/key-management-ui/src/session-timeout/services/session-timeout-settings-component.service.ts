@@ -1,21 +1,21 @@
 import { combineLatest, concatMap, defer, map, Observable } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { getFirstPolicy } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { getFirstPolicy } from "@localpass/common/admin-console/services/policy/default-policy.service";
 import {
   MaximumSessionTimeoutPolicyData,
   SessionTimeoutTypeService,
-} from "@bitwarden/common/key-management/session-timeout";
+} from "@localpass/common/key-management/session-timeout";
 import {
   isVaultTimeoutTypeNumeric,
   VaultTimeout,
   VaultTimeoutOption,
   VaultTimeoutNumberType,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/user-core";
 
 export class SessionTimeoutSettingsComponentService {
   private readonly availableTimeoutOptions$: Observable<VaultTimeoutOption[]>;

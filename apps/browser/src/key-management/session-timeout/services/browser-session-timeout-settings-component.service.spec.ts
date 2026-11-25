@@ -1,13 +1,13 @@
 import { mock } from "jest-mock-extended";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { SessionTimeoutTypeService } from "@bitwarden/common/key-management/session-timeout";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { SessionTimeoutTypeService } from "@localpass/common/key-management/session-timeout";
 import {
   VaultTimeoutNumberType,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 import { BrowserSessionTimeoutSettingsComponentService } from "./browser-session-timeout-settings-component.service";
 

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, importProvidersFrom, inject } from 
 import { Router, RouterModule } from "@angular/router";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { IconButtonModule } from "../icon-button";
 import { IconTileComponent } from "../icon-tile";

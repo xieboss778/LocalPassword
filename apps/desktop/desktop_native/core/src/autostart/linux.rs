@@ -9,7 +9,7 @@ mod impl_direct_write;
 #[path = "impl_portal.rs"]
 mod impl_portal;
 
-const FLATPAK_COMMAND: &str = "bitwarden.sh";
+const FLATPAK_COMMAND: &str = "localpass.sh";
 const PARAMETER_PASSTHROUGH: &str = "%U";
 
 /// Values supplied by the Electron main process that the autostart implementations need.

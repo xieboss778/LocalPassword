@@ -3,11 +3,11 @@
 import { Directive } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { Verification } from "@bitwarden/common/auth/types/verification";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ToastService } from "@bitwarden/components";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { Verification } from "@localpass/common/auth/types/verification";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ToastService } from "@localpass/components";
 
 import { ModalRef } from "../../components/modal/modal.ref";
 

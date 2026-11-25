@@ -1,8 +1,8 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, bufferCount, firstValueFrom, ObservedValueOf, of, Subject } from "rxjs";
 
-import { AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { Measurement } from "@bitwarden/logging";
+import { AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { Measurement } from "@localpass/logging";
 
 import { awaitAsync, mockAccountInfoWith } from "../../../../spec";
 import { Matrix } from "../../../../spec/matrix";
@@ -81,7 +81,7 @@ describe("NotificationsService", () => {
     accountService.accounts$ = accounts.asObservable();
 
     environment = new BehaviorSubject<ObservedValueOf<EnvironmentService["environment$"]>>({
-      getNotificationsUrl: () => "https://notifications.bitwarden.com",
+      getNotificationsUrl: () => "https://notifications.local.invalid",
     } as Environment);
 
     environmentService.environment$ = environment;

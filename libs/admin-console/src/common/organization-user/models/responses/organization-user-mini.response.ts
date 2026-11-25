@@ -1,8 +1,8 @@
 import {
   OrganizationUserStatusType,
   OrganizationUserType,
-} from "@bitwarden/common/admin-console/enums";
-import { BaseResponse } from "@bitwarden/common/models/response/base.response";
+} from "@localpass/common/admin-console/enums";
+import { BaseResponse } from "@localpass/common/models/response/base.response";
 
 export class OrganizationUserUserMiniResponse extends BaseResponse {
   id: string;

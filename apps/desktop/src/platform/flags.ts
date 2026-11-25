@@ -4,7 +4,7 @@ import {
   devFlagValue as baseDevFlagValue,
   SharedFlags,
   SharedDevFlags,
-} from "@bitwarden/common/platform/misc/flags";
+} from "@localpass/common/platform/misc/flags";
 
 // required to avoid linting errors when there are no flags
 export type Flags = {} & SharedFlags;

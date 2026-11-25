@@ -2,8 +2,8 @@ import { computed, inject, Injectable, Signal, signal, ViewContainerRef } from "
 import { toSignal } from "@angular/core/rxjs-interop";
 import { of } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 /**
  * Coordinates `bit-header` with a `bit-breadcrumbs` projected into it.

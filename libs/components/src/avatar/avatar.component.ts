@@ -7,7 +7,7 @@ import {
   input,
 } from "@angular/core";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { AriaDisableDirective } from "../a11y";
 import { ariaDisableElement } from "../utils";
@@ -51,7 +51,7 @@ const sizeClasses: Record<AvatarSize, string[]> = {
 
 /**
  * Palette avatar color options. Prefer using these over custom colors. These are chosen for
- * cohesion with the rest of our Bitwarden color palette and for accessibility color contrast.
+ * cohesion with the rest of our LocalPass color palette and for accessibility color contrast.
  * We reference color variables defined in tw-theme.css to ensure the avatar color handles light and
  * dark mode.
  */

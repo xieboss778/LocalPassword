@@ -1,10 +1,10 @@
 import { filter, map, Observable } from "rxjs";
 
-import { UriMatchStrategySetting } from "@bitwarden/common/models/domain/domain-service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { UriMatchStrategySetting } from "@localpass/common/models/domain/domain-service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { CipherUse, FillCipherPolicy, SaveCandidate } from "./abstractions/fill-cipher-policy";
 

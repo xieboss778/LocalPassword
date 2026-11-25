@@ -1,7 +1,7 @@
 import { inject, Injectable, WritableSignal } from "@angular/core";
 import { Jsonify } from "type-fest";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
 
 /**
  * The key for the email two factor auth component cache.

@@ -1,4 +1,4 @@
-import { ExtensionPageUrls } from "@bitwarden/common/vault/enums";
+import { ExtensionPageUrls } from "@localpass/common/vault/enums";
 
 type ContentMessageWindowData = {
   command: string;

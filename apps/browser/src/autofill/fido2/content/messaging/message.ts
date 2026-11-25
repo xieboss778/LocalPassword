@@ -3,7 +3,7 @@ import {
   CreateCredentialResult,
   AssertCredentialParams,
   AssertCredentialResult,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+} from "@localpass/common/platform/abstractions/fido2/fido2-client.service.abstraction";
 
 export const MessageTypes = {
   CredentialCreationRequest: 0,

@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, Inject } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   DIALOG_DATA,
   DialogRef,
@@ -13,7 +13,7 @@ import {
   FormFieldModule,
   IconButtonModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export type LastPassMultifactorPromptVariant = "otp" | "oob" | "yubikey";
 
@@ -21,7 +21,7 @@ type LastPassMultifactorPromptData = {
   variant: LastPassMultifactorPromptVariant;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "lastpass-multifactor-prompt.component.html",

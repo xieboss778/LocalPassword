@@ -40,7 +40,7 @@ export const BWI_TO_FIGMA: Record<string, string> = {
   "ellipsis-v": "more-vertical",
   "exclamation-triangle": "warning",
 
-  // Bitwarden Objects
+  // LocalPass Objects
   collection: "collection",
   "collection-shared": "collection", // Variant - both point to same SVG
   users: "groups",
@@ -55,7 +55,7 @@ export const BWI_TO_FIGMA: Record<string, string> = {
   // Misc
   premium: "diamond",
   "universal-access": "accessibility",
-  shield: "bitwarden-shield",
+  shield: "localpass-shield",
   bell: "notifications",
   brush: "palette",
   billing: "receipt",

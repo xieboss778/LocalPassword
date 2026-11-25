@@ -1,4 +1,4 @@
-import { SecureNoteType as SdkSecureNoteType } from "@bitwarden/sdk-internal";
+import { SecureNoteType as SdkSecureNoteType } from "@localpass/sdk-internal";
 
 import { UnionOfValues } from "../types/union-of-values";
 

@@ -1,27 +1,27 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 import {
   DomainSettingsService,
   DefaultDomainSettingsService,
-} from "@bitwarden/common/autofill/services/domain-settings.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+} from "@localpass/common/autofill/services/domain-settings.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   FakeStateProvider,
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { createChromeTabMock } from "../../autofill/spec/autofill-mocks";
 import { BrowserApi } from "../browser/browser-api";
@@ -34,7 +34,7 @@ import { BrowserScriptInjectorService } from "./browser-script-injector.service"
 
 const mockEquivalentDomains = [
   ["example.com", "exampleapp.com", "example.co.uk", "ejemplo.es"],
-  ["bitwarden.com", "bitwarden.co.uk", "sm-bitwarden.com"],
+  ["local.invalid", "localpass.co.uk", "sm-local.invalid"],
   ["example.co.uk", "exampleapp.co.uk"],
 ];
 
@@ -77,7 +77,7 @@ describe("ScriptInjectorService", () => {
     jest.spyOn(BrowserApi, "getTab").mockImplementation(async () => tabMock);
 
     const mockEnvironment = mock<Environment>();
-    mockEnvironment.getApiUrl.mockReturnValue("https://api.bitwarden.com");
+    mockEnvironment.getApiUrl.mockReturnValue("https://api.local.invalid");
     const environmentService = mock<EnvironmentService>();
     environmentService.environment$ = new BehaviorSubject(mockEnvironment);
 

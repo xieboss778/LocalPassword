@@ -4,20 +4,20 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Observable, of, Subject, throwError } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
-import { PremiumUpgradeNudgeOptions } from "@bitwarden/common/billing/abstractions/premium-upgrade-nudge.service";
-import { SubscriptionPricingServiceAbstraction } from "@bitwarden/common/billing/abstractions/subscription-pricing.service.abstraction";
+import { ClientType } from "@localpass/client-type";
+import { PremiumUpgradeNudgeOptions } from "@localpass/common/billing/abstractions/premium-upgrade-nudge.service";
+import { SubscriptionPricingServiceAbstraction } from "@localpass/common/billing/abstractions/subscription-pricing.service.abstraction";
 import {
   PersonalSubscriptionPricingTier,
   PersonalSubscriptionPricingTierIds,
   SubscriptionCadenceIds,
-} from "@bitwarden/common/billing/types/subscription-pricing-tier";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { ButtonComponent, DIALOG_DATA, DialogRef, DialogService } from "@bitwarden/components";
+} from "@localpass/common/billing/types/subscription-pricing-tier";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { ButtonComponent, DIALOG_DATA, DialogRef, DialogService } from "@localpass/components";
 
 import { SYSTEM_THEME_OBSERVABLE } from "../../../services/injection-tokens";
 

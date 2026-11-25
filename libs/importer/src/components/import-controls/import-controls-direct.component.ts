@@ -9,9 +9,9 @@ import {
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 
-import { BitSvg } from "@bitwarden/assets/svg";
-import { BadgeModule, IconTileComponent, SvgModule, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { BitSvg } from "@localpass/assets/svg";
+import { BadgeModule, IconTileComponent, SvgModule, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { UpgradeImportType } from "../../models";
 

@@ -1,26 +1,26 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import type { MasterPasswordSalt } from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import type { MasterPasswordSalt } from "@localpass/common/key-management/master-password/types/master-password.types";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   makeEncString,
   makeSymmetricCryptoKey,
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 import {
   UserKey,
   MasterKey,
   UserPublicKey,
   OrgKey,
   ProviderKey,
-} from "@bitwarden/common/types/key";
-import type { KdfConfigService, KeyService } from "@bitwarden/key-management";
-import { LogService } from "@bitwarden/logging";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+} from "@localpass/common/types/key";
+import type { KdfConfigService, KeyService } from "@localpass/key-management";
+import { LogService } from "@localpass/logging";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { EncryptService } from "../abstractions/encrypt.service";
@@ -110,7 +110,7 @@ describe("legacyCompatKeyService", () => {
 
       expect(keyGenerationService.deriveKeyFromMaterial).toHaveBeenCalledWith(
         mockRandomBytes,
-        "bitwarden-send",
+        "localpass-send",
         "send",
       );
     });

@@ -1,4 +1,4 @@
-import { EncString as SdkEncString } from "@bitwarden/sdk-internal";
+import { EncString as SdkEncString } from "@localpass/sdk-internal";
 
 type OrganizationUserBulkRequestEntry = {
   id: string;

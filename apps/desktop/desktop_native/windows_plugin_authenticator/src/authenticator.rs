@@ -31,7 +31,7 @@ use crate::ipc::{IpcClient, IpcConnector, RealIpcConnector};
 pub(super) fn run_server(clsid: Clsid) -> Result<WebAuthnPlugin, String> {
     tracing::debug!("Setting up COM server");
 
-    let authenticator_handler = BitwardenPluginAuthenticator {
+    let authenticator_handler = LocalPassPluginAuthenticator {
         connector: RealIpcConnector,
         client: Mutex::new(None),
         callbacks: Arc::new(Mutex::new(HashMap::new())),
@@ -45,7 +45,7 @@ pub(super) fn run_server(clsid: Clsid) -> Result<WebAuthnPlugin, String> {
     Ok(plugin)
 }
 
-struct BitwardenPluginAuthenticator<Conn: IpcConnector> {
+struct LocalPassPluginAuthenticator<Conn: IpcConnector> {
     connector: Conn,
     /// Active connection to the desktop app over IPC.
     client: Mutex<Option<Arc<Conn::Client>>>,
@@ -53,7 +53,7 @@ struct BitwardenPluginAuthenticator<Conn: IpcConnector> {
     callbacks: Arc<Mutex<HashMap<GUID, Sender<()>>>>,
 }
 
-impl<Conn: IpcConnector> BitwardenPluginAuthenticator<Conn> {
+impl<Conn: IpcConnector> LocalPassPluginAuthenticator<Conn> {
     fn get_client(&self) -> Result<Arc<Conn::Client>, String> {
         {
             let mut client = self.client.lock().expect("not poisoned");
@@ -117,7 +117,7 @@ impl<Conn: IpcConnector> BitwardenPluginAuthenticator<Conn> {
     }
 }
 
-impl<C: IpcConnector> PluginAuthenticator for BitwardenPluginAuthenticator<C> {
+impl<C: IpcConnector> PluginAuthenticator for LocalPassPluginAuthenticator<C> {
     fn make_credential(
         &self,
         request: PluginMakeCredentialRequest,
@@ -498,8 +498,8 @@ mod tests {
     // Helpers
     // -----------------------------------------------------------------------
 
-    fn make_authenticator<C: IpcConnector>(connector: C) -> BitwardenPluginAuthenticator<C> {
-        BitwardenPluginAuthenticator {
+    fn make_authenticator<C: IpcConnector>(connector: C) -> LocalPassPluginAuthenticator<C> {
+        LocalPassPluginAuthenticator {
             connector,
             client: Mutex::new(None),
             callbacks: Arc::new(Mutex::new(HashMap::new())),
@@ -507,7 +507,7 @@ mod tests {
     }
 
     fn prepopulate_client<C: IpcConnector>(
-        auth: &BitwardenPluginAuthenticator<C>,
+        auth: &LocalPassPluginAuthenticator<C>,
         client: C::Client,
     ) {
         *auth.client.lock().unwrap() = Some(Arc::new(client));

@@ -1,25 +1,25 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { Collection } from "@bitwarden/common/admin-console/models/collections";
-import { OrganizationExportResponse } from "@bitwarden/common/admin-console/models/response/organization-export.response";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherResponse } from "@bitwarden/common/vault/models/response/cipher.response";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+import { CollectionService } from "@localpass/admin-console/common";
+import { Collection } from "@localpass/common/admin-console/models/collections";
+import { OrganizationExportResponse } from "@localpass/common/admin-console/models/response/organization-export.response";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherResponse } from "@localpass/common/vault/models/response/cipher.response";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptService,
   EncString,
   KeyGenerationService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import { VaultExportApiService } from "./api/vault-export-api.service.abstraction";
 import { OrganizationVaultExportService } from "./org-vault-export.service";

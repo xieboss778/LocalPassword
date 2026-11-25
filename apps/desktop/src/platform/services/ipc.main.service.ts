@@ -1,15 +1,15 @@
 import { ipcMain } from "electron";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
 import {
   ForwardedIpcMessage,
   IpcMessage,
   DesktopIpcPeerClientType,
   IpcService,
   isIpcMessage,
-} from "@bitwarden/common/platform/ipc";
-import { ipc } from "@bitwarden/desktop-napi";
+} from "@localpass/common/platform/ipc";
+import { ipc } from "@localpass/desktop-napi";
 import {
   BroadcastGroup,
   BroadcastResolution,
@@ -20,7 +20,7 @@ import {
   ipcRegisterDiscoverHandler,
   OutgoingMessage,
   Source,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { NativeMessagingMain } from "../../main/native-messaging.main";
 import { WindowMain } from "../../main/window.main";
@@ -54,7 +54,7 @@ export class IpcMainService extends IpcService {
           const nativeHost = nativeMessagingHost(message.destination);
           if (nativeHost != null) {
             const ipcMessage = {
-              type: "bitwarden-ipc-message",
+              type: "localpass-ipc-message",
               message: {
                 destination: message.destination,
                 payload: [...message.payload],
@@ -68,7 +68,7 @@ export class IpcMainService extends IpcService {
 
           if (message.destination === "DesktopRenderer") {
             this.windowMain.win?.webContents.send("ipc.onMessage", {
-              type: "bitwarden-ipc-message",
+              type: "localpass-ipc-message",
               message: {
                 destination: message.destination,
                 payload: [...message.payload],
@@ -112,7 +112,7 @@ export class IpcMainService extends IpcService {
           // Forward to renderer process
           if (ipcMessage.message.destination === "DesktopRenderer") {
             this.windowMain.win?.webContents.send("ipc.onMessage", {
-              type: "forwarded-bitwarden-ipc-message",
+              type: "forwarded-localpass-ipc-message",
               message: ipcMessage.message,
               originalSource: this.sourceFor(nativeMessage.clientId),
             } satisfies ForwardedIpcMessage);
@@ -157,7 +157,7 @@ export class IpcMainService extends IpcService {
           const nativeHost = nativeMessagingHost(message.message.destination);
           if (nativeHost != null) {
             const forwardedMessage = {
-              type: "forwarded-bitwarden-ipc-message",
+              type: "forwarded-localpass-ipc-message",
               message: {
                 destination: message.message.destination,
                 payload: [...message.message.payload],

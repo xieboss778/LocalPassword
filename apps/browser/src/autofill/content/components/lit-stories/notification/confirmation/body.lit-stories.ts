@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import {
   NotificationConfirmationBody,
@@ -21,7 +21,7 @@ export default {
     error: "",
     buttonAria: "View",
     buttonText: "View",
-    confirmationMessage: "[item name] updated in Bitwarden.",
+    confirmationMessage: "[item name] updated in LocalPass.",
     messageDetails: "You can view it in your vault.",
     tasksAreComplete: false,
     handleOpenVault: () => window.alert("Link was clicked!"),

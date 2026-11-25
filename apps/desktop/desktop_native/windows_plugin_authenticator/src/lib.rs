@@ -9,7 +9,7 @@ use win_webauthn::{
 };
 
 pub const AAGUID: &str = "d548826e-79b4-db40-a3d8-11116f7e8349";
-pub const RPID: &str = "bitwarden.com";
+pub const RPID: &str = "localpass.com";
 
 /// Errors returned by [register].
 #[derive(Debug)]

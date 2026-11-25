@@ -306,7 +306,7 @@ export const KEY_CONNECTOR_DISK = new StateDefinition("keyConnector", "disk");
 export const SHARED_UNLOCK_SETTINGS_DISK = new StateDefinition("sharedUnlockSettings", "disk");
 export const SHARED_UNLOCK_DISK = new StateDefinition("sharedUnlock", "disk");
 
-// LocalPassword (local-only vault)
+// LocalPass (local-only vault)
 
 export const LOCAL_VAULT_DISK = new StateDefinition("localVault", "disk");
 export const LOCAL_VAULT_SYNC_DISK = new StateDefinition("localVaultSync", "disk");

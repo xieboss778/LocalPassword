@@ -18,7 +18,7 @@ import {
 import { toObservable } from "@angular/core/rxjs-interop";
 import { combineLatest, switchMap } from "rxjs";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { AutofocusFallbackDirective } from "../../a11y/autofocus-fallback.directive";
 import { BitIconButtonComponent } from "../../icon-button/icon-button.component";

@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { LockService, UnlockService } from "@bitwarden/unlock";
+import { LockService, UnlockService } from "@localpass/unlock";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../spec";
 import { AccountService } from "../../auth/abstractions/account.service";

@@ -8,8 +8,8 @@ import {
   SendAccessTokenInvalidRequestError,
   SendAccessTokenResponse,
   UnexpectedIdentityError,
-} from "@bitwarden/sdk-internal";
-import { FakeGlobalState, FakeGlobalStateProvider } from "@bitwarden/state-test-utils";
+} from "@localpass/sdk-internal";
+import { FakeGlobalState, FakeGlobalStateProvider } from "@localpass/state-test-utils";
 
 import {
   SendHashedPassword,

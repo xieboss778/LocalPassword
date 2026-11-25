@@ -1,15 +1,15 @@
 import { Observable } from "rxjs";
 
-import { UriMatchStrategySetting } from "@bitwarden/common/models/domain/domain-service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { UriMatchStrategySetting } from "@localpass/common/models/domain/domain-service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 /** Why Autofill looks up ciphers. A policy can give each use a different set of ciphers. */
 export const CipherUse = Object.freeze({
   /** The user picked a cipher or ran a command: inline menu, context menu, keyboard shortcut, popup fill. */
   UserFill: "userFill",
-  /** Bitwarden starts the fill: page-load fill, auto-submit, HTTP basic auth. */
+  /** LocalPass starts the fill: page-load fill, auto-submit, HTTP basic auth. */
   AutomaticFill: "automaticFill",
   /** An add or update prompt: match the submitted form, show the ciphers in the prompt. */
   SavePrompt: "savePrompt",

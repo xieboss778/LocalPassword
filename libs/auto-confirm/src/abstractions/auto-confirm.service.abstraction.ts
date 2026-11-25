@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { UserId } from "@bitwarden/user-core";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { UserId } from "@localpass/user-core";
 
 import { AutoConfirmState } from "../models/auto-confirm-state.model";
 

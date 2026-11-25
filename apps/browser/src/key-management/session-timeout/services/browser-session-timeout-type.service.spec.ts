@@ -3,8 +3,8 @@ import { mock } from "jest-mock-extended";
 import {
   VaultTimeoutNumberType,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/key-management/vault-timeout";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { BrowserSessionTimeoutTypeService } from "./browser-session-timeout-type.service";
 

@@ -3,9 +3,9 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, Observable, of } from "rxjs";
 
-import { AccountSwitcherService } from "@bitwarden/common/auth/account-switcher";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ToastService } from "@bitwarden/components";
+import { AccountSwitcherService } from "@localpass/common/auth/account-switcher";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ToastService } from "@localpass/components";
 
 import { maxAccountsGuardFn } from "./max-accounts.guard";
 

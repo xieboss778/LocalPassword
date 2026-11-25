@@ -4,23 +4,23 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of, Subject } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { FileUploadService } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { WhoCanAccessType } from "@bitwarden/common/tools/models/send-who-can-access-type";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService as SendApiServiceConcrete } from "@bitwarden/common/tools/send/services/send-api.service";
-import { SendApiService as SendApiServiceAbstraction } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { SendDecryptionService } from "@bitwarden/common/tools/send/services/send-decryption.service";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { FileUploadService } from "@localpass/common/platform/abstractions/file-upload/file-upload.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { WhoCanAccessType } from "@localpass/common/tools/models/send-who-can-access-type";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService as SendApiServiceConcrete } from "@localpass/common/tools/send/services/send-api.service";
+import { SendApiService as SendApiServiceAbstraction } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { SendDecryptionService } from "@localpass/common/tools/send/services/send-decryption.service";
 import {
   InternalSendService,
   SendService,
-} from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { DialogCloseRef, DialogRef, DialogService, ToastService } from "@bitwarden/components";
+} from "@localpass/common/tools/send/services/send.service.abstraction";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { DialogCloseRef, DialogRef, DialogService, ToastService } from "@localpass/components";
 
 import { SendFormConfig } from "../send-form/abstractions/send-form-config.service";
 import { SendFormService } from "../send-form/abstractions/send-form.service";

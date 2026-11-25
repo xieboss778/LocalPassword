@@ -4,13 +4,13 @@ import { By } from "@angular/platform-browser";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { BehaviorSubject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   RestrictedCipherType,
   RestrictedItemTypesService,
-} from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { DIALOG_DATA, DialogRef } from "@bitwarden/components";
+} from "@localpass/common/vault/services/restricted-item-types.service";
+import { DIALOG_DATA, DialogRef } from "@localpass/components";
 
 import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service";
 import { AddItemGridComponent } from "../add-item-grid/add-item-grid.component";

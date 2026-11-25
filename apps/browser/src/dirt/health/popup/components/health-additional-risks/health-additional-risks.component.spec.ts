@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { CipherHealthView } from "@bitwarden/common/dirt/models/view";
-import { RiskCategory } from "@bitwarden/common/dirt/vault-health/models";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { CipherHealthView } from "@localpass/common/dirt/models/view";
+import { RiskCategory } from "@localpass/common/dirt/vault-health/models";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { HealthAdditionalRisksComponent } from "./health-additional-risks.component";
 

@@ -17,12 +17,12 @@ import {
   tap,
 } from "rxjs";
 
-import { VaultHealthReportStatus } from "@bitwarden/common/dirt/vault-health/models";
-import { VaultHealthReportService } from "@bitwarden/common/dirt/vault-health/services";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+import { VaultHealthReportStatus } from "@localpass/common/dirt/vault-health/models";
+import { VaultHealthReportService } from "@localpass/common/dirt/vault-health/services";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 
 /**
  * A sync rewrites many ciphers across several ticks, and each rebuild can cost a

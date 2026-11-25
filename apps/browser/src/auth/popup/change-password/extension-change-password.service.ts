@@ -1,14 +1,14 @@
 import {
   DefaultChangePasswordService,
   ChangePasswordService,
-} from "@bitwarden/angular/auth/password-management/change-password";
-import BrowserPopupUtils from "@bitwarden/browser/platform/browser/browser-popup-utils";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { MasterPasswordApiService } from "@bitwarden/common/auth/abstractions/master-password-api.service.abstraction";
-import { OrganizationInviteService } from "@bitwarden/common/auth/organization-invite";
-import { MasterPasswordUnlockService } from "@bitwarden/common/key-management/master-password/abstractions/master-password-unlock.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/angular/auth/password-management/change-password";
+import BrowserPopupUtils from "@localpass/browser/platform/browser/browser-popup-utils";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordApiService } from "@localpass/common/auth/abstractions/master-password-api.service.abstraction";
+import { OrganizationInviteService } from "@localpass/common/auth/organization-invite";
+import { MasterPasswordUnlockService } from "@localpass/common/key-management/master-password/abstractions/master-password-unlock.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { KeyService } from "@localpass/key-management";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 
@@ -46,7 +46,7 @@ export class ExtensionChangePasswordService
    * the user is left on the change-password page after changing their password. See `switchAccount()`
    * in main.background.ts: when we send an "unlocked" message there is no subsequent routing, so we
    * must route to root from the ChangePasswordComponent. [Note: LogoutService behavior and routing will
-   * be investigated in https://bitwarden.atlassian.net/browse/PM-32660]
+   * be investigated in https://localpass.atlassian.net/browse/PM-32660]
    *
    * @returns true
    */

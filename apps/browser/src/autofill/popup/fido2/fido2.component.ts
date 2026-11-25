@@ -15,24 +15,24 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NoResults } from "@bitwarden/assets/svg";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Fido2Utils } from "@bitwarden/common/platform/services/fido2/fido2-utils";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NoResults } from "@localpass/assets/svg";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Fido2Utils } from "@localpass/common/platform/services/fido2/fido2-utils";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { SecureNoteType, CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 import {
   ButtonModule,
   DialogService,
@@ -42,8 +42,8 @@ import {
   SectionComponent,
   SectionHeaderComponent,
   SvgComponent,
-} from "@bitwarden/components";
-import { PasswordRepromptService } from "@bitwarden/vault";
+} from "@localpass/components";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { ZonedMessageListenerService } from "../../../platform/browser/zoned-message-listener.service";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
@@ -71,7 +71,7 @@ interface ViewData {
   fallbackSupported: boolean;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-fido2",
@@ -286,7 +286,7 @@ export class Fido2Component implements OnInit, OnDestroy {
 
     if (data?.type === BrowserFido2MessageTypes.PickCredentialRequest) {
       // TODO: Revert to use fido2 user verification service once user verification for passkeys is approved for production.
-      // PM-4577 - https://github.com/bitwarden/clients/pull/8746
+      // PM-4577 - https://github.com/xieboss778/LocalPassword/pull/8746
       const userVerified = await this.handleUserVerification(data.userVerification, this.cipher);
 
       this.send({
@@ -309,7 +309,7 @@ export class Fido2Component implements OnInit, OnDestroy {
       }
 
       // TODO: Revert to use fido2 user verification service once user verification for passkeys is approved for production.
-      // PM-4577 - https://github.com/bitwarden/clients/pull/8746
+      // PM-4577 - https://github.com/xieboss778/LocalPassword/pull/8746
       const userVerified = await this.handleUserVerification(data.userVerification, this.cipher);
 
       this.send({
@@ -329,7 +329,7 @@ export class Fido2Component implements OnInit, OnDestroy {
     if (data?.type === BrowserFido2MessageTypes.ConfirmNewCredentialRequest) {
       const name = data.credentialName || data.rpId;
       // TODO: Revert to check for user verification once user verification for passkeys is approved for production.
-      // PM-4577 - https://github.com/bitwarden/clients/pull/8746
+      // PM-4577 - https://github.com/xieboss778/LocalPassword/pull/8746
       await this.createNewCipher(name, data.userName);
 
       if (this.sessionId == null || this.cipher == null) {

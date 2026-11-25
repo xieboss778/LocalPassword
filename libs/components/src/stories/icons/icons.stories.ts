@@ -50,13 +50,13 @@ export const StatusIcons = {
   },
 };
 
-const bitwardenObjectsData = new TableDataSource<IconWithUsage>();
-bitwardenObjectsData.data = IconStoryData.bitwardenObjects;
+const localpassObjectsData = new TableDataSource<IconWithUsage>();
+localpassObjectsData.data = IconStoryData.localpassObjects;
 
-export const BitwardenObjects = {
+export const LocalPassObjects = {
   ...StatusIcons,
   args: {
-    dataSource: bitwardenObjectsData,
+    dataSource: localpassObjectsData,
   },
 };
 

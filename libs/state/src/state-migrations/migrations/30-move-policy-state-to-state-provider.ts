@@ -4,7 +4,7 @@ import { KeyDefinitionLike, MigrationHelper } from "../migration-helper";
 import { Migrator } from "../migrator";
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum PolicyType {
   TwoFactorAuthentication = 0, // Requires users to have 2fa enabled
   MasterPassword = 1, // Sets minimum requirements for master password complexity
@@ -12,8 +12,8 @@ enum PolicyType {
   SingleOrg = 3, // Allows users to only be apart of one organization
   RequireSso = 4, // Requires users to authenticate with SSO
   PersonalOwnership = 5, // Disables personal vault ownership for adding/cloning items
-  DisableSend = 6, // Disables the ability to create and edit Bitwarden Sends
-  SendOptions = 7, // Sets restrictions or defaults for Bitwarden Sends
+  DisableSend = 6, // Disables the ability to create and edit LocalPass Sends
+  SendOptions = 7, // Sets restrictions or defaults for LocalPass Sends
   ResetPassword = 8, // Allows orgs to use reset password : also can enable auto-enrollment during invite flow
   MaximumVaultTimeout = 9, // Sets the maximum allowed vault timeout
   DisablePersonalVaultExport = 10, // Disable personal vault export

@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, importProvidersFrom } from "@angula
 import { RouterModule } from "@angular/router";
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { ButtonModule } from "../button";
 import { FormFieldModule } from "../form-field";

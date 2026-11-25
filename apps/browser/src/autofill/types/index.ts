@@ -1,6 +1,6 @@
-import { VaultTimeout, VaultTimeoutAction } from "@bitwarden/common/key-management/vault-timeout";
-import { Region } from "@bitwarden/common/platform/abstractions/environment.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { VaultTimeout, VaultTimeoutAction } from "@localpass/common/key-management/vault-timeout";
+import { Region } from "@localpass/common/platform/abstractions/environment.service";
+import { CipherType } from "@localpass/common/vault/enums";
 
 export type UserSettings = {
   avatarColor: string | null;

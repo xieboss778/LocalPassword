@@ -1,5 +1,5 @@
-import { LogService } from "@bitwarden/logging";
-import { StateProvider } from "@bitwarden/state";
+import { LogService } from "@localpass/logging";
+import { StateProvider } from "@localpass/state";
 
 import { PolicyService } from "../admin-console/abstractions/policy/policy.service.abstraction";
 import { ConfigService } from "../platform/abstractions/config/config.service";

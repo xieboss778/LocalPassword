@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { SdkService } from "../../../platform/abstractions/sdk/sdk.service";

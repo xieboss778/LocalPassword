@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-/** Global config for the Bitwarden Design System */
+/** Global config for the LocalPass Design System */
 export abstract class CompactModeService {
   /**
    * When true, enables "compact mode".

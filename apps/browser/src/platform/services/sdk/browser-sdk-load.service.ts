@@ -1,7 +1,7 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { importSdkWasm } from "@bitwarden/common/platform/services/sdk/wasm-simd";
-import * as sdk from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { importSdkWasm } from "@localpass/common/platform/services/sdk/wasm-simd";
+import * as sdk from "@localpass/sdk-internal";
 
 import { BrowserApi } from "../../browser/browser-api";
 

@@ -4,7 +4,7 @@ import {
   SharedFoldersBreadcrumbsComponent,
   SharedFoldersComponent as VaultSharedFoldersComponent,
   VaultOrganizationUserNotificationsComponent,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { DesktopHeaderComponent } from "../../../app/layout/header";
 

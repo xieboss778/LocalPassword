@@ -1,17 +1,17 @@
 import * as papa from "papaparse";
 
-import { FlightRecorderEvent } from "@bitwarden/sdk-internal";
+import { FlightRecorderEvent } from "@localpass/sdk-internal";
 
 import { buildFlightRecorderCsvExport } from "./flight-recorder-export";
 
 describe("buildFlightRecorderCsvExport", () => {
   describe("fileName", () => {
-    it("uses the Bitwarden-diagnostic-report-YYYY-MM-DD.csv format", () => {
+    it("uses the LocalPass-diagnostic-report-YYYY-MM-DD.csv format", () => {
       const date = new Date(2026, 4, 4); // 2026-05-04 local time
 
       const { fileName } = buildFlightRecorderCsvExport([], date);
 
-      expect(fileName).toBe("Bitwarden-diagnostic-report-2026-05-04.csv");
+      expect(fileName).toBe("LocalPass-diagnostic-report-2026-05-04.csv");
     });
 
     it("zero-pads single-digit months and days", () => {
@@ -19,7 +19,7 @@ describe("buildFlightRecorderCsvExport", () => {
 
       const { fileName } = buildFlightRecorderCsvExport([], date);
 
-      expect(fileName).toBe("Bitwarden-diagnostic-report-2026-01-05.csv");
+      expect(fileName).toBe("LocalPass-diagnostic-report-2026-01-05.csv");
     });
 
     it("defaults to the current date when none is supplied", () => {
@@ -29,7 +29,7 @@ describe("buildFlightRecorderCsvExport", () => {
       try {
         const { fileName } = buildFlightRecorderCsvExport([]);
 
-        expect(fileName).toBe("Bitwarden-diagnostic-report-2026-06-15.csv");
+        expect(fileName).toBe("LocalPass-diagnostic-report-2026-06-15.csv");
       } finally {
         jest.useRealTimers();
       }
@@ -40,7 +40,7 @@ describe("buildFlightRecorderCsvExport", () => {
     const sampleEvent: FlightRecorderEvent = {
       timestamp: 1000,
       level: "INFO",
-      target: "bitwarden_core::client",
+      target: "localpass_core::client",
       message: "Client initialized",
       fields: {},
     };

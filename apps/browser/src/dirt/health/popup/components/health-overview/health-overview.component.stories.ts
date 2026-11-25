@@ -1,10 +1,10 @@
 import { provideRouter } from "@angular/router";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
-import { CipherHealthView } from "@bitwarden/common/dirt/models/view";
-import { VaultHealthReportView } from "@bitwarden/common/dirt/vault-health/models";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nMockService } from "@bitwarden/components";
+import { CipherHealthView } from "@localpass/common/dirt/models/view";
+import { VaultHealthReportView } from "@localpass/common/dirt/vault-health/models";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nMockService } from "@localpass/components";
 
 import { HealthOverviewComponent } from "./health-overview.component";
 

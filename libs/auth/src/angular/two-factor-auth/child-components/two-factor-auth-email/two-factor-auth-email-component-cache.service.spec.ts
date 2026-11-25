@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import {
   TwoFactorAuthEmailComponentCache,

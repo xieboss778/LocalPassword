@@ -1,4 +1,4 @@
-import { SendEncryptionType } from "@bitwarden/sdk-internal";
+import { SendEncryptionType } from "@localpass/sdk-internal";
 
 import { BaseResponse } from "../../../../models/response/base.response";
 

@@ -1,9 +1,9 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { FieldType, SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { FieldType, SecureNoteType, CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 
 import { ImportResult } from "../../models/import-result";
 import { BaseImporter } from "../base-importer";

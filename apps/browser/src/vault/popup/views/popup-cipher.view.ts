@@ -1,7 +1,7 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherListView } from "@localpass/sdk-internal";
 
 interface CommonPopupCipherView {
   collections?: CollectionView[];

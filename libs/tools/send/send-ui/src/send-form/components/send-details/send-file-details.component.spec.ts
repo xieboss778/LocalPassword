@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MAX_SDK_FILE_SEND_SIZE_BYTES } from "@bitwarden/common/tools/send/services/send-api.service";
-import { ToastService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MAX_SDK_FILE_SEND_SIZE_BYTES } from "@localpass/common/tools/send/services/send-api.service";
+import { ToastService } from "@localpass/components";
 
 import { SendFormService } from "../../abstractions/send-form.service";
 

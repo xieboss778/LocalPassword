@@ -1,17 +1,17 @@
 import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
-import { OutgoingMessage } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { IpcService } from "@localpass/common/platform/ipc";
+import { OutgoingMessage } from "@localpass/sdk-internal";
 
 import { IpcRendererService } from "./ipc-renderer.service";
 
 /** The `send` the service hands to the SDK's communication backend. */
 let backendSend: (message: OutgoingMessage) => Promise<void>;
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   IpcCommunicationBackend: jest.fn().mockImplementation((sender) => {
     backendSend = sender.send;
     return {};
@@ -21,7 +21,7 @@ jest.mock("@bitwarden/sdk-internal", () => ({
   IncomingMessage: jest.fn(),
 }));
 
-jest.mock("@bitwarden/common/platform/abstractions/sdk/sdk-load.service", () => ({
+jest.mock("@localpass/common/platform/abstractions/sdk/sdk-load.service", () => ({
   SdkLoadService: { Ready: Promise.resolve() },
 }));
 
@@ -64,7 +64,7 @@ describe("IpcRendererService", () => {
     ["the main process", "DesktopMain"],
   ])("forwards messages for %s to the main process", async (_, destination) => {
     expect(await sendTo(destination)).toEqual({
-      type: "bitwarden-ipc-message",
+      type: "localpass-ipc-message",
       message: { destination, payload: [1], topic: "topic" },
     });
   });

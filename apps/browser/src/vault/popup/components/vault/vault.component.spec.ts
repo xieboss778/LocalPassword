@@ -7,36 +7,36 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Observable, Subject, of } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { PremiumUpgradeDialogComponent } from "@bitwarden/angular/billing/components";
-import { NudgeType, NudgesService, PremiumUpsellService } from "@bitwarden/angular/vault";
+import { CollectionService } from "@localpass/admin-console/common";
+import { PremiumUpgradeDialogComponent } from "@localpass/angular/billing/components";
+import { NudgeType, NudgesService, PremiumUpsellService } from "@localpass/angular/vault";
 import {
   AutoConfirmExtensionSetupDialogComponent,
   AutomaticUserConfirmationService,
-} from "@bitwarden/auto-confirm/angular";
-import { CurrentAccountComponent } from "@bitwarden/browser/auth/popup/account-switching/current-account.component";
-import AutofillService from "@bitwarden/browser/autofill/services/autofill.service";
-import { PopOutComponent } from "@bitwarden/browser/platform/popup/components/pop-out.component";
-import { PopupHeaderComponent } from "@bitwarden/browser/platform/popup/layout/popup-header.component";
-import { PopupRouterCacheService } from "@bitwarden/browser/platform/popup/view-cache/popup-router-cache.service";
-import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ServerSettings } from "@bitwarden/common/platform/models/domain/server-settings";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { TaskService } from "@bitwarden/common/vault/tasks";
-import { DialogService } from "@bitwarden/components";
-import { StateProvider } from "@bitwarden/state";
+} from "@localpass/auto-confirm/angular";
+import { CurrentAccountComponent } from "@localpass/browser/auth/popup/account-switching/current-account.component";
+import AutofillService from "@localpass/browser/autofill/services/autofill.service";
+import { PopOutComponent } from "@localpass/browser/platform/popup/components/pop-out.component";
+import { PopupHeaderComponent } from "@localpass/browser/platform/popup/layout/popup-header.component";
+import { PopupRouterCacheService } from "@localpass/browser/platform/popup/view-cache/popup-router-cache.service";
+import { InternalOrganizationServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ServerSettings } from "@localpass/common/platform/models/domain/server-settings";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { TaskService } from "@localpass/common/vault/tasks";
+import { DialogService } from "@localpass/components";
+import { StateProvider } from "@localpass/state";
 import {
   ALL_ITEMS_SCOPE,
   DecryptionFailureDialogComponent,
@@ -49,7 +49,7 @@ import {
   VaultOrganizationUserNotificationsComponent,
   VaultScopeType,
   Vfo1TourCalloutService,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils";
@@ -203,7 +203,7 @@ const mockDialogRef = {
   close: jest.fn(),
   afterClosed: jest.fn().mockReturnValue(of(undefined)),
   closed: of(undefined),
-} as unknown as import("@bitwarden/components").DialogRef<any, any>;
+} as unknown as import("@localpass/components").DialogRef<any, any>;
 
 jest
   .spyOn(PremiumUpgradeDialogComponent, "open")

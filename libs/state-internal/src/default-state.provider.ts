@@ -12,8 +12,8 @@ import {
   SingleUserStateProvider,
   StateProvider,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 export class DefaultStateProvider implements StateProvider {
   activeUserId$: Observable<UserId>;

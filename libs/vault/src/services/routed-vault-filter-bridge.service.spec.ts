@@ -2,7 +2,7 @@ import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
 
 import { VaultFilterService } from "../abstractions/vault-filter.service";
 import { RoutedVaultFilterModel } from "../models/routed-vault-filter.model";

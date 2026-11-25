@@ -1,5 +1,5 @@
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 /**
  * Runs the client's master-password re-prompt for a cipher, returning whether the caller may

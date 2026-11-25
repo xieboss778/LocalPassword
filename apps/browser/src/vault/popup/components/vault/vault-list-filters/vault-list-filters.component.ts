@@ -3,13 +3,13 @@ import { Component } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { combineLatest, map, shareReplay } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ChipFilterComponent } from "@bitwarden/components";
-import { Vfo1I18nPipe, Vfo1IconPipe } from "@bitwarden/vault";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ChipFilterComponent } from "@localpass/components";
+import { Vfo1I18nPipe, Vfo1IconPipe } from "@localpass/vault";
 
 import { VaultPopupListFiltersService } from "../../../services/vault-popup-list-filters.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-list-filters",

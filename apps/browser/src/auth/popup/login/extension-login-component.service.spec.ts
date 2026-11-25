@@ -2,19 +2,19 @@ import { TestBed } from "@angular/core/testing";
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { DefaultLoginComponentService } from "@bitwarden/auth/angular";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { SsoUrlService } from "@bitwarden/common/auth/sso-login";
-import { ClientType } from "@bitwarden/common/enums";
+import { DefaultLoginComponentService } from "@localpass/auth/angular";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { SsoUrlService } from "@localpass/common/auth/sso-login";
+import { ClientType } from "@localpass/common/enums";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { BrowserPlatformUtilsService } from "../../../platform/services/platform-utils/browser-platform-utils.service";
 import { ExtensionAnonLayoutWrapperDataService } from "../../../popup/components/extension-anon-layout-wrapper/extension-anon-layout-wrapper-data.service";
@@ -26,7 +26,7 @@ jest.mock("../../../platform/flags", () => ({
 }));
 
 describe("ExtensionLoginComponentService", () => {
-  const baseUrl = "https://webvault.bitwarden.com";
+  const baseUrl = "https://webvault.local.invalid";
   let service: ExtensionLoginComponentService;
   let cryptoFunctionService: MockProxy<CryptoFunctionService>;
   let environmentService: MockProxy<EnvironmentService>;
@@ -85,7 +85,7 @@ describe("ExtensionLoginComponentService", () => {
 
   describe("redirectToSso", () => {
     it("launches SSO browser window", async () => {
-      const email = "test@bitwarden.com";
+      const email = "test@local.invalid";
       const state = "testState";
       const expectedState = "testState:clientId=browser";
       const codeVerifier = "testCodeVerifier";
@@ -107,7 +107,7 @@ describe("ExtensionLoginComponentService", () => {
 
   describe("redirectToSsoLoginWithOrganizationSsoIdentifier", () => {
     it("launches SSO browser window with correct Url", async () => {
-      const email = "test@bitwarden.com";
+      const email = "test@local.invalid";
       const state = "testState";
       const expectedState = "testState:clientId=browser";
       const codeVerifier = "testCodeVerifier";

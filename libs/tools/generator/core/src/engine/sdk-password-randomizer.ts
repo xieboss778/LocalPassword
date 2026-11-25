@@ -2,7 +2,7 @@ import {
   PasswordManagerClient,
   PassphraseGeneratorRequest,
   PasswordGeneratorRequest,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { Type } from "../metadata";
 import {

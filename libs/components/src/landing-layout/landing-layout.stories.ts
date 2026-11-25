@@ -1,9 +1,9 @@
 import { ActivatedRoute } from "@angular/router";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { ButtonModule } from "../button";
 import { I18nMockService } from "../utils";

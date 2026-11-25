@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { catchError, map, of } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
+import { ClientType } from "@localpass/client-type";
 import {
   PremiumUpgradeNudgeImage,
   PremiumUpgradeNudgeOptions,
-} from "@bitwarden/common/billing/abstractions/premium-upgrade-nudge.service";
-import { SubscriptionPricingServiceAbstraction } from "@bitwarden/common/billing/abstractions/subscription-pricing.service.abstraction";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/billing/abstractions/premium-upgrade-nudge.service";
+import { SubscriptionPricingServiceAbstraction } from "@localpass/common/billing/abstractions/subscription-pricing.service.abstraction";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   AsyncActionsModule,
   BadgeModule,
@@ -21,8 +21,8 @@ import {
   DialogService,
   IconModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { DarkImageSourceDirective } from "../../../directives/dark-image-source.directive";
 

@@ -1,4 +1,4 @@
-import { LoginView as SdkLoginView } from "@bitwarden/sdk-internal";
+import { LoginView as SdkLoginView } from "@localpass/sdk-internal";
 
 import { mockFromJson, mockFromSdk } from "../../../../spec";
 import { Login } from "../domain/login";
@@ -37,7 +37,7 @@ describe("LoginView", () => {
         username: "username",
         password: "password",
         passwordRevisionDate: "2025-01-01T01:06:40.441Z",
-        uris: [{ uri: "bitwarden.com" } as any],
+        uris: [{ uri: "local.invalid" } as any],
         totp: "totp",
         autofillOnPageLoad: true,
         httpAuthenticationEnabled: true,
@@ -49,7 +49,7 @@ describe("LoginView", () => {
         username: "username",
         password: "password",
         passwordRevisionDate: new Date("2025-01-01T01:06:40.441Z"),
-        uris: [expect.objectContaining({ uri: "bitwarden.com", __fromSdk: true })],
+        uris: [expect.objectContaining({ uri: "local.invalid", __fromSdk: true })],
         totp: "totp",
         autofillOnPageLoad: true,
         httpAuthenticationEnabled: true,

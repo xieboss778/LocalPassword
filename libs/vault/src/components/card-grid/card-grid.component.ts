@@ -16,10 +16,10 @@ import {
 } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   IconComponent,
   IconTileComponent,
@@ -28,8 +28,8 @@ import {
   TypographyModule,
   AccordionComponent,
   focusAfterRender,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { VaultScope } from "../../models/vault-scope";
 

@@ -12,20 +12,20 @@ import {
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { combineLatest, firstValueFrom, map, of, switchMap } from "rxjs";
 
-import { StopPropDirective } from "@bitwarden/angular/directives/stop-prop.directive";
-import { NoFolders, NoSendsIcon } from "@bitwarden/assets/svg";
-import { ClientType } from "@bitwarden/client-type";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { normalizeSearchQuery } from "@bitwarden/common/vault/services/search.service";
+import { StopPropDirective } from "@localpass/angular/directives/stop-prop.directive";
+import { NoFolders, NoSendsIcon } from "@localpass/assets/svg";
+import { ClientType } from "@localpass/client-type";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { normalizeSearchQuery } from "@localpass/common/vault/services/search.service";
 import {
   BitCellComponent,
   BitCellDefDirective,
@@ -55,9 +55,9 @@ import {
   CollapseOnScrollDirective,
   ScrollCollapseSourceDirective,
   ColumnName,
-} from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { LogService } from "@localpass/logging";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { NewSendDropdownV2Component } from "../new-send-dropdown-v2/new-send-dropdown-v2.component";
 import { removeSendAuthI18nKeys } from "../send-auth/remove-send-auth-i18n";

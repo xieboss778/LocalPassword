@@ -1,16 +1,16 @@
 import { mock } from "jest-mock-extended";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { OrganizationId } from "@localpass/common/types/guid";
 import {
   FieldType,
   SecureNoteType,
   CipherType,
   BankAccountType,
-} from "@bitwarden/common/vault/enums";
-import * as sdkInternal from "@bitwarden/sdk-internal";
+} from "@localpass/common/vault/enums";
+import * as sdkInternal from "@localpass/sdk-internal";
 
 import { ImportRecordErrorReason } from "../../models";
 import { assertCustomFieldsStructure } from "../spec-data/importer-test-utils";
@@ -42,7 +42,7 @@ import { WirelessRouterData } from "../spec-data/onepassword-1pux/wireless-route
 
 import { OnePassword1PuxImporter } from "./onepassword-1pux-importer";
 
-jest.mock("@bitwarden/sdk-internal");
+jest.mock("@localpass/sdk-internal");
 
 async function expectSuccessfulParse(importer: OnePassword1PuxImporter, data: string) {
   const result = await importer.parse(data);
@@ -70,7 +70,7 @@ describe("1Password 1Pux Importer", () => {
 
   // Fixes #20694: items tagged "state: archived" in 1pux exports were being
   // silently dropped, contradicting the help-center docs that state every 1pux
-  // entry is imported. They now land in Bitwarden with the archive flag set.
+  // entry is imported. They now land in LocalPass with the archive flag set.
   it("should import items with state 'archived' as archived ciphers", async () => {
     const importer = new OnePassword1PuxImporter(configService, mock<LogService>());
     // Deep clone to avoid mutating the shared LoginData fixture across tests.

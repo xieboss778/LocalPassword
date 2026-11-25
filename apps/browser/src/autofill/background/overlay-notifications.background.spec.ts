@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CLEAR_NOTIFICATION_LOGIN_DATA_DURATION } from "@bitwarden/common/autofill/constants";
-import { ServerConfig } from "@bitwarden/common/platform/abstractions/config/server-config";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { EnvironmentServerConfigData } from "@bitwarden/common/platform/models/data/server-config.data";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CLEAR_NOTIFICATION_LOGIN_DATA_DURATION } from "@localpass/common/autofill/constants";
+import { ServerConfig } from "@localpass/common/platform/abstractions/config/server-config";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { EnvironmentServerConfigData } from "@localpass/common/platform/models/data/server-config.data";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import AutofillField from "../models/autofill-field";
@@ -97,7 +97,7 @@ describe("OverlayNotificationsBackground", () => {
         });
 
         it("skips setting up listeners when the sender is the user's vault", async () => {
-          const vault = "https://vault.bitwarden.com";
+          const vault = "https://vault.local.invalid";
           const sender = mock<chrome.runtime.MessageSender>({ origin: vault });
           jest
             .spyOn(notificationBackground, "getActiveUserServerConfig")
@@ -385,7 +385,7 @@ describe("OverlayNotificationsBackground", () => {
       });
 
       it("security: ignores a submission from a frame on the user's vault", async () => {
-        const vault = "https://vault.bitwarden.com";
+        const vault = "https://vault.local.invalid";
         jest
           .spyOn(notificationBackground, "getActiveUserServerConfig")
           .mockResolvedValue(
@@ -424,7 +424,7 @@ describe("OverlayNotificationsBackground", () => {
       });
 
       it("security: ignores a submission from a sub-frame whose top-level page is the user's vault", async () => {
-        const vault = "https://vault.bitwarden.com";
+        const vault = "https://vault.local.invalid";
         jest
           .spyOn(notificationBackground, "getActiveUserServerConfig")
           .mockResolvedValue(

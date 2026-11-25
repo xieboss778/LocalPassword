@@ -4,7 +4,7 @@ import {
   AUTOFILL_SETTINGS_DISK,
   KeyDefinition,
   StateProvider,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 const ENABLE_DUCK_DUCK_GO_BROWSER_INTEGRATION = new KeyDefinition(
   AUTOFILL_SETTINGS_DISK,

@@ -1,5 +1,5 @@
-import { EventUploadService } from "@bitwarden/common/dirt/event-logs/abstractions/event-upload.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { EventUploadService } from "@localpass/common/dirt/event-logs/abstractions/event-upload.service";
+import { UserId } from "@localpass/common/types/guid";
 
 /**
  * No-op implementation of EventUploadService for the browser foreground (popup) context.

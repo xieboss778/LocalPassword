@@ -8,13 +8,13 @@
   properties therefore accepts data of every 1.x.y version.
 
   Handling this in an automated fashion is future work scoped in ticket:
-  https://bitwarden.atlassian.net/browse/PM-43969
+  https://localpass.atlassian.net/browse/PM-43969
 */
 
 import { LiteralUnion } from "type-fest";
 
 /**
- * The known types of packaging of the Bitwarden client a pairing was made on. Informs the
+ * The known types of packaging of the LocalPass client a pairing was made on. Informs the
  * operating system and potential sandboxing requirements.
  *
  * Later 1.x versions of the schema may add values, so pairing data can hold a `packagingType`
@@ -69,7 +69,7 @@ export type AutotypePairingData = {
   };
   clientData: {
     /**
-     * The type of packaging of the Bitwarden client this pairing was made on: one of
+     * The type of packaging of the LocalPass client this pairing was made on: one of
      * {@link AutotypePairingPackagingType}, or a value added by a later 1.x version. Never empty.
      *
      * A `===` check doesn't narrow this type. Use {@link isAutotypePairingPackagingType} to narrow

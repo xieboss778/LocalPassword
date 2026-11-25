@@ -1,10 +1,10 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Rc } from "@bitwarden/common/platform/misc/reference-counting/rc";
-import { UserId } from "@bitwarden/common/types/guid";
-import { PasswordManagerClient } from "@bitwarden/sdk-internal";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Rc } from "@localpass/common/platform/misc/reference-counting/rc";
+import { UserId } from "@localpass/common/types/guid";
+import { PasswordManagerClient } from "@localpass/sdk-internal";
 
 import { SdkCapability } from "./sdk";
 

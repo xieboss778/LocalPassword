@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { firstValueFrom, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ButtonComponent, CalloutComponent } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ButtonComponent, CalloutComponent } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { Vfo1TourCalloutService } from "../../services/vfo1-tour-callout.service";
 

@@ -1,30 +1,30 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { mockAccountInfoWith, FakeAccountService } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { BiometricsService, BiometricsCommands } from "@bitwarden/key-management";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { mockAccountInfoWith, FakeAccountService } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { BiometricsService, BiometricsCommands } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService, CsprngArray, EncryptService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService, CsprngArray, EncryptService } from "@localpass/legacy-crypto";
 
 import { BiometricMessageHandlerService } from "./biometric-message-handler.service";
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   PureCrypto: {
     make_aes256_cbc_hmac_key: jest.fn(),
   },
 }));
 
-jest.mock("@bitwarden/common/platform/abstractions/sdk/sdk-load.service", () => ({
+jest.mock("@localpass/common/platform/abstractions/sdk/sdk-load.service", () => ({
   SdkLoadService: { Ready: Promise.resolve() },
 }));
 
-const makeAes256CbcHmacKey = jest.requireMock("@bitwarden/sdk-internal").PureCrypto
+const makeAes256CbcHmacKey = jest.requireMock("@localpass/sdk-internal").PureCrypto
   .make_aes256_cbc_hmac_key as jest.Mock;
 
 const SomeUser = "SomeUser" as UserId;

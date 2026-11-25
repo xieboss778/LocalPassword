@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 import {
   BadgeModule,
   ButtonModule,
@@ -16,7 +16,7 @@ import {
   TableModule,
   TooltipDirective,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { removeSendAuthI18nKeys } from "../send-auth/remove-send-auth-i18n";
 import { getSendItemIcon } from "../send-item-icon";

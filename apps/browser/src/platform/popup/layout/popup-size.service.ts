@@ -5,7 +5,7 @@ import {
   GlobalStateProvider,
   KeyDefinition,
   POPUP_STYLE_DISK,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 import { BrowserApi } from "../../browser/browser-api";
 import BrowserPopupUtils, {

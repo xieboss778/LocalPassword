@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/organization-invite-link",
+  "name": "@localpass/organization-invite-link",
   "version": "0.0.1",
   "description": "Organization invite link feature library",
   "private": true,

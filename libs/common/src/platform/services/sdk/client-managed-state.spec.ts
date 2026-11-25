@@ -1,6 +1,6 @@
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
+import { newGuid } from "@localpass/guid";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { UserId } from "../../../types/guid";

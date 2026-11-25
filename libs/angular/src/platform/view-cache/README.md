@@ -13,7 +13,7 @@ the extension context, but this introduces additional user actions and may leave
 (and unlocked) for longer than a user intends.
 
 In order to provide a better user experience, we have introduced two levels of persistence to the
-Bitwarden extension client:
+LocalPass extension client:
 
 - We persist the route history, allowing us to re-open the last route when the popup re-opens, and
 - We offer a service for teams to use to persist component-specific form data or state to survive a

@@ -1,13 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { booleanAttribute, ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   CollapseOnScrollDirective,
   IconModule,
   ScrollCollapseService,
   ScrollLayoutHostDirective,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 @Component({
   selector: "popup-page",

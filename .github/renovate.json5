@@ -1,6 +1,6 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["github>bitwarden/renovate-config"], // Extends our default configuration for pinned dependencies
+  extends: [], // Self-hosted: no shared upstream config
   enabledManagers: ["cargo", "github-actions", "npm", "custom.regex"],
   // Don't install dependencies to node_modules. It causes incomplete
   // lockfile updates, and CI already runs npm ci to assert builds
@@ -165,9 +165,9 @@
       matchPackageNames: [
         "@babel/core",
         "@babel/preset-env",
-        "@bitwarden/sdk-internal",
-        "@bitwarden/commercial-sdk-internal",
-        "@bitwarden/desktop-napi",
+        "@localpass/sdk-internal",
+        "@localpass/commercial-sdk-internal",
+        "@localpass/desktop-napi",
         "@electron/fuses",
         "@electron/notarize",
         "@electron/rebuild",
@@ -663,7 +663,7 @@
     "@types/koa-bodyparser",
     "bootstrap",
     "node-ipc",
-    "@bitwarden/sdk-internal",
-    "@bitwarden/commercial-sdk-internal",
+    "@localpass/sdk-internal",
+    "@localpass/commercial-sdk-internal",
   ],
 }

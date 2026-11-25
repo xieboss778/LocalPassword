@@ -4,7 +4,7 @@ import { firstValueFrom, map } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CreateCollectionRequest, UpdateCollectionRequest } from "@bitwarden/admin-console/common";
+import { CreateCollectionRequest, UpdateCollectionRequest } from "@localpass/admin-console/common";
 
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { OrganizationConnectionType } from "../admin-console/enums";
@@ -109,7 +109,7 @@ export const EventUploadBatchSize = 100;
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
  * api services. The `send` method is still allowed to be used within api services. For background
- * of this decision please read https://contributing.bitwarden.com/architecture/adr/refactor-api-service.
+ * of this decision please read https://contributing.local.invalid/architecture/adr/refactor-api-service.
  */
 export class ApiService implements ApiServiceAbstraction {
   private device: DeviceType;
@@ -1175,14 +1175,14 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   private async applyPlatformHeaders(headers: Headers): Promise<void> {
-    headers.set("Bitwarden-Client-Name", this.platformUtilsService.getClientType());
+    headers.set("LocalPass-Client-Name", this.platformUtilsService.getClientType());
     headers.set(
-      "Bitwarden-Client-Version",
+      "LocalPass-Client-Version",
       await this.platformUtilsService.getApplicationVersionNumber(),
     );
     const packageType = await this.platformUtilsService.packageType();
     if (packageType != null) {
-      headers.set("Bitwarden-Package-Type", packageType);
+      headers.set("LocalPass-Package-Type", packageType);
     }
   }
 
@@ -1619,7 +1619,7 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   /**
-   * Handle an error response from a request to the Bitwarden API.
+   * Handle an error response from a request to the LocalPass API.
    * If the request is made with an access token (aka the user is authenticated),
    * and we receive a 401 or 403 response, we will log the user out, as this indicates
    * that the access token used on the request is either expired or does not have the appropriate permissions.

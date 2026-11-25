@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { FlightRecorder } from "@bitwarden/logging";
+import { FlightRecorder } from "@localpass/logging";
 
 import { LoggingCapability } from "./logging";
 

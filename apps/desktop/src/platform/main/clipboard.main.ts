@@ -1,6 +1,6 @@
 import { app, ipcMain } from "electron";
 
-import { clipboards } from "@bitwarden/desktop-napi";
+import { clipboards } from "@localpass/desktop-napi";
 
 import { ClipboardWriteMessage } from "../types/clipboard";
 

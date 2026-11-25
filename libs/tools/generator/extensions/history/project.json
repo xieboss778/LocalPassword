@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/generator-history",
+  "name": "@localpass/generator-history",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tools/generator/extensions/history/src",
   "projectType": "library",

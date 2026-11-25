@@ -1,11 +1,11 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
 import {
   getFlatCollectionTree,
   getNestedCollectionTree,
-} from "@bitwarden/common/admin-console/utils/collection-utils";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/admin-console/utils/collection-utils";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { cipherInScope, VaultScope, VaultScopeType } from "../../models/vault-scope";
 import { sharedFolderName } from "../../utils/shared-folder-name";

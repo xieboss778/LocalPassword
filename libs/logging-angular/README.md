@@ -2,14 +2,14 @@
 
 Owned by: platform
 
-Angular wrapper for [`@bitwarden/logging`](../logging/README.md). Provides `FlightRecorderService`, an
+Angular wrapper for [`@localpass/logging`](../logging/README.md). Provides `FlightRecorderService`, an
 `@Injectable` subclass of `FlightRecorder` that wires SDK readiness automatically via
 `SdkLoadService.Ready`.
 
 ## Usage
 
 ```typescript
-import { FlightRecorderService } from "@bitwarden/logging-angular";
+import { FlightRecorderService } from "@localpass/logging-angular";
 
 @Component({/* ... */})
 export class MyComponent {
@@ -21,4 +21,4 @@ export class MyComponent {
 }
 ```
 
-See [`@bitwarden/logging`](../logging/README.md) for the full API surface inherited by this service.
+See [`@localpass/logging`](../logging/README.md) for the full API surface inherited by this service.

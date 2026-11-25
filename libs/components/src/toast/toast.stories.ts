@@ -4,14 +4,14 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 import { action } from "storybook/actions";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { ButtonModule } from "../button";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { ToastComponent } from "./toast.component";
-import { BitwardenToastrGlobalConfig, ToastModule } from "./toast.module";
+import { LocalPassToastrGlobalConfig, ToastModule } from "./toast.module";
 import { ToastOptions, ToastService } from "./toast.service";
 
 const toastServiceExampleTemplate = `
@@ -68,7 +68,7 @@ export default {
     variant: "info",
     progressWidth: 50,
     title: "",
-    message: "Hello Bitwarden!",
+    message: "Hello LocalPass!",
   },
   parameters: {
     design: {
@@ -132,9 +132,9 @@ export const Service: Story = {
   }),
   args: {
     title: "",
-    message: "Hello Bitwarden!",
+    message: "Hello LocalPass!",
     variant: "error",
-    timeout: BitwardenToastrGlobalConfig.timeOut,
+    timeout: LocalPassToastrGlobalConfig.timeOut,
   } as ToastOptions,
   parameters: {
     chromatic: { disableSnapshot: true },

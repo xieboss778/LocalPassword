@@ -1,7 +1,7 @@
 import { InputSignal, Type } from "@angular/core";
 
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 export type VaultRowIcon = Type<{ cipher: InputSignal<CipherViewLike | null> }>;
 

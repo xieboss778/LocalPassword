@@ -4,16 +4,16 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { AvatarModule, IconModule, ItemModule, type BitwardenIcon } from "@bitwarden/components";
-import { BiometricsService } from "@bitwarden/key-management";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { AvatarModule, IconModule, ItemModule, type LocalPassIcon } from "@localpass/components";
+import { BiometricsService } from "@localpass/key-management";
 
 import { AccountSwitcherService, AvailableAccount } from "./services/account-switcher.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "auth-account",
@@ -21,10 +21,10 @@ import { AccountSwitcherService, AvailableAccount } from "./services/account-swi
   imports: [CommonModule, JslibModule, AvatarModule, IconModule, ItemModule],
 })
 export class AccountComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() account: AvailableAccount;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() loading = new EventEmitter<boolean>();
 
@@ -60,7 +60,7 @@ export class AccountComponent {
     this.loading.emit(false);
   }
 
-  get status(): { text: string; icon: BitwardenIcon } {
+  get status(): { text: string; icon: LocalPassIcon } {
     if (this.account.isActive) {
       return { text: this.i18nService.t("active"), icon: "bwi-check-circle" };
     }

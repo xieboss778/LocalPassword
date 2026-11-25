@@ -79,56 +79,33 @@ export const USER_CLOUD_REGION_KEY = new UserKeyDefinition<CloudRegion>(
 );
 
 /**
- * The production regions available for selection.
+ * LocalPass is offline-only: there is no service to talk to.
  *
- * In the future we desire to load these urls from the config endpoint.
+ * Every URL resolves to the same reserved, non-resolvable host so that no code path can reach
+ * a real vendor endpoint, and the network layer rejects it before it leaves the machine. The
+ * region list is kept as a single configuration because `Region` is still part of the public
+ * state shape.
  */
+const OFFLINE_DOMAIN = "local.invalid";
+const OFFLINE_URL = `https://${OFFLINE_DOMAIN}`;
+
+const OFFLINE_URLS: Urls = {
+  base: null,
+  api: OFFLINE_URL,
+  identity: OFFLINE_URL,
+  icons: OFFLINE_URL,
+  webVault: OFFLINE_URL,
+  notifications: OFFLINE_URL,
+  events: OFFLINE_URL,
+  keyConnector: null,
+  send: OFFLINE_URL,
+  scim: OFFLINE_URL,
+};
+
 export const PRODUCTION_REGIONS: RegionConfig[] = [
-  {
-    key: Region.US,
-    domain: "bitwarden.com",
-    urls: {
-      base: null,
-      api: "https://api.bitwarden.com",
-      identity: "https://identity.bitwarden.com",
-      icons: "https://icons.bitwarden.net",
-      webVault: "https://vault.bitwarden.com",
-      notifications: "https://notifications.bitwarden.com",
-      events: "https://events.bitwarden.com",
-      scim: "https://scim.bitwarden.com",
-      send: "https://send.bitwarden.com",
-    },
-  },
-  {
-    key: Region.EU,
-    domain: "bitwarden.eu",
-    urls: {
-      base: null,
-      api: "https://api.bitwarden.eu",
-      identity: "https://identity.bitwarden.eu",
-      icons: "https://icons.bitwarden.eu",
-      webVault: "https://vault.bitwarden.eu",
-      notifications: "https://notifications.bitwarden.eu",
-      events: "https://events.bitwarden.eu",
-      scim: "https://scim.bitwarden.eu",
-      send: "https://vault.bitwarden.eu",
-    },
-  },
-  {
-    key: Region.Gov,
-    domain: "bitwarden-gov.com",
-    urls: {
-      base: null,
-      api: "https://api.bitwarden-gov.com",
-      identity: "https://identity.bitwarden-gov.com",
-      icons: "https://icons.bitwarden-gov.com",
-      webVault: "https://vault.bitwarden-gov.com",
-      notifications: "https://notifications.bitwarden-gov.com",
-      events: "https://events.bitwarden-gov.com",
-      scim: "https://scim.bitwarden-gov.com",
-      send: "https://send.bitwarden-gov.com",
-    },
-  },
+  { key: Region.US, domain: OFFLINE_DOMAIN, urls: { ...OFFLINE_URLS } },
+  { key: Region.EU, domain: OFFLINE_DOMAIN, urls: { ...OFFLINE_URLS } },
+  { key: Region.Gov, domain: OFFLINE_DOMAIN, urls: { ...OFFLINE_URLS } },
 ];
 
 /**
@@ -440,21 +417,10 @@ abstract class UrlEnvironment implements Environment {
 
   getSendUrl() {
     if (this.urls.send != null) {
-      // Bitwarden production US cloud environment uses a web page on a vanity url
-      // to redirect to the correct full send path
-      if (this.urls.send === "https://send.bitwarden.com") {
-        return this.urls.send + "/#";
-      }
-
-      // If using a custom send url with full send path, don't modify anything and return it
-      if (this.urls.send.endsWith("/#/send/")) {
-        return this.urls.send;
-      }
-
-      // If using a custom send url with just the domain, complete the send url path
-      return this.urls.send + "/#/send/";
+      // Offline builds only ever have the sentinel host; never rewrite it into a real path.
+      return this.urls.send;
     }
-    // This line is only reached by self-hosted environments (or lower Bitwarden environments)
+    // This line is only reached by self-hosted environments (or lower LocalPass environments)
     // that don't use a custom domain
     return this.getWebVaultUrl() + "/#/send/";
   }
@@ -500,7 +466,7 @@ export class CloudEnvironment extends UrlEnvironment {
   }
 
   /**
-   * Cloud always returns nice urls, i.e. bitwarden.com instead of vault.bitwarden.com.
+   * The single offline configuration has no vanity host to report.
    */
   getHostname() {
     return this.config.domain;

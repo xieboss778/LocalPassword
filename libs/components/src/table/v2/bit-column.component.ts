@@ -11,7 +11,7 @@ import {
   input,
 } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import type { SortDirection, SortFn } from "../table-data-source";
 

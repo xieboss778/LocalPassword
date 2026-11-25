@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, input } from "@angular/core";
 
-import { BackgroundLeftIllustration, BackgroundRightIllustration } from "@bitwarden/assets/svg";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { BackgroundLeftIllustration, BackgroundRightIllustration } from "@localpass/assets/svg";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { SvgModule } from "../svg";
 

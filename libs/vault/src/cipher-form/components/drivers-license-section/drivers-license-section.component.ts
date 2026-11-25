@@ -3,16 +3,16 @@ import { ChangeDetectionStrategy, Component, DestroyRef, input, OnInit } from "@
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DriversLicenseView } from "@bitwarden/common/vault/models/view/drivers-license.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DriversLicenseView } from "@localpass/common/vault/models/view/drivers-license.view";
 import {
   CardComponent,
   FormFieldModule,
   IconButtonModule,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormContainer } from "../../cipher-form-container";
 import { DateFieldGroupComponent } from "../date-field-group/date-field-group.component";

@@ -1,7 +1,7 @@
 //! Shared helpers for integration tests
 
 use ssh_agent::{
-    ApprovalError, ApprovalRequester, BitwardenSSHAgent, InMemoryEncryptedKeyStore, SSHKeyData,
+    ApprovalError, ApprovalRequester, LocalPassSSHAgent, InMemoryEncryptedKeyStore, SSHKeyData,
     SignApprovalRequest,
 };
 
@@ -85,7 +85,7 @@ pub fn init_tracing() {
 }
 
 pub fn always_approving_agent(
-) -> BitwardenSSHAgent<InMemoryEncryptedKeyStore, MockApprovalRequester> {
+) -> LocalPassSSHAgent<InMemoryEncryptedKeyStore, MockApprovalRequester> {
     let mut requester = MockApprovalRequester::new();
     requester
         .expect_request_sign_approval()
@@ -93,12 +93,12 @@ pub fn always_approving_agent(
     requester
         .expect_request_list_approval()
         .returning(|| Ok(true));
-    BitwardenSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester)
+    LocalPassSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester)
 }
 
 pub fn agent_with_keys(
     keys: Vec<SSHKeyData>,
-) -> BitwardenSSHAgent<InMemoryEncryptedKeyStore, MockApprovalRequester> {
+) -> LocalPassSSHAgent<InMemoryEncryptedKeyStore, MockApprovalRequester> {
     let agent = always_approving_agent();
     agent.replace(keys).expect("failed to replace test keys");
     agent
@@ -239,7 +239,7 @@ pub fn parse_sign_response_algorithm(response: &[u8]) -> String {
 }
 
 /// Creates an agent whose approval handler always denies sign requests.
-pub fn always_denying_agent() -> BitwardenSSHAgent<InMemoryEncryptedKeyStore, MockApprovalRequester>
+pub fn always_denying_agent() -> LocalPassSSHAgent<InMemoryEncryptedKeyStore, MockApprovalRequester>
 {
     let mut requester = MockApprovalRequester::new();
     requester
@@ -248,7 +248,7 @@ pub fn always_denying_agent() -> BitwardenSSHAgent<InMemoryEncryptedKeyStore, Mo
     requester
         .expect_request_list_approval()
         .returning(|| Ok(false));
-    BitwardenSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester)
+    LocalPassSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester)
 }
 
 /// Reads a single length-prefixed response frame from any async reader.

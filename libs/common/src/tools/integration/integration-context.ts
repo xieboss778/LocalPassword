@@ -116,7 +116,7 @@ export class IntegrationContext<Settings extends object> {
     return url.slice(0, options?.maxLength);
   }
 
-  /** look up localized text indicating Bitwarden requested the forwarding address.
+  /** look up localized text indicating LocalPass requested the forwarding address.
    *  @param request supplies information about the state of the extension site
    *  @param options optional parameters
    *  @param options.extractHostname when `true`, extracts the hostname from the website URL

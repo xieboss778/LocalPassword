@@ -3,12 +3,12 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { DeviceType } from "@bitwarden/common/enums";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CenterPositionStrategy, DialogService, ItemModule } from "@bitwarden/components";
-import { TroubleshootingDialogComponent } from "@bitwarden/logging-angular";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { DeviceType } from "@localpass/common/enums";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CenterPositionStrategy, DialogService, ItemModule } from "@localpass/components";
+import { TroubleshootingDialogComponent } from "@localpass/logging-angular";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
@@ -18,21 +18,21 @@ import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
 
 const RateUrls = {
   [DeviceType.ChromeExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
+    "https://chromewebstore.google.com/detail/localpass-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
   [DeviceType.FirefoxExtension]:
-    "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/#reviews",
+    "https://addons.mozilla.org/en-US/firefox/addon/localpass-password-manager/#reviews",
   [DeviceType.OperaExtension]:
-    "https://addons.opera.com/en/extensions/details/bitwarden-free-password-manager/#feedback-container",
+    "https://addons.opera.com/en/extensions/details/localpass-free-password-manager/#feedback-container",
   [DeviceType.EdgeExtension]:
     "https://microsoftedge.microsoft.com/addons/detail/jbkfoedolllekgbhcbcoahefnbanhhlh",
   [DeviceType.VivaldiExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
-  [DeviceType.SafariExtension]: "https://apps.apple.com/app/bitwarden/id1352778147",
+    "https://chromewebstore.google.com/detail/localpass-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
+  [DeviceType.SafariExtension]: "https://apps.apple.com/app/localpass/id1352778147",
   [DeviceType.DuckDuckGoExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
+    "https://chromewebstore.google.com/detail/localpass-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "about-page-v2.component.html",
@@ -71,7 +71,7 @@ export class AboutPageV2Component {
       acceptButtonText: { key: "continue" },
     });
     if (confirmed) {
-      await BrowserApi.createNewTab("https://bitwarden.com/help/");
+      await BrowserApi.createNewTab("https://github.com/xieboss778/LocalPass/tree/main/docs");
     }
   }
 

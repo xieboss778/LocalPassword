@@ -1,6 +1,6 @@
 import { Subject, firstValueFrom } from "rxjs";
 
-import { DeriveDefinition, StateDefinition } from "@bitwarden/state";
+import { DeriveDefinition, StateDefinition } from "@localpass/state";
 
 import { InlineDerivedState } from "./inline-derived-state";
 

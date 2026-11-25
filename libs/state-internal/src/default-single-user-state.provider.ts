@@ -1,14 +1,14 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 import {
   SingleUserState,
   SingleUserStateProvider,
   StateEventRegistrarService,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { StorageServiceProvider } from "@bitwarden/storage-core";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { StorageServiceProvider } from "@localpass/storage-core";
+import { UserId } from "@localpass/user-core";
 
 import { DefaultSingleUserState } from "./default-single-user-state";
 

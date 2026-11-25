@@ -8,7 +8,7 @@ import { setupAutofillInitDisconnectAction } from "../utils";
 import AutofillInit from "./autofill-init";
 
 (function (windowContext) {
-  if (!windowContext.bitwardenAutofillInit) {
+  if (!windowContext.localpassAutofillInit) {
     const domQueryService = new DomQueryService();
     const domElementVisibilityService = new DomElementVisibilityService();
     const inlineMenuFieldQualificationService = new InlineMenuFieldQualificationService();
@@ -23,7 +23,7 @@ import AutofillInit from "./autofill-init";
       overlayNotificationsContentService = new OverlayNotificationsContentService();
     }
 
-    windowContext.bitwardenAutofillInit = new AutofillInit(
+    windowContext.localpassAutofillInit = new AutofillInit(
       domQueryService,
       domElementVisibilityService,
       autofillOverlayContentService,
@@ -32,6 +32,6 @@ import AutofillInit from "./autofill-init";
     );
     setupAutofillInitDisconnectAction(windowContext);
 
-    windowContext.bitwardenAutofillInit.init();
+    windowContext.localpassAutofillInit.init();
   }
 })(window);

@@ -13,7 +13,7 @@ export type SharedDevFlags = {
   configRetrievalIntervalMs: number;
   showRiskInsightsDebug: boolean;
   fillAssistDevTools: boolean;
-  useBitwardenAutofillAttributes: boolean;
+  useLocalPassAutofillAttributes: boolean;
   /** Shows the cipher-level HTTP authentication controls */
   httpAuthenticationCipherControls: boolean;
   testPhishingUrls: string[];

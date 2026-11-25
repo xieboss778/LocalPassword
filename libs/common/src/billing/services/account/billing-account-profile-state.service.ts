@@ -1,6 +1,6 @@
 import { map, Observable } from "rxjs";
 
-import { BILLING_DISK, StateProvider, UserKeyDefinition } from "@bitwarden/state";
+import { BILLING_DISK, StateProvider, UserKeyDefinition } from "@localpass/state";
 
 import { UserId } from "../../../types/guid";
 import { BillingAccountProfile, BillingAccountProfileStateService } from "../../abstractions";

@@ -2,17 +2,17 @@
 // @ts-strict-ignore
 import { firstValueFrom, map, Observable, Subscription } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   DefaultTaskSchedulerService,
   ScheduledTaskName,
-} from "@bitwarden/common/platform/scheduling";
+} from "@localpass/common/platform/scheduling";
 import {
   TASK_SCHEDULER_DISK,
   GlobalState,
   KeyDefinition,
   StateProvider,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 import { BrowserApi } from "../../browser/browser-api";
 import {

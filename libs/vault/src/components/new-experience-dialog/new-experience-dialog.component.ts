@@ -10,11 +10,11 @@ import {
 } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DarkImageSourceDirective } from "@bitwarden/angular/directives/dark-image-source.directive";
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { DarkImageSourceDirective } from "@localpass/angular/directives/dark-image-source.directive";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   ButtonModule,
   DIALOG_DATA,
@@ -23,8 +23,8 @@ import {
   DialogService,
   IconButtonModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 export const NewExperienceDialogResult = {
   /** The user chose to explore the redesigned vault. */
@@ -46,7 +46,7 @@ export type NewExperienceDialogParams = {
   darkImgSrc: string;
 };
 
-export const NEW_EXPERIENCE_LEARN_MORE_URL = "https://bitwarden.com/blog/2026-design-update";
+export const NEW_EXPERIENCE_LEARN_MORE_URL = "https://local.invalid/blog/2026-design-update";
 
 /**
  * Announces the redesigned vault to users who created their account before the redesign shipped.

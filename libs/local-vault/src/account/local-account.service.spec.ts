@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
 
 import { IS_LOCAL_ACCOUNT, LocalAccountService } from "./local-account.service";
 

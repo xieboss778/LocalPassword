@@ -1,18 +1,18 @@
 import { app } from "electron";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { passwords } from "@bitwarden/desktop-napi";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { passwords } from "@localpass/desktop-napi";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import OsBiometricsServiceMac from "./os-biometrics-mac.service";
 
 jest.mock("electron", () => ({
   app: {
-    getName: jest.fn().mockReturnValue("Bitwarden"),
+    getName: jest.fn().mockReturnValue("LocalPass"),
   },
   systemPreferences: {
     canPromptTouchID: jest.fn(),
@@ -20,7 +20,7 @@ jest.mock("electron", () => ({
   },
 }));
 
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   biometrics: {
     setBiometricSecret: jest.fn(),
     getBiometricSecret: jest.fn(),
@@ -56,7 +56,7 @@ describe("OsBiometricsServiceMac", () => {
   });
 
   describe("deleteBiometricKey", () => {
-    const serviceName = "Bitwarden_biometric";
+    const serviceName = "LocalPass_biometric";
     const keyName = "test-user-id_user_biometric";
 
     it("should delete biometric key successfully", async () => {
@@ -107,21 +107,21 @@ describe("OsBiometricsServiceMac", () => {
       });
     }
 
-    it("derives 'Bitwarden_biometric' on the stable channel", async () => {
-      await enrollUnderAppName("Bitwarden");
+    it("derives 'LocalPass_biometric' on the stable channel", async () => {
+      await enrollUnderAppName("LocalPass");
 
       expect(passwords.setPassword).toHaveBeenCalledWith(
-        "Bitwarden_biometric",
+        "LocalPass_biometric",
         keyName,
         key.toBase64(),
       );
     });
 
-    it("derives 'Bitwarden Beta_biometric' on the Beta channel", async () => {
-      await enrollUnderAppName("Bitwarden Beta");
+    it("derives 'LocalPass Beta_biometric' on the Beta channel", async () => {
+      await enrollUnderAppName("LocalPass Beta");
 
       expect(passwords.setPassword).toHaveBeenCalledWith(
-        "Bitwarden Beta_biometric",
+        "LocalPass Beta_biometric",
         keyName,
         key.toBase64(),
       );

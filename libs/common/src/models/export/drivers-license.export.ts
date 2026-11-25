@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { DriversLicense as DriversLicenseDomain } from "../../vault/models/domain/drivers-license";
 import { DriversLicenseView } from "../../vault/models/view/drivers-license.view";

@@ -4,8 +4,8 @@ import { By } from "@angular/platform-browser";
 import { MockProxy, mock } from "jest-mock-extended";
 import { Observable, Subject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateProvider } from "@bitwarden/state";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@localpass/state";
 
 import { ChipComponent, ChipGroupComponent } from "../../chips";
 import { DialogRef, DialogService } from "../../dialog";

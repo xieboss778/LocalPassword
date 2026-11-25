@@ -1,12 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "extraMetadata": {
-    "name": "localpassword"
+    "name": "localpass",
+    "productName": "LocalPass"
   },
-  "productName": "LocalPassword",
-  "appId": "com.localpassword.desktop",
+  "productName": "LocalPass",
+  "appId": "com.localpass.desktop",
   "buildDependenciesFromSource": true,
-  "copyright": "Copyright © 2026 LocalPassword",
+  "copyright": "Copyright © 2026 LocalPass contributors",
   "directories": {
     "buildResources": "resources",
     "output": "dist",
@@ -15,24 +16,25 @@
   "afterPack": "scripts/after-pack.js",
   "beforePack": "scripts/before-pack.js",
   "files": [
-    "!node_modules/@bitwarden/desktop-napi/scripts",
-    "!node_modules/@bitwarden/desktop-napi/src",
-    "!node_modules/@bitwarden/desktop-napi/Cargo.toml",
-    "!node_modules/@bitwarden/desktop-napi/build.rs",
-    "!node_modules/@bitwarden/desktop-napi/package.json"
+    "!node_modules/@localpass/desktop-napi/scripts",
+    "!node_modules/@localpass/desktop-napi/src",
+    "!node_modules/@localpass/desktop-napi/Cargo.toml",
+    "!node_modules/@localpass/desktop-napi/build.rs",
+    "!node_modules/@localpass/desktop-napi/package.json"
   ],
   "electronVersion": "45.2.3",
   "generateUpdatesFilesForAllChannels": true,
   "mac": {
+    "identity": null,
     "electronUpdaterCompatibility": ">=0.0.1",
     "category": "public.app-category.productivity",
     "darkModeSupport": true,
-    "gatekeeperAssess": false,
-    "hardenedRuntime": true,
-    "entitlements": "resources/entitlements.mac.plist",
-    "entitlementsInherit": "resources/entitlements.mac.inherit.plist",
+    
+    
+    
+    
     "extendInfo": {
-      "BitwardenAppGroupIdentifier": "com.localpassword.desktop",
+      "LocalPassAppGroupIdentifier": "com.localpass.desktop",
       "ITSAppUsesNonExemptEncryption": false,
       "CFBundleLocalizations": [
         "en",
@@ -65,7 +67,7 @@
       ],
       "CFBundleDevelopmentRegion": "en"
     },
-    "singleArchFiles": "node_modules/@bitwarden/desktop-napi/desktop_napi.darwin-*.node",
+    "singleArchFiles": "node_modules/@localpass/desktop-napi/desktop_napi.darwin-*.node",
     "x64ArchFiles": "{**/desktop_napi.darwin-*.node,**/bufferutil/**/darwin-*/*.node}",
     "extraFiles": [
       {
@@ -76,12 +78,6 @@
         "from": "desktop_native/dist/desktop_proxy.${platform}-${arch}",
         "to": "MacOS/desktop_proxy.inherit"
       }
-    ],
-    "signIgnore": [
-      "MacOS/desktop_proxy",
-      "MacOS/desktop_proxy.inherit",
-      "Contents/PlugIns/autofill-extension.appex",
-      "Frameworks/Electron Framework.framework/(Electron Framework|Libraries|Resources|Versions/Current)/.*"
     ],
     "target": ["dmg"]
   },
@@ -94,8 +90,8 @@
         "to": "desktop_proxy.exe"
       },
       {
-        "from": "desktop_native/dist/bitwarden_chromium_import_helper.win32-${arch}.exe",
-        "to": "bitwarden_chromium_import_helper.exe"
+        "from": "desktop_native/dist/localpass_chromium_import_helper.win32-${arch}.exe",
+        "to": "localpass_chromium_import_helper.exe"
       }
     ]
   },
@@ -115,7 +111,7 @@
     "target": ["deb", "AppImage"],
     "desktop": {
       "entry": {
-        "Name": "LocalPassword",
+        "Name": "LocalPass",
         "Type": "Application",
         "GenericName": "Password Manager"
       }
@@ -149,13 +145,13 @@
   "appx": {
     "artifactName": "${productName}-${version}-${arch}.${ext}",
     "backgroundColor": "#175DDC",
-    "applicationId": "bitwardendesktop",
-    "identityName": "8bitSolutionsLLC.bitwardendesktop",
-    "publisher": "CN=14D52771-DE3C-4886-B8BF-825BA7690418",
+    "applicationId": "localpassdesktop",
+    "identityName": "LocalPass.localpassdesktop",
+    "publisher": "CN=LOCALPASS-PUBLISHER-CN",
     "minVersion": "10.0.14393.0",
     "maxVersionTested": "10.0.26100.0",
     "customExtensionsPath": "../custom-appx-extensions.stable.xml",
-    "publisherDisplayName": "Bitwarden Inc",
+    "publisherDisplayName": "LocalPass",
     "languages": [
       "en-US",
       "af",
@@ -234,8 +230,8 @@
   },
   "protocols": [
     {
-      "name": "Bitwarden",
-      "schemes": ["bitwarden"]
+      "name": "LocalPass",
+      "schemes": ["localpass"]
     }
   ],
   "nsis": {

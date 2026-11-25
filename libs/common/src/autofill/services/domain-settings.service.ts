@@ -53,7 +53,7 @@ function fillAssistRulesCacheKey(apiUrl: string, effectiveUrl: string): string {
 }
 
 const SHOW_FAVICONS = new KeyDefinition(DOMAIN_SETTINGS_DISK, "showFavicons", {
-  // LocalPassword: icons are fetched from a remote icon service, so they stay off by default.
+  // LocalPass: icons are fetched from a remote icon service, so they stay off by default.
   deserializer: (value: boolean) => value ?? false,
 });
 
@@ -177,7 +177,7 @@ export abstract class DomainSettingsService {
 
   /**
    * The effective fill assist rules-feed URL, in priority order: org policy's
-   * custom URL (if it differs from the Bitwarden default) → server config's
+   * custom URL (if it differs from the LocalPass default) → server config's
    * URL. Emits `undefined` when neither source supplies a URL. When defined,
    * always ends with a trailing slash.
    */

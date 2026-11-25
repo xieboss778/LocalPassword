@@ -1,4 +1,4 @@
-import { PositionIdentifier } from "@bitwarden/components";
+import { PositionIdentifier } from "@localpass/components";
 
 /** Identifies a specific step in the coachmark tour */
 export type CoachmarkStepId =

@@ -1,5 +1,5 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { RestrictedCipherType } from "@bitwarden/common/vault/services/restricted-item-types.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { RestrictedCipherType } from "@localpass/common/vault/services/restricted-item-types.service";
 
 /**
  * The cipher types dropped from an import into a destination. Without an organization (My vault)

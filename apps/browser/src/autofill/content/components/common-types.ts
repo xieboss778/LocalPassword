@@ -1,7 +1,7 @@
 import { TemplateResult } from "lit";
 
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { Theme } from "@bitwarden/common/platform/enums";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 export type I18n = {
   [key: string]: string;

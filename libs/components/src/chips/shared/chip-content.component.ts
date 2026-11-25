@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, computed } from "@angular/core";
 
 import { IconComponent } from "../../icon";
-import { BitwardenIcon } from "../../shared/icon";
+import { LocalPassIcon } from "../../shared/icon";
 
 import { ChipSize } from "./base-chip.directive";
 
@@ -21,9 +21,9 @@ import { ChipSize } from "./base-chip.directive";
   },
 })
 export class ChipContentComponent {
-  readonly startIcon = input<BitwardenIcon>();
+  readonly startIcon = input<LocalPassIcon>();
 
-  readonly endIcon = input<BitwardenIcon>();
+  readonly endIcon = input<LocalPassIcon>();
 
   readonly size = input<ChipSize>("large");
 

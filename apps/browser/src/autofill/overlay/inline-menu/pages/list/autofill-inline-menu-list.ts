@@ -4,10 +4,10 @@ import "lit/polyfill-support.js";
 import { nothing, render, TemplateResult } from "lit";
 import { FocusableElement } from "tabbable";
 
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { EVENTS, UPDATE_PASSKEYS_HEADINGS_ON_SCROLL } from "@bitwarden/common/autofill/constants";
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { EVENTS, UPDATE_PASSKEYS_HEADINGS_ON_SCROLL } from "@localpass/common/autofill/constants";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
 
 import { InlineMenuCipherData } from "../../../../background/abstractions/overlay.background";
 import { ActionButton } from "../../../../content/components/buttons/action-button";
@@ -224,9 +224,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     if (this.useLitComponents) {
       this.renderLit(
         InlineMenuPrompt({
-          actionText: this.getTranslation("saveToBitwarden"),
+          actionText: this.getTranslation("saveToLocalPass"),
           i18n: {
-            actionAria: `${this.getTranslation("saveToBitwarden")}, ${this.getTranslation("opensInANewWindow")}`,
+            actionAria: `${this.getTranslation("saveToLocalPass")}, ${this.getTranslation("opensInANewWindow")}`,
           },
           theme: this.theme,
           handleAction: (event) => this.handleNewLoginVaultItemAction(event as MouseEvent),
@@ -248,9 +248,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     saveLoginButton.tabIndex = -1;
     saveLoginButton.setAttribute(
       "aria-label",
-      `${this.getTranslation("saveToBitwarden")}, ${this.getTranslation("opensInANewWindow")}`,
+      `${this.getTranslation("saveToLocalPass")}, ${this.getTranslation("opensInANewWindow")}`,
     );
-    saveLoginButton.textContent = this.getTranslation("saveToBitwarden");
+    saveLoginButton.textContent = this.getTranslation("saveToLocalPass");
 
     saveLoginButton.addEventListener(EVENTS.CLICK, this.handleNewLoginVaultItemAction);
     saveLoginButton.addEventListener(EVENTS.KEYUP, this.handleSaveLoginInlineMenuKeyUp);

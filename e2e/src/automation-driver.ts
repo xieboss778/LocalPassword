@@ -27,7 +27,7 @@ export function automationDriver<T>(page: Page, capability: string): RemoteCapab
       return (...args: unknown[]) =>
         page.evaluate(
           ([name, fn, fnArgs]) =>
-            (window as any).bitwardenAutomationDriver.get(name)[fn](...fnArgs),
+            (window as any).localpassAutomationDriver.get(name)[fn](...fnArgs),
           [capability, method, args] as const,
         );
     },

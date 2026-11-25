@@ -62,7 +62,7 @@ three are set. CI uses them.
 ## Seeded data
 
 Tests that need their own users, organizations or items create them through the server's
-SeederApi (`util/SeederApi` in bitwarden/server) instead of the shared accounts above.
+SeederApi (`util/SeederApi` in localpass/server) instead of the shared accounts above.
 Run it beside the local server:
 
 ```
@@ -131,7 +131,7 @@ The account needs an ED25519, an ECDSA and an RSA SSH key in its vault; each tes
 first of its type. It needs OpenSSH, server included. `sshd` runs unprivileged as you, so it
 only accepts logins as you, and its second hop runs in your login shell. It is looked up in
 `/usr/sbin`, Homebrew and `/usr/local/sbin`; `E2E_SSHD` overrides. The agent's socket is a
-temp path, never `~/.bitwarden-ssh-agent.sock`.
+temp path, never `~/.localpass-ssh-agent.sock`.
 
 ## CI
 

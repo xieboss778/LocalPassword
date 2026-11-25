@@ -1,4 +1,4 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 /** The five default avatar colors, in palette order. */
 export const AvatarDefaultColors = ["teal", "coral", "brand", "green", "purple"] as const;

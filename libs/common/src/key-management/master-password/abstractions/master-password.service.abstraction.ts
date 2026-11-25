@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfig } from "@bitwarden/legacy-crypto";
+import { KdfConfig } from "@localpass/legacy-crypto";
 
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
 import { UserId } from "../../../types/guid";

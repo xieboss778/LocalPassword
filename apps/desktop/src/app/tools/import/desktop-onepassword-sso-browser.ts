@@ -1,4 +1,4 @@
-import { OnePasswordSsoBrowser, OnePasswordSsoSignInClosedError } from "@bitwarden/importer-ui";
+import { OnePasswordSsoBrowser, OnePasswordSsoSignInClosedError } from "@localpass/importer-ui";
 
 /** Signs in to 1Password with its identity provider in a window of the main process. */
 export class DesktopOnePasswordSsoBrowser extends OnePasswordSsoBrowser {

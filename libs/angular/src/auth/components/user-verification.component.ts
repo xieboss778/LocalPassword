@@ -4,11 +4,11 @@ import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angu
 import { ControlValueAccessor, FormControl, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
-import { Verification } from "@bitwarden/common/auth/types/verification";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { VerificationType } from "@localpass/common/auth/enums/verification-type";
+import { Verification } from "@localpass/common/auth/types/verification";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 /**
  * Used for general-purpose user verification throughout the app.
@@ -23,11 +23,11 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
   selector: "app-user-verification",
   standalone: false,
 })
-// FIXME(https://bitwarden.atlassian.net/browse/PM-28232): Use Directive suffix
+// FIXME(https://localpass.atlassian.net/browse/PM-28232): Use Directive suffix
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class UserVerificationComponent implements ControlValueAccessor, OnInit, OnDestroy {
   private _invalidSecret = false;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   get invalidSecret() {
@@ -46,7 +46,7 @@ export class UserVerificationComponent implements ControlValueAccessor, OnInit, 
     }
     this.secret.updateValueAndValidity({ emitEvent: false });
   }
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() invalidSecretChange = new EventEmitter<boolean>();
 

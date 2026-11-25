@@ -1,13 +1,13 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from "@angular/router";
 
-import { BrowserApi } from "@bitwarden/browser/platform/browser/browser-api";
-import BrowserPopupUtils from "@bitwarden/browser/platform/browser/browser-popup-utils";
-import { BrowserPlatformUtilsService } from "@bitwarden/browser/platform/services/platform-utils/browser-platform-utils.service";
-import { DeviceType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import { BrowserApi } from "@localpass/browser/platform/browser/browser-api";
+import BrowserPopupUtils from "@localpass/browser/platform/browser/browser-popup-utils";
+import { BrowserPlatformUtilsService } from "@localpass/browser/platform/services/platform-utils/browser-platform-utils.service";
+import { DeviceType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 
 import { SendPopoutType } from "../utils/send-popout-window";
 

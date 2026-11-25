@@ -1,6 +1,6 @@
 import * as papa from "papaparse";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { ImporterLoginResult } from "../../services";
 

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { BitwardenLogo } from "@bitwarden/assets/svg";
-import { SvgModule, TypographyModule } from "@bitwarden/components";
+import { CollectionService } from "@localpass/admin-console/common";
+import { LocalPassLogo } from "@localpass/assets/svg";
+import { SvgModule, TypographyModule } from "@localpass/components";
 import {
   ImportOutcomePresenter,
   ImportShellProgressComponent,
   importShellProviders,
-} from "@bitwarden/importer-ui";
-import { I18nPipe, safeProvider } from "@bitwarden/ui-common";
+} from "@localpass/importer-ui";
+import { I18nPipe, safeProvider } from "@localpass/ui-common";
 
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
 
@@ -37,5 +37,5 @@ import { BrowserImportOutcomePresenter } from "./browser-import-outcome-presente
   ],
 })
 export class ImportShellBrowserComponent {
-  protected readonly logo = BitwardenLogo;
+  protected readonly logo = LocalPassLogo;
 }

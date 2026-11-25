@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, booleanAttribute, input } from "@angular/core";
 
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 /**
  * Declares an action that lives only in the bar's "Additional actions" menu (never in the
@@ -20,6 +20,6 @@ import { BitwardenIcon } from "../shared/icon";
 export class BulkAdditionalActionComponent {
   readonly action = input.required<() => void>();
   readonly label = input.required<string>();
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
   readonly disabled = input(false, { transform: booleanAttribute });
 }

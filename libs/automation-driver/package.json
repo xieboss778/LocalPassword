@@ -1,7 +1,7 @@
 {
-  "name": "@bitwarden/automation-driver",
+  "name": "@localpass/automation-driver",
   "version": "0.0.1",
-  "description": "Automation driver library for E2E test automation of Bitwarden clients",
+  "description": "Automation driver library for E2E test automation of LocalPass clients",
   "private": true,
   "type": "commonjs",
   "main": "index.js",

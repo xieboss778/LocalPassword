@@ -3,12 +3,12 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { NativeMessagingVersion } from "@bitwarden/common/enums";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogService } from "@bitwarden/components";
+import { NativeMessagingVersion } from "@localpass/common/enums";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { DialogService } from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
@@ -19,8 +19,8 @@ import {
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import { VerifyNativeMessagingDialogComponent } from "../app/components/verify-native-messaging-dialog.component";
 import { DesktopAutofillSettingsService } from "../autofill/services/desktop-autofill-settings.service";
@@ -245,9 +245,9 @@ export class DuckDuckGoMessageHandlerService {
   }
 
   /*
-   * Bitwarden type 2 (AES256-CBC-HMAC256) uses PKCS7 padding.
+   * LocalPass type 2 (AES256-CBC-HMAC256) uses PKCS7 padding.
    * DuckDuckGo does not use PKCS7 padding; and instead fills the last CBC block with null bytes.
-   * ref: https://github.com/duckduckgo/apple-browsers/blob/04d678b447869c3a640714718a466b36407db8b6/macOS/DuckDuckGo/PasswordManager/Bitwarden/Services/BWEncryption.m#L141
+   * ref: https://github.com/duckduckgo/apple-browsers/blob/04d678b447869c3a640714718a466b36407db8b6/macOS/DuckDuckGo/PasswordManager/LocalPass/Services/BWEncryption.m#L141
    *
    * This is incompatible which means the default encryptService cannot be used to decrypt the message,
    * a custom EncString decrypt operation is needed.

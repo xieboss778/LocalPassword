@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import { GlobalState, GlobalStateProvider } from "@bitwarden/common/platform/state";
+import { AuthenticationType } from "@localpass/common/auth/enums/authentication-type";
+import { GlobalState, GlobalStateProvider } from "@localpass/common/platform/state";
 
 import { LoginStrategyCacheService } from "../../abstractions/login-strategy-cache.service";
 

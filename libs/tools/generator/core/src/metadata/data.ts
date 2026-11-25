@@ -1,4 +1,4 @@
-import { deepFreeze } from "@bitwarden/common/tools/util";
+import { deepFreeze } from "@localpass/common/tools/util";
 
 /** algorithms for generating credentials */
 export const Algorithm = Object.freeze({
@@ -18,21 +18,21 @@ export const Algorithm = Object.freeze({
   plusAddress: "subaddress",
 } as const);
 
-/** categorizes credentials according to their use-case outside of Bitwarden */
+/** categorizes credentials according to their use-case outside of LocalPass */
 export const Type = Object.freeze({
   password: "password",
   username: "username",
   email: "email",
 } as const);
 
-/** categorizes settings according to their expected use-case within Bitwarden */
+/** categorizes settings according to their expected use-case within LocalPass */
 export const Profile = Object.freeze({
   /** account-level generator options. This is the default.
    *  @remarks these are the options displayed on the generator tab
    */
   account: "account",
 
-  // FIXME: consider adding a profile for bitwarden's master password
+  // FIXME: consider adding a profile for localpass's master password
 });
 
 /** Credential generation algorithms grouped by purpose. */

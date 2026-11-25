@@ -1,10 +1,10 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { PasswordAlgorithm } from "@bitwarden/generator-core";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { PasswordAlgorithm } from "@localpass/generator-core";
 
 /** Policy settings affecting password generator navigation */
 export type GeneratorNavigationPolicy = {

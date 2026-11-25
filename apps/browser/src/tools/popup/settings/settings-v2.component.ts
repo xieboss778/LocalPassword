@@ -11,15 +11,15 @@ import {
   switchMap,
 } from "rxjs";
 
-import { PremiumUpgradeDialogComponent } from "@bitwarden/angular/billing/components";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { UserId } from "@bitwarden/common/types/guid";
+import { PremiumUpgradeDialogComponent } from "@localpass/angular/billing/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { UserId } from "@localpass/common/types/guid";
 import {
   DialogService,
   ItemModule,
@@ -27,7 +27,7 @@ import {
   TypographyModule,
   CalloutModule,
   BerryComponent,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
@@ -65,9 +65,9 @@ export class SettingsV2Component {
     switchMap((account) => this.accountProfileStateService.hasPremiumFromAnySource$(account.id)),
   );
 
-  readonly showDownloadBitwardenNudge$: Observable<boolean> = this.authenticatedAccount$.pipe(
+  readonly showDownloadLocalPassNudge$: Observable<boolean> = this.authenticatedAccount$.pipe(
     switchMap((account) =>
-      this.nudgesService.showNudgeBadge$(NudgeType.DownloadBitwarden, account.id),
+      this.nudgesService.showNudgeBadge$(NudgeType.DownloadLocalPass, account.id),
     ),
   );
 

@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { CredentialType } from "@bitwarden/generator-core";
+import { UserId } from "@localpass/common/types/guid";
+import { CredentialType } from "@localpass/generator-core";
 
 import { GeneratedCredential } from "./generated-credential";
 

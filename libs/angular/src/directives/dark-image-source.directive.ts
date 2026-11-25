@@ -2,8 +2,8 @@ import { DestroyRef, Directive, ElementRef, inject, input, OnInit, signal } from
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { combineLatest, Observable } from "rxjs";
 
-import { Theme } from "@bitwarden/common/platform/enums";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { Theme } from "@localpass/common/platform/enums";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
 
 import { SYSTEM_THEME_OBSERVABLE } from "../services/injection-tokens";
 

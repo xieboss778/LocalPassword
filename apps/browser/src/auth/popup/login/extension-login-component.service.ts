@@ -3,14 +3,14 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DefaultLoginComponentService, LoginComponentService } from "@bitwarden/auth/angular";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { SsoUrlService } from "@bitwarden/common/auth/sso-login";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { DefaultLoginComponentService, LoginComponentService } from "@localpass/auth/angular";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { SsoUrlService } from "@localpass/common/auth/sso-login";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { ExtensionAnonLayoutWrapperDataService } from "../../../popup/components/extension-anon-layout-wrapper/extension-anon-layout-wrapper-data.service";
 

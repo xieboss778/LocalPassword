@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, Inject } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   DIALOG_DATA,
   ButtonModule,
@@ -12,14 +12,14 @@ import {
   LinkModule,
   DialogRef,
   A11yTitleDirective,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   CredentialGeneratorHistoryDialogComponent,
   GeneratorModule,
-} from "@bitwarden/generator-components";
-import { AlgorithmInfo } from "@bitwarden/generator-core";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { CipherFormGeneratorComponent } from "@bitwarden/vault";
+} from "@localpass/generator-components";
+import { AlgorithmInfo } from "@localpass/generator-core";
+import { I18nPipe } from "@localpass/ui-common";
+import { CipherFormGeneratorComponent } from "@localpass/vault";
 
 type CredentialGeneratorParams = {
   /** @deprecated Prefer use of dialogRef.closed to retrieve the generated value */
@@ -40,7 +40,7 @@ export const CredentialGeneratorDialogAction = {
 
 type CredentialGeneratorDialogAction = UnionOfValues<typeof CredentialGeneratorDialogAction>;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "credential-generator-dialog",

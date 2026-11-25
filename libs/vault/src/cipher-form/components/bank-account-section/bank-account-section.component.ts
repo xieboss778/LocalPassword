@@ -9,10 +9,10 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AbstractControl, FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { BankAccountType } from "@bitwarden/common/vault/enums/bank-account-type";
-import { BankAccountView } from "@bitwarden/common/vault/models/view/bank-account.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { BankAccountType } from "@localpass/common/vault/enums/bank-account-type";
+import { BankAccountView } from "@localpass/common/vault/models/view/bank-account.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   CardComponent,
   FormFieldModule,
@@ -20,8 +20,8 @@ import {
   SectionHeaderComponent,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CipherFormContainer } from "../../cipher-form-container";
 

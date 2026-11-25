@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Observable, combineLatest, map, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
 
 import { DefaultSingleNudgeService } from "../default-single-nudge.service";
 import { NudgeStatus, NudgeType } from "../nudges.service";

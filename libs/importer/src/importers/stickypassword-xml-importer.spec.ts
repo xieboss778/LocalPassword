@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { StickyPasswordXmlImporter } from "./stickypassword-xml-importer";
 

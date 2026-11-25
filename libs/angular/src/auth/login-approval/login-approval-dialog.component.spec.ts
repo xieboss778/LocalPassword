@@ -4,17 +4,17 @@ import { of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { AuthRequestServiceAbstraction } from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
-import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogRef, DIALOG_DATA, ToastService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+import { AuthRequestServiceAbstraction } from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { DevicesServiceAbstraction } from "@localpass/common/auth/abstractions/devices/devices.service.abstraction";
+import { AuthRequestResponse } from "@localpass/common/auth/models/response/auth-request.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogRef, DIALOG_DATA, ToastService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 import { LoginApprovalDialogComponent } from "./login-approval-dialog.component";
 
@@ -33,7 +33,7 @@ describe("LoginApprovalDialogComponent", () => {
   let validationService: MockProxy<ValidationService>;
 
   const testNotificationId = "test-notification-id";
-  const testEmail = "test@bitwarden.com";
+  const testEmail = "test@local.invalid";
   const testPublicKey = "test-public-key";
 
   beforeEach(async () => {

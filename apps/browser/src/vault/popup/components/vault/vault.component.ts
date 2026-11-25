@@ -30,31 +30,31 @@ import {
   withLatestFrom,
 } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { PremiumUpgradeDialogComponent } from "@bitwarden/angular/billing/components";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NudgesService, NudgeType, PremiumUpsellService } from "@bitwarden/angular/vault";
-import { DeactivatedOrg, NoResults, VaultOpen } from "@bitwarden/assets/svg";
+import { CollectionService } from "@localpass/admin-console/common";
+import { PremiumUpgradeDialogComponent } from "@localpass/angular/billing/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NudgesService, NudgeType, PremiumUpsellService } from "@localpass/angular/vault";
+import { DeactivatedOrg, NoResults, VaultOpen } from "@localpass/assets/svg";
 import {
   AutoConfirmExtensionSetupDialogComponent,
   AutoConfirmState,
   AutomaticUserConfirmationService,
-} from "@bitwarden/auto-confirm/angular";
-import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherId, CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
-import { skeletonLoadingDelay } from "@bitwarden/common/vault/utils/skeleton-loading.operator";
+} from "@localpass/auto-confirm/angular";
+import { InternalOrganizationServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherId, CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
+import { skeletonLoadingDelay } from "@localpass/common/vault/utils/skeleton-loading.operator";
 import {
   ButtonModule,
   DialogService,
@@ -64,7 +64,7 @@ import {
   ToastService,
   TypographyModule,
   CalloutModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   ALL_ITEMS_SCOPE,
   DecryptionFailureDialogComponent,
@@ -80,7 +80,7 @@ import {
   VaultNavService,
   VaultOrganizationUserNotificationsComponent,
   VAULT_RENDERED_MARK,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { CurrentAccountComponent } from "../../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
@@ -126,7 +126,7 @@ type VaultState = UnionOfValues<typeof VaultState>;
 const NEW_EXPERIENCE_LIGHT_IMG = "../../../../images/new-experience/new-experience.light.png";
 const NEW_EXPERIENCE_DARK_IMG = "../../../../images/new-experience/new-experience.dark.png";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault",

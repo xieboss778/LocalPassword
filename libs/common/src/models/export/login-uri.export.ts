@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { UriMatchStrategySetting } from "../../models/domain/domain-service";
 import { LoginUri as LoginUriDomain } from "../../vault/models/domain/login-uri";

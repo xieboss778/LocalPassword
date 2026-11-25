@@ -13,7 +13,7 @@ import {
 } from "@angular/core";
 
 import { PopoverElementProvider } from "../../popover";
-import { BitwardenIcon } from "../../shared/icon";
+import { LocalPassIcon } from "../../shared/icon";
 
 /** Used to generate unique IDs for each tab component */
 let nextTabId = 0;
@@ -33,8 +33,8 @@ export class TabComponent implements OnInit, PopoverElementProvider {
   readonly disabled = input(false);
   readonly textLabel = input("", { alias: "label" });
   readonly berryValue = input<number>();
-  readonly startIcon = input<BitwardenIcon>();
-  readonly endIcon = input<BitwardenIcon>();
+  readonly startIcon = input<LocalPassIcon>();
+  readonly endIcon = input<LocalPassIcon>();
 
   /** Popover anchor target. `TabGroupComponent` rebinds `nativeElement` to the rendered tab-list button. */
   readonly popoverAnchorElementRef: ElementRef<HTMLElement> = inject(ElementRef);

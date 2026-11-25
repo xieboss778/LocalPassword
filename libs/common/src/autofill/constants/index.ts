@@ -119,20 +119,20 @@ export const BrowserClientVendors = {
 
 export const BrowserShortcutsUris = {
   Chrome: "chrome://extensions/shortcuts",
-  Firefox: "https://bitwarden.com/help/keyboard-shortcuts",
+  Firefox: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   Opera: "opera://extensions/shortcuts",
   Edge: "edge://extensions/shortcuts",
   Vivaldi: "vivaldi://extensions/shortcuts",
-  Unknown: "https://bitwarden.com/help/keyboard-shortcuts",
+  Unknown: "https://github.com/xieboss778/LocalPass/tree/main/docs",
 } as const;
 
 export const DisablePasswordManagerUris = {
   Chrome: "chrome://password-manager/settings",
-  Firefox: "https://bitwarden.com/help/disable-browser-autofill/",
+  Firefox: "https://github.com/xieboss778/LocalPass/tree/main/docs",
   Opera: "opera://settings/autofill",
   Edge: "edge://settings/autofill/passwords/settings",
   Vivaldi: "vivaldi://settings/autofill",
-  Unknown: "https://bitwarden.com/help/disable-browser-autofill/",
+  Unknown: "https://github.com/xieboss778/LocalPass/tree/main/docs",
 } as const;
 
 export const ExtensionCommand = {
@@ -191,7 +191,7 @@ export const SHADOW_ROOT_CANDIDATE_NODE_NAMES = Object.freeze(
  * value to LEGACY_DEFAULT_FILL_ASSIST_RULES_URLS below — otherwise existing
  * "Default" policies silently flip to "Custom" pointing at the retired URL.
  */
-export const DEFAULT_FILL_ASSIST_RULES_URL = "https://fillassist.bitwarden.com";
+export const DEFAULT_FILL_ASSIST_RULES_URL = "https://local.invalid";
 
 /**
  * Historical values of DEFAULT_FILL_ASSIST_RULES_URL. Policies saved before

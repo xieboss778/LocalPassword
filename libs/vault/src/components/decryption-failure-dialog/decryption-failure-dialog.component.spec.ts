@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { DIALOG_DATA, DialogRef, ToastService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherId } from "@localpass/common/types/guid";
+import { DIALOG_DATA, DialogRef, ToastService } from "@localpass/components";
 
 import {
   DecryptionFailureDialogComponent,

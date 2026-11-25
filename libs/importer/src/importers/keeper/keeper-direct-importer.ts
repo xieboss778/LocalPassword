@@ -1,12 +1,12 @@
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FieldType } from "@bitwarden/common/vault/enums/field-type.enum";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { import_ssh_key, SshKeyView } from "@bitwarden/sdk-internal";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { import_ssh_key, SshKeyView } from "@localpass/sdk-internal";
 
 import { ImportResult } from "../../models";
 import { ImportRecordError, ImportRecordErrorReason } from "../../models/import-record-error";
@@ -118,7 +118,7 @@ export class KeeperDirectImporter extends BaseImporter {
         });
         break;
       case "sshKeys":
-        // In Bitwarden the ssh key is supposed to be valid.
+        // In LocalPass the ssh key is supposed to be valid.
         // So we only set the type if we can actually import the key.
         if (!this.importSshKey(item, cipher, consumedFieldIndices)) {
           // Otherwise, fall back to a secure note.

@@ -1,9 +1,9 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, RouteReuseStrategy, RouterModule, Routes } from "@angular/router";
 
-import { AuthenticationTimeoutComponent } from "@bitwarden/angular/auth/components/authentication-timeout.component";
-import { AuthRoute } from "@bitwarden/angular/auth/constants";
-import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/environment-selector/environment-selector.component";
+import { AuthenticationTimeoutComponent } from "@localpass/angular/auth/components/authentication-timeout.component";
+import { AuthRoute } from "@localpass/angular/auth/constants";
+import { EnvironmentSelectorComponent } from "@localpass/angular/auth/environment-selector/environment-selector.component";
 import {
   activeAuthGuard,
   authGuard,
@@ -13,24 +13,24 @@ import {
   redirectToVaultIfUnlockedGuard,
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
-} from "@bitwarden/angular/auth/guards";
+} from "@localpass/angular/auth/guards";
 import {
   CreateLocalVaultComponent,
   LocalVaultStartComponent,
   RestoreVaultComponent,
-} from "@bitwarden/angular/auth/local-vault";
-import { LoginViaWebAuthnComponent } from "@bitwarden/angular/auth/login-via-webauthn/login-via-webauthn.component";
-import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
-import { SetInitialPasswordComponent } from "@bitwarden/angular/auth/password-management/set-initial-password/set-initial-password.component";
+} from "@localpass/angular/auth/local-vault";
+import { LoginViaWebAuthnComponent } from "@localpass/angular/auth/login-via-webauthn/login-via-webauthn.component";
+import { ChangePasswordComponent } from "@localpass/angular/auth/password-management/change-password";
+import { SetInitialPasswordComponent } from "@localpass/angular/auth/password-management/set-initial-password/set-initial-password.component";
 import {
   RegistrationFinishComponent,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
   RegistrationStartSecondaryComponentData,
-} from "@bitwarden/angular/auth/registration";
-import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
-import { featureFlaggedRoute } from "@bitwarden/angular/platform/utils/feature-flagged-route";
-import { BackupSettingsComponent } from "@bitwarden/angular/tools/backup";
+} from "@localpass/angular/auth/registration";
+import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
+import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
+import { BackupSettingsComponent } from "@localpass/angular/tools/backup";
 import {
   DevicesIcon,
   ExpiredIcon,
@@ -39,7 +39,7 @@ import {
   VaultIcon,
   LockIcon,
   DomainIcon,
-} from "@bitwarden/assets/svg";
+} from "@localpass/assets/svg";
 import {
   LoginDecryptionOptionsComponent,
   LoginViaAuthRequestComponent,
@@ -48,18 +48,18 @@ import {
   SsoComponent,
   TwoFactorAuthComponent,
   TwoFactorAuthGuard,
-} from "@bitwarden/auth/angular";
-import { canAccessAutoConfirmSettings } from "@bitwarden/auto-confirm/angular";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { RestrictedCipherAction } from "@bitwarden/common/vault/utils/restricted-cipher-policy";
-import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/components";
-import { canActivateImportType, IMPORT_DESTINATION_ROUTE_PATH } from "@bitwarden/importer-ui";
+} from "@localpass/auth/angular";
+import { canAccessAutoConfirmSettings } from "@localpass/auto-confirm/angular";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { RestrictedCipherAction } from "@localpass/common/vault/utils/restricted-cipher-policy";
+import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@localpass/components";
+import { canActivateImportType, IMPORT_DESTINATION_ROUTE_PATH } from "@localpass/importer-ui";
 import {
   LockComponent,
   ConfirmKeyConnectorDomainComponent,
   RemovePasswordComponent,
-} from "@bitwarden/key-management-ui";
-import { MY_ITEMS_ROUTE, MY_ITEMS_ROUTE_DATA, vaultScopeGuard } from "@bitwarden/vault";
+} from "@localpass/key-management-ui";
+import { MY_ITEMS_ROUTE, MY_ITEMS_ROUTE_DATA, vaultScopeGuard } from "@localpass/vault";
 
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
 import { AuthExtensionRoute } from "../auth/popup/constants/auth-extension-route.constant";
@@ -126,9 +126,9 @@ import { restrictedCipherGuard } from "../vault/popup/guards/restricted-cipher.g
 import { AdminSettingsComponent } from "../vault/popup/settings/admin-settings.component";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { ArchiveComponent } from "../vault/popup/settings/archive.component";
-import { DownloadBitwardenComponent } from "../vault/popup/settings/download-bitwarden.component";
+import { DownloadLocalPassComponent } from "../vault/popup/settings/download-localpass.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
-import { MoreFromBitwardenPageComponent } from "../vault/popup/settings/more-from-bitwarden-page.component";
+import { MoreFromLocalPassPageComponent } from "../vault/popup/settings/more-from-localpass-page.component";
 import { TrashComponent } from "../vault/popup/settings/trash.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
@@ -362,7 +362,7 @@ const routes: Routes = [
     data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
-    // LocalPassword: importing Google Authenticator's migration export.
+    // LocalPass: importing Google Authenticator's migration export.
     path: "import-google-auth",
     component: GoogleAuthImportComponent,
     canActivate: [authGuard],
@@ -375,14 +375,14 @@ const routes: Routes = [
     data: { elevation: 2 } satisfies RouteDataProperties,
   },
   {
-    // LocalPassword: register a security key (PRF) as an unlock method.
+    // LocalPass: register a security key (PRF) as an unlock method.
     path: "security-key",
     component: SecurityKeyComponent,
     canActivate: [authGuard],
     data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
-    // LocalPassword: cloud backup settings for a local vault.
+    // LocalPass: cloud backup settings for a local vault.
     path: "backup-settings",
     component: BackupSettingsComponent,
     canActivate: [authGuard],
@@ -557,7 +557,7 @@ const routes: Routes = [
         } satisfies RouteDataProperties,
       },
       {
-        // LocalPassword: a vault is created on this device, so the login screen becomes the start
+        // LocalPass: a vault is created on this device, so the login screen becomes the start
         // screen. The route keeps its name so the existing guards and redirects keep working.
         path: AuthRoute.Login,
         canActivate: [unauthGuardFn(unauthRouteOverrides)],
@@ -736,7 +736,7 @@ const routes: Routes = [
            * unlocking, the user can be redirected back to the `/fido2?<queryParams>` URL.
            *
            * Also, this prevents a routing loop when using biometrics to unlock the vault in MV2 (Firefox),
-           * locking up the browser (https://bitwarden.atlassian.net/browse/PM-16116). This involves the
+           * locking up the browser (https://localpass.atlassian.net/browse/PM-16116). This involves the
            * `popup-router-cache.service` pushing the `lock` route to the history.
            */
           doNotSaveUrl: true,
@@ -797,14 +797,14 @@ const routes: Routes = [
     data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
-    path: "more-from-bitwarden",
-    component: MoreFromBitwardenPageComponent,
+    path: "more-from-localpass",
+    component: MoreFromLocalPassPageComponent,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
   },
   {
-    path: "download-bitwarden",
-    component: DownloadBitwardenComponent,
+    path: "download-localpass",
+    component: DownloadLocalPassComponent,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
   },

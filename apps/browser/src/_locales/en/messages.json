@@ -1,20 +1,20 @@
 {
   "appName": {
-    "message": "LocalPassword"
+    "message": "LocalPass"
   },
   "appLogoLabel": {
-    "message": "LocalPassword logo"
+    "message": "LocalPass logo"
   },
   "extName": {
-    "message": "LocalPassword",
+    "message": "LocalPass",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "LocalPassword Beta",
+    "message": "LocalPass Beta",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "LocalPassword keeps your passwords, passkeys and notes on this device. No servers, no accounts.",
+    "message": "LocalPass keeps your passwords, passkeys and notes on this device. No servers, no accounts.",
     "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
@@ -26,14 +26,14 @@
   "createAccount": {
     "message": "Create account"
   },
-  "welcomeToBitwarden": {
-    "message": "Welcome to Bitwarden"
+  "welcomeToLocalPass": {
+    "message": "Welcome to LocalPass"
   },
   "createYourAccountOrLogIn": {
     "message": "Create your account or log in"
   },
-  "newToBitwarden": {
-    "message": "New to Bitwarden?"
+  "newToLocalPass": {
+    "message": "New to LocalPass?"
   },
   "logInWithPasskey": {
     "message": "Log in with passkey"
@@ -330,19 +330,19 @@
     "message": "Continue to web app?"
   },
   "continueToWebAppDesc": {
-    "message": "Explore more features of your Bitwarden account on the web app."
+    "message": "Explore more features of your LocalPass account on the web app."
   },
   "continueToHelpCenter": {
     "message": "Continue to Help Center?"
   },
   "continueToHelpCenterDesc": {
-    "message": "Learn more about how to use Bitwarden on the Help Center."
+    "message": "Learn more about how to use LocalPass on the Help Center."
   },
   "continueToBrowserExtensionStore": {
     "message": "Continue to browser extension store?"
   },
   "continueToBrowserExtensionStoreDesc": {
-    "message": "Help others find out if Bitwarden is right for them. Visit your browser's extension store and leave a rating now."
+    "message": "Help others find out if LocalPass is right for them. Visit your browser's extension store and leave a rating now."
   },
   "fingerprintPhrase": {
     "message": "Fingerprint phrase",
@@ -358,44 +358,44 @@
   "logOut": {
     "message": "Log out"
   },
-  "aboutBitwarden": {
-    "message": "About Bitwarden"
+  "aboutLocalPass": {
+    "message": "About LocalPass"
   },
   "about": {
     "message": "About"
   },
-  "moreFromBitwarden": {
-    "message": "More from Bitwarden"
+  "moreFromLocalPass": {
+    "message": "More from LocalPass"
   },
-  "continueToBitwardenDotCom": {
-    "message": "Continue to bitwarden.com?"
+  "continueToLocalPassDotCom": {
+    "message": "Continue to local.invalid?"
   },
-  "bitwardenForBusiness": {
-    "message": "Bitwarden for Business"
+  "localpassForBusiness": {
+    "message": "LocalPass for Business"
   },
-  "bitwardenAuthenticator": {
-    "message": "Bitwarden Authenticator"
+  "localpassAuthenticator": {
+    "message": "LocalPass Authenticator"
   },
   "continueToAuthenticatorPageDesc": {
-    "message": "Bitwarden Authenticator allows you to store authenticator keys and generate TOTP codes for 2-step verification flows. Learn more on the bitwarden.com website"
+    "message": "LocalPass Authenticator allows you to store authenticator keys and generate TOTP codes for 2-step verification flows. Learn more on the local.invalid website"
   },
-  "bitwardenSecretsManager": {
-    "message": "Bitwarden Secrets Manager"
+  "localpassSecretsManager": {
+    "message": "LocalPass Secrets Manager"
   },
   "continueToSecretsManagerPageDesc": {
-    "message": "Securely store, manage, and share developer secrets with Bitwarden Secrets Manager. Learn more on the bitwarden.com website."
+    "message": "Securely store, manage, and share developer secrets with LocalPass Secrets Manager. Learn more on the local.invalid website."
   },
   "passwordlessDotDev": {
     "message": "Passwordless.dev"
   },
   "continueToPasswordlessDotDevPageDesc": {
-    "message": "Create smooth and secure login experiences free from traditional passwords with Passwordless.dev. Learn more on the bitwarden.com website."
+    "message": "Create smooth and secure login experiences free from traditional passwords with Passwordless.dev. Learn more on the local.invalid website."
   },
-  "freeBitwardenFamilies": {
-    "message": "Free Bitwarden Families"
+  "freeLocalPassFamilies": {
+    "message": "Free LocalPass Families"
   },
-  "freeBitwardenFamiliesPageDesc": {
-    "message": "You are eligible for Free Bitwarden Families. Redeem this offer today in the web app."
+  "freeLocalPassFamiliesPageDesc": {
+    "message": "You are eligible for Free LocalPass Families. Redeem this offer today in the web app."
   },
   "version": {
     "message": "Version"
@@ -461,13 +461,13 @@
     "message": "Help & feedback"
   },
   "helpCenter": {
-    "message": "Bitwarden Help center"
+    "message": "LocalPass Help center"
   },
   "communityForums": {
-    "message": "Explore Bitwarden community forums"
+    "message": "Explore LocalPass community forums"
   },
   "contactSupport": {
-    "message": "Contact Bitwarden support"
+    "message": "Contact LocalPass support"
   },
   "sync": {
     "message": "Sync"
@@ -489,7 +489,7 @@
     "message": "Automatically generate strong, unique passwords for your logins."
   },
   "bitWebVaultApp": {
-    "message": "Bitwarden web app"
+    "message": "LocalPass web app"
   },
   "select": {
     "message": "Select"
@@ -866,9 +866,9 @@
   "downloadDiagnosticReportWith": {
     "message": "Download then share the diagnostic report with"
   },
-  "bitwardenSupport": {
-    "message": "Bitwarden support",
-    "description": "Link text following the troubleshooting description sentence. 'Bitwarden' should not be translated."
+  "localpassSupport": {
+    "message": "LocalPass support",
+    "description": "Link text following the troubleshooting description sentence. 'LocalPass' should not be translated."
   },
   "download": {
     "message": "Download"
@@ -909,7 +909,7 @@
       },
       "hostname": {
         "content": "$2",
-        "example": "bitwarden.com"
+        "example": "local.invalid"
       }
     }
   },
@@ -921,7 +921,7 @@
     "placeholders": {
       "host": {
         "content": "$1",
-        "example": "vault.bitwarden.com"
+        "example": "vault.local.invalid"
       }
     }
   },
@@ -1084,10 +1084,10 @@
     "message": "Make 2-step verification seamless"
   },
   "totpHelper": {
-    "message": "Bitwarden can store and fill 2-step verification codes. Copy and paste the key into this field."
+    "message": "LocalPass can store and fill 2-step verification codes. Copy and paste the key into this field."
   },
   "totpHelperWithCapture": {
-    "message": "Bitwarden can store and fill 2-step verification codes. Select the camera icon to take a screenshot of this website's authenticator QR code, or copy and paste the key into this field."
+    "message": "LocalPass can store and fill 2-step verification codes. Select the camera icon to take a screenshot of this website's authenticator QR code, or copy and paste the key into this field."
   },
   "learnMoreAboutAuthenticators": {
     "message": "Learn more about authenticators"
@@ -1174,10 +1174,10 @@
     "message": "Enter a name."
   },
   "twoStepLoginConfirmation": {
-    "message": "Two-step login makes your account more secure by requiring you to verify your login with another device such as a security key, authenticator app, SMS, phone call, or email. Two-step login can be set up on the bitwarden.com web vault. Do you want to visit the website now?"
+    "message": "Two-step login makes your account more secure by requiring you to verify your login with another device such as a security key, authenticator app, SMS, phone call, or email. Two-step login can be set up on the local.invalid web vault. Do you want to visit the website now?"
   },
   "twoStepLoginConfirmationContent": {
-    "message": "Make your account more secure by setting up two-step login in the Bitwarden web app."
+    "message": "Make your account more secure by setting up two-step login in the LocalPass web app."
   },
   "twoStepLoginConfirmationTitle": {
     "message": "Continue to web app?"
@@ -1228,7 +1228,7 @@
   },
   "addDomain": {
     "message": "Add domain",
-    "description": "'Domain' here refers to an internet domain name (e.g. 'bitwarden.com') and the message in whole described the act of putting a domain value into the context."
+    "description": "'Domain' here refers to an internet domain name (e.g. 'local.invalid') and the message in whole described the act of putting a domain value into the context."
   },
   "addedItem": {
     "message": "Item added"
@@ -1336,7 +1336,7 @@
     "message": "Jump to setting"
   },
   "notificationAddDesc": {
-    "message": "Should Bitwarden remember this password for you?"
+    "message": "Should LocalPass remember this password for you?"
   },
   "notificationAddSave": {
     "message": "Save"
@@ -1372,11 +1372,11 @@
     }
   },
   "notificationLoginSaveConfirmation": {
-    "message": "saved to Bitwarden.",
+    "message": "saved to LocalPass.",
     "description": "Shown to user after item is saved."
   },
   "notificationLoginUpdatedConfirmation": {
-    "message": "updated in Bitwarden.",
+    "message": "updated in LocalPass.",
     "description": "Shown to user after item is updated."
   },
   "selectItemAriaLabel": {
@@ -1474,13 +1474,13 @@
     "message": "Ask to save new passkeys or log in with passkeys stored in your vault. Applies to all logged in accounts."
   },
   "notificationChangeDesc": {
-    "message": "Do you want to update this password in Bitwarden?"
+    "message": "Do you want to update this password in LocalPass?"
   },
   "notificationChangeSave": {
     "message": "Update"
   },
   "notificationUnlockDesc": {
-    "message": "Unlock your Bitwarden vault to complete the autofill request."
+    "message": "Unlock your LocalPass vault to complete the autofill request."
   },
   "notificationUnlock": {
     "message": "Unlock"
@@ -1500,16 +1500,16 @@
   "aboutFillAssistLabelV2": {
     "message": "About fill assist"
   },
-  "honorDataBitwardenIgnoreAttributeLabel": {
+  "honorDataLocalPassIgnoreAttributeLabel": {
     "message": "Allow websites to exclude fields to autofill"
   },
-  "honorDataBitwardenIgnoreAttributeHint": {
+  "honorDataLocalPassIgnoreAttributeHint": {
     "message": "Skip fields that a website marks with the `data-bwignore` attribute."
   },
-  "honorDataBitwardenAutofillAttributeLabel": {
+  "honorDataLocalPassAutofillAttributeLabel": {
     "message": "Allow websites to add fields to autofill"
   },
-  "honorDataBitwardenAutofillAttributeHint": {
+  "honorDataLocalPassAutofillAttributeHint": {
     "message": "Use any span elements that a website marks with the `data-bwautofill` attribute."
   },
   "enableBasicAuthResponseLabel": {
@@ -1789,10 +1789,10 @@
     "message": "This password will be used to export and import this file"
   },
   "accountRestrictedOptionDescription": {
-    "message": "Use your account encryption key, derived from your account's username and Master Password, to encrypt the export and restrict import to only the current Bitwarden account."
+    "message": "Use your account encryption key, derived from your account's username and Master Password, to encrypt the export and restrict import to only the current LocalPass account."
   },
   "passwordProtectedOptionDescription": {
-    "message": "Set a file password to encrypt the export and import it to any Bitwarden account using the password for decryption."
+    "message": "Set a file password to encrypt the export and import it to any LocalPass account using the password for decryption."
   },
   "exportTypeHeading": {
     "message": "Export type"
@@ -1821,7 +1821,7 @@
     "message": "This export encrypts your data using your account's encryption key. If you ever rotate your account's encryption key you should export again since you will not be able to decrypt this export file."
   },
   "encExportAccountWarningDesc": {
-    "message": "Account encryption keys are unique to each Bitwarden user account, so you can't import an encrypted export into a different account."
+    "message": "Account encryption keys are unique to each LocalPass user account, so you can't import an encrypted export into a different account."
   },
   "exportMasterPassword": {
     "message": "Enter your master password to export your vault data."
@@ -1844,8 +1844,8 @@
   "addSharedFolder": {
     "message": "Add shared folder"
   },
-  "bitwardenForBusinessPageDesc": {
-    "message": "Bitwarden for Business allows you to share your vault items with others by using an organization. Learn more on the bitwarden.com website."
+  "localpassForBusinessPageDesc": {
+    "message": "LocalPass for Business allows you to share your vault items with others by using an organization. Learn more on the local.invalid website."
   },
   "moveToOrganization": {
     "message": "Move to organization"
@@ -1999,7 +1999,7 @@
     "message": "Manage membership"
   },
   "premiumManageAlert": {
-    "message": "You can manage your membership on the bitwarden.com web vault. Do you want to visit the website now?"
+    "message": "You can manage your membership on the local.invalid web vault. Do you want to visit the website now?"
   },
   "premiumRefresh": {
     "message": "Refresh membership"
@@ -2047,7 +2047,7 @@
     "message": "Purchase Premium"
   },
   "premiumPurchaseAlertV2": {
-    "message": "You can purchase Premium from your account settings on the Bitwarden web app."
+    "message": "You can purchase Premium from your account settings on the LocalPass web app."
   },
   "premiumFeatures": {
     "message": "Upgrade to Premium and receive:"
@@ -2153,8 +2153,8 @@
     "message": "Authenticator app"
   },
   "authenticatorAppDescV2": {
-    "message": "Enter a code generated by an authenticator app like Bitwarden Authenticator.",
-    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
+    "message": "Enter a code generated by an authenticator app like LocalPass Authenticator.",
+    "description": "'LocalPass Authenticator' is a product name and should not be translated."
   },
   "yubiKeyTitleV2": {
     "message": "Yubico OTP Security Key"
@@ -2186,7 +2186,7 @@
     "message": "Self-hosted environment"
   },
   "selfHostedBaseUrlHint": {
-    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+    "message": "Specify the base URL of your on-premises hosted LocalPass installation. Example: https://local.invalid"
   },
   "selfHostedCustomEnvHeader": {
     "message": "For advanced configuration, you can specify the base URL of each service independently."
@@ -2239,7 +2239,7 @@
     "message": "Easily find autofill suggestions"
   },
   "autofillSpotlightDesc": {
-    "message": "Turn off your browser's autofill settings, so they don't conflict with Bitwarden."
+    "message": "Turn off your browser's autofill settings, so they don't conflict with LocalPass."
   },
   "turnOffBrowserAutofill": {
     "message": "Turn off $BROWSER$ autofill",
@@ -2295,8 +2295,8 @@
   "showInlineMenuLabel": {
     "message": "Show autofill suggestions on form fields"
   },
-  "howDoesBitwardenProtectFromPhishing": {
-    "message": "How does Bitwarden protect your data from phishing?"
+  "howDoesLocalPassProtectFromPhishing": {
+    "message": "How does LocalPass protect your data from phishing?"
   },
   "currentWebsite": {
     "message": "Current website"
@@ -3229,7 +3229,7 @@
     "message": "Weak master password"
   },
   "weakMasterPasswordDesc": {
-    "message": "The master password you have chosen is weak. You should use a strong master password (or a passphrase) to properly protect your Bitwarden account. Are you sure you want to use this master password?"
+    "message": "The master password you have chosen is weak. You should use a strong master password (or a passphrase) to properly protect your LocalPass account. Are you sure you want to use this master password?"
   },
   "rotateAccountEncKey": {
     "message": "Also rotate my account's encryption key"
@@ -3241,7 +3241,7 @@
     "message": "Are you sure you want to rotate your account's encryption key?"
   },
   "updateEncryptionKeyWarning": {
-    "message": "After updating your encryption key, you are required to log out and back in to all Bitwarden applications that you are currently using (such as the mobile app or browser extensions). Failure to log out and back in (which downloads your new encryption key) may result in data corruption. We will attempt to log you out automatically, however, it may be delayed."
+    "message": "After updating your encryption key, you are required to log out and back in to all LocalPass applications that you are currently using (such as the mobile app or browser extensions). Failure to log out and back in (which downloads your new encryption key) may result in data corruption. We will attempt to log you out automatically, however, it may be delayed."
   },
   "updateEncryptionKeyAccountExportWarning": {
     "message": "Any account restricted exports you have saved will become invalid."
@@ -3269,10 +3269,10 @@
     "message": "Set PIN"
   },
   "setYourPinCode": {
-    "message": "Set your PIN code for unlocking Bitwarden. Your PIN settings will be reset if you ever fully log out of the application."
+    "message": "Set your PIN code for unlocking LocalPass. Your PIN settings will be reset if you ever fully log out of the application."
   },
   "setPinCode": {
-    "message": "You can use this PIN to unlock Bitwarden. Your PIN will be reset if you ever fully log out of the application."
+    "message": "You can use this PIN to unlock LocalPass. Your PIN will be reset if you ever fully log out of the application."
   },
   "pinRequired": {
     "message": "PIN code is required."
@@ -3293,7 +3293,7 @@
     "message": "Awaiting confirmation from desktop"
   },
   "awaitDesktopDesc": {
-    "message": "Please confirm using biometrics in the Bitwarden desktop application to set up biometrics for browser."
+    "message": "Please confirm using biometrics in the LocalPass desktop application to set up biometrics for browser."
   },
   "lockWithMasterPassOnRestart": {
     "message": "Lock with master password on browser restart"
@@ -3408,7 +3408,7 @@
     "message": "The form is hosted by a different domain than the URI of your saved login. Choose OK to autofill anyway, or Cancel to stop."
   },
   "autofillIframeWarningTip": {
-    "message": "To prevent this warning in the future, save this URI, $HOSTNAME$, to your Bitwarden login item for this site.",
+    "message": "To prevent this warning in the future, save this URI, $HOSTNAME$, to your LocalPass login item for this site.",
     "placeholders": {
       "hostname": {
         "content": "$1",
@@ -3417,7 +3417,7 @@
     }
   },
   "topLayerHijackWarning": {
-    "message": "This page is interfering with the Bitwarden experience. The Bitwarden inline menu has been temporarily disabled as a safety measure."
+    "message": "This page is interfering with the LocalPass experience. The LocalPass inline menu has been temporarily disabled as a safety measure."
   },
   "setMasterPassword": {
     "message": "Set master password"
@@ -3474,7 +3474,7 @@
     "message": "Your new master password does not meet the policy requirements."
   },
   "receiveMarketingEmails": {
-    "message": "Receive updates from Bitwarden in your inbox."
+    "message": "Receive updates from LocalPass in your inbox."
   },
   "unsubscribe": {
     "message": "Unsubscribe"
@@ -3519,13 +3519,13 @@
     "message": "Browser integration is not set up"
   },
   "desktopIntegrationDisabledDesc": {
-    "message": "Browser integration is not set up in the Bitwarden desktop application. Please set it up in the settings within the desktop application."
+    "message": "Browser integration is not set up in the LocalPass desktop application. Please set it up in the settings within the desktop application."
   },
   "startDesktopTitle": {
-    "message": "Start the Bitwarden desktop application"
+    "message": "Start the LocalPass desktop application"
   },
   "startDesktopDesc": {
-    "message": "The Bitwarden desktop application needs to be started before unlock with biometrics can be used."
+    "message": "The LocalPass desktop application needs to be started before unlock with biometrics can be used."
   },
   "errorEnableBiometricTitle": {
     "message": "Unable to set up biometrics"
@@ -3579,13 +3579,13 @@
     "message": "Biometrics failed"
   },
   "biometricsFailedDesc": {
-    "message": "Biometrics cannot be completed, consider using a master password or logging out. If this persists, please contact Bitwarden support."
+    "message": "Biometrics cannot be completed, consider using a master password or logging out. If this persists, please contact LocalPass support."
   },
   "nativeMessagingPermissionErrorTitle": {
     "message": "Permission not provided"
   },
   "nativeMessagingPermissionErrorDesc": {
-    "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
+    "message": "Without permission to communicate with the LocalPass Desktop Application we cannot provide biometrics in the browser extension. Please try again."
   },
   "nativeMessagingPermissionSidebarTitle": {
     "message": "Permission request error"
@@ -3622,7 +3622,7 @@
     "message": "Excluded domains"
   },
   "excludedDomainsDesc": {
-    "message": "Bitwarden will not ask to save login details for these domains. You must refresh the page for changes to take effect."
+    "message": "LocalPass will not ask to save login details for these domains. You must refresh the page for changes to take effect."
   },
   "blockedDomainsDesc": {
     "message": "Autofill and other related features will not be offered for these websites. You must refresh the page for changes to take effect."
@@ -3754,24 +3754,24 @@
     "message": "Illustration of a list of logins that are at-risk."
   },
   "welcomeDialogGraphicAlt": {
-    "message": "Illustration of the layout of the Bitwarden vault page."
+    "message": "Illustration of the layout of the LocalPass vault page."
   },
   "generatePasswordSlideDesc": {
-    "message": "Quickly generate a strong, unique password with the Bitwarden autofill menu on the at-risk site.",
+    "message": "Quickly generate a strong, unique password with the LocalPass autofill menu on the at-risk site.",
     "description": "Description of the generate password slide on the at-risk password page carousel"
   },
   "generatePasswordSlideImgAltPeriod": {
-    "message": "Illustration of the Bitwarden autofill menu displaying a generated password."
+    "message": "Illustration of the LocalPass autofill menu displaying a generated password."
   },
-  "updateInBitwarden": {
-    "message": "Update in Bitwarden"
+  "updateInLocalPass": {
+    "message": "Update in LocalPass"
   },
-  "updateInBitwardenSlideDesc": {
-    "message": "Bitwarden will then prompt you to update the password in the password manager.",
-    "description": "Description of the update in Bitwarden slide on the at-risk password page carousel"
+  "updateInLocalPassSlideDesc": {
+    "message": "LocalPass will then prompt you to update the password in the password manager.",
+    "description": "Description of the update in LocalPass slide on the at-risk password page carousel"
   },
-  "updateInBitwardenSlideImgAltPeriod": {
-    "message": "Illustration of a Bitwarden’s notification prompting the user to update the login."
+  "updateInLocalPassSlideImgAltPeriod": {
+    "message": "Illustration of a LocalPass’s notification prompting the user to update the login."
   },
   "turnOnAutofill": {
     "message": "Turn on autofill"
@@ -3825,11 +3825,11 @@
   },
   "send": {
     "message": "Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendDetails": {
     "message": "Send details",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendTypeText": {
     "message": "Text"
@@ -3845,7 +3845,7 @@
   },
   "sendsCount": {
     "message": "$COUNT$ Sends",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -3855,11 +3855,11 @@
   },
   "oneSendCount": {
     "message": "1 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendsTitleNoItemsV2": {
     "message": "You have no Sends",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendsBodyNoItemsV2": {
     "message": "Share text or files securely with anyone. Your information will be end-to-end encrypted."
@@ -3869,7 +3869,7 @@
   },
   "allSends": {
     "message": "All Sends",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "maxAccessCountReached": {
     "message": "Max access count reached",
@@ -3889,7 +3889,7 @@
   },
   "copySendLink": {
     "message": "Copy Send link",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "removeAuth": {
     "message": "Remove Password or Email Verification"
@@ -3902,11 +3902,11 @@
   },
   "deletedSend": {
     "message": "Send deleted",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendLink": {
     "message": "Send link",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "disabled": {
     "message": "Disabled"
@@ -3928,34 +3928,34 @@
   },
   "removeSendPasswordConfirmation": {
     "message": "Are you sure you want to remove the password requirement from this Send?",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "removeSendEmailVerificationConfirmation": {
     "message": "Are you sure you want to remove the email verification requirement from this Send?",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deleteSend": {
     "message": "Delete Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deleteSendConfirmation": {
     "message": "Are you sure you want to delete this Send?",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deleteSendPermanentConfirmation": {
     "message": "Are you sure you want to permanently delete this Send?",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "editSend": {
     "message": "Edit Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deletionDate": {
     "message": "Deletion date"
   },
   "deletionDateDescV2": {
     "message": "The Send will be permanently deleted on this date.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "expirationDate": {
     "message": "Expiration date"
@@ -3977,38 +3977,38 @@
   },
   "createSend": {
     "message": "New Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "createSendV2": {
     "message": "Create Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "newPassword": {
     "message": "New password"
   },
   "sendDisabled": {
     "message": "Send removed",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendDisabledWarning": {
     "message": "Due to an enterprise policy, you are only able to delete an existing Send.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "createdSend": {
     "message": "Send created",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "createdSendSuccessfully": {
     "message": "Send created successfully!",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendExpiresInHoursSingle": {
     "message": "The Send will be available to anyone with the link for the next 1 hour.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendExpiresInHours": {
     "message": "The Send will be available to anyone with the link for the next $HOURS$ hours.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -4018,11 +4018,11 @@
   },
   "sendExpiresInDaysSingle": {
     "message": "The Send will be available to anyone with the link for the next 1 day.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendExpiresInDays": {
     "message": "The Send will be available to anyone with the link for the next $DAYS$ days.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "days": {
         "content": "$1",
@@ -4041,7 +4041,7 @@
   },
   "sendCreatedDescriptionV2": {
     "message": "Copy and share this Send link. The Send will be available to anyone with the link for the next $TIME$.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "time": {
         "content": "$1",
@@ -4051,7 +4051,7 @@
   },
   "sendCreatedDescriptionPassword": {
     "message": "Copy and share this Send link. The Send will be available to anyone with the link and password you set for the next $TIME$.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "time": {
         "content": "$1",
@@ -4061,7 +4061,7 @@
   },
   "sendCreatedDescriptionEmail": {
     "message": "Copy and share this Send link. It can be viewed by the people you specified for the next $TIME$.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "time": {
         "content": "$1",
@@ -4071,11 +4071,11 @@
   },
   "sendLinkCopied": {
     "message": "Send link copied",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "editedSend": {
     "message": "Send saved",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "popOut": {
     "message": "Pop out"
@@ -4333,10 +4333,10 @@
     "message": "Error getting autofill data"
   },
   "couldNotDecryptVaultItem": {
-    "message": "Bitwarden could not decrypt the vault item listed below. Contact Bitwarden Customer Support and provide the item ID below to see if it can be recovered."
+    "message": "LocalPass could not decrypt the vault item listed below. Contact LocalPass Customer Support and provide the item ID below to see if it can be recovered."
   },
   "couldNotDecryptVaultItems": {
-    "message": "Bitwarden could not decrypt the vault items listed below. Contact Bitwarden Customer Support and provide the item IDs below to see if they can be recovered."
+    "message": "LocalPass could not decrypt the vault items listed below. Contact LocalPass Customer Support and provide the item IDs below to see if they can be recovered."
   },
   "itemId": {
     "message": "Item ID",
@@ -4446,11 +4446,11 @@
     }
   },
   "forwarderGeneratedBy": {
-    "message": "Generated by Bitwarden.",
+    "message": "Generated by LocalPass.",
     "description": "Displayed with the address on the forwarding service's configuration screen."
   },
   "forwarderGeneratedByWithWebsite": {
-    "message": "Website: $WEBSITE$. Generated by Bitwarden.",
+    "message": "Website: $WEBSITE$. Generated by LocalPass.",
     "description": "Displayed with the address on the forwarding service's configuration screen.",
     "placeholders": {
       "WEBSITE": {
@@ -4672,7 +4672,7 @@
     "message": "A notification has been sent to your device."
   },
   "notificationSentDevicePart1": {
-    "message": "Unlock Bitwarden on your device or on the"
+    "message": "Unlock LocalPass on your device or on the"
   },
   "notificationSentDeviceAnchor": {
     "message": "web app"
@@ -5030,11 +5030,11 @@
   },
   "sendsTitleNoItems": {
     "message": "Send sensitive information safely",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendsBodyNoItems": {
     "message": "Share files and data securely with anyone, on any platform. Your information will remain end-to-end encrypted while limiting exposure.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "inputRequired": {
     "message": "Input is required."
@@ -5171,16 +5171,16 @@
   "skipToContent": {
     "message": "Skip to content"
   },
-  "bitwardenOverlayButton": {
-    "message": "Bitwarden autofill menu button",
+  "localpassOverlayButton": {
+    "message": "LocalPass autofill menu button",
     "description": "Page title for the iframe containing the overlay button"
   },
-  "toggleBitwardenVaultOverlay": {
-    "message": "Toggle Bitwarden autofill menu",
+  "toggleLocalPassVaultOverlay": {
+    "message": "Toggle LocalPass autofill menu",
     "description": "Screen reader and tool tip label for the overlay button"
   },
-  "bitwardenVault": {
-    "message": "Bitwarden autofill menu",
+  "localpassVault": {
+    "message": "LocalPass autofill menu",
     "description": "Page title in overlay"
   },
   "unlockYourAccountToViewMatchingLogins": {
@@ -5251,8 +5251,8 @@
     "message": "Add new vault identity item, opens in a new window",
     "description": "Screen reader text (aria-label) for new identity button within inline menu"
   },
-  "bitwardenOverlayMenuAvailable": {
-    "message": "Bitwarden autofill menu available. Press the down arrow key to select.",
+  "localpassOverlayMenuAvailable": {
+    "message": "LocalPass autofill menu available. Press the down arrow key to select.",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
   "turnOn": {
@@ -5289,7 +5289,7 @@
     "message": "Import successful"
   },
   "importConfirmationBody": {
-    "message": "You’ve successfully imported $AMOUNT$ items into Bitwarden.",
+    "message": "You’ve successfully imported $AMOUNT$ items into LocalPass.",
     "placeholders": {
       "amount": {
         "content": "$1",
@@ -5298,7 +5298,7 @@
     }
   },
   "importConfirmationBodySingular": {
-    "message": "You’ve successfully imported 1 item into Bitwarden."
+    "message": "You’ve successfully imported 1 item into LocalPass."
   },
   "importConfirmationTipLabel": {
     "message": "Tip:"
@@ -5308,7 +5308,7 @@
     "placeholders": {
       "filename": {
         "content": "$1",
-        "example": "bitwarden_export.json"
+        "example": "localpass_export.json"
       }
     }
   },
@@ -5343,18 +5343,18 @@
     "message": "Something went wrong..."
   },
   "openingExtensionError": {
-    "message": "We had trouble opening the Bitwarden browser extension. Click the button to open it now."
+    "message": "We had trouble opening the LocalPass browser extension. Click the button to open it now."
   },
   "openExtension": {
     "message": "Open extension"
   },
   "openingExtensionToolbarErrorPart1": {
-    "message": "We had trouble opening the Bitwarden browser extension. Open the Bitwarden icon ",
-    "description": "This will be used as part of a larger sentence, broken up to include the Bitwarden icon. The full sentence will read 'We had trouble opening the Bitwarden browser extension. Open the Bitwarden icon [Bitwarden Icon] from the toolbar.'"
+    "message": "We had trouble opening the LocalPass browser extension. Open the LocalPass icon ",
+    "description": "This will be used as part of a larger sentence, broken up to include the LocalPass icon. The full sentence will read 'We had trouble opening the LocalPass browser extension. Open the LocalPass icon [LocalPass Icon] from the toolbar.'"
   },
   "openingExtensionToolbarErrorPart2": {
     "message": " from the toolbar.",
-    "description": "This will be used as part of a larger sentence, broken up to include the Bitwarden icon. The full sentence will read 'We had trouble opening the Bitwarden browser extension. Open the Bitwarden icon [Bitwarden Icon] from the toolbar.'"
+    "description": "This will be used as part of a larger sentence, broken up to include the LocalPass icon. The full sentence will read 'We had trouble opening the LocalPass browser extension. Open the LocalPass icon [LocalPass Icon] from the toolbar.'"
   },
   "tryAgain": {
     "message": "Try again"
@@ -5695,7 +5695,7 @@
     "message": "Secure by design"
   },
   "importDataSecureByDesignBody": {
-    "message": "End-to-end encrypted handoff. Bitwarden never sees your $VENDOR$ login details.",
+    "message": "End-to-end encrypted handoff. LocalPass never sees your $VENDOR$ login details.",
     "placeholders": {
       "vendor": {
         "content": "$1",
@@ -5870,7 +5870,7 @@
     "description": "Followed by a literal filename (my_passwords.json) rendered as code."
   },
   "importGnomeInstructionsFileHere": {
-    "message": "file here to Bitwarden.",
+    "message": "file here to LocalPass.",
     "description": "Follows the my_passwords.json filename."
   },
   "importPasswordagentInstructions": {
@@ -6342,7 +6342,7 @@
     "message": "Log in with SSO"
   },
   "onePasswordSsoSwitchToSignInPage": {
-    "message": "Switch to the SSO sign-in page to finish importing into Bitwarden."
+    "message": "Switch to the SSO sign-in page to finish importing into LocalPass."
   },
   "onePasswordSsoEncryptionKeyTransfer": {
     "message": "Encryption key transfer"
@@ -6566,8 +6566,8 @@
   "activeAccount": {
     "message": "Active account"
   },
-  "bitwardenAccount": {
-    "message": "Bitwarden account"
+  "localpassAccount": {
+    "message": "LocalPass account"
   },
   "availableAccounts": {
     "message": "Available accounts"
@@ -6613,8 +6613,8 @@
     "description": "Label indicating the most common import formats"
   },
   "uriMatchDefaultStrategyHint": {
-    "message": "URI match detection is how Bitwarden identifies autofill suggestions.",
-    "description": "Explains to the user that URI match detection determines how Bitwarden suggests autofill options, and clarifies that this default strategy applies when no specific match detection is set for a login item."
+    "message": "URI match detection is how LocalPass identifies autofill suggestions.",
+    "description": "Explains to the user that URI match detection determines how LocalPass suggests autofill options, and clarifies that this default strategy applies when no specific match detection is set for a login item."
   },
   "regExAdvancedOptionWarning": {
     "message": "\"Regular expression\" is an advanced option with increased risk of exposing credentials.",
@@ -6657,24 +6657,24 @@
     "description": "Body content for dialog which asks if the user wants to proceed to the browser's keyboard shortcut settings page"
   },
   "overrideDefaultBrowserAutofillTitle": {
-    "message": "Make Bitwarden your default password manager?",
+    "message": "Make LocalPass your default password manager?",
     "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillDescription": {
-    "message": "Ignoring this option may cause conflicts between Bitwarden autofill suggestions and your browser's.",
+    "message": "Ignoring this option may cause conflicts between LocalPass autofill suggestions and your browser's.",
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutoFillSettings": {
-    "message": "Make Bitwarden your default password manager",
+    "message": "Make LocalPass your default password manager",
     "description": "Label for the setting that allows overriding the default browser autofill settings"
   },
   "defaultPasswordManagerCalloutTitle": {
     "message": "Make your autofill experience better",
-    "description": "Title for the callout that prompts users to set Bitwarden as their default password manager"
+    "description": "Title for the callout that prompts users to set LocalPass as their default password manager"
   },
   "defaultPasswordManagerCalloutDesc": {
-    "message": "You'll be asked to grant a $BROWSER$ browser permission to make Bitwarden your default password manager.",
-    "description": "Description for the callout that prompts users to set Bitwarden as their default password manager",
+    "message": "You'll be asked to grant a $BROWSER$ browser permission to make LocalPass your default password manager.",
+    "description": "Description for the callout that prompts users to set LocalPass as their default password manager",
     "placeholders": {
       "browser": {
         "content": "$1",
@@ -6683,11 +6683,11 @@
     }
   },
   "privacyPermissionAdditionNotGrantedTitle": {
-    "message": "Unable to set Bitwarden as the default password manager",
+    "message": "Unable to set LocalPass as the default password manager",
     "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "privacyPermissionAdditionNotGrantedDescription": {
-    "message": "You must grant browser privacy permissions to Bitwarden to set it as the default password manager.",
+    "message": "You must grant browser privacy permissions to LocalPass to set it as the default password manager.",
     "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "makeDefault": {
@@ -6695,11 +6695,11 @@
     "description": "Button text for the setting that allows overriding the default browser autofill settings"
   },
   "defaultPasswordManagerPromptTitle": {
-    "message": "Make Bitwarden your browser's default password manager"
+    "message": "Make LocalPass your browser's default password manager"
   },
   "defaultPasswordManagerPromptTitleV2": {
-    "message": "Make Bitwarden your default password manager",
-    "description": "Label for the setting to make Bitwarden the default password manager"
+    "message": "Make LocalPass your default password manager",
+    "description": "Label for the setting to make LocalPass the default password manager"
   },
   "defaultPasswordManagerSettingHintV2": {
     "message": "Turn off the browser autofill settings to avoid conflicts.",
@@ -6710,13 +6710,13 @@
     "description": "Link text to browser autofill settings in the default password manager setting hint."
   },
   "defaultPasswordManagerPromptStep2AfterAllow": {
-    "message": "from the browser prompt to give Bitwarden permission to change your settings."
+    "message": "from the browser prompt to give LocalPass permission to change your settings."
   },
   "defaultPasswordManagerPromptStep3": {
     "message": "We'll turn off your browser's built-in password manager so you can enjoy a secure login experience."
   },
   "defaultPasswordManagerSuccessToast": {
-    "message": "Made Bitwarden your default browser password manager"
+    "message": "Made LocalPass your default browser password manager"
   },
   "allow": {
     "message": "Allow",
@@ -7123,17 +7123,17 @@
   "downloadAttachmentLabel": {
     "message": "Download Attachment"
   },
-  "downloadBitwarden": {
-    "message": "Download Bitwarden"
+  "downloadLocalPass": {
+    "message": "Download LocalPass"
   },
-  "downloadBitwardenOnAllDevices": {
-    "message": "Download Bitwarden on all devices"
+  "downloadLocalPassOnAllDevices": {
+    "message": "Download LocalPass on all devices"
   },
   "getTheMobileApp": {
     "message": "Get the mobile app"
   },
   "getTheMobileAppDesc": {
-    "message": "Access your passwords on the go with the Bitwarden mobile app."
+    "message": "Access your passwords on the go with the LocalPass mobile app."
   },
   "getTheDesktopApp": {
     "message": "Get the desktop app"
@@ -7141,8 +7141,8 @@
   "getTheDesktopAppDesc": {
     "message": "Access your vault without a browser, then set up unlock with biometrics to expedite unlocking in both the desktop app and browser extension."
   },
-  "downloadFromBitwardenNow": {
-    "message": "Download from bitwarden.com now"
+  "downloadFromLocalPassNow": {
+    "message": "Download from local.invalid now"
   },
   "getItOnGooglePlay": {
     "message": "Get it on Google Play"
@@ -7575,15 +7575,15 @@
   },
   "fileSends": {
     "message": "File Sends",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "textSends": {
     "message": "Text Sends",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "itemSends": {
     "message": "Item Sends",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "accountActions": {
     "message": "Account actions"
@@ -7688,10 +7688,10 @@
     "message": "Biometric unlock is unavailable due to misconfigured system files."
   },
   "biometricsStatusHelptextDesktopDisconnected": {
-    "message": "Biometric unlock is unavailable because the Bitwarden desktop app is closed."
+    "message": "Biometric unlock is unavailable because the LocalPass desktop app is closed."
   },
   "biometricsStatusHelptextNotEnabledInDesktop": {
-    "message": "Biometric unlock is unavailable because it is not enabled for $EMAIL$ in the Bitwarden desktop app.",
+    "message": "Biometric unlock is unavailable because it is not enabled for $EMAIL$ in the LocalPass desktop app.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -7722,9 +7722,9 @@
     "message": "Password regenerated",
     "description": "Notification message for when a password has been regenerated"
   },
-  "saveToBitwarden": {
-    "message": "Save to Bitwarden",
-    "description": "Confirmation message for saving a login to Bitwarden"
+  "saveToLocalPass": {
+    "message": "Save to LocalPass",
+    "description": "Confirmation message for saving a login to LocalPass"
   },
   "spaceCharacterDescriptor": {
     "message": "Space",
@@ -7964,13 +7964,13 @@
     "message": "Use folders to organize vault items. They're just for you. No one else will see or use them."
   },
   "introCarouselLabel": {
-    "message": "Welcome to Bitwarden"
+    "message": "Welcome to LocalPass"
   },
   "securityPrioritized": {
     "message": "Security, prioritized"
   },
   "securityPrioritizedBody": {
-    "message": "Save logins, cards, and identities to your secure vault. Bitwarden uses zero-knowledge, end-to-end encryption to protect what’s important to you."
+    "message": "Save logins, cards, and identities to your secure vault. LocalPass uses zero-knowledge, end-to-end encryption to protect what’s important to you."
   },
   "quickLogin": {
     "message": "Quick and easy login"
@@ -7988,7 +7988,7 @@
     "message": "Your data, when and where you need it"
   },
   "secureDevicesBody": {
-    "message": "Save unlimited passwords across unlimited devices with Bitwarden mobile, browser, and desktop apps."
+    "message": "Save unlimited passwords across unlimited devices with LocalPass mobile, browser, and desktop apps."
   },
   "nudgeBadgeAria": {
     "message": "1 notification"
@@ -7997,7 +7997,7 @@
     "message": "Import existing passwords"
   },
   "emptyVaultNudgeBody": {
-    "message": "Use the importer to quickly transfer logins to Bitwarden without manually adding them."
+    "message": "Use the importer to quickly transfer logins to LocalPass without manually adding them."
   },
   "emptyVaultNudgeButton": {
     "message": "Import now"
@@ -8033,7 +8033,7 @@
     "placeholders": {
       "product": {
         "content": "$1",
-        "example": "Bitwarden Phishing Blocker"
+        "example": "LocalPass Phishing Blocker"
       }
     }
   },
@@ -8116,7 +8116,7 @@
     "message": "About this setting"
   },
   "permitCipherDetailsDescription": {
-    "message": "Bitwarden will use saved login URIs to identify which icon or change password URL should be used to improve your experience. No information is collected or saved when you use this service."
+    "message": "LocalPass will use saved login URIs to identify which icon or change password URL should be used to improve your experience. No information is collected or saved when you use this service."
   },
   "showQuickCopyActionsDetailsDescription": {
     "message": "Add 3 quick copy buttons next to items to copy your username, password, or verification code to the clipboard."
@@ -8125,7 +8125,7 @@
     "message": "You do not have permissions to view this page. Try logging in with a different account."
   },
   "wasmNotSupported": {
-    "message": "WebAssembly is not supported on your browser or is not enabled. WebAssembly is required to use the Bitwarden app.",
+    "message": "WebAssembly is not supported on your browser or is not enabled. WebAssembly is required to use the LocalPass app.",
     "description": "'WebAssembly' is a technical term and should not be translated."
   },
   "showMore": {
@@ -8213,7 +8213,7 @@
     "message": "Error: Cannot decrypt"
   },
   "removeMasterPasswordForOrgUserKeyConnector": {
-    "message": "Your organization is no longer using master passwords to log into Bitwarden. To continue, verify the organization and domain."
+    "message": "Your organization is no longer using master passwords to log into LocalPass. To continue, verify the organization and domain."
   },
   "continueWithLogIn": {
     "message": "Continue with log in"
@@ -8299,7 +8299,7 @@
     "message": "Set an unlock method to change your timeout action"
   },
   "sessionTimeoutSuppressedByConnectedDevice": {
-    "message": "Managed by the Bitwarden desktop app. Open the desktop app to edit."
+    "message": "Managed by the LocalPass desktop app. Open the desktop app to edit."
   },
   "percentageCompleted": {
     "message": "$PERCENT$% complete",
@@ -8392,20 +8392,20 @@
     "message": "Enter multiple emails by separating with a comma."
   },
   "emailPlaceholder": {
-    "message": "user@bitwarden.com , user@acme.com"
+    "message": "user@local.invalid , user@acme.com"
   },
   "emailPlaceholderMultiple": {
-    "message": "user@bitwarden.com, user@acme.com"
+    "message": "user@local.invalid, user@acme.com"
   },
-  "downloadBitwardenApps": {
-    "message": "Download Bitwarden apps"
+  "downloadLocalPassApps": {
+    "message": "Download LocalPass apps"
   },
   "emailProtected": {
     "message": "Email protected"
   },
   "sendPasswordHelperText": {
     "message": "Individuals will need to enter the password to view this Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "userVerificationFailed": {
     "message": "User verification failed."
@@ -8417,7 +8417,7 @@
     "message": "Synchronize unlock with desktop"
   },
   "syncUnlockWithDesktopDescription1": {
-    "message": "The Bitwarden browser extension and desktop app lock and unlock together. Biometrics will be used if available."
+    "message": "The LocalPass browser extension and desktop app lock and unlock together. Biometrics will be used if available."
   },
   "sharedUnlockUnavailableUntrustedDevice": {
     "message": "Shared unlock is not available because you chose not to remember this device. To enable this setting, try logging in again."
@@ -8426,13 +8426,13 @@
     "message": "New permission needed"
   },
   "sharedUnlockDesktopPermissionDesc": {
-    "message": "To use shared unlock, Bitwarden needs permission to communicate with the desktop app. When you continue, your browser will ask you to approve it."
+    "message": "To use shared unlock, LocalPass needs permission to communicate with the desktop app. When you continue, your browser will ask you to approve it."
   },
   "sharedUnlockDesktopPermissionWarning": {
-    "message": "Bitwarden will lock and reload. After you approve, the extension reloads and will lock your vault."
+    "message": "LocalPass will lock and reload. After you approve, the extension reloads and will lock your vault."
   },
   "biometricPermissionDesc": {
-    "message": "To use biometric unlock, Bitwarden needs permission to communicate with the desktop app. When you continue, your browser will ask you to approve it."
+    "message": "To use biometric unlock, LocalPass needs permission to communicate with the desktop app. When you continue, your browser will ask you to approve it."
   },
   "enterMonth": {
     "message": "Enter month."
@@ -8555,7 +8555,7 @@
   },
   "sendCreated": {
     "message": "Send created",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "numericInputError": {
     "message": "Input must be numeric"
@@ -8590,26 +8590,26 @@
   },
   "sendNotCompliantWithYourOrgsPolicy": {
     "message": "Not compliant with your organization's Send policy",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendDisabledNonCompliantBannerMessage": {
     "message": "To edit this Send, make a copy. If this Send can expire at the set deletion date, no action is needed",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "makeACopy": {
     "message": "Make a copy"
   },
   "orgDoesNotAllowTextSends": {
     "message": "Text Sends are not allowed for your organization",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "orgDoesNotAllowFileSends": {
     "message": "File Sends are not allowed for your organization",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendWillAutomaticallyExpire": {
     "message": "This Send will automatically expire at the set deletion date",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "errorImportingMyItemsMultiCollectionV2": {
     "message": "You cannot import items into My items that are part of multiple collections"
@@ -8935,15 +8935,15 @@
     "message": "Unable to determine item ID"
   },
   "newExperienceDialogTitle": {
-    "message": "Bitwarden has a new look",
+    "message": "LocalPass has a new look",
     "description": "Title of the dialog that introduces the redesigned vault to existing users."
   },
   "newExperienceDialogDesc": {
-    "message": "Better experience, same trusted security. The Bitwarden vault has been redesigned based on your feedback, so things are easier to find and work like you'd expect.",
+    "message": "Better experience, same trusted security. The LocalPass vault has been redesigned based on your feedback, so things are easier to find and work like you'd expect.",
     "description": "Body copy of the dialog that introduces the redesigned vault to existing users."
   },
   "newExperienceDialogImgAlt": {
-    "message": "A preview of the redesigned Bitwarden vault.",
+    "message": "A preview of the redesigned LocalPass vault.",
     "description": "Alt text for the screenshot shown in the dialog that introduces the redesigned vault."
   },
   "exploreTheNewVault": {
@@ -9477,7 +9477,7 @@
     "message": "month"
   },
   "localVaultStartTitle": {
-    "message": "LocalPassword"
+    "message": "LocalPass"
   },
   "localVaultIntro": {
     "message": "This vault lives only on this device. There is no account and no server — nothing you save here ever leaves your computer."
@@ -9570,7 +9570,7 @@
     "message": "Google Authenticator"
   },
   "googleAuthHint": {
-    "message": "In Google Authenticator choose Transfer accounts → Export accounts and scan the code it shows. Bitwarden cannot read the code with the camera here, so paste the otpauth-migration link or pick the screenshot instead."
+    "message": "In Google Authenticator choose Transfer accounts → Export accounts and scan the code it shows. LocalPass cannot read the code with the camera here, so paste the otpauth-migration link or pick the screenshot instead."
   },
   "googleAuthPasteLabel": {
     "message": "Migration link"

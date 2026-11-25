@@ -1,12 +1,12 @@
 # Cipher Types Reference
 
-> A guide for engineers adding or modifying a cipher type in the Bitwarden clients monorepo.
+> A guide for engineers adding or modifying a cipher type in the LocalPass clients monorepo.
 
 ---
 
 ## 1. Overview
 
-A **CipherType** is a frozen const object (following [ADR-0025](https://contributing.bitwarden.com/architecture/adr/0025-const-objects-vs-enums/)) with integer values 1-5:
+A **CipherType** is a frozen const object (following [ADR-0025](https://contributing.local.invalid/architecture/adr/0025-const-objects-vs-enums/)) with integer values 1-5:
 
 | Value | Name          |
 | ----- | ------------- |
@@ -175,7 +175,7 @@ Three apps maintain independent locale files. Each new cipher type needs i18n ke
 
 ## 8. SDK Integration
 
-The clients repo bridges to `@bitwarden/sdk-internal` via mapper classes and `toSdk*`/`fromSdk*` methods on domain and view models.
+The clients repo bridges to `@localpass/sdk-internal` via mapper classes and `toSdk*`/`fromSdk*` methods on domain and view models.
 
 | Concern                  | File                                                                                                                |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------- |
@@ -187,7 +187,7 @@ The clients repo bridges to `@bitwarden/sdk-internal` via mapper classes and `to
 | SDK cipher service       | `libs/common/src/vault/services/cipher-sdk.service.ts`                                                              |
 | SDK abstraction          | `libs/common/src/vault/abstractions/cipher-sdk.service.ts`                                                          |
 
-**Pattern:** Each type-specific domain model needs `toSdk<Type>()` and `static fromSdk<Type>()` methods. Each view model needs `toSdk<Type>View()` and `static fromSdk<Type>View()` methods. The SDK types are imported from `@bitwarden/sdk-internal`.
+**Pattern:** Each type-specific domain model needs `toSdk<Type>()` and `static fromSdk<Type>()` methods. Each view model needs `toSdk<Type>View()` and `static fromSdk<Type>View()` methods. The SDK types are imported from `@localpass/sdk-internal`.
 
 ---
 
@@ -219,7 +219,7 @@ Key autofill files that reference `CipherType`:
 
 Adding a new cipher type is a **cross-repo effort** spanning three repositories.
 
-### SDK (`bitwarden/sdk`)
+### SDK (`localpass/sdk`)
 
 High-level changes needed:
 
@@ -230,7 +230,7 @@ High-level changes needed:
 - Add WASM bindings so the TypeScript types are generated
 - Bump the SDK version
 
-### Server (`bitwarden/server`)
+### Server (`localpass/server`)
 
 High-level changes needed:
 
@@ -282,7 +282,7 @@ The gating logic is: a cipher type is **filtered out** if `clientVersion < minim
 
 The server is migrating toward a single `Data` JSON string property on request/response models. Per-type properties (e.g., `SSHKey`, `BankAccount`) are still present for backwards compatibility but are marked `[Obsolete("Use Data instead.")]`. New types should follow this pattern: add the typed property for older clients, mark it obsolete, and ensure the `Data` JSON path also works.
 
-> The clients repo consumes server API contracts via `CipherResponse` and SDK types via `@bitwarden/sdk-internal`. Coordinate version bumps across all three repos.
+> The clients repo consumes server API contracts via `CipherResponse` and SDK types via `@localpass/sdk-internal`. Coordinate version bumps across all three repos.
 
 ---
 

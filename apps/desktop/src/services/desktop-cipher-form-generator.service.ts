@@ -1,8 +1,8 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DialogService } from "@bitwarden/components";
-import { CipherFormGenerationService } from "@bitwarden/vault";
+import { DialogService } from "@localpass/components";
+import { CipherFormGenerationService } from "@localpass/vault";
 
 import { CredentialGeneratorDialogComponent } from "../vault/app/vault/credential-generator-dialog.component";
 

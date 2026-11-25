@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from "@
 import { RouterModule, Router } from "@angular/router";
 import { catchError, from, Observable, of } from "rxjs";
 
-import { IconComponent } from "@bitwarden/angular/vault/components/icon.component";
-import { NoResults } from "@bitwarden/assets/svg";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { IconComponent } from "@localpass/angular/vault/components/icon.component";
+import { NoResults } from "@localpass/assets/svg";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   DialogService,
   BadgeModule,
@@ -20,8 +20,8 @@ import {
   SectionHeaderComponent,
   SimpleDialogOptions,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { DesktopSettingsService } from "../../../platform/services/desktop-settings.service";
 import { DesktopFido2UserInterfaceService } from "../../services/desktop-fido2-user-interface.service";
@@ -67,7 +67,7 @@ export class Fido2CreateComponent implements OnInit, OnDestroy {
     return {
       unexpectedErrorShort: {
         title: { key: "unexpectedErrorShort" },
-        content: { key: "closeThisBitwardenWindow" },
+        content: { key: "closeThisLocalPassWindow" },
         type: "danger",
         acceptButtonText: { key: "closeThisWindow" },
         cancelButtonText: null as null,
@@ -75,7 +75,7 @@ export class Fido2CreateComponent implements OnInit, OnDestroy {
       },
       unableToSavePasskey: {
         title: { key: "unableToSavePasskey" },
-        content: { key: "closeThisBitwardenWindow" },
+        content: { key: "closeThisLocalPassWindow" },
         type: "danger",
         acceptButtonText: { key: "closeThisWindow" },
         cancelButtonText: null as null,

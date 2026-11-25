@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { ErrorHandler, Injectable, Injector, inject } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 @Injectable()
 export class LoggingErrorHandler extends ErrorHandler {

@@ -1,9 +1,9 @@
 import { Injectable, computed, inject, signal } from "@angular/core";
 
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogService, ToastService } from "@localpass/components";
 
 import { TwoFactorMethod } from "../../../../importers/keeper/access";
 import { KEEPER_SSO_TAB_MONITOR } from "../../../keeper/services/keeper-sso-tab-monitor";

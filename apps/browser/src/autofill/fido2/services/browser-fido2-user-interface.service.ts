@@ -14,16 +14,16 @@ import {
   throwError,
 } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UserRequestedFallbackAbortReason } from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UserRequestedFallbackAbortReason } from "@localpass/common/platform/abstractions/fido2/fido2-client.service.abstraction";
 import {
   Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction,
   Fido2UserInterfaceSession,
   NewCredentialParams,
   PickCredentialParams,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+} from "@localpass/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import { fromChromeEvent } from "../../../platform/browser/from-chrome-event";

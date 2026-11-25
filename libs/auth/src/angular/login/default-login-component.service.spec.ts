@@ -1,24 +1,24 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { ClientType } from "@bitwarden/common/enums";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { ClientType } from "@localpass/common/enums";
 import {
   EnvironmentService,
   Environment,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { DefaultLoginComponentService } from "./default-login-component.service";
 
-jest.mock("@bitwarden/common/platform/abstractions/environment.service");
-jest.mock("@bitwarden/common/platform/abstractions/platform-utils.service");
-jest.mock("@bitwarden/common/auth/abstractions/sso-login.service.abstraction");
-jest.mock("@bitwarden/generator-legacy");
+jest.mock("@localpass/common/platform/abstractions/environment.service");
+jest.mock("@localpass/common/platform/abstractions/platform-utils.service");
+jest.mock("@localpass/common/auth/abstractions/sso-login.service.abstraction");
+jest.mock("@localpass/generator-legacy");
 
 describe("DefaultLoginComponentService", () => {
   let service: DefaultLoginComponentService;
@@ -36,11 +36,11 @@ describe("DefaultLoginComponentService", () => {
     passwordGenerationService = mock<PasswordGenerationServiceAbstraction>();
 
     environmentService.environment$ = of({
-      getWebVaultUrl: () => "https://webvault.bitwarden.com",
+      getWebVaultUrl: () => "https://webvault.local.invalid",
       getRegion: () => "US",
       getUrls: () => ({}),
       isCloud: () => true,
-      getApiUrl: () => "https://api.bitwarden.com",
+      getApiUrl: () => "https://api.local.invalid",
     } as Environment);
 
     service = new DefaultLoginComponentService(
@@ -70,7 +70,7 @@ describe("DefaultLoginComponentService", () => {
 
   describe("redirectToSsoLogin", () => {
     it("sets the pre-SSO state", async () => {
-      const email = "test@bitwarden.com";
+      const email = "test@local.invalid";
       const state = "testState";
       const codeVerifier = "testCodeVerifier";
       const codeChallenge = "testCodeChallenge";

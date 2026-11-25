@@ -1,7 +1,7 @@
 import type { Observable } from "rxjs";
 
-import type { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import type { UserId } from "@bitwarden/common/types/guid";
+import type { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import type { UserId } from "@localpass/common/types/guid";
 
 import type { AccountEventKind, TabEdgeCause, TabState } from "./enums";
 

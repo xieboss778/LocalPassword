@@ -1,1 +1,1 @@
-export * from "@bitwarden/scheduling";
+export * from "@localpass/scheduling";

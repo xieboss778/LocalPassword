@@ -30,30 +30,30 @@ import {
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { CollectionService } from "@localpass/admin-console/common";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   getOrganizationById,
   OrganizationService,
-} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
+} from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserStatusType } from "@localpass/common/admin-console/enums";
 import {
   CollectionView,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherId, CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherId, CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   AsyncActionsModule,
   BitSubmitDirective,
-  BitwardenIcon,
+  LocalPassIcon,
   ButtonComponent,
   ButtonModule,
   DialogModule,
@@ -63,7 +63,7 @@ import {
   SelectItemView,
   SelectModule,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { orgIconTile } from "../models/vault-icon-tile";
 import { Vfo1I18nPipe } from "../pipes/vfo1-i18n.pipe";
@@ -112,7 +112,7 @@ const MY_VAULT_ID = "MyVault";
 // splitting up) the translated string.
 const ORG_NAME_TOKEN = "\uFFFC";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "assign-collections",
@@ -140,28 +140,28 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
    */
   private vfo1Enabled$ = toObservable(this.vfo1TerminologyService.enabled);
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(BitSubmitDirective)
   private bitSubmit: BitSubmitDirective;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() params: CollectionAssignmentParams;
 
   /**
    * Submit button instance that will be disabled or marked as loading when the form is submitting.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() submitBtn?: ButtonComponent;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   editableItemCountChange = new EventEmitter<number>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onCollectionAssign = new EventEmitter<CollectionAssignmentResult>();
 
@@ -229,7 +229,7 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
     ),
   );
 
-  protected getOrgIcon = (org: Organization): BitwardenIcon => {
+  protected getOrgIcon = (org: Organization): LocalPassIcon => {
     switch (org.productTierType) {
       case ProductTierType.Free:
       case ProductTierType.Families:
@@ -535,7 +535,7 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
       : this.params.ciphers.filter((c) => c.edit);
 
     this.editableItemCount = this.editableItems.length;
-    // TODO: https://bitwarden.atlassian.net/browse/PM-9307,
+    // TODO: https://localpass.atlassian.net/browse/PM-9307,
     // clean up editableItemCountChange when the org vault is updated to filter editable ciphers
     this.editableItemCountChange.emit(this.editableItemCount);
     this.personalItemsCount = this.params.ciphers.filter((c) => c.organizationId == null).length;

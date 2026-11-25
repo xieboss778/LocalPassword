@@ -65,7 +65,7 @@ export class SshApproval {
 
 /**
  * Desktop `test` with the SSH agent's socket at `agentSocket` instead of the
- * user's `~/.bitwarden-ssh-agent.sock`.
+ * user's `~/.localpass-ssh-agent.sock`.
  */
 export const test = desktopTest.extend<{
   agentSocket: string;
@@ -77,7 +77,7 @@ export const test = desktopTest.extend<{
     rmSync(dir, { recursive: true, force: true });
   },
   extraEnv: async ({ extraEnv, agentSocket }, use) => {
-    await use({ ...extraEnv, BITWARDEN_SSH_AUTH_SOCK: agentSocket });
+    await use({ ...extraEnv, LOCALPASS_SSH_AUTH_SOCK: agentSocket });
   },
   approval: async ({ window }, use) => {
     await use(new SshApproval(window));

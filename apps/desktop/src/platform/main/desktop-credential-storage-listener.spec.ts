@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
 import { mock } from "jest-mock-extended";
 
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { passwords } from "@bitwarden/desktop-napi";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
+import { passwords } from "@localpass/desktop-napi";
 
 import { DesktopCredentialStorageListener } from "./desktop-credential-storage-listener";
 
@@ -12,7 +12,7 @@ jest.mock("electron", () => ({
   },
 }));
 
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   passwords: {
     getPassword: jest.fn(),
     setPassword: jest.fn(),
@@ -41,7 +41,7 @@ describe("DesktopCredentialStorageListener", () => {
     // service name derived from `app.getName()` changes.
 
     it("blocks renderer access to the biometric slot on the stable channel", async () => {
-      const handler = captureKeytarHandler("Bitwarden");
+      const handler = captureKeytarHandler("LocalPass");
 
       const result = await handler(null, {
         action: "getPassword",
@@ -54,7 +54,7 @@ describe("DesktopCredentialStorageListener", () => {
     });
 
     it("blocks renderer access to the biometric slot on the Beta channel", async () => {
-      const handler = captureKeytarHandler("Bitwarden Beta");
+      const handler = captureKeytarHandler("LocalPass Beta");
 
       const result = await handler(null, {
         action: "getPassword",
@@ -68,7 +68,7 @@ describe("DesktopCredentialStorageListener", () => {
 
     it("does not block non-biometric renderer calls", async () => {
       (passwords.getPassword as jest.Mock).mockResolvedValueOnce("secret");
-      const handler = captureKeytarHandler("Bitwarden");
+      const handler = captureKeytarHandler("LocalPass");
 
       const result = await handler(null, {
         action: "getPassword",
@@ -77,12 +77,12 @@ describe("DesktopCredentialStorageListener", () => {
       });
 
       expect(result).toBe("secret");
-      expect(passwords.getPassword).toHaveBeenCalledWith("Bitwarden", "user-id");
+      expect(passwords.getPassword).toHaveBeenCalledWith("LocalPass", "user-id");
     });
 
     it("does not block a non-biometric renderer call on the Beta channel", async () => {
       (passwords.getPassword as jest.Mock).mockResolvedValueOnce("secret");
-      const handler = captureKeytarHandler("Bitwarden Beta");
+      const handler = captureKeytarHandler("LocalPass Beta");
 
       const result = await handler(null, {
         action: "getPassword",
@@ -91,7 +91,7 @@ describe("DesktopCredentialStorageListener", () => {
       });
 
       expect(result).toBe("secret");
-      expect(passwords.getPassword).toHaveBeenCalledWith("Bitwarden Beta", "user-id");
+      expect(passwords.getPassword).toHaveBeenCalledWith("LocalPass Beta", "user-id");
     });
   });
 });

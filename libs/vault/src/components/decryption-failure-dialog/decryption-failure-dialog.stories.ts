@@ -1,9 +1,9 @@
 import { Meta, moduleMetadata, StoryObj, applicationConfig } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { DIALOG_DATA, DialogRef, I18nMockService, ToastService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherId } from "@localpass/common/types/guid";
+import { DIALOG_DATA, DialogRef, I18nMockService, ToastService } from "@localpass/components";
 
 import { DecryptionFailureDialogComponent } from "./decryption-failure-dialog.component";
 
@@ -46,9 +46,9 @@ export default {
             new I18nMockService({
               decryptionError: "Decryption error",
               couldNotDecryptVaultItem:
-                "Bitwarden could not decrypt the vault item listed below. Contact Bitwarden Customer Support and provide the item ID below to see if it can be recovered.",
+                "LocalPass could not decrypt the vault item listed below. Contact LocalPass Customer Support and provide the item ID below to see if it can be recovered.",
               couldNotDecryptVaultItems:
-                "Bitwarden could not decrypt the vault items listed below. Contact Bitwarden Customer Support and provide the item IDs below to see if they can be recovered.",
+                "LocalPass could not decrypt the vault items listed below. Contact LocalPass Customer Support and provide the item IDs below to see if they can be recovered.",
               itemId: "Item ID",
               itemIds: "Item IDs",
               copyId: "Copy ID",

@@ -2,8 +2,8 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ButtonModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ButtonModule } from "@localpass/components";
 
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";

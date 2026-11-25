@@ -3,28 +3,28 @@ import { Component, Input, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { KeyConnectorApiService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector-api.service";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { KeyConnectorApiService } from "@localpass/common/key-management/key-connector/abstractions/key-connector-api.service";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { SyncService } from "@localpass/common/platform/sync";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 import {
   AnonLayoutWrapperDataService,
   BitActionDirective,
   ButtonModule,
   IconButtonModule,
   ToastService,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "confirm-key-connector-domain",
@@ -46,7 +46,7 @@ export class ConfirmKeyConnectorDomainComponent implements OnInit {
    * @param organizationInviteAccepted Whether we told the server to accept the organization
    *   invite. `SsoJitProvisionFinishService.shouldAcceptOrganizationInvite` makes this decision.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() onBeforeNavigation: (organizationInviteAccepted: boolean) => Promise<void> =
     async () => {};

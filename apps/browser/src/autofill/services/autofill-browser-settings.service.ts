@@ -3,8 +3,8 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
-import { BrowserClientVendor } from "@bitwarden/common/autofill/types";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
+import { BrowserClientVendor } from "@localpass/common/autofill/types";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../platform/browser/browser-popup-utils";

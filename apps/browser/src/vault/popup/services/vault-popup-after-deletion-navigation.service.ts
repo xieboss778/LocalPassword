@@ -3,7 +3,7 @@ import { inject, Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popup-router-cache.service";
 

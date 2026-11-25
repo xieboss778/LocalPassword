@@ -1,13 +1,13 @@
-import { withPasswordManagerSdk } from "@bitwarden/common/key-management/utils";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { LogService } from "@bitwarden/logging";
+import { withPasswordManagerSdk } from "@localpass/common/key-management/utils";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { LogService } from "@localpass/logging";
 import {
   KeyRotationMethod,
   PasswordChangeAndRotateUserKeysRequest,
   RotateUserKeysRequest,
   UpgradeTokenAction,
-} from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 import { UserCryptoDialogService } from "./user-crypto-dialog.service.abstraction";
 import {

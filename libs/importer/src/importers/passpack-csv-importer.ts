@@ -1,4 +1,4 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
 
 import { ImportResult } from "../models/import-result";
 

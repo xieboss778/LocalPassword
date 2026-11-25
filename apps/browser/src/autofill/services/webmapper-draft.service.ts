@@ -5,7 +5,7 @@ import {
   KeyDefinition,
   StateProvider,
   WEBMAPPER_DISK,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 import { emptyDraft, WebmapperDraft } from "../webmapper/draft";
 

@@ -16,7 +16,7 @@ function isPasteContentShape(value: string): value is PasteContentShape {
 // Vendors whose paste formats are distinguishable by shape. Excludes 1Password (wincsv/maccsv
 // share a shape). Includes keepass now that keepassxcsv joined its picker card.
 const SHAPE_NARROWABLE_VENDORS: ReadonlySet<UpgradeImportType> = new Set([
-  "bitwarden",
+  "localpass",
   "dashlane",
   "keeper",
   "enpass",

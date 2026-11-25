@@ -1,9 +1,9 @@
 import { Observable } from "rxjs";
 
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { BoundDependency, OnDependency } from "@bitwarden/common/tools/dependencies";
-import { VendorId } from "@bitwarden/common/tools/extension";
-import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { BoundDependency, OnDependency } from "@localpass/common/tools/dependencies";
+import { VendorId } from "@localpass/common/tools/extension";
+import { UserStateSubject } from "@localpass/common/tools/state/user-state-subject";
 
 import {
   CredentialAlgorithm,
@@ -70,7 +70,7 @@ export abstract class CredentialGeneratorService {
    *  @returns a subject bound to the user's preferences
    *  @remarks Preferences determine which algorithms are used when generating a
    *   credential from a credential category (e.g. `PassX` or `Username`). Preferences
-   *   should not be used to hold navigation history. Use {@link @bitwarden/generator-navigation}
+   *   should not be used to hold navigation history. Use {@link @localpass/generator-navigation}
    *   instead.
    */
   abstract preferences: (

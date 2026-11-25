@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { BannerComponent, ButtonModule } from "@bitwarden/components";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { BannerComponent, ButtonModule } from "@localpass/components";
 
 import { VaultOrganizationUserNotificationsService } from "../../services/vault-organization-user-notifications.service";
 

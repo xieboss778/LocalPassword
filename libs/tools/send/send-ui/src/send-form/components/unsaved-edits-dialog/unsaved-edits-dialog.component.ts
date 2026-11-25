@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
-import { ButtonModule, DialogModule, DialogRef } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { ButtonModule, DialogModule, DialogRef } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** A result of the unsaved edits dialog. */
 export const UnsavedEditsDialogResult = Object.freeze({

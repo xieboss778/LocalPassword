@@ -14,8 +14,8 @@ import {
 } from "@angular/core";
 import { ControlValueAccessor, NgControl } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ButtonComponent } from "../button/button.component";
 import { BitHintDirective } from "../form-control/hint.directive";

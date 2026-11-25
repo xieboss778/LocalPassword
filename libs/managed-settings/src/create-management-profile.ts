@@ -1,4 +1,4 @@
-import { ManagementProfile } from "@bitwarden/sdk-internal";
+import { ManagementProfile } from "@localpass/sdk-internal";
 
 import { flattenSettings } from "./flatten-settings";
 import { MANAGEMENT_PROFILE_VERSION } from "./management-profile-version";

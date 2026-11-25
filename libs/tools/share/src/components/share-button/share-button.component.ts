@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { switchMap } from "rxjs";
 
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { ButtonModule, DialogRef } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { ButtonModule, DialogRef } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ShareItemService } from "../../services/share-item.service";
 import { ShareLinkService } from "../../services/share-link.service";

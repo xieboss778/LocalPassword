@@ -1,8 +1,8 @@
 /// <reference types="chrome"/>
 import { filter } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { isExternalMessage, MessageListener } from "@bitwarden/common/platform/messaging";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { isExternalMessage, MessageListener } from "@localpass/common/platform/messaging";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { ContextMenuClickedHandler } from "../browser/context-menu-clicked-handler";

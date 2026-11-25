@@ -18,52 +18,52 @@ import {
 } from "rxjs";
 import { parse } from "tldts";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { getOptionalUserId, getUserId } from "@bitwarden/common/auth/services/account.service";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { getOptionalUserId, getUserId } from "@localpass/common/auth/services/account.service";
 import {
   AutofillOverlayVisibility,
   AutofillTargetingRuleTypes,
   SHOW_AUTOFILL_BUTTON,
-} from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
-import { parseYearMonthExpiry } from "@bitwarden/common/autofill/utils";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+} from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { InlineMenuVisibilitySetting } from "@localpass/common/autofill/types";
+import { parseYearMonthExpiry } from "@localpass/common/autofill/utils";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { NeverDomains } from "@localpass/common/models/domain/domain-service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
 import {
   Fido2ActiveRequestEvents,
   Fido2ActiveRequestManager,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   IntraprocessMessageSender,
   isExternalMessage,
   MessageListener,
-} from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { buildCipherIcon } from "@bitwarden/common/vault/icon/build-cipher-icon";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
-import { CredentialGeneratorService, GenerateRequest, Type } from "@bitwarden/generator-core";
-import { GeneratorHistoryService } from "@bitwarden/generator-history";
+} from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { buildCipherIcon } from "@localpass/common/vault/icon/build-cipher-icon";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { SshKeyView } from "@localpass/common/vault/models/view/ssh-key.view";
+import { CredentialGeneratorService, GenerateRequest, Type } from "@localpass/generator-core";
+import { GeneratorHistoryService } from "@localpass/generator-history";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports
@@ -2709,8 +2709,8 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "passwordRegenerated",
         "passwords",
         "regeneratePassword",
-        "saveToBitwarden",
-        "toggleBitwardenVaultOverlay",
+        "saveToLocalPass",
+        "toggleLocalPassVaultOverlay",
         "totpCodeAria",
         "totpSecondsSpanAria",
         "unlockAccount",
@@ -3568,7 +3568,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       command: `initAutofillInlineMenu${isInlineMenuListPort ? "List" : "Button"}`,
       iframeUrl,
       pageTitle: chrome.i18n.getMessage(
-        isInlineMenuListPort ? "bitwardenVault" : "bitwardenOverlayButton",
+        isInlineMenuListPort ? "localpassVault" : "localpassOverlayButton",
       ),
       styleSheetUrl,
       showAnimations: await firstValueFrom(this.autofillService.enableInlineMenuAnimation$),

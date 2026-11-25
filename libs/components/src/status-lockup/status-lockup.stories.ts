@@ -15,13 +15,13 @@ import {
   RestrictedView,
   Security,
   VaultOpen,
-} from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+} from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { ButtonModule } from "../button";
 import { IconComponent } from "../icon";
 import { IconTileComponent } from "../icon-tile";
-import { BitwardenIcon, BITWARDEN_ICONS } from "../shared/icon";
+import { LocalPassIcon, LOCALPASS_ICONS } from "../shared/icon";
 import { SvgComponent } from "../svg";
 import { I18nMockService } from "../utils";
 
@@ -56,7 +56,7 @@ export default {
 } as Meta;
 
 /** Additional typing is for story-only knobs. */
-type Story = StoryObj<StatusLockupComponent & { svg?: BitSvg; icon?: BitwardenIcon }>;
+type Story = StoryObj<StatusLockupComponent & { svg?: BitSvg; icon?: LocalPassIcon }>;
 
 const Svgs = {
   EmptyTrash,
@@ -210,7 +210,7 @@ export const WithIconTile: Story = {
   },
   argTypes: {
     icon: {
-      options: BITWARDEN_ICONS,
+      options: LOCALPASS_ICONS,
       control: { type: "select" },
     },
   },

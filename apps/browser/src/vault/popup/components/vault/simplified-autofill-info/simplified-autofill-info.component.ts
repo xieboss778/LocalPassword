@@ -10,12 +10,12 @@ import {
 import { firstValueFrom } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { InfoFilledIcon } from "@bitwarden/assets/svg";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { PopoverModule, IconModule, ButtonModule, SvgModule } from "@bitwarden/components";
-import { StateProvider, UserKeyDefinition, VAULT_AUTOFILL_SIMPLIFIED_ICON } from "@bitwarden/state";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { InfoFilledIcon } from "@localpass/assets/svg";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { PopoverModule, IconModule, ButtonModule, SvgModule } from "@localpass/components";
+import { StateProvider, UserKeyDefinition, VAULT_AUTOFILL_SIMPLIFIED_ICON } from "@localpass/state";
 
 const VAULT_AUTOFILL_SIMPLIFIED_ICON_KEY = new UserKeyDefinition<{
   hasSeen: boolean;

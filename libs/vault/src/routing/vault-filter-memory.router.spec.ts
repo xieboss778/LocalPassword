@@ -8,15 +8,15 @@ import { RouterTestingHarness } from "@angular/router/testing";
 import {
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/../spec/fake-account-service";
-import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+} from "@localpass/common/../spec/fake-account-service";
+import { FakeStateProvider } from "@localpass/common/../spec/fake-state-provider";
 import { map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { StateProvider } from "@localpass/common/platform/state";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 import {
   BitCellComponent,
   BitCellDefDirective,
@@ -26,7 +26,7 @@ import {
   defineTable,
   DialogService,
   FilterMenuModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import {
   VAULT_FILTER_KEYS,

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer } from "@bitwarden/legacy-crypto";
+import { EncArrayBuffer } from "@localpass/legacy-crypto";
 
 import { SendAccessToken } from "../../../auth/send-access";
 import { Send } from "../models/domain/send";

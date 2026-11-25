@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SendAccessResponse as SdkSendAccessResponse } from "@bitwarden/sdk-internal";
+import { SendAccessResponse as SdkSendAccessResponse } from "@localpass/sdk-internal";
 
 import { BaseResponse } from "../../../../models/response/base.response";
 import { asUuid } from "../../../../platform/abstractions/sdk/sdk.service";

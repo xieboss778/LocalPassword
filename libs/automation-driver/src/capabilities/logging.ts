@@ -1,4 +1,4 @@
-import { FlightRecorder } from "@bitwarden/logging";
+import { FlightRecorder } from "@localpass/logging";
 
 import { AutomationCapability } from "../automation-capability";
 

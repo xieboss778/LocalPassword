@@ -1,12 +1,12 @@
 # Vendors
 
 This folder contains vendor-specific logic that extends the
-Bitwarden password manager.
+LocalPass password manager.
 
 ## Vendor IDs
 
 A vendor's ID is used to identify and trace the code provided by
-a vendor across Bitwarden. There are a few rules that vendor ids
+a vendor across LocalPass. There are a few rules that vendor ids
 must follow:
 
 1. They should be human-readable. (No UUIDs.)
@@ -28,6 +28,6 @@ There are 4 vendor-independent files in this directory.
 
 Each vendor should have one and only one definition, whose name
 MUST match their `VendorId`. The vendor is free to use either a
-single file (e.g. `bitwarden.ts`) or a folder containing multiple
-files (e.g. `bitwarden/extension.ts`, `bitwarden/forwarder.ts`) to
+single file (e.g. `localpass.ts`) or a folder containing multiple
+files (e.g. `localpass/extension.ts`, `localpass/forwarder.ts`) to
 host their files.

@@ -1,7 +1,7 @@
 import { Directive, HostListener, Input } from "@angular/core";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 @Directive({
   selector: "[appLaunchClick]",
@@ -9,7 +9,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 export class LaunchClickDirective {
   constructor(private platformUtilsService: PlatformUtilsService) {}
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input("appLaunchClick") uriToLaunch = "";
 

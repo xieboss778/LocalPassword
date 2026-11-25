@@ -10,14 +10,14 @@ import {
 } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { isDesktopAppUri } from "@bitwarden/common/desktop-native/models/desktop-autotype-pairing-uri";
-import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { isDesktopAppUri } from "@localpass/common/desktop-native/models/desktop-autotype-pairing-uri";
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   DIALOG_DATA,
   DialogConfig,
@@ -29,7 +29,7 @@ import {
   TypographyModule,
   CalloutComponent,
   LinkModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export interface AutofillConfirmationDialogParams {
   savedUris: LoginUriView[];

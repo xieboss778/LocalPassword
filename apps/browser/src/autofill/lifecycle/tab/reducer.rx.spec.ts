@@ -1,7 +1,7 @@
 import { BehaviorSubject, Subject } from "rxjs";
 
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UserId } from "@bitwarden/common/types/guid";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UserId } from "@localpass/common/types/guid";
 
 import { signedIn, tabSignals$ } from "./reducer.rx";
 import type { ObservedWindow, ReducerSources, TabLifecycleEvent, TabSignal } from "./types";

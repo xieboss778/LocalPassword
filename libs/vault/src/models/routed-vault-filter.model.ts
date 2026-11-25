@@ -1,5 +1,5 @@
-import { Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { Unassigned } from "@localpass/common/admin-console/models/collections";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 
 /**
  * A constant used to represent viewing "all" of a particular filter.

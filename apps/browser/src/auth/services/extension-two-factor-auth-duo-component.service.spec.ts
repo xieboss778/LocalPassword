@@ -1,14 +1,14 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject, Subject, firstValueFrom } from "rxjs";
 
-import { Duo2faResult } from "@bitwarden/auth/angular";
+import { Duo2faResult } from "@localpass/auth/angular";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { awaitAsync } from "@bitwarden/common/spec";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { awaitAsync } from "@localpass/common/spec";
 
 import { ZonedMessageListenerService } from "../../platform/browser/zoned-message-listener.service";
 import I18nService from "../../platform/services/i18n.service";
@@ -28,7 +28,7 @@ const deferred = () => {
 };
 
 describe("ExtensionTwoFactorAuthDuoComponentService", () => {
-  const vaultHostname = "vault.bitwarden.com";
+  const vaultHostname = "vault.local.invalid";
 
   let extensionTwoFactorAuthDuoComponentService: ExtensionTwoFactorAuthDuoComponentService;
   let browserMessagingApi: MockProxy<ZonedMessageListenerService>;

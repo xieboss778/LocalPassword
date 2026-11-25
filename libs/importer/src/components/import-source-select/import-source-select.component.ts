@@ -14,10 +14,10 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { map } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { BitSvg } from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { BitSvg } from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 import {
   ButtonModule,
   CardContentComponent,
@@ -30,8 +30,8 @@ import {
   SegmentedCardComponent,
   SvgModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportOption, importUpgradeOptions, UpgradeImportType } from "../../models";
 

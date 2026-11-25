@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType, FieldType } from "@bitwarden/common/vault/enums";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType, FieldType } from "@localpass/common/vault/enums";
 
 import { DelineaCsvImporter } from "./delinea-csv-importer";
 import {
@@ -74,7 +74,7 @@ describe("Delinea CSV Importer", () => {
     expect(loginCipher.type).toEqual(CipherType.Login);
     expect(loginCipher.login.username).toEqual("myUser");
     expect(loginCipher.login.uris.length).toEqual(1);
-    expect(loginCipher.login.uris[0].uri).toEqual("https://bitwarden.com");
+    expect(loginCipher.login.uris[0].uri).toEqual("https://local.invalid");
     expect(loginCipher.login.password).toEqual("SoftBatchCookies123!");
     expect(loginCipher.notes).toEqual("Level 1 = 1024");
 

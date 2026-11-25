@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of } from "rxjs";
 
-import { BitwardenClient } from "@bitwarden/sdk-internal";
+import { BitwardenClient } from "@localpass/sdk-internal";
 
 import {
   ObservableTracker,

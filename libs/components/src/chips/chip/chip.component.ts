@@ -8,10 +8,10 @@ import {
   viewChild,
 } from "@angular/core";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { FocusableElement } from "../../shared/focusable-element";
-import { BitwardenIcon } from "../../shared/icon";
+import { LocalPassIcon } from "../../shared/icon";
 import { BaseChipDirective } from "../shared/base-chip.directive";
 import { ChipContentComponent } from "../shared/chip-content.component";
 import { ChipDismissButtonComponent } from "../shared/chip-dismiss-button.component";
@@ -50,7 +50,7 @@ export class ChipComponent implements FocusableElement {
    */
   readonly label = input<string>("");
 
-  readonly startIcon = input<BitwardenIcon | undefined>();
+  readonly startIcon = input<LocalPassIcon | undefined>();
 
   /**
    * Provide a specific accessible name for the dismiss button if you want to use something

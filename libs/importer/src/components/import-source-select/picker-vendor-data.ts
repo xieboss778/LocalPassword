@@ -15,7 +15,7 @@ interface PickerVendorData {
 }
 
 const PICKER_VENDOR_DATA: Partial<Record<UpgradeImportType, PickerVendorData>> = {
-  bitwarden: { displayName: "Bitwarden", formats: ["bitwardencsv", "bitwardenjson"] },
+  localpass: { displayName: "LocalPass", formats: ["localpasscsv", "localpassjson"] },
   chromecsv: { displayName: "Chrome" },
   dashlane: { displayName: "Dashlane", formats: ["dashlanecsv", "dashlanejson"] },
   firefoxcsv: { displayName: "Firefox" },

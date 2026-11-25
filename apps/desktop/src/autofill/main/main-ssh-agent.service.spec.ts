@@ -2,9 +2,9 @@
 
 import { ipcMain } from "electron";
 
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { sshagent } from "@bitwarden/desktop-napi";
-import { LogService } from "@bitwarden/logging";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { sshagent } from "@localpass/desktop-napi";
+import { LogService } from "@localpass/logging";
 
 import { MainSshAgentService } from "./main-ssh-agent.service";
 
@@ -14,7 +14,7 @@ jest.mock("electron", () => ({
   },
 }));
 
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   sshagent: {
     SshAgentState: {
       serve: jest.fn(),

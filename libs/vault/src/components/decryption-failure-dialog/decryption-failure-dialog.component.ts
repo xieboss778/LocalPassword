@@ -1,7 +1,7 @@
 import { NgTemplateOutlet } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { CipherId } from "@bitwarden/common/types/guid";
+import { CipherId } from "@localpass/common/types/guid";
 import {
   DIALOG_DATA,
   DialogRef,
@@ -12,8 +12,8 @@ import {
   CenterPositionStrategy,
   IconModule,
   isAtOrLargerThanBreakpointSignal,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 export type DecryptionFailureDialogParams = {
   cipherIds: CipherId[];

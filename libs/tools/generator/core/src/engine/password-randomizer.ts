@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { EFFLongWordList } from "@bitwarden/common/platform/misc/wordlist";
+import { EFFLongWordList } from "@localpass/common/platform/misc/wordlist";
 
 import { Type } from "../metadata";
 import {

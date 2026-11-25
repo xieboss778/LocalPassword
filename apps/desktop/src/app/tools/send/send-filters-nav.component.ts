@@ -4,13 +4,13 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router } from "@angular/router";
 import { filter, map, startWith } from "rxjs";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { NavigationModule } from "@bitwarden/components";
-import { SendListFiltersService, SendPolicyService } from "@bitwarden/send-ui";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { NavigationModule } from "@localpass/components";
+import { SendListFiltersService, SendPolicyService } from "@localpass/send-ui";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * Navigation component that renders Send filter options in the sidebar.

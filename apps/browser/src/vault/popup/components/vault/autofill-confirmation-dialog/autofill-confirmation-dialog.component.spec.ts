@@ -4,14 +4,14 @@ import { By } from "@angular/platform-browser";
 import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { BehaviorSubject } from "rxjs";
 
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
-} from "@bitwarden/common/models/domain/domain-service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { DIALOG_DATA, DialogRef, DialogService } from "@bitwarden/components";
+} from "@localpass/common/models/domain/domain-service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { DIALOG_DATA, DialogRef, DialogService } from "@localpass/components";
 
 import {
   AutofillConfirmationDialogComponent,
@@ -158,13 +158,13 @@ describe("AutofillConfirmationDialogComponent", () => {
 
   it("handles empty savedUris gracefully", async () => {
     const newParams: AutofillConfirmationDialogParams = {
-      currentUrl: "https://bitwarden.com/help",
+      currentUrl: "https://local.invalid/help",
       savedUris: [],
     };
 
     const { component: fresh } = await createFreshFixture({ params: newParams });
     expect(fresh.savedUrls()).toEqual([]);
-    expect(fresh.formattedCurrentUrl()).toBe("bitwarden.com");
+    expect(fresh.formattedCurrentUrl()).toBe("local.invalid");
   });
 
   it("handles undefined savedUris by defaulting to []", async () => {
@@ -328,7 +328,7 @@ describe("AutofillConfirmationDialogComponent", () => {
 
   it('hides the "show all" button when savedUrls is empty', async () => {
     const newParams: AutofillConfirmationDialogParams = {
-      currentUrl: "https://bitwarden.com/help",
+      currentUrl: "https://local.invalid/help",
       savedUris: [],
     };
 

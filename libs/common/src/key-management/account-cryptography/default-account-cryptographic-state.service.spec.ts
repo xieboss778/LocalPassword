@@ -1,8 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
-import { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
-import { FakeStateProvider } from "@bitwarden/state-test-utils";
-import { UserId } from "@bitwarden/user-core";
+import { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
+import { FakeStateProvider } from "@localpass/state-test-utils";
+import { UserId } from "@localpass/user-core";
 
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec";
 import { ACCOUNT_CRYPTOGRAPHIC_STATE } from "../state-definitions";

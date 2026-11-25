@@ -1,7 +1,7 @@
 import { InputSignal, Type } from "@angular/core";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 export type SharedFolderDecoration = Type<{ collection: InputSignal<CollectionView> }>;
 

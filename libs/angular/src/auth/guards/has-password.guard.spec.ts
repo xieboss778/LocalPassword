@@ -5,10 +5,10 @@ import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { hasPasswordGuard } from "./has-password.guard";
 

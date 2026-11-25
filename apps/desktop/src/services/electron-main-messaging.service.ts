@@ -2,11 +2,11 @@ import * as path from "path";
 
 import { app, dialog, ipcMain, nativeTheme, Notification } from "electron";
 
-import { ThemeType } from "@bitwarden/common/platform/enums";
-import { MessageSender, CommandDefinition } from "@bitwarden/common/platform/messaging";
+import { ThemeType } from "@localpass/common/platform/enums";
+import { MessageSender, CommandDefinition } from "@localpass/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports -- Using implementation helper in implementation
-import { getCommand } from "@bitwarden/common/platform/messaging/internal";
-import { UrlType } from "@bitwarden/common/platform/misc/safe-urls";
+import { getCommand } from "@localpass/common/platform/messaging/internal";
+import { UrlType } from "@localpass/common/platform/misc/safe-urls";
 
 import { WindowMain } from "../main/window.main";
 import { SafeShell } from "../platform/main/safe-shell.main";

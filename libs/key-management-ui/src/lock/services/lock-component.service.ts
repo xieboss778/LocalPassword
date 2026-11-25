@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { BiometricsStatus } from "@bitwarden/key-management";
+import { UserId } from "@localpass/common/types/guid";
+import { BiometricsStatus } from "@localpass/key-management";
 
 // ex: type UnlockOptionValue = "masterPassword" | "pin" | "biometrics"
 export type UnlockOptionValue = (typeof UnlockOption)[keyof typeof UnlockOption];

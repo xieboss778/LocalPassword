@@ -2,14 +2,14 @@ import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { mock } from "jest-mock-extended";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { RestrictedCipherAction } from "@bitwarden/common/vault/utils/restricted-cipher-policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { CipherId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { RestrictedCipherAction } from "@localpass/common/vault/utils/restricted-cipher-policy";
 
 import { restrictedCipherGuard } from "./restricted-cipher.guard";
 

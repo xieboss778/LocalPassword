@@ -1,11 +1,11 @@
 import { firstValueFrom, Observable, shareReplay, switchMap } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { FetchMiddleware, FetchFn } from "@bitwarden/common/platform/misc/fetch-middleware";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ServerCommunicationConfigClient } from "@bitwarden/sdk-internal";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { FetchMiddleware, FetchFn } from "@localpass/common/platform/misc/fetch-middleware";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ServerCommunicationConfigClient } from "@localpass/sdk-internal";
 
 import { ServerCommunicationConfigPlatformApiService } from "./server-communication-config-platform-api.service";
 import { ServerCommunicationConfigRepository } from "./server-communication-config.repository";

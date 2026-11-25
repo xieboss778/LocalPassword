@@ -15,7 +15,7 @@ use common::{
     test_ecdsa_p521_key_blob, test_ed25519_key, test_ed25519_key_blob, test_rsa_key,
     test_rsa_key_blob, unsupported_dsa_key_blob, MockApprovalRequester,
 };
-use ssh_agent::{BitwardenSSHAgent, InMemoryEncryptedKeyStore};
+use ssh_agent::{LocalPassSSHAgent, InMemoryEncryptedKeyStore};
 
 fn test_socket_path() -> PathBuf {
     std::env::temp_dir().join("bw-ssh-agent-test.sock")
@@ -24,7 +24,7 @@ fn test_socket_path() -> PathBuf {
 fn set_socket_path() {
     // SAFETY: tests are serialized with #[serial]
     unsafe {
-        std::env::set_var("BITWARDEN_SSH_AUTH_SOCK", test_socket_path());
+        std::env::set_var("LOCALPASS_SSH_AUTH_SOCK", test_socket_path());
     }
 }
 
@@ -517,7 +517,7 @@ async fn test_session_bind_is_forwarding_reaches_approval_layer() {
         })
         .returning(|_| Ok(true));
 
-    let mut agent = BitwardenSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
+    let mut agent = LocalPassSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
     agent.replace(vec![test_ed25519_key()]).unwrap();
     agent.start().unwrap();
 
@@ -545,7 +545,7 @@ async fn test_session_bind_is_forwarding_reaches_approval_layer() {
 }
 
 // The three tests below exercise the is_initialized() gating logic end-to-end through a real
-// socket connection. BitwardenSSHAgent::new() wires up BitwardenAuthPolicy internally, so passing
+// socket connection. LocalPassSSHAgent::new() wires up LocalPassAuthPolicy internally, so passing
 // a MockApprovalRequester is sufficient — no manual policy construction is needed.
 
 #[serial]
@@ -559,7 +559,7 @@ async fn test_list_request_initialized_keystore_skips_callback() {
         .expect_request_sign_approval()
         .returning(|_| Ok(true));
 
-    let mut agent = BitwardenSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
+    let mut agent = LocalPassSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
     // replace() marks the keystore as initialized; the callback must not fire.
     agent.replace(vec![test_ed25519_key()]).unwrap();
     agent.start().unwrap();
@@ -597,7 +597,7 @@ async fn test_list_request_uninitialized_keystore_calls_callback_once() {
         .returning(|| Ok(true));
 
     // No replace() called — keystore is uninitialized; the callback must fire exactly once.
-    let mut agent = BitwardenSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
+    let mut agent = LocalPassSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
     agent.start().unwrap();
 
     let mut stream = UnixStream::connect(test_socket_path()).await.unwrap();
@@ -635,7 +635,7 @@ async fn test_list_request_uninitialized_keystore_denied_returns_failure() {
         .returning(|| Ok(false));
 
     // No replace() called — keystore is uninitialized; the denied callback must yield FAILURE.
-    let mut agent = BitwardenSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
+    let mut agent = LocalPassSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
     agent.start().unwrap();
 
     let mut stream = UnixStream::connect(test_socket_path()).await.unwrap();

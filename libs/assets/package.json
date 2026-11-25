@@ -1,7 +1,7 @@
 {
-  "name": "@bitwarden/assets",
+  "name": "@localpass/assets",
   "version": "0.0.1",
-  "description": "Assets used in Bitwarden clients",
+  "description": "Assets used in LocalPass clients",
   "private": true,
   "type": "commonjs",
   "main": "index.js",

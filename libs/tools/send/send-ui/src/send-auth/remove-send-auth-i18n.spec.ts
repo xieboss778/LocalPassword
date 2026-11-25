@@ -1,4 +1,4 @@
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
 
 import { removeSendAuthI18nKeys } from "./remove-send-auth-i18n";
 

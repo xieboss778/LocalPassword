@@ -1,4 +1,4 @@
-import { Constraints, StateConstraints } from "@bitwarden/common/tools/types";
+import { Constraints, StateConstraints } from "@localpass/common/tools/types";
 
 import { SubaddressGenerationOptions } from "../types";
 

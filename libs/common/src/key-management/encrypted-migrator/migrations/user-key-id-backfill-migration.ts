@@ -1,7 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
-import { LogService } from "@bitwarden/logging";
-import { isKeyIdBackfillError } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/logging";
+import { isKeyIdBackfillError } from "@localpass/sdk-internal";
 
 import { assertNonNullish } from "../../../auth/utils";
 import { SdkService } from "../../../platform/abstractions/sdk/sdk.service";

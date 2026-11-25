@@ -14,7 +14,7 @@
  * @see https://github.com/fregante/content-scripts-register-polyfill
  * @version 4.0.2
  */
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
 
 import { BrowserApi } from "./browser-api";
 

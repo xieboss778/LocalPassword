@@ -3,11 +3,11 @@
 import { Injectable } from "@angular/core";
 import { map, Observable, of, switchMap } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
 
 @Injectable({ providedIn: "root" })
 export class FamiliesPolicyService {
@@ -28,7 +28,7 @@ export class FamiliesPolicyService {
 
             // Check if there is exactly one organization that can manage sponsorships.
             // This is important because users that are part of multiple organizations
-            // may always access free bitwarden family menu. We want to restrict access
+            // may always access free localpass family menu. We want to restrict access
             // to the policy only when there is a single enterprise organization and the free family policy is turn.
             return sponsorshipOrgs.length === 1;
           }),

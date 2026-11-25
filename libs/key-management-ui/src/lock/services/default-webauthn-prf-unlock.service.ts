@@ -1,19 +1,19 @@
 import { firstValueFrom } from "rxjs";
 
-import { WebAuthnLoginPrfKeyServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-prf-key.service.abstraction";
-import { ClientType } from "@bitwarden/common/enums";
-import { WEBAUTHN_PRF_OPTIONS } from "@bitwarden/common/key-management/state-definitions";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { Fido2Utils } from "@bitwarden/common/platform/services/fido2/fido2-utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { PrfKey, UserKey } from "@bitwarden/common/types/key";
+import { WebAuthnLoginPrfKeyServiceAbstraction } from "@localpass/common/auth/abstractions/webauthn/webauthn-login-prf-key.service.abstraction";
+import { ClientType } from "@localpass/common/enums";
+import { WEBAUTHN_PRF_OPTIONS } from "@localpass/common/key-management/state-definitions";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { Fido2Utils } from "@localpass/common/platform/services/fido2/fido2-utils";
+import { UserId } from "@localpass/common/types/guid";
+import { PrfKey, UserKey } from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString } from "@bitwarden/legacy-crypto";
-import { WebAuthnPrfUnlockOption } from "@bitwarden/sdk-internal";
-import { StateProvider } from "@bitwarden/state";
+import { EncryptService, EncString } from "@localpass/legacy-crypto";
+import { WebAuthnPrfUnlockOption } from "@localpass/sdk-internal";
+import { StateProvider } from "@localpass/state";
 
 import { WebAuthnPrfUnlockService } from "./webauthn-prf-unlock.service";
 
@@ -251,7 +251,7 @@ export class DefaultWebAuthnPrfUnlockService implements WebAuthnPrfUnlockService
       const environment = await firstValueFrom(this.environmentService.getEnvironment$(userId));
       const hostname = Utils.getHost(environment.getWebVaultUrl());
 
-      // LocalPassword: a local vault's environment is a placeholder (`*.invalid`), never a real
+      // LocalPass: a local vault's environment is a placeholder (`*.invalid`), never a real
       // RP ID. Fall back to the page's own host, which for the extension is its extension id — the
       // same RP ID the credential was created with.
       if (!hostname || hostname.endsWith(".invalid")) {

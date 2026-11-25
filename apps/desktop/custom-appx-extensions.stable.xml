@@ -17,11 +17,11 @@
           <com:Extension xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
             Category="windows.comServer">
             <com:ComServer>
-              <com:ExeServer Executable="app\bitwarden_plugin_authenticator.exe"
+              <com:ExeServer Executable="app\localpass_plugin_authenticator.exe"
                 Arguments="serve"
-                DisplayName="Bitwarden Passkey Manager">
+                DisplayName="LocalPass Passkey Manager">
                 <com:Class Id="${clsid:windows_plugin_authenticator_config.stable.json}"
-                  DisplayName="Bitwarden Passkey Manager" />
+                  DisplayName="LocalPass Passkey Manager" />
               </com:ExeServer>
             </com:ComServer>
           </com:Extension>
@@ -30,6 +30,6 @@
             Executable="app\desktop_proxy.exe"
             EntryPoint="Windows.FullTrustApplication">
             <uap3:AppExecutionAlias>
-              <desktop:ExecutionAlias Alias="bitwarden_desktop_proxy.exe" />
+              <desktop:ExecutionAlias Alias="localpass_desktop_proxy.exe" />
             </uap3:AppExecutionAlias>
           </uap3:Extension>

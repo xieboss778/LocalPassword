@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testin
 import { RouterModule } from "@angular/router";
 import { BehaviorSubject, Observable, of } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalState, GlobalStateProvider, KeyDefinition } from "@bitwarden/state";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalState, GlobalStateProvider, KeyDefinition } from "@localpass/state";
 
 import { NavigationModule } from "../navigation/navigation.module";
 import { ARROW_STEP_REM } from "../navigation/side-nav-resize";

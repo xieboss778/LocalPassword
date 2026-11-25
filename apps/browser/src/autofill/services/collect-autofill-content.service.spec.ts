@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { FormPurposeCategories } from "@bitwarden/common/autofill/constants";
+import { FormPurposeCategories } from "@localpass/common/autofill/constants";
 
 import AutofillField from "../models/autofill-field";
 import AutofillForm from "../models/autofill-form";
@@ -63,9 +63,9 @@ describe("CollectAutofillContentService", () => {
    * Opts into the page-controlled `data-bwignore` and `data-bwautofill` attributes,
    * which are unhonored by default.
    */
-  const honorBitwardenAttributes = () => {
-    collectAutofillContentService["honorBitwardenIgnoreAttribute"] = true;
-    collectAutofillContentService["honorBitwardenAutofillAttribute"] = true;
+  const honorLocalPassAttributes = () => {
+    collectAutofillContentService["honorLocalPassIgnoreAttribute"] = true;
+    collectAutofillContentService["honorLocalPassAutofillAttribute"] = true;
     collectAutofillContentService["formFieldQueryString"] =
       collectAutofillContentService["buildFormFieldQueryString"]();
   };
@@ -77,7 +77,7 @@ describe("CollectAutofillContentService", () => {
     jest
       .mocked(autofillUtils.sendExtensionMessage)
       .mockImplementation(async (command: string, options?: Record<string, any>) =>
-        command === "getBitwardenAutofillAttributeSettings"
+        command === "getLocalPassAutofillAttributeSettings"
           ? null
           : actualSendExtensionMessage(command, options),
       );
@@ -1393,7 +1393,7 @@ describe("CollectAutofillContentService", () => {
 
   describe("getAutofillFieldElements", () => {
     beforeEach(() => {
-      honorBitwardenAttributes();
+      honorLocalPassAttributes();
     });
 
     it("returns all form elements from the targeted document if no limit is set", () => {
@@ -1588,7 +1588,7 @@ describe("CollectAutofillContentService", () => {
     });
   });
 
-  describe("Bitwarden autofill attribute settings", () => {
+  describe("LocalPass autofill attribute settings", () => {
     const attributeMarkup = `
       <div>
         <input type="text" id="ignored-input" data-bwignore />
@@ -1612,7 +1612,7 @@ describe("CollectAutofillContentService", () => {
 
     it("skips `data-bwignore` fields and collects `data-bwautofill` spans once both settings are honored", () => {
       document.body.innerHTML = attributeMarkup;
-      honorBitwardenAttributes();
+      honorLocalPassAttributes();
 
       const formElements = collectAutofillContentService["getAutofillFieldElements"]();
 
@@ -1621,7 +1621,7 @@ describe("CollectAutofillContentService", () => {
 
     it("applies each setting independently", () => {
       document.body.innerHTML = attributeMarkup;
-      collectAutofillContentService["honorBitwardenIgnoreAttribute"] = true;
+      collectAutofillContentService["honorLocalPassIgnoreAttribute"] = true;
       collectAutofillContentService["formFieldQueryString"] =
         collectAutofillContentService["buildFormFieldQueryString"]();
 
@@ -1631,15 +1631,15 @@ describe("CollectAutofillContentService", () => {
     it("adopts the fetched settings and rebuilds the field query string", async () => {
       jest.mocked(autofillUtils.sendExtensionMessage).mockResolvedValue({
         result: {
-          honorBitwardenIgnoreAttribute: true,
-          honorBitwardenAutofillAttribute: true,
+          honorLocalPassIgnoreAttribute: true,
+          honorLocalPassAutofillAttribute: true,
         },
       });
 
-      await collectAutofillContentService["fetchAndSetBitwardenAttributeSettings"]();
+      await collectAutofillContentService["fetchAndSetLocalPassAttributeSettings"]();
 
-      expect(collectAutofillContentService["honorBitwardenIgnoreAttribute"]).toBe(true);
-      expect(collectAutofillContentService["honorBitwardenAutofillAttribute"]).toBe(true);
+      expect(collectAutofillContentService["honorLocalPassIgnoreAttribute"]).toBe(true);
+      expect(collectAutofillContentService["honorLocalPassAutofillAttribute"]).toBe(true);
       expect(collectAutofillContentService["formFieldQueryString"]).toContain(
         "span[data-bwautofill]",
       );
@@ -1653,10 +1653,10 @@ describe("CollectAutofillContentService", () => {
         .mocked(autofillUtils.sendExtensionMessage)
         .mockRejectedValue(new Error("no receiving end"));
 
-      await collectAutofillContentService["fetchAndSetBitwardenAttributeSettings"]();
+      await collectAutofillContentService["fetchAndSetLocalPassAttributeSettings"]();
 
-      expect(collectAutofillContentService["honorBitwardenIgnoreAttribute"]).toBe(false);
-      expect(collectAutofillContentService["honorBitwardenAutofillAttribute"]).toBe(false);
+      expect(collectAutofillContentService["honorLocalPassIgnoreAttribute"]).toBe(false);
+      expect(collectAutofillContentService["honorLocalPassAutofillAttribute"]).toBe(false);
       expect(collectAutofillContentService["formFieldQueryString"]).not.toContain("data-bw");
     });
   });
@@ -4427,7 +4427,7 @@ describe("CollectAutofillContentService", () => {
     const createdContainers: HTMLElement[] = [];
 
     beforeEach(() => {
-      honorBitwardenAttributes();
+      honorLocalPassAttributes();
     });
 
     const makeContainer = (): HTMLElement => {

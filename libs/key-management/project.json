@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/key-management",
+  "name": "@localpass/key-management",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/key-management/src",
   "projectType": "library",
