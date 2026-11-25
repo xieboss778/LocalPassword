@@ -6,7 +6,7 @@
   <form [formGroup]="formGroup" [bitSubmit]="save">
     <bit-form-field>
       <bit-label>{{ "backupEndpoint" | i18n }}</bit-label>
-      <input bitInput type="url" formControlName="endpoint" placeholder="https://" />
+      <input bitInput type="text" formControlName="endpoint" placeholder="https://" />
     </bit-form-field>
 
     <bit-form-field>
