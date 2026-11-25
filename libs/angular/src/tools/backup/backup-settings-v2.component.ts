@@ -8,7 +8,12 @@ import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { ButtonModule, DialogService } from "@localpass/components";
-import { S3Client, VaultBackupService, VaultBackupSyncService } from "@localpass/local-vault";
+import {
+  MergeConflict,
+  S3Client,
+  VaultBackupService,
+  VaultBackupSyncService,
+} from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
 import {
@@ -147,6 +152,52 @@ interface BackupStatus {
           />
         </lp-group>
 
+        @switch (phase()) {
+          @case ("loading") {
+            <lp-group [label]="i18n.t('syncPhaseTitle')">
+              <lp-row
+                emoji="⏳"
+                [label]="i18n.t('syncLoading')"
+                [value]="i18n.t('loading')"
+                [clickable]="false"
+              />
+            </lp-group>
+          }
+          @case ("conflict") {
+            <lp-group [label]="i18n.t('syncConflictTitle')">
+              @for (conflict of conflicts(); track conflict.id) {
+                <lp-row
+                  [label]="conflict.id"
+                  [sub]="conflict.localRevision + ' → ' + conflict.remoteRevision"
+                  [value]="
+                    conflict.winner === 'local'
+                      ? i18n.t('restoreWinnerLocal')
+                      : i18n.t('restoreWinnerRemote')
+                  "
+                  [clickable]="false"
+                />
+              }
+            </lp-group>
+            <div class="tw-px-3 tw-pt-2">
+              <button type="button" bitButton buttonType="secondary" (click)="dismissConflict()">
+                {{ i18n.t("syncConflictAccept") }}
+              </button>
+            </div>
+          }
+          @case ("error") {
+            <div
+              class="tw-mx-3 tw-mt-2 tw-rounded-[11px] tw-border tw-border-[#f3c9c4] tw-bg-[#fdf0ee] tw-px-3 tw-py-2.5 tw-text-[11px] tw-text-[#8a2c22]"
+            >
+              {{ i18n.t("backupSyncFailed") }}
+            </div>
+            <div class="tw-px-3 tw-pt-2">
+              <button type="button" bitButton buttonType="secondary" (click)="syncNow()">
+                {{ i18n.t("retry") }}
+              </button>
+            </div>
+          }
+        }
+
         @if (errorMessage()) {
           <p class="tw-px-4 tw-pt-3 tw-text-[11px] tw-text-[var(--lp-danger)]">
             {{ errorMessage() }}
@@ -175,6 +226,9 @@ export class BackupSettingsV2Component implements OnInit {
   });
 
   protected readonly status = signal<BackupStatus>({ lastSyncedAt: null, lastBackupAt: null });
+  /** 同步的三态：idle / loading / conflict / error——由真实调用驱动，不是摆出来的。 */
+  protected readonly phase = signal<"idle" | "loading" | "conflict" | "error">("idle");
+  protected readonly conflicts = signal<readonly MergeConflict[]>([]);
   protected readonly busy = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly password = signal<string | null>(null);
@@ -272,13 +326,31 @@ export class BackupSettingsV2Component implements OnInit {
 
   protected async syncNow(): Promise<void> {
     this.busy.set(true);
+    this.phase.set("loading");
+    this.conflicts.set([]);
     try {
       const userId = await this.userId();
-      await this.syncService.sync(userId);
+      const result = await this.syncService.sync(userId);
       await this.refreshStatus();
+
+      // 冲突条目由拉取时的合并给出：冷启动不再用「不知道发生了什么」的提示。
+      if (result.pulled.conflicts.length > 0) {
+        this.conflicts.set(result.pulled.conflicts);
+        this.phase.set("conflict");
+      } else {
+        this.phase.set("idle");
+      }
+    } catch {
+      this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+      this.phase.set("error");
     } finally {
       this.busy.set(false);
     }
+  }
+
+  protected dismissConflict(): void {
+    this.phase.set("idle");
+    this.conflicts.set([]);
   }
 
   protected async revealPassword(): Promise<void> {

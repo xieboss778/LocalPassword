@@ -8380,5 +8380,20 @@
   },
   "importSourceHint": {
     "message": "Importing reads the file locally and writes the items straight into your vault. Nothing is uploaded; cloud backup only happens when you press it."
+  },
+  "syncPhaseTitle": {
+    "message": "Sync"
+  },
+  "syncLoading": {
+    "message": "Pulling the newest snapshot…"
+  },
+  "syncConflictTitle": {
+    "message": "Items changed on both sides"
+  },
+  "syncConflictAccept": {
+    "message": "Got it"
+  },
+  "backupSyncFailed": {
+    "message": "Sync failed — the local vault is untouched"
   }
 }

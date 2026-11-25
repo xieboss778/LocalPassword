@@ -99,3 +99,13 @@
 **桌面端 renderer 构建本地跑不了**：`npm run build:bit:renderer` 依赖 `localpass_license/bit-desktop/webpack.config.js`，本仓库没有这个覆盖层目录，webpack 直接报找不到配置。这不是代码问题——用 `ngc`（`strictTemplates: true`）做模板类型检查，等价覆盖 `NG8001` 这类模板错误。
 
 CI 的 windows / chrome / 静态检查三个 job 仍然能验证真实构建，所以本地补齐 `ngc` 即可。
+
+## 7. 写代码前先 grep 真实 import 路径
+
+这个仓库的包名与 tsconfig 别名并不总是一致（`@localpass/importer` 是 package.json 的名字，实际别名是 `@localpass/importer-core` / `-ui`；`AutoUnlockService` 在 `@localpass/unlock` 而不在 `@localpass/angular/key-management`）。这几轮已经因此红了四次构建。
+
+规则：
+
+1. 写 `import` 之前先 `grep -rn "SymbolName" apps libs --include=*.ts | head`，照着已有文件的路径抄
+2. 类型不确定时看声明处，不要凭印象给参数加窄类型（`ImportOption.id` 是 `string`，不是 `ImportType`）
+3. 改已有字段前先 `grep` 出真实行再替换——`eslint --fix` 会给字段加 `readonly`，凭记忆写的补丁会连续失手
