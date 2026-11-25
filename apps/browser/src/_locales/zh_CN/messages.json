@@ -9595,5 +9595,20 @@
   },
   "showQrCode": {
     "message": "显示二维码"
+  },
+  "restoreVaultFromCloud": {
+    "message": "从云备份恢复"
+  },
+  "restoreVaultDescription": {
+    "message": "填入存储配置和那份保险库的主密码。存储里的 account.json 用来验证口令并还原密钥，随后快照会把内容填回来。"
+  },
+  "restoreNoAccountFile": {
+    "message": "这个桶里没有 account.json，请检查配置和键前缀。"
+  },
+  "restoreFinished": {
+    "message": "保险库已恢复"
+  },
+  "restoreFailed": {
+    "message": "保险库恢复失败"
   }
 }

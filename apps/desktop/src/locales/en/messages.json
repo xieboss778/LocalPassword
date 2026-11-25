@@ -8044,5 +8044,20 @@
   },
   "showQrCode": {
     "message": "Show QR code"
+  },
+  "restoreVaultFromCloud": {
+    "message": "Restore from cloud backup"
+  },
+  "restoreVaultDescription": {
+    "message": "Enter the storage settings and the master password of the vault you want to bring back. The account file in storage proves the password and unwraps the key; the snapshot then fills the vault."
+  },
+  "restoreNoAccountFile": {
+    "message": "There is no account.json in that bucket. Check the settings and the key prefix."
+  },
+  "restoreFinished": {
+    "message": "Vault restored"
+  },
+  "restoreFailed": {
+    "message": "The vault could not be restored"
   }
 }

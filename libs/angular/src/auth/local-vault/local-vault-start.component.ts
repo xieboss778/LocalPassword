@@ -31,4 +31,9 @@ export class LocalVaultStartComponent {
   readonly restoreFromFile = async (): Promise<void> => {
     await this.router.navigate(["/create-local-vault"], { queryParams: { next: "import" } });
   };
+
+  /** Restores from the account.json + snapshot a device pushed to cloud storage. */
+  readonly restoreFromCloud = async (): Promise<void> => {
+    await this.router.navigate(["/restore-vault"]);
+  };
 }
