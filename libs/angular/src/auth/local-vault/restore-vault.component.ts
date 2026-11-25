@@ -1,12 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import {
@@ -19,11 +14,8 @@ import {
   FormFieldModule,
   TypographyModule,
 } from "@bitwarden/components";
-import {
-  Argon2KdfConfig,
-  KdfType,
-  PBKDF2KdfConfig,
-} from "@bitwarden/legacy-crypto";
+// eslint-disable-next-line no-restricted-imports
+import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
 import {
   ACCOUNT_OBJECT,
   CreateLocalAccountService,
