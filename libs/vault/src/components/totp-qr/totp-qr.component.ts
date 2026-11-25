@@ -6,7 +6,16 @@ import {
   input,
   viewChild,
 } from "@angular/core";
-import QRious from "qrious";
+// qrious ships no types and no @types package exists; the constructor is all this component needs.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const QRious = require("qrious") as new (options: {
+  element: HTMLCanvasElement;
+  value: string;
+  size: number;
+  level: string;
+  background: string;
+  foreground: string;
+}) => unknown;
 
 /**
  * Renders a QR code for a TOTP uri, so the code can be scanned into another authenticator.
