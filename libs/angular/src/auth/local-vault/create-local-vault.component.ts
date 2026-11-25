@@ -9,18 +9,17 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import {
   AsyncActionsModule,
   ButtonModule,
   FormFieldModule,
-  LinkModule,
   TypographyModule,
 } from "@bitwarden/components";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { CreateLocalAccountService } from "@bitwarden/local-vault";
 
-import { JslibModule } from "../../../jslib.module";
+import { JslibModule } from "../../jslib.module";
 
 /** Minimum length a local master password must have; deliberately longer than the server's floor. */
 const MIN_MASTER_PASSWORD_LENGTH = 8;
@@ -49,7 +48,6 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
     FormFieldModule,
     AsyncActionsModule,
     ButtonModule,
-    LinkModule,
     TypographyModule,
   ],
 })
@@ -111,9 +109,9 @@ export class CreateLocalVaultComponent {
     this.submitting = true;
     try {
       await this.createLocalAccountService.createAccount({
-        email: this.email.value,
+        email: this.email.value ?? "",
         name: this.name.value || undefined,
-        masterPassword: this.masterPassword.value,
+        masterPassword: this.masterPassword.value ?? "",
       });
 
       // Restoring from a file goes straight to the importer; otherwise the vault is ready.
