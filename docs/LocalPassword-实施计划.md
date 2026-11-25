@@ -28,13 +28,13 @@
 
 ### CI 证据（`main` @ `fa224eb`）
 
-| Job | 结论 |
-| --- | --- |
-| 静态检查（46 个 tsc 项目 + eslint + prettier + 语言包 + 依赖归属） | ✅ |
-| 单元测试（local-vault / importer / key-management-ui / 钓鱼检测，2158 用例） | ✅ |
-| Chrome 扩展生产构建 + `localpassword-chrome` 产物 | ✅ |
-| 桌面端 Windows（Rust native → 应用 → NSIS → `localpassword-windows`） | ✅ |
-| 桌面端 macOS | 排队（runner 供给问题） |
+| Job                                                                          | 结论                    |
+| ---------------------------------------------------------------------------- | ----------------------- |
+| 静态检查（46 个 tsc 项目 + eslint + prettier + 语言包 + 依赖归属）           | ✅                      |
+| 单元测试（local-vault / importer / key-management-ui / 钓鱼检测，2158 用例） | ✅                      |
+| Chrome 扩展生产构建 + `localpassword-chrome` 产物                            | ✅                      |
+| 桌面端 Windows（Rust native → 应用 → NSIS → `localpassword-windows`）        | ✅                      |
+| 桌面端 macOS                                                                 | 排队（runner 供给问题） |
 
 未由 CI 覆盖的内容与人工步骤见 `docs/LocalPassword-验证清单.md`。
 

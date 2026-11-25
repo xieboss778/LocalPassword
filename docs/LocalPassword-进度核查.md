@@ -165,7 +165,6 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 - 构建：Chrome 扩展 webpack 生产构建、桌面端 Windows NSIS 打包均成功；macOS 受 runner 排队限制，job 为 `continue-on-error`。
 - 验证清单：新增 `docs/LocalPassword-验证清单.md`，列出 CI 覆盖不到的人工验证步骤。
 
-
 ## 2026-11-26 最终核对
 
 - `main` @ `fa224eb`：静态检查、改动范围单测（2158 用例）、Chrome 构建、Windows 打包四条全绿。
