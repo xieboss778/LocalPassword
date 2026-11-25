@@ -106,6 +106,9 @@ import { ImportShellBrowserComponent } from "../tools/popup/settings/import/impo
 import { SettingsV2Component } from "../tools/popup/settings/settings-v2.component";
 import { ShareItemComponent } from "../tools/popup/share/share-item.component";
 import { AtRiskPasswordsComponent } from "../vault/popup/components/at-risk-passwords/at-risk-passwords.component";
+import { ItemFormV2Component } from "../vault/popup/components/item-form-v2/item-form-v2.component";
+import { VaultItemViewV2Component } from "../vault/popup/components/item-view-v2/item-view-v2.component";
+import { NewItemV2Component } from "../vault/popup/components/new-item-v2/new-item-v2.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit/add-edit.component";
 import { AssignCollections } from "../vault/popup/components/vault/assign-collections/assign-collections.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments/attachments.component";
@@ -113,12 +116,8 @@ import { IntroCarouselComponent } from "../vault/popup/components/vault/intro-ca
 import { NewItemPageComponent } from "../vault/popup/components/vault/new-item-page/new-item-page.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/vault-password-history/vault-password-history.component";
 import { VaultComponent } from "../vault/popup/components/vault/vault.component";
-import { ItemFormV2Component } from "../vault/popup/components/item-form-v2/item-form-v2.component";
-import { NewItemV2Component } from "../vault/popup/components/new-item-v2/new-item-v2.component";
-import { VaultItemViewV2Component } from "../vault/popup/components/item-view-v2/item-view-v2.component";
-import { VaultListV2Component } from "../vault/popup/components/vault-list-v2/vault-list-v2.component";
-import { ViewComponent } from "../vault/popup/components/vault/view/view.component";
 import { WelcomePageComponent } from "../vault/popup/components/vault/welcome-page/welcome-page.component";
+import { VaultListV2Component } from "../vault/popup/components/vault-list-v2/vault-list-v2.component";
 import {
   atRiskPasswordAuthGuard,
   canAccessAtRiskPasswords,
@@ -280,7 +279,7 @@ const routes: Routes = [
   },
   {
     path: "view-cipher",
-    component: ViewComponent,
+    component: VaultItemViewV2Component,
     canActivate: [authGuard],
     data: {
       // Above "trash"
@@ -906,7 +905,7 @@ const routes: Routes = [
       },
       {
         path: "vault",
-        component: VaultComponent,
+        component: VaultListV2Component,
         canActivate: [authGuard, restoreVaultScopeGuard],
         canDeactivate: [clearVaultStateGuard],
         data: { elevation: 0 } satisfies RouteDataProperties,
