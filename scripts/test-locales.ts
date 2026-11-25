@@ -16,12 +16,11 @@ function findLocaleFiles(dir: string): string[] {
     .map((file) => path.join(dir, file));
 }
 
+// LocalPassword ships two clients; the web and cli apps were removed in phase 1.
 function findAllLocaleFiles(rootDir: string): string[] {
   return [
     ...findLocaleFiles(path.join(rootDir, "apps", "browser", "src")),
-    ...findLocaleFiles(path.join(rootDir, "apps", "cli", "src")),
     ...findLocaleFiles(path.join(rootDir, "apps", "desktop", "src")),
-    ...findLocaleFiles(path.join(rootDir, "apps", "web", "src")),
   ].map((file) => path.relative(rootDir, file));
 }
 
