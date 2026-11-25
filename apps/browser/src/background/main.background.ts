@@ -302,7 +302,13 @@ import {
   LegacyCompatKeyService as LegacyCompatKeyServiceAbstraction,
   WebCryptoFunctionService,
 } from "@bitwarden/legacy-crypto";
-import { DefaultLocalVaultWriter, LocalAccountService } from "@bitwarden/local-vault";
+import {
+  CreateLocalAccountService,
+  DefaultLocalVaultWriter,
+  LocalAccountService,
+  LocalPasswordApiService,
+  LocalVaultNetworkGate,
+} from "@bitwarden/local-vault";
 import { FlightRecorderLogRecorder, limitPerformanceMeasurements } from "@bitwarden/logging";
 import {
   DefaultManagedSettingsService,
@@ -590,6 +596,8 @@ export default class MainBackground {
   cipherEncryptionService: CipherEncryptionService;
   localAccountService: LocalAccountService;
   localVaultWriter: LocalVaultWriter;
+  networkGate: LocalVaultNetworkGate;
+  createLocalAccountService: CreateLocalAccountService;
   collectionEncryptionService: CollectionEncryptionService;
   private restrictedItemTypesService: RestrictedItemTypesService;
 
@@ -969,7 +977,9 @@ export default class MainBackground {
       sessionTimeoutTypeService,
     );
 
-    this.apiService = new ApiService(
+    this.networkGate = new LocalVaultNetworkGate();
+
+    this.apiService = new LocalPasswordApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
@@ -980,6 +990,7 @@ export default class MainBackground {
       this.vaultTimeoutSettingsService,
       this.accountService,
       { createRequest: (url, request) => new Request(url, request) },
+      this.networkGate,
     );
 
     this.organizationUserApiService = new DefaultOrganizationUserApiService(this.apiService);
@@ -1236,6 +1247,21 @@ export default class MainBackground {
     this.cipherSdkService = new DefaultCipherSdkService(this.sdkService, this.logService);
 
     this.localAccountService = new LocalAccountService(this.stateProvider);
+    this.createLocalAccountService = new CreateLocalAccountService(
+      this.accountService,
+      this.environmentService,
+      this.tokenService,
+      this.masterPasswordService,
+      this.userDecryptionOptionsService,
+      this.billingAccountProfileStateService,
+      this.vaultTimeoutSettingsService,
+      this.kdfConfigService,
+      this.accountCryptographicStateService,
+      this.unlockService,
+      this.legacyCompatKeyService,
+      this.localAccountService,
+      this.logService,
+    );
     this.localVaultWriter = new DefaultLocalVaultWriter(
       this.localAccountService,
       this.cipherEncryptionService,
