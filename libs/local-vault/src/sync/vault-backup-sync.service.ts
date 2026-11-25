@@ -144,6 +144,12 @@ export class VaultBackupSyncService {
     return await firstValueFrom(this.syncState(userId).state$);
   }
 
+  /** An S3 client for the configured storage, or null when sync is not configured yet. */
+  async clientFor(userId: UserId): Promise<S3Client | null> {
+    const config = await this.getConfig(userId);
+    return config == null ? null : this.clientFactory(config);
+  }
+
   /** Flags that local changes are waiting; the scheduler calls this after every write. */
   async markPending(userId: UserId): Promise<void> {
     await this.syncState(userId).update((state) => ({ ...state, pending: true }));
