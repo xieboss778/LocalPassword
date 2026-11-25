@@ -509,8 +509,9 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
   async logOut() {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "logOut" },
-      content: { key: "logOutConfirmation" },
-      type: "info",
+      // LocalPassword: logging out wipes a vault that has no server copy, so say so plainly.
+      content: { key: "localVaultLogoutWarning" },
+      type: "danger",
     });
 
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;

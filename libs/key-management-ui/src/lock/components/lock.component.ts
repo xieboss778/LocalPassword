@@ -139,6 +139,8 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private invalidPinAttempts = 0;
+  /** Until this timestamp the PIN form refuses entries instead of logging the user out. */
+  private pinLockedUntil: number | null = null;
   private unlockingViaPin = false;
   private readonly pinService = inject(PinServiceAbstraction);
 
@@ -532,19 +534,33 @@ export class LockComponent implements OnInit, OnDestroy {
 
     const MAX_INVALID_PIN_ENTRY_ATTEMPTS = 5;
 
+    // LocalPassword: a local vault has no recovery path, so repeated wrong PINs must never log the
+    // user out. Past the threshold they instead lock the form for a growing pause.
+    if (this.pinLockedUntil == null || Date.now() >= this.pinLockedUntil) {
+      this.pinLockedUntil = null;
+    } else {
+      return;
+    }
+
     try {
       await this.unlockService.unlockWithPin(this.activeAccount.id, pin);
     } catch {
       // Failure state: invalid PIN or failed decryption
       this.invalidPinAttempts++;
 
-      // Log user out if they have entered an invalid PIN too many times
       if (this.invalidPinAttempts >= MAX_INVALID_PIN_ENTRY_ATTEMPTS) {
+        // 5th attempt waits 1s, then 2s, 4s … capped at a minute. The vault is never destroyed.
+        const over = this.invalidPinAttempts - MAX_INVALID_PIN_ENTRY_ATTEMPTS;
+        const waitMs = Math.min(60_000, 2 ** over * 1000);
+        this.pinLockedUntil = Date.now() + waitMs;
         this.toastService.showToast({
           variant: "error",
-          message: this.i18nService.t("tooManyInvalidPinEntryAttemptsLoggingOut"),
+          message: this.i18nService.t("tooManyInvalidPinAttemptsWait"),
         });
-        await this.logoutService.logout(this.activeAccount.id, "tooManyInvalidPinAttempts");
+        this.formGroup?.controls.pin.reset();
+        setTimeout(() => {
+          this.pinLockedUntil = null;
+        }, waitMs);
         return;
       }
 

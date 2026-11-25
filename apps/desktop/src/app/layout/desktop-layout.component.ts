@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
-import { map } from "rxjs";
+import { of } from "rxjs";
 
 import { PasswordManagerLogo } from "@bitwarden/assets/svg";
 import { DeviceType } from "@bitwarden/common/enums";
@@ -9,7 +9,6 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, LayoutComponent, NavigationModule } from "@bitwarden/components";
-import { SendPolicyService } from "@bitwarden/send-ui";
 import { I18nPipe } from "@bitwarden/ui-common";
 import { VaultManageNavComponent, VaultNavSectionComponent } from "@bitwarden/vault";
 
@@ -40,17 +39,14 @@ import { DesktopSideNavComponent } from "./desktop-side-nav.component";
 })
 export class DesktopLayoutComponent {
   private dialogService = inject(DialogService);
-  private sendPolicyService = inject(SendPolicyService);
   private configService = inject(ConfigService);
   private platformUtilsService = inject(PlatformUtilsService);
   private router = inject(Router);
 
   protected readonly logo = PasswordManagerLogo;
 
-  protected readonly sendEnabled = toSignal(
-    this.sendPolicyService.disableSend$.pipe(map((disableSend) => !disableSend)),
-    { initialValue: true },
-  );
+  // LocalPassword: Send relays a secret through a server, so a local vault never offers it.
+  protected readonly sendEnabled = toSignal(of(false), { initialValue: false });
 
   protected readonly vfo1Foundation = toSignal(
     this.configService.getFeatureFlag$(FeatureFlag.VFO1Foundation),

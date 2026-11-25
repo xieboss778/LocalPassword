@@ -142,8 +142,9 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     this.loading = true;
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "logOut" },
-      content: { key: "logOutConfirmation" },
-      type: "info",
+      // LocalPassword: logging out wipes a vault that has no server copy, so say so plainly.
+      content: { key: "localVaultLogoutWarning" },
+      type: "danger",
     });
 
     if (confirmed) {
