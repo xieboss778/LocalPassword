@@ -30,7 +30,7 @@ import {
 } from "@localpass/angular/auth/registration";
 import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
-import { BackupSettingsComponent } from "@localpass/angular/tools/backup";
+import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
 import {
   DevicesIcon,
   ExpiredIcon,
@@ -423,7 +423,7 @@ const routes: Routes = [
   {
     // LocalPass: cloud backup settings for a local vault.
     path: "backup-settings",
-    component: BackupSettingsComponent,
+    component: BackupSettingsV2Component,
     canActivate: [authGuard],
     data: { elevation: 1 } satisfies RouteDataProperties,
   },

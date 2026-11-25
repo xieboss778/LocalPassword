@@ -9778,5 +9778,41 @@
   },
   "touchIdDesktopOnly": {
     "message": "Touch ID unlock lives in the macOS desktop app: Settings → Security. The extension never asks for it."
+  },
+  "backupSubtitle": {
+    "message": "Everything uploads only when you press a button"
+  },
+  "backupManualNotice": {
+    "message": "There is no background job: local edits never upload on their own. Restoring, deleting and importing are all local until you press backup or sync."
+  },
+  "backupStatus": {
+    "message": "Status"
+  },
+  "lastSynced": {
+    "message": "Last sync"
+  },
+  "lastBackup": {
+    "message": "Last backup"
+  },
+  "backupMode": {
+    "message": "Mode"
+  },
+  "backupStorage": {
+    "message": "Storage"
+  },
+  "backupAccessKey": {
+    "message": "Access key ID"
+  },
+  "backupActions": {
+    "message": "Actions"
+  },
+  "backupSaveConfig": {
+    "message": "Save configuration"
+  },
+  "backupPassphrase": {
+    "message": "Backup passphrase"
+  },
+  "backupFieldsRequired": {
+    "message": "Fill endpoint, bucket and credentials first"
   }
 }

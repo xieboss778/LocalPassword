@@ -9745,5 +9745,41 @@
   },
   "touchIdDesktopOnly": {
     "message": "Touch ID 解锁在 macOS 桌面端「设置 → 安全」里，扩展里不提供这个开关。"
+  },
+  "backupSubtitle": {
+    "message": "只有你点按钮时才会上传"
+  },
+  "backupManualNotice": {
+    "message": "没有后台任务：本地改动不会自动上传。恢复、删除、导入都只发生在本地，直到你点「立即备份」或「立即同步」。"
+  },
+  "backupStatus": {
+    "message": "状态"
+  },
+  "lastSynced": {
+    "message": "上次同步"
+  },
+  "lastBackup": {
+    "message": "上次备份"
+  },
+  "backupMode": {
+    "message": "模式"
+  },
+  "backupStorage": {
+    "message": "存储"
+  },
+  "backupAccessKey": {
+    "message": "Access Key ID"
+  },
+  "backupActions": {
+    "message": "操作"
+  },
+  "backupSaveConfig": {
+    "message": "保存配置"
+  },
+  "backupPassphrase": {
+    "message": "备份口令"
+  },
+  "backupFieldsRequired": {
+    "message": "先填端点、桶名和凭据"
   }
 }
