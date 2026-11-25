@@ -35,6 +35,14 @@ export class LocalVaultUnsupportedError extends Error {
  * never touches the network.
  */
 export class DefaultLocalVaultWriter implements LocalVaultWriter {
+  /** Called after every local write so the sync scheduler can debounce an upload. */
+  private changeListener: ((userId: UserId) => void) | null = null;
+
+  /** Registers the callback that hears about local writes. */
+  setChangeListener(listener: (userId: UserId) => void): void {
+    this.changeListener = listener;
+  }
+
   constructor(
     private readonly localAccountService: LocalAccountService,
     private readonly cipherEncryptionService: CipherEncryptionService,
@@ -99,6 +107,7 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
       }
       return next;
     });
+    this.changeListener?.(userId);
     return true;
   }
 
@@ -131,6 +140,7 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
     });
     // Folders live in the same client-managed state the SDK repository reads.
     await this.foldersState(userId).update((state) => ({ ...(state ?? {}), [data.id]: data }));
+    this.changeListener?.(userId);
     return data;
   }
 
@@ -146,6 +156,7 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
       }
       return next;
     });
+    this.changeListener?.(userId);
     return true;
   }
 
@@ -212,6 +223,7 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
   private async write(cipher: Cipher, userId: UserId): Promise<void> {
     const data = cipher.toCipherData();
     await this.ciphersState(userId).update((state) => ({ ...(state ?? {}), [cipher.id]: data }));
+    this.changeListener?.(userId);
   }
 
   private ciphersState(userId: UserId) {
