@@ -16,14 +16,13 @@
 - 浏览器↔桌面通信硬编码了 `com.8bit.bitwarden` 和 Bitwarden 扩展 ID（`apps/desktop/src/main/native-messaging.main.ts:174-188`、`473-478`）。
 - 桌面端构建强制需要 Rust 工具链（`apps/desktop/desktop_native/`），本机目前没有，v1 的"没有 Rust 就停下来"必须升级为"先装工具链"。
 
-## 执行状态（2026-11-25）
+## 执行状态（2026-11-26）
 
 - **开发规则**：见 `docs/LocalPassword-开发规则.md`。硬规则：本地不做任何构建/打包/测试，构建全部在 GitHub Actions 完成。
-- **已推送**：仓库已能推到 `xieboss778/LocalPassword`（经本机代理 `127.0.0.1:7889`），CI 会给出类型/格式/单测/双端构建结果。
-- **已完成**：阶段 0（改名、关自动更新、固定扩展 ID `gmobddgobjdhbjhedhgaeekhgchkoncm`）、阶段 1（瘦身与 CI 重写）、阶段 2 的数据层与网络层（本地账户创建、本地读写、网络闸门、起始页与创建向导、安全护栏）、阶段 3 的桌面阻断项（原生消息改名、禁 SSO cookie、`data.json.bak`）、阶段 4 的核心（S3 客户端、同步引擎、备份服务、调度器）。
-- **进行中**：阶段 4 的设置页与两端调度接线（`chrome.alarms` / 桌面主进程 timer）、`account.json` 上传与「从 R2 恢复」。
-- **未开始**：阶段 5（Passkey/PRF 登记）、阶段 6（Google Authenticator 二维码）、阶段 7（打包发布）。
-- **进度核查**：`docs/LocalPassword-进度核查.md` 记录每一步的证据（文件与行号）；该文档在每次阶段推进后更新。
+- **已完成**：阶段 0（改名、关自动更新、固定扩展 ID）、阶段 1（瘦身 + CI 护栏）、阶段 2（本地账户、本地读写、网络闸门、起始页与创建向导、安全护栏）、阶段 3 阻断项（原生消息改名、禁 SSO cookie、`data.json.bak`）、阶段 4（S3 客户端、快照同步、备份与调度、云端恢复）、阶段 5（PRF 登记与解锁路径）、阶段 6（Google Authenticator 导入、TOTP 二维码）、阶段 7 的扩展产物 zip 与安装文档。
+- **进行中**：CI 收敛——静态检查（eslint + prettier + 类型）与单元测试逐轮变绿；桌面端 Windows/macOS 打包因 runner 排队尚未跑完一轮完整流程。
+- **待验证**：Passkey 保存/断言在两端的实测；桌面端从托盘运行时的定时同步实测。
+- **进度证据**：`docs/LocalPassword-进度核查.md` 记录每一步的文件与行号。
 
 ## Context
 
