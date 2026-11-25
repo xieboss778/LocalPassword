@@ -113,6 +113,7 @@ import { IntroCarouselComponent } from "../vault/popup/components/vault/intro-ca
 import { NewItemPageComponent } from "../vault/popup/components/vault/new-item-page/new-item-page.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/vault-password-history/vault-password-history.component";
 import { VaultComponent } from "../vault/popup/components/vault/vault.component";
+import { VaultListV2Component } from "../vault/popup/components/vault-list-v2/vault-list-v2.component";
 import { ViewComponent } from "../vault/popup/components/vault/view/view.component";
 import { WelcomePageComponent } from "../vault/popup/components/vault/welcome-page/welcome-page.component";
 import {
@@ -245,6 +246,13 @@ const routes: Routes = [
         } satisfies ExtensionAnonLayoutWrapperData,
       },
     ],
+  },
+  {
+    // LocalPassword：方向 C 的新列表，逐个替换旧界面时先用独立路由对比。
+    path: "vault-list-v2",
+    component: VaultListV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
     path: "view-cipher",

@@ -9643,5 +9643,29 @@
   },
   "backupConflicts": {
     "message": "The remote copy differs from this device; review before syncing again."
+  },
+  "itemKindLogin": {
+    "message": "Login"
+  },
+  "itemKindToken": {
+    "message": "Token"
+  },
+  "itemKindSshKey": {
+    "message": "SSH key"
+  },
+  "itemKindLicense": {
+    "message": "License"
+  },
+  "itemKindCard": {
+    "message": "Card"
+  },
+  "itemKindIdentity": {
+    "message": "Identity"
+  },
+  "itemKindServer": {
+    "message": "Server"
+  },
+  "itemKindNote": {
+    "message": "Note"
   }
 }

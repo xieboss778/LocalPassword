@@ -9610,5 +9610,29 @@
   },
   "backupConflicts": {
     "message": "远端与本地不一致，请先确认再同步。"
+  },
+  "itemKindLogin": {
+    "message": "登录"
+  },
+  "itemKindToken": {
+    "message": "令牌"
+  },
+  "itemKindSshKey": {
+    "message": "SSH 私钥"
+  },
+  "itemKindLicense": {
+    "message": "许可证"
+  },
+  "itemKindCard": {
+    "message": "卡片"
+  },
+  "itemKindIdentity": {
+    "message": "身份"
+  },
+  "itemKindServer": {
+    "message": "服务器"
+  },
+  "itemKindNote": {
+    "message": "笔记"
   }
 }
