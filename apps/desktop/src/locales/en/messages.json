@@ -7891,5 +7891,26 @@
   "secureCheckoutViaStripe": {
     "message": "Secure checkout via Stripe",
     "description": "Shown with the Premium price where checkout opens in the browser"
+  },
+  "localVaultStartTitle": {
+    "message": "LocalPassword"
+  },
+  "localVaultIntro": {
+    "message": "This vault lives only on this device. There is no account and no server — nothing you save here ever leaves your computer."
+  },
+  "createLocalVault": {
+    "message": "Create local vault"
+  },
+  "createLocalVaultDescription": {
+    "message": "Choose an email to identify this vault and a master password to protect it. Both stay on this device, and the password cannot be recovered."
+  },
+  "restoreVaultFromFile": {
+    "message": "Restore from a backup file"
+  },
+  "restoreVaultFromCloudComingSoon": {
+    "message": "Restoring from a cloud backup becomes available once cloud sync is configured."
+  },
+  "passwordsDoNotMatch": {
+    "message": "Passwords do not match."
   }
 }

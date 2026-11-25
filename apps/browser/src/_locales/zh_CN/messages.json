@@ -9442,5 +9442,26 @@
   },
   "requestAccessModalRequestCreatedSuccessV2": {
     "message": "已请求访问权限"
+  },
+  "localVaultStartTitle": {
+    "message": "LocalPassword"
+  },
+  "localVaultIntro": {
+    "message": "这个保险库只存在于本机。没有账户，也没有服务器——你保存的一切都不会离开这台电脑。"
+  },
+  "createLocalVault": {
+    "message": "创建本地保险库"
+  },
+  "createLocalVaultDescription": {
+    "message": "用一个邮箱标识这个保险库，再设置一个主密码来保护它。两者都只留在这台设备上，主密码无法找回。"
+  },
+  "restoreVaultFromFile": {
+    "message": "从备份文件恢复"
+  },
+  "restoreVaultFromCloudComingSoon": {
+    "message": "配置云同步后即可从云端备份恢复。"
+  },
+  "passwordsDoNotMatch": {
+    "message": "两次输入的密码不一致。"
   }
 }

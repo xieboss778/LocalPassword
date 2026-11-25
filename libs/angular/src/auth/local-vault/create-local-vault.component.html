@@ -1,0 +1,43 @@
+<form [formGroup]="formGroup" [bitSubmit]="submit">
+  <p bitTypography="body1" class="tw-text-main tw-mb-4">
+    {{ "createLocalVaultDescription" | i18n }}
+  </p>
+
+  <bit-form-field>
+    <bit-label>{{ "emailAddress" | i18n }}</bit-label>
+    <input id="local-vault_email" bitInput type="email" formControlName="email" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "name" | i18n }}</bit-label>
+    <input id="local-vault_name" bitInput type="text" formControlName="name" />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "masterPassword" | i18n }}</bit-label>
+    <input
+      id="local-vault_master-password"
+      bitInput
+      type="password"
+      formControlName="masterPassword"
+    />
+  </bit-form-field>
+
+  <bit-form-field>
+    <bit-label>{{ "confirmMasterPassword" | i18n }}</bit-label>
+    <input
+      id="local-vault_confirm-master-password"
+      bitInput
+      type="password"
+      formControlName="confirmMasterPassword"
+    />
+  </bit-form-field>
+
+  <p *ngIf="errorMessage != null" bitTypography="helper" class="tw-text-danger">
+    {{ errorMessage }}
+  </p>
+
+  <button type="submit" bitButton bitFormButton buttonType="primary" [block]="true">
+    {{ "createLocalVault" | i18n }}
+  </button>
+</form>

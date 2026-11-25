@@ -1,0 +1,17 @@
+<div class="tw-flex tw-flex-col tw-gap-4">
+  <p bitTypography="body1" class="tw-text-main tw-mb-0">
+    {{ "localVaultIntro" | i18n }}
+  </p>
+
+  <button type="button" bitButton buttonType="primary" [block]="true" (click)="createVault()">
+    {{ "createLocalVault" | i18n }}
+  </button>
+
+  <button type="button" bitButton buttonType="secondary" [block]="true" (click)="restoreFromFile()">
+    {{ "restoreVaultFromFile" | i18n }}
+  </button>
+
+  <p bitTypography="helper" class="tw-text-muted tw-mb-0">
+    {{ "restoreVaultFromCloudComingSoon" | i18n }}
+  </p>
+</div>
