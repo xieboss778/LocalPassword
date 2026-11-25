@@ -11,6 +11,7 @@ import { AccountCryptographicStateService } from "@bitwarden/common/key-manageme
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import {
   MasterKeyWrappedUserKey,
+  MasterPasswordSalt,
   MasterPasswordUnlockData,
 } from "@bitwarden/common/key-management/master-password/types/master-password.types";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
@@ -173,7 +174,7 @@ export class CreateLocalAccountService {
       {
         name,
         email,
-        salt: request.unlock.salt,
+        salt: request.unlock.salt as MasterPasswordSalt,
         kdfConfig: request.unlock.kdf,
         wrappedUserKey: request.unlock.masterKeyWrappedUserKey,
         wrappedPrivateKey: request.wrappedPrivateKey,
@@ -188,7 +189,7 @@ export class CreateLocalAccountService {
     account: {
       name: string;
       email: string;
-      salt: string;
+      salt: MasterPasswordSalt;
       kdfConfig: KdfConfig;
       wrappedUserKey: string;
       wrappedPrivateKey: string;
@@ -215,7 +216,7 @@ export class CreateLocalAccountService {
 
     await this.masterPasswordService.setMasterPasswordUnlockData(
       new MasterPasswordUnlockData(
-        account.salt as MasterPasswordUnlockData["salt"],
+        account.salt,
         account.kdfConfig,
         account.wrappedUserKey as unknown as MasterKeyWrappedUserKey,
       ),
