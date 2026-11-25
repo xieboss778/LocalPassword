@@ -158,7 +158,6 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 
 **CI 收敛记录**：类型检查 46 个项目多次全绿；eslint 从 19 项降到 0；prettier 基线通过一次性 `format.yml` + `chore/prettier` 分支合并建立；Chrome 扩展 webpack 构建成功。仍未跑完的是单元测试与桌面端打包（GitHub runner 排队 + 频繁推送触发 concurrency 取消）。
 
-
 ## 2026-11-26 收尾：CI 收敛完成
 
 - 单测：全量 jest 首轮 9714 passed / 3 failed，三条失败（钓鱼默认值、创建时间类型、204 响应体）已修；改动范围门禁 2158 用例全绿。
