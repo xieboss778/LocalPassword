@@ -30,12 +30,13 @@ function ic(name, size) {
 var DATA = {
   email: "bossxie@xie.dev",
   items: [
-    { e: "🔐", n: "GitHub", u: "bossxie", tag: "开发", otp: "742 913", fav: true },
-    { e: "✉️", n: "Proton Mail", u: "bossxie@proton.me", tag: "邮箱" },
-    { e: "🏦", n: "招商银行", u: "6214 **** 8891", tag: "金融" },
-    { e: "☁️", n: "Cloudflare", u: "ops@xie.dev", tag: "基础设施", otp: "118 402" },
-    { e: "🎮", n: "Steam", u: "bossxie", tag: "娱乐" },
-    { e: "🧾", n: "发票系统", u: "xie", tag: "工作" },
+    { type: "login", n: "GitHub", u: "bossxie · 登录", otp: "742 913", fav: true },
+    { type: "server", n: "生产跳板机", u: "10.0.2.14:22 · SSH" },
+    { type: "key", n: "Cloudflare API", u: "令牌 · 生产", otp: "118 402" },
+    { type: "card", n: "招商银行 储蓄卡", u: "•••• 8891 · 借记" },
+    { type: "identity", n: "本人身份证", u: "居民身份证" },
+    { type: "login", n: "Proton Mail", u: "bossxie@proton.me · 登录" },
+    { type: "note", n: "恢复码", u: "笔记 · 12 行" },
   ],
   passkeys: [{ n: "webauthn.me", d: "2026-11-02 登记" }],
   keys: [{ n: "YubiKey 5C NFC", d: "2026-10-18 登记 · 最后使用 3 天前" }],
@@ -131,13 +132,13 @@ POPUP["unlock-wait"] = function () {
 POPUP.vault = function () {
   var fav = DATA.items.filter(function (i) { return i.fav; });
   var rest = DATA.items.filter(function (i) { return !i.fav; });
-  return pTop("保险库", "6 个条目 · 已加密 · 离线") + pSearch() +
+  return pTop("保险库", "7 个条目 · 已加密 · 离线") + pSearch() +
     '<div class="p-scroll">' +
     pTitle("收藏") + pGroup(fav.map(function (i) {
-      return row({ emoji: i.e, k: i.n, sub: i.u, value: i.otp || "", mono: true, brand: !!i.otp, go: "item" });
+      return row({ emoji: typeOf(i.type).icon, k: i.n, sub: i.u, value: i.otp || "", mono: true, brand: !!i.otp, go: "item" });
     }).join("")) +
     pTitle("全部条目") + pGroup(rest.map(function (i) {
-      return row({ emoji: i.e, k: i.n, sub: i.u, go: "item" });
+      return row({ emoji: typeOf(i.type).icon, k: i.n, sub: i.u, go: "item" });
     }).join("")) +
     "</div>" + pTabbar("vault");
 };
@@ -146,7 +147,7 @@ POPUP["vault-empty"] = function () {
   return pTop("保险库", "还没有条目") +
     '<div class="p-scroll">' +
     pHero("vault", "空的保险库", "新建一个登录条目，或者从别处导入。") +
-    '<div class="p-actions"><button class="btn" data-go="item-edit">新建条目</button>' +
+    '<div class="p-actions"><button class="btn" data-go="new-type">新建条目</button>' +
     '<button class="btn secondary" data-go="import-ga">从 Google 认证器导入</button>' +
     '<button class="btn secondary" data-go="restore-cloud">从备份恢复</button></div>' +
     "</div>" + pTabbar("vault");
@@ -506,7 +507,7 @@ DESK["security-desktop"] = function () {
 
 function vaultRows(current) {
   return DATA.items.map(function (i, idx) {
-    return dRow({ emoji: i.e, n: i.n, sub: i.u, value: i.otp || "", current: idx === (current || 0), go: "vault-desktop" });
+    return dRow({ emoji: typeOf(i.type).icon, n: i.n, sub: i.u, value: i.otp || "", current: idx === (current || 0), go: "vault-desktop" });
   }).join("");
 }
 
@@ -519,7 +520,7 @@ function vaultRows(current) {
 
 
 DESK["gen-desktop"] = function () {
-  var list = DATA.items.map(function (i) { return dRow({ emoji: i.e, n: i.n, sub: i.u, value: i.otp || "" }); }).join("");
+  var list = DATA.items.map(function (i) { return dRow({ emoji: typeOf(i.type).icon, n: i.n, sub: i.u, value: i.otp || "" }); }).join("");
   var main =
     '<div class="hd"><h2>生成器</h2><div class="d-toolbar"><span class="t primary">复制</span></div></div>' +
     '<div class="body">' +
@@ -563,7 +564,7 @@ function inputRow(label, value, opts) {
 DESK["vault-desktop"] = function () {
   var main =
     '<div class="hd"><div><h2>GitHub</h2><div class="meta">github.com · 登录 · 开发</div></div>' +
-    '<div class="d-toolbar"><span class="t">' + star(true) + '</span><span class="t" data-go="d-item-edit">编辑</span><span class="t" data-go="d-item-delete">删除</span><span class="t primary">复制密码</span></div></div>' +
+    '<div class="d-toolbar"><span class="t">' + star(true) + '</span><span class="t" data-go="d-form-login">编辑</span><span class="t" data-go="d-item-delete">删除</span><span class="t primary">复制密码</span></div></div>' +
     '<div class="body">' +
     '<div class="gtitle">凭据</div><div class="group">' +
       kvRow("用户名", "bossxie", { mono: true, copy: true }) +
@@ -586,81 +587,12 @@ DESK["vault-desktop"] = function () {
       kvRow("附件", "recovery-codes.txt · 4 KB", { chev: true }) +
     "</div></div>" +
     '<div class="foot"><span>修改于 2026-11-26 14:02 · 创建于 2026-10-12</span><span class="mono">本地 · 无网络请求</span></div>';
-  return dRail("vault") + dList("保险库", "6 个条目 · 已加密", vaultRows(0), { label: "＋ 新建条目", go: "d-item-new" }) +
+  return dRail("vault") + dList("保险库", "6 个条目 · 已加密", vaultRows(0), { label: "＋ 新建条目", go: "d-pick-type" }) +
     '<div class="d-main">' + main + "</div>";
 };
 
 /* ---------- 桌面端：新建 / 编辑（同一套表单） ---------- */
-function deskForm(opts) {
-  opts = opts || {};
-  var editing = !!opts.editing;
-  var main =
-    '<div class="hd"><div><h2>' + (editing ? "编辑 GitHub" : "新建条目") + "</h2>" +
-    '<div class="meta">' + (editing ? "保存后覆盖本地记录" : "保存后写入本地加密存储") + "</div></div>" +
-    '<div class="d-toolbar"><span class="t" data-go="vault-desktop">取消</span><span class="t primary" data-go="vault-desktop">保存</span></div></div>' +
-    '<div class="body">' +
-    '<div class="gtitle">类型</div><div class="group">' +
-      '<div class="row" style="cursor:default;gap:8px">' +
-        ["登录|🔐", "卡片|💳", "身份|🪪", "备注|📝"].map(function (t, i) {
-          var parts = t.split("|");
-          var on = i === 0;
-          return '<span class="type-pill' + (on ? " on" : "") + '">' + parts[1] + " " + parts[0] + "</span>";
-        }).join("") + "</div></div>" +
-    '<div class="gtitle">项目</div><div class="group">' +
-      inputRow("名称", editing ? "GitHub" : "") +
-      inputRow("文件夹", editing ? "开发" : "未分类", { action: "选择" }) +
-      '<div class="row"><span class="k">收藏</span><span class="switch' + (editing ? "" : " off") + '"></span></div>' +
-    "</div>" +
-    '<div class="gtitle">登录凭据</div><div class="group">' +
-      inputRow("用户名", editing ? "bossxie" : "") +
-      inputRow("密码", editing ? "••••••••••••" : "", { mask: true, action: "生成" }) +
-      inputRow("验证码密钥", editing ? "JBSWY3DP••••" : "", { action: "扫码" }) +
-    "</div>" +
-    '<div class="gtitle">自动填充（网址）</div><div class="group">' +
-      inputRow("网址 1", editing ? "github.com" : "", { action: "删除" }) +
-      inputRow("网址 2", editing ? "gist.github.com" : "", { action: "删除" }) +
-      '<div class="row"><span class="k" style="color:#2f6bff">＋ 添加网址</span></div>' +
-    "</div>" +
-    '<div class="gtitle">Passkey</div><div class="group">' +
-      (editing ? kvRow("webauthn.me", "2026-11-02 登记", { chev: true }) : '<div class="row"><span class="k" style="color:#2f6bff">在网站上创建 Passkey</span></div>') +
-    "</div>" +
-    '<div class="gtitle">自定义字段（2）</div><div class="group">' +
-      inputRow("恢复码 · 隐藏", "••••••••", { mask: true, action: "显示" }) +
-      inputRow("备用邮箱 · 文本", editing ? "backup@xie.dev" : "") +
-      '<div class="row"><span class="k" style="color:#2f6bff">＋ 添加字段</span><span class="v">文本 / 隐藏 / 布尔 / 链接</span></div>' +
-    "</div>" +
-    '<div class="gtitle">附加选项</div><div class="group">' +
-      '<div class="row" style="cursor:default"><span class="k">备注<span class="sub" style="color:#8b919c">主力开发账号；开了 2FA</span></span></div>' +
-      kvRow("密码重提示", "每次查看前需要验证", { chev: true }) +
-      '<div class="row"><span class="k">附件</span><span class="v">添加文件（≤ 100 MB）</span></div>' +
-    "</div></div>" +
-    '<div class="foot"><span>' + (editing ? "有未保存的改动" : "尚未保存") + '</span><span class="mono">' + (editing ? "编辑" : "新建") + "</span></div>";
-  return dRail("vault") + dList("保险库", "6 个条目 · 已加密", vaultRows(0), { label: "＋ 新建条目", go: "d-item-new" }) +
-    '<div class="d-main">' + main + "</div>";
-}
-DESK["d-item-new"] = function () { return deskForm({ editing: false }); };
-DESK["d-item-edit"] = function () { return deskForm({ editing: true }); };
 
-/* ---------- 桌面端：删除确认 ---------- */
-DESK["d-item-delete"] = function () {
-  var main =
-    '<div class="hd"><div><h2>GitHub</h2><div class="meta">github.com · 登录</div></div>' +
-    '<div class="d-toolbar"><span class="t" data-go="d-item-edit">编辑</span><span class="t primary">复制密码</span></div></div>' +
-    '<div class="body"><div class="gtitle">凭据</div><div class="group">' +
-      kvRow("用户名", "bossxie", { mono: true, copy: true }) +
-      kvRow("密码", "••••••••••••", { mono: true, copy: true }) +
-    "</div></div>";
-  var modal =
-    '<div class="modal-wrap"><div class="modal narrow">' +
-      "<h3>删除「GitHub」？</h3>" +
-      '<div class="m-sub">移到回收站后 30 天内可以恢复。<b>只影响本地</b>：云端快照要等你点「立即同步」才会更新。</div>' +
-      '<div class="m-actions">' +
-        '<button class="btn danger" data-go="d-trash">移到回收站</button>' +
-        '<button class="btn secondary" data-go="vault-desktop">取消</button>' +
-      "</div></div></div>";
-  return dRail("vault") + dList("保险库", "6 个条目 · 已加密", vaultRows(0), { label: "＋ 新建条目", go: "d-item-new" }) +
-    '<div class="d-main">' + main + "</div>" + modal;
-};
 
 /* ---------- 桌面端：回收站 ---------- */
 DESK["d-trash"] = function () {
@@ -679,10 +611,10 @@ DESK["d-trash"] = function () {
     '<div class="body"><div class="gtitle">已删除</div><div class="group">' + rows + "</div>" +
     '<div class="note" style="padding:12px 24px">清空后无法恢复；云备份里可能有旧快照，但不包含删除前的最后一次改动。</div></div>' +
     '<div class="foot"><span>软删除 · 可恢复</span><span class="mono">回收站</span></div>';
-  var list = DATA.items.map(function (i) { return dRow({ emoji: i.e, n: i.n, sub: i.u }); }).join("");
+  var list = DATA.items.map(function (i) { return dRow({ emoji: typeOf(i.type).icon, n: i.n, sub: i.u }); }).join("");
   return dRail("vault") +
     '<div class="d-list"><div class="hd"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div><h2>保险库</h2>' +
-    '<div class="sub">回收站 · 2 个</div></div><button class="plus" data-go="d-item-new">＋ 新建条目</button></div></div>' +
+    '<div class="sub">回收站 · 2 个</div></div><button class="plus" data-go="d-pick-type">＋ 新建条目</button></div></div>' +
     '<div class="d-search">' + ic("search", 13) + " 搜索</div>" +
     '<div class="d-rows"><div class="d-row" data-go="vault-desktop"><span class="emoji">🗑️</span>' +
     '<div class="main"><div class="nm">回收站</div><div class="sub">2 个条目</div></div></div>' + list + "</div></div>" +
@@ -723,62 +655,10 @@ POPUP.item = function () {
 };
 
 /* ---------- 弹窗：编辑（登录） ---------- */
-POPUP["item-edit"] = function () {
-  return pTop("编辑条目", "登录 · 开发", { back: "item" }) +
-    '<div class="p-scroll">' +
-    '<div class="seg"><button aria-pressed="true">登录</button><button>卡片</button><button>身份</button><button>备注</button></div>' +
-    pTitle("项目") + pGroup(
-      row({ k: "名称", sub: "GitHub", chev: false }) +
-      row({ k: "文件夹", value: "开发", chev: true }) +
-      row({ k: "收藏", toggle: true, chev: false })
-    ) +
-    pTitle("登录凭据") + pGroup(
-      row({ k: "用户名", sub: "bossxie", chev: false }) +
-      row({ k: "密码", sub: "••••••••••••", value: "生成", brand: true, chev: false }) +
-      row({ k: "验证码密钥", sub: "JBSWY3DP••••", value: "扫码", brand: true, chev: false })
-    ) +
-    pTitle("自动填充") + pGroup(
-      row({ k: "github.com", value: "删除", brand: true, chev: false }) +
-      row({ k: "＋ 添加网址", chev: false })
-    ) +
-    pTitle("自定义字段") + pGroup(
-      row({ k: "恢复码 · 隐藏", sub: "••••••••", value: "显示", brand: true, chev: false }) +
-      row({ k: "备用邮箱 · 文本", sub: "backup@xie.dev", chev: false }) +
-      row({ k: "＋ 添加字段", chev: false })
-    ) +
-    pTitle("附加选项") + pGroup(
-      row({ k: "备注", sub: "主力开发账号；开了 2FA", chev: true }) +
-      row({ k: "密码重提示", value: "需要主密码", chev: true }) +
-      row({ k: "附件", value: "1 个", chev: true })
-    ) +
-    '<div class="p-actions"><button class="btn" data-go="item">保存</button>' +
-    '<button class="btn secondary" data-go="item">取消</button></div>' +
-    "</div>";
-};
+
 
 /* ---------- 弹窗：编辑（卡片） ---------- */
-POPUP["item-card"] = function () {
-  return pTop("编辑条目", "卡片", { back: "vault" }) +
-    '<div class="p-scroll">' +
-    '<div class="seg"><button>登录</button><button aria-pressed="true">卡片</button><button>身份</button><button>备注</button></div>' +
-    pTitle("项目") + pGroup(
-      row({ k: "名称", sub: "招商银行 储蓄卡", chev: false }) +
-      row({ k: "文件夹", value: "金融", chev: true })
-    ) +
-    pTitle("卡片信息") + pGroup(
-      row({ k: "持卡人", sub: "XIE BOSS", chev: false }) +
-      row({ k: "卡号", sub: "6214 8888 8891 0000", mono: true, icon: "copy", chev: false }) +
-      row({ k: "有效期", value: "09/28", mono: true, chev: false }) +
-      row({ k: "安全码", value: "•••", mono: true, chev: false }) +
-      row({ k: "品牌", value: "Visa", chev: true })
-    ) +
-    pTitle("附加选项") + pGroup(
-      row({ k: "备注", sub: "工资卡，绑定自动还款", chev: true })
-    ) +
-    '<div class="p-actions"><button class="btn" data-go="vault">保存</button></div>' +
-    '<div class="note">卡片信息同样先加密再写盘，不进入剪贴板历史。</div>' +
-    "</div>";
-};
+
 
 /* ---------- 弹窗：删除操作单 ---------- */
 POPUP["item-delete"] = function () {
@@ -814,17 +694,191 @@ POPUP.trash = function () {
     "</div>";
 };
 
+/* ================= 类型体系（简约 6 类，覆盖真实使用） ================= */
+var TYPES = [
+  { key: "login",    name: "登录",   icon: "🔐", blurb: "网站与 App 的账号", hint: "账号" },
+  { key: "key",      name: "密钥",   icon: "🗝️", blurb: "API 令牌 / SSH 私钥 / 许可证", hint: "令牌" },
+  { key: "card",     name: "卡片",   icon: "💳", blurb: "银行卡与信用卡", hint: "卡" },
+  { key: "identity", name: "身份",   icon: "🪪", blurb: "个人资料 / 护照 / 驾照", hint: "证件" },
+  { key: "server",   name: "服务器", icon: "🖥️", blurb: "主机与远程登录凭据", hint: "主机" },
+  { key: "note",     name: "笔记",   icon: "📝", blurb: "恢复码、配置片段", hint: "笔记" },
+];
+
+function typeOf(key) {
+  for (var i = 0; i < TYPES.length; i++) if (TYPES[i].key === key) return TYPES[i];
+  return TYPES[0];
+}
+
+/** 每种类型的关键字段：简约原则——最多 5 个，其余进「附加选项」。 */
+var TYPE_FIELDS = {
+  login: [
+    ["用户名", "bossxie"],
+    ["密码", "••••••••••••", { mask: true, action: "生成" }],
+    ["验证码密钥", "JBSWY3DP••••", { action: "扫码" }],
+  ],
+  key: [
+    ["用途", "API 令牌", { chev: true }],
+    ["服务", "Cloudflare"],
+    ["密钥内容", "••••••••••••••••", { mask: true, action: "显示" }],
+    ["有效期", "2027-03-01", { action: "选择" }],
+    ["环境", "生产", { chev: true }],
+  ],
+  card: [
+    ["持卡人", "XIE BOSS"],
+    ["卡号", "6214 8888 8891 0000", { mask: true, action: "扫描" }],
+    ["有效期 / 安全码", "09/28 · •••", { action: "显示" }],
+    ["类型", "借记卡", { chev: true }],
+  ],
+  identity: [
+    ["证件类型", "居民身份证", { chev: true }],
+    ["姓名", "谢某某"],
+    ["证件号", "••••••••••••••••", { mask: true, action: "显示" }],
+    ["有效期", "2031-06-30", { action: "选择" }],
+  ],
+  server: [
+    ["主机", "10.0.2.14:22", { mono: true, action: "复制" }],
+    ["协议", "SSH", { chev: true }],
+    ["用户名", "root"],
+    ["认证方式", "私钥（~/.ssh/id_ed25519）", { chev: true }],
+    ["sudo 备注", "需要密码"],
+  ],
+  note: [
+    ["内容", "恢复码：A1B2-C3D4 …（多行）"],
+  ],
+};
+
+function typePills(active, prefix) {
+  return TYPES.map(function (t) {
+    var on = t.key === active;
+    var go = on ? "" : ' data-go="' + (prefix || "") + t.key + '"';
+    return '<span class="type-pill' + (on ? " on" : "") + '"' + go + ">" + t.icon + " " + t.name + "</span>";
+  }).join("");
+}
+
+/* ---------- 桌面端：类型选择 ---------- */
+DESK["d-pick-type"] = function () {
+  var grid = TYPES.map(function (t) {
+    return '<div class="type-card" data-go="d-form-' + t.key + '">' +
+      '<div class="ico">' + t.icon + "</div>" +
+      '<div class="nm">' + t.name + "</div>" +
+      '<div class="bl">' + t.blurb + "</div></div>";
+  }).join("");
+  var main =
+    '<div class="hd"><div><h2>新建条目</h2><div class="meta">先选类型，字段会按类型变化</div></div>' +
+    '<div class="d-toolbar"><span class="t" data-go="vault-desktop">取消</span></div></div>' +
+    '<div class="body"><div class="gtitle">类型（6）</div><div class="type-grid">' + grid + "</div>" +
+    '<div class="note" style="padding:14px 24px">类型只影响表单字段与展示方式，加密方式完全相同。以后需要新类型时在这里加一格。</div></div>' +
+    '<div class="foot"><span>选择后进入右栏内联表单</span><span class="mono">新建</span></div>';
+  return dRail("vault") + dList("保险库", "6 个条目 · 已加密", vaultRows(0), { label: "＋ 新建条目", go: "d-pick-type" }) +
+    '<div class="d-main">' + main + "</div>";
+};
+
+/* ---------- 桌面端：按类型的右栏内联表单 ---------- */
+function deskTypeForm(key) {
+  var t = typeOf(key);
+  var fields = TYPE_FIELDS[key] || [];
+  var rows = fields.map(function (f) {
+    return inputRow(f[0], f[2] && f[2].editing === false ? "" : f[1], { mask: !!(f[2] && f[2].mask), action: f[2] && f[2].action });
+  }).join("");
+  var extra =
+    key === "login"
+      ? '<div class="gtitle">自动填充（网址）</div><div class="group">' +
+        inputRow("网址 1", "github.com", { action: "删除" }) +
+        inputRow("网址 2", "gist.github.com", { action: "删除" }) +
+        '<div class="row"><span class="k" style="color:#2f6bff">＋ 添加网址</span></div></div>' +
+        '<div class="gtitle">Passkey</div><div class="group">' +
+        kvRow("webauthn.me", "2026-11-02 登记", { chev: true }) + "</div>"
+      : key === "server"
+      ? '<div class="gtitle">连接</div><div class="group">' +
+        kvRow("上次连接", "2026-11-24 09:12", { chev: false }) +
+        kvRow("备注的启动命令", "docker compose up -d", { mono: true, chev: false }) + "</div>"
+      : "";
+  var main =
+    '<div class="hd"><div><h2>新建「' + t.name + '」</h2><div class="meta">' + t.blurb + "</div></div>" +
+    '<div class="d-toolbar"><span class="t" data-go="d-pick-type">换类型</span><span class="t" data-go="vault-desktop">取消</span><span class="t primary" data-go="vault-desktop">保存</span></div></div>' +
+    '<div class="body">' +
+    '<div class="gtitle">类型</div><div class="group"><div class="row" style="cursor:default;gap:6px;flex-wrap:wrap">' + typePills(key) + "</div></div>" +
+    '<div class="gtitle">项目</div><div class="group">' +
+      inputRow("名称", key === "server" ? "生产跳板机" : key === "key" ? "Cloudflare API" : key === "card" ? "招商银行 储蓄卡" : key === "identity" ? "本人身份证" : key === "note" ? "恢复码" : "GitHub") +
+      inputRow("文件夹", key === "server" ? "运维" : key === "card" ? "金融" : key === "identity" ? "个人" : "开发", { action: "选择" }) +
+      '<div class="row"><span class="k">收藏</span><span class="switch off"></span></div></div>' +
+    '<div class="gtitle">' + t.name + '信息</div><div class="group">' + rows + "</div>" +
+    extra +
+    '<div class="gtitle">附加选项</div><div class="group">' +
+      '<div class="row" style="cursor:default"><span class="k">备注<span class="sub" style="color:#8b919c">可选</span></span></div>' +
+      kvRow("密码重提示", "不需要", { chev: true }) +
+      '<div class="row"><span class="k">附件</span><span class="v">添加文件（≤ 100 MB）</span></div></div>' +
+    "</div>" +
+    '<div class="foot"><span>尚未保存</span><span class="mono">新建 · ' + t.name + "</span></div>";
+  return dRail("vault") + dList("保险库", "6 个条目 · 已加密", vaultRows(0), { label: "＋ 新建条目", go: "d-pick-type" }) +
+    '<div class="d-main">' + main + "</div>";
+}
+TYPES.forEach(function (t) { DESK["d-form-" + t.key] = function () { return deskTypeForm(t.key); }; });
+
+/* ---------- 弹窗：类型选择 ---------- */
+POPUP["new-type"] = function () {
+  var grid = TYPES.map(function (t) {
+    return '<div class="type-card" data-go="form-' + t.key + '">' +
+      '<div class="ico">' + t.icon + "</div>" +
+      '<div class="nm">' + t.name + "</div>" +
+      '<div class="bl">' + t.blurb + "</div></div>";
+  }).join("");
+  return pTop("新建条目", "先选类型", { back: "vault" }) +
+    '<div class="p-scroll"><div class="type-grid">' + grid + "</div>" +
+    '<div class="note">类型只影响字段与展示，加密方式完全一致。</div></div>' + pTabbar("vault");
+};
+
+/* ---------- 弹窗：按类型的表单 ---------- */
+function popupTypeForm(key) {
+  var t = typeOf(key);
+  var fields = (TYPE_FIELDS[key] || []).map(function (f) {
+    return row({ k: f[0], sub: f[1], value: f[2] && f[2].action ? f[2].action : "", brand: !!(f[2] && f[2].action), chev: false });
+  }).join("");
+  var extra = "";
+  if (key === "login") {
+    extra = pTitle("自动填充") + pGroup(
+      row({ k: "github.com", value: "删除", brand: true, chev: false }) +
+      row({ k: "＋ 添加网址", chev: false })
+    ) + pTitle("Passkey") + pGroup(row({ emoji: "🔑", k: "webauthn.me", sub: "2026-11-02 登记", chev: true }));
+  }
+  return pTop("新建「" + t.name + "」", t.blurb, { back: "new-type" }) +
+    '<div class="p-scroll">' +
+    pTitle("类型") + '<div class="p-scroll" style="padding:0 12px 6px;overflow:visible"><div class="type-scroll">' + typePills(key) + "</div></div>" +
+    pTitle("项目") + pGroup(
+      row({ k: "名称", value: "GitHub", chev: false }) +
+      row({ k: "文件夹", value: "开发", chev: true })
+    ) +
+    pTitle(t.name + "信息") + pGroup(fields) +
+    extra +
+    pTitle("附加选项") + pGroup(
+      row({ k: "备注", chev: true }) +
+      row({ k: "密码重提示", value: "不需要", chev: true }) +
+      row({ k: "附件", value: "添加", chev: true })
+    ) +
+    '<div class="p-actions"><button class="btn" data-go="vault">保存</button>' +
+    '<button class="btn secondary" data-go="vault">取消</button></div></div>';
+}
+TYPES.forEach(function (t) { POPUP["form-" + t.key] = function () { return popupTypeForm(t.key); }; });
+
+/* ---------- 列表行：按类型显示 ---------- */
+function typedRows(items) {
+  return items.map(function (i) {
+    var t = typeOf(i.type || "login");
+    return dRow({ emoji: t.icon, n: i.n, sub: i.u, value: i.value || "", go: "vault-desktop" });
+  }).join("");
+}
+
 var GROUPS = [
   { g: "首次使用", device: "popup", items: [["setup", "设置安全密码"]] },
   { g: "解锁", device: "popup", items: [["unlock", "解锁（安全密码）"], ["unlock-wait", "输错等待（不登出）"]] },
   { g: "保险库", device: "popup", items: [["vault", "列表"], ["vault-empty", "空状态"], ["autofill", "页面内联菜单"]] },
-  { g: "条目", device: "popup", items: [["item", "详情（读）"], ["item-edit", "编辑（改 · 登录）"], ["item-card", "编辑（改 · 卡片）"], ["item-passkey", "Passkey"], ["qr", "动态口令二维码"]] },
+  { g: "条目", device: "popup", items: [["item", "详情（读）"], ["new-type", "类型选择"], ["form-login", "登录"], ["form-key", "密钥"], ["form-card", "卡片"], ["form-identity", "身份"], ["form-server", "服务器"], ["form-note", "笔记"], ["item-passkey", "Passkey"], ["qr", "动态口令二维码"]] },
   { g: "工具", device: "popup", items: [["generator", "生成器"], ["import-ga", "Google 认证器导入"], ["import-preview", "导入预览"], ["security-key", "安全密钥"]] },
   { g: "备份（手动）", device: "popup", items: [["backup", "云备份"], ["backup-config", "存储配置"], ["restore-cloud", "从备份恢复"]] },
   { g: "回收站", device: "popup", items: [["item-delete", "删除（操作单）"], ["trash", "回收站（恢复 / 清空）"]] },
   { g: "状态与异常", device: "popup", items: [["state-loading", "恢复中"], ["state-conflict", "同步冲突"], ["state-error", "连接失败"]] },
   { g: "设置 / 系统", device: "popup", items: [["settings", "设置"], ["offline", "网络闸门"], ["data", "数据与安全"]] },
-  { g: "桌面端", device: "desktop", items: [["setup", "设置安全密码"], ["unlock", "解锁"], ["vault-desktop", "详情（读 · 全字段）"], ["d-item-new", "新建（增 · 表单）"], ["d-item-edit", "编辑（改 · 表单）"], ["d-item-delete", "删除确认（删）"], ["d-trash", "回收站（恢复 / 永久删除）"], ["gen-desktop", "生成器"], ["security-desktop", "安全设置"], ["settings-desktop", "备份设置"]] },
+  { g: "桌面端", device: "desktop", items: [["setup", "设置安全密码"], ["unlock", "解锁"], ["vault-desktop", "详情（读 · 全字段）"], ["d-pick-type", "新建 · 选类型"], ["d-form-login", "登录表单"], ["d-form-key", "密钥表单"], ["d-form-card", "卡片表单"], ["d-form-identity", "身份表单"], ["d-form-server", "服务器表单"], ["d-form-note", "笔记表单"], ["d-item-delete", "删除确认（删）"], ["d-trash", "回收站（恢复 / 永久删除）"], ["gen-desktop", "生成器"], ["security-desktop", "安全设置"], ["settings-desktop", "备份设置"]] },
 ];
 
 var state = { device: "popup", screen: "setup" };
@@ -889,9 +943,9 @@ document.addEventListener("click", function (e) {
       "setup": "setup", "offline": "offline", "data": "data", "vault-empty": "vault-empty",
       "item-card": "item-card", "autofill": "autofill",
       "state-loading": "state-loading", "state-conflict": "state-conflict", "state-error": "state-error",
-      "item-delete": "item-delete", "trash": "trash",
+      "item-delete": "item-delete", "trash": "trash", "new-type": "new-type", "form-login": "form-login", "form-key": "form-key", "form-card": "form-card", "form-identity": "form-identity", "form-server": "form-server", "form-note": "form-note", "d-pick-type": "d-pick-type", "d-form-login": "d-form-login", "d-form-key": "d-form-key", "d-form-card": "d-form-card", "d-form-identity": "d-form-identity", "d-form-server": "d-form-server", "d-form-note": "d-form-note",
       "vault-desktop": "vault-desktop", "gen-desktop": "gen-desktop", "settings-desktop": "settings-desktop",
-      "security-desktop": "security-desktop", "d-item-new": "d-item-new", "d-item-edit": "d-item-edit",
+      "security-desktop": "security-desktop",
       "d-item-delete": "d-item-delete", "d-trash": "d-trash",
     };
     var found = map[target];

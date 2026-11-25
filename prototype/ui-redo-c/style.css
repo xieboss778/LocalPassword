@@ -198,3 +198,17 @@ body { margin:0; background:#e8eaee; color:var(--ink); }
 }
 .type-pill.on { background: var(--brand-soft); color: #3352c4; font-weight: 600; }
 .d-main .hd .meta { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+
+/* ---------- 类型选择：网格与胶囊 ---------- */
+.type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 4px 22px 8px; }
+.popup .type-grid { grid-template-columns: repeat(2, 1fr); padding: 4px 12px 8px; }
+.type-card {
+  background: var(--card); border-radius: 12px; padding: 12px 10px; cursor: pointer;
+  border: 1px solid transparent; box-shadow: 0 1px 2px #10131812; transition: border-color .12s;
+}
+.type-card:hover { border-color: #c9d4ff; }
+.type-card .ico { font-size: 20px; line-height: 1; }
+.type-card .nm { font-size: 12.5px; font-weight: 600; margin-top: 8px; }
+.type-card .bl { font-size: 10.5px; color: var(--ink3); margin-top: 3px; line-height: 1.4; }
+.type-scroll { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px; }
+.type-scroll .type-pill { flex: none; padding: 7px 12px; }
