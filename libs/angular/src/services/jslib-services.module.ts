@@ -331,18 +331,6 @@ import {
 import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
 import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
 import { CipherEncryptionService } from "@bitwarden/common/vault/abstractions/cipher-encryption.service";
-import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
-import {
-  CreateLocalAccountService,
-  DefaultLocalVaultWriter,
-  LocalAccountService,
-  LocalPasswordApiService,
-  LocalVaultNetworkGate,
-  TimerVaultSchedulerAdapter,
-  VaultBackupScheduler,
-  VaultBackupService,
-  VaultBackupSyncService,
-} from "@bitwarden/local-vault";
 import { CipherRiskService } from "@bitwarden/common/vault/abstractions/cipher-risk.service";
 import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -352,6 +340,7 @@ import {
   FolderService as FolderServiceAbstraction,
   InternalFolderService,
 } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
 import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/vault/abstractions/search.service";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
@@ -417,6 +406,17 @@ import {
   LegacyCompatKeyService,
   WebCryptoFunctionService,
 } from "@bitwarden/legacy-crypto";
+import {
+  CreateLocalAccountService,
+  DefaultLocalVaultWriter,
+  LocalAccountService,
+  LocalPasswordApiService,
+  LocalVaultNetworkGate,
+  TimerVaultSchedulerAdapter,
+  VaultBackupScheduler,
+  VaultBackupService,
+  VaultBackupSyncService,
+} from "@bitwarden/local-vault";
 import {
   FlightRecorderLogRecorderService,
   FlightRecorderService,

@@ -6,6 +6,7 @@ import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
 import { ENCRYPTED_CIPHERS } from "@bitwarden/common/vault/services/key-state/ciphers.state";
 import { FOLDER_ENCRYPTED_FOLDERS } from "@bitwarden/common/vault/services/key-state/folder.state";
 import { KeyService } from "@bitwarden/key-management";
+// eslint-disable-next-line no-restricted-imports
 import { EncString, EncryptService } from "@bitwarden/legacy-crypto";
 import { LogService } from "@bitwarden/logging";
 import { StateProvider } from "@bitwarden/state";

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { firstValueFrom } from "rxjs";
 
@@ -71,9 +71,13 @@ export class BackupSettingsComponent implements OnInit {
     forcePathStyle: [false],
   });
 
-  protected status: BackupStatus = { lastSyncedAt: null, pending: false, lastBackupAt: null };
-  protected backupPassword: string | null = null;
-  protected busy = false;
+  protected readonly status = signal<BackupStatus>({
+    lastSyncedAt: null,
+    pending: false,
+    lastBackupAt: null,
+  });
+  protected readonly backupPassword = signal<string | null>(null);
+  protected readonly busy = signal(false);
 
   async ngOnInit(): Promise<void> {
     const userId = await this.userId();
@@ -108,7 +112,7 @@ export class BackupSettingsComponent implements OnInit {
   }
 
   protected async testConnection(): Promise<void> {
-    this.busy = true;
+    this.busy.set(true);
     try {
       const value = this.formGroup.getRawValue();
       const client = new S3Client({
@@ -127,23 +131,23 @@ export class BackupSettingsComponent implements OnInit {
     } catch {
       this.platformUtilsService.showToast("error", "", this.i18nService.t("backupTestFailed"));
     } finally {
-      this.busy = false;
+      this.busy.set(false);
     }
   }
 
   protected async syncNow(): Promise<void> {
-    this.busy = true;
+    this.busy.set(true);
     try {
       const userId = await this.userId();
       await this.scheduler.syncNow(userId);
       await this.refreshStatus();
     } finally {
-      this.busy = false;
+      this.busy.set(false);
     }
   }
 
   protected async backupNow(): Promise<void> {
-    this.busy = true;
+    this.busy.set(true);
     try {
       const userId = await this.userId();
       const result = await this.backupService.backupNow(userId);
@@ -154,7 +158,7 @@ export class BackupSettingsComponent implements OnInit {
       );
       await this.refreshStatus();
     } finally {
-      this.busy = false;
+      this.busy.set(false);
     }
   }
 
@@ -171,25 +175,25 @@ export class BackupSettingsComponent implements OnInit {
     const userId = await this.userId();
     await this.syncService.disconnect(userId);
     this.formGroup.reset({ provider: "r2", region: "auto", prefix: "localpassword" });
-    this.status = { lastSyncedAt: null, pending: false, lastBackupAt: null };
+    this.status.set({ lastSyncedAt: null, pending: false, lastBackupAt: null });
   }
 
   protected get lastSyncedLabel(): string {
-    return this.status.lastSyncedAt ?? this.i18nService.t("never");
+    return this.status().lastSyncedAt ?? this.i18nService.t("never");
   }
 
   protected get lastBackupLabel(): string {
-    return this.status.lastBackupAt ?? this.i18nService.t("never");
+    return this.status().lastBackupAt ?? this.i18nService.t("never");
   }
 
   protected async revealPassword(): Promise<void> {
     const userId = await this.userId();
-    this.backupPassword = await this.backupService.ensurePassword(userId);
+    this.backupPassword.set(await this.backupService.ensurePassword(userId));
   }
 
   protected async copyPassword(): Promise<void> {
     const userId = await this.userId();
-    const password = this.backupPassword ?? (await this.backupService.ensurePassword(userId));
+    const password = this.backupPassword() ?? (await this.backupService.ensurePassword(userId));
     await this.platformUtilsService.copyToClipboard(password);
     this.platformUtilsService.showToast("info", "", this.i18nService.t("valueCopied"));
   }
@@ -198,11 +202,11 @@ export class BackupSettingsComponent implements OnInit {
     const userId = await this.userId();
     const state = await this.syncService.getSyncState(userId);
     const settings = await this.backupService.getSettings(userId);
-    this.status = {
+    this.status.set({
       lastSyncedAt: state.lastSyncedAt,
       pending: state.pending,
       lastBackupAt: settings.lastBackupAt,
-    };
+    });
   }
 
   private async userId() {
