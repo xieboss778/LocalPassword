@@ -8,9 +8,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { getUserId } from "@bitwarden/common/auth/services/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import {
-  PlatformUtilsService,
-} from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -136,11 +134,7 @@ export class GoogleAuthImportComponent {
         await this.cipherService.createWithServer(view, userId);
       }
 
-      this.platformUtilsService.showToast(
-        "success",
-        "",
-        this.i18nService.t("googleAuthImported"),
-      );
+      this.platformUtilsService.showToast("success", "", this.i18nService.t("googleAuthImported"));
       await this.router.navigate(["/tabs/vault"]);
     } catch {
       this.platformUtilsService.showToast("error", "", this.i18nService.t("errorOccurred"));
