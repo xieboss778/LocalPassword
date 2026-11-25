@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import {
   NotificationConfirmationMessage,
@@ -18,7 +18,7 @@ export default {
   },
   args: {
     buttonText: "View",
-    message: "[item name] updated in Bitwarden.",
+    message: "[item name] updated in LocalPass.",
     messageDetails: "It was added to your vault.",
     handleClick: () => window.alert("link was clicked!"),
     theme: ThemeTypes.Light,

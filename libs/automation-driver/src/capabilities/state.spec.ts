@@ -1,6 +1,6 @@
-import { UserId } from "@bitwarden/common/types/guid";
-import { StorageServiceProvider } from "@bitwarden/storage-core";
-import { FakeStorageService } from "@bitwarden/storage-test-utils";
+import { UserId } from "@localpass/common/types/guid";
+import { StorageServiceProvider } from "@localpass/storage-core";
+import { FakeStorageService } from "@localpass/storage-test-utils";
 
 import { StateCapability } from "./state";
 

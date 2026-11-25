@@ -6,7 +6,7 @@ import {
   PasswordReuseMap,
   CipherRiskResult,
   CipherId as SdkCipherId,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { SdkService, asUuid } from "../../platform/abstractions/sdk/sdk.service";
 import { UserId, CipherId } from "../../types/guid";
@@ -60,7 +60,7 @@ export class DefaultCipherRiskService implements CipherRiskServiceAbstraction {
   async computeCipherRiskForUser(
     cipherId: CipherId,
     userId: UserId,
-    // LocalPassword: the breach check reaches a remote service, so it only runs when asked for.
+    // LocalPass: the breach check reaches a remote service, so it only runs when asked for.
     checkExposed: boolean = false,
   ): Promise<CipherRiskResult> {
     // Get all ciphers for the user

@@ -1,4 +1,4 @@
-import { Policy as SdkPolicy } from "@bitwarden/sdk-internal";
+import { Policy as SdkPolicy } from "@localpass/sdk-internal";
 
 import { asUuid, uuidAsString } from "../../../platform/abstractions/sdk/sdk.service";
 import { SdkRecordMapper } from "../../../platform/services/sdk/client-managed-state";

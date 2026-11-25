@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Unified lint/format runner for the Bitwarden desktop_native workspace.
+// Unified lint/format runner for the LocalPass desktop_native workspace.
 // Mirrors the checks in .github/workflows/lint.yml so local runs match CI.
 //
 // Usage:
@@ -69,7 +69,7 @@ if (only && !CHECKS.includes(only)) {
 }
 
 function printHelp() {
-  console.log(`Unified lint/format runner for the Bitwarden desktop_native workspace.
+  console.log(`Unified lint/format runner for the LocalPass desktop_native workspace.
 Mirrors the checks in .github/workflows/lint.yml so local runs match CI.
 
 Usage:

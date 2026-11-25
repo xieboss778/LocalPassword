@@ -3,18 +3,18 @@
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { DeviceType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { GlobalStateProvider } from "@bitwarden/common/platform/state";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LogService } from "@bitwarden/logging";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { DeviceType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { GlobalStateProvider } from "@localpass/common/platform/state";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LogService } from "@localpass/logging";
 
 import { DesktopAutotypeMvpService, getAutotypeVaultData } from "./desktop-autotype-mvp.service";
 import { DesktopAutotypeDefaultSettingPolicy } from "./desktop-autotype-policy.service";

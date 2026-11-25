@@ -3,14 +3,14 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CalloutModule } from "@bitwarden/components";
+import { CalloutModule } from "@localpass/components";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "auth-password-callout",
@@ -18,10 +18,10 @@ import { CalloutModule } from "@bitwarden/components";
   imports: [CommonModule, JslibModule, CalloutModule],
 })
 export class PasswordCalloutComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() message = "masterPasswordPolicyInEffect";
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() policy: MasterPasswordPolicyOptions;
 

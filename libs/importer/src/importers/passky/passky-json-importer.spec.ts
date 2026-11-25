@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { testData as EncryptedData } from "../spec-data/passky-json/passky-encrypted.json";
 import { testData as UnencryptedData } from "../spec-data/passky-json/passky-unencrypted.json";
@@ -27,12 +27,12 @@ describe("Passky Json Importer", () => {
     expect(result != null).toBe(true);
 
     const cipher = result.ciphers.shift();
-    expect(cipher.name).toEqual("https://bitwarden.com/");
+    expect(cipher.name).toEqual("https://local.invalid/");
     expect(cipher.login.username).toEqual("testUser");
     expect(cipher.login.password).toEqual("testPassword");
     expect(cipher.login.uris.length).toEqual(1);
     const uriView = cipher.login.uris.shift();
-    expect(uriView.uri).toEqual("https://bitwarden.com/");
+    expect(uriView.uri).toEqual("https://local.invalid/");
     expect(cipher.notes).toEqual("my notes");
   });
 });

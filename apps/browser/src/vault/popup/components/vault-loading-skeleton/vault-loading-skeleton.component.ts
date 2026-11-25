@@ -4,7 +4,7 @@ import {
   SkeletonComponent,
   SkeletonGroupComponent,
   SkeletonTextComponent,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 @Component({
   selector: "vault-loading-skeleton",

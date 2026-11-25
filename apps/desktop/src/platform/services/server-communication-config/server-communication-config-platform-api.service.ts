@@ -1,10 +1,10 @@
 import { Subscription } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
-import { DialogService } from "@bitwarden/components";
-import { AcquiredCookie, ServerCommunicationConfigPlatformApi } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CommandDefinition, MessageListener } from "@localpass/common/platform/messaging";
+import { DialogService } from "@localpass/components";
+import { AcquiredCookie, ServerCommunicationConfigPlatformApi } from "@localpass/sdk-internal";
 
 export const SSO_COOKIE_VENDOR_CALLBACK_COMMAND = new CommandDefinition<{ urlString: string }>(
   "ssoCookieVendorCallback",

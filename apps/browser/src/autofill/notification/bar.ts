@@ -1,8 +1,8 @@
 import { render } from "lit";
 
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import type { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import type { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { NotificationCipherData } from "../content/components/cipher/types";
 import { CollectionView, I18n, OrgView } from "../content/components/common-types";

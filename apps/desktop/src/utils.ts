@@ -17,10 +17,10 @@ export function cleanUserAgent(userAgent: string): string {
   };
   const systemInformation = "(Windows NT 10.0; Win64; x64)";
 
-  // Set system information, remove bitwarden, and electron information
+  // Set system information, remove localpass, and electron information
   return userAgent
     .replace(userAgentItem("(", ")"), systemInformation)
-    .replace(userAgentItem("Bitwarden", " "), "")
+    .replace(userAgentItem("LocalPass", " "), "")
     .replace(userAgentItem("Electron", " "), "");
 }
 

@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, NEVER, Subject } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { GlobalState, StateProvider } from "@bitwarden/state";
+import { UserId } from "@localpass/common/types/guid";
+import { GlobalState, StateProvider } from "@localpass/state";
 
 import { TabEdgeCause, TabState } from "../enums";
 import type { TabEdge } from "../types";

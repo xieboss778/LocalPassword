@@ -1,6 +1,6 @@
 # Icon Font Management
 
-This directory contains scripts and resources for managing the Bitwarden icon font (BWI).
+This directory contains scripts and resources for managing the LocalPass icon font (BWI).
 
 ## Overview
 
@@ -53,7 +53,7 @@ Add your icon to the appropriate category in `libs/components/src/stories/icons/
 ```typescript
 // Choose the appropriate category:
 // - statusIndicators
-// - bitwardenObjects
+// - localpassObjects
 // - actions
 // - directionalMenuIndicators
 // - miscObjects
@@ -182,7 +182,7 @@ In the following directories:
 
 - `apps/`
 - `libs/`
-- `bitwarden_license/`
+- `localpass_license/`
 
 Excluding build/cache directories like `node_modules`, `dist`, `.git`, etc.
 

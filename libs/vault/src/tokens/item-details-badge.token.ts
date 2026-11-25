@@ -1,7 +1,7 @@
 import { InputSignal, Type } from "@angular/core";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 export type ItemDetailsBadge = Type<{
   cipher: InputSignal<CipherView>;

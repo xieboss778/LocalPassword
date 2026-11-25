@@ -1,6 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { TaskSchedulerService, ScheduledTaskNames } from "@bitwarden/common/platform/scheduling";
+import { TaskSchedulerService, ScheduledTaskNames } from "@localpass/common/platform/scheduling";
 
 import { BackgroundSyncService, DEFAULT_SYNC_INTERVAL_MS } from "./background-sync.service";
 

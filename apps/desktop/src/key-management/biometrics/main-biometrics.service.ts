@@ -1,10 +1,10 @@
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { BiometricsStatus, BiometricStateService } from "@bitwarden/key-management";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { BiometricsStatus, BiometricStateService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { WindowMain } from "../../main/window.main";
 import { isDev } from "../../utils";

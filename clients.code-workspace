@@ -10,7 +10,7 @@
     },
     {
       "name": "web vault (bit)",
-      "path": "bitwarden_license/bit-web",
+      "path": "localpass_license/bit-web",
     },
     {
       "name": "cli",
@@ -18,7 +18,7 @@
     },
     {
       "name": "cli (bit)",
-      "path": "bitwarden_license/bit-cli",
+      "path": "localpass_license/bit-cli",
     },
     {
       "name": "desktop",
@@ -26,7 +26,7 @@
     },
     {
       "name": "desktop (bit)",
-      "path": "bitwarden_license/bit-desktop",
+      "path": "localpass_license/bit-desktop",
     },
     {
       "name": "browser",
@@ -38,15 +38,15 @@
     },
     {
       "name": "common (bit)",
-      "path": "bitwarden_license/bit-common",
+      "path": "localpass_license/bit-common",
     },
     {
       "name": "pam (bit)",
-      "path": "bitwarden_license/bit-pam",
+      "path": "localpass_license/bit-pam",
     },
     {
       "name": "pam components (bit)",
-      "path": "bitwarden_license/bit-pam-components",
+      "path": "localpass_license/bit-pam-components",
     },
   ],
   "settings": {
@@ -61,7 +61,7 @@
       "sourceMapPathOverrides": {
         "webpack:///./~/*": "${workspaceFolder:root}/node_modules/*",
         "webpack://?:*/*": "${workspaceFolder}/*",
-        "webpack://@bitwarden/cli/*": "${workspaceFolder}/*",
+        "webpack://@localpass/cli/*": "${workspaceFolder}/*",
       },
     },
     "jest.disabledWorkspaceFolders": [

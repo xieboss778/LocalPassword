@@ -7,12 +7,12 @@ import {
 } from "@angular/router";
 import { firstValueFrom, map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { KeyService } from "@bitwarden/key-management";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { KeyService } from "@localpass/key-management";
 
 /**
  * Only allow access to this route if the vault is locked and has never been decrypted.

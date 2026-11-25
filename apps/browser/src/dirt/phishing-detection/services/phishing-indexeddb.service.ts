@@ -1,4 +1,4 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 /**
  * Record type for phishing URL storage in IndexedDB.
@@ -10,7 +10,7 @@ type PhishingUrlRecord = { url: string };
  * Stores URLs as individual rows.
  */
 export class PhishingIndexedDbService {
-  private readonly DB_NAME = "bitwarden-phishing";
+  private readonly DB_NAME = "localpass-phishing";
   private readonly STORE_NAME = "phishing-urls";
   private readonly DB_VERSION = 1;
   private readonly CHUNK_SIZE = 50000;

@@ -5,17 +5,17 @@ import { combineLatest, filter, firstValueFrom, map, switchMap } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { OrganizationUserStatusType, PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { OrganizationUserStatusType, PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
 
 import {
   CipherFormConfig,

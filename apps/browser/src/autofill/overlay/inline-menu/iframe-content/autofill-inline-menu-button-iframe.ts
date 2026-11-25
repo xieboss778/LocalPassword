@@ -12,8 +12,8 @@ export class AutofillInlineMenuButtonIframe extends AutofillInlineMenuIframeElem
         border: "none",
         colorScheme: "auto",
       },
-      chrome.i18n.getMessage("bitwardenOverlayButton"),
-      chrome.i18n.getMessage("bitwardenOverlayMenuAvailable"),
+      chrome.i18n.getMessage("localpassOverlayButton"),
+      chrome.i18n.getMessage("localpassOverlayMenuAvailable"),
     );
   }
 }

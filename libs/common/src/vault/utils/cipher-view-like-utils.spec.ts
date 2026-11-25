@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { CipherListView, LoginUriView as LoginListUriView } from "@bitwarden/sdk-internal";
+import { CipherListView, LoginUriView as LoginListUriView } from "@localpass/sdk-internal";
 
 import { UriMatchStrategy } from "../../models/domain/domain-service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
@@ -478,7 +478,7 @@ describe("CipherViewLikeUtils", () => {
         const cipherView = createCipherView(CipherType.Login);
         cipherView.login = new LoginView();
         const uriView = new LoginUriView();
-        uriView.uri = "bitwarden.com";
+        uriView.uri = "local.invalid";
         cipherView.login.uris = [uriView];
 
         expect(CipherViewLikeUtils.canLaunch(cipherView)).toBe(true);
@@ -503,7 +503,7 @@ describe("CipherViewLikeUtils", () => {
 
       it("returns true when the uri does not have a protocol", () => {
         const cipherListView = {
-          type: { login: { uris: [{ uri: "bitwarden.com" }] } },
+          type: { login: { uris: [{ uri: "local.invalid" }] } },
         } as CipherListView;
 
         expect(CipherViewLikeUtils.canLaunch(cipherListView)).toBe(true);
@@ -551,10 +551,10 @@ describe("CipherViewLikeUtils", () => {
         const cipherView = createCipherView(CipherType.Login);
         cipherView.login = new LoginView();
         const uriView = new LoginUriView();
-        uriView.uri = "bitwarden.com";
+        uriView.uri = "local.invalid";
         cipherView.login.uris = [uriView];
 
-        expect(CipherViewLikeUtils.getLaunchUri(cipherView)).toBe("http://bitwarden.com");
+        expect(CipherViewLikeUtils.getLaunchUri(cipherView)).toBe("https://local.invalid");
       });
     });
 
@@ -603,7 +603,7 @@ describe("CipherViewLikeUtils", () => {
         const cipherView = createCipherView(CipherType.Login);
         cipherView.login = new LoginView();
         const uri = new LoginUriView();
-        uri.uri = "https://www.bitwarden.com";
+        uri.uri = "https://www.local.invalid";
         cipherView.login.uris = [uri];
 
         expect(
@@ -625,7 +625,7 @@ describe("CipherViewLikeUtils", () => {
 
       it("returns false when the URI does not match", () => {
         const cipherListView = {
-          type: { login: { uris: [{ uri: "https://bitwarden.com" }] } },
+          type: { login: { uris: [{ uri: "https://local.invalid" }] } },
         } as CipherListView;
 
         expect(
@@ -658,7 +658,7 @@ describe("CipherViewLikeUtils", () => {
       it("returns true for identity fields", () => {
         const cipherView = createCipherView(CipherType.Identity);
         cipherView.identity = new IdentityView();
-        cipherView.identity.email = "example@bitwarden.com";
+        cipherView.identity.email = "example@local.invalid";
         cipherView.identity.phone = "123-456-7890";
 
         expect(CipherViewLikeUtils.hasCopyableValue(cipherView, "email")).toBe(true);

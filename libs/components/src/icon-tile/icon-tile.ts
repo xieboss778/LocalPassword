@@ -1,4 +1,4 @@
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 import { IconTileEmphasis, IconTileVariant } from "./icon-tile.component";
 
@@ -10,7 +10,7 @@ import { IconTileEmphasis, IconTileVariant } from "./icon-tile.component";
  */
 export interface IconTileOptions {
   /** The BWI icon name */
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
 
   /** The visual theme of the icon tile */
   variant?: IconTileVariant;

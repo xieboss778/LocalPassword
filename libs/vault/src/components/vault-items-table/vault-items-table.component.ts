@@ -19,30 +19,30 @@ import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { asapScheduler, catchError, map, observeOn, of, Subject, switchMap, take } from "rxjs";
 
-import { IconComponent as VaultIconComponent } from "@bitwarden/angular/vault/components/icon.component";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { getNestedCollectionTree } from "@bitwarden/common/admin-console/utils/collection-utils";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DIALOG_CIPHER_MENU_ITEMS } from "@bitwarden/common/vault/types/cipher-menu-items";
+import { IconComponent as VaultIconComponent } from "@localpass/angular/vault/components/icon.component";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { getNestedCollectionTree } from "@localpass/common/admin-console/utils/collection-utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherId, CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { DIALOG_CIPHER_MENU_ITEMS } from "@localpass/common/vault/types/cipher-menu-items";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { getNestedFolderTree } from "@bitwarden/common/vault/utils/folder-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { getNestedFolderTree } from "@localpass/common/vault/utils/folder-utils";
 import {
   RestrictedCipherAction,
   RestrictedCipherPolicy,
-} from "@bitwarden/common/vault/utils/restricted-cipher-policy";
+} from "@localpass/common/vault/utils/restricted-cipher-policy";
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   BitCellComponent,
   BitCellDefDirective,
   BitCellLoadingDirective,
@@ -67,8 +67,8 @@ import {
   SkeletonTextComponent,
   SortFn,
   TableSelectionModel,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { TableRowNameDirective } from "../../directives/table-row-name.directive";
 import { orgIconTile, personalIconTile } from "../../models/vault-icon-tile";
@@ -221,7 +221,7 @@ const CIPHER_TYPE_LABELS = new Map<CipherType, string>(
 /** Stable empty list for a row with no memberships — see `chipsById` for why identity matters. */
 const EMPTY_CHIPS: ChipGroupItem[] = [];
 
-function chipItem(id: string, label: string, startIcon: BitwardenIcon): ChipGroupItem {
+function chipItem(id: string, label: string, startIcon: LocalPassIcon): ChipGroupItem {
   return { id, label, variant: "subtle", startIcon };
 }
 

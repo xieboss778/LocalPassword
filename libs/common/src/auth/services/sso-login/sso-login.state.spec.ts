@@ -2,7 +2,7 @@ import { SsoRequiredCacheEntry } from "../../abstractions/sso-login.service.abst
 
 import { SSO_REQUIRED_CACHE } from "./sso-login.state";
 
-// TODO: Delete these tests as part of https://bitwarden.atlassian.net/browse/PM-35145, as they
+// TODO: Delete these tests as part of https://localpass.atlassian.net/browse/PM-35145, as they
 //       will become irrelevant.
 describe("SSO_REQUIRED_CACHE deserializer", () => {
   const deserialize = (value: unknown) =>
@@ -26,7 +26,7 @@ describe("SSO_REQUIRED_CACHE deserializer", () => {
 
   it("should return the cache unchanged when it contains the new SsoRequiredCacheEntry[] format", () => {
     const cache: SsoRequiredCacheEntry[] = [
-      { email: "user@example.com", webVaultUrl: "https://vault.bitwarden.com" },
+      { email: "user@example.com", webVaultUrl: "https://vault.local.invalid" },
     ];
 
     expect(deserialize(cache)).toEqual(cache);

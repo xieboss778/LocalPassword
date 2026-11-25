@@ -2,7 +2,7 @@ import { Signal, signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject, Observable } from "rxjs";
 
-import { StateProvider } from "@bitwarden/state";
+import { StateProvider } from "@localpass/state";
 
 import { TableColumnPreferencesService } from "./table-column-preferences.service";
 import { TableColumnPreferences } from "./table-column-preferences.state";

@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of, Subject } from "rxjs";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { mockAccountInfoWith } from "../../../../spec";
 import { MessagingService } from "../../../platform/abstractions/messaging.service";

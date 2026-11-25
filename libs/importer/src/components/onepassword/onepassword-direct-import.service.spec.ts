@@ -2,12 +2,12 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { Subject } from "rxjs";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { DialogRef, DialogService } from "@bitwarden/components";
-import { ImportError } from "@bitwarden/sdk-internal";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { DialogRef, DialogService } from "@localpass/components";
+import { ImportError } from "@localpass/sdk-internal";
 
 import {
   OnePasswordImportRequest,
@@ -37,8 +37,8 @@ import {
 import { OnePasswordSsoBrowser, OnePasswordSsoSignInClosedError } from "./onepassword-sso-browser";
 
 // `isImportError` is a WASM call; tell SDK errors apart by name instead.
-jest.mock("@bitwarden/sdk-internal", () => ({
-  ...jest.requireActual("@bitwarden/sdk-internal"),
+jest.mock("@localpass/sdk-internal", () => ({
+  ...jest.requireActual("@localpass/sdk-internal"),
   isImportError: (error: unknown) => error instanceof Error && error.name === "ImportError",
 }));
 

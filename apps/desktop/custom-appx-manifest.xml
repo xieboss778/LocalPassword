@@ -108,8 +108,8 @@
             </uap:VisualElements>
             <Extensions>
                 <uap:Extension Category="windows.protocol">
-                    <uap:Protocol Name="bitwarden">
-                        <uap:DisplayName>Bitwarden</uap:DisplayName>
+                    <uap:Protocol Name="localpass">
+                        <uap:DisplayName>LocalPass</uap:DisplayName>
                     </uap:Protocol>
                 </uap:Extension>
 ${customExtensions}

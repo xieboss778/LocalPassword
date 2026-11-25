@@ -6,14 +6,14 @@ import { of } from "rxjs";
 import {
   AUTOTYPE_PAIRING_DATA_SCHEMA_VERSION,
   AutotypePairingPackagingType,
-} from "@bitwarden/common/desktop-native/models/autotype-pairing-data";
+} from "@localpass/common/desktop-native/models/autotype-pairing-data";
 import {
   DESKTOP_APP_URI_PREFIX,
   DesktopAutotypePairingUri,
-} from "@bitwarden/common/desktop-native/models/desktop-autotype-pairing-uri";
-import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { DialogRef, DialogService } from "@bitwarden/components";
+} from "@localpass/common/desktop-native/models/desktop-autotype-pairing-uri";
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { DialogRef, DialogService } from "@localpass/components";
 
 import { CipherFormHTTPAuthenticationService } from "../../services/cipher-form-http-authentication.service";
 

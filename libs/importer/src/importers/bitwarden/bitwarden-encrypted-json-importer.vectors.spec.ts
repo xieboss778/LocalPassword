@@ -1,5 +1,5 @@
-import { CipherWithIdExport, FolderWithIdExport } from "@bitwarden/common/models/export";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { CipherWithIdExport, FolderWithIdExport } from "@localpass/common/models/export";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   CipherView as SdkCipherView,
   Folder as SdkFolder,
@@ -8,8 +8,8 @@ import {
   ManagedSettingsClient,
   PasswordManagerClient,
   PureCrypto,
-} from "@bitwarden/sdk-internal";
-import { BitwardenEncryptedIndividualJsonExport } from "@bitwarden/vault-export-core";
+} from "@localpass/sdk-internal";
+import { LocalPassEncryptedIndividualJsonExport } from "@localpass/vault-export-core";
 
 import { accountEncryptedV1 } from "../spec-data/bitwarden-json/account-encrypted-v1.json";
 import { accountEncryptedV2 } from "../spec-data/bitwarden-json/account-encrypted-v2.json";
@@ -23,7 +23,7 @@ describe.each([
   ["V1", accountEncryptedV1],
   ["V2", accountEncryptedV2],
 ])("account-restricted export vector %s", (_, vector) => {
-  const exportFile = JSON.parse(vector.exportJson) as BitwardenEncryptedIndividualJsonExport;
+  const exportFile = JSON.parse(vector.exportJson) as LocalPassEncryptedIndividualJsonExport;
   const expectedFolders = vector.expected.folders as FolderView[];
   const expectedCiphers = vector.expected.ciphers as SdkCipherView[];
   let client: PasswordManagerClient;

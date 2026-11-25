@@ -1,7 +1,7 @@
 import {
   AssertCredentialParams,
   CreateCredentialParams,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+} from "@localpass/common/platform/abstractions/fido2/fido2-client.service.abstraction";
 
 import { currentlyInSandboxedIframe, sendExtensionMessage } from "../../../autofill/utils";
 import { Fido2PortName } from "../enums/fido2-port-name.enum";

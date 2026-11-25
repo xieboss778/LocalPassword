@@ -1,12 +1,12 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { IncomingMessage } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { IncomingMessage } from "@localpass/sdk-internal";
 
 import { WebIpcTransport } from "./web-ipc.transport";
 
 const message = {
-  type: "bitwarden-ipc-message",
+  type: "localpass-ipc-message",
   message: { destination: { BrowserBackground: { id: "Own" } }, payload: [1], topic: "topic" },
 };
 

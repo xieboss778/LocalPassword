@@ -5,15 +5,15 @@ import { setupAutofillInitDisconnectAction } from "../utils";
 import AutofillInit from "./autofill-init";
 
 (function (windowContext) {
-  if (!windowContext.bitwardenAutofillInit) {
+  if (!windowContext.localpassAutofillInit) {
     const domQueryService = new DomQueryService();
     const domElementVisibilityService = new DomElementVisibilityService();
-    windowContext.bitwardenAutofillInit = new AutofillInit(
+    windowContext.localpassAutofillInit = new AutofillInit(
       domQueryService,
       domElementVisibilityService,
     );
     setupAutofillInitDisconnectAction(windowContext);
 
-    windowContext.bitwardenAutofillInit.init();
+    windowContext.localpassAutofillInit.init();
   }
 })(window);

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 export type SpinnerVariant = "primary" | "subtle" | "success" | "warning" | "danger" | "contrast";
 

@@ -3,22 +3,22 @@ import { Component, DestroyRef, OnInit, viewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { DevicesServiceAbstraction } from "@localpass/common/auth/abstractions/devices/devices.service.abstraction";
 import {
   DevicePendingAuthRequest,
   DeviceResponse,
-} from "@bitwarden/common/auth/abstractions/devices/responses/device.response";
-import { DeviceView } from "@bitwarden/common/auth/abstractions/devices/views/device.view";
-import { AuthRequestApiServiceAbstraction } from "@bitwarden/common/auth/login-via-auth-request";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { PendingAuthRequestsStateService } from "@bitwarden/common/auth/services/auth-request-answering/pending-auth-requests.state";
-import { DeviceType, DeviceTypeMetadata } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { MessageListener } from "@bitwarden/common/platform/messaging";
-import { ButtonModule, DialogService, IconModule, PopoverModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/common/auth/abstractions/devices/responses/device.response";
+import { DeviceView } from "@localpass/common/auth/abstractions/devices/views/device.view";
+import { AuthRequestApiServiceAbstraction } from "@localpass/common/auth/login-via-auth-request";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { PendingAuthRequestsStateService } from "@localpass/common/auth/services/auth-request-answering/pending-auth-requests.state";
+import { DeviceType, DeviceTypeMetadata } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { MessageListener } from "@localpass/common/platform/messaging";
+import { ButtonModule, DialogService, IconModule, PopoverModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { LoginApprovalDialogComponent } from "../login-approval";
 
@@ -51,7 +51,7 @@ export interface DeviceDisplayData {
  * - Medium to Large screens = `bit-table` view
  * - Small screens = `bit-item-group` view
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   standalone: true,
@@ -166,7 +166,7 @@ export class DeviceManagementComponent implements OnInit {
       .sort(sortDevices);
   }
 
-  // TODO: Clean up this flow: https://bitwarden.atlassian.net/browse/PM-34129
+  // TODO: Clean up this flow: https://localpass.atlassian.net/browse/PM-34129
   private async upsertDeviceWithPendingAuthRequest(authRequestId: string) {
     const authRequestResponse = await this.authRequestApiService.getAuthRequest(authRequestId);
     if (!authRequestResponse) {

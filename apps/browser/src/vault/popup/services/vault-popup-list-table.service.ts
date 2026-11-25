@@ -16,19 +16,19 @@ import {
   timer,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { uuidAsString } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { SearchTextDebounceInterval } from "@bitwarden/common/vault/services/search.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { uuidAsString } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { CipherId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { SearchTextDebounceInterval } from "@localpass/common/vault/services/search.service";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { RestrictedCipherPolicy } from "@bitwarden/common/vault/utils/restricted-cipher-policy";
-import { DialogService } from "@bitwarden/components";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { RestrictedCipherPolicy } from "@localpass/common/vault/utils/restricted-cipher-policy";
+import { DialogService } from "@localpass/components";
 import {
   ALL_ITEMS_SCOPE,
   cipherInScope,
@@ -40,7 +40,7 @@ import {
   PasswordRepromptService,
   type VaultScope,
   VaultScopeType,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/browser/browser-popup-utils";

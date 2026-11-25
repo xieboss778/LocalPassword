@@ -1,17 +1,17 @@
 import {
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+} from "@localpass/common/admin-console/models/collections";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 
 import { ImportResult } from "../models/import-result";
 

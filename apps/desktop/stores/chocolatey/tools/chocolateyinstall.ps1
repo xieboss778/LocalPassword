@@ -1,12 +1,12 @@
 ﻿$ErrorActionPreference = 'Stop';
 
-$url = 'https://github.com/bitwarden/clients/releases/download/desktop-v__version__/__artifact_prefix__Bitwarden-Installer-__version__.exe'
+$url = 'https://github.com/localpass/clients/releases/download/desktop-v__version__/__artifact_prefix__LocalPass-Installer-__version__.exe'
 $checksum = '__checksum__'
 
 $packageArgs = @{
-  packageName   = 'bitwarden'
+  packageName   = 'localpass'
   fileType      = 'EXE'
-  softwareName  = 'Bitwarden'
+  softwareName  = 'LocalPass'
   url           = $url
   checksum      = $checksum
   checksumType  = 'sha256'

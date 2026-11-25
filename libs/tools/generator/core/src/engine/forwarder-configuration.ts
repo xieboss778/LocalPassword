@@ -1,11 +1,11 @@
-import { UserKeyDefinition } from "@bitwarden/common/platform/state";
-import { IntegrationConfiguration } from "@bitwarden/common/tools/integration/integration-configuration";
-import { ApiSettings, SelfHostedApiSettings } from "@bitwarden/common/tools/integration/rpc";
-import { IntegrationRequest } from "@bitwarden/common/tools/integration/rpc/integration-request";
-import { RpcConfiguration } from "@bitwarden/common/tools/integration/rpc/rpc-definition";
-import { BufferedKeyDefinition } from "@bitwarden/common/tools/state/buffered-key-definition";
-import { ObjectKey } from "@bitwarden/common/tools/state/object-key";
-import { Constraints } from "@bitwarden/common/tools/types";
+import { UserKeyDefinition } from "@localpass/common/platform/state";
+import { IntegrationConfiguration } from "@localpass/common/tools/integration/integration-configuration";
+import { ApiSettings, SelfHostedApiSettings } from "@localpass/common/tools/integration/rpc";
+import { IntegrationRequest } from "@localpass/common/tools/integration/rpc/integration-request";
+import { RpcConfiguration } from "@localpass/common/tools/integration/rpc/rpc-definition";
+import { BufferedKeyDefinition } from "@localpass/common/tools/state/buffered-key-definition";
+import { ObjectKey } from "@localpass/common/tools/state/object-key";
+import { Constraints } from "@localpass/common/tools/types";
 
 import { ForwarderContext } from "./forwarder-context";
 import { EmailDomainSettings, EmailPrefixSettings } from "./settings";

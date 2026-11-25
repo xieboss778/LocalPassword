@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { SendType } from "../../types/send-type";
 import { Send } from "../domain/send";

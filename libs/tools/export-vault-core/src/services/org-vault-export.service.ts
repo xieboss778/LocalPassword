@@ -3,31 +3,31 @@
 import * as papa from "papaparse";
 import { filter, firstValueFrom, map } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
+import { CollectionService } from "@localpass/admin-console/common";
 import {
   CollectionView,
   CollectionDetailsResponse,
   Collection,
   CollectionData,
-} from "@bitwarden/common/admin-console/models/collections";
-import { CipherWithIdExport, CollectionWithIdExport } from "@bitwarden/common/models/export";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { newGuid } from "@bitwarden/guid";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/admin-console/models/collections";
+import { CipherWithIdExport, CollectionWithIdExport } from "@localpass/common/models/export";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { newGuid } from "@localpass/guid";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KeyGenerationService, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { EncryptService, KeyGenerationService, SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import {
-  BitwardenCsvOrgExportType,
-  BitwardenEncryptedOrgJsonExport,
-  BitwardenUnEncryptedOrgJsonExport,
+  LocalPassCsvOrgExportType,
+  LocalPassEncryptedOrgJsonExport,
+  LocalPassUnEncryptedOrgJsonExport,
   ExportedVaultAsString,
 } from "../types";
 
@@ -341,7 +341,7 @@ export class OrganizationVaultExportService
     }
     const encKeyValidation = await this.encryptService.encryptString(newGuid(), keyForEncryption);
 
-    const jsonDoc: BitwardenEncryptedOrgJsonExport = {
+    const jsonDoc: LocalPassEncryptedOrgJsonExport = {
       encrypted: true,
       encKeyValidation_DO_NOT_EDIT: encKeyValidation.encryptedString,
       collections: [],
@@ -368,14 +368,14 @@ export class OrganizationVaultExportService
       collectionsMap.set(c.id, c);
     });
 
-    const exportCiphers: BitwardenCsvOrgExportType[] = [];
+    const exportCiphers: LocalPassCsvOrgExportType[] = [];
     decCiphers.forEach((c) => {
       // only export logins and secure notes
       if (c.type !== CipherType.Login && c.type !== CipherType.SecureNote) {
         return;
       }
 
-      const cipher = {} as BitwardenCsvOrgExportType;
+      const cipher = {} as LocalPassCsvOrgExportType;
       cipher.collections = [];
       if (c.collectionIds != null) {
         cipher.collections = c.collectionIds
@@ -390,7 +390,7 @@ export class OrganizationVaultExportService
   }
 
   private buildJsonExport(decCollections: CollectionView[], decCiphers: CipherView[]): string {
-    const jsonDoc: BitwardenUnEncryptedOrgJsonExport = {
+    const jsonDoc: LocalPassUnEncryptedOrgJsonExport = {
       encrypted: false,
       collections: [],
       items: [],

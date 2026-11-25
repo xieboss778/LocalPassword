@@ -3,18 +3,18 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { DialogService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { DialogService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 import { KeyRotationDialogComponent } from "./key-rotation-dialog.component";
 import { KeyRotationDialogService } from "./key-rotation-dialog.service";
@@ -273,7 +273,7 @@ describe("KeyRotationDialogComponent", () => {
           await callSubmit();
 
           expect(mockPlatformUtilsService.launchUri).toHaveBeenCalledWith(
-            "https://bitwarden.com/help/attachments/#fixing-old-attachments",
+            "https://github.com/xieboss778/LocalPass/tree/main/docs",
           );
         });
 

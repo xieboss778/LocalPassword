@@ -10,13 +10,13 @@ import {
 } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { MasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { MasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 export const authGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,

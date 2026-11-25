@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
 
 import { creditCard } from "../spec-data/enpass-json/credit-card";
 import { folders } from "../spec-data/enpass-json/folders";

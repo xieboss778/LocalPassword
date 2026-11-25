@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { IntegrationRequest } from "@bitwarden/common/tools/integration/rpc";
-import { Classifier } from "@bitwarden/common/tools/state/classifier";
+import { IntegrationRequest } from "@localpass/common/tools/integration/rpc";
+import { Classifier } from "@localpass/common/tools/state/classifier";
 
 /** Classifies an object by excluding IntegrationRequest parameters.
  */

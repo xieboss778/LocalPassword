@@ -1,6 +1,6 @@
 import { BrowserWindow, clipboard, dialog, MenuItemConstructorOptions } from "electron";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { flagEnabled } from "../../platform/flags";
 import { VersionMain } from "../../platform/main/version.main";
@@ -17,7 +17,7 @@ export class AboutMenu implements IMenubarMenu {
   }
 
   get items(): MenuItemConstructorOptions[] {
-    return [this.separator, this.checkForUpdates, this.aboutBitwarden];
+    return [this.separator, this.checkForUpdates, this.aboutLocalPass];
   }
 
   private readonly _i18nService: I18nService;
@@ -53,10 +53,10 @@ export class AboutMenu implements IMenubarMenu {
     };
   }
 
-  private get aboutBitwarden(): MenuItemConstructorOptions {
+  private get aboutLocalPass(): MenuItemConstructorOptions {
     return {
-      id: "aboutBitwarden",
-      label: this.localize("aboutBitwarden"),
+      id: "aboutLocalPass",
+      label: this.localize("aboutLocalPass"),
       click: async () => {
         const sdkVersion = await this._versionMain.sdkVersion();
         const aboutInformation =
@@ -72,7 +72,7 @@ export class AboutMenu implements IMenubarMenu {
           "\nArchitecture " +
           process.arch;
         const productName = this.localize(
-          flagEnabled("prereleaseBuild") ? "bitwardenBeta" : "bitwarden",
+          flagEnabled("prereleaseBuild") ? "localpassBeta" : "localpass",
         );
         const result = await dialog.showMessageBox(this._window, {
           title: productName,

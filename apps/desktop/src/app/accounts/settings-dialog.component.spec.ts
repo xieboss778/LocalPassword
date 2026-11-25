@@ -23,40 +23,40 @@ class MockTabComponent {
   readonly label = input<string>();
 }
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { ClearClipboardDelay } from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { DeviceType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { ThemeType } from "@bitwarden/common/platform/enums";
-import { MessageSender } from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { PolicyId, UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { TabsModule, DialogRef, DialogService, ToastService } from "@bitwarden/components";
-import { BiometricStateService, BiometricsStatus, KeyService } from "@bitwarden/key-management";
-import { SessionTimeoutSettingsComponent } from "@bitwarden/key-management-ui";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { DeviceType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { ThemeType } from "@localpass/common/platform/enums";
+import { MessageSender } from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { FakeAccountService, mockAccountServiceWith } from "@localpass/common/spec";
+import { PolicyId, UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { TabsModule, DialogRef, DialogService, ToastService } from "@localpass/components";
+import { BiometricStateService, BiometricsStatus, KeyService } from "@localpass/key-management";
+import { SessionTimeoutSettingsComponent } from "@localpass/key-management-ui";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { AutoUnlockService } from "@bitwarden/unlock";
-import { VaultCopyButtonsService } from "@bitwarden/vault";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { AutoUnlockService } from "@localpass/unlock";
+import { VaultCopyButtonsService } from "@localpass/vault";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { SshAgentPromptType } from "../../autofill/models/ssh-agent-setting";
@@ -784,7 +784,7 @@ describe("SettingsDialogComponent", () => {
 
           if (dialogResult) {
             expect(platformUtilsService.launchUri).toHaveBeenCalledWith(
-              "https://bitwarden.com/help/biometrics/",
+              "https://github.com/xieboss778/LocalPass/tree/main/docs",
             );
           } else {
             expect(platformUtilsService.launchUri).not.toHaveBeenCalled();
@@ -1518,7 +1518,7 @@ describe("SettingsDialogComponent", () => {
       await init();
     }
 
-    it("asks to turn on Bitwarden when it is off", async () => {
+    it("asks to turn on LocalPass when it is off", async () => {
       await createRegisteredComponent(false);
       desktopAutofillService.requestEnableCredentialProvider.mockResolvedValue(true);
 
@@ -1530,7 +1530,7 @@ describe("SettingsDialogComponent", () => {
       expect(desktopAutofillService.openCredentialProviderSettings).not.toHaveBeenCalled();
     });
 
-    it("opens the system settings when the OS cannot ask to turn on Bitwarden", async () => {
+    it("opens the system settings when the OS cannot ask to turn on LocalPass", async () => {
       await createRegisteredComponent(false);
       desktopAutofillService.requestEnableCredentialProvider.mockResolvedValue(undefined);
 
@@ -1552,7 +1552,7 @@ describe("SettingsDialogComponent", () => {
       expect(descriptions).toContainEqual(expect.stringContaining("mayOpenSystemSettings"));
     });
 
-    it("opens the system settings when Bitwarden is on", async () => {
+    it("opens the system settings when LocalPass is on", async () => {
       await createRegisteredComponent(true);
 
       manageInSystemSettingsLink().nativeElement.click();

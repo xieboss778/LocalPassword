@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/legacy-crypto",
+  "name": "@localpass/legacy-crypto",
   "version": "0.0.1",
   "description": "Deprecated crypto primitives being retired in favour of the SDK",
   "private": true,

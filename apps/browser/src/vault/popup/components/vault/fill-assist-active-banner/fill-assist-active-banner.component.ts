@@ -2,8 +2,8 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { BannerModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { BannerModule } from "@localpass/components";
 
 import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
 

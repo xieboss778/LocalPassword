@@ -1,6 +1,6 @@
 import { filter, firstValueFrom, map, race, timer } from "rxjs";
 
-import { Repository, StateClient } from "@bitwarden/sdk-internal";
+import { Repository, StateClient } from "@localpass/sdk-internal";
 
 import { OrganizationRecordMapper } from "../../../admin-console/models/domain/organization-sdk-mapper";
 import { PolicyRecordMapper } from "../../../admin-console/models/domain/policy-sdk-mapper";

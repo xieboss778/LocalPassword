@@ -1,7 +1,7 @@
 /**
  * Preview-side (iframe) wiring for the feature-flags addon.
  *
- * Runs in the preview bundle, which resolves `@bitwarden/*` aliases, so it can
+ * Runs in the preview bundle, which resolves `@localpass/*` aliases, so it can
  * read the flag enum directly. It provides a mock `ConfigService` whose flag
  * values are driven by the `FEATURE_FLAGS_GLOBAL` Storybook global.
  */
@@ -12,8 +12,8 @@ import {
   DefaultFeatureFlagValue,
   FeatureFlag,
   FeatureFlagValueType,
-} from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+} from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { FEATURE_FLAGS_GLOBAL, FeatureFlagOption } from "./constants";
 

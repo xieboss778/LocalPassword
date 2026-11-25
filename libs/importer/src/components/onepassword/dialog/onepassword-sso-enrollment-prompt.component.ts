@@ -8,8 +8,8 @@ import {
   Validators,
 } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   DIALOG_DATA,
   DialogRef,
@@ -20,7 +20,7 @@ import {
   FormFieldModule,
   IconButtonModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { requiredWithMessage } from "../onepassword-validators";
 

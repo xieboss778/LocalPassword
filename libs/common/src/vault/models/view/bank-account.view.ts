@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { BankAccountView as SdkBankAccountView } from "@bitwarden/sdk-internal";
+import { BankAccountView as SdkBankAccountView } from "@localpass/sdk-internal";
 
 import { ItemView } from "./item.view";
 

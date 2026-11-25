@@ -1,12 +1,12 @@
 import { mock } from "jest-mock-extended";
 import { Subject } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   IntraprocessMessageSender,
   Message,
   MessageListener,
-} from "@bitwarden/common/platform/messaging";
+} from "@localpass/common/platform/messaging";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { ContextMenuClickedHandler } from "../browser/context-menu-clicked-handler";

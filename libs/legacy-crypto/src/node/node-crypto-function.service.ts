@@ -1,8 +1,8 @@
 import * as crypto from "crypto";
 
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { UnsignedPublicKey } from "../types/key-types";

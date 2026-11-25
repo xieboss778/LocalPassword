@@ -10,7 +10,7 @@ module.exports = {
   transform: {
     "^.+\\.[tj]s$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.spec.json" }],
   },
-  // Resolve the workspace aliases (@bitwarden/*) the same way the build does.
+  // Resolve the workspace aliases (@localpass/*) the same way the build does.
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions?.paths ?? {}, {
     prefix: "<rootDir>/../../",
   }),

@@ -1,4 +1,4 @@
-import { ToastService } from "@bitwarden/components";
+import { ToastService } from "@localpass/components";
 
 import { OffscreenDocumentService } from "../../offscreen-document/abstractions/offscreen-document";
 

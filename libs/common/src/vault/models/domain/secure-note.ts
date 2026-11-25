@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { SecureNote as SdkSecureNote } from "@bitwarden/sdk-internal";
+import { SecureNote as SdkSecureNote } from "@localpass/sdk-internal";
 
 import Domain from "../../../platform/models/domain/domain-base";
 import { normalizeSecureNoteTypeForSdk, SecureNoteType } from "../../enums";

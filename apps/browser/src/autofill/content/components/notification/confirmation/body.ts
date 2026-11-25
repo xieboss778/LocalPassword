@@ -1,7 +1,7 @@
 import createEmotion from "@emotion/css/create-instance";
 import { html, nothing } from "lit";
 
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 import { spacing, themes } from "../../constants/styles";
 import { Celebrate, Keyhole, Warning } from "../../illustrations";

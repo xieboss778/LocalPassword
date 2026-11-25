@@ -40,9 +40,9 @@ export abstract class PlatformUtilsService {
    */
   abstract supportsFileDownloads(): boolean;
   /**
-   * @deprecated use `@bitwarden/components/ToastService.showToast` instead
+   * @deprecated use `@localpass/components/ToastService.showToast` instead
    *
-   * Jira: [CL-213](https://bitwarden.atlassian.net/browse/CL-213)
+   * Jira: [CL-213](https://localpass.atlassian.net/browse/CL-213)
    */
   abstract showToast(
     type: "error" | "success" | "warning" | "info",

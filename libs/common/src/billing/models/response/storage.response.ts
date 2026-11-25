@@ -1,4 +1,4 @@
-import { Storage } from "@bitwarden/subscription";
+import { Storage } from "@localpass/subscription";
 
 import { BaseResponse } from "../../../models/response/base.response";
 

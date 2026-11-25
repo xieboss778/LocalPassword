@@ -1,17 +1,17 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { DEFAULT_FILL_ASSIST_RULES_URL } from "@bitwarden/common/autofill/constants";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { DEFAULT_FILL_ASSIST_RULES_URL } from "@localpass/common/autofill/constants";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
-import { GlobalState, GlobalStateProvider } from "@bitwarden/state";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { TaskSchedulerService } from "@localpass/common/platform/scheduling";
+import { GlobalState, GlobalStateProvider } from "@localpass/state";
 
 import { TargetingRulesDataService } from "./targeting-rules-data.service";
 
@@ -25,7 +25,7 @@ import { TargetingRulesDataService } from "./targeting-rules-data.service";
     constructor(public url: string) {}
   };
 
-const MOCK_API_URL = "https://api.bitwarden.com";
+const MOCK_API_URL = "https://api.local.invalid";
 const DEFAULT_URL_TRAILING = `${DEFAULT_FILL_ASSIST_RULES_URL}/`;
 
 const makeManifestResponse = (cid: string) =>

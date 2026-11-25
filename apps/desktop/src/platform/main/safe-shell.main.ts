@@ -1,7 +1,7 @@
 import { shell } from "electron";
 
-import { SafeUrls, UrlType } from "@bitwarden/common/platform/misc/safe-urls";
-import { LogService } from "@bitwarden/logging";
+import { SafeUrls, UrlType } from "@localpass/common/platform/misc/safe-urls";
+import { LogService } from "@localpass/logging";
 
 /**
  * A wrapper around Electron's shell module with safe versions of methods for opening external URLs.

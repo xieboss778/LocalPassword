@@ -1,4 +1,4 @@
-import { ImportError, isImportError } from "@bitwarden/sdk-internal";
+import { ImportError, isImportError } from "@localpass/sdk-internal";
 
 import {
   OnePasswordErrorDisplay,
@@ -7,8 +7,8 @@ import {
 } from "./onepassword-import";
 
 // `isImportError` is a WASM call; override just it so the error mapping is unit-testable.
-jest.mock("@bitwarden/sdk-internal", () => ({
-  ...jest.requireActual("@bitwarden/sdk-internal"),
+jest.mock("@localpass/sdk-internal", () => ({
+  ...jest.requireActual("@localpass/sdk-internal"),
   isImportError: jest.fn(),
 }));
 

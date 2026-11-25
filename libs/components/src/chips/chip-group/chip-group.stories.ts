@@ -1,7 +1,7 @@
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { findByRole, fn, userEvent } from "storybook/test";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { I18nMockService } from "../../utils/i18n-mock.service";
 

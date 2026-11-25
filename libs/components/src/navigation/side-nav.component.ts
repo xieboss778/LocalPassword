@@ -14,9 +14,9 @@ import {
 } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BitIconButtonComponent } from "../icon-button/icon-button.component";
 import { SIDERAIL_WIDTH_REM } from "../shared";

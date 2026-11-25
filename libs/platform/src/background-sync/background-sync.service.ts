@@ -1,4 +1,4 @@
-import { TaskSchedulerService, ScheduledTaskNames } from "@bitwarden/common/platform/scheduling";
+import { TaskSchedulerService, ScheduledTaskNames } from "@localpass/common/platform/scheduling";
 
 /**
  * The default interval between background syncs.

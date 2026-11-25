@@ -5,10 +5,10 @@ import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
 import {
   ButtonModule,
   CardComponent,
@@ -17,11 +17,11 @@ import {
   SectionHeaderComponent,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormContainer } from "../../cipher-form-container";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-identity-section",
@@ -40,10 +40,10 @@ import { CipherFormContainer } from "../../cipher-form-container";
   ],
 })
 export class IdentitySectionComponent implements OnInit {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() originalCipherView: CipherView;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() disabled: boolean;
   identityTitleOptions = [

@@ -1,6 +1,6 @@
-import { LogService } from "@bitwarden/logging";
-import { GlobalState, KeyDefinition } from "@bitwarden/state";
-import { AbstractStorageService, ObservableStorageService } from "@bitwarden/storage-core";
+import { LogService } from "@localpass/logging";
+import { GlobalState, KeyDefinition } from "@localpass/state";
+import { AbstractStorageService, ObservableStorageService } from "@localpass/storage-core";
 
 import { StateBase } from "./state-base";
 import { globalKeyBuilder } from "./util";

@@ -2,7 +2,7 @@
 import { TextEncoder, TextDecoder } from "util";
 Object.assign(global, { TextDecoder, TextEncoder });
 
-import { ObjectKey } from "@bitwarden/common/tools/state/object-key";
+import { ObjectKey } from "@localpass/common/tools/state/object-key";
 
 import { BuiltIn, Profile } from "../metadata";
 import { PasswordGeneratorSettings } from "../types";

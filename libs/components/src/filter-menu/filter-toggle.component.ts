@@ -15,7 +15,7 @@ import {
 import { BaseChipDirective } from "../chips/shared/base-chip.directive";
 import { ChipContentComponent } from "../chips/shared/chip-content.component";
 import { OverflowItemDirective } from "../overflow-list";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TooltipDirective } from "../tooltip";
 
 import {
@@ -63,13 +63,13 @@ export class FilterToggleComponent implements FilterControl, FilterPresenter, On
   readonly label = input.required<string>();
 
   /** Leading icon, shown in both states unless {@link iconActive} overrides it while active. */
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
 
   /**
    * Icon shown while active — e.g. `bwi-star-f` for an outline `bwi-star`. Falls
    * back to {@link icon} when omitted.
    */
-  readonly iconActive = input<BitwardenIcon>();
+  readonly iconActive = input<LocalPassIcon>();
 
   /**
    * Tooltip text to explain why the chip is disabled. The chip carries no tooltip otherwise, so
@@ -108,7 +108,7 @@ export class FilterToggleComponent implements FilterControl, FilterPresenter, On
   readonly optionsTemplate = computed<TemplateRef<unknown> | undefined>(() => undefined);
 
   /** The displayed icon — {@link iconActive} while active (if supplied), else {@link icon}. */
-  protected readonly displayIcon = computed<BitwardenIcon | undefined>(() =>
+  protected readonly displayIcon = computed<LocalPassIcon | undefined>(() =>
     this._value() ? (this.iconActive() ?? this.icon()) : this.icon(),
   );
 

@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 import { Subject } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { DesktopIpcPeerClientType, IpcService } from "@bitwarden/common/platform/ipc";
-import { BroadcastGroup, BroadcastResolution, OutgoingMessage } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { DesktopIpcPeerClientType, IpcService } from "@localpass/common/platform/ipc";
+import { BroadcastGroup, BroadcastResolution, OutgoingMessage } from "@localpass/sdk-internal";
 
 import { NativeMessagingMain } from "../../main/native-messaging.main";
 import { WindowMain } from "../../main/window.main";
@@ -17,7 +17,7 @@ let backendResolve: (group: BroadcastGroup) => Promise<BroadcastResolution>;
 
 jest.mock("electron", () => ({ ipcMain: { on: jest.fn() } }));
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   IpcCommunicationBackend: jest.fn().mockImplementation((sender) => {
     backendSend = sender.send;
     backendResolve = sender.resolve;
@@ -28,7 +28,7 @@ jest.mock("@bitwarden/sdk-internal", () => ({
   IncomingMessage: jest.fn(),
 }));
 
-jest.mock("@bitwarden/common/platform/abstractions/sdk/sdk-load.service", () => ({
+jest.mock("@localpass/common/platform/abstractions/sdk/sdk-load.service", () => ({
   SdkLoadService: { Ready: Promise.resolve() },
 }));
 
@@ -63,7 +63,7 @@ describe("IpcMainService", () => {
     await sendTo(destination);
 
     expect(nativeMessaging.sendTo).toHaveBeenCalledWith(1, {
-      type: "bitwarden-ipc-message",
+      type: "localpass-ipc-message",
       message: { destination, payload: [1], topic: "topic" },
     });
   });
@@ -72,7 +72,7 @@ describe("IpcMainService", () => {
     await sendTo("DesktopRenderer");
 
     expect(webContentsSend).toHaveBeenCalledWith("ipc.onMessage", {
-      type: "bitwarden-ipc-message",
+      type: "localpass-ipc-message",
       message: { destination: "DesktopRenderer", payload: [1], topic: "topic" },
     });
   });

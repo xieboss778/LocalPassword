@@ -35,7 +35,7 @@ const statusIndicators = [
   },
 ];
 
-const bitwardenObjects = [
+const localpassObjects = [
   {
     id: "bwi-access-connector",
     usage:
@@ -454,7 +454,7 @@ const miscObjects = [
   },
   {
     id: "bwi-shield",
-    usage: "Indicates the Bitwarden brand or Bitwarden-branded elements.",
+    usage: "Indicates the LocalPass brand or LocalPass-branded elements.",
   },
   {
     id: "bwi-sliders",
@@ -504,7 +504,7 @@ const platformsAndLogos = [
 export const IconStoryData = {
   platformsAndLogos,
   actions,
-  bitwardenObjects,
+  localpassObjects,
   statusIndicators,
   directionalMenuIndicators,
   miscObjects,

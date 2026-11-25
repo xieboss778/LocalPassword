@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import { KeyDefinition, LOGIN_STRATEGY_MEMORY } from "@bitwarden/common/platform/state";
+import { AuthenticationType } from "@localpass/common/auth/enums/authentication-type";
+import { KeyDefinition, LOGIN_STRATEGY_MEMORY } from "@localpass/common/platform/state";
 
 import { AuthRequestLoginStrategyData } from "../../login-strategies/auth-request-login.strategy";
 import { PasswordLoginStrategyData } from "../../login-strategies/password-login.strategy";

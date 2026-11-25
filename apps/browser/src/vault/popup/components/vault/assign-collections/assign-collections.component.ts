@@ -7,32 +7,32 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Observable, combineLatest, filter, first, switchMap } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CollectionService } from "@localpass/admin-console/common";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   ButtonModule,
   CardComponent,
   SelectModule,
   FormFieldModule,
   AsyncActionsModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   AssignCollectionsComponent,
   CollectionAssignmentParams,
   Vfo1I18nPipe,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-page.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-assign-collections",
@@ -54,7 +54,7 @@ import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-p
     Vfo1I18nPipe,
   ],
 })
-// FIXME(https://bitwarden.atlassian.net/browse/PM-28231): Use Component suffix
+// FIXME(https://localpass.atlassian.net/browse/PM-28231): Use Component suffix
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class AssignCollections {
   /** Params needed to populate the assign collections component */

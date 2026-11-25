@@ -14,7 +14,7 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
     @IBOutlet weak var statusLabel: NSTextField!
     @IBOutlet weak var logoImageView: NSImageView!
 
-    // The IPC client to communicate with the Bitwarden desktop app
+    // The IPC client to communicate with the LocalPass desktop app
     private var client: AutofillProviderClient?
 
     // Timer for checking connection status
@@ -65,7 +65,7 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
         }
 
         initializeLogging()
-        let logger = Logger(subsystem: "com.bitwarden.desktop.autofill-extension", category: "credential-provider")
+        let logger = Logger(subsystem: "com.localpass.desktop.autofill-extension", category: "credential-provider")
 
         // The app that contains this extension, derived from the extension's own location:
         // <App>.app/Contents/PlugIns/<extension>.appex. Resolving it by path rather than by
@@ -85,24 +85,24 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
         }
 
         if !isRunning {
-            logger.log("[autofill-extension] Bitwarden Desktop not running, attempting to launch \(containerURL.path, privacy: .public)")
+            logger.log("[autofill-extension] LocalPass Desktop not running, attempting to launch \(containerURL.path, privacy: .public)")
 
             // Launch the app and wait for it to be ready
             await withCheckedContinuation { continuation in
                 workspace.openApplication(at: containerURL, configuration: NSWorkspace.OpenConfiguration()) { app, error in
                     if let error = error {
-                        logger.error("[autofill-extension] Failed to launch Bitwarden Desktop: \(error.localizedDescription)")
+                        logger.error("[autofill-extension] Failed to launch LocalPass Desktop: \(error.localizedDescription)")
                     } else {
-                        logger.log("[autofill-extension] Successfully launched Bitwarden Desktop")
+                        logger.log("[autofill-extension] Successfully launched LocalPass Desktop")
                     }
                     continuation.resume()
                 }
             }
         }
 
-        logger.log("[autofill-extension] Connecting to Bitwarden over IPC")
+        logger.log("[autofill-extension] Connecting to LocalPass over IPC")
 
-        // Retry connecting to the Bitwarden IPC with an increasing delay
+        // Retry connecting to the LocalPass IPC with an increasing delay
         let maxRetries = 20
         let delayMs = 500
         var newClient: AutofillProviderClient?
@@ -123,7 +123,7 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
             logger.log("[autofill-extension] Connection attempt \(attempt), status: \(statusString)")
 
             if connectionStatus == .connected {
-                logger.log("[autofill-extension] Successfully connected to Bitwarden (attempt \(attempt))")
+                logger.log("[autofill-extension] Successfully connected to LocalPass (attempt \(attempt))")
                 break
             } else if connectionStatus == .connecting {
                 // try to wait one more time while it's connecting
@@ -191,7 +191,7 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
     }
 
     init() {
-        logger = Logger(subsystem: "com.bitwarden.desktop.autofill-extension", category: "credential-provider")
+        logger = Logger(subsystem: "com.localpass.desktop.autofill-extension", category: "credential-provider")
 
         logger.log("[autofill-extension] initializing extension")
 
@@ -294,7 +294,7 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
         self.view.isHidden = false
 
         // Set the localized message
-        statusLabel.stringValue = NSLocalizedString("autofillConfigurationMessage", comment: "Message shown when Bitwarden is enabled in system settings")
+        statusLabel.stringValue = NSLocalizedString("autofillConfigurationMessage", comment: "Message shown when LocalPass is enabled in system settings")
 
         // Send the native status request asynchronously
         Task {

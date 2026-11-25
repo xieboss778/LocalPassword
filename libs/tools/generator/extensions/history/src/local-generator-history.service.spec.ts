@@ -11,10 +11,10 @@ import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { DataPacker } from "@bitwarden/common/tools/state/data-packer.abstraction";
-import { UserId } from "@bitwarden/common/types/guid";
-import { Algorithm, Type } from "@bitwarden/generator-core";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { DataPacker } from "@localpass/common/tools/state/data-packer.abstraction";
+import { UserId } from "@localpass/common/types/guid";
+import { Algorithm, Type } from "@localpass/generator-core";
 
 import { FakeStateProvider, awaitAsync, mockAccountServiceWith } from "../../../../../common/spec";
 

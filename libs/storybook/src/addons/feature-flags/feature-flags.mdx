@@ -4,7 +4,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # Feature Flags
 
-The `@bitwarden/storybook` feature-flags addon lets you preview any story under different
+The `@localpass/storybook` feature-flags addon lets you preview any story under different
 feature-flag states — interactively while developing, and as automated Chromatic snapshots. Both are
 driven by a mock `ConfigService` provided to every story.
 
@@ -22,8 +22,8 @@ To fix a flag's state per story — one story with it on, another with it off �
 so each story always renders in its own state:
 
 ```ts
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { enabledFlags } from "@bitwarden/storybook";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { enabledFlags } from "@localpass/storybook";
 
 export const FlagOn: StoryObj<MyComponent> = {
   globals: enabledFlags(FeatureFlag.MyFlag),
@@ -41,8 +41,8 @@ Pass multiple flags to enable them together: `enabledFlags(FlagA, FlagB)`.
 Opt a story into Chromatic on/off snapshots with `featureFlagModes`:
 
 ```ts
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { featureFlagModes } from "@bitwarden/storybook";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { featureFlagModes } from "@localpass/storybook";
 
 export const Default: StoryObj<MyComponent> = {
   parameters: {

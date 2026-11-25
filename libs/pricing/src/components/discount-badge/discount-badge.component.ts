@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { BadgeModule } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { BadgeModule } from "@localpass/components";
 
 import { Discount, getLabel } from "../../types/discount";
 import { Maybe } from "../../types/maybe";

@@ -2,9 +2,9 @@ import { Injectable, inject } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { firstValueFrom } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { DialogService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { DialogService } from "@localpass/components";
 
 import { KeeperRegion } from "../../../importers/keeper/access";
 import { ImportRecordError, ImportResult } from "../../../models";

@@ -6,7 +6,7 @@ import {
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import { OrganizationId } from "../../types/guid";
 import { OrgKey } from "../../types/key";

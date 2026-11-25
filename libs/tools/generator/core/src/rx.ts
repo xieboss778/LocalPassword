@@ -1,6 +1,6 @@
 import { map, pipe } from "rxjs";
 
-import { reduceCollection, distinctIfShallowMatch } from "@bitwarden/common/tools/rx";
+import { reduceCollection, distinctIfShallowMatch } from "@localpass/common/tools/rx";
 
 import { DefaultPolicyEvaluator } from "./policies";
 import { PolicyConfiguration } from "./types";

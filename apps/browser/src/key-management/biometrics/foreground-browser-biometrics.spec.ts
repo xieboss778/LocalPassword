@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 

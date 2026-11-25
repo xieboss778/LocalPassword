@@ -3,7 +3,7 @@
 /// The Info.plist key carrying the App Group identifier shared between the desktop app
 /// and the macOS autofill extension. It is stamped per build variant so a single native
 /// binary serves both production and beta without recompilation.
-static NSString *const kAppGroupInfoKey = @"BitwardenAppGroupIdentifier";
+static NSString *const kAppGroupInfoKey = @"LocalPassAppGroupIdentifier";
 
 /// The Info.plist of the app this process belongs to.
 ///

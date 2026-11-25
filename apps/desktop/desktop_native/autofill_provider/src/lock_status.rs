@@ -4,7 +4,7 @@ use std::sync::Arc;
 use napi_derive::napi;
 use serde::{Deserialize, Serialize};
 
-use crate::{BitwardenError, Callback, TimedCallback};
+use crate::{LocalPassError, Callback, TimedCallback};
 
 /// Response for the lock status of the desktop client.
 #[derive(Debug, Serialize, Deserialize)]
@@ -22,7 +22,7 @@ impl Callback for Arc<dyn GetLockStatusCallback> {
         Ok(())
     }
 
-    fn error(&self, error: BitwardenError) {
+    fn error(&self, error: LocalPassError) {
         self.as_ref().on_error(error);
     }
 }
@@ -33,7 +33,7 @@ pub trait GetLockStatusCallback: Send + Sync {
     fn on_complete(&self, response: LockStatusResponse);
 
     /// Function to call if an error response is returned.
-    fn on_error(&self, error: BitwardenError);
+    fn on_error(&self, error: LocalPassError);
 }
 
 impl GetLockStatusCallback for TimedCallback<LockStatusResponse> {
@@ -41,7 +41,7 @@ impl GetLockStatusCallback for TimedCallback<LockStatusResponse> {
         self.send(Ok(response));
     }
 
-    fn on_error(&self, error: BitwardenError) {
+    fn on_error(&self, error: LocalPassError) {
         self.send(Err(error));
     }
 }

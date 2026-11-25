@@ -1,5 +1,5 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
 
 import { LOCAL_VAULT_SENTINEL_URL } from "./local-vault-environment";
 
@@ -24,7 +24,7 @@ const TOKEN_LIFETIME_SECONDS = 10 * 365 * 24 * 60 * 60;
  *
  * The token is never verified anywhere: the client only decodes the payload to read the user id,
  * the email and the name, so the signature segment stays empty. Keep this in sync with
- * `DecodedAccessToken` in `@bitwarden/common/auth/services/token.service`.
+ * `DecodedAccessToken` in `@localpass/common/auth/services/token.service`.
  */
 export function buildLocalAccessToken(options: LocalAccessTokenOptions): string {
   const issuedAtSeconds = Math.floor((options.issuedAt ?? new Date()).getTime() / 1000);

@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { ColorPasswordComponent } from "./color-password.component";
 

@@ -25,17 +25,17 @@ import {
 import { Router } from "@angular/router";
 import { catchError, map, of } from "rxjs";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   AsyncActionsModule,
-  BitwardenIcon,
+  LocalPassIcon,
   ButtonModule,
   CalloutModule,
   CardContentComponent,
@@ -51,8 +51,8 @@ import {
   SpinnerComponent,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import {
   ImportDestinationKind,
@@ -96,7 +96,7 @@ const RESTRICTED_TYPE_KEYS: Record<CipherType, string> = {
   [CipherType.Passport]: "importRestrictedTypePassport",
 };
 
-const POLICY_HELP_URL = "https://bitwarden.com/help/policies/#manage-item-types";
+const POLICY_HELP_URL = "https://github.com/xieboss778/LocalPass/tree/main/docs";
 
 /**
  * Lets the user choose where the staged items land (My vault, My items, or an organization,
@@ -594,7 +594,7 @@ export class ImportDestinationComponent {
   }
 
   private reportFailure(error: unknown): void {
-    // Set only by the encrypted Bitwarden JSON importer; shown as a toast, as in credential parsing.
+    // Set only by the encrypted LocalPass JSON importer; shown as a toast, as in credential parsing.
     if (
       error instanceof ImportResultError &&
       error.errorKey === ImportResultErrorKey.AccountMismatch
@@ -684,11 +684,11 @@ export class ImportDestinationComponent {
 
   // A default collection gets the user icon, as in the legacy import. In an admin console import
   // it is another member's My items collection.
-  protected folderIcon(folder: CollectionView): BitwardenIcon {
+  protected folderIcon(folder: CollectionView): LocalPassIcon {
     return folder.isDefaultCollection ? "bwi-user" : "bwi-shared-folder";
   }
 
-  private iconFor(option: ImportDestinationOption): BitwardenIcon {
+  private iconFor(option: ImportDestinationOption): LocalPassIcon {
     if (option.kind !== ImportDestinationKind.Organization) {
       return "bwi-user";
     }

@@ -9,7 +9,7 @@ import {
   FEATURE_FLAG_CATALOG,
   FEATURE_FLAGS_GLOBAL,
   FEATURE_FLAGS_PARAM,
-} from "@bitwarden/storybook";
+} from "@localpass/storybook";
 
 import docJson from "../documentation.json";
 
@@ -67,7 +67,7 @@ const preview: Preview = {
       disabled: true,
     },
     // Published here (the preview can read the enum) so the manager's Feature
-    // Flags panel can render the catalog without importing `@bitwarden/*`.
+    // Flags panel can render the catalog without importing `@localpass/*`.
     // A parameter rather than a global: parameters are never diffed or written
     // to the URL, so this array survives the boundary intact.
     [FEATURE_FLAGS_PARAM]: { catalog: FEATURE_FLAG_CATALOG },

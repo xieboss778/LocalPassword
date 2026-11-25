@@ -2,9 +2,9 @@
 // @ts-strict-ignore
 import { ipcMain } from "electron";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { sshagent } from "@bitwarden/desktop-napi";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { sshagent } from "@localpass/desktop-napi";
 
 import { SSH_AGENT_IPC_CHANNELS } from "../models/ipc-channels";
 

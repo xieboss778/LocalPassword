@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 
 import { BrowserWindow, Session, WebContents, ipcMain, session } from "electron";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { OnePasswordSsoLoginOutcome } from "../../../types/onepassword-sso-login-outcome";
 import { WindowMain } from "../../window.main";
@@ -21,7 +21,7 @@ type LoginWebPreferences = ReturnType<typeof loginWebPreferences>;
 
 /** Some identity providers refuse to sign in an embedded browser that says what it is. */
 export function withoutAppTokens(userAgent: string): string {
-  return userAgent.replace(/\s(?:Bitwarden[\w-]*|Electron)\/\S+/g, "");
+  return userAgent.replace(/\s(?:LocalPass[\w-]*|Electron)\/\S+/g, "");
 }
 
 function parseUrl(address: unknown): URL | null {

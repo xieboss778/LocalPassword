@@ -9,7 +9,7 @@ import {
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { getByRole, userEvent } from "storybook/test";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { ButtonModule } from "../button";
 import { IconComponent } from "../icon/icon.component";
@@ -89,7 +89,7 @@ export default {
       type: "figma",
       url: "https://www.figma.com/design/Zt3YSeb6E6lebAffrNLa0h/Tailwind-Component-Library?node-id=16329-40852&t=b5tDKylm5sWm2yKo-4",
     },
-    // TODO: fix flakiness of popover positioning https://bitwarden.atlassian.net/browse/CL-822
+    // TODO: fix flakiness of popover positioning https://localpass.atlassian.net/browse/CL-822
     chromatic: {
       disableSnapshot: true,
     },

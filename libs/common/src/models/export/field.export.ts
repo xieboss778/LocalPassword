@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { FieldType, LinkedIdType } from "../../vault/enums";
 import { Field as FieldDomain } from "../../vault/models/domain/field";

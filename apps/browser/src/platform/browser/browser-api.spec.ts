@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
-import { DeviceType } from "@bitwarden/common/enums";
-import { LogService } from "@bitwarden/logging";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
+import { DeviceType } from "@localpass/common/enums";
+import { LogService } from "@localpass/logging";
 
 import { flushPromises } from "../../autofill/spec/testing-utils";
 import { BrowserPlatformUtilsService } from "../services/platform-utils/browser-platform-utils.service";

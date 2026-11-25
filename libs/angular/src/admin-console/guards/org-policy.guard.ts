@@ -2,14 +2,14 @@ import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { firstValueFrom, Observable, switchMap, tap } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { ToastService } from "@bitwarden/components";
-import { UserId } from "@bitwarden/user-core";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { ToastService } from "@localpass/components";
+import { UserId } from "@localpass/user-core";
 
 /**
  * This guard is intended to prevent members of an organization from accessing

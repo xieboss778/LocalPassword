@@ -16,8 +16,8 @@ import {
 import { ControlValueAccessor, NgControl, ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { NgSelectComponent, NgSelectModule } from "@ng-select/ng-select";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ChipComponent } from "../chips";
 import { BitFormFieldControlDirective } from "../form-field/form-field-control.directive";

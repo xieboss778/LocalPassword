@@ -1,8 +1,8 @@
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { FieldType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { FieldType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
 
 import { BaseImporter } from "../base-importer";
 

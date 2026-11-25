@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Observable, switchMap } from "rxjs";
 
-import { NudgeStatus, NudgeType } from "@bitwarden/angular/vault";
-import { NewAccountNudgeService } from "@bitwarden/angular/vault/services/custom-nudges-services/new-account-nudge.service";
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
-import { UserId } from "@bitwarden/common/types/guid";
+import { NudgeStatus, NudgeType } from "@localpass/angular/vault";
+import { NewAccountNudgeService } from "@localpass/angular/vault/services/custom-nudges-services/new-account-nudge.service";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
+import { UserId } from "@localpass/common/types/guid";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 

@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
-import { EncString as SdkEncString } from "@bitwarden/sdk-internal";
+import { EncString } from "@localpass/legacy-crypto";
+import { EncString as SdkEncString } from "@localpass/sdk-internal";
 
 /**
  * Converts a string value to an EncString, handling null/undefined gracefully.

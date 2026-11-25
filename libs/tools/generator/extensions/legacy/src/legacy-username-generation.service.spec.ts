@@ -7,14 +7,14 @@ Object.assign(global, { TextDecoder, TextEncoder });
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AddyIo } from "@bitwarden/common/tools/extension/vendor/addyio";
-import { DuckDuckGo } from "@bitwarden/common/tools/extension/vendor/duckduckgo";
-import { Fastmail } from "@bitwarden/common/tools/extension/vendor/fastmail";
-import { ForwardEmail } from "@bitwarden/common/tools/extension/vendor/forwardemail";
-import { Mozilla } from "@bitwarden/common/tools/extension/vendor/mozilla";
-import { SimpleLogin } from "@bitwarden/common/tools/extension/vendor/simplelogin";
-import { IntegrationId } from "@bitwarden/common/tools/integration";
-import { UserId } from "@bitwarden/common/types/guid";
+import { AddyIo } from "@localpass/common/tools/extension/vendor/addyio";
+import { DuckDuckGo } from "@localpass/common/tools/extension/vendor/duckduckgo";
+import { Fastmail } from "@localpass/common/tools/extension/vendor/fastmail";
+import { ForwardEmail } from "@localpass/common/tools/extension/vendor/forwardemail";
+import { Mozilla } from "@localpass/common/tools/extension/vendor/mozilla";
+import { SimpleLogin } from "@localpass/common/tools/extension/vendor/simplelogin";
+import { IntegrationId } from "@localpass/common/tools/integration";
+import { UserId } from "@localpass/common/types/guid";
 import {
   ApiOptions,
   EmailDomainOptions,
@@ -30,14 +30,14 @@ import {
   SubaddressGenerationOptions,
   policies,
   Integrations,
-} from "@bitwarden/generator-core";
+} from "@localpass/generator-core";
 import {
   GeneratorNavigationPolicy,
   GeneratorNavigationEvaluator,
   DefaultGeneratorNavigation,
   GeneratorNavigation,
   GeneratorNavigationService,
-} from "@bitwarden/generator-navigation";
+} from "@localpass/generator-navigation";
 
 import { mockAccountServiceWith } from "../../../../../common/spec";
 

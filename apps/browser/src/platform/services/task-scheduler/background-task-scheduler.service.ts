@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { StateProvider } from "@localpass/common/platform/state";
 
 import { BrowserApi } from "../../browser/browser-api";
 import {

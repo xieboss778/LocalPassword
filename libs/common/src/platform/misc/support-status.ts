@@ -10,7 +10,7 @@ export type NotSupported = { type: "not-supported"; reason: string };
 
 /**
  * Indicates that the given set of actions does not currently work but
- * could be supported if configuration, either inside Bitwarden or outside,
+ * could be supported if configuration, either inside LocalPass or outside,
  * is done. The reason property should contain a documented and
  * machine readable string so further instruction can be supplied to the caller.
  */

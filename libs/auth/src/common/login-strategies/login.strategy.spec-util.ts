@@ -1,6 +1,6 @@
-import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
-import { MasterPasswordPolicyResponse } from "@bitwarden/common/auth/models/response/master-password-policy.response";
-import { IUserDecryptionOptionsServerResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
+import { IdentityTokenResponse } from "@localpass/common/auth/models/response/identity-token.response";
+import { MasterPasswordPolicyResponse } from "@localpass/common/auth/models/response/master-password-policy.response";
+import { IUserDecryptionOptionsServerResponse } from "@localpass/common/auth/models/response/user-decryption-options/user-decryption-options.response";
 
 export const email = "hello@world.com";
 export const accessToken = "ACCESS_TOKEN";

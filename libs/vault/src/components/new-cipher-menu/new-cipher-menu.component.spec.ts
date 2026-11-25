@@ -3,10 +3,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { of } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { PopoverAnchorForDirective } from "@bitwarden/components";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { PopoverAnchorForDirective } from "@localpass/components";
 
 import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service";
 import { CoachmarkStepId } from "../coachmark/coachmark-step";

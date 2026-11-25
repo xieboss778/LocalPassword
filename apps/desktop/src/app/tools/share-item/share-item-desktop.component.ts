@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, viewChild } from "@angular/core";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -8,9 +8,9 @@ import {
   DialogModule,
   DialogRef,
   DialogService,
-} from "@bitwarden/components";
-import { ShareItemFormComponent } from "@bitwarden/tools-share";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { ShareItemFormComponent } from "@localpass/tools-share";
+import { I18nPipe } from "@localpass/ui-common";
 
 export interface ShareItemDesktopDialogData {
   cipher: CipherView;

@@ -5,11 +5,11 @@ import { Component, Inject, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroupDirective, ReactiveFormsModule } from "@angular/forms";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { VerificationWithSecret } from "@bitwarden/common/auth/types/verification";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { VerificationWithSecret } from "@localpass/common/auth/types/verification";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -21,7 +21,7 @@ import {
   DialogModule,
   DialogService,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
 import {
@@ -30,7 +30,7 @@ import {
 } from "./user-verification-dialog.types";
 import { UserVerificationFormInputComponent } from "./user-verification-form-input.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "user-verification-dialog.component.html",
@@ -46,7 +46,7 @@ import { UserVerificationFormInputComponent } from "./user-verification-form-inp
   ],
 })
 export class UserVerificationDialogComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(FormGroupDirective) private formGroupDirective: FormGroupDirective;
 

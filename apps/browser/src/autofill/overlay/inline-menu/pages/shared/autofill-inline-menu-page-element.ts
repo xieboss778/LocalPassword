@@ -1,4 +1,4 @@
-import { EVENTS } from "@bitwarden/common/autofill/constants";
+import { EVENTS } from "@localpass/common/autofill/constants";
 
 import { RedirectFocusDirection } from "../../../../enums/autofill-overlay.enum";
 import { EventSecurity } from "../../../../utils/event-security";

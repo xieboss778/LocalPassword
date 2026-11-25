@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/send-ui",
+  "name": "@localpass/send-ui",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tools/send/send-ui/src",
   "projectType": "library",

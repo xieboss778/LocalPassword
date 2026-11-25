@@ -1,12 +1,12 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { ChipFilterOption } from "@bitwarden/components";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { ChipFilterOption } from "@localpass/components";
 import {
   ALL_ITEMS_SCOPE,
   VaultNavItemType,
   VaultScopeType,
   type VaultsNavViewModel,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { collectionOptionsInScope } from "./filter-options";
 

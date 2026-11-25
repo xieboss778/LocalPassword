@@ -1,6 +1,6 @@
 import { Directive, inject, model } from "@angular/core";
 
-import { BitActionDirective, FunctionReturningAwaitable } from "@bitwarden/components";
+import { BitActionDirective, FunctionReturningAwaitable } from "@localpass/components";
 
 import { PopupRouterCacheService } from "../view-cache/popup-router-cache.service";
 

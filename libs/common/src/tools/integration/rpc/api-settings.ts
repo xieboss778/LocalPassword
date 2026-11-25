@@ -1,6 +1,6 @@
 /** Options common to all forwarder APIs */
 export type ApiSettings = {
-  /** bearer token that authenticates bitwarden to the forwarder.
+  /** bearer token that authenticates localpass to the forwarder.
    *  This is required to issue an API request.
    */
   token?: string;

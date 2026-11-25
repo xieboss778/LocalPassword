@@ -3,29 +3,29 @@
 import { Observable, Subject, defer, firstValueFrom, map } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestApiServiceAbstraction } from "@bitwarden/common/auth/login-via-auth-request";
-import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
-import { PasswordlessAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-auth.request";
-import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { AuthRequestPushNotification } from "@bitwarden/common/models/response/notification.response";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthRequestApiServiceAbstraction } from "@localpass/common/auth/login-via-auth-request";
+import { AdminAuthRequestStorable } from "@localpass/common/auth/models/domain/admin-auth-req-storable";
+import { PasswordlessAuthRequest } from "@localpass/common/auth/models/request/passwordless-auth.request";
+import { AuthRequestResponse } from "@localpass/common/auth/models/response/auth-request.response";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { AuthRequestPushNotification } from "@localpass/common/models/response/notification.response";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   AUTH_REQUEST_DISK_LOCAL,
   StateProvider,
   UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-import { UnlockService } from "@bitwarden/unlock";
+import { EncryptService, EncString, LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { UnlockService } from "@localpass/unlock";
 
 import { AuthRequestServiceAbstraction } from "../../abstractions/auth-request.service.abstraction";
 

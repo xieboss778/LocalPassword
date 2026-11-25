@@ -53,7 +53,7 @@ const workspaceSection =
 workspaceSection
   .split("\n") // Process each line
   .map((line) => line.match(/^([a-zA-Z0-9_-]+)\s*=/)?.[1]) // Find the dependency name
-  .filter((depName): depName is string => depName != null && !depName.startsWith("bitwarden")) // Make sure it's not an empty line or a Bitwarden dependency
+  .filter((depName): depName is string => depName != null && !depName.startsWith("localpass")) // Make sure it's not an empty line or a LocalPass dependency
   .forEach((depName) => cargoDependencies.add(depName));
 
 // Check for missing owners

@@ -5,31 +5,31 @@ import { combineLatest, of, switchMap, map, catchError, from, Observable, startW
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
-import { isCardExpired } from "@bitwarden/common/autofill/utils";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { RiskCategory } from "@bitwarden/common/dirt/vault-health/models";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { getByIds } from "@bitwarden/common/platform/misc";
-import { CipherId, EmergencyAccessId, UserId } from "@bitwarden/common/types/guid";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
+import { CollectionService } from "@localpass/admin-console/common";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
+import { isCardExpired } from "@localpass/common/autofill/utils";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { RiskCategory } from "@localpass/common/dirt/vault-health/models";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { getByIds } from "@localpass/common/platform/misc";
+import { CipherId, EmergencyAccessId, UserId } from "@localpass/common/types/guid";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
 import {
   CipherRiskService,
   getPasswordRiskCategory,
-} from "@bitwarden/common/vault/abstractions/cipher-risk.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
-import { CalloutModule, SearchModule, TypographyModule } from "@bitwarden/components";
+} from "@localpass/common/vault/abstractions/cipher-risk.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
+import { CalloutModule, SearchModule, TypographyModule } from "@localpass/components";
 
 import { CIPHER_VIEW_BANNER, CipherViewBanner } from "../tokens/cipher-view-banner.token";
 
@@ -47,7 +47,7 @@ import { PassportViewComponent } from "./passport-sections/passport-view.compone
 import { SshKeyViewComponent } from "./sshkey-sections/sshkey-view.component";
 import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-identity-sections.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-cipher-view",

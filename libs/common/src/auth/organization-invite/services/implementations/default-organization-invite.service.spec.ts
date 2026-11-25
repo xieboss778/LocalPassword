@@ -3,15 +3,15 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
-import { newGuid } from "@bitwarden/guid";
+import { OrganizationUserApiService } from "@localpass/admin-console/common";
+import { newGuid } from "@localpass/guid";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-import { OrganizationInviteLinkApiService } from "@bitwarden/organization-invite-link";
-import { UserId } from "@bitwarden/user-core";
+import { EncryptService, EncString, LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { OrganizationInviteLinkApiService } from "@localpass/organization-invite-link";
+import { UserId } from "@localpass/user-core";
 
 import { FakeGlobalStateProvider } from "../../../../../spec";
 import { ApiService } from "../../../../abstractions/api.service";
@@ -785,7 +785,7 @@ describe("DefaultOrganizationInviteService", () => {
 
     /**
      * Fabricates the `AcceptInviteLinkError { variant: "Api" }` shape the SDK produces when
-     * a server response fails. Mirrors `bitwarden-api-base::Error::Response`'s Display
+     * a server response fails. Mirrors `localpass-api-base::Error::Response`'s Display
      * output: `error in response: status code {status} {reason}: {json-body}`, where
      * `{json-body}` is the raw server error response envelope. The name/variant fields
      * are what `isAcceptInviteLinkError` uses to identify the error.

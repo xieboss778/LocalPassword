@@ -23,17 +23,17 @@ import {
   withLatestFrom,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CommandDefinition, MessageListener } from "@localpass/common/platform/messaging";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService, ToastService } from "@localpass/components";
 
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { ApproveSshRequestComponent } from "../components/approve-ssh-request";

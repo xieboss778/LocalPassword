@@ -1,8 +1,8 @@
 import { BrowserWindow, dialog, MenuItemConstructorOptions } from "electron";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { UrlType } from "@bitwarden/common/platform/misc/safe-urls";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { UrlType } from "@localpass/common/platform/misc/safe-urls";
 
 import { SafeShell } from "../../platform/main/safe-shell.main";
 import { isMacAppStore, isWindowsStore } from "../platform-utils.main";
@@ -17,15 +17,11 @@ export class AccountMenu implements IMenubarMenu {
   }
 
   get items(): MenuItemConstructorOptions[] {
-    const items = [this.premiumMembership];
+    // Offline product: no premium page, device list or two-step setup hosted on a server.
+    const items: MenuItemConstructorOptions[] = [];
     if (this._hasMasterPassword) {
       items.push(this.changeMasterPassword);
     }
-    // TODO: PM-34438 - remove flag check and always push this.devices
-    if (this._desktopAddDevices) {
-      items.push(this.devices);
-    }
-    items.push(this.twoStepLogin);
     items.push(this.fingerprintPhrase);
     items.push(this.separator);
     items.push(this.deleteAccount);

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 
-import { BitwardenIcon, BrowserExtensionIcon, Party } from "@bitwarden/assets/svg";
-import { ButtonModule, SpinnerComponent, SvgModule, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { LocalPassIcon, BrowserExtensionIcon, Party } from "@localpass/assets/svg";
+import { ButtonModule, SpinnerComponent, SvgModule, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** What the page shows: it is opening the popup, it opened, or it could not and offers a button,
  *  then the toolbar instructions. */
@@ -27,5 +27,5 @@ export class ImportConfirmationStatesComponent {
 
   protected readonly celebration = Party;
   protected readonly extensionIllustration = BrowserExtensionIcon;
-  protected readonly toolbarIcon = BitwardenIcon;
+  protected readonly toolbarIcon = LocalPassIcon;
 }

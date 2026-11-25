@@ -1,4 +1,4 @@
-import { PasswordHistoryView as SdkPasswordHistoryView } from "@bitwarden/sdk-internal";
+import { PasswordHistoryView as SdkPasswordHistoryView } from "@localpass/sdk-internal";
 
 import { PasswordHistoryView } from "./password-history.view";
 

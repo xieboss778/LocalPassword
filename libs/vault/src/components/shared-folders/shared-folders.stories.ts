@@ -12,21 +12,21 @@ import { BehaviorSubject, of } from "rxjs";
 import { action } from "storybook/actions";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   DialogModule,
   I18nMockService,
   LayoutFooterService,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { SHARED_FOLDERS_ROUTE } from "../../models/vault-scope";
 import { PinnedSharedFoldersService } from "../../services/pinned-shared-folders.service";

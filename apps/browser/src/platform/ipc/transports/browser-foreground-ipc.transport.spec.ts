@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { IpcMessage } from "@bitwarden/common/platform/ipc";
-import { IncomingMessage, OutgoingMessage } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { IpcMessage } from "@localpass/common/platform/ipc";
+import { IncomingMessage, OutgoingMessage } from "@localpass/sdk-internal";
 
 import { BrowserForegroundIpcTransport } from "./browser-foreground-ipc.transport";
 import { DESTINATION_UNREACHABLE_ERROR } from "./errors";
@@ -30,7 +30,7 @@ function createPort(name = IPC_FOREGROUND_PORT_NAME, origin = "chrome-extension:
 
 function ipcMessage(destination: unknown, payload = [1, 2, 3]): IpcMessage {
   return {
-    type: "bitwarden-ipc-message",
+    type: "localpass-ipc-message",
     message: { destination, payload, topic: "topic" },
   } as IpcMessage;
 }

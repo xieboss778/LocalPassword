@@ -1,6 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
-import { StateProvider } from "@bitwarden/state";
+import { StateProvider } from "@localpass/state";
 
 import { UserId } from "../../../types/guid";
 import {

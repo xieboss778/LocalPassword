@@ -33,7 +33,7 @@ type NumberConstraints = {
   /** maximum number value. When absent, min value is unbounded. */
   max?: number;
 
-  /** recommended value. This is the value bitwarden recommends
+  /** recommended value. This is the value localpass recommends
    *  to the user as an appropriate value.
    */
   recommendation?: number;

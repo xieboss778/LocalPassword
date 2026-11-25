@@ -1,6 +1,6 @@
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 
-import { CipherRiskResult } from "@bitwarden/sdk-internal";
+import { CipherRiskResult } from "@localpass/sdk-internal";
 
 import { LogService } from "../../../../platform/abstractions/log.service";
 import { UserId } from "../../../../types/guid";

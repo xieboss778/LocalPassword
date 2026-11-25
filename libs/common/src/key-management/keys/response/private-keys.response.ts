@@ -1,4 +1,4 @@
-import { SignedPublicKey, WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
+import { SignedPublicKey, WrappedAccountCryptographicState } from "@localpass/sdk-internal";
 
 import { SecurityStateResponse } from "../../security-state/response/security-state.response";
 

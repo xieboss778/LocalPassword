@@ -3,8 +3,8 @@ import * as path from "path";
 
 import { app, ipcMain } from "electron";
 
-import { I18nService as BaseI18nService } from "@bitwarden/common/platform/services/i18n.service";
-import { GlobalStateProvider } from "@bitwarden/common/platform/state";
+import { I18nService as BaseI18nService } from "@localpass/common/platform/services/i18n.service";
+import { GlobalStateProvider } from "@localpass/common/platform/state";
 
 export class I18nMainService extends BaseI18nService {
   constructor(

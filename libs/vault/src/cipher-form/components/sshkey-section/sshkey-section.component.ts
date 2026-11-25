@@ -6,12 +6,12 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ClientType } from "@bitwarden/common/enums";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ClientType } from "@localpass/common/enums";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { SshKeyView } from "@localpass/common/vault/models/view/ssh-key.view";
 import {
   CardComponent,
   FormFieldModule,
@@ -19,13 +19,13 @@ import {
   SectionHeaderComponent,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { generate_ssh_key } from "@bitwarden/sdk-internal";
+} from "@localpass/components";
+import { generate_ssh_key } from "@localpass/sdk-internal";
 
 import { SshImportPromptService } from "../../../services/ssh-import-prompt.service";
 import { CipherFormContainer } from "../../cipher-form-container";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-sshkey-section",

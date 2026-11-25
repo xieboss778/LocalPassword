@@ -1,6 +1,6 @@
 import * as forge from "node-forge";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { RecordKeyType } from "../generated/record_pb";
 import {

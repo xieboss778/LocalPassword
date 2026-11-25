@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums/theme-type.enum";
+import { ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 
 import { NotificationTypes } from "../../../../notification/abstractions/notification-bar";
 import { NotificationBody, NotificationBodyProps } from "../../notification/body";

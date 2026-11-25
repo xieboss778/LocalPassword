@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   BadgeModule,
   ButtonModule,
@@ -10,8 +10,8 @@ import {
   IconModule,
   ItemModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { Vfo1IconPipe } from "@bitwarden/vault";
+} from "@localpass/components";
+import { Vfo1IconPipe } from "@localpass/vault";
 
 @Component({
   selector: "app-fido2-cipher-row",
@@ -30,13 +30,13 @@ import { Vfo1IconPipe } from "@bitwarden/vault";
   ],
 })
 export class Fido2CipherRowComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onSelected = new EventEmitter<CipherView>();
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) cipher!: CipherView;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true }) title!: string;
 

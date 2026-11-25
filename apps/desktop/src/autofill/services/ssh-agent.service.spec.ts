@@ -1,9 +1,9 @@
 import { BehaviorSubject, EMPTY, Subject, of } from "rxjs";
 
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { SSH_AGENT_IPC_CHANNELS } from "../models/ipc-channels";
 import { SshAgentPromptType } from "../models/ssh-agent-setting";

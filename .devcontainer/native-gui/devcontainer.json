@@ -1,7 +1,7 @@
 {
-  "name": "Bitwarden Clients (Windows / Linux)",
+  "name": "LocalPass Clients (Windows / Linux)",
   "dockerComposeFile": ["../common/docker-compose.yml", "docker-compose.override.yml"],
-  "service": "bitwarden_clients",
+  "service": "localpass_clients",
   "workspaceFolder": "/workspace",
   "initializeCommand": "bash .devcontainer/native-gui/setup-x11.sh",
   "features": {

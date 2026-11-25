@@ -17,9 +17,9 @@ describe("decodeJwtTokenToJson", () => {
     client_id: "web",
     sub: "ece70a13-7216-43c4-9977-b1030146e1e7", // user id
     auth_time: 1709324104,
-    idp: "bitwarden",
+    idp: "localpass",
     premium: false,
-    email: "example@bitwarden.com",
+    email: "example@local.invalid",
     email_verified: false,
     sstamp: "GY7JAO64CKKTKBB6ZEAUYL2WOQU7AST2",
     name: "Test User",

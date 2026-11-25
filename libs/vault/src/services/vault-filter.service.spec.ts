@@ -1,40 +1,40 @@
 import {
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/../spec/fake-account-service";
-import { FakeSingleUserState } from "@bitwarden/common/../spec/fake-state";
-import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+} from "@localpass/common/../spec/fake-account-service";
+import { FakeSingleUserState } from "@localpass/common/../spec/fake-state";
+import { FakeStateProvider } from "@localpass/common/../spec/fake-state-provider";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of, ReplaySubject } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import * as vaultFilterSvc from "@bitwarden/angular/vault/vault-filter/services/vault-filter.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { CollectionService } from "@localpass/admin-console/common";
+import * as vaultFilterSvc from "@localpass/angular/vault/vault-filter/services/vault-filter.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 import {
   CollectionView,
   CollectionType,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { buildTestOrganization } from "@bitwarden/common/spec";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { COLLAPSED_GROUPINGS } from "@bitwarden/common/vault/services/key-state/collapsed-groupings.state";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { buildTestOrganization } from "@localpass/common/spec";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { COLLAPSED_GROUPINGS } from "@localpass/common/vault/services/key-state/collapsed-groupings.state";
 
 import { VaultFilterService } from "./vault-filter.service";
 import { Vfo1TerminologyService } from "./vfo1-terminology.service";
 
-jest.mock("@bitwarden/angular/vault/vault-filter/services/vault-filter.service", () => ({
+jest.mock("@localpass/angular/vault/vault-filter/services/vault-filter.service", () => ({
   sortDefaultCollections: jest.fn((): CollectionView[] => []),
 }));
 

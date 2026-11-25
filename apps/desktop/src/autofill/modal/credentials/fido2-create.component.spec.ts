@@ -3,14 +3,14 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { AccountService, Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
+import { AccountService, Account } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService } from "@localpass/components";
 
 import { DesktopSettingsService } from "../../../platform/services/desktop-settings.service";
 import {
@@ -113,7 +113,7 @@ describe("Fido2CreateComponent", () => {
 
       expect(mockDialogService.openSimpleDialog).toHaveBeenCalledWith({
         title: { key: "unableToSavePasskey" },
-        content: { key: "closeThisBitwardenWindow" },
+        content: { key: "closeThisLocalPassWindow" },
         type: "danger",
         acceptButtonText: { key: "closeThisWindow" },
         acceptAction: expect.any(Function),
@@ -177,7 +177,7 @@ describe("Fido2CreateComponent", () => {
 
       expect(mockDialogService.openSimpleDialog).toHaveBeenCalledWith({
         title: { key: "unableToSavePasskey" },
-        content: { key: "closeThisBitwardenWindow" },
+        content: { key: "closeThisLocalPassWindow" },
         type: "danger",
         acceptButtonText: { key: "closeThisWindow" },
         acceptAction: expect.any(Function),

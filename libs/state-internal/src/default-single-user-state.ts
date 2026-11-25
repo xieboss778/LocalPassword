@@ -1,14 +1,14 @@
 import { Observable, combineLatest, of } from "rxjs";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 import {
   CombinedState,
   SingleUserState,
   StateEventRegistrarService,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { AbstractStorageService, ObservableStorageService } from "@bitwarden/storage-core";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { AbstractStorageService, ObservableStorageService } from "@localpass/storage-core";
+import { UserId } from "@localpass/user-core";
 
 import { StateBase } from "./state-base";
 

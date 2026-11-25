@@ -1,20 +1,20 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { FieldType, SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { BankAccountView } from "@bitwarden/common/vault/models/view/bank-account.view";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DriversLicenseView } from "@bitwarden/common/vault/models/view/drivers-license.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
-import { PasswordHistoryView } from "@bitwarden/common/vault/models/view/password-history.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
-import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { FieldType, SecureNoteType, CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { BankAccountView } from "@localpass/common/vault/models/view/bank-account.view";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DriversLicenseView } from "@localpass/common/vault/models/view/drivers-license.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
+import { PasswordHistoryView } from "@localpass/common/vault/models/view/password-history.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
+import { SshKeyView } from "@localpass/common/vault/models/view/ssh-key.view";
 import {
   import_ssh_key,
   BankAccountView as SdkBankAccountView,
@@ -22,7 +22,7 @@ import {
   DriversLicenseView as SdkDriversLicenseView,
   IdentityView as SdkIdentityView,
   isSshKeyImportError,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { ImportRecordError, ImportRecordErrorReason } from "../../models/import-record-error";
 import { ImportResult } from "../../models/import-result";
@@ -162,7 +162,7 @@ export class OnePassword1PuxImporter extends BaseImporter implements Importer {
           // Preserve 1Password's archive state on import (fixes #20694). The 1pux
           // schema only tells us an item is archived, not WHEN it was archived,
           // so we stamp the import time — this matches the behaviour of archiving
-          // a cipher manually in Bitwarden after the import.
+          // a cipher manually in LocalPass after the import.
           if (item.state === "archived") {
             cipher.archivedDate = new Date();
           }

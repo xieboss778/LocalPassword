@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, booleanAttribute, input } from "@angular/core";
 
 import { IconTileOptions } from "../icon-tile";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 import { MappedOptionComponent } from "./option";
 
@@ -11,7 +11,7 @@ import { MappedOptionComponent } from "./option";
   template: `<ng-template><ng-content></ng-content></ng-template>`,
 })
 export class OptionComponent<T = unknown> implements MappedOptionComponent<T> {
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
 
   /**
    * Renders a `bit-icon-tile` in place of the plain `icon`. Takes precedence when both are set.

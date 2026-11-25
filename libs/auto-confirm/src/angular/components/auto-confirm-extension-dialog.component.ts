@@ -2,14 +2,14 @@ import { DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   BadgeComponent,
   ButtonModule,
   CenterPositionStrategy,
   DialogModule,
   DialogService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,7 +56,7 @@ import {
           <a
             class="tw-text-sm tw-text-center"
             bitLink
-            href="https://bitwarden.com/help/automatic-confirmation/"
+            href="https://github.com/xieboss778/LocalPass/tree/main/docs"
             target="_blank"
           >
             <strong class="tw-pr-1">

@@ -1,4 +1,4 @@
-import { IntegrationRequest } from "@bitwarden/common/tools/integration/rpc";
+import { IntegrationRequest } from "@localpass/common/tools/integration/rpc";
 
 import { UsernameGenerationMode } from "./generator-options";
 

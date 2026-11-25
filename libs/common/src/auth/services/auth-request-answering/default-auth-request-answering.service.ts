@@ -12,7 +12,7 @@ import {
   tap,
 } from "rxjs";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { MasterPasswordServiceAbstraction } from "../../../key-management/master-password/abstractions/master-password.service.abstraction";
 import { MessagingService } from "../../../platform/abstractions/messaging.service";

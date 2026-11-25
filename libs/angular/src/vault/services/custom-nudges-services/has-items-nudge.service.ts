@@ -2,11 +2,11 @@ import { inject, Injectable } from "@angular/core";
 import { combineLatest, Observable, of, switchMap } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { DefaultSingleNudgeService } from "../default-single-nudge.service";
 import { NudgeStatus, NudgeType } from "../nudges.service";

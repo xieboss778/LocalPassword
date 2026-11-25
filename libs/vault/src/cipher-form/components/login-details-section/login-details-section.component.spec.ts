@@ -5,21 +5,21 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { AuditService } from "@localpass/common/abstractions/audit.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   BitPasswordInputToggleDirective,
   CenterPositionStrategy,
   DialogRef,
   DialogService,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormGenerationService } from "../../abstractions/cipher-form-generation.service";
 import { TotpCaptureService } from "../../abstractions/totp-capture.service";
@@ -32,7 +32,7 @@ import {
 } from "./delete-passkey-dialog/delete-passkey-dialog.component";
 import { LoginDetailsSectionComponent } from "./login-details-section.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-autofill-options",

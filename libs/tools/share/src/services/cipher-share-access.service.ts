@@ -1,12 +1,12 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { BehaviorSubject, distinctUntilChanged, Subscription, switchMap } from "rxjs";
 
-import { CipherId } from "@bitwarden/common/types/guid";
+import { CipherId } from "@localpass/common/types/guid";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { CipherShareAccess } from "@bitwarden/vault";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { CipherShareAccess } from "@localpass/vault";
 
 import { ShareItemService } from "./share-item.service";
 import { ShareLinkService } from "./share-link.service";

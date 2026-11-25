@@ -1,4 +1,4 @@
-import { PinLockType, PinSettingsClient } from "@bitwarden/sdk-internal";
+import { PinLockType, PinSettingsClient } from "@localpass/sdk-internal";
 
 import { SdkService } from "../../platform/abstractions/sdk/sdk.service";
 import { UserId } from "../../types/guid";

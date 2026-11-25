@@ -1,2 +1,2 @@
-// Compatibility re-export for @bitwarden/common/state-migrations
-export * from "@bitwarden/state";
+// Compatibility re-export for @localpass/common/state-migrations
+export * from "@localpass/state";

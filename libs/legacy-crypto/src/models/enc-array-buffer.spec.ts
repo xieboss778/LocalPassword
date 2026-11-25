@@ -1,4 +1,4 @@
-import { makeStaticByteArray } from "@bitwarden/common/spec";
+import { makeStaticByteArray } from "@localpass/common/spec";
 
 import { EncryptionType } from "../enums/encryption-type.enum";
 

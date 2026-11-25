@@ -5,8 +5,8 @@ import {
   AT_RISK_PASSWORDS_PAGE_DISK,
   StateProvider,
   UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 const AUTOFILL_CALLOUT_DISMISSED_KEY = new UserKeyDefinition<boolean>(
   AT_RISK_PASSWORDS_PAGE_DISK,

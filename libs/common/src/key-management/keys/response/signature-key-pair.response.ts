@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { VerifyingKey, WrappedSigningKey } from "@bitwarden/legacy-crypto";
+import { VerifyingKey, WrappedSigningKey } from "@localpass/legacy-crypto";
 
 export class SignatureKeyPairResponse {
   readonly wrappedSigningKey: WrappedSigningKey;

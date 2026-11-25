@@ -1,8 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { UserId } from "@bitwarden/common/types/guid";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { UserId } from "@localpass/common/types/guid";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 import { CoachmarkStep } from "../coachmark-step";
 import { CoachmarkTour } from "../coachmark-tour";

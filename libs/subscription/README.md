@@ -2,4 +2,4 @@
 
 Owned by: billing
 
-Components and services for managing Bitwarden subscriptions.
+Components and services for managing LocalPass subscriptions.

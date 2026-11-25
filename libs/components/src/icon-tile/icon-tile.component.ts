@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from "@angular/core";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { IconComponent } from "../icon";
 import {
@@ -9,7 +9,7 @@ import {
   DecorativeVariant,
   decorativeColors,
 } from "../shared/decorative-colors";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 type SemanticVariant = "primary" | "success" | "danger" | "warning" | "dark";
 
@@ -91,7 +91,7 @@ export class IconTileComponent {
   /**
    * The BWI icon name
    */
-  readonly icon = input.required<BitwardenIcon>();
+  readonly icon = input.required<LocalPassIcon>();
 
   /**
    * The visual theme of the icon tile

@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { MenuItemConstructorOptions } from "electron";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 import { isDev } from "../../utils";
 import { WindowMain } from "../window.main";

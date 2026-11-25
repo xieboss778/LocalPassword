@@ -12,10 +12,10 @@ import {
 } from "@angular/forms";
 import * as papa from "papaparse";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   CalloutModule,
   CheckboxModule,
@@ -23,7 +23,7 @@ import {
   IconButtonModule,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { ImportType } from "../../models";
 
@@ -46,7 +46,7 @@ type LoginImportResult = {
   failure?: LoginImportFailure;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "import-chrome",
@@ -82,21 +82,21 @@ export class ImportChromeComponent implements OnInit, OnDestroy {
 
   readonly format = input.required<ImportType>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   onLoadProfilesFromBrowser: (browser: string) => Promise<ProfileOption[]>;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   onImportFromBrowser: (browser: string, profile: string) => Promise<LoginImportResult[]>;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() csvDataLoaded = new EventEmitter<string>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() error = new EventEmitter<string>();
 

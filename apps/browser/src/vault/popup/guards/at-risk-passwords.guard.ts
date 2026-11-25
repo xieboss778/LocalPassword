@@ -7,13 +7,13 @@ import {
 } from "@angular/router";
 import { combineLatest, map, switchMap } from "rxjs";
 
-import { authGuard } from "@bitwarden/angular/auth/guards";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
-import { ToastService } from "@bitwarden/components";
+import { authGuard } from "@localpass/angular/auth/guards";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
+import { ToastService } from "@localpass/components";
 
 /**
  * Wrapper around the main auth guard to redirect to login if not authenticated.

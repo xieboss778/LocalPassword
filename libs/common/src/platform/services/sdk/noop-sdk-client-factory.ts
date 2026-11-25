@@ -1,4 +1,4 @@
-import type { PasswordManagerClient } from "@bitwarden/sdk-internal";
+import type { PasswordManagerClient } from "@localpass/sdk-internal";
 
 import { SdkClientFactory } from "../../abstractions/sdk/sdk-client-factory";
 

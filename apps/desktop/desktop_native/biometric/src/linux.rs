@@ -35,7 +35,7 @@ use zbus::Connection;
 use zbus_polkit::policykit1::{AuthorityProxy, CheckAuthorizationFlags, Subject};
 
 /// Secret Service collection entry name holding the persistently enrolled user keys.
-const KEYRING_SERVICE_NAME: &str = "BitwardenBiometricsV2";
+const KEYRING_SERVICE_NAME: &str = "LocalPassBiometricsV2";
 
 /// Biometric lock system using Polkit for authentication and secure memory to hold the key on
 /// Linux.
@@ -68,11 +68,11 @@ impl Default for BiometricLockSystem {
 
 impl super::BiometricTrait for BiometricLockSystem {
     async fn authenticate(&self, _hwnd: Vec<u8>, _message: String) -> Result<bool> {
-        polkit_authenticate_bitwarden_policy().await
+        polkit_authenticate_localpass_policy().await
     }
 
     async fn authenticate_available(&self) -> Result<bool> {
-        polkit_is_bitwarden_policy_available().await
+        polkit_is_localpass_policy_available().await
     }
 
     async fn enroll_persistent(&self, user_id: &str, key: &[u8]) -> Result<()> {
@@ -99,7 +99,7 @@ impl super::BiometricTrait for BiometricLockSystem {
     async fn unlock(&self, user_id: &String, _hwnd: Vec<u8>) -> Result<Vec<u8>> {
         // A single authorization covers both the ephemeral and the persistent path, so the user is
         // never prompted twice for one unlock.
-        if !polkit_authenticate_bitwarden_policy().await? {
+        if !polkit_authenticate_localpass_policy().await? {
             return Err(anyhow!("Authentication failed"));
         }
 
@@ -188,10 +188,10 @@ async fn has_keyring_entry(user_id: &str) -> Result<bool> {
         })
 }
 
-/// Perform a polkit authorization against the bitwarden unlock policy. Note: This relies on no
+/// Perform a polkit authorization against the localpass unlock policy. Note: This relies on no
 /// custom rules in the system skipping the authorization check, in which case this counts as UV /
 /// authentication.
-async fn polkit_authenticate_bitwarden_policy() -> Result<bool> {
+async fn polkit_authenticate_localpass_policy() -> Result<bool> {
     debug!("[Polkit] Authenticating / performing UV");
 
     let connection = Connection::system().await?;
@@ -226,7 +226,7 @@ async fn polkit_authenticate_bitwarden_policy() -> Result<bool> {
     let authorization_result = proxy
         .check_authorization(
             &subject,
-            "com.bitwarden.Bitwarden.unlock",
+            "com.localpass.LocalPass.unlock",
             &details,
             CheckAuthorizationFlags::AllowUserInteraction.into(),
             "",
@@ -242,12 +242,12 @@ async fn polkit_authenticate_bitwarden_policy() -> Result<bool> {
     }
 }
 
-async fn polkit_is_bitwarden_policy_available() -> Result<bool> {
+async fn polkit_is_localpass_policy_available() -> Result<bool> {
     let connection = Connection::system().await?;
     let proxy = AuthorityProxy::new(&connection).await?;
     let actions = proxy.enumerate_actions("en").await?;
     for action in actions {
-        if action.action_id == "com.bitwarden.Bitwarden.unlock" {
+        if action.action_id == "com.localpass.LocalPass.unlock" {
             return Ok(true);
         }
     }
@@ -262,7 +262,7 @@ mod tests {
     #[tokio::test]
     #[ignore]
     async fn test_polkit_authenticate() {
-        let result = polkit_authenticate_bitwarden_policy().await;
+        let result = polkit_authenticate_localpass_policy().await;
         assert!(result.is_ok());
     }
 

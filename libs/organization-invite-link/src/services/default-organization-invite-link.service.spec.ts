@@ -4,11 +4,11 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { MockSdkService } from "@bitwarden/common/platform/spec/mock-sdk.service";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { OrganizationInviteLinkView as SdkOrganizationInviteLinkView } from "@bitwarden/sdk-internal";
-import { FakeActiveUserAccessor, FakeStateProvider } from "@bitwarden/state-test-utils";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { MockSdkService } from "@localpass/common/platform/spec/mock-sdk.service";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { OrganizationInviteLinkView as SdkOrganizationInviteLinkView } from "@localpass/sdk-internal";
+import { FakeActiveUserAccessor, FakeStateProvider } from "@localpass/state-test-utils";
 
 import { OrganizationInviteLinkView } from "../models/organization-invite-link.view";
 import { ORGANIZATION_INVITE_LINK_KEY } from "../state/organization-invite-link-state";
@@ -17,7 +17,7 @@ import { DefaultOrganizationInviteLinkService } from "./default-organization-inv
 
 const mockUserId = "user-1" as UserId;
 const mockOrgId = "12345678-1234-1234-1234-123456789012" as OrganizationId;
-const webVaultUrl = "https://vault.bitwarden.com";
+const webVaultUrl = "https://vault.local.invalid";
 const urlFragment = "#/join/org/code?key=secret";
 const expectedUrl = `${webVaultUrl}/${urlFragment}`;
 
@@ -151,11 +151,11 @@ describe("DefaultOrganizationInviteLinkService", () => {
 
   describe("create", () => {
     it("generates the invite link via the SDK and caches the result with the full url", async () => {
-      inviteLinkClient.create.mockResolvedValue(makeSdkView({ allowedDomains: ["bitwarden.com"] }));
+      inviteLinkClient.create.mockResolvedValue(makeSdkView({ allowedDomains: ["local.invalid"] }));
 
-      await sut.create(mockUserId, mockOrgId, ["bitwarden.com"], true);
+      await sut.create(mockUserId, mockOrgId, ["local.invalid"], true);
 
-      expect(inviteLinkClient.create).toHaveBeenCalledWith(mockOrgId, ["bitwarden.com"], true);
+      expect(inviteLinkClient.create).toHaveBeenCalledWith(mockOrgId, ["local.invalid"], true);
 
       const stored = await firstValueFrom(
         stateProvider.getUser(mockUserId, ORGANIZATION_INVITE_LINK_KEY).state$,
@@ -164,7 +164,7 @@ describe("DefaultOrganizationInviteLinkService", () => {
         [mockOrgId]: expect.objectContaining({
           id: "link-id",
           organizationId: mockOrgId,
-          allowedDomains: ["bitwarden.com"],
+          allowedDomains: ["local.invalid"],
           supportsConfirmation: true,
           creationDate: "2024-01-01T00:00:00Z",
           url: expectedUrl,

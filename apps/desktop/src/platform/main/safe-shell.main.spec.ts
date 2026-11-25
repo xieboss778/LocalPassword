@@ -1,7 +1,7 @@
 import { shell } from "electron";
 
-import { SafeUrls, UrlType } from "@bitwarden/common/platform/misc/safe-urls";
-import { LogService } from "@bitwarden/logging";
+import { SafeUrls, UrlType } from "@localpass/common/platform/misc/safe-urls";
+import { LogService } from "@localpass/logging";
 
 import { SafeShell } from "./safe-shell.main";
 
@@ -11,7 +11,7 @@ jest.mock("electron", () => ({
   },
 }));
 
-jest.mock("@bitwarden/common/platform/misc/safe-urls");
+jest.mock("@localpass/common/platform/misc/safe-urls");
 
 describe("SafeShell", () => {
   let mockLogService: jest.Mocked<LogService>;
@@ -37,9 +37,9 @@ describe("SafeShell", () => {
     it("opens the url when canLaunch returns true", () => {
       jest.mocked(SafeUrls.canLaunch).mockReturnValue(true);
 
-      safeShell.openExternal("https://bitwarden.com", UrlType.WebUrl);
+      safeShell.openExternal("https://local.invalid", UrlType.WebUrl);
 
-      expect(shell.openExternal).toHaveBeenCalledWith("https://bitwarden.com", undefined);
+      expect(shell.openExternal).toHaveBeenCalledWith("https://local.invalid", undefined);
       expect(mockLogService.warning).not.toHaveBeenCalled();
     });
 

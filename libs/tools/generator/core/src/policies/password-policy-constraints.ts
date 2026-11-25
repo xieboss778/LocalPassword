@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { PolicyConstraints, StateConstraints } from "@bitwarden/common/tools/types";
+import { PolicyConstraints, StateConstraints } from "@localpass/common/tools/types";
 
 import { DefaultPasswordGenerationOptions } from "../data";
 import { PasswordGeneratorSettings } from "../types";

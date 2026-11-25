@@ -4,17 +4,17 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Subject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   AccountSwitcherEntries,
   AccountSwitcherEntry,
   AccountSwitcherService,
-} from "@bitwarden/common/auth/account-switcher";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { MessageListener } from "@bitwarden/common/platform/messaging";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/auth/account-switcher";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { MessageListener } from "@localpass/common/platform/messaging";
+import { UserId } from "@localpass/common/types/guid";
 
 import { DesktopBiometricsService } from "../../../key-management/biometrics/desktop.biometrics.service";
 

@@ -29,17 +29,17 @@ import {
   withLatestFrom,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { VendorId } from "@bitwarden/common/tools/extension";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { VendorId } from "@localpass/common/tools/extension";
 import {
   SemanticLogger,
   disabledSemanticLoggerProvider,
   ifEnabledSemanticLoggerProvider,
-} from "@bitwarden/common/tools/log";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/tools/log";
+import { UserId } from "@localpass/common/types/guid";
 import {
   ToastService,
   Option,
@@ -55,7 +55,7 @@ import {
   SelectComponent,
   TypographyModule,
   FormFieldModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   AlgorithmInfo,
   CredentialGeneratorService,
@@ -70,9 +70,9 @@ import {
   AlgorithmsByType,
   Type,
   Algorithm,
-} from "@bitwarden/generator-core";
-import { GeneratorHistoryService } from "@bitwarden/generator-history";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/generator-core";
+import { GeneratorHistoryService } from "@localpass/generator-history";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CatchallSettingsComponent } from "./catchall-settings.component";
 import { ForwarderSettingsComponent } from "./forwarder-settings.component";
@@ -86,7 +86,7 @@ const FORWARDER = "forwarder";
 const NONE_SELECTED = "none";
 
 /** Component that generates usernames and emails */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-username-generator",
@@ -141,7 +141,7 @@ export class UsernameGeneratorComponent implements OnInit, OnChanges, OnDestroy 
   /** Binds the component to a specific user's settings. When this input is not provided,
    * the form binds to the active user
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   account: Account | null = null;
@@ -153,7 +153,7 @@ export class UsernameGeneratorComponent implements OnInit, OnChanges, OnDestroy 
    *
    *  @warning this may reveal sensitive information in plaintext.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   debug: boolean = false;
@@ -182,25 +182,25 @@ export class UsernameGeneratorComponent implements OnInit, OnChanges, OnDestroy 
   /**
    * The website associated with the credential generation request.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   website: string | null = null;
 
   /** Emits credentials created from a generation request. */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   readonly onGenerated = new EventEmitter<GeneratedCredential>();
 
   /** emits algorithm info when the selected algorithm changes */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   readonly onAlgorithm = new EventEmitter<AlgorithmInfo | null>();
 
   /** Removes bottom margin from internal elements */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ transform: coerceBooleanProperty }) disableMargin = false;
 

@@ -2,8 +2,8 @@ import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { firstValueFrom, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
 import {
   defaultUserCollectionId,
   isPersonalOnly,
@@ -14,7 +14,7 @@ import {
   VaultNavService,
   vaultScopeCommands,
   VaultScopeType,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultPopupListTableFiltersService } from "../services/vault-popup-list-table-filters.service";
 

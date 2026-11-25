@@ -6,7 +6,7 @@ import {
   ObservableStorageService,
   StorageUpdate,
   StorageOptions,
-} from "@bitwarden/storage-core";
+} from "@localpass/storage-core";
 
 const INTERNAL_KEY = "__internal__";
 

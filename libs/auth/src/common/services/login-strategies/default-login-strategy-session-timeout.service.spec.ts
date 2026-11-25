@@ -1,9 +1,9 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { Subject, firstValueFrom } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessageListener, MessageSender } from "@bitwarden/common/platform/messaging";
-import { ScheduledTaskNames, TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessageListener, MessageSender } from "@localpass/common/platform/messaging";
+import { ScheduledTaskNames, TaskSchedulerService } from "@localpass/common/platform/scheduling";
 
 import { LoginStrategyCacheService } from "../../abstractions/login-strategy-cache.service";
 

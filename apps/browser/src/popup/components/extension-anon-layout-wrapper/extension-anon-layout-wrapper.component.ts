@@ -3,8 +3,8 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { filter, map, of, switchMap, tap } from "rxjs";
 
-import { BitwardenLogo, BitwardenLogoBeta, BitSvg } from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LocalPassLogo, LocalPassLogoBeta, BitSvg } from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   SvgModule,
   Translation,
@@ -17,8 +17,8 @@ import {
   HeroTextAlignmentType,
   LandingContentMaxWidthType,
   SecondaryContentLocationType,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { AccountSwitcherService } from "../../../auth/popup/account-switching/services/account-switcher.service";
@@ -73,7 +73,7 @@ const INITIAL_STATE: ExtensionAnonLayoutWrapperState = {
   hideCardWrapper: false,
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush once routed pages no longer rely on Default CD
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush once routed pages no longer rely on Default CD
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "extension-anon-layout-wrapper.component.html",
@@ -105,7 +105,7 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit {
     { initialValue: false },
   );
 
-  protected readonly logo = flagEnabled("prereleaseBuild") ? BitwardenLogoBeta : BitwardenLogo;
+  protected readonly logo = flagEnabled("prereleaseBuild") ? LocalPassLogoBeta : LocalPassLogo;
 
   ngOnInit(): void {
     // Set the initial page data on load

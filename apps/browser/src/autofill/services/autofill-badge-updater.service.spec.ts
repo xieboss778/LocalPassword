@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Observable, Subject, Subscription } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BadgeSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/badge-settings.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BadgeSettingsServiceAbstraction } from "@localpass/common/autofill/services/badge-settings.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { Tab } from "../../platform/badge/badge-browser-api";
 import { BadgeService } from "../../platform/badge/badge.service";

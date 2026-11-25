@@ -2,15 +2,15 @@
 // @ts-strict-ignore
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { KeyService } from "@bitwarden/key-management";
+import { ContainerService } from "@localpass/common/platform/services/container.service";
+import { KeyService } from "@localpass/key-management";
 import {
   EncryptionType,
   EncryptService,
   EncString,
   LegacyCompatKeyService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import { PermissionsApi } from "../src/admin-console/models/api/permissions.api";
 import { OrganizationData } from "../src/admin-console/models/data/organization.data";
@@ -109,12 +109,12 @@ export const mockContainerService = () => {
   encryptService.decryptString.mockImplementation(async (encStr, _key) => {
     return encStr.decryptedValue;
   });
-  (window as any).bitwardenContainerService = new ContainerService(
+  (window as any).localpassContainerService = new ContainerService(
     keyService,
     encryptService,
     legacyCompatKeyService,
   );
-  return (window as any).bitwardenContainerService;
+  return (window as any).localpassContainerService;
 };
 
-export { trackEmissions, awaitAsync } from "@bitwarden/core-test-utils";
+export { trackEmissions, awaitAsync } from "@localpass/core-test-utils";

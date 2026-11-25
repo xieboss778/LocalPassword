@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-import { BreadcrumbsModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { BreadcrumbsModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { folderCommands, foldersListCommands } from "../../models/vault-scope";
 

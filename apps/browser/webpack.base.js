@@ -350,7 +350,7 @@ module.exports.buildConfig = function buildConfig(params) {
             },
           },
     snapshot: {
-      unmanagedPaths: [path.resolve(__dirname, "../../node_modules/@bitwarden/")],
+      unmanagedPaths: [path.resolve(__dirname, "../../node_modules/@localpass/")],
     },
     optimization: {
       minimize: ENV !== "development",
@@ -534,7 +534,7 @@ module.exports.buildConfig = function buildConfig(params) {
               },
             },
       snapshot: {
-        unmanagedPaths: [path.resolve(__dirname, "../../node_modules/@bitwarden/")],
+        unmanagedPaths: [path.resolve(__dirname, "../../node_modules/@localpass/")],
       },
       experiments: {
         asyncWebAssembly: true,

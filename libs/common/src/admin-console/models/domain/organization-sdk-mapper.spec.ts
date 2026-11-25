@@ -4,7 +4,7 @@ import {
   OrganizationUserType,
   ProductTierType,
   ProviderType,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { PermissionsApi } from "../api/permissions.api";
 import { OrganizationData } from "../data/organization.data";

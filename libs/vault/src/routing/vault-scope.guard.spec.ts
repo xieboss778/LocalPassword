@@ -10,15 +10,15 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { Collection } from "@bitwarden/common/admin-console/models/collections";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { Folder } from "@bitwarden/common/vault/models/domain/folder";
+import { CollectionService } from "@localpass/admin-console/common";
+import { Collection } from "@localpass/common/admin-console/models/collections";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { Folder } from "@localpass/common/vault/models/domain/folder";
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import {
   VaultNavItemType,

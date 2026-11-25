@@ -1,9 +1,9 @@
 import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { LoginViaAuthRequestView } from "@bitwarden/common/auth/models/view/login-via-auth-request.view";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { LoginViaAuthRequestView } from "@localpass/common/auth/models/view/login-via-auth-request.view";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { LoginViaAuthRequestCacheService } from "./default-login-via-auth-request-cache.service";
 

@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/web-components";
 import { html } from "lit";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums/theme-type.enum";
+import { ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 
 import { Lock, Plus } from "../../icons";
 import { InlineMenuPrompt, InlineMenuPromptProps } from "../../inline-menu/prompt";
@@ -105,9 +105,9 @@ export const Locked: StoryObj<ComponentAndControls> = {
 export const SaveLogin: StoryObj<ComponentAndControls> = {
   args: {
     message: undefined,
-    actionText: mockI18n.saveToBitwarden,
+    actionText: mockI18n.saveToLocalPass,
     i18n: {
-      actionAria: `${mockI18n.saveToBitwarden}, ${mockI18n.opensInANewWindow}`,
+      actionAria: `${mockI18n.saveToLocalPass}, ${mockI18n.opensInANewWindow}`,
     },
     iconName: "none",
     dataTestId: "inline-menu-save-login",

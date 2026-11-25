@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { DialogService } from "@bitwarden/components";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CipherRepromptType } from "@localpass/common/vault/enums";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { DialogService } from "@localpass/components";
 
 import { PasswordRepromptComponent } from "../components/password-reprompt.component";
 

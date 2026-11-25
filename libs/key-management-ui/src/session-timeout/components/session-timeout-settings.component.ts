@@ -24,23 +24,23 @@ import {
   tap,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ClientType } from "@bitwarden/client-type";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { getFirstPolicy } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { MaximumSessionTimeoutPolicyData } from "@bitwarden/common/key-management/session-timeout";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ClientType } from "@localpass/client-type";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { getFirstPolicy } from "@localpass/common/admin-console/services/policy/default-policy.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { MaximumSessionTimeoutPolicyData } from "@localpass/common/key-management/session-timeout";
 import {
   VaultTimeout,
   VaultTimeoutAction,
   VaultTimeoutSettingsService,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
 import {
   CheckboxModule,
   DialogService,
@@ -51,14 +51,14 @@ import {
   SelectModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 import { SessionTimeoutSettingsComponentService } from "../services/session-timeout-settings-component.service";
 
 import { SessionTimeoutInputComponent } from "./session-timeout-input.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "bit-session-timeout-settings",
@@ -80,7 +80,7 @@ import { SessionTimeoutInputComponent } from "./session-timeout-input.component"
   ],
 })
 export class SessionTimeoutSettingsComponent implements OnInit {
-  // TODO remove once https://bitwarden.atlassian.net/browse/PM-27283 is completed
+  // TODO remove once https://localpass.atlassian.net/browse/PM-27283 is completed
   //  This is because vaultTimeoutSettingsService.availableVaultTimeoutActions$ is not reactive, hence the change detection
   //  needs to be manually triggered to refresh available timeout actions
   readonly refreshTimeoutActionSettings = input<Observable<void>>(

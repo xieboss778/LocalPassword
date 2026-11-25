@@ -2,22 +2,22 @@ import { ComponentFixture, fakeAsync, flush, TestBed } from "@angular/core/testi
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   MaximumSessionTimeoutPolicyData,
   SessionTimeoutTypeService,
-} from "@bitwarden/common/key-management/session-timeout";
+} from "@localpass/common/key-management/session-timeout";
 import {
   VaultTimeout,
   VaultTimeoutOption,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { LogService } from "@localpass/logging";
 
 import { SessionTimeoutSettingsComponentService } from "../services/session-timeout-settings-component.service";
 

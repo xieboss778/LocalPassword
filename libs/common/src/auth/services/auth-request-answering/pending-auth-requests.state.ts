@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import {
   AUTH_REQUEST_DISK_LOCAL,

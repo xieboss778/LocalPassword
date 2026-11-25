@@ -8,24 +8,24 @@ import {
   OrganizationUserBulkConfirmRequest,
   OrganizationUserConfirmRequest,
   OrganizationUserPendingAutoConfirmResponse,
-} from "@bitwarden/admin-console/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
-import { OrganizationData } from "@bitwarden/common/admin-console/models/data/organization.data";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProfileOrganizationResponse } from "@bitwarden/common/admin-console/models/response/profile-organization.response";
-import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { UserKeyResponse } from "@bitwarden/common/models/response/user-key.response";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { newGuid } from "@bitwarden/guid";
+} from "@localpass/admin-console/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { InternalOrganizationServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { PermissionsApi } from "@localpass/common/admin-console/models/api/permissions.api";
+import { OrganizationData } from "@localpass/common/admin-console/models/data/organization.data";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { ProfileOrganizationResponse } from "@localpass/common/admin-console/models/response/profile-organization.response";
+import { AccountInfo, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { UserKeyResponse } from "@localpass/common/models/response/user-key.response";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { newGuid } from "@localpass/guid";
 
 import { AUTO_CONFIRM_STATE, AutoConfirmState } from "../models/auto-confirm-state.model";
 

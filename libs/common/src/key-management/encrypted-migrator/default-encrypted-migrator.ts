@@ -4,9 +4,9 @@ import {
   BiometricsService,
   KdfConfigService,
   KeyService,
-} from "@bitwarden/key-management";
-import { LogService, measured, PerfTrackGroup } from "@bitwarden/logging";
-import { UserKeyRotationServiceAbstraction } from "@bitwarden/user-crypto-management";
+} from "@localpass/key-management";
+import { LogService, measured, PerfTrackGroup } from "@localpass/logging";
+import { UserKeyRotationServiceAbstraction } from "@localpass/user-crypto-management";
 
 import { assertNonNullish } from "../../auth/utils";
 import { ClientType } from "../../enums";

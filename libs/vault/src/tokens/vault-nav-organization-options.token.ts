@@ -1,6 +1,6 @@
 import { Signal, Type } from "@angular/core";
 
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 /** The members the vault side nav uses on an organization options component. */
 export interface VaultNavOrganizationOptions {

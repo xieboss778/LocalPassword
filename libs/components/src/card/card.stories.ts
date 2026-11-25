@@ -1,7 +1,7 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { LayoutComponent } from "../layout";
 import { SectionComponent } from "../section";

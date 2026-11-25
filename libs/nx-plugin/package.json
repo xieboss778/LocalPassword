@@ -1,7 +1,7 @@
 {
-  "name": "@bitwarden/nx-plugin",
+  "name": "@localpass/nx-plugin",
   "version": "0.0.1",
-  "description": "Custom Nx tools like generators and executors for Bitwarden projects",
+  "description": "Custom Nx tools like generators and executors for LocalPass projects",
   "private": true,
   "type": "commonjs",
   "main": "index.js",

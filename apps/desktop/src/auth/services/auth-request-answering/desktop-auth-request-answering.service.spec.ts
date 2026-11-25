@@ -1,19 +1,19 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestAnsweringService } from "@bitwarden/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { PendingAuthRequestsStateService } from "@bitwarden/common/auth/services/auth-request-answering/pending-auth-requests.state";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { LogService } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthRequestAnsweringService } from "@localpass/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { PendingAuthRequestsStateService } from "@localpass/common/auth/services/auth-request-answering/pending-auth-requests.state";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { LogService } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 import { DesktopAuthRequestAnsweringService } from "./desktop-auth-request-answering.service";
 

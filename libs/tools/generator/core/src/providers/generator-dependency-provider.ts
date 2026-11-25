@@ -1,6 +1,6 @@
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { RestClient } from "@bitwarden/common/tools/integration/rpc";
-import { PasswordManagerClient } from "@bitwarden/sdk-internal";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { RestClient } from "@localpass/common/tools/integration/rpc";
+import { PasswordManagerClient } from "@localpass/sdk-internal";
 
 import { Randomizer } from "../abstractions";
 

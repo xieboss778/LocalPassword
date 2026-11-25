@@ -2,10 +2,10 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { NavigationModule, SideNavService, SideNavVariant } from "@bitwarden/components";
-import { VaultTourCalloutComponent } from "@bitwarden/vault";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { NavigationModule, SideNavService, SideNavVariant } from "@localpass/components";
+import { VaultTourCalloutComponent } from "@localpass/vault";
 
 import { AccountSwitcherV2Component } from "../../auth/components/account-switcher/account-switcher-v2.component";
 

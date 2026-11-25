@@ -1,10 +1,10 @@
-import { ProductTierType } from "@bitwarden/common/billing/enums";
+import { ProductTierType } from "@localpass/common/billing/enums";
 import {
   defaultAvatarColors,
   IconTileOptions,
   IconTileVariant,
   isAvatarColor,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { getOrgIconForTier } from "../components/org-icon.directive";
 

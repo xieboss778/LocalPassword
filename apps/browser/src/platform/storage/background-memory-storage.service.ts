@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 
-import { LogService } from "@bitwarden/logging";
-import { SerializedMemoryStorageService } from "@bitwarden/storage-core";
+import { LogService } from "@localpass/logging";
+import { SerializedMemoryStorageService } from "@localpass/storage-core";
 
 import { BrowserApi } from "../browser/browser-api";
 

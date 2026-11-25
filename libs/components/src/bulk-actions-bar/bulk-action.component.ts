@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, booleanAttribute, input } from "@angular/core";
 
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 /**
  * Declares a primary action in a `BulkActionsBarComponent`. This component renders no DOM of
@@ -20,6 +20,6 @@ import { BitwardenIcon } from "../shared/icon";
 export class BulkActionComponent {
   readonly action = input.required<() => void>();
   readonly label = input.required<string>();
-  readonly icon = input.required<BitwardenIcon>();
+  readonly icon = input.required<LocalPassIcon>();
   readonly disabled = input(false, { transform: booleanAttribute });
 }

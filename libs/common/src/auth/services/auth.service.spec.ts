@@ -3,9 +3,9 @@ import { BehaviorSubject, firstValueFrom, Observable, of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import {
   FakeAccountService,
@@ -196,7 +196,7 @@ describe("AuthService", () => {
     });
   });
 
-  // Regression: https://github.com/bitwarden/clients/issues/20548
+  // Regression: https://github.com/xieboss778/LocalPassword/issues/20548
   // authStatusFor$ used to be a method that built a fresh
   // shareReplay({ refCount: false }) on every call. Because that ReplaySubject never
   // unsubscribes from the long-lived state subjects, every getAuthStatus() /

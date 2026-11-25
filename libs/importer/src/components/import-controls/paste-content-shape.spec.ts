@@ -45,8 +45,8 @@ describe("detectPasteContentShape", () => {
 
 describe("expectedPasteShapeFor", () => {
   it("classifies every real format in the six shape-narrowable vendor groups, read off pasteFormats", () => {
-    expect(expectedPasteShapeFor(realOption("bitwardenjson"))).toBe("json");
-    expect(expectedPasteShapeFor(realOption("bitwardencsv"))).toBe("csv");
+    expect(expectedPasteShapeFor(realOption("localpassjson"))).toBe("json");
+    expect(expectedPasteShapeFor(realOption("localpasscsv"))).toBe("csv");
     expect(expectedPasteShapeFor(realOption("dashlanejson"))).toBe("json");
     expect(expectedPasteShapeFor(realOption("dashlanecsv"))).toBe("csv");
     expect(expectedPasteShapeFor(realOption("keeperjson"))).toBe("json");
@@ -82,7 +82,7 @@ describe("expectedPasteShapeFor", () => {
 
 describe("vendorSupportsPasteShapeNarrowing", () => {
   it("is true for exactly the seven target vendors", () => {
-    expect(vendorSupportsPasteShapeNarrowing("bitwarden")).toBe(true);
+    expect(vendorSupportsPasteShapeNarrowing("localpass")).toBe(true);
     expect(vendorSupportsPasteShapeNarrowing("dashlane")).toBe(true);
     expect(vendorSupportsPasteShapeNarrowing("keeper")).toBe(true);
     expect(vendorSupportsPasteShapeNarrowing("enpass")).toBe(true);

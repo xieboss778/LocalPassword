@@ -55,7 +55,7 @@ static INIT: Once = Once::new();
 
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[derive(Debug, Serialize, Deserialize)]
-pub enum BitwardenError {
+pub enum LocalPassError {
     Internal(String),
     Disconnected,
     /// The vault holds a credential the relying party asked to exclude.
@@ -64,7 +64,7 @@ pub enum BitwardenError {
     CredentialNotFound,
 }
 
-impl Display for BitwardenError {
+impl Display for LocalPassError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Internal(msg) => write!(f, "Internal error occurred: {msg}"),
@@ -84,14 +84,14 @@ impl Display for BitwardenError {
     }
 }
 
-impl Error for BitwardenError {}
+impl Error for LocalPassError {}
 
 // These methods are named differently than the actual Uniffi traits (without
 // the `on_` prefix) to avoid ambiguous trait implementations in the generated
 // code.
 trait Callback: Send + Sync {
     fn complete(&self, credential: serde_json::Value) -> Result<(), serde_json::Error>;
-    fn error(&self, error: BitwardenError);
+    fn error(&self, error: LocalPassError);
 }
 
 /// Store the connection status between the credential provider extension
@@ -473,7 +473,7 @@ pub fn initialize_logging() {
         tracing_subscriber::registry()
             .with(filter)
             .with(tracing_oslog::OsLogger::new(
-                "com.bitwarden.desktop.autofill-extension",
+                "com.localpass.desktop.autofill-extension",
                 "default",
             ))
             .init();
@@ -493,7 +493,7 @@ pub enum SerializedMessage {
     Command(CommandMessage),
     Message {
         sequence_number: u32,
-        value: Result<serde_json::Value, BitwardenError>,
+        value: Result<serde_json::Value, LocalPassError>,
     },
 }
 
@@ -514,7 +514,7 @@ impl AutofillProviderClient {
     fn send_request(&self, request: ExtensionRequest, callback: Option<Box<dyn Callback>>) {
         if !matches!(self.get_connection_status(), ConnectionStatus::Connected) {
             if let Some(callback) = callback {
-                callback.error(BitwardenError::Disconnected);
+                callback.error(LocalPassError::Disconnected);
             }
             return;
         }
@@ -533,7 +533,7 @@ impl AutofillProviderClient {
                     .expect("response callbacks queue mutex should not be poisoned")
                     .remove(&sequence_number)
                 {
-                    callback.error(BitwardenError::Internal(format!(
+                    callback.error(LocalPassError::Internal(format!(
                         "Error sending message: {e}"
                     )));
                 }
@@ -547,20 +547,20 @@ fn send_request_helper(
     sequence_number: u32,
     request: ExtensionRequest,
     tx: &tokio::sync::mpsc::Sender<String>,
-) -> Result<(), BitwardenError> {
+) -> Result<(), LocalPassError> {
     let message = ExtensionRequestMessage {
         sequence_number,
         request,
     };
     let json = serde_json::to_string(&message).map_err(|err| {
-        BitwardenError::Internal(format!("Could not serialize message as JSON: {err}"))
+        LocalPassError::Internal(format!("Could not serialize message as JSON: {err}"))
     })?;
     // The OS calls us serially, and we only need 1-3 concurrent requests
     // (passkey request, cancellation, maybe user verification).
     // So it's safe to send on this thread since there should always be enough
     // room in the receiver buffer to send.
     tx.blocking_send(json)
-        .map_err(|_| BitwardenError::Disconnected)?;
+        .map_err(|_| LocalPassError::Disconnected)?;
     Ok(())
 }
 
@@ -581,7 +581,7 @@ impl Display for CallbackError {
 }
 impl std::error::Error for CallbackError {}
 
-type CallbackResponse<T> = Result<T, BitwardenError>;
+type CallbackResponse<T> = Result<T, LocalPassError>;
 
 /// An implementation of a callback handler that can take a deadline.
 pub struct TimedCallback<T> {
@@ -628,7 +628,7 @@ impl<T: Send + 'static> TimedCallback<T> {
         &self,
         timeout: Duration,
         cancellation_token: Option<Receiver<()>>,
-    ) -> Result<Result<T, BitwardenError>, CallbackError> {
+    ) -> Result<Result<T, LocalPassError>, CallbackError> {
         let (tx, rx) = mpsc::channel();
         if let Some(cancellation_token) = cancellation_token {
             let tx2 = tx.clone();
@@ -669,7 +669,7 @@ impl<T: Send + 'static> TimedCallback<T> {
         }
     }
 
-    fn send(&self, response: Result<T, BitwardenError>) {
+    fn send(&self, response: Result<T, LocalPassError>) {
         match self.tx.lock().expect("not poisoned").take() {
             Some(tx) => {
                 if tx.send(response).is_err() {
@@ -707,7 +707,7 @@ mod tests {
     use tracing::Level;
 
     use super::{
-        AutofillProviderClient, BitwardenError, ConnectionStatus, ExtensionRequest,
+        AutofillProviderClient, LocalPassError, ConnectionStatus, ExtensionRequest,
         ExtensionRequestMessage, PasskeyAssertionRequest, Position, SerializedMessage,
         TimedCallback, UserVerification, WindowDetails, IPC_PATH,
     };
@@ -725,7 +725,7 @@ mod tests {
     }
 
     /// Sets up an in-memory server based on the passed handler and returns a client to the server.
-    fn get_client<F: Fn(ExtensionRequest) -> Result<Value, BitwardenError> + Send + 'static>(
+    fn get_client<F: Fn(ExtensionRequest) -> Result<Value, LocalPassError> + Send + 'static>(
         handler: F,
     ) -> AutofillProviderClient {
         let (signal_tx, signal_rx) = std::sync::mpsc::channel();
@@ -818,7 +818,7 @@ mod tests {
             .wait_for_response(Duration::from_millis(10), None)
             .unwrap();
 
-        assert!(matches!(response, Err(BitwardenError::Disconnected)));
+        assert!(matches!(response, Err(LocalPassError::Disconnected)));
     }
 
     #[test]
@@ -828,7 +828,7 @@ mod tests {
             if let ExtensionRequest::LockStatus = request {
                 Ok(json!({"isUnlocked": true }))
             } else {
-                Err(BitwardenError::Internal(format!(
+                Err(LocalPassError::Internal(format!(
                     "Expected LockStatusRequest, received: {request:?}"
                 )))
             }

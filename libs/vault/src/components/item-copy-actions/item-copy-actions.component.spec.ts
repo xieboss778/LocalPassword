@@ -3,18 +3,18 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
-import { CipherListView, CopyableCipherFields } from "@bitwarden/sdk-internal";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { IconButtonModule, ItemModule, MenuModule } from "@localpass/components";
+import { CipherListView, CopyableCipherFields } from "@localpass/sdk-internal";
 
 import { CopyCipherFieldService } from "../../services/copy-cipher-field.service";
 

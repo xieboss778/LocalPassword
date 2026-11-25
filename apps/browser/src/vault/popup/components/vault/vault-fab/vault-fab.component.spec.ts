@@ -5,21 +5,21 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { CIPHER_MENU_ITEMS } from "@bitwarden/common/vault/types/cipher-menu-items";
-import { DialogService, IconModule, MenuModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { CIPHER_MENU_ITEMS } from "@localpass/common/vault/types/cipher-menu-items";
+import { DialogService, IconModule, MenuModule } from "@localpass/components";
 import {
   AddEditFolderDialogComponent,
   MY_VAULT,
   NO_FOLDER,
   VaultFabComponent,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/browser/browser-popup-utils";

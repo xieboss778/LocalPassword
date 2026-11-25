@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { Observable, of } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * The header's item count in isolation — `VaultComponent`'s spec removes `PopupHeaderComponent`.

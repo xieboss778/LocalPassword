@@ -1,10 +1,10 @@
 import { combineLatest, firstValueFrom, from, map, Observable, of, switchMap } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { ApiService } from "@localpass/common/abstractions/api.service";
 import {
   getOrganizationById,
   OrganizationService,
-} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+} from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
 import {
   CollectionAccessSelectionView,
   CollectionAdminView,
@@ -12,13 +12,13 @@ import {
   CollectionDetailsResponse,
   CollectionResponse,
   CollectionData,
-} from "@bitwarden/common/admin-console/models/collections";
-import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { OrgKey } from "@bitwarden/common/types/key";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/admin-console/models/collections";
+import { SelectionReadOnlyRequest } from "@localpass/common/admin-console/models/request/selection-read-only.request";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { OrgKey } from "@localpass/common/types/key";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService } from "@bitwarden/legacy-crypto";
+import { EncryptService } from "@localpass/legacy-crypto";
 
 import { CollectionAdminService, CollectionService } from "../abstractions";
 import {

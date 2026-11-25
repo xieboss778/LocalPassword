@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 
-import { DialogService } from "@bitwarden/components";
-import { safeProvider } from "@bitwarden/ui-common";
-import { UserCryptoDialogService } from "@bitwarden/user-crypto-management";
+import { DialogService } from "@localpass/components";
+import { safeProvider } from "@localpass/ui-common";
+import { UserCryptoDialogService } from "@localpass/user-crypto-management";
 
 import { DefaultUserCryptoDialogService } from "./trust/default-user-crypto-dialog.service";
 

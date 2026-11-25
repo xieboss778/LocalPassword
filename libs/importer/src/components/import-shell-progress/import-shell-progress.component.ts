@@ -4,10 +4,10 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { catchError, distinctUntilChanged, filter, map, of, skip, startWith } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ProgressBarComponent, ScrollLayoutService, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ProgressBarComponent, ScrollLayoutService, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportDestinationKind, ImportDestinationsState } from "../../models";
 import { ImportDestinationServiceAbstraction } from "../../services";

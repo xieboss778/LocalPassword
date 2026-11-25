@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { of } from "rxjs";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 
 import { VaultCollectionRowComponent } from "./vault-collection-row.component";
 

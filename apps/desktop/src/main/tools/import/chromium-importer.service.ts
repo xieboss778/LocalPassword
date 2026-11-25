@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 
-import { chromium_importer } from "@bitwarden/desktop-napi";
+import { chromium_importer } from "@localpass/desktop-napi";
 
 import { isMacAppStore } from "../../platform-utils.main";
 

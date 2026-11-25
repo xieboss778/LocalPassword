@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { MSecureCsvImporter } from "./msecure-csv-importer";
 
@@ -48,7 +48,7 @@ describe("MSecureCsvImporter.parse", () => {
 
   it("should correctly parse login entries", async () => {
     const mockCsvData = `
-        Bitwarden|810974637,Login,,,Website|2|bitwarden.com,Username|7|bitwarden user,Password|8|bitpassword,
+        LocalPass|810974637,Login,,,Website|2|local.invalid,Username|7|localpass user,Password|8|bitpassword,
     `.trim();
 
     const result = await importer.parse(mockCsvData);
@@ -56,11 +56,11 @@ describe("MSecureCsvImporter.parse", () => {
     expect(result.success).toBe(true);
     expect(result.ciphers.length).toBe(1);
     const cipher = result.ciphers[0];
-    expect(cipher.name).toBe("Bitwarden");
+    expect(cipher.name).toBe("LocalPass");
     expect(cipher.type).toBe(CipherType.Login);
-    expect(cipher.login.username).toBe("bitwarden user");
+    expect(cipher.login.username).toBe("localpass user");
     expect(cipher.login.password).toBe("bitpassword");
-    expect(cipher.login.uris[0].uri).toContain("bitwarden.com");
+    expect(cipher.login.uris[0].uri).toContain("local.invalid");
   });
 
   it("should correctly parse login entries with notes", async () => {
@@ -102,7 +102,7 @@ describe("MSecureCsvImporter.parse", () => {
   it("should handle multiple entries correctly", async () => {
     const mockCsvData =
       `myCreditCard|155089404,Credit Card,,,Card Number|12|41111111111111111,Expiration Date|11|05/2026,Security Code|9|123,Name on Card|0|John Doe,PIN|9|1234,Issuing Bank|0|Visa,Phone Number|4|,Billing Address|0|,
-Bitwarden|810974637,Login,,,Website|2|bitwarden.com,Username|7|bitwarden user,Password|8|bitpassword,
+LocalPass|810974637,Login,,,Website|2|local.invalid,Username|7|localpass user,Password|8|bitpassword,
 Example|188987444,Login,,This is a note |,Website|2|example2.com,Username|7|username || lol,Password|8|this is a password,
 Website with a tag|1401978655,Login,tag holding it,,Website|2|johndoe.com,Username|7|JohnDoeWebsite,Password|8|JohnDoePassword,`.trim();
 
@@ -116,9 +116,9 @@ Website with a tag|1401978655,Login,tag holding it,,Website|2|johndoe.com,Userna
     expect(cipher1.name).toBe("myCreditCard");
     expect(cipher1.type).toBe(CipherType.Card);
 
-    // Check second entry (Login - Bitwarden)
+    // Check second entry (Login - LocalPass)
     const cipher2 = result.ciphers[1];
-    expect(cipher2.name).toBe("Bitwarden");
+    expect(cipher2.name).toBe("LocalPass");
     expect(cipher2.type).toBe(CipherType.Login);
 
     // Check third entry (Login with note - Example)

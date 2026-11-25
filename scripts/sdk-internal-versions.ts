@@ -9,12 +9,12 @@ const packageJson = JSON.parse(
   fs.readFileSync(path.join(__dirname, "..", "..", "package.json"), "utf8"),
 );
 
-const sdkInternal = packageJson.dependencies["@bitwarden/sdk-internal"];
-const commercialSdkInternal = packageJson.dependencies["@bitwarden/commercial-sdk-internal"];
+const sdkInternal = packageJson.dependencies["@localpass/sdk-internal"];
+const commercialSdkInternal = packageJson.dependencies["@localpass/commercial-sdk-internal"];
 
 if (sdkInternal !== commercialSdkInternal) {
   console.error(
-    `Version mismatch between @bitwarden/sdk-internal (${sdkInternal}) and @bitwarden/commercial-sdk-internal (${commercialSdkInternal}), must be an exact match.`,
+    `Version mismatch between @localpass/sdk-internal (${sdkInternal}) and @localpass/commercial-sdk-internal (${commercialSdkInternal}), must be an exact match.`,
   );
   process.exit(1);
 }

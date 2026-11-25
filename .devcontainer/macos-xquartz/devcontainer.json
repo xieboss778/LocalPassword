@@ -1,7 +1,7 @@
 {
-  "name": "Bitwarden Clients (macOS XQuartz)",
+  "name": "LocalPass Clients (macOS XQuartz)",
   "dockerComposeFile": ["../common/docker-compose.yml", "docker-compose.override.yml"],
-  "service": "bitwarden_clients",
+  "service": "localpass_clients",
   "workspaceFolder": "/workspace",
   "features": {
     "ghcr.io/devcontainers/features/rust:1": {}

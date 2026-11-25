@@ -2,12 +2,12 @@
 // @ts-strict-ignore
 import { Observable } from "rxjs";
 
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy as AdminPolicy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { SingleUserState } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Policy as AdminPolicy } from "@localpass/common/admin-console/models/domain/policy";
+import { SingleUserState } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { PolicyEvaluator } from "./policy-evaluator.abstraction";
 

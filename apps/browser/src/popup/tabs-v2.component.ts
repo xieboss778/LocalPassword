@@ -2,7 +2,7 @@ import { Component, inject } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { combineLatest, map, Observable, of, startWith, switchMap } from "rxjs";
 
-import { NudgesService } from "@bitwarden/angular/vault";
+import { NudgesService } from "@localpass/angular/vault";
 import {
   VaultInactive,
   VaultActive,
@@ -12,22 +12,22 @@ import {
   SendActive,
   SettingsInactive,
   SettingsActive,
-} from "@bitwarden/assets/svg";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { BottomNavigationButton } from "@bitwarden/components";
+} from "@localpass/assets/svg";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { BottomNavigationButton } from "@localpass/components";
 import {
   ALL_ITEMS_SCOPE,
   parseVaultScope,
   VAULT_BASE_ROUTE,
   vaultScopeCommands,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { HealthAccessService } from "../dirt/health/popup/services/health-access.service";
 import { VaultPopupListTableFiltersService } from "../vault/popup/services/vault-popup-list-table-filters.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-tabs-v2",
@@ -59,7 +59,7 @@ export class TabsV2Component {
     switchMap((userId) => this.healthAccessService.healthNavButton$(userId)),
   );
 
-  // LocalPassword: Send relays a secret through a server, so a local vault never offers it.
+  // LocalPass: Send relays a secret through a server, so a local vault never offers it.
   private sendEnabled$ = of(false);
 
   protected navButtons$: Observable<BottomNavigationButton[]> = combineLatest([

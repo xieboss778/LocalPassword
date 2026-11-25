@@ -1,14 +1,14 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
 import {
   getFlatCollectionTree,
   getNestedCollectionTree,
-} from "@bitwarden/common/admin-console/utils/collection-utils";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { getNestedFolderTree } from "@bitwarden/common/vault/utils/folder-utils";
-import { BitwardenIcon } from "@bitwarden/components";
+} from "@localpass/common/admin-console/utils/collection-utils";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { getNestedFolderTree } from "@localpass/common/vault/utils/folder-utils";
+import { LocalPassIcon } from "@localpass/components";
 
 import { myFolderItemCounts, subtreeIds } from "../../models/folder-table-row";
 import {
@@ -27,7 +27,7 @@ export type CardGridCard = {
   id: string;
   name: string;
   commands: string[];
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
 
   /** How many folders sit directly inside this one. */
   nestedCount: number;

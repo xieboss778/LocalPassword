@@ -4,21 +4,21 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of, Subject } from "rxjs";
 
-import { PremiumUpgradeDialogComponent } from "@bitwarden/angular/billing/components";
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { AutofillBrowserSettingsService } from "@bitwarden/browser/autofill/services/autofill-browser-settings.service";
-import { BrowserApi } from "@bitwarden/browser/platform/browser/browser-api";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService } from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { FakeGlobalStateProvider } from "@bitwarden/state-test-utils";
+import { PremiumUpgradeDialogComponent } from "@localpass/angular/billing/components";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { AutofillBrowserSettingsService } from "@localpass/browser/autofill/services/autofill-browser-settings.service";
+import { BrowserApi } from "@localpass/browser/platform/browser/browser-api";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { DialogService } from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
+import { FakeGlobalStateProvider } from "@localpass/state-test-utils";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 
@@ -243,11 +243,11 @@ describe("SettingsV2Component", () => {
     expect(mockNudges.dismissNudge).not.toHaveBeenCalled();
   });
 
-  it("showDownloadBitwardenNudge$ proxies to nudges service for the active account", async () => {
+  it("showDownloadLocalPassNudge$ proxies to nudges service for the active account", async () => {
     const acct = pushActiveAccount("user-xyz");
 
     mockNudges.showNudgeBadge$.mockImplementation((type: NudgeType) =>
-      of(type === NudgeType.DownloadBitwarden),
+      of(type === NudgeType.DownloadLocalPass),
     );
 
     const fixture = TestBed.createComponent(SettingsV2Component);
@@ -255,8 +255,8 @@ describe("SettingsV2Component", () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const val = await firstValueFrom(component.showDownloadBitwardenNudge$);
+    const val = await firstValueFrom(component.showDownloadLocalPassNudge$);
     expect(val).toBe(true);
-    expect(mockNudges.showNudgeBadge$).toHaveBeenCalledWith(NudgeType.DownloadBitwarden, acct.id);
+    expect(mockNudges.showNudgeBadge$).toHaveBeenCalledWith(NudgeType.DownloadLocalPass, acct.id);
   });
 });

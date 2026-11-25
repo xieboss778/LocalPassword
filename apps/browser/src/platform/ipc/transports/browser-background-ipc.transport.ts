@@ -1,5 +1,5 @@
-import { IpcMessage, isIpcMessage, reconstructIpcMessage } from "@bitwarden/common/platform/ipc";
-import { IncomingMessage, OutgoingMessage, Source } from "@bitwarden/sdk-internal";
+import { IpcMessage, isIpcMessage, reconstructIpcMessage } from "@localpass/common/platform/ipc";
+import { IncomingMessage, OutgoingMessage, Source } from "@localpass/sdk-internal";
 
 import { BrowserApi } from "../../browser/browser-api";
 
@@ -41,7 +41,7 @@ export class BrowserBackgroundIpcTransport {
 
     try {
       this.connect().postMessage({
-        type: "bitwarden-ipc-message",
+        type: "localpass-ipc-message",
         message: {
           destination: message.destination,
           payload: [...message.payload],

@@ -12,21 +12,21 @@ import {
   viewChild,
 } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   BulkActionsBarComponent,
   BulkActionComponent,
   BulkAdditionalActionComponent,
   LayoutFooterService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { VaultBatchBarService } from "../../services/vault-batch-bar.service";
 import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service";
 
 type ActionDescriptor = {
   action: () => void;
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
   label: string;
   color?: string;
 };

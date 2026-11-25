@@ -1,4 +1,4 @@
-import { ClientType } from "@bitwarden/client-type";
+import { ClientType } from "@localpass/client-type";
 
 import { LoaderAvailability } from "./metadata";
 import { ImportOptionData, ImportType } from "./models";

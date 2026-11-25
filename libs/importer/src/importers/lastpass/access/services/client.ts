@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { HttpStatusCode } from "@bitwarden/common/enums";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { HttpStatusCode } from "@localpass/common/enums";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { OtpMethod, Platform } from "../enums";
 import {

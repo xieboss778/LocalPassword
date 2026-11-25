@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/storage-core",
+  "name": "@localpass/storage-core",
   "version": "0.0.1",
   "description": "Abstractions over storage APIs",
   "private": true,

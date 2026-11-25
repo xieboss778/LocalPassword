@@ -1,4 +1,4 @@
-import { OnePasswordSsoSignInClosedError } from "@bitwarden/importer-ui";
+import { OnePasswordSsoSignInClosedError } from "@localpass/importer-ui";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 

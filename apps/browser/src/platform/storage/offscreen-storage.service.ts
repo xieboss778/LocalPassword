@@ -1,5 +1,5 @@
-import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
-import { StorageOptions } from "@bitwarden/common/platform/models/domain/storage-options";
+import { AbstractStorageService } from "@localpass/common/platform/abstractions/storage.service";
+import { StorageOptions } from "@localpass/common/platform/models/domain/storage-options";
 
 import { BrowserApi } from "../browser/browser-api";
 import { OffscreenDocumentService } from "../offscreen-document/abstractions/offscreen-document";

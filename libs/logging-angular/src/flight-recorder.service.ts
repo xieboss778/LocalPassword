@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { FlightRecorder } from "@bitwarden/logging";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { FlightRecorder } from "@localpass/logging";
 
 /**
  * Angular wrapper for {@link FlightRecorder}.

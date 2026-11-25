@@ -1,4 +1,4 @@
-import { StorageLocation, ClientLocations } from "@bitwarden/storage-core";
+import { StorageLocation, ClientLocations } from "@localpass/storage-core";
 
 /**
  * Defines the base location and instruction of where this state is expected to be located.

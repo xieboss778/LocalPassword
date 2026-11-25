@@ -1,20 +1,20 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, Observable, of } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherEncryptionService } from "@bitwarden/common/vault/abstractions/cipher-encryption.service";
-import { CipherSdkService } from "@bitwarden/common/vault/abstractions/cipher-sdk.service";
-import { CipherFileUploadService } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { KeyService } from "@bitwarden/key-management";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherEncryptionService } from "@localpass/common/vault/abstractions/cipher-encryption.service";
+import { CipherSdkService } from "@localpass/common/vault/abstractions/cipher-sdk.service";
+import { CipherFileUploadService } from "@localpass/common/vault/abstractions/file-upload/cipher-file-upload.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { KeyService } from "@localpass/key-management";
 
 import { DesktopCipherService } from "./desktop-cipher.service";
 

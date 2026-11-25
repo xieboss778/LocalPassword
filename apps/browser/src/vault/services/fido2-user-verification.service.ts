@@ -2,12 +2,12 @@
 // @ts-strict-ignore
 import { firstValueFrom } from "rxjs";
 
-import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
-import { PasswordRepromptService } from "@bitwarden/vault";
+import { UserVerificationDialogComponent } from "@localpass/auth/angular";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService } from "@localpass/components";
+import { PasswordRepromptService } from "@localpass/vault";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports

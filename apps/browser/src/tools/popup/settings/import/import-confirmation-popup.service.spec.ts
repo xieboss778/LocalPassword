@@ -2,11 +2,11 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
-import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService } from "@bitwarden/components";
-import { ImportConfirmationDialogComponent } from "@bitwarden/importer-ui";
-import { StateProvider } from "@bitwarden/state";
+import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService } from "@localpass/components";
+import { ImportConfirmationDialogComponent } from "@localpass/importer-ui";
+import { StateProvider } from "@localpass/state";
 
 import { ImportConfirmationPopupService } from "./import-confirmation-popup.service";
 import { ImportConfirmationStateService } from "./import-confirmation-state.service";

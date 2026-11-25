@@ -3,8 +3,8 @@ import { distinctUntilChanged, firstValueFrom, map, Observable } from "rxjs";
 import {
   ServerCommunicationConfigRepository as SdkRepository,
   ServerCommunicationConfig,
-} from "@bitwarden/sdk-internal";
-import { GlobalState, StateProvider } from "@bitwarden/state";
+} from "@localpass/sdk-internal";
+import { GlobalState, StateProvider } from "@localpass/state";
 
 import { SERVER_COMMUNICATION_CONFIGS } from "./server-communication-config.state";
 

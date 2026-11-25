@@ -14,7 +14,7 @@ import {
 } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BerryComponent } from "../../berry";
 import { IconModule } from "../../icon";

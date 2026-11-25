@@ -18,8 +18,8 @@ jest.mock("../../platform/browser/browser-popup-utils", () => ({
   inPopout: jest.fn(),
 }));
 
-import { DuoLaunchAction } from "@bitwarden/auth/angular";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
+import { DuoLaunchAction } from "@localpass/auth/angular";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../platform/browser/browser-popup-utils";

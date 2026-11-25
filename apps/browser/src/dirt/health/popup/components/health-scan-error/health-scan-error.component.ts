@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, output } from "@angular/core";
 
-import { ReportBreach } from "@bitwarden/assets/svg";
-import { SvgComponent, StatusLockupComponent, ButtonModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { ReportBreach } from "@localpass/assets/svg";
+import { SvgComponent, StatusLockupComponent, ButtonModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * The Health tab's failure view, shown when the vault-health scan does not

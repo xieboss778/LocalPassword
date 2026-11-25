@@ -1,5 +1,5 @@
-import { UserId } from "@bitwarden/common/types/guid";
-import { CrossContextUnlockService } from "@bitwarden/unlock";
+import { UserId } from "@localpass/common/types/guid";
+import { CrossContextUnlockService } from "@localpass/unlock";
 
 import { BACKGROUND_UNLOCK_COMPLETED, FOREGROUND_UNLOCK_COMPLETED } from "./unlock-messages";
 

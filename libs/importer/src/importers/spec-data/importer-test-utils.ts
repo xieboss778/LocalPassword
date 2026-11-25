@@ -1,5 +1,5 @@
-import { FieldType } from "@bitwarden/common/vault/enums";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
+import { FieldType } from "@localpass/common/vault/enums";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
 
 type FieldViewExpectation = [string, string] | [string, string, FieldType];
 

@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
+import { newGuid } from "@localpass/guid";
 
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";
 import { OrganizationId } from "../../../types/guid";

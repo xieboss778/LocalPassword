@@ -5,13 +5,13 @@ import { provideRouter } from "@angular/router";
 import { RouterTestingHarness } from "@angular/router/testing";
 import { BehaviorSubject } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { IconTileComponent } from "@bitwarden/components";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { IconTileComponent } from "@localpass/components";
 
 import { SharedFoldersBreadcrumbsComponent } from "./shared-folders-breadcrumbs.component";
 

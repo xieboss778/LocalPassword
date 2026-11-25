@@ -1,8 +1,8 @@
 import { inject, Injectable, WritableSignal } from "@angular/core";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { LoginViaAuthRequestView } from "@bitwarden/common/auth/models/view/login-via-auth-request.view";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { LoginViaAuthRequestView } from "@localpass/common/auth/models/view/login-via-auth-request.view";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 const LOGIN_VIA_AUTH_CACHE_KEY = "login-via-auth-request-form-cache";
 

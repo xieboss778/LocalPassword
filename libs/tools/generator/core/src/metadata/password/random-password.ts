@@ -1,7 +1,7 @@
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { GENERATOR_DISK } from "@bitwarden/common/platform/state";
-import { PublicClassifier } from "@bitwarden/common/tools/public-classifier";
-import { deepFreeze } from "@bitwarden/common/tools/util";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { GENERATOR_DISK } from "@localpass/common/platform/state";
+import { PublicClassifier } from "@localpass/common/tools/public-classifier";
+import { deepFreeze } from "@localpass/common/tools/util";
 
 import { SdkPasswordRandomizer } from "../../engine";
 import { DynamicPasswordPolicyConstraints, passwordLeastPrivilege } from "../../policies";

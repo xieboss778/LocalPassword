@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BadgeModule, BadgeVariant } from "../badge";
 

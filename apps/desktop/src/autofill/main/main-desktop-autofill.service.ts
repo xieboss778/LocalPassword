@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { autofill, passkey_authenticator } from "@bitwarden/desktop-napi";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { autofill, passkey_authenticator } from "@localpass/desktop-napi";
 
 import { WindowMain } from "../../main/window.main";
 import { AutofillCommandDefinition } from "../models/autofill-command";

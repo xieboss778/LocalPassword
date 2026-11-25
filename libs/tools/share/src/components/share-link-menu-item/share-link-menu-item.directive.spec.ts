@@ -4,8 +4,8 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { MenuComponent, MenuModule } from "@bitwarden/components";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { MenuComponent, MenuModule } from "@localpass/components";
 
 import { ShareItemService } from "../../services/share-item.service";
 import { ShareLinkService } from "../../services/share-link.service";

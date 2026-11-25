@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+import { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 export abstract class AccountCryptographicStateService {
   /**

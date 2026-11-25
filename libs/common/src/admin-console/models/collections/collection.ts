@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString } from "@bitwarden/legacy-crypto";
-import { Collection as SdkCollection } from "@bitwarden/sdk-internal";
+import { EncryptService, EncString } from "@localpass/legacy-crypto";
+import { Collection as SdkCollection } from "@localpass/sdk-internal";
 
 import { asUuid, uuidAsString } from "../../../platform/abstractions/sdk/sdk.service";
 import Domain from "../../../platform/models/domain/domain-base";

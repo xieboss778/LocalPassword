@@ -1,8 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
-import { RequiredUserId, StateService } from "@bitwarden/state";
-import { StorageService } from "@bitwarden/storage-core";
-import { UserId } from "@bitwarden/user-core";
+import { RequiredUserId, StateService } from "@localpass/state";
+import { StorageService } from "@localpass/storage-core";
+import { UserId } from "@localpass/user-core";
 
 import { ActiveUserAccessor } from "../active-user.accessor";
 

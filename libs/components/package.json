@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/components",
+  "name": "@localpass/components",
   "version": "0.0.0",
   "sideEffects": false,
   "scripts": {

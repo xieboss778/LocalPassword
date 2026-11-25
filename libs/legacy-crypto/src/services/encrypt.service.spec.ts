@@ -1,10 +1,10 @@
 import { mockReset, mock } from "jest-mock-extended";
 
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { makeStaticByteArray } from "@bitwarden/common/spec";
-import { LogService } from "@bitwarden/logging";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { makeStaticByteArray } from "@localpass/common/spec";
+import { LogService } from "@localpass/logging";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { EncryptionType } from "../enums/encryption-type.enum";

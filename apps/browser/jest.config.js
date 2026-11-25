@@ -9,7 +9,7 @@ module.exports = {
   ...sharedConfig,
   setupFilesAfterEnv: ["<rootDir>/test.setup.ts"],
   moduleNameMapper: pathsToModuleNameMapper(
-    { "@bitwarden/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
+    { "@localpass/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
     {
       prefix: "<rootDir>/../../",
     },

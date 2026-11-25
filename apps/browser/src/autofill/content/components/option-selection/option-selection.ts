@@ -2,8 +2,8 @@ import createEmotion from "@emotion/css/create-instance";
 import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import type { Theme } from "@bitwarden/common/platform/enums";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import type { Theme } from "@localpass/common/platform/enums";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { EventSecurity } from "../../../utils/event-security";
 import { OptionSelectionButton } from "../buttons/option-selection-button";

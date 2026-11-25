@@ -3,32 +3,32 @@ import { of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { PasswordInputResult } from "@bitwarden/auth/angular";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { MasterPasswordApiService } from "@bitwarden/common/auth/abstractions/master-password-api.service.abstraction";
-import { PasswordRequest } from "@bitwarden/common/auth/models/request/password.request";
-import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
+import { PasswordInputResult } from "@localpass/auth/angular";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { MasterPasswordApiService } from "@localpass/common/auth/abstractions/master-password-api.service.abstraction";
+import { PasswordRequest } from "@localpass/common/auth/models/request/password.request";
+import { UpdateTempPasswordRequest } from "@localpass/common/auth/models/request/update-temp-password.request";
 import {
   OrganizationInvite,
   OrganizationInviteService,
-} from "@bitwarden/common/auth/organization-invite";
-import { MasterPasswordUnlockService } from "@bitwarden/common/key-management/master-password/abstractions/master-password-unlock.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
+} from "@localpass/common/auth/organization-invite";
+import { MasterPasswordUnlockService } from "@localpass/common/key-management/master-password/abstractions/master-password-unlock.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import {
   MasterKeyWrappedUserKey,
   MasterPasswordAuthenticationData,
   MasterPasswordAuthenticationHash,
   MasterPasswordSalt,
   MasterPasswordUnlockData,
-} from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { makeSymmetricCryptoKey, mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/key-management/master-password/types/master-password.types";
+import { makeSymmetricCryptoKey, mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { DEFAULT_KDF_CONFIG } from "@bitwarden/legacy-crypto";
+import { DEFAULT_KDF_CONFIG } from "@localpass/legacy-crypto";
 
 import {
   ChangePasswordService,

@@ -1,7 +1,7 @@
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
 
 import { PasswordGeneratorPolicy } from "../types";
 

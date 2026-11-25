@@ -18,12 +18,12 @@ describe("NetworkGatePolicy", () => {
     });
   });
 
-  it("blocks every bitwarden.com host", () => {
-    expect(policy.evaluate({ url: "https://api.bitwarden.com/sync" })).toEqual({
+  it("blocks every local.invalid host", () => {
+    expect(policy.evaluate({ url: "https://api.local.invalid/sync" })).toEqual({
       action: "block",
       reason: "not-allowlisted",
     });
-    expect(policy.evaluate({ url: "https://events.bitwarden.com/collect" }).action).toBe("block");
+    expect(policy.evaluate({ url: "https://events.local.invalid/collect" }).action).toBe("block");
   });
 
   it("allows the breach check only when the user triggered it", () => {

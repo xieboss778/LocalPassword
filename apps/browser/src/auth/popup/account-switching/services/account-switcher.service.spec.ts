@@ -5,19 +5,19 @@ import {
   Account,
   AccountInfo,
   AccountService,
-} from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+} from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { AccountSwitcherService } from "./account-switcher.service";
 

@@ -1,11 +1,11 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { GeneratedCredential } from "@bitwarden/generator-core";
-import { GeneratorHistoryService } from "@bitwarden/generator-history";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { GeneratedCredential } from "@localpass/generator-core";
+import { GeneratorHistoryService } from "@localpass/generator-history";
 
 import { trackGeneratedCredential } from "./credential-history-utils";
 
@@ -13,7 +13,7 @@ describe("trackGeneratedCredential", () => {
   const mockUserId = Utils.newGuid() as UserId;
   const mockAccount: Account = {
     id: mockUserId,
-    email: "test@bitwarden.com",
+    email: "test@local.invalid",
     emailVerified: true,
     name: undefined,
     creationDate: undefined,

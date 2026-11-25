@@ -9,7 +9,7 @@ import {
 } from "@angular/router";
 import { mock } from "jest-mock-extended";
 
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 import { ALL_ITEMS_SCOPE, VaultScopeType } from "../models/vault-scope";
 

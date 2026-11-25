@@ -23,7 +23,7 @@ describe("basic-lib generator", () => {
     const tsconfigContent = tree.read("tsconfig.base.json");
     expect(tsconfigContent).not.toBeNull();
     const tsconfig = JSON.parse(tsconfigContent?.toString() ?? "");
-    expect(tsconfig.compilerOptions.paths[`@bitwarden/${options.name}`]).toEqual([
+    expect(tsconfig.compilerOptions.paths[`@localpass/${options.name}`]).toEqual([
       `./libs/test/src/index.ts`,
     ]);
   });
@@ -34,7 +34,7 @@ describe("basic-lib generator", () => {
     const codeownersContent = tree.read(".github/CODEOWNERS");
     expect(codeownersContent).not.toBeNull();
     const codeowners = codeownersContent?.toString();
-    expect(codeowners).toContain(`libs/test @bitwarden/team-platform-dev`);
+    expect(codeowners).toContain(`libs/test @localpass/team-platform-dev`);
   });
 
   it("should generate expected files", async () => {
@@ -66,7 +66,7 @@ describe("basic-lib generator", () => {
     const codeownersContent = tree.read(".github/CODEOWNERS");
     expect(codeownersContent).not.toBeNull();
     const codeowners = codeownersContent?.toString();
-    expect(codeowners).toContain(`libs/test @bitwarden/team-vault-dev`);
+    expect(codeowners).toContain(`libs/test @localpass/team-vault-dev`);
   });
 
   it("should generate expected files", async () => {

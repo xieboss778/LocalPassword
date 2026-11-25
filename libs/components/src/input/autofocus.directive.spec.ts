@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { FocusableElement } from "../shared/focusable-element";
 

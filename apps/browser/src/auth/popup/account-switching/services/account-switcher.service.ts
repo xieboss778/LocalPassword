@@ -13,17 +13,17 @@ import {
   timeout,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { NewActiveUser } from "@bitwarden/common/auth/logout";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { NewActiveUser } from "@localpass/common/auth/logout";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { UserId } from "@localpass/common/types/guid";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import { fromChromeEvent } from "../../../../platform/browser/from-chrome-event";
@@ -59,7 +59,7 @@ export class AccountSwitcherService {
     private configService: ConfigService,
     authService: AuthService,
   ) {
-    // TODO: PM-44635 - Build from AccountSwitcherService.entries$ in @bitwarden/common/auth/account-switcher,
+    // TODO: PM-44635 - Build from AccountSwitcherService.entries$ in @localpass/common/auth/account-switcher,
     // which also owns the account limit.
     this.availableAccounts$ = combineLatest([
       accountService.accounts$,

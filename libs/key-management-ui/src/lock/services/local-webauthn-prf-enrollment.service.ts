@@ -1,14 +1,14 @@
 import { firstValueFrom } from "rxjs";
 
-import { WebAuthnLoginPrfKeyServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login-prf-key.service.abstraction";
-import { RotateableKeySetService } from "@bitwarden/common/key-management/keys/services/abstractions/rotateable-key-set.service";
-import { WEBAUTHN_PRF_OPTIONS } from "@bitwarden/common/key-management/state-definitions";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService } from "@bitwarden/key-management";
-import { LogService } from "@bitwarden/logging";
-import type { WebAuthnPrfUnlockOption } from "@bitwarden/sdk-internal";
-import { StateProvider } from "@bitwarden/state";
+import { WebAuthnLoginPrfKeyServiceAbstraction } from "@localpass/common/auth/abstractions/webauthn/webauthn-login-prf-key.service.abstraction";
+import { RotateableKeySetService } from "@localpass/common/key-management/keys/services/abstractions/rotateable-key-set.service";
+import { WEBAUTHN_PRF_OPTIONS } from "@localpass/common/key-management/state-definitions";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { KeyService } from "@localpass/key-management";
+import { LogService } from "@localpass/logging";
+import type { WebAuthnPrfUnlockOption } from "@localpass/sdk-internal";
+import { StateProvider } from "@localpass/state";
 
 /**
  * Registers a security key (or a passkey) as an unlock method for a local vault.
@@ -56,7 +56,7 @@ export class LocalWebAuthnPrfEnrollmentService {
     const credential = (await this.window.navigator.credentials.create({
       publicKey: {
         challenge,
-        rp: { id: rpId, name: "LocalPassword" },
+        rp: { id: rpId, name: "LocalPass" },
         user: {
           id: new TextEncoder().encode(userId),
           name: accountName,

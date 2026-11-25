@@ -13,7 +13,7 @@ use common::{
     test_ecdsa_p521_key_blob, test_ed25519_key, test_ed25519_key_blob, test_rsa_key,
     test_rsa_key_blob, unsupported_dsa_key_blob, MockApprovalRequester,
 };
-use ssh_agent::{BitwardenSSHAgent, InMemoryEncryptedKeyStore};
+use ssh_agent::{LocalPassSSHAgent, InMemoryEncryptedKeyStore};
 
 const PIPE_NAME: &str = r"\\.\pipe\openssh-ssh-agent";
 
@@ -491,7 +491,7 @@ async fn test_session_bind_is_forwarding_reaches_approval_layer() {
         })
         .returning(|_| Ok(true));
 
-    let mut agent = BitwardenSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
+    let mut agent = LocalPassSSHAgent::new(InMemoryEncryptedKeyStore::new(), requester);
     agent.replace(vec![test_ed25519_key()]).unwrap();
     agent.start().unwrap();
 

@@ -1,12 +1,12 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
+import { newGuid } from "@localpass/guid";
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { CryptoError } from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+import { Argon2KdfConfig, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { CryptoError } from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 import { UserKey } from "../../../types/key";
 import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";

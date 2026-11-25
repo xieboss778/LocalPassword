@@ -20,7 +20,7 @@ export type FooterVerticalPaddingType = "compact" | "default";
  * <bit-landing-footer>
  *   <div class="tw-text-center tw-text-sm">
  *     <a routerLink="/privacy">Privacy</a>
- *     <span>© 2024 Bitwarden</span>
+ *     <span>© 2024 LocalPass</span>
  *   </div>
  * </bit-landing-footer>
  * ```

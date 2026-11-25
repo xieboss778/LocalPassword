@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   DialogRef,
   AsyncActionsModule,
@@ -13,9 +13,9 @@ import {
   FormFieldModule,
   IconButtonModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "lastpass-password-prompt.component.html",

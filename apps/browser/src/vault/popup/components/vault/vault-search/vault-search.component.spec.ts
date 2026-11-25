@@ -3,10 +3,10 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testin
 import { FormsModule } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SearchTextDebounceInterval } from "@bitwarden/common/vault/services/search.service";
-import { SearchModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SearchTextDebounceInterval } from "@localpass/common/vault/services/search.service";
+import { SearchModule } from "@localpass/components";
 
 import { VaultPopupItemsService } from "../../../services/vault-popup-items.service";
 import { VaultPopupLoadingService } from "../../../services/vault-popup-loading.service";

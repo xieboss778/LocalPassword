@@ -1,11 +1,11 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogoutReason, LogoutService } from "@bitwarden/common/auth/logout";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { LogService } from "@bitwarden/logging";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogoutReason, LogoutService } from "@localpass/common/auth/logout";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { UserId } from "@localpass/common/types/guid";
+import { LogService } from "@localpass/logging";
 
 import { AccountSwitcherService } from "../account-switching/services/account-switcher.service";
 

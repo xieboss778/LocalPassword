@@ -3,13 +3,13 @@ import { of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptService,
   LegacyCompatKeyService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import { makeStaticByteArray, mockContainerService, mockEnc } from "../../../../../spec";
 import { ContainerService } from "../../../../platform/services/container.service";
@@ -151,7 +151,7 @@ describe("Send", () => {
     legacyCompatKeyService.makeSendKey.mockResolvedValue("cryptoKey" as any);
     keyService.userKey$.calledWith(userId).mockReturnValue(of(userKey));
 
-    (window as any).bitwardenContainerService = new ContainerService(
+    (window as any).localpassContainerService = new ContainerService(
       keyService,
       encryptService,
       legacyCompatKeyService,
@@ -199,7 +199,7 @@ describe("Send", () => {
       encryptService.decryptBytes.mockResolvedValue(makeStaticByteArray(32));
       legacyCompatKeyService.makeSendKey.mockResolvedValue("cryptoKey" as any);
       keyService.userKey$.mockReturnValue(of(userKey));
-      (window as any).bitwardenContainerService = new ContainerService(
+      (window as any).localpassContainerService = new ContainerService(
         keyService,
         encryptService,
         legacyCompatKeyService,
@@ -294,7 +294,7 @@ describe("Send", () => {
       encryptService.decryptBytes.mockResolvedValue(makeStaticByteArray(32));
       legacyCompatKeyService.makeSendKey.mockResolvedValue("cryptoKey" as any);
       keyService.userKey$.mockReturnValue(of(userKey));
-      (window as any).bitwardenContainerService = new ContainerService(
+      (window as any).localpassContainerService = new ContainerService(
         keyService,
         encryptService,
         legacyCompatKeyService,

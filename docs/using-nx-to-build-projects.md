@@ -1,6 +1,6 @@
 # Using Nx to Build Projects
 
-Bitwarden uses [Nx](https://nx.dev/) to make building projects from the monorepo easier. To build, lint, or test a project you'll want to reference the project's `project.json` file for available commands and their names. Then you'll run `npx nx [your_command] [your_project] [your_options]`. Run `npx nx --help` to see available options, there are many.
+LocalPass uses [Nx](https://nx.dev/) to make building projects from the monorepo easier. To build, lint, or test a project you'll want to reference the project's `project.json` file for available commands and their names. Then you'll run `npx nx [your_command] [your_project] [your_options]`. Run `npx nx --help` to see available options, there are many.
 
 Please note: the Nx implementation is a work in progress. CI still uses the old npm builds, and we have many "legacy" libraries that use hacks to get them into the Nx project graph.
 
@@ -13,7 +13,7 @@ Please note: the Nx implementation is a work in progress. CI still uses the old 
 npx nx build cli
 npx nx build-native desktop # Some apps have special build commands
 npx nx build state # Modern libs and apps have simple, all lowercase target names
-npx nx build @bitwarden/common # Legacy libs have a special naming convention and include the @bitwarden prefix
+npx nx build @localpass/common # Legacy libs have a special naming convention and include the @localpass prefix
 
 # Test a project
 npx nx test cli
@@ -30,14 +30,14 @@ nx affected --target=build --base=origin/main
 # Build, lint, and test every project at once
 npx nx run-many --target=build,test,lint --all
 
-# Most projects default to the "oss-dev" build, so if you need the bitwarden license build add a --configuration
+# Most projects default to the "oss-dev" build, so if you need the localpass license build add a --configuration
 npx nx build cli --configuration=commercial-dev
 
 # If you need a production build drop the "dev" suffix
 npx nx build cli --configuration=oss # or "commercial"
 
 # Configurations can also be passed to run-many
-# For example: to run all Bitwarden licensed builds
+# For example: to run all LocalPass licensed builds
 npx nx run-many --target=build,test,lint --all --configuration=commercial
 
 # Outputs are distributed in a root level /dist/ folder

@@ -7,8 +7,8 @@ import {
   DialogRef,
   DialogService,
   IconTileComponent,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** A result of the delete passkey dialog. */
 export const DeletePasskeyDialogResult = Object.freeze({

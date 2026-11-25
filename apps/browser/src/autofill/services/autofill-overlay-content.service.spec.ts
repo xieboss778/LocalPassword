@@ -4,8 +4,8 @@ import {
   AutofillTargetingRuleTypes,
   EVENTS,
   FormPurposeCategories,
-} from "@bitwarden/common/autofill/constants";
-import { CipherType } from "@bitwarden/common/vault/enums";
+} from "@localpass/common/autofill/constants";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { ModifyLoginCipherFormData } from "../background/abstractions/overlay-notifications.background";
 import AutofillInit from "../content/autofill-init";

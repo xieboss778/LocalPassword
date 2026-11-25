@@ -2,10 +2,10 @@ import { TestBed } from "@angular/core/testing";
 import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 
 import { SendListFiltersService } from "./send-list-filters.service";
 

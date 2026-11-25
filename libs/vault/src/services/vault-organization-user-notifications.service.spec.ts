@@ -2,20 +2,20 @@ import { TestBed } from "@angular/core/testing";
 import {
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/../spec/fake-account-service";
-import { FakeSingleUserState } from "@bitwarden/common/../spec/fake-state";
-import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+} from "@localpass/common/../spec/fake-account-service";
+import { FakeSingleUserState } from "@localpass/common/../spec/fake-state";
+import { FakeStateProvider } from "@localpass/common/../spec/fake-state-provider";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of, ReplaySubject } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { StateProvider } from "@localpass/common/platform/state";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 
 import {
   NOTIFICATION_BANNER_DISMISSED_KEY,

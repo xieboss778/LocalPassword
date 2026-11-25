@@ -7,14 +7,14 @@ use anyhow::Result;
 use tracing::{debug, info};
 
 use crate::{
-    approval::ApprovalRequester, authorization::BitwardenAuthPolicy, server::SSHAgentServer,
+    approval::ApprovalRequester, authorization::LocalPassAuthPolicy, server::SSHAgentServer,
     storage::keystore::KeyStore,
 };
 
 /// - contains the [`KeyStore`] of ssh keys
 /// - manages the [`SSHAgentServer`]
 /// - provides an Authentication policy for server requests
-pub struct BitwardenSSHAgent<K, H>
+pub struct LocalPassSSHAgent<K, H>
 where
     K: KeyStore,
     H: ApprovalRequester,
@@ -22,18 +22,18 @@ where
     /// store of ssh keys. shared with the authorization policy and server.
     keystore: Arc<K>,
     // the agent's server
-    server: SSHAgentServer<K, BitwardenAuthPolicy<K, H>>,
+    server: SSHAgentServer<K, LocalPassAuthPolicy<K, H>>,
 }
 
-impl<K, H> BitwardenSSHAgent<K, H>
+impl<K, H> LocalPassSSHAgent<K, H>
 where
     K: KeyStore + Send + Sync + 'static,
     H: ApprovalRequester + 'static,
 {
-    /// Creates a new [`BitwardenSSHAgent`]
+    /// Creates a new [`LocalPassSSHAgent`]
     pub fn new(keystore: K, approval_handler: H) -> Self {
         let keystore = Arc::new(keystore);
-        let auth_policy = Arc::new(BitwardenAuthPolicy::new(keystore.clone(), approval_handler));
+        let auth_policy = Arc::new(LocalPassAuthPolicy::new(keystore.clone(), approval_handler));
         let server = SSHAgentServer::new(keystore.clone(), auth_policy);
 
         Self { keystore, server }
@@ -80,7 +80,7 @@ mod tests {
         keystore.expect_clear().once().return_const(());
         let approval_handler = MockApprovalRequester::new();
 
-        let mut agent = BitwardenSSHAgent::new(keystore, approval_handler);
+        let mut agent = LocalPassSSHAgent::new(keystore, approval_handler);
 
         agent.stop();
     }

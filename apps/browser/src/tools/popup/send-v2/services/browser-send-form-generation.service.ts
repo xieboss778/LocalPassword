@@ -2,8 +2,8 @@ import { Overlay } from "@angular/cdk/overlay";
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DialogService } from "@bitwarden/components";
-import { SendFormGenerationService } from "@bitwarden/send-ui";
+import { DialogService } from "@localpass/components";
+import { SendFormGenerationService } from "@localpass/send-ui";
 
 import { BrowserSendGeneratorDialogComponent } from "../send-generator-dialog/send-generator-dialog.component";
 

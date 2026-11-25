@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/<%= name %>",
+  "name": "@localpass/<%= name %>",
   "version": "0.0.1",
   "description": "<%= description %>",
   "private": true,

@@ -1,6 +1,6 @@
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { getNestedFolderTree } from "@bitwarden/common/vault/utils/folder-utils";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
+import { getNestedFolderTree } from "@localpass/common/vault/utils/folder-utils";
 
 import { EMPTY_NAME_PLACEHOLDER } from "../models/folder-table-row";
 

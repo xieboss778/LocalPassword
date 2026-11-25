@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { html, nothing } from "lit";
 
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 import { InlineMenuCipherData } from "../../../background/abstractions/overlay.background";
 import { spacing, themes, typography } from "../constants/styles";

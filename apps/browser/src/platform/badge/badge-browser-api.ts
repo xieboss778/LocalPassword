@@ -12,8 +12,8 @@ import {
   switchMap,
 } from "rxjs";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { BrowserApi } from "../browser/browser-api";
 import { fromChromeEvent } from "../browser/from-chrome-event";
@@ -231,7 +231,7 @@ export class DefaultBadgeBrowserApi implements BadgeBrowserApi {
       this.sidebarAction.setBadgeText({ text, tabId });
     } else if (this.sidebarAction) {
       // Firefox
-      const title = `Bitwarden${Utils.isNullOrEmpty(text) ? "" : ` [${text}]`}`;
+      const title = `LocalPass${Utils.isNullOrEmpty(text) ? "" : ` [${text}]`}`;
       await this.sidebarAction.setTitle({ title, tabId });
     }
   }

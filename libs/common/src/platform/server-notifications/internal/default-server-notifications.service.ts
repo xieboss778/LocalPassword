@@ -13,8 +13,8 @@ import {
   tap,
 } from "rxjs";
 
-import { AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { PerfTrackGroup } from "@bitwarden/logging";
+import { AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { PerfTrackGroup } from "@localpass/logging";
 
 import { AccountInfo, AccountService } from "../../../auth/abstractions/account.service";
 import { AuthRequestAnsweringService } from "../../../auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";

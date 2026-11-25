@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { Identity as IdentityDomain } from "../../vault/models/domain/identity";
 import { IdentityView } from "../../vault/models/view/identity.view";

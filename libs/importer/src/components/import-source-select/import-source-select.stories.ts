@@ -1,10 +1,10 @@
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { of } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { I18nMockService } from "@bitwarden/components";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { I18nMockService } from "@localpass/components";
 
 import { ImportSourceSelectComponent } from "./import-source-select.component";
 

@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 
 import { NotificationTypes } from "../../../../notification/abstractions/notification-bar";
 import { getNotificationHeaderMessage, getNotificationTestId } from "../../../../notification/bar";

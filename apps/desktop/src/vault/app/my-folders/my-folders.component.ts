@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import {
   MyFoldersComponent as VaultMyFoldersComponent,
   VaultOrganizationUserNotificationsComponent,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { DesktopHeaderComponent } from "../../../app/layout/header";
 

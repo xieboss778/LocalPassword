@@ -1,9 +1,9 @@
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { GENERATOR_DISK } from "@bitwarden/common/platform/state";
-import { VendorId } from "@bitwarden/common/tools/extension";
-import { PrivateClassifier } from "@bitwarden/common/tools/private-classifier";
-import { IdentityConstraint } from "@bitwarden/common/tools/state/identity-state-constraint";
-import { ObjectKey } from "@bitwarden/common/tools/state/object-key";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { GENERATOR_DISK } from "@localpass/common/platform/state";
+import { VendorId } from "@localpass/common/tools/extension";
+import { PrivateClassifier } from "@localpass/common/tools/private-classifier";
+import { IdentityConstraint } from "@localpass/common/tools/state/identity-state-constraint";
+import { ObjectKey } from "@localpass/common/tools/state/object-key";
 
 import { Algorithm, AlgorithmsByType } from "./data";
 import { ProfileContext, ProfileMetadata } from "./profile-metadata";
@@ -51,7 +51,7 @@ describe("credential generator metadata utility functions", () => {
     });
 
     it("returns `false` when the algorithm is a forwarder extension", () => {
-      expect(isPasswordAlgorithm({ forwarder: "bitwarden" as VendorId })).toBe(false);
+      expect(isPasswordAlgorithm({ forwarder: "localpass" as VendorId })).toBe(false);
     });
   });
 
@@ -75,7 +75,7 @@ describe("credential generator metadata utility functions", () => {
     });
 
     it("returns `false` when the algorithm is a forwarder extension", () => {
-      expect(isUsernameAlgorithm({ forwarder: "bitwarden" as VendorId })).toBe(false);
+      expect(isUsernameAlgorithm({ forwarder: "localpass" as VendorId })).toBe(false);
     });
   });
 
@@ -99,7 +99,7 @@ describe("credential generator metadata utility functions", () => {
     });
 
     it("returns `true` when the algorithm is a forwarder extension", () => {
-      expect(isForwarderExtensionId({ forwarder: "bitwarden" as VendorId })).toBe(true);
+      expect(isForwarderExtensionId({ forwarder: "localpass" as VendorId })).toBe(true);
     });
   });
 
@@ -123,7 +123,7 @@ describe("credential generator metadata utility functions", () => {
     });
 
     it("returns `true` when the algorithm is a forwarder extension", () => {
-      expect(isEmailAlgorithm({ forwarder: "bitwarden" as VendorId })).toBe(true);
+      expect(isEmailAlgorithm({ forwarder: "localpass" as VendorId })).toBe(true);
     });
   });
 
@@ -146,19 +146,19 @@ describe("credential generator metadata utility functions", () => {
     });
 
     it("returns `true` when the algorithms refer to a forwarder with a matching vendor", () => {
-      const someVendor = { forwarder: "bitwarden" as VendorId };
-      const sameVendor = { forwarder: "bitwarden" as VendorId };
+      const someVendor = { forwarder: "localpass" as VendorId };
+      const sameVendor = { forwarder: "localpass" as VendorId };
       expect(isSameAlgorithm(someVendor, sameVendor)).toBe(true);
     });
 
     it("returns `false` when the algorithms refer to a forwarder with a different vendor", () => {
-      const someVendor = { forwarder: "bitwarden" as VendorId };
+      const someVendor = { forwarder: "localpass" as VendorId };
       const sameVendor = { forwarder: "bytewarden" as VendorId };
       expect(isSameAlgorithm(someVendor, sameVendor)).toBe(false);
     });
 
     it("returns `false` when the algorithms refer to a forwarder and a core algorithm", () => {
-      const someVendor = { forwarder: "bitwarden" as VendorId };
+      const someVendor = { forwarder: "localpass" as VendorId };
       // not an exhaustive list
       expect(isSameAlgorithm(someVendor, Algorithm.plusAddress)).toBe(false);
       expect(isSameAlgorithm(Algorithm.username, someVendor)).toBe(false);

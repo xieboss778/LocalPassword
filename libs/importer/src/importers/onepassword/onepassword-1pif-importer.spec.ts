@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { BankAccountType, CipherType, FieldType } from "@bitwarden/common/vault/enums";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { BankAccountType, CipherType, FieldType } from "@localpass/common/vault/enums";
 
 import { assertCustomFieldsStructure } from "../spec-data/importer-test-utils";
 import { BankAccountTestData } from "../spec-data/onepassword-1pif/bankaccount";

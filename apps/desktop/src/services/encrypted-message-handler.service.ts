@@ -2,20 +2,20 @@
 // @ts-strict-ignore
 import { firstValueFrom, switchMap } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 
 import { DecryptedCommandData } from "../models/native-messaging/decrypted-command-data";
 import { CredentialCreatePayload } from "../models/native-messaging/encrypted-message-payloads/credential-create-payload";

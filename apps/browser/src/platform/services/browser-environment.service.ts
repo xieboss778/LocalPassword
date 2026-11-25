@@ -2,11 +2,11 @@
 // @ts-strict-ignore
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { Region, RegionConfig } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { Region, RegionConfig } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { DefaultEnvironmentService } from "@localpass/common/platform/services/default-environment.service";
+import { StateProvider } from "@localpass/common/platform/state";
 
 import { GroupPolicyEnvironment } from "../../admin-console/types/group-policy-environment";
 import { devFlagEnabled, devFlagValue } from "../flags";

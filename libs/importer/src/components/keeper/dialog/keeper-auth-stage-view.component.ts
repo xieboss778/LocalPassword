@@ -9,8 +9,8 @@ import {
 } from "@angular/core";
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   CalloutModule,
   DialogModule,
@@ -21,7 +21,7 @@ import {
   RadioButtonModule,
   SpinnerComponent,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import {
   DeviceApprovalChannel,

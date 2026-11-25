@@ -1,14 +1,14 @@
 import { Observable, distinctUntilChanged, map, shareReplay, switchMap, takeUntil } from "rxjs";
 
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { BoundDependency } from "@bitwarden/common/tools/dependencies";
-import { ExtensionSite } from "@bitwarden/common/tools/extension";
-import { SemanticLogger } from "@bitwarden/common/tools/log";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
-import { anyComplete, memoizedMap, pin } from "@bitwarden/common/tools/rx";
-import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
-import { UserStateSubjectDependencyProvider } from "@bitwarden/common/tools/state/user-state-subject-dependency-provider";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { BoundDependency } from "@localpass/common/tools/dependencies";
+import { ExtensionSite } from "@localpass/common/tools/extension";
+import { SemanticLogger } from "@localpass/common/tools/log";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
+import { anyComplete, memoizedMap, pin } from "@localpass/common/tools/rx";
+import { UserStateSubject } from "@localpass/common/tools/state/user-state-subject";
+import { UserStateSubjectDependencyProvider } from "@localpass/common/tools/state/user-state-subject-dependency-provider";
 
 import {
   GeneratorMetadata,
@@ -222,7 +222,7 @@ export class GeneratorMetadataProvider {
    *  @returns a subject bound to the user's preferences
    *  @remarks Preferences determine which algorithms are used when generating a
    *   credential from a credential type (e.g. `PassX` or `Username`). Preferences
-   *   should not be used to hold navigation history. Use @bitwarden/generator-navigation
+   *   should not be used to hold navigation history. Use @localpass/generator-navigation
    *   instead.
    */
   preferences(

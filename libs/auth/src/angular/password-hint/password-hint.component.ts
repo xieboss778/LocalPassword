@@ -6,13 +6,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { LoginEmailServiceAbstraction } from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PasswordHintRequest } from "@bitwarden/common/auth/models/request/password-hint.request";
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { LoginEmailServiceAbstraction } from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { PasswordHintRequest } from "@localpass/common/auth/models/request/password-hint.request";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -20,9 +20,9 @@ import {
   ButtonModule,
   FormFieldModule,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "./password-hint.component.html",

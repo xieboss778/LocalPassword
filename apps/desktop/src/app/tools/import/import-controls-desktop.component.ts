@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   ImportStagingServiceAbstraction,
   ImportUpgradeMetadataServiceAbstraction,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 import {
   IMPORT_DESTINATION_SEGMENT,
   ImportControlsComponent,
@@ -13,9 +13,9 @@ import {
   importTypeFromRoute,
   navigateCarryingImportParams,
   SYSTEM_SERVICE_PROVIDER,
-} from "@bitwarden/importer-ui";
-import { safeProvider } from "@bitwarden/ui-common";
-import { vaultCommandsAfterImport } from "@bitwarden/vault";
+} from "@localpass/importer-ui";
+import { safeProvider } from "@localpass/ui-common";
+import { vaultCommandsAfterImport } from "@localpass/vault";
 
 import { DesktopImportUpgradeMetadataService } from "./desktop-import-upgrade-metadata.service";
 

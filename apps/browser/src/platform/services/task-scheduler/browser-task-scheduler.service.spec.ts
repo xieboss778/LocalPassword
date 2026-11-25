@@ -1,9 +1,9 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Observable } from "rxjs";
 
-import { ScheduledTaskNames } from "@bitwarden/common/platform/scheduling";
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { GlobalState, StateProvider } from "@bitwarden/common/platform/state";
+import { ScheduledTaskNames } from "@localpass/common/platform/scheduling";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
+import { GlobalState, StateProvider } from "@localpass/common/platform/state";
 
 import { flushPromises, triggerOnAlarmEvent } from "../../../autofill/spec/testing-utils";
 import {

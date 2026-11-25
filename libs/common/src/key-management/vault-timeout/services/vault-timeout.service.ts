@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { combineLatest, concatMap, firstValueFrom } from "rxjs";
 
-import { LockService, LockSource } from "@bitwarden/unlock";
+import { LockService, LockSource } from "@localpass/unlock";
 
 import { AccountService } from "../../../auth/abstractions/account.service";
 import { AuthService } from "../../../auth/abstractions/auth.service";

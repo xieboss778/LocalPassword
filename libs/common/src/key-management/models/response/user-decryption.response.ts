@@ -1,4 +1,4 @@
-import { CryptoSyncUserDecryption, KeyId } from "@bitwarden/sdk-internal";
+import { CryptoSyncUserDecryption, KeyId } from "@localpass/sdk-internal";
 
 import { WebAuthnPrfDecryptionOptionResponse } from "../../../auth/models/response/user-decryption-options/webauthn-prf-decryption-option.response";
 import { BaseResponse } from "../../../models/response/base.response";

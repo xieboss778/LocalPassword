@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { ComponentFixture, fakeAsync, flushMicrotasks, TestBed, tick } from "@angular/core/testing";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { AutofocusFallbackDirective } from "./autofocus-fallback.directive";
 

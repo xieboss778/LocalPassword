@@ -1,4 +1,4 @@
-import { Policy as SdkPolicy } from "@bitwarden/sdk-internal";
+import { Policy as SdkPolicy } from "@localpass/sdk-internal";
 
 import { ListResponse } from "../../../models/response/list.response";
 import Domain from "../../../platform/models/domain/domain-base";

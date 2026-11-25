@@ -1,1 +1,1 @@
-export { MigrationHelper } from "@bitwarden/state";
+export { MigrationHelper } from "@localpass/state";

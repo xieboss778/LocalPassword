@@ -1,7 +1,7 @@
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { BadgeModule } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { BadgeModule } from "@localpass/components";
 
 import { Discount, DiscountBadgeComponent, DiscountTypes } from "../..";
 

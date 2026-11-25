@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { CipherPermissions as SdkCipherPermissions } from "@bitwarden/sdk-internal";
+import { CipherPermissions as SdkCipherPermissions } from "@localpass/sdk-internal";
 
 import { BaseResponse } from "../../../models/response/base.response";
 

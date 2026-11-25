@@ -1,4 +1,4 @@
-import { UnexpectedIdentityError, SendAccessTokenApiErrorResponse } from "@bitwarden/sdk-internal";
+import { UnexpectedIdentityError, SendAccessTokenApiErrorResponse } from "@localpass/sdk-internal";
 
 /**
  * Represents the possible errors that can occur when retrieving a SendAccessToken.

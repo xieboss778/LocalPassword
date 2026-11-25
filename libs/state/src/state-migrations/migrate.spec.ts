@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
-import { AbstractStorageService } from "@bitwarden/storage-core";
+import { LogService } from "@localpass/logging";
+import { AbstractStorageService } from "@localpass/storage-core";
 
 import { currentVersion } from "./migrate";
 

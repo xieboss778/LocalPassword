@@ -11,18 +11,18 @@ import {
 import { outputFromObservable, toSignal } from "@angular/core/rxjs-interop";
 import { of, Subject } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { IconButtonModule } from "../icon-button";
 import { IconTileComponent } from "../icon-tile/icon-tile.component";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TypographyDirective } from "../typography/typography.directive";
 
 export type BannerVariant = "primary" | "success" | "warning" | "danger";
 
-const defaultIcon: Record<BannerVariant, BitwardenIcon> = {
+const defaultIcon: Record<BannerVariant, LocalPassIcon> = {
   primary: "bwi-info-circle",
   success: "bwi-star",
   warning: "bwi-exclamation-triangle",
@@ -101,7 +101,7 @@ export class BannerComponent implements OnInit {
    * The icon to display. If not provided, a default icon based on variant will be used.
    * Explicitly passing null will remove the icon.
    */
-  readonly icon = input<BitwardenIcon | null>();
+  readonly icon = input<LocalPassIcon | null>();
 
   /**
    * Whether to use ARIA alert role for screen readers.

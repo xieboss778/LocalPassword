@@ -3,28 +3,28 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { firstValueFrom, of, throwError } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { PremiumCheckoutPendingService } from "@bitwarden/common/billing/abstractions/account/premium-checkout-pending.service";
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
-import { SubscriptionPricingServiceAbstraction } from "@bitwarden/common/billing/abstractions/subscription-pricing.service.abstraction";
-import { PremiumCheckoutSessionResponse } from "@bitwarden/common/billing/models/response/premium-checkout-session.response";
+import { ClientType } from "@localpass/client-type";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { PremiumCheckoutPendingService } from "@localpass/common/billing/abstractions/account/premium-checkout-pending.service";
+import { BillingApiServiceAbstraction } from "@localpass/common/billing/abstractions/billing-api.service.abstraction";
+import { SubscriptionPricingServiceAbstraction } from "@localpass/common/billing/abstractions/subscription-pricing.service.abstraction";
+import { PremiumCheckoutSessionResponse } from "@localpass/common/billing/models/response/premium-checkout-session.response";
 import {
   PersonalSubscriptionPricingTier,
   PersonalSubscriptionPricingTierIds,
   SubscriptionCadenceIds,
-} from "@bitwarden/common/billing/types/subscription-pricing-tier";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+} from "@localpass/common/billing/types/subscription-pricing-tier";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   EnvironmentService,
   Region,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogRef, ToastService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogRef, ToastService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 import { PremiumUpgradeDialogComponent } from "./premium-upgrade-dialog.component";
 
@@ -95,7 +95,7 @@ describe("PremiumUpgradeDialogComponent", () => {
 
     mockEnvironmentService = {
       environment$: of({
-        getWebVaultUrl: () => "https://vault.bitwarden.com",
+        getWebVaultUrl: () => "https://vault.local.invalid",
         getRegion: () => Region.US,
         isCloud: () => true,
       }),
@@ -208,7 +208,7 @@ describe("PremiumUpgradeDialogComponent", () => {
         );
         expect(mockBillingApiService.createPremiumCheckoutSession).not.toHaveBeenCalled();
         expect(mockPlatformUtilsService.launchUri).toHaveBeenCalledWith(
-          "https://vault.bitwarden.com/#/settings/subscription/premium?callToAction=upgradeToPremium",
+          "https://vault.local.invalid/#/settings/subscription/premium?callToAction=upgradeToPremium",
         );
         expect(mockDialogRef.close).toHaveBeenCalled();
       });
@@ -315,7 +315,7 @@ describe("PremiumUpgradeDialogComponent", () => {
 
         expect(mockBillingApiService.createPremiumCheckoutSession).not.toHaveBeenCalled();
         expect(mockPlatformUtilsService.launchUri).toHaveBeenCalledWith(
-          "https://vault.bitwarden.com/#/settings/subscription/premium?callToAction=upgradeToPremium",
+          "https://vault.local.invalid/#/settings/subscription/premium?callToAction=upgradeToPremium",
         );
         expect(mockDialogRef.close).toHaveBeenCalled();
       });

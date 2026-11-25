@@ -1,6 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { FlightRecorderClient, LogLevel as SdkLogLevel } from "@bitwarden/sdk-internal";
+import { FlightRecorderClient, LogLevel as SdkLogLevel } from "@localpass/sdk-internal";
 
 import { FlightRecorderLogRecorder } from "./flight-recorder-log-recorder";
 import { LogLevel } from "./log-level";

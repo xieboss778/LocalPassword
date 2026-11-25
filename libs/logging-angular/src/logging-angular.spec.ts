@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 
-import { FlightRecorder, FlightRecorderLogRecorder } from "@bitwarden/logging";
+import { FlightRecorder, FlightRecorderLogRecorder } from "@localpass/logging";
 
 import { FlightRecorderLogRecorderService, FlightRecorderService } from "./index";
 

@@ -1,28 +1,28 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
-import { DefaultSetInitialPasswordService } from "@bitwarden/angular/auth/password-management/set-initial-password/default-set-initial-password.service.implementation";
+import { OrganizationUserApiService } from "@localpass/admin-console/common";
+import { DefaultSetInitialPasswordService } from "@localpass/angular/auth/password-management/set-initial-password/default-set-initial-password.service.implementation";
 import {
   InitializeJitPasswordCredentials,
   SetInitialPasswordService,
   SetInitialPasswordTdeUserWithPermissionCredentials,
-} from "@bitwarden/angular/auth/password-management/set-initial-password/set-initial-password.service.abstraction";
-import { FakeUserDecryptionOptions as InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { MasterPasswordApiService } from "@bitwarden/common/auth/abstractions/master-password-api.service.abstraction";
-import { SsoJitProvisionFinishService } from "@bitwarden/common/auth/sso-jit-provision-finish";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { MasterPasswordSalt } from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { newGuid } from "@bitwarden/guid";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+} from "@localpass/angular/auth/password-management/set-initial-password/set-initial-password.service.abstraction";
+import { FakeUserDecryptionOptions as InternalUserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { MasterPasswordApiService } from "@localpass/common/auth/abstractions/master-password-api.service.abstraction";
+import { SsoJitProvisionFinishService } from "@localpass/common/auth/sso-jit-provision-finish";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { MasterPasswordSalt } from "@localpass/common/key-management/master-password/types/master-password.types";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { newGuid } from "@localpass/guid";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { DEFAULT_KDF_CONFIG, EncryptService } from "@bitwarden/legacy-crypto";
-import { UnlockService } from "@bitwarden/unlock";
+import { DEFAULT_KDF_CONFIG, EncryptService } from "@localpass/legacy-crypto";
+import { UnlockService } from "@localpass/unlock";
 
 import { DesktopSetInitialPasswordService } from "./desktop-set-initial-password.service";
 

@@ -7,11 +7,11 @@ import {
   input,
 } from "@angular/core";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { IconComponent } from "../icon";
 import { IconTileComponent } from "../icon-tile";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TypographyDirective } from "../typography/typography.directive";
 
 import { FormControlBaseDirective } from "./form-control-base.directive";
@@ -37,7 +37,7 @@ import { BitLabelComponent } from "./label.component";
   imports: [TypographyDirective, I18nPipe, IconTileComponent, IconComponent],
 })
 export class FormControlCardComponent {
-  protected readonly icon = input<BitwardenIcon>();
+  protected readonly icon = input<LocalPassIcon>();
 
   /** Native tooltip text for the card. Defaults to the projected label's text. */
   readonly title = input<string>();

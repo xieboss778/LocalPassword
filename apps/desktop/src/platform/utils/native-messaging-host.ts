@@ -1,4 +1,4 @@
-import type { OutgoingMessage } from "@bitwarden/sdk-internal";
+import type { OutgoingMessage } from "@localpass/sdk-internal";
 
 export type NativeMessagingHost = { id: string | { Id: number } };
 

@@ -1,4 +1,4 @@
-import { isIpcMessage, reconstructIpcMessage } from "@bitwarden/common/platform/ipc/ipc-message";
+import { isIpcMessage, reconstructIpcMessage } from "@localpass/common/platform/ipc/ipc-message";
 
 const IPC_CONTENT_SCRIPT_PORT_NAME = "ipc-content-script-port";
 
@@ -93,13 +93,13 @@ function teardown() {
 // This keeps exactly one set of listeners and one port alive, avoiding the
 // duplicate IPC message delivery that stacked listeners would cause.
 const ipcWindow = window as Window & {
-  __bitwardenIpcContentScript?: { teardown: () => void };
+  __localpassIpcContentScript?: { teardown: () => void };
 };
 
-ipcWindow.__bitwardenIpcContentScript?.teardown();
+ipcWindow.__localpassIpcContentScript?.teardown();
 
 window.addEventListener("message", handleWindowMessage);
 addRuntimeMessageListener();
 setupExtensionDisconnectAction(teardown);
 
-ipcWindow.__bitwardenIpcContentScript = { teardown };
+ipcWindow.__localpassIpcContentScript = { teardown };

@@ -4,19 +4,19 @@ import { firstValueFrom, map, Observable, Subject, switchMap } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { measured, PerfTrackGroup } from "@bitwarden/logging";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { measured, PerfTrackGroup } from "@localpass/logging";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import { AccountService } from "../../../auth/abstractions/account.service";
 import { DeviceResponse } from "../../../auth/abstractions/devices/responses/device.response";

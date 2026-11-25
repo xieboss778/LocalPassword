@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   ButtonComponent,
   DIALOG_DATA,
@@ -8,8 +8,8 @@ import {
   DialogRef,
   DialogService,
   IconComponent,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * Marker substituted for the folder-name placeholder so the localized sentence

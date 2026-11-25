@@ -1,7 +1,7 @@
 import type { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { unsafeUrlReason } from "@bitwarden/common/tools/url-safety";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { unsafeUrlReason } from "@localpass/common/tools/url-safety";
 
 /**
  * Rejects a self-hosted forwarder base URL that can't be parsed as a url at all.

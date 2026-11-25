@@ -1,11 +1,11 @@
-import { IntegrationRequest } from "@bitwarden/common/tools/integration/rpc";
+import { IntegrationRequest } from "@localpass/common/tools/integration/rpc";
 import {
   ForwarderId,
   CatchallGenerationOptions,
   EffUsernameGenerationOptions,
   SubaddressGenerationOptions,
   UsernameGeneratorType,
-} from "@bitwarden/generator-core";
+} from "@localpass/generator-core";
 
 export type UsernameGeneratorOptions = EffUsernameGenerationOptions &
   SubaddressGenerationOptions &

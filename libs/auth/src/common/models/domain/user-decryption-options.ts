@@ -2,10 +2,10 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
-import { KeyConnectorUserDecryptionOptionResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/key-connector-user-decryption-option.response";
-import { TrustedDeviceUserDecryptionOptionResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/trusted-device-user-decryption-option.response";
-import { WebAuthnPrfDecryptionOptionResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/webauthn-prf-decryption-option.response";
+import { IdentityTokenResponse } from "@localpass/common/auth/models/response/identity-token.response";
+import { KeyConnectorUserDecryptionOptionResponse } from "@localpass/common/auth/models/response/user-decryption-options/key-connector-user-decryption-option.response";
+import { TrustedDeviceUserDecryptionOptionResponse } from "@localpass/common/auth/models/response/user-decryption-options/trusted-device-user-decryption-option.response";
+import { WebAuthnPrfDecryptionOptionResponse } from "@localpass/common/auth/models/response/user-decryption-options/webauthn-prf-decryption-option.response";
 
 /**
  * Key Connector decryption options. Intended to be sent to the client for use after authentication.

@@ -1,16 +1,16 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { devFlagEnabled, flagEnabled } from "@bitwarden/common/platform/misc/flags";
-import { GlobalState, StateProvider } from "@bitwarden/common/platform/state";
+import { devFlagEnabled, flagEnabled } from "@localpass/common/platform/misc/flags";
+import { GlobalState, StateProvider } from "@localpass/common/platform/state";
 
 import { BrowserApi } from "../browser/browser-api";
 import { ExtensionInstallType } from "../browser/extension-install-type";
 
 import BrowserInitialInstallService from "./browser-initial-install.service";
 
-jest.mock("@bitwarden/common/platform/misc/flags", () => ({
-  ...jest.requireActual("@bitwarden/common/platform/misc/flags"),
+jest.mock("@localpass/common/platform/misc/flags", () => ({
+  ...jest.requireActual("@localpass/common/platform/misc/flags"),
   devFlagEnabled: jest.fn(),
   flagEnabled: jest.fn(),
 }));
@@ -52,7 +52,7 @@ describe("BrowserInitialInstallService", () => {
       await service.displayWelcomePage();
 
       expect(createNewTabSpy).toHaveBeenCalledTimes(1);
-      expect(createNewTabSpy).toHaveBeenCalledWith("https://bitwarden.com/browser-start/");
+      expect(createNewTabSpy).toHaveBeenCalledWith("https://local.invalid/browser-start/");
     });
 
     it.each([

@@ -1,4 +1,4 @@
-import { BILLING_MEMORY, UserKeyDefinition } from "@bitwarden/state";
+import { BILLING_MEMORY, UserKeyDefinition } from "@localpass/state";
 
 import { PremiumCheckoutPending } from "../../abstractions/account/premium-checkout-pending.service";
 

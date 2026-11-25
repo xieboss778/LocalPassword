@@ -2,30 +2,30 @@ import { Component, computed, inject, input, OnDestroy, OnInit, output } from "@
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ClientType } from "@bitwarden/client-type";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserKey } from "@bitwarden/common/types/key";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ClientType } from "@localpass/client-type";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserKey } from "@localpass/common/types/key";
 import {
   AsyncActionsModule,
   ButtonModule,
   FormFieldModule,
   IconButtonModule,
   ToastService,
-} from "@bitwarden/components";
-import { BiometricsStatus, KeyService } from "@bitwarden/key-management";
-import { LogService } from "@bitwarden/logging";
-import { CommandDefinition, MessageListener } from "@bitwarden/messaging";
-import { UnlockService } from "@bitwarden/unlock";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/components";
+import { BiometricsStatus, KeyService } from "@localpass/key-management";
+import { LogService } from "@localpass/logging";
+import { CommandDefinition, MessageListener } from "@localpass/messaging";
+import { UnlockService } from "@localpass/unlock";
+import { UserId } from "@localpass/user-core";
 
 import { UnlockOptions } from "../../services/lock-component.service";
 import { UnlockViaPrfComponent } from "../unlock-via-prf.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "bit-master-password-lock",

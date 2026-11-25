@@ -3,7 +3,7 @@ import {
   EVENTS,
   MAX_DEEP_QUERY_RECURSION_DEPTH,
   SHADOW_ROOT_CANDIDATE_NODE_NAMES,
-} from "@bitwarden/common/autofill/constants";
+} from "@localpass/common/autofill/constants";
 
 import { nodeIsElement } from "../utils";
 

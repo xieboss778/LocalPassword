@@ -1,29 +1,29 @@
 import { filter, firstValueFrom, of, timeout } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
+import { CollectionService } from "@localpass/admin-console/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import {
   CommandDefinition,
   MessageListener,
   MessageSender,
-} from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { StateProvider } from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { StateProvider } from "@localpass/common/platform/state";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CoreSyncService } from "@bitwarden/common/platform/sync/internal";
-import { SyncOptions } from "@bitwarden/common/platform/sync/sync.service";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { InternalSendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
-import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { CoreSyncService } from "@localpass/common/platform/sync/internal";
+import { SyncOptions } from "@localpass/common/platform/sync/sync.service";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { InternalSendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder-api.service.abstraction";
+import { InternalFolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 
 import { FULL_SYNC_FINISHED } from "./sync-service.listener";
 

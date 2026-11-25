@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import Domain from "../../../../platform/models/domain/domain-base";
 import { SendItemMetadataData } from "../data/send-item-metadata.data";

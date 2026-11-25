@@ -54,7 +54,7 @@ function buildConfig(): Config {
   return {
     port: cli.port ?? parseInt(process.env.RPE_PORT ?? "8000", 10),
     backendUrl: cli.backendUrl ?? process.env.RPE_BACKEND_URL ?? "https://localhost:8080",
-    cookieName: cli.cookieName ?? process.env.RPE_COOKIE_NAME ?? "BitwardenLoadBalancerCookie",
+    cookieName: cli.cookieName ?? process.env.RPE_COOKIE_NAME ?? "LocalPassLoadBalancerCookie",
     cookieMaxAge: cli.cookieMaxAge ?? parseInt(process.env.RPE_COOKIE_MAX_AGE ?? "86400", 10),
     insecure: cli.insecure ?? false,
   };
@@ -211,7 +211,7 @@ const pem = loadTlsPem();
 let cookieGeneration = 0;
 
 // Extend (not replace) the default CA bundle with our self-signed cert so that both
-// localhost dev servers and public backends (e.g. vault.bitwarden.com) are trusted.
+// localhost dev servers and public backends (e.g. vault.local.invalid) are trusted.
 // --insecure skips verification entirely for backends with unknown certs.
 const backendAgent = config.backendUrl.startsWith("https://")
   ? new https.Agent(

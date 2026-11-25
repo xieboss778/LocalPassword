@@ -2,11 +2,11 @@ import { DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherHealthView } from "@bitwarden/common/dirt/models/view";
-import { RiskCategory } from "@bitwarden/common/dirt/vault-health/models";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherHealthView } from "@localpass/common/dirt/models/view";
+import { RiskCategory } from "@localpass/common/dirt/vault-health/models";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import {
   DialogModule,
   ButtonModule,
@@ -14,8 +14,8 @@ import {
   ToastService,
   TypographyModule,
   AsyncActionsModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { HealthAdditionalRisksComponent } from "../health-additional-risks/health-additional-risks.component";
 

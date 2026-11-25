@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
 
 import { POPUP_THEME_STORAGE_KEY } from "../../browser/popup-view";
 

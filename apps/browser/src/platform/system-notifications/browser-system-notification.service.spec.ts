@@ -1,9 +1,9 @@
-import { DeviceType } from "@bitwarden/common/enums";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { DeviceType } from "@localpass/common/enums";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   ButtonLocation,
   SystemNotificationCreateInfo,
-} from "@bitwarden/common/platform/system-notifications/system-notifications.service";
+} from "@localpass/common/platform/system-notifications/system-notifications.service";
 
 import { BrowserSystemNotificationService } from "./browser-system-notification.service";
 

@@ -7,8 +7,8 @@ import {
   ActiveUserStateProvider,
   SingleUserStateProvider,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 import { ActiveUserAccessor } from "./active-user.accessor";
 import { DefaultActiveUserState } from "./default-active-user-state";

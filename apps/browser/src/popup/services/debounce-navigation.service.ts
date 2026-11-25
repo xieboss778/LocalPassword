@@ -10,7 +10,7 @@ import { filter, pairwise } from "rxjs/operators";
  * unexpectedly.
  * Specifically, this is used to avoid data loss when navigating from the password generator component back to the
  * add/edit cipher component in browser.
- * For more information, see https://github.com/bitwarden/clients/pull/1935
+ * For more information, see https://github.com/xieboss778/LocalPassword/pull/1935
  */
 export function debounceNavigationGuard(): CanActivateFn {
   return async () => {

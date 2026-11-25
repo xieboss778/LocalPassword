@@ -10,22 +10,22 @@ import {
 } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService, OrganizationUserApiService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { OrganizationUserStatusType, PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { getById } from "@bitwarden/common/platform/misc";
-import { OrganizationId, CollectionId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+import { CollectionService, OrganizationUserApiService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { OrganizationUserStatusType, PolicyType } from "@localpass/common/admin-console/enums";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { getById } from "@localpass/common/platform/misc";
+import { OrganizationId, CollectionId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
+import { DialogService, ToastService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 import {
   VaultItemsTransferService,

@@ -10,22 +10,22 @@ import {
   switchMap,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import {
   hasOptedInToHTTPAuthentication,
   isEligibleForHTTPAuthentication,
-} from "@bitwarden/common/autofill/utils/http-authentication-eligibility";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { devFlagEnabled } from "@bitwarden/common/platform/misc/flags";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+} from "@localpass/common/autofill/utils/http-authentication-eligibility";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { devFlagEnabled } from "@localpass/common/platform/misc/flags";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { CipherUse, FillCipherPolicy } from "../services/abstractions/fill-cipher-policy";
 

@@ -6,10 +6,10 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { ButtonModule } from "@bitwarden/components";
-import { CipherAttachmentsComponent } from "@bitwarden/vault";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CipherId } from "@localpass/common/types/guid";
+import { ButtonModule } from "@localpass/components";
+import { CipherAttachmentsComponent } from "@localpass/vault";
 
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
@@ -17,7 +17,7 @@ import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup
 import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-page.component";
 import { PopupRouterCacheService } from "../../../../../platform/popup/view-cache/popup-router-cache.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-attachments",

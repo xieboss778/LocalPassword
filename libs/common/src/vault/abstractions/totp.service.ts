@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { TotpResponse } from "@bitwarden/sdk-internal";
+import { TotpResponse } from "@localpass/sdk-internal";
 
 export abstract class TotpService {
   /**

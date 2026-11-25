@@ -1,11 +1,11 @@
 import { ipcRenderer, IpcRendererEvent } from "electron";
 
-import { DeviceType } from "@bitwarden/common/enums";
-import { ThemeType, LogLevelType } from "@bitwarden/common/platform/enums";
-import { ForwardedIpcMessage, IpcMessage } from "@bitwarden/common/platform/ipc";
-import { Message as PlatformMessage } from "@bitwarden/common/platform/messaging";
+import { DeviceType } from "@localpass/common/enums";
+import { ThemeType, LogLevelType } from "@localpass/common/platform/enums";
+import { ForwardedIpcMessage, IpcMessage } from "@localpass/common/platform/ipc";
+import { Message as PlatformMessage } from "@localpass/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import {
   allowBrowserintegrationOverride,

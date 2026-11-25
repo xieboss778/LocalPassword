@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 
 import { ImportDestinations } from "../models/import-destination";
 import { ImportResult } from "../models/import-result";

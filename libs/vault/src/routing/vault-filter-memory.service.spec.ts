@@ -6,14 +6,14 @@ import { NavigationEnd, provideRouter, Router } from "@angular/router";
 import {
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/../spec/fake-account-service";
-import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+} from "@localpass/common/../spec/fake-account-service";
+import { FakeStateProvider } from "@localpass/common/../spec/fake-state-provider";
 import { filter, firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { ALL_ITEMS_SCOPE, MY_VAULT_ROUTE, scopeKey, VaultScopeType } from "../models/vault-scope";
 

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
 
-import { ButtonModule, DIALOG_DATA, DialogModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { ButtonModule, DIALOG_DATA, DialogModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { TotpQrComponent } from "../../components/totp-qr/totp-qr.component";
 

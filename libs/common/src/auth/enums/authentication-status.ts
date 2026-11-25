@@ -4,7 +4,7 @@
  * See `AuthService.authStatusFor$` for details on how we determine the user's `AuthenticationStatus`
  */
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum AuthenticationStatus {
   /**
    * User is not authenticated

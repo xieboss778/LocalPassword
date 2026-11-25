@@ -3,7 +3,7 @@ import { TextEncoder } from "util";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { SdkRandomNumberClient } from "@bitwarden/sdk-internal";
+import { SdkRandomNumberClient } from "@localpass/sdk-internal";
 
 import { mockAccountServiceWith, mockAccountInfoWith } from "../../../../spec";
 import { Account } from "../../../auth/abstractions/account.service";
@@ -37,7 +37,7 @@ import { Fido2Utils } from "./fido2-utils";
 
 type ParentWindowReference = string;
 
-const RpId = "bitwarden.com";
+const RpId = "local.invalid";
 
 describe("FidoAuthenticatorService", () => {
   const userId = "testId" as UserId;
@@ -430,12 +430,12 @@ describe("FidoAuthenticatorService", () => {
       return {
         hash: params.hash ?? (await createClientDataHash()),
         rpEntity: params.rpEntity ?? {
-          name: "Bitwarden",
+          name: "LocalPass",
           id: RpId,
         },
         userEntity: params.userEntity ?? {
           id: randomBytes(64),
-          name: "jane.doe@bitwarden.com",
+          name: "jane.doe@local.invalid",
           displayName: "Jane Doe",
           icon: " data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAOhJREFUeNpiFI+9E8DAwDAfiAUYSAMfgDiQBVmzlSYnUTqPXf/OANWzngVZ87pKKaIMCGp/BjeEhRjFMKAjx8bQFC2CIs9CpHNxAiYGCsEQM4Cfiwm3AY9f/yZogIcRN4ZahAFv/jAcu4E7xMNtecEYpAakFqsX8me9Yvj07R+G5jR3foaJqWJgOZAaZMAIzAv/kQV05NgZ5hdIMMiKQJIIyEYrDU6wrYkTXjBcefQTvwGwwCoJFGJIBdoMArN3fmToWf+O4SMW14EMeI8rJ8Jcgexn9BwJCoNEaNbEACCN+DSDsjNAgAEAri9Zii/uDMsAAAAASUVORK5CYII=",
         },

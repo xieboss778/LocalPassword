@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { FSecureFskImporter as Importer } from "./fsecure-fsk-importer";
 import { CreditCardTestEntry, LoginTestEntry } from "./fsk-test-data";

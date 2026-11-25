@@ -14,33 +14,33 @@ import {
   combineLatest,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { Send } from "@bitwarden/common/tools/send/models/domain/send";
-import { SendFileView } from "@bitwarden/common/tools/send/models/view/send-file.view";
-import { SendTextView } from "@bitwarden/common/tools/send/models/view/send-text.view";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { SendDecryptionService } from "@bitwarden/common/tools/send/services/send-decryption.service";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { Send } from "@localpass/common/tools/send/models/domain/send";
+import { SendFileView } from "@localpass/common/tools/send/models/view/send-file.view";
+import { SendTextView } from "@localpass/common/tools/send/models/view/send-text.view";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { SendDecryptionService } from "@localpass/common/tools/send/services/send-decryption.service";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { DialogService, ToastService } from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer } from "@bitwarden/legacy-crypto";
-import { SendPolicyService } from "@bitwarden/send-ui";
+import { EncArrayBuffer } from "@localpass/legacy-crypto";
+import { SendPolicyService } from "@localpass/send-ui";
 
 // Value = hours
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 enum DatePreset {
   OneHour = 1,
   OneDay = 24,
@@ -59,20 +59,20 @@ interface DatePresetSelectOption {
 
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() sendId: string;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() type: SendType;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onSavedSend = new EventEmitter<SendView>();
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onDeletedSend = new EventEmitter<SendView>();
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onCancelled = new EventEmitter<SendView>();
 

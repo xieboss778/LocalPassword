@@ -2,15 +2,15 @@ import { Injectable, inject } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@localpass/admin-console/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 
 export type BulkDeleteCiphersParams = {
   cipherIds: string[];

@@ -4,7 +4,7 @@ import { FormGroup } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { KeeperInlineAuthUi } from "./direct/keeper/keeper-inline-auth-ui";
 import { LastPassInlineAuthUi } from "./direct/lastpass/lastpass-inline-auth-ui";

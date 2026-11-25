@@ -5,8 +5,8 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { ButtonModule } from "../button";
 import { DialogModule, DialogService } from "../dialog";

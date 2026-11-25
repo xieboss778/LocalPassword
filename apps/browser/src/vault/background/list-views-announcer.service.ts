@@ -1,8 +1,8 @@
 import { EMPTY, filter, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { MessageSender } from "@bitwarden/common/platform/messaging";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { MessageSender } from "@localpass/common/platform/messaging";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 
 import { CIPHER_LIST_VIEWS_CHANGED } from "../services/foreground-cipher.service";
 

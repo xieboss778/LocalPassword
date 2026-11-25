@@ -1,4 +1,4 @@
-import { EVENTS, TYPE_CHECK } from "@bitwarden/common/autofill/constants";
+import { EVENTS, TYPE_CHECK } from "@localpass/common/autofill/constants";
 
 import AutofillScript, {
   AutofillInsertActions,
@@ -299,8 +299,8 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
       return;
     }
 
-    element.classList.add("com-bitwarden-browser-animated-fill");
-    setTimeout(() => element.classList.remove("com-bitwarden-browser-animated-fill"), 200);
+    element.classList.add("com-localpass-browser-animated-fill");
+    setTimeout(() => element.classList.remove("com-localpass-browser-animated-fill"), 200);
   }
 
   /**

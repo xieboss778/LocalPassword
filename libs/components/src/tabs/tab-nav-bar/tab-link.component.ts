@@ -20,7 +20,7 @@ import { IsActiveMatchOptions, Params, RouterLinkActive, RouterModule } from "@a
 import { BerryComponent } from "../../berry";
 import { IconModule } from "../../icon";
 import { OverflowItemDirective } from "../../overflow-list";
-import type { BitwardenIcon } from "../../shared/icon";
+import type { LocalPassIcon } from "../../shared/icon";
 import { TAB_LABEL_CONTENT_CLASSES, TabListItemDirective } from "../shared/tab-list-item.directive";
 
 import { TabNavBarComponent } from "./tab-nav-bar.component";
@@ -69,8 +69,8 @@ export class TabLinkComponent implements FocusableOption, AfterViewInit {
   readonly queryParams = input<Params>();
   readonly label = input<string>();
   readonly berryValue = input<number>();
-  readonly startIcon = input<BitwardenIcon>();
-  readonly endIcon = input<BitwardenIcon>();
+  readonly startIcon = input<LocalPassIcon>();
+  readonly endIcon = input<LocalPassIcon>();
 
   readonly disabledInput = input(false, { alias: "disabled", transform: booleanAttribute });
 

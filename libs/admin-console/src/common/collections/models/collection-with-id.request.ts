@@ -1,4 +1,4 @@
-import { Collection } from "@bitwarden/common/admin-console/models/collections";
+import { Collection } from "@localpass/common/admin-console/models/collections";
 
 import { BaseCollectionRequest } from "./collection.request";
 

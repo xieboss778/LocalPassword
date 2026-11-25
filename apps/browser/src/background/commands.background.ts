@@ -2,19 +2,19 @@
 // @ts-strict-ignore
 import { filter, firstValueFrom, Observable } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ExtensionCommand, ExtensionCommandType } from "@bitwarden/common/autofill/constants";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ExtensionCommand, ExtensionCommandType } from "@localpass/common/autofill/constants";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   IntraprocessMessageSender,
   isExternalMessage,
   MessageListener,
-} from "@bitwarden/common/platform/messaging";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { LockService, LockSource } from "@bitwarden/unlock";
+} from "@localpass/common/platform/messaging";
+import { CipherType } from "@localpass/common/vault/enums";
+import { LockService, LockSource } from "@localpass/unlock";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports

@@ -13,20 +13,20 @@ import {
   timer,
 } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { TargetingRulesByDomain } from "@bitwarden/common/autofill/types";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ScheduledTaskNames, TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { TargetingRulesByDomain } from "@localpass/common/autofill/types";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ScheduledTaskNames, TaskSchedulerService } from "@localpass/common/platform/scheduling";
 import {
   DOMAIN_SETTINGS_DISK,
   GlobalState,
   GlobalStateProvider,
   KeyDefinition,
-} from "@bitwarden/state";
+} from "@localpass/state";
 
 /** Client-owned manifest filename, resolved against the resource base URL */
 const MANIFEST_FILENAME = "manifest.json";

@@ -6,7 +6,7 @@
  *
  * A source key that already contains a `.` is emitted verbatim, so `{ "a.b": 1 }` and
  * `{ a: { b: 1 } }` collapse to one key. No escape syntax is defined, because every consumer and
- * the SDK would have to mirror it and no Bitwarden key has a dot inside a segment.
+ * the SDK would have to mirror it and no LocalPass key has a dot inside a segment.
  *
  * Total by design: no input shape throws, so a client's boot-path acquisition cannot fail here
  */

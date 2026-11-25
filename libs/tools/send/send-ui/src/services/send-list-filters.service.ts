@@ -4,11 +4,11 @@ import { Injectable } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { map, Observable, startWith } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { BitwardenIcon, ChipFilterOption } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { ITreeNodeObject, TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { LocalPassIcon, ChipFilterOption } from "@localpass/components";
 
 export type SendListFilter = {
   sendType: SendType | null;
@@ -86,7 +86,7 @@ export class SendListFiltersService {
    */
   private convertToChipFilterOption<T extends ITreeNodeObject>(
     item: TreeNode<T>,
-    icon: BitwardenIcon,
+    icon: LocalPassIcon,
   ): ChipFilterOption<T> {
     return {
       value: item.node,

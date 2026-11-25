@@ -3,15 +3,15 @@ import { Component, Input, OnInit, computed, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { of } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ButtonType, IconButtonModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ButtonType, IconButtonModule } from "@localpass/components";
 
 import BrowserPopupUtils from "../../browser/browser-popup-utils";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-pop-out",
@@ -19,7 +19,7 @@ import BrowserPopupUtils from "../../browser/browser-popup-utils";
   imports: [CommonModule, JslibModule, IconButtonModule],
 })
 export class PopOutComponent implements OnInit {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() show = true;
 

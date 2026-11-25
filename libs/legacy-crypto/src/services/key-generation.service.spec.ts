@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { SdkRandomNumberClient } from "@bitwarden/sdk-internal";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { SdkRandomNumberClient } from "@localpass/sdk-internal";
 
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { EncryptionType } from "../enums/encryption-type.enum";

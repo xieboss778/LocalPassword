@@ -12,7 +12,7 @@ if (
   process.argv.some((arg) => arg.indexOf("chrome-extension://") !== -1 || arg.indexOf("{") !== -1)
 ) {
   // If we're on MacOS, we need to support DuckDuckGo's IPC communication,
-  // which for the moment is launching the Bitwarden process.
+  // which for the moment is launching the LocalPass process.
   // Ideally the browser would instead startup the desktop_proxy process
   // when available, but for now we'll just launch it here.
 

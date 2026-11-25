@@ -1,11 +1,11 @@
-# @bitwarden/nx-plugin
+# @localpass/nx-plugin
 
-The `@bitwarden/nx-plugin` library is a custom Nx plugin developed specifically for Bitwarden projects. It
-provides generators tailored to Bitwarden's architecture and coding standards.
+The `@localpass/nx-plugin` library is a custom Nx plugin developed specifically for LocalPass projects. It
+provides generators tailored to LocalPass's architecture and coding standards.
 
 ## Overview
 
-This plugin extends Nx's capabilities with Bitwarden-specific **nx generators** that help maintain
+This plugin extends Nx's capabilities with LocalPass-specific **nx generators** that help maintain
 consistency across the codebase.
 
 ### What are Nx Generators?
@@ -30,11 +30,11 @@ Use generators when:
 - You need to automate repetitive setup tasks
 - You want to reduce the chance of human error in project setup
 
-## How `@bitwarden/nx-plugin` Fits Into the Project Architecture
+## How `@localpass/nx-plugin` Fits Into the Project Architecture
 
-`@bitwarden/nx-plugin` is designed to:
+`@localpass/nx-plugin` is designed to:
 
-1. Enforce Bitwarden's architectural decisions and code organization
+1. Enforce LocalPass's architectural decisions and code organization
 2. Streamline the creation of new libraries and components
 3. Ensure consistent configuration across the project
 4. Automate updates to project metadata and configuration files
@@ -60,7 +60,7 @@ The plugin currently includes the following generators:
 
 - `basic-lib`: Creates a new library with standard configuration and structure. Specific documentation for the `basic-lib` generator can be found [here](./docs/using-the-basic-lib-generator.md)
 
-Additional generators may be added in the future to support other common patterns in the Bitwarden
+Additional generators may be added in the future to support other common patterns in the LocalPass
 codebase.
 
 ## Creating A Nx Generator

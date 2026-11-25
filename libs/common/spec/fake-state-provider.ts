@@ -6,4 +6,4 @@ export {
   FakeActiveUserStateProvider,
   FakeStateProvider,
   FakeDerivedStateProvider,
-} from "@bitwarden/state-test-utils";
+} from "@localpass/state-test-utils";

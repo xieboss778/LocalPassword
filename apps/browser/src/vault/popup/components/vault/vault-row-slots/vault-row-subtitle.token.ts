@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 /** Replaces a popup vault row's subtitle for the items the provider governs. */
 export interface VaultRowSubtitle {

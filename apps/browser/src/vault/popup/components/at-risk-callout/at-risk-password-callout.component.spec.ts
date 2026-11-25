@@ -4,12 +4,12 @@ import { RouterModule } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { SecurityTask, SecurityTaskType } from "@bitwarden/common/vault/tasks";
-import { AtRiskPasswordCalloutService } from "@bitwarden/vault";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
+import { SecurityTask, SecurityTaskType } from "@localpass/common/vault/tasks";
+import { AtRiskPasswordCalloutService } from "@localpass/vault";
 
 import { AtRiskPasswordCalloutComponent } from "./at-risk-password-callout.component";
 

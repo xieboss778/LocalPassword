@@ -1,6 +1,6 @@
 # Automation-driver
 
-Library exposing `AutomationDriver` — a hook into the client for machine interaction with Bitwarden
+Library exposing `AutomationDriver` — a hook into the client for machine interaction with LocalPass
 clients. It is attached to the global object in all Angular builds (browser, desktop, web), and lets
 end-to-end tests, automated scripts, and agents drive the client at runtime through dev-tools. The
 CLI is not supported.
@@ -25,10 +25,10 @@ safeProvider({
 ## Usage from dev-tools
 
 ```js
-bitwardenAutomationDriver.list();
+localpassAutomationDriver.list();
 // ["featureFlags", "state", "lock", "login", "logging", "processReload"]
 
-await bitwardenAutomationDriver.get("lock").listUsers();
+await localpassAutomationDriver.get("lock").listUsers();
 ```
 
 `get` returns `undefined` when the running client does not provide the capability.
@@ -40,10 +40,10 @@ builds. Its `debug()` tree additionally needs an sdk-internal build with the `de
 feature (`build.sh -d`).
 
 ```js
-await bitwardenAutomationDriver
+await localpassAutomationDriver
   .get("sdk")
   .forUser(userId, (client) => client.vault().folders().list());
-await bitwardenAutomationDriver
+await localpassAutomationDriver
   .get("sdk")
   .forUser(userId, (client) => client.debug().state().types());
 ```

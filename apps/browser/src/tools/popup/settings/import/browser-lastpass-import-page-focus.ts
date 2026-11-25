@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { LastPassImportPageFocus } from "@bitwarden/importer-ui";
+import { LastPassImportPageFocus } from "@localpass/importer-ui";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 

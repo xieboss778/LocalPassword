@@ -1,5 +1,5 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { makeStaticByteArray } from "@bitwarden/common/spec";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { makeStaticByteArray } from "@localpass/common/spec";
 
 import { EncryptionType } from "../enums/encryption-type.enum";
 

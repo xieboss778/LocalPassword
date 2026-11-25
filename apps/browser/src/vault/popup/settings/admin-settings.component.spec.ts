@@ -4,17 +4,17 @@ import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { AutoConfirmState, AutomaticUserConfirmationService } from "@bitwarden/auto-confirm";
-import { AutoConfirmWarningDialogComponent } from "@bitwarden/auto-confirm/angular";
-import { PopOutComponent } from "@bitwarden/browser/platform/popup/components/pop-out.component";
-import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService } from "@bitwarden/components";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { AutoConfirmState, AutomaticUserConfirmationService } from "@localpass/auto-confirm";
+import { AutoConfirmWarningDialogComponent } from "@localpass/auto-confirm/angular";
+import { PopOutComponent } from "@localpass/browser/platform/popup/components/pop-out.component";
+import { InternalOrganizationServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService } from "@localpass/components";
 
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";

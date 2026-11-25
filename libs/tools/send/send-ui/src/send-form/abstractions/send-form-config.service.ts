@@ -1,7 +1,7 @@
-import { Send } from "@bitwarden/common/tools/send/models/domain/send";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { SendId } from "@bitwarden/common/types/guid";
+import { Send } from "@localpass/common/tools/send/models/domain/send";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { SendId } from "@localpass/common/types/guid";
 
 /**
  * The mode of the add/edit form.

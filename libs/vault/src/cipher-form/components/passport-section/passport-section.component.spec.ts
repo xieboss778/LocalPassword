@@ -3,9 +3,9 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { mock } from "jest-mock-extended";
 import { Subject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
 
 import { CipherFormContainer } from "../../cipher-form-container";
 

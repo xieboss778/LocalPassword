@@ -4,13 +4,13 @@ import { firstValueFrom } from "rxjs";
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 import {
   AuthType as SdkAuthType,
   Send as SdkSend,
   SendId as SdkSendId,
   SendType as SdkSendType,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { asUuid, uuidAsString } from "../../../../platform/abstractions/sdk/sdk.service";
 import { Utils } from "../../../../platform/misc/utils";

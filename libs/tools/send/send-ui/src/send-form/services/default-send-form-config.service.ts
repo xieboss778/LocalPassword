@@ -3,9 +3,9 @@
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, firstValueFrom, map } from "rxjs";
 
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { SendId } from "@bitwarden/common/types/guid";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { SendId } from "@localpass/common/types/guid";
 
 import { SendPolicyService } from "../../services/send-policy.service";
 import {

@@ -4,14 +4,14 @@ import { firstValueFrom } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { PasswordInputResult } from "@bitwarden/auth/angular";
-import { assertNonNullish, assertTruthy } from "@bitwarden/common/auth/utils";
-import { asUuid, SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
+import { PasswordInputResult } from "@localpass/auth/angular";
+import { assertNonNullish, assertTruthy } from "@localpass/common/auth/utils";
+import { asUuid, SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import {
   OrganizationId as SdkOrganizationId,
   UserId as SdkUserId,
   UserMasterPasswordRegistrationRequest,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { RegistrationFinishService } from "./registration-finish.service";
 

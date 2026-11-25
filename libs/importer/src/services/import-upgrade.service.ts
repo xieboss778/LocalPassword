@@ -4,23 +4,23 @@ import { firstValueFrom } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KeyService } from "@bitwarden/key-management";
+import { CollectionService } from "@localpass/admin-console/common";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KeyGenerationService } from "@bitwarden/legacy-crypto";
+import { EncryptService, KeyGenerationService } from "@localpass/legacy-crypto";
 
 import { UpgradeBitwardenPasswordProtectedImporter } from "../importers/bitwarden-upgrade/upgrade-bitwarden-password-protected-importer";
 import { Importer } from "../importers/importer";
@@ -44,7 +44,7 @@ const isImportType = (id: string): id is ImportType =>
  *
  *  TODO: remove once pm-35053-import-upgrade is retired */
 export class ImportUpgradeService extends ImportService implements ImportUpgradeServiceAbstraction {
-  private readonly bitwardenImporterDeps: {
+  private readonly localpassImporterDeps: {
     keyService: KeyService;
     encryptService: EncryptService;
     i18nService: I18nService;
@@ -84,7 +84,7 @@ export class ImportUpgradeService extends ImportService implements ImportUpgrade
       sdkService,
       logService,
     );
-    this.bitwardenImporterDeps = {
+    this.localpassImporterDeps = {
       keyService,
       encryptService,
       i18nService,
@@ -101,11 +101,11 @@ export class ImportUpgradeService extends ImportService implements ImportUpgrade
   }
 
   override getImporter(
-    format: UpgradeImportType | "bitwardenpasswordprotected",
+    format: UpgradeImportType | "localpasspasswordprotected",
     promptForPassword_callback: () => Promise<string>,
     organizationId?: OrganizationId,
   ): Importer {
-    if (format !== "bitwardenjson" && format !== "bitwardenpasswordprotected") {
+    if (format !== "localpassjson" && format !== "localpasspasswordprotected") {
       // A picker vendor id (e.g. "keepass") has no importer of its own.
       return isImportType(format)
         ? super.getImporter(format, promptForPassword_callback, organizationId)
@@ -115,7 +115,7 @@ export class ImportUpgradeService extends ImportService implements ImportUpgrade
       return null;
     }
 
-    const deps = this.bitwardenImporterDeps;
+    const deps = this.localpassImporterDeps;
     const importer = new UpgradeBitwardenPasswordProtectedImporter(
       deps.keyService,
       deps.encryptService,
@@ -138,7 +138,7 @@ export class ImportUpgradeService extends ImportService implements ImportUpgrade
       importResult = await importer.parse(fileContents);
     } catch (error) {
       if (error instanceof SyntaxError) {
-        throw new Error(this.bitwardenImporterDeps.i18nService.t("importFormatError"));
+        throw new Error(this.localpassImporterDeps.i18nService.t("importFormatError"));
       }
       throw error;
     }

@@ -1,5 +1,5 @@
-// FIXME(https://bitwarden.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
-/* eslint-disable @bitwarden/components/enforce-readonly-angular-properties */
+// FIXME(https://localpass.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
+/* eslint-disable @localpass/components/enforce-readonly-angular-properties */
 import { CommonModule } from "@angular/common";
 import {
   Component,
@@ -18,8 +18,8 @@ import {
 } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
-import { compareValues } from "@bitwarden/common/platform/misc/compare-values";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { compareValues } from "@localpass/common/platform/misc/compare-values";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ButtonModule } from "../../button";
 import { IconComponent } from "../../icon";
@@ -32,7 +32,7 @@ import {
 } from "../../icon-tile";
 import { MenuComponent, MenuItemComponent, MenuModule, MenuTriggerForDirective } from "../../menu";
 import { Option } from "../../select/option";
-import { BitwardenIcon } from "../../shared/icon";
+import { LocalPassIcon } from "../../shared/icon";
 import { TypographyModule } from "../../typography";
 import { BaseChipDirective } from "../shared/base-chip.directive";
 import { ChipContentComponent } from "../shared/chip-content.component";
@@ -45,7 +45,7 @@ import { ChipDismissButtonComponent } from "../shared/chip-dismiss-button.compon
 export type ChipFilterOption<T> = Omit<Option<T>, "icon"> & {
   /** The options that will be nested under this option */
   children?: ChipFilterOption<T>[];
-  icon?: BitwardenIcon;
+  icon?: LocalPassIcon;
   iconClass?: string;
 };
 
@@ -103,7 +103,7 @@ export class ChipFilterComponent<T = unknown> implements ControlValueAccessor {
   readonly placeholderText = input.required<string>();
 
   /** Icon to show when there is no selected option or the selected option does not have an icon */
-  readonly placeholderIcon = input<BitwardenIcon>();
+  readonly placeholderIcon = input<LocalPassIcon>();
 
   /** The select options to render */
   readonly options = input.required<ChipFilterOption<T>[]>();
@@ -201,7 +201,7 @@ export class ChipFilterComponent<T = unknown> implements ControlValueAccessor {
   }
 
   /** The icon to show in the chip button */
-  protected get icon(): BitwardenIcon | undefined {
+  protected get icon(): LocalPassIcon | undefined {
     return (
       this.selectedOption?.icon ?? this.selectedOption?.iconTile?.icon ?? this.placeholderIcon()
     );

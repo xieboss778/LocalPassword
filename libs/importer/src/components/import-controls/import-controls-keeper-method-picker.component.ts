@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { ControlContainer, ReactiveFormsModule } from "@angular/forms";
 
-import { FormFieldModule, RadioButtonModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { FormFieldModule, RadioButtonModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** A radio group of Keeper's login methods. The control belongs to the login card's form; this
  *  only draws it. */

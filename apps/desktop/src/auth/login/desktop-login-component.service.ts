@@ -3,16 +3,16 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DefaultLoginComponentService, LoginComponentService } from "@bitwarden/auth/angular";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { DESKTOP_SSO_CALLBACK, SsoUrlService } from "@bitwarden/common/auth/sso-login";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ToastService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { DefaultLoginComponentService, LoginComponentService } from "@localpass/auth/angular";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { DESKTOP_SSO_CALLBACK, SsoUrlService } from "@localpass/common/auth/sso-login";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ToastService } from "@localpass/components";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 @Injectable()
 export class DesktopLoginComponentService
@@ -51,7 +51,7 @@ export class DesktopLoginComponentService
     codeChallenge: string,
     orgSsoIdentifier?: string,
   ): Promise<void> {
-    // For platforms that cannot support a protocol-based (e.g. bitwarden://) callback, we use a localhost callback
+    // For platforms that cannot support a protocol-based (e.g. localpass://) callback, we use a localhost callback
     // Otherwise, we launch the SSO component in a browser window and wait for the callback
     if (ipc.platform.isAppImage || ipc.platform.isDev) {
       await this.initiateSsoThroughLocalhostCallback(email, state, codeChallenge, orgSsoIdentifier);

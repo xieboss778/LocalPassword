@@ -8,7 +8,7 @@ import { Portal } from "@angular/cdk/portal";
 import { signal } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 export type DialogCloseRef = {
   /** A boolean indicating whether the close succeeded */

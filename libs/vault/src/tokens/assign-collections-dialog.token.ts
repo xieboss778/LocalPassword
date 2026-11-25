@@ -1,7 +1,7 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 export interface AssignCollectionsParams {
   ciphers: CipherView[];

@@ -7,12 +7,12 @@ import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom, Observable, switchMap, of } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { BrowserPremiumUpgradePromptService } from "@bitwarden/browser/billing/popup/services/browser-premium-upgrade-prompt.service";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { BrowserPremiumUpgradePromptService } from "@localpass/browser/billing/popup/services/browser-premium-upgrade-prompt.service";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
 import {
   AUTOFILL_ID,
   COPY_PASSWORD_ID,
@@ -20,28 +20,28 @@ import {
   COPY_VERIFICATION_CODE_ID,
   SHOW_AUTOFILL_BUTTON,
   UPDATE_PASSWORD,
-} from "@bitwarden/common/autofill/constants";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+} from "@localpass/common/autofill/constants";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { ViewPasswordHistoryService } from "@localpass/common/vault/abstractions/view-password-history.service";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@localpass/common/vault/services/cipher-authorization.service";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 import {
   RestrictedCipherAction,
   RestrictedCipherPolicy,
-} from "@bitwarden/common/vault/utils/restricted-cipher-policy";
+} from "@localpass/common/vault/utils/restricted-cipher-policy";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -51,14 +51,14 @@ import {
   IconButtonModule,
   SearchModule,
   ToastService,
-} from "@bitwarden/components";
-import { ShareButtonComponent } from "@bitwarden/tools-share";
+} from "@localpass/components";
+import { ShareButtonComponent } from "@localpass/tools-share";
 import {
   ArchiveCipherUtilitiesService,
   CipherViewComponent,
   CopyCipherFieldService,
   PasswordRepromptService,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { sendExtensionMessage } from "../../../../../autofill/utils/index";
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
@@ -92,7 +92,7 @@ type LoadAction =
   | typeof COPY_VERIFICATION_CODE_ID
   | typeof UPDATE_PASSWORD;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-view",
@@ -405,7 +405,7 @@ export class ViewComponent {
     }
 
     //this tab checking should be moved into the vault-popup-autofill service in case the current tab is changed
-    //ticket: https://bitwarden.atlassian.net/browse/PM-32467
+    //ticket: https://localpass.atlassian.net/browse/PM-32467
     const currentTab = await firstValueFrom(this.vaultPopupAutofillService.currentAutofillTab$);
 
     if (!currentTab?.url) {

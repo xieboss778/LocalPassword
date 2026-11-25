@@ -1,6 +1,6 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { IpcMessage, isIpcMessage, reconstructIpcMessage } from "@bitwarden/common/platform/ipc";
-import { Endpoint, IncomingMessage, OutgoingMessage } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { IpcMessage, isIpcMessage, reconstructIpcMessage } from "@localpass/common/platform/ipc";
+import { Endpoint, IncomingMessage, OutgoingMessage } from "@localpass/sdk-internal";
 
 import { BrowserApi } from "../../browser/browser-api";
 
@@ -81,7 +81,7 @@ export class BrowserForegroundIpcTransport {
 
     try {
       port.postMessage({
-        type: "bitwarden-ipc-message",
+        type: "localpass-ipc-message",
         message: {
           destination: message.destination,
           payload: [...message.payload],

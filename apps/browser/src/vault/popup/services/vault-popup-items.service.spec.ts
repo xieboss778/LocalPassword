@@ -3,33 +3,33 @@ import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of, take, timeout } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { uuidAsString } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SyncService } from "@bitwarden/common/platform/sync";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { uuidAsString } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { SyncService } from "@localpass/common/platform/sync";
 import {
   FakeAccountService,
   mockAccountServiceWith,
   ObservableTracker,
-} from "@bitwarden/common/spec";
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+} from "@localpass/common/spec";
+import { CipherId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   RestrictedCipherType,
   RestrictedItemTypesService,
-} from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/services/restricted-item-types.service";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { InlineMenuFieldQualificationService } from "../../../autofill/services/inline-menu-field-qualification.service";
 import { BrowserApi } from "../../../platform/browser/browser-api";

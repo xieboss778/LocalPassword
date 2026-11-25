@@ -12,8 +12,8 @@ import {
   IconButtonModule,
   DialogService,
   CalloutModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 export interface ApproveSshRequestParams {
   cipherName: string;
@@ -22,7 +22,7 @@ export interface ApproveSshRequestParams {
   action: string;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-approve-ssh-request",

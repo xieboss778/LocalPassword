@@ -1,7 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 /**
  * Validates that a referrer hostname matches any of the available regions' and current environment web vault URLs.

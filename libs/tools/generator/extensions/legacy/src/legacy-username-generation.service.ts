@@ -2,10 +2,10 @@
 // @ts-strict-ignore
 import { zip, firstValueFrom, map, concatMap, combineLatest } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { Vendor } from "@bitwarden/common/tools/extension/vendor/data";
-import { IntegrationRequest } from "@bitwarden/common/tools/integration/rpc";
-import { UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { Vendor } from "@localpass/common/tools/extension/vendor/data";
+import { IntegrationRequest } from "@localpass/common/tools/integration/rpc";
+import { UserId } from "@localpass/common/types/guid";
 import {
   ApiOptions,
   EmailDomainOptions,
@@ -18,8 +18,8 @@ import {
   SubaddressGenerationOptions,
   UsernameGeneratorType,
   ForwarderId,
-} from "@bitwarden/generator-core";
-import { GeneratorNavigationService, GeneratorNavigation } from "@bitwarden/generator-navigation";
+} from "@localpass/generator-core";
+import { GeneratorNavigationService, GeneratorNavigation } from "@localpass/generator-navigation";
 
 import { Forwarders } from "./forwarders";
 import { UsernameGeneratorOptions } from "./username-generation-options";

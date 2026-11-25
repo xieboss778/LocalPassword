@@ -6,7 +6,7 @@ import {
   IpcEndpointSendResult,
   IncomingMessage,
   OutgoingMessage,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 /**
  * Entry point for inter-process communication (IPC).
@@ -78,8 +78,8 @@ import {
  *
  * #### TypeScript code
  * ```typescript
- * import { IpcService } from "@bitwarden/common/platform/ipc";
- * import { IpcClient, ipcRegisterPingHandler, ipcRequestPing } from "@bitwarden/sdk-internal";
+ * import { IpcService } from "@localpass/common/platform/ipc";
+ * import { IpcClient, ipcRegisterPingHandler, ipcRequestPing } from "@localpass/sdk-internal";
  *
  * class MyService {
  *   constructor(private ipcService: IpcService) {}

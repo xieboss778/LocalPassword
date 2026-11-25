@@ -14,13 +14,13 @@ import { isActive, Router } from "@angular/router";
 import { combineLatest, map, switchMap } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { NavigationModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { NavigationModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import {
   sharedFoldersCommands,

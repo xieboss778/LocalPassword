@@ -6,12 +6,12 @@ import { any, mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of, timeout } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { awaitAsync, trackEmissions } from "@bitwarden/core-test-utils";
-import { LogService } from "@bitwarden/logging";
-import { StateDefinition, StateEventRegistrarService, UserKeyDefinition } from "@bitwarden/state";
-import { StorageServiceProvider } from "@bitwarden/storage-core";
-import { FakeStorageService } from "@bitwarden/storage-test-utils";
-import { UserId } from "@bitwarden/user-core";
+import { awaitAsync, trackEmissions } from "@localpass/core-test-utils";
+import { LogService } from "@localpass/logging";
+import { StateDefinition, StateEventRegistrarService, UserKeyDefinition } from "@localpass/state";
+import { StorageServiceProvider } from "@localpass/storage-core";
+import { FakeStorageService } from "@localpass/storage-test-utils";
+import { UserId } from "@localpass/user-core";
 
 import { DefaultActiveUserState } from "./default-active-user-state";
 import { DefaultSingleUserStateProvider } from "./default-single-user-state.provider";
@@ -212,7 +212,7 @@ describe("DefaultActiveUserState", () => {
   it("should not emit a previous users value if that user is no longer active", async () => {
     const user1Data: Jsonify<TestState> = {
       date: "2020-09-21T13:14:17.648Z",
-      // NOTE: `as any` is here until we migrate to Nx: https://bitwarden.atlassian.net/browse/PM-6493
+      // NOTE: `as any` is here until we migrate to Nx: https://localpass.atlassian.net/browse/PM-6493
       array: ["value"] as any,
     };
     const user2Data: Jsonify<TestState> = {

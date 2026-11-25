@@ -2,15 +2,15 @@
 // @ts-strict-ignore
 import { Observable, concatMap, filter } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   CommandDefinition,
   MessageListener,
   MessageSender,
   isExternalMessage,
-} from "@bitwarden/common/platform/messaging";
-import { SyncOptions } from "@bitwarden/common/platform/sync/sync.service";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+} from "@localpass/common/platform/messaging";
+import { SyncOptions } from "@localpass/common/platform/sync/sync.service";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { DO_FULL_SYNC } from "./foreground-sync.service";
 

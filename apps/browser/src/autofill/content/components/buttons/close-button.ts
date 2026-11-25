@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { html } from "lit";
 
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 import { I18n } from "../common-types";
 import { spacing, themes } from "../constants/styles";

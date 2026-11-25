@@ -2,17 +2,17 @@ import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { PolicyData } from "@bitwarden/common/admin-console/models/data/policy.data";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { WhoCanAccessType } from "@bitwarden/common/tools/models/send-who-can-access-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PolicyId, UserId } from "@bitwarden/common/types/guid";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { PolicyData } from "@localpass/common/admin-console/models/data/policy.data";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { WhoCanAccessType } from "@localpass/common/tools/models/send-who-can-access-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PolicyId, UserId } from "@localpass/common/types/guid";
 
 import { SendPolicyService } from "..";
 

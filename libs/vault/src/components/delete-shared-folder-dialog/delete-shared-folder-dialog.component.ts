@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   ButtonComponent,
   DIALOG_DATA,
   DialogModule,
   DialogRef,
   DialogService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 /**
  * Marker substituted for the folder-name placeholder so the localized sentence

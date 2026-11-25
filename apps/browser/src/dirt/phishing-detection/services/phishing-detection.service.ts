@@ -9,14 +9,14 @@ import {
   tap,
 } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { PhishingDetectionSettingsServiceAbstraction } from "@bitwarden/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CommandDefinition, MessageListener } from "@bitwarden/messaging";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { PhishingDetectionSettingsServiceAbstraction } from "@localpass/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CommandDefinition, MessageListener } from "@localpass/messaging";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import { fromChromeEvent } from "../../../platform/browser/from-chrome-event";

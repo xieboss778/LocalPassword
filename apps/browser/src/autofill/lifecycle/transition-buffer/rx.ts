@@ -9,7 +9,7 @@ import {
   tap,
 } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserId } from "@localpass/common/types/guid";
 
 import { AccountEventKind } from "../enums";
 import type { AccountEvent } from "../types";

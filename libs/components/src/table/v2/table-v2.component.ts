@@ -25,9 +25,9 @@ import {
   viewChild,
 } from "@angular/core";
 
-import { NoResults } from "@bitwarden/assets/svg";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { NoResults } from "@localpass/assets/svg";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CheckboxModule } from "../../checkbox";
 import { DialogService } from "../../dialog";

@@ -1,10 +1,10 @@
 import { firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { UserId, PeerLockState, SharedUnlockDriver, SymmetricKey } from "@bitwarden/sdk-internal";
-import { LockService, LockSource, UnlockService } from "@bitwarden/unlock";
-import { UserId as TSUserId } from "@bitwarden/user-core";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { UserId, PeerLockState, SharedUnlockDriver, SymmetricKey } from "@localpass/sdk-internal";
+import { LockService, LockSource, UnlockService } from "@localpass/unlock";
+import { UserId as TSUserId } from "@localpass/user-core";
 
 import { AccountService } from "../../auth/abstractions/account.service";
 import { EnvironmentService } from "../../platform/abstractions/environment.service";

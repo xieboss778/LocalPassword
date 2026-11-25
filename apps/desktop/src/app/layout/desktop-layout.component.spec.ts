@@ -5,26 +5,26 @@ import { Router, RouterModule } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DeviceType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { DeviceType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
 import {
   DialogService,
   LayoutComponent,
   NavigationModule,
   SideNavService,
-} from "@bitwarden/components";
-import { SendPolicyService } from "@bitwarden/send-ui";
-import { GlobalStateProvider } from "@bitwarden/state";
+} from "@localpass/components";
+import { SendPolicyService } from "@localpass/send-ui";
+import { GlobalStateProvider } from "@localpass/state";
 import {
   PinnedSharedFoldersService,
   CoachmarkService,
@@ -32,7 +32,7 @@ import {
   VaultNavService,
   VaultsNavViewModel,
   VaultTourCalloutComponent,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { AccountSwitcherV2Component } from "../../auth/components/account-switcher/account-switcher-v2.component";
 import { VaultFilterComponent } from "../../vault/app/vault-v3/vault-filter/vault-filter.component";

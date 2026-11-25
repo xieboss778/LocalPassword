@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 
 import {
   CipherTypeFilter,

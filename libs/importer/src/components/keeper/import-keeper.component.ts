@@ -18,12 +18,12 @@ import {
 } from "@angular/forms";
 import { lastValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { OrganizationId } from "@localpass/common/types/guid";
 import {
   CalloutModule,
   DialogService,
@@ -31,7 +31,7 @@ import {
   IconButtonModule,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { KeeperAuthError, KeeperAuthErrorCode, KeeperRegion } from "../../importers/keeper/access";
 import { ImportResult } from "../../models";

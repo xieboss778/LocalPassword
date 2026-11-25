@@ -2,18 +2,18 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { BehaviorSubject, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { Folder } from "@bitwarden/common/vault/models/domain/folder";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DIALOG_DATA, DialogRef, DialogService, ToastService } from "@bitwarden/components";
-import { KeyService } from "@bitwarden/key-management";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { Folder } from "@localpass/common/vault/models/domain/folder";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { DIALOG_DATA, DialogRef, DialogService, ToastService } from "@localpass/components";
+import { KeyService } from "@localpass/key-management";
 
 import {
   AddEditFolderDialogComponent,

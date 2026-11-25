@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { OrganizationId } from "@bitwarden/sdk-internal";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { OrganizationId } from "@localpass/sdk-internal";
 
 @Pipe({
   name: "orgNameFromId",

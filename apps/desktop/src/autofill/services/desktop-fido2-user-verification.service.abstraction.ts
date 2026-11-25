@@ -11,7 +11,7 @@ export type Fido2UserVerificationRequest = {
   username: string;
 
   /**
-   * Native handle of the window the OS prompt should attach to: Bitwarden's
+   * Native handle of the window the OS prompt should attach to: LocalPass's
    * window while our own UI is showing, otherwise the calling client's window.
    * Null on platforms that don't attach the prompt to a window.
    */

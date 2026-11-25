@@ -1,15 +1,15 @@
 import { inject } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
 import {
   ForwardedIpcMessage,
   IpcMessage,
   IpcService,
   isForwardedIpcMessage,
   isIpcMessage,
-} from "@bitwarden/common/platform/ipc";
+} from "@localpass/common/platform/ipc";
 import {
   IncomingMessage,
   IpcClient,
@@ -17,7 +17,7 @@ import {
   ipcRegisterDiscoverHandler,
   OutgoingMessage,
   Source,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { nativeMessagingHost } from "../utils/native-messaging-host";
 
@@ -48,7 +48,7 @@ export class IpcRendererService extends IpcService {
           }
 
           ipc.platform.ipcService.send({
-            type: "bitwarden-ipc-message",
+            type: "localpass-ipc-message",
             message: {
               destination: message.destination,
               payload: [...message.payload],

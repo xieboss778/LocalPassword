@@ -10,9 +10,9 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router } from "@angular/router";
 import { filter, firstValueFrom, map, switchMap, take } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogService } from "@bitwarden/logging";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogService } from "@localpass/logging";
 
 import { isAtOrLargerThanBreakpoint } from "../utils/responsive-utils";
 
@@ -119,7 +119,7 @@ export class DialogService {
   constructor() {
     /**
      * TODO: This logic should exist outside of `libs/components`.
-     * @see https://bitwarden.atlassian.net/browse/CL-657
+     * @see https://localpass.atlassian.net/browse/CL-657
      **/
     /** Close all open dialogs if the vault locks */
     if (this.router && this.authService) {

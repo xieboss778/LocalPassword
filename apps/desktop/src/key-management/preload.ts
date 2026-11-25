@@ -1,8 +1,8 @@
 import { ipcRenderer } from "electron";
 import { Jsonify } from "type-fest";
 
-import { UserKey } from "@bitwarden/common/types/key";
-import { BiometricsStatus } from "@bitwarden/key-management";
+import { UserKey } from "@localpass/common/types/key";
+import { BiometricsStatus } from "@localpass/key-management";
 
 import { BiometricMessage, BiometricAction } from "../types/biometric-message";
 

@@ -76,15 +76,15 @@ module.exports.buildConfig = function buildConfig(params) {
     },
   };
 
-  // Pick up locally linked @bitwarden packages (notably the SDK) on `--watch`:
+  // Pick up locally linked @localpass packages (notably the SDK) on `--watch`:
   //  - unmanagedPaths: content-hash them instead of trusting package.json version,
   //    which a local build never bumps. Mirrors apps/web and apps/browser.
   //  - poll: resolve.symlinks is false, so the native macOS watcher misses changes
   //    made at the symlink's real path. Gated on a local symlink since polling has a
   //    real CPU cost on registry installs.
   const sdkLinkPaths = [
-    path.resolve(__dirname, "../../node_modules/@bitwarden/sdk-internal"),
-    path.resolve(process.cwd(), "node_modules/@bitwarden/sdk-internal"),
+    path.resolve(__dirname, "../../node_modules/@localpass/sdk-internal"),
+    path.resolve(process.cwd(), "node_modules/@localpass/sdk-internal"),
   ];
   const isLocalLinkedSdk = sdkLinkPaths.some((p) => {
     try {
@@ -95,7 +95,7 @@ module.exports.buildConfig = function buildConfig(params) {
   });
   const localSdkWatch = {
     snapshot: {
-      unmanagedPaths: [path.resolve(__dirname, "../../node_modules/@bitwarden/")],
+      unmanagedPaths: [path.resolve(__dirname, "../../node_modules/@localpass/")],
     },
     ...(isLocalLinkedSdk ? { watchOptions: { poll: 1000 } } : {}),
   };
@@ -136,7 +136,7 @@ module.exports.buildConfig = function buildConfig(params) {
             loader: "ts-loader",
             options: { configFile: params.main.tsConfig },
           },
-          exclude: /node_modules\/(?!(@bitwarden)\/).*/,
+          exclude: /node_modules\/(?!(@localpass)\/).*/,
         },
         {
           test: /\.node$/,
@@ -208,7 +208,7 @@ module.exports.buildConfig = function buildConfig(params) {
     ],
     externals: {
       "electron-reload": "commonjs2 electron-reload",
-      "@bitwarden/desktop-napi": "commonjs2 @bitwarden/desktop-napi",
+      "@localpass/desktop-napi": "commonjs2 @localpass/desktop-napi",
     },
   };
 
@@ -237,7 +237,7 @@ module.exports.buildConfig = function buildConfig(params) {
             loader: "ts-loader",
             options: { configFile: params.preload.tsConfig },
           },
-          exclude: /node_modules\/(?!(@bitwarden)\/).*/,
+          exclude: /node_modules\/(?!(@localpass)\/).*/,
         },
       ],
     },

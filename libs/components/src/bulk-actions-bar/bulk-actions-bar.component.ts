@@ -20,8 +20,8 @@ import {
 import { outputFromObservable, takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Subject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { IconComponent } from "../icon/icon.component";
 import { MenuDividerComponent } from "../menu/menu-divider.component";

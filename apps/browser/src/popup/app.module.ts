@@ -9,14 +9,14 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { UserVerificationDialogComponent } from "@localpass/auth/angular";
 import {
   DefaultVaultHealthReportService,
   VaultHealthReportService,
-} from "@bitwarden/common/dirt/vault-health/services";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherRiskService } from "@bitwarden/common/vault/abstractions/cipher-risk.service";
+} from "@localpass/common/dirt/vault-health/services";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherRiskService } from "@localpass/common/vault/abstractions/cipher-risk.service";
 import {
   DialogModule,
   AvatarModule,
@@ -25,9 +25,9 @@ import {
   ToastModule,
   CalloutModule,
   LinkModule,
-} from "@bitwarden/components";
-import { KEEPER_SSO_TAB_MONITOR, LASTPASS_IMPORT_PAGE_FOCUS } from "@bitwarden/importer-ui";
-import { safeProvider } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { KEEPER_SSO_TAB_MONITOR, LASTPASS_IMPORT_PAGE_FOCUS } from "@localpass/importer-ui";
+import { safeProvider } from "@localpass/ui-common";
 
 import { AccountComponent } from "../auth/popup/account-switching/account.component";
 import { CurrentAccountComponent } from "../auth/popup/account-switching/current-account.component";

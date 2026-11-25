@@ -1,10 +1,10 @@
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UserId } from "@bitwarden/common/types/guid";
-import { LockService, LockSource, UnlockService } from "@bitwarden/unlock";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UserId } from "@localpass/common/types/guid";
+import { LockService, LockSource, UnlockService } from "@localpass/unlock";
 
 import { AutomationCapability } from "../automation-capability";
 

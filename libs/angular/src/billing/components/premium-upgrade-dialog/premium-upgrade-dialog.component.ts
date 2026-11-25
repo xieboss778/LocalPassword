@@ -3,22 +3,22 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { catchError, EMPTY, firstValueFrom, map, Observable } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { PremiumCheckoutPendingService } from "@bitwarden/common/billing/abstractions/account/premium-checkout-pending.service";
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
-import { SubscriptionPricingServiceAbstraction } from "@bitwarden/common/billing/abstractions/subscription-pricing.service.abstraction";
-import { PremiumCheckoutSessionPlatform } from "@bitwarden/common/billing/models/request/premium-checkout-session.request";
+import { ClientType } from "@localpass/client-type";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { PremiumCheckoutPendingService } from "@localpass/common/billing/abstractions/account/premium-checkout-pending.service";
+import { BillingApiServiceAbstraction } from "@localpass/common/billing/abstractions/billing-api.service.abstraction";
+import { SubscriptionPricingServiceAbstraction } from "@localpass/common/billing/abstractions/subscription-pricing.service.abstraction";
+import { PremiumCheckoutSessionPlatform } from "@localpass/common/billing/models/request/premium-checkout-session.request";
 import {
   PersonalSubscriptionPricingTier,
   PersonalSubscriptionPricingTierIds,
   SubscriptionCadenceIds,
-} from "@bitwarden/common/billing/types/subscription-pricing-tier";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/billing/types/subscription-pricing-tier";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   ButtonModule,
   CenterPositionStrategy,
@@ -28,8 +28,8 @@ import {
   IconButtonModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 import { JslibModule } from "../../../jslib.module";
 import { SubscriptionPricingCardDetails } from "../../types/subscription-pricing-card-details";

@@ -2,8 +2,8 @@ import { NgClass } from "@angular/common";
 import { ChangeDetectionStrategy, Component, input, inject } from "@angular/core";
 import { RouterLinkActive, RouterLink } from "@angular/router";
 
-import { BitwardenShield, SideNavLogo, SideNavLogoBeta, BitSvg } from "@bitwarden/assets/svg";
-import { flagEnabled } from "@bitwarden/common/platform/misc/flags";
+import { LocalPassShield, SideNavLogo, SideNavLogoBeta, BitSvg } from "@localpass/assets/svg";
+import { flagEnabled } from "@localpass/common/platform/misc/flags";
 
 import { SvgComponent } from "../svg/svg.component";
 
@@ -27,9 +27,9 @@ export class NavLogoComponent {
   /**
    * Icon that is displayed when the side nav is closed
    *
-   * @default BitwardenShield
+   * @default LocalPassShield
    */
-  readonly closedIcon = input(BitwardenShield);
+  readonly closedIcon = input(LocalPassShield);
 
   /**
    * Icon that is displayed when the side nav is open

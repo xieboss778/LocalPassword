@@ -1,11 +1,11 @@
 import { Observable, catchError, concatMap, map, of } from "rxjs";
 
-import { Collection } from "@bitwarden/common/admin-console/models/collections/collection";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections/collection.view";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkService, uuidAsString } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { CollectionId, UserId } from "@bitwarden/common/types/guid";
-import { DecryptCollectionListResult } from "@bitwarden/sdk-internal";
+import { Collection } from "@localpass/common/admin-console/models/collections/collection";
+import { CollectionView } from "@localpass/common/admin-console/models/collections/collection.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkService, uuidAsString } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { CollectionId, UserId } from "@localpass/common/types/guid";
+import { DecryptCollectionListResult } from "@localpass/sdk-internal";
 
 import { CollectionEncryptionService } from "../abstractions/collection-encryption.service";
 

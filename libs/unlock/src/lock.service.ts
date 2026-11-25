@@ -1,21 +1,21 @@
 import { combineLatest, filter, firstValueFrom, map, timeout } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { assertNonNullish } from "@bitwarden/common/auth/utils";
-import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/process-reload";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { BiometricsService, KeyService } from "@bitwarden/key-management";
-import { LogService } from "@bitwarden/logging";
-import { StateEventRunnerService } from "@bitwarden/state";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { assertNonNullish } from "@localpass/common/auth/utils";
+import { ProcessReloadServiceAbstraction } from "@localpass/common/key-management/process-reload";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { SystemService } from "@localpass/common/platform/abstractions/system.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { BiometricsService, KeyService } from "@localpass/key-management";
+import { LogService } from "@localpass/logging";
+import { StateEventRunnerService } from "@localpass/state";
 
 import { LockSource } from "./lock-source.enum";
 

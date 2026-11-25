@@ -16,7 +16,7 @@ export const AuthRoute = Object.freeze({
   AuthenticationTimeout: "authentication-timeout",
   NewDeviceVerification: "device-verification",
   LoginWithPasskey: "login-with-passkey",
-  // LocalPassword: the vault is created on this device instead of an account being registered.
+  // LocalPass: the vault is created on this device instead of an account being registered.
   CreateLocalVault: "create-local-vault",
 } as const);
 

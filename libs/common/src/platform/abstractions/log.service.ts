@@ -1,1 +1,1 @@
-export { LogService } from "@bitwarden/logging";
+export { LogService } from "@localpass/logging";

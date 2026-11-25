@@ -17,11 +17,11 @@ import {
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { BiometricStateService } from "@bitwarden/key-management";
-import { AutoUnlockService } from "@bitwarden/unlock";
+import { BiometricStateService } from "@localpass/key-management";
+import { AutoUnlockService } from "@localpass/unlock";
 
 import { PolicyService } from "../../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../../admin-console/enums";
@@ -96,7 +96,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     const userId$ =
       userId != null
         ? of(userId)
-        : // TODO remove with https://bitwarden.atlassian.net/browse/PM-10647
+        : // TODO remove with https://localpass.atlassian.net/browse/PM-10647
           getUserId(this.accountService.activeAccount$);
 
     return userId$.pipe(

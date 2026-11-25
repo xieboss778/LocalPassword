@@ -34,7 +34,7 @@ describe("DefaultChangeLoginPasswordService", () => {
 
     const mockEnvironmentService = {
       environment$: of({
-        getIconsUrl: () => "https://icons.bitwarden.com",
+        getIconsUrl: () => "https://icons.local.invalid",
       } as Environment),
     } as EnvironmentService;
 
@@ -102,7 +102,7 @@ describe("DefaultChangeLoginPasswordService", () => {
 
     expect(mockApiService.fetch).toHaveBeenCalledWith(
       expect.objectContaining({
-        url: "https://icons.bitwarden.com/change-password-uri?uri=https%3A%2F%2Fexample.com%2F",
+        url: "https://icons.local.invalid/change-password-uri?uri=https%3A%2F%2Fexample.com%2F",
       }),
     );
   });

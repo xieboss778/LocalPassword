@@ -5,33 +5,33 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
-import { TaskService } from "@bitwarden/common/vault/tasks";
-import { AddEditCipherInfo } from "@bitwarden/common/vault/types/add-edit-cipher-info";
-import { DialogService } from "@bitwarden/components";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@localpass/common/vault/services/cipher-authorization.service";
+import { TaskService } from "@localpass/common/vault/tasks";
+import { AddEditCipherInfo } from "@localpass/common/vault/types/add-edit-cipher-info";
+import { DialogService } from "@localpass/components";
 import {
   ArchiveCipherUtilitiesService,
   CipherFormConfig,
   CipherFormConfigService,
   CipherFormMode,
   OptionalInitialValues,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { BrowserFido2UserInterfaceSession } from "../../../../../autofill/fido2/services/browser-fido2-user-interface.service";
 import { BrowserApi } from "../../../../../platform/browser/browser-api";

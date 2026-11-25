@@ -1,10 +1,10 @@
 import { firstValueFrom, map, Observable } from "rxjs";
 
-import { TwoFactorAuthDuoComponentService, Duo2faResult } from "@bitwarden/auth/angular";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
+import { TwoFactorAuthDuoComponentService, Duo2faResult } from "@localpass/auth/angular";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CommandDefinition, MessageListener } from "@localpass/common/platform/messaging";
 
 // TODO: PM-16209 We should create a Duo2faMessageListenerService that listens for messages from duo
 // and this command definition should move to that file.

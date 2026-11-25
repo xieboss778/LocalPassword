@@ -7,8 +7,8 @@ import {
 } from "@angular/forms";
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { LockIcon } from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LockIcon } from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { FormControlCardComponent } from "../form-control/form-control-card.component";
 import { FormControlGroupComponent } from "../form-control/form-control-group.component";

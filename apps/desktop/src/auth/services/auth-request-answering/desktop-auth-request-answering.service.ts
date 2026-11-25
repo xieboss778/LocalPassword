@@ -1,17 +1,17 @@
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthRequestAnsweringService } from "@bitwarden/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { DefaultAuthRequestAnsweringService } from "@bitwarden/common/auth/services/auth-request-answering/default-auth-request-answering.service";
-import { PendingAuthRequestsStateService } from "@bitwarden/common/auth/services/auth-request-answering/pending-auth-requests.state";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { MasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { LogService } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthRequestAnsweringService } from "@localpass/common/auth/abstractions/auth-request-answering/auth-request-answering.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { DefaultAuthRequestAnsweringService } from "@localpass/common/auth/services/auth-request-answering/default-auth-request-answering.service";
+import { PendingAuthRequestsStateService } from "@localpass/common/auth/services/auth-request-answering/pending-auth-requests.state";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { MasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { LogService } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 export class DesktopAuthRequestAnsweringService
   extends DefaultAuthRequestAnsweringService

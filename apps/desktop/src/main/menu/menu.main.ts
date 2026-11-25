@@ -1,9 +1,9 @@
 import { app, Menu } from "electron";
 import { firstValueFrom } from "rxjs";
 
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 import { SafeShell } from "../../platform/main/safe-shell.main";
 import { VersionMain } from "../../platform/main/version.main";
@@ -14,7 +14,7 @@ import { WindowMain } from "../window.main";
 import { MenuUpdateRequest } from "./menu.updater";
 import { Menubar } from "./menubar";
 
-const cloudWebVaultUrl = "https://vault.bitwarden.com";
+const cloudWebVaultUrl = "https://vault.local.invalid";
 
 export class MenuMain {
   constructor(

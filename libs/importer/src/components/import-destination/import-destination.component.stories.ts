@@ -4,16 +4,16 @@ import { defer, NEVER, Observable, of, throwError } from "rxjs";
 import {
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService, I18nMockService, ToastService } from "@bitwarden/components";
+} from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService, I18nMockService, ToastService } from "@localpass/components";
 
 import {
   ImportDestinationKind,

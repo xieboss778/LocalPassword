@@ -1,4 +1,4 @@
-import { Cart } from "@bitwarden/pricing";
+import { Cart } from "@localpass/pricing";
 
 import { Storage } from "./storage";
 

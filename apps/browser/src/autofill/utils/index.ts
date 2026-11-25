@@ -1,4 +1,4 @@
-import { AUTOFILL_ATTRIBUTES } from "@bitwarden/common/autofill/constants";
+import { AUTOFILL_ATTRIBUTES } from "@localpass/common/autofill/constants";
 
 import { FieldRect } from "../background/abstractions/overlay.background";
 import { AutofillPort } from "../enums/autofill-port.enum";
@@ -180,14 +180,14 @@ export function setupExtensionDisconnectAction(callback: (port: chrome.runtime.P
  * @param windowContext - The global window context
  */
 export function setupAutofillInitDisconnectAction(windowContext: Window) {
-  const bitwardenAutofillInit = windowContext.bitwardenAutofillInit;
-  if (!bitwardenAutofillInit) {
+  const localpassAutofillInit = windowContext.localpassAutofillInit;
+  if (!localpassAutofillInit) {
     return;
   }
 
   const onDisconnectCallback = () => {
-    bitwardenAutofillInit.destroy();
-    delete windowContext.bitwardenAutofillInit;
+    localpassAutofillInit.destroy();
+    delete windowContext.localpassAutofillInit;
   };
   setupExtensionDisconnectAction(onDisconnectCallback);
 }

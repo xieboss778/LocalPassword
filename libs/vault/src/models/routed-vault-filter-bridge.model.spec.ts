@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { CipherType } from "@localpass/common/vault/enums";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
 
 import { RoutedVaultFilterBridgeService } from "../services/routed-vault-filter-bridge.service";
 

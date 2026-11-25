@@ -1,8 +1,8 @@
 import { TestScheduler } from "rxjs/testing";
 
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { UserId } from "@localpass/common/types/guid";
 
 import { accountEvents$ } from "./account-events.rx";
 import { AccountEventKind } from "./enums";

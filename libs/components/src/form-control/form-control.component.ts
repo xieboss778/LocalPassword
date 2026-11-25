@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { IconComponent } from "../icon";
 import { TypographyDirective } from "../typography/typography.directive";

@@ -1,8 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
-import { LogService } from "@bitwarden/logging";
-import { isCryptoError } from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+import { LogService } from "@localpass/logging";
+import { isCryptoError } from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 import { UserKey } from "../../../types/key";
 import { MasterPasswordUnlockService } from "../abstractions/master-password-unlock.service";

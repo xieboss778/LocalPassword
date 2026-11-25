@@ -4,16 +4,16 @@ import { Router, provideRouter } from "@angular/router";
 import { RouterTestingHarness } from "@angular/router/testing";
 import { BehaviorSubject, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { NavigationModule } from "@bitwarden/components";
-import { SendListFiltersService, SendPolicyService } from "@bitwarden/send-ui";
-import { GlobalStateProvider } from "@bitwarden/state";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { NavigationModule } from "@localpass/components";
+import { SendListFiltersService, SendPolicyService } from "@localpass/send-ui";
+import { GlobalStateProvider } from "@localpass/state";
 
 import { SendFiltersNavComponent } from "./send-filters-nav.component";
 

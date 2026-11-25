@@ -1,14 +1,14 @@
 {
   "name": "__MSG_extNameBeta__",
-  "short_name": "Bitwarden Beta",
+  "short_name": "LocalPass Beta",
   "action": {
-    "default_title": "Bitwarden Beta"
+    "default_title": "LocalPass Beta"
   },
   "browser_action": {
-    "default_title": "Bitwarden Beta"
+    "default_title": "LocalPass Beta"
   },
   "sidebar_action": {
-    "default_title": "Bitwarden Beta"
+    "default_title": "LocalPass Beta"
   },
   "browser_specific_settings": {
     "gecko": {

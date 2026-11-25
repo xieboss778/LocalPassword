@@ -11,9 +11,9 @@ import {
   SimpleChanges,
 } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { ProgressBarComponent, FormFieldModule } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
+import { ProgressBarComponent, FormFieldModule } from "@localpass/components";
 
 import { JslibModule } from "../../jslib.module";
 
@@ -26,7 +26,7 @@ export type PasswordStrengthScore = 0 | 1 | 2 | 3 | 4;
 type SizeTypes = "small" | "default" | "large";
 type BackgroundTypes = "danger" | "primary" | "success" | "warning";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-password-strength",
@@ -38,25 +38,25 @@ export class PasswordStrengthV2Component implements OnChanges {
    * The size (height) of the password strength component.
    * Possible values are "default", "small" and "large".
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() size: SizeTypes = "default";
   /**
    * Determines whether to show the password strength score text on the progress bar or not.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() showText = false;
   /**
    * Optional email address which can be used as input for the password strength calculation
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() email: string;
   /**
    * Optional name which can be used as input for the password strength calculation
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() name: string;
   /**
@@ -64,7 +64,7 @@ export class PasswordStrengthV2Component implements OnChanges {
    *
    * @param value - password provided by the hosting component
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() set password(value: string) {
     this.updatePasswordStrength(value);
@@ -76,14 +76,14 @@ export class PasswordStrengthV2Component implements OnChanges {
    * The password strength score represents the strength of a password.
    * It is emitted as an event when the password strength changes.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() passwordStrengthScore = new EventEmitter<PasswordStrengthScore>();
 
   /**
    * Emits an event with the password score text and color.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() passwordScoreTextWithColor = new EventEmitter<PasswordColorText>();
 

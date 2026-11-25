@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString } from "@bitwarden/legacy-crypto";
+import { EncryptService, EncString } from "@localpass/legacy-crypto";
 
 import {
   makeEncString,

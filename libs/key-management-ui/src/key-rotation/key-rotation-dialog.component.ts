@@ -4,15 +4,15 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { firstValueFrom, forkJoin, map, switchMap } from "rxjs";
 
-import { InputVerbatimDirective } from "@bitwarden/angular/directives/input-verbatim.directive";
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { InputVerbatimDirective } from "@localpass/angular/directives/input-verbatim.directive";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { UserId } from "@localpass/common/types/guid";
 import {
   AsyncActionsModule,
   BitIconButtonComponent,
@@ -23,9 +23,9 @@ import {
   FormFieldModule,
   SpinnerComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { LogService } from "@localpass/logging";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { KeyRotationDialogService } from "./key-rotation-dialog.service";
 
@@ -162,7 +162,7 @@ export class KeyRotationDialogComponent {
 
     if (learnMore) {
       this.platformUtilsService.launchUri(
-        "https://bitwarden.com/help/attachments/#fixing-old-attachments",
+        "https://github.com/xieboss778/LocalPass/tree/main/docs",
       );
     }
   }

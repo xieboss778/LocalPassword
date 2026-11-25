@@ -3,14 +3,14 @@ import { Component, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { combineLatest, filter, map, Observable, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NoFolders } from "@bitwarden/assets/svg";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NoFolders } from "@localpass/assets/svg";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { UserId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -20,14 +20,14 @@ import {
   StatusLockupComponent,
   SvgComponent,
   IconComponent,
-} from "@bitwarden/components";
-import { AddEditFolderDialogComponent, VaultFabComponent, Vfo1I18nPipe } from "@bitwarden/vault";
+} from "@localpass/components";
+import { AddEditFolderDialogComponent, VaultFabComponent, Vfo1I18nPipe } from "@localpass/vault";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "./folders.component.html",

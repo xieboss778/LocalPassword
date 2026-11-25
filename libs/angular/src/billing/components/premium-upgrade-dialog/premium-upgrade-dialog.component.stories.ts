@@ -1,20 +1,20 @@
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 import { of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { PremiumCheckoutPendingService } from "@bitwarden/common/billing/abstractions/account/premium-checkout-pending.service";
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
-import { SubscriptionPricingServiceAbstraction } from "@bitwarden/common/billing/abstractions/subscription-pricing.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { PremiumCheckoutPendingService } from "@localpass/common/billing/abstractions/account/premium-checkout-pending.service";
+import { BillingApiServiceAbstraction } from "@localpass/common/billing/abstractions/billing-api.service.abstraction";
+import { SubscriptionPricingServiceAbstraction } from "@localpass/common/billing/abstractions/subscription-pricing.service.abstraction";
 import {
   PersonalSubscriptionPricingTier,
   PersonalSubscriptionPricingTierIds,
   SubscriptionCadenceIds,
-} from "@bitwarden/common/billing/types/subscription-pricing-tier";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/billing/types/subscription-pricing-tier";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   ButtonModule,
   DialogModule,
@@ -22,7 +22,7 @@ import {
   ToastOptions,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { PremiumUpgradeDialogComponent } from "./premium-upgrade-dialog.component";
 
@@ -92,9 +92,9 @@ export default {
         {
           provide: EnvironmentService,
           useValue: {
-            cloudWebVaultUrl$: of("https://vault.bitwarden.com"),
+            cloudWebVaultUrl$: of("https://vault.local.invalid"),
             environment$: of({
-              getWebVaultUrl: () => "https://vault.bitwarden.com",
+              getWebVaultUrl: () => "https://vault.local.invalid",
               isCloud: () => true,
             }),
           },

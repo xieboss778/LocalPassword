@@ -6,7 +6,7 @@ import {
   KeyDefinition,
   StateProvider,
   VAULT_SETTINGS_DISK,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 import { VaultPopupItemsService } from "./vault-popup-items.service";
 

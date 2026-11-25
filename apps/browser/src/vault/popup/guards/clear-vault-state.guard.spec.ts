@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
 import { firstValueFrom, Observable, of } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { VaultComponent } from "../components/vault/vault.component";
 import { VaultPopupItemsService } from "../services/vault-popup-items.service";

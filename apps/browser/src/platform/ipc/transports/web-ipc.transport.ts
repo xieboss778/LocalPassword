@@ -1,7 +1,7 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { IpcMessage, isIpcMessage } from "@bitwarden/common/platform/ipc";
-import { urlOriginsMatch } from "@bitwarden/platform";
-import { IncomingMessage, OutgoingMessage } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { IpcMessage, isIpcMessage } from "@localpass/common/platform/ipc";
+import { urlOriginsMatch } from "@localpass/platform";
+import { IncomingMessage, OutgoingMessage } from "@localpass/sdk-internal";
 
 import { BrowserApi } from "../../browser/browser-api";
 
@@ -87,7 +87,7 @@ export class WebIpcTransport {
     await BrowserApi.tabSendMessage(
       { id: message.destination.Web.tab_id } as chrome.tabs.Tab,
       {
-        type: "bitwarden-ipc-message",
+        type: "localpass-ipc-message",
         message: {
           destination: message.destination,
           payload: [...message.payload],

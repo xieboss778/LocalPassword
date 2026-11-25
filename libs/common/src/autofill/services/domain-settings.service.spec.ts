@@ -17,7 +17,7 @@ import { TargetingRulesByDomain, FormContent } from "../types";
 
 import { DefaultDomainSettingsService, DomainSettingsService } from "./domain-settings.service";
 
-const MOCK_API_URL = "https://api.bitwarden.com";
+const MOCK_API_URL = "https://api.local.invalid";
 
 describe("DefaultDomainSettingsService", () => {
   let domainSettingsService: DomainSettingsService;
@@ -43,7 +43,7 @@ describe("DefaultDomainSettingsService", () => {
 
   const mockEquivalentDomains = [
     ["example.com", "exampleapp.com", "example.co.uk", "ejemplo.es"],
-    ["bitwarden.com", "bitwarden.co.uk", "sm-bitwarden.com"],
+    ["local.invalid", "localpass.co.uk", "sm-local.invalid"],
     ["example.co.uk", "exampleapp.co.uk"],
   ];
 
@@ -911,7 +911,7 @@ describe("DefaultDomainSettingsService", () => {
 
     it("emits undefined when the policy URL is the default sentinel and server config has no URL", async () => {
       fillAssistPolicyMock$.next([
-        makeFillAssistPolicy({ rulesUrl: "https://fillassist.bitwarden.com" }),
+        makeFillAssistPolicy({ rulesUrl: "https://fillassist.local.invalid" }),
       ]);
       serverConfigMock$.next({ environment: {} });
 
@@ -945,11 +945,11 @@ describe("DefaultDomainSettingsService", () => {
     });
 
     it("falls back to server config when the policy URL matches the hardcoded default", async () => {
-      // A policy configured with the Bitwarden default URL should not shadow
+      // A policy configured with the LocalPass default URL should not shadow
       // the server config — otherwise self-hosted admins couldn't override.
       fillAssistPolicyMock$.next([
         makeFillAssistPolicy({
-          rulesUrl: "https://fillassist.bitwarden.com",
+          rulesUrl: "https://fillassist.local.invalid",
         }),
       ]);
       serverConfigMock$.next({
@@ -966,7 +966,7 @@ describe("DefaultDomainSettingsService", () => {
       // URL with a slash must not shadow server config.
       fillAssistPolicyMock$.next([
         makeFillAssistPolicy({
-          rulesUrl: "https://fillassist.bitwarden.com/",
+          rulesUrl: "https://fillassist.local.invalid/",
         }),
       ]);
       serverConfigMock$.next({

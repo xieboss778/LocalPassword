@@ -1,5 +1,5 @@
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 
 import { EventSecurity } from "../../../../utils/event-security";
 import { keyupEvent, litHandler, litValues } from "../../lit-stories/lit-values";

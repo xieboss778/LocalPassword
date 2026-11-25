@@ -10,7 +10,7 @@ import {
   ImportResult,
   ImportStagingServiceAbstraction,
   ImportType,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 
 import { ImportControlsDesktopComponent } from "./import-controls-desktop.component";
 

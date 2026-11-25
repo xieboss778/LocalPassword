@@ -1,10 +1,10 @@
 import { mock } from "jest-mock-extended";
 import { Subject, firstValueFrom } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessageListener, MessageSender } from "@bitwarden/common/platform/messaging";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { tagAsExternal } from "@bitwarden/messaging";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessageListener, MessageSender } from "@localpass/common/platform/messaging";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { tagAsExternal } from "@localpass/messaging";
 
 import { FullSyncMessage } from "./foreground-sync.service";
 import { FULL_SYNC_FINISHED, SyncServiceListener } from "./sync-service.listener";

@@ -4,24 +4,24 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { SendDeletionDatePreset } from "@bitwarden/common/tools/models/send-deletion-date-preset";
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { ToastService } from "@bitwarden/components";
-import { newGuid } from "@bitwarden/guid";
-import { LogService } from "@bitwarden/logging";
-import { OrganizationId } from "@bitwarden/sdk-internal";
-import { SendPolicyService } from "@bitwarden/send-ui";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { SendDeletionDatePreset } from "@localpass/common/tools/models/send-deletion-date-preset";
+import { CipherId, UserId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { ToastService } from "@localpass/components";
+import { newGuid } from "@localpass/guid";
+import { LogService } from "@localpass/logging";
+import { OrganizationId } from "@localpass/sdk-internal";
+import { SendPolicyService } from "@localpass/send-ui";
 
 import { ShareLink, ShareLinkService } from "../../services/share-link.service";
 
@@ -182,7 +182,7 @@ describe("ShareItemFormComponent", () => {
 
   it("should create and copy link when form is valid", async () => {
     component.form.controls.emails.setValue("recipient@example.com");
-    shareLinkService.createShareLink.mockResolvedValue("https://send.bitwarden.com/access-id/key");
+    shareLinkService.createShareLink.mockResolvedValue("https://send.local.invalid/access-id/key");
 
     await component.createAndCopyLink();
 
@@ -197,7 +197,7 @@ describe("ShareItemFormComponent", () => {
 
   it("should parse comma-delimited emails correctly", async () => {
     component.form.controls.emails.setValue("a@test.com, b@test.com, c@test.com");
-    shareLinkService.createShareLink.mockResolvedValue("https://send.bitwarden.com/access-id/key");
+    shareLinkService.createShareLink.mockResolvedValue("https://send.local.invalid/access-id/key");
 
     await component.createAndCopyLink();
 
@@ -216,13 +216,13 @@ describe("ShareItemFormComponent", () => {
       emails: ["test@test.com"],
       expiresAt: new Date(),
       oneTimeShare: false,
-      url: "https://vault.bitwarden.com/share/abc",
+      url: "https://vault.local.invalid/share/abc",
     };
 
     await component["copyLink"](mockLink);
 
     expect(platformUtilsService.copyToClipboard).toHaveBeenCalledWith(
-      "https://vault.bitwarden.com/share/abc",
+      "https://vault.local.invalid/share/abc",
     );
     expect(toastService.showToast).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -239,7 +239,7 @@ describe("ShareItemFormComponent", () => {
       emails: ["test@test.com"],
       expiresAt: new Date(),
       oneTimeShare: false,
-      url: "https://vault.bitwarden.com/share/abc",
+      url: "https://vault.local.invalid/share/abc",
     };
 
     await component["deleteLink"](mockLink);

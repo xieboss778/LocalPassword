@@ -22,22 +22,22 @@ import {
   take,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   getOrganizationById,
   OrganizationService,
-} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { EndUserNotificationService } from "@bitwarden/common/vault/notifications";
-import { SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+} from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AutofillOverlayVisibility } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { EndUserNotificationService } from "@localpass/common/vault/notifications";
+import { SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 import {
   ButtonModule,
   CalloutModule,
@@ -46,12 +46,12 @@ import {
   ItemModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   AtRiskPasswordCalloutService,
   PasswordRepromptService,
   VaultCarouselModule,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";

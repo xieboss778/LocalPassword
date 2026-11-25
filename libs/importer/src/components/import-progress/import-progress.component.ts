@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-import { SpinnerComponent, TypographyModule } from "@bitwarden/components";
+import { SpinnerComponent, TypographyModule } from "@localpass/components";
 
 @Component({
   selector: "importer-progress",

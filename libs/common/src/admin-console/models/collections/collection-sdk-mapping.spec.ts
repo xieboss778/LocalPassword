@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-restricted-imports
-import { DECRYPT_ERROR, EncString } from "@bitwarden/legacy-crypto";
+import { DECRYPT_ERROR, EncString } from "@localpass/legacy-crypto";
 import {
   Collection as SdkCollection,
   CollectionView as SdkCollectionView,
   EncString as SdkEncString,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { CollectionId, OrganizationId } from "../../../types/guid";
 

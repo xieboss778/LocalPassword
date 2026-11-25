@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 
 import { SafariCsvImporter } from "./safari-csv-importer";
 import { data as oldSimplePasswordData } from "./spec-data/safari-csv/old-simple-password-data.csv";

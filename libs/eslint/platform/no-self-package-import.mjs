@@ -8,7 +8,7 @@ export const messages = {
 
 const toPosix = (p) => p.replace(/\\/g, "/");
 
-// Cache of repoRoot -> parsed `@bitwarden/*` path entries so tsconfig.base.json is read once.
+// Cache of repoRoot -> parsed `@localpass/*` path entries so tsconfig.base.json is read once.
 const entriesCache = new Map();
 
 /** Walk up from `startDir` until a directory containing tsconfig.base.json is found. */
@@ -28,7 +28,7 @@ function findRepoRoot(startDir) {
 }
 
 /**
- * Build the list of `{ alias, dir }` entries from tsconfig.base.json's `@bitwarden/*` path map.
+ * Build the list of `{ alias, dir }` entries from tsconfig.base.json's `@localpass/*` path map.
  * `alias` has any trailing `/*` removed; `dir` is a repo-relative posix path with `./`, `/*`, and
  * `/index.ts` removed.
  */
@@ -43,7 +43,7 @@ function loadPathEntries(repoRoot) {
 
   const entries = [];
   for (const [key, values] of Object.entries(paths)) {
-    if (!key.startsWith("@bitwarden/") || !Array.isArray(values) || values.length === 0) {
+    if (!key.startsWith("@localpass/") || !Array.isArray(values) || values.length === 0) {
       continue;
     }
     const alias = key.replace(/\/\*$/, "");
@@ -91,7 +91,7 @@ export default {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Disallow importing a package's own '@bitwarden/*' alias; use relative paths",
+      description: "Disallow importing a package's own '@localpass/*' alias; use relative paths",
       category: "Best Practices",
       recommended: false,
     },

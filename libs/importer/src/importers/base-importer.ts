@@ -2,23 +2,23 @@
 // @ts-strict-ignore
 import * as papa from "papaparse";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { normalizeExpiryYearFormat } from "@bitwarden/common/autofill/utils";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { normalizeExpiryYearFormat } from "@localpass/common/autofill/utils";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 import {
   FieldType,
   SecureNoteType,
   CipherType,
   BankAccountType,
-} from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+} from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 
 import { ImportResult } from "../models/import-result";
 

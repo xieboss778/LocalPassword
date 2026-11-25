@@ -1,6 +1,6 @@
 import { Subscription } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 /**
  * A service for managing the setting of the `lang="<locale>" attribute on the

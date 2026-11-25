@@ -77,8 +77,8 @@ These services require **platform-specific features** and must be explicitly reg
 import { Injectable } from "@angular/core";
 import { combineLatest, map, Observable } from "rxjs";
 
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { DefaultSingleNudgeService } from "../default-single-nudge.service";
 import { NudgeStatus, NudgeType } from "../nudges.service";
@@ -117,8 +117,8 @@ export class MyNudgeService extends DefaultSingleNudgeService {
 import { Injectable } from "@angular/core";
 import { combineLatest, map, Observable } from "rxjs";
 
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { DefaultSingleNudgeService } from "../default-single-nudge.service";
 import { NudgeStatus, NudgeType } from "../nudges.service";
@@ -195,7 +195,7 @@ private customNudgeServices = {
 3. **Register in each supporting client** (e.g., `apps/browser/src/popup/services/services.module.ts`):
 
 ```typescript
-import { MY_NUDGE_SERVICE } from "@bitwarden/angular/vault";
+import { MY_NUDGE_SERVICE } from "@localpass/angular/vault";
 
 safeProvider({
   provide: MY_NUDGE_SERVICE as SafeInjectionToken<SingleNudgeService>,

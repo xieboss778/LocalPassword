@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
 
 import { DesktopImportUpgradeMetadataService } from "./desktop-import-upgrade-metadata.service";
 

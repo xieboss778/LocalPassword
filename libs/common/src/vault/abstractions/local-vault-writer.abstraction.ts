@@ -8,7 +8,7 @@ import { CipherView } from "../models/view/cipher.view";
  *
  * Every method returns `null`/`false` when the user's vault is not local, which makes the caller
  * fall through to the ordinary server path untouched. Implementations live in
- * `@bitwarden/local-vault`; `NoopLocalVaultWriter` is the default so that a client which never
+ * `@localpass/local-vault`; `NoopLocalVaultWriter` is the default so that a client which never
  * registers one behaves exactly as upstream.
  */
 export abstract class LocalVaultWriter {

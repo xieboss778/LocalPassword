@@ -7,39 +7,39 @@ import { RouterModule } from "@angular/router";
 import { BehaviorSubject, EMPTY, firstValueFrom, from, fromEvent } from "rxjs";
 import { catchError, concatMap, map, switchMap, timeout } from "rxjs/operators";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
 import {
   AutotypeShortcutComponent,
   formatAutotypeShortcut,
-} from "@bitwarden/angular/desktop-native/components/autotype-shortcut.component";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { getFirstPolicy } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ClearClipboardDelay } from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { ClearClipboardDelaySetting } from "@bitwarden/common/autofill/types";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { AutotypeFeatureFlagState } from "@bitwarden/common/desktop-native/enums/autotype-feature-flag-state.enum";
-import { autotypeFeatureFlagState$ } from "@bitwarden/common/desktop-native/services/autotype-feature-flags";
-import { DeviceType } from "@bitwarden/common/enums";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums/theme-type.enum";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
+} from "@localpass/angular/desktop-native/components/autotype-shortcut.component";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { getFirstPolicy } from "@localpass/common/admin-console/services/policy/default-policy.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { UserVerificationService as UserVerificationServiceAbstraction } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { ClearClipboardDelaySetting } from "@localpass/common/autofill/types";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { AutotypeFeatureFlagState } from "@localpass/common/desktop-native/enums/autotype-feature-flag-state.enum";
+import { autotypeFeatureFlagState$ } from "@localpass/common/desktop-native/services/autotype-feature-flags";
+import { DeviceType } from "@localpass/common/enums";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { UserId } from "@localpass/common/types/guid";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
 import {
   BadgeComponent,
   ButtonModule,
@@ -57,16 +57,16 @@ import {
   SelectModule,
   TabsModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { KeyService, BiometricStateService, BiometricsStatus } from "@bitwarden/key-management";
-import { SessionTimeoutSettingsComponent } from "@bitwarden/key-management-ui";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { AutoUnlockService } from "@bitwarden/unlock";
+} from "@localpass/components";
+import { KeyService, BiometricStateService, BiometricsStatus } from "@localpass/key-management";
+import { SessionTimeoutSettingsComponent } from "@localpass/key-management-ui";
+import { I18nPipe } from "@localpass/ui-common";
+import { AutoUnlockService } from "@localpass/unlock";
 import {
   PermitCipherDetailsPopoverComponent,
   VaultCopyButtonsService,
   ShowQuickCopyActionsDetailsPopoverComponent,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { SshAgentPromptType } from "../../autofill/models/ssh-agent-setting";
@@ -500,7 +500,7 @@ export class SettingsDialogComponent implements OnInit {
         type: "warning",
       });
       if (confirmed) {
-        this.platformUtilsService.launchUri("https://bitwarden.com/help/biometrics/");
+        this.platformUtilsService.launchUri("https://github.com/xieboss778/LocalPass/tree/main/docs");
       }
       return;
     }
@@ -633,7 +633,7 @@ export class SettingsDialogComponent implements OnInit {
   }
 
   /**
-   * Asks the user to turn on Bitwarden if it is off and the OS can prompt, otherwise opens the
+   * Asks the user to turn on LocalPass if it is off and the OS can prompt, otherwise opens the
    * system settings.
    */
   protected async managePasskeyProvider() {

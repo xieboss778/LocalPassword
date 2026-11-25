@@ -19,7 +19,7 @@ fn make_id() -> String {
     let counter = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
     // In case multiple processes are running, include the PID in the key ID.
     let pid = std::process::id();
-    format!("bitwarden_desktop_{}_{}", pid, counter)
+    format!("localpass_desktop_{}_{}", pid, counter)
 }
 
 /// A secure key container that uses the Linux kernel keyctl API to store the key.
@@ -103,7 +103,7 @@ impl SecureKeyContainer for KeyctlSecureKeyContainer {
         let (init_tx, init_rx) = mpsc::sync_channel(0);
         let (command_tx, command_rx) = mpsc::channel();
         let worker = thread::Builder::new()
-            .name(format!("bitwarden-keyctl-{id}"))
+            .name(format!("localpass-keyctl-{id}"))
             .spawn(move || keyctl_worker(id, data, init_tx, command_rx))
             .expect("should start keyctl worker");
 
@@ -120,7 +120,7 @@ impl SecureKeyContainer for KeyctlSecureKeyContainer {
 
     fn is_supported() -> bool {
         thread::Builder::new()
-            .name("bitwarden-keyctl-support".to_string())
+            .name("localpass-keyctl-support".to_string())
             .spawn(|| KeyRing::from_special_id(KEY_RING_IDENTIFIER, true).is_ok())
             .and_then(|worker| {
                 worker

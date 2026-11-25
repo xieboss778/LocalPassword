@@ -2,11 +2,11 @@ import { ModuleWithProviders, NgModule } from "@angular/core";
 import { DefaultNoComponentGlobalConfig, GlobalConfig, TOAST_CONFIG } from "ngx-toastr";
 
 import { ToastContainerComponent } from "./toast-container.component";
-import { BitwardenToastrComponent } from "./toastr.component";
+import { LocalPassToastrComponent } from "./toastr.component";
 
 @NgModule({
-  imports: [BitwardenToastrComponent, ToastContainerComponent],
-  exports: [BitwardenToastrComponent, ToastContainerComponent],
+  imports: [LocalPassToastrComponent, ToastContainerComponent],
+  exports: [LocalPassToastrComponent, ToastContainerComponent],
 })
 export class ToastModule {
   static forRoot(config: Partial<GlobalConfig> = {}): ModuleWithProviders<ToastModule> {
@@ -16,7 +16,7 @@ export class ToastModule {
         {
           provide: TOAST_CONFIG,
           useValue: {
-            default: BitwardenToastrGlobalConfig,
+            default: LocalPassToastrGlobalConfig,
             config: config,
           },
         },
@@ -25,9 +25,9 @@ export class ToastModule {
   }
 }
 
-export const BitwardenToastrGlobalConfig: GlobalConfig = {
+export const LocalPassToastrGlobalConfig: GlobalConfig = {
   ...DefaultNoComponentGlobalConfig,
-  toastComponent: BitwardenToastrComponent,
+  toastComponent: LocalPassToastrComponent,
   tapToDismiss: false,
   timeOut: 5000,
   extendedTimeOut: 2000,

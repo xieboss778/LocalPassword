@@ -15,7 +15,7 @@ import { encryptAesV2 } from "./services/crypto";
 // Vault is a temporary data structure. It's only used to store the decoded vault data from the Keeper API response.
 // Later it's converted to the ImportResult format by the keeper-direct-importer. We only do some minimal testing here
 // to make sure it doesn't have any major issues with decryption and data access. The keeper-direct-importer.spec tests
-// the conversion from Vault to ImportResult in more detail, since that's where most of the Bitwarden specific logic is.
+// the conversion from Vault to ImportResult in more detail, since that's where most of the LocalPass specific logic is.
 describe("Keeper Vault", () => {
   let vault: Vault;
 

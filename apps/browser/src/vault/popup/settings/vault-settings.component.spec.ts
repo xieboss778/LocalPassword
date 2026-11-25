@@ -5,16 +5,16 @@ import { provideRouter, Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { NudgesService } from "@bitwarden/angular/vault";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { ToastService } from "@bitwarden/components";
+import { NudgesService } from "@localpass/angular/vault";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { ToastService } from "@localpass/components";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";

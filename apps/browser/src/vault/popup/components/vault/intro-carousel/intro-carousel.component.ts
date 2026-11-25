@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ItemTypes, LoginCards, NoCredentialsIcon, DevicesIcon } from "@bitwarden/assets/svg";
-import { consumeDefaultPasswordManagerSuccessToast } from "@bitwarden/browser/autofill/default-password-manager-session.util";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ItemTypes, LoginCards, NoCredentialsIcon, DevicesIcon } from "@localpass/assets/svg";
+import { consumeDefaultPasswordManagerSuccessToast } from "@localpass/browser/autofill/default-password-manager-session.util";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   ButtonModule,
   DialogModule,
   SvgModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { VaultCarouselModule } from "@bitwarden/vault";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { VaultCarouselModule } from "@localpass/vault";
 
 import { IntroCarouselService } from "../../../services/intro-carousel.service";
 

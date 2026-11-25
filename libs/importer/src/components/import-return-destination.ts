@@ -1,7 +1,7 @@
 import { Router } from "@angular/router";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 /** A button on the import's result dialog that leads back to where the import was started from. */
 export interface ImportReturnDestination {

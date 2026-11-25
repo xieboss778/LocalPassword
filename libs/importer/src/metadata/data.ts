@@ -6,7 +6,7 @@ export const Loader = Object.freeze({
   /** Data loaded directly from the chromium browser's data store */
   chromium: "chromium",
 
-  /** Data provided through an importer ipc channel (e.g. Bitwarden bridge) */
+  /** Data provided through an importer ipc channel (e.g. LocalPass bridge) */
   ipc: "ipc",
 
   /** Data provided by a literal file download, saved to disk and then read back.

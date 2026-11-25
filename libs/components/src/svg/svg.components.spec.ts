@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { BitSvg, svg } from "@bitwarden/assets/svg";
+import { BitSvg, svg } from "@localpass/assets/svg";
 
 import { SvgComponent } from "./svg.component";
 

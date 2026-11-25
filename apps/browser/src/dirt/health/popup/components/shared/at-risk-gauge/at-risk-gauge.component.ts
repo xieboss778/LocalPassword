@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * Presentational 270° arc gauge for a vault-health "at risk" score. Fills a

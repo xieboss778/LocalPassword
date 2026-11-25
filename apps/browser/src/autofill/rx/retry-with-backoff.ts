@@ -1,6 +1,6 @@
 import { MonoTypeOperatorFunction, Observable, catchError, retry, throwError, timer } from "rxjs";
 
-import type { LogService } from "@bitwarden/logging";
+import type { LogService } from "@localpass/logging";
 
 /**
  * Reports one retried failure: the human-readable message and the triggering error, mirroring a

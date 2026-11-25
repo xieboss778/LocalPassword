@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService } from "@localpass/components";
 
 import { ImportResult } from "../../models";
 import { ImportSkippedItemsDialogComponent, ImportSuccessDialogComponent } from "../dialog";

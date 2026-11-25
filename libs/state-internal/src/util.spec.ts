@@ -1,4 +1,4 @@
-import { FakeStorageService } from "@bitwarden/storage-test-utils";
+import { FakeStorageService } from "@localpass/storage-test-utils";
 
 import { getStoredValue } from "./util";
 

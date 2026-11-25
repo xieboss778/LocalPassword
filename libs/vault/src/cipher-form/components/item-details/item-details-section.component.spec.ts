@@ -6,26 +6,26 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { ClientType } from "@localpass/client-type";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
 import {
   CollectionView,
   CollectionType,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { Option, SelectComponent } from "@bitwarden/components";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { Option, SelectComponent } from "@localpass/components";
 
 import { Vfo1TerminologyService } from "../../../services/vfo1-terminology.service";
 import {

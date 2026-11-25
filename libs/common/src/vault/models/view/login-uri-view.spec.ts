@@ -1,4 +1,4 @@
-import { LoginUriView as SdkLoginUriView, UriMatchType } from "@bitwarden/sdk-internal";
+import { LoginUriView as SdkLoginUriView, UriMatchType } from "@localpass/sdk-internal";
 
 import { UriMatchStrategy, UriMatchStrategySetting } from "../../../models/domain/domain-service";
 import { Utils } from "../../../platform/misc/utils";
@@ -13,18 +13,18 @@ const testData = [
   },
   {
     match: UriMatchStrategy.Host,
-    uri: "bitwarden.com",
-    expected: "http://bitwarden.com",
+    uri: "local.invalid",
+    expected: "https://local.invalid",
   },
   {
     match: UriMatchStrategy.Host,
-    uri: "bitwarden.de",
-    expected: "http://bitwarden.de",
+    uri: "localpass.de",
+    expected: "http://localpass.de",
   },
   {
     match: UriMatchStrategy.Host,
-    uri: "bitwarden.br",
-    expected: "http://bitwarden.br",
+    uri: "localpass.br",
+    expected: "http://localpass.br",
   },
 ];
 
@@ -129,13 +129,13 @@ describe("LoginUriView", () => {
 
   it(`canLaunch should return false when MatchDetection is set to Regex`, async () => {
     const uri = new LoginUriView();
-    Object.assign(uri, { match: UriMatchStrategy.RegularExpression, uri: "bitwarden.com" });
+    Object.assign(uri, { match: UriMatchStrategy.RegularExpression, uri: "local.invalid" });
     expect(uri.canLaunch).toBe(false);
   });
 
   it(`canLaunch() should return false when the given protocol does not match CanLaunchWhiteList`, async () => {
     const uri = new LoginUriView();
-    Object.assign(uri, { match: UriMatchStrategy.Host, uri: "someprotocol://bitwarden.com" });
+    Object.assign(uri, { match: UriMatchStrategy.Host, uri: "someprotocol://local.invalid" });
     expect(uri.canLaunch).toBe(false);
   });
 

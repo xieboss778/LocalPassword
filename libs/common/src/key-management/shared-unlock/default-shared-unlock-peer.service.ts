@@ -8,8 +8,8 @@ import {
   Subscription,
 } from "rxjs";
 
-import { SharedUnlockClient, SharedUnlockPeer } from "@bitwarden/sdk-internal";
-import { LockService, LockSource, UnlockMethod, UnlockService } from "@bitwarden/unlock";
+import { SharedUnlockClient, SharedUnlockPeer } from "@localpass/sdk-internal";
+import { LockService, LockSource, UnlockMethod, UnlockService } from "@localpass/unlock";
 
 import { AccountService } from "../../auth/abstractions/account.service";
 import { ClientType } from "../../enums";

@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, Subject } from "rxjs";
 
-import { LogService } from "@bitwarden/logging";
+import { LogService } from "@localpass/logging";
 
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { OrganizationService } from "../../../admin-console/abstractions/organization/organization.service.abstraction";

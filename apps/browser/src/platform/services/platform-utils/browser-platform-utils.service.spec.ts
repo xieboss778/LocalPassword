@@ -1,6 +1,6 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
-import { DeviceType } from "@bitwarden/common/enums";
+import { DeviceType } from "@localpass/common/enums";
 
 import { flushPromises } from "../../../autofill/spec/testing-utils";
 import { SafariApp } from "../../../browser/safariApp";

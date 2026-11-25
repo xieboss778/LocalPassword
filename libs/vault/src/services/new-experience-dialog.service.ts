@@ -1,11 +1,11 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService } from "@bitwarden/components";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService } from "@localpass/components";
 
 import {
   NewExperienceDialogComponent,

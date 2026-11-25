@@ -1,8 +1,8 @@
 import { Injectable, inject } from "@angular/core";
 import { FormControl } from "@angular/forms";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { LastPassDirectImportService } from "../../lastpass/lastpass-direct-import.service";
 import { lastPassValidationErrorI18nKey } from "../../lastpass/lastpass-validation-error";

@@ -6,7 +6,7 @@ import {
   KeyDefinition,
   StateProvider,
   VAULT_BROWSER_INTRO_CAROUSEL,
-} from "@bitwarden/common/platform/state";
+} from "@localpass/common/platform/state";
 
 const INTRO_CAROUSEL = new KeyDefinition<boolean>(
   VAULT_BROWSER_INTRO_CAROUSEL,

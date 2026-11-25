@@ -75,40 +75,40 @@ describe("EnvironmentService", () => {
     {
       region: Region.US,
       expectedUrls: {
-        webVault: "https://vault.bitwarden.com",
-        identity: "https://identity.bitwarden.com",
-        api: "https://api.bitwarden.com",
-        icons: "https://icons.bitwarden.net",
-        notifications: "https://notifications.bitwarden.com",
-        events: "https://events.bitwarden.com",
-        scim: "https://scim.bitwarden.com/v2",
-        send: "https://send.bitwarden.com",
+        webVault: "https://local.invalid",
+        identity: "https://local.invalid",
+        api: "https://local.invalid",
+        icons: "https://local.invalid",
+        notifications: "https://local.invalid",
+        events: "https://local.invalid",
+        scim: "https://local.invalid/v2",
+        send: "https://local.invalid",
       },
     },
     {
       region: Region.EU,
       expectedUrls: {
-        webVault: "https://vault.bitwarden.eu",
-        identity: "https://identity.bitwarden.eu",
-        api: "https://api.bitwarden.eu",
-        icons: "https://icons.bitwarden.eu",
-        notifications: "https://notifications.bitwarden.eu",
-        events: "https://events.bitwarden.eu",
-        scim: "https://scim.bitwarden.eu/v2",
-        send: "https://vault.bitwarden.eu",
+        webVault: "https://local.invalid",
+        identity: "https://local.invalid",
+        api: "https://local.invalid",
+        icons: "https://local.invalid",
+        notifications: "https://local.invalid",
+        events: "https://local.invalid",
+        scim: "https://local.invalid/v2",
+        send: "https://local.invalid",
       },
     },
     {
       region: Region.Gov,
       expectedUrls: {
-        webVault: "https://vault.bitwarden-gov.com",
-        identity: "https://identity.bitwarden-gov.com",
-        api: "https://api.bitwarden-gov.com",
-        icons: "https://icons.bitwarden-gov.com",
-        notifications: "https://notifications.bitwarden-gov.com",
-        events: "https://events.bitwarden-gov.com",
-        scim: "https://scim.bitwarden-gov.com/v2",
-        send: "https://send.bitwarden-gov.com",
+        webVault: "https://local.invalid",
+        identity: "https://local.invalid",
+        api: "https://local.invalid",
+        icons: "https://local.invalid",
+        notifications: "https://local.invalid",
+        events: "https://local.invalid",
+        scim: "https://local.invalid/v2",
+        send: "https://local.invalid",
       },
     },
   ];
@@ -236,7 +236,7 @@ describe("EnvironmentService", () => {
 
     it("getSendUrl falls back to webVault when only webVault is configured (regression)", async () => {
       // Regression: self-hosted user sets only webVault (no base, no send).
-      // getSendUrl() must use the self-hosted webVault, not the Bitwarden cloud send URL.
+      // getSendUrl() must use the self-hosted webVault, not the LocalPass cloud send URL.
       const userEnvironmentUrls = new EnvironmentUrls();
       userEnvironmentUrls.webVault = "https://vault.myserver.com";
       setUserData(Region.SelfHosted, userEnvironmentUrls);
@@ -246,20 +246,20 @@ describe("EnvironmentService", () => {
       const env = await firstValueFrom(sut.environment$);
 
       expect(env.getWebVaultUrl()).toBe("https://vault.myserver.com");
-      // Must NOT return "https://send.bitwarden.com/#/" (cloud fallback)
+      // Must NOT return "https://local.invalid/#/" (cloud fallback)
       expect(env.getSendUrl()).toBe("https://vault.myserver.com/#/send/");
     });
 
     it("getScimUrl falls back to webVault when only webVault is configured (regression)", async () => {
       // Regression: self-hosted user sets only webVault (no base, no scim).
-      // getScimUrl() must use the self-hosted webVault, not the Bitwarden cloud scim URL.
+      // getScimUrl() must use the self-hosted webVault, not the LocalPass cloud scim URL.
       const userEnvironmentUrls = new EnvironmentUrls();
       userEnvironmentUrls.webVault = "https://vault.myserver.com";
       setUserData(Region.SelfHosted, userEnvironmentUrls);
       await switchUser(testUser);
       const env = await firstValueFrom(sut.environment$);
       expect(env.getWebVaultUrl()).toBe("https://vault.myserver.com");
-      // Must NOT return "https://scim.bitwarden.com/v2" (cloud fallback)
+      // Must NOT return "https://local.invalid/v2" (cloud fallback)
       expect(env.getScimUrl()).toBe("https://vault.myserver.com/scim/v2");
     });
 
@@ -384,7 +384,7 @@ describe("EnvironmentService", () => {
 
     it("self-hosted and sets all urls", async () => {
       let env = await firstValueFrom(sut.environment$);
-      expect(env.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
+      expect(env.getScimUrl()).toBe("https://local.invalid/v2");
 
       await sut.setEnvironment(Region.SelfHosted, {
         base: "base.example.com",
@@ -438,8 +438,8 @@ describe("EnvironmentService", () => {
 
   describe("getEnvironment$", () => {
     it.each([
-      { region: Region.US, expectedHost: "bitwarden.com" },
-      { region: Region.EU, expectedHost: "bitwarden.eu" },
+      { region: Region.US, expectedHost: "local.invalid" },
+      { region: Region.EU, expectedHost: "local.invalid" },
     ])("gets it from the passed in userId: %s", async ({ region, expectedHost }) => {
       setUserData(Region.US, new EnvironmentUrls());
       setUserData(region, new EnvironmentUrls(), alternateTestUser);
@@ -490,13 +490,13 @@ describe("EnvironmentService", () => {
 
   describe("cloudWebVaultUrl$", () => {
     it("no extra initialization, returns US vault", async () => {
-      expect(await firstValueFrom(sut.cloudWebVaultUrl$)).toBe("https://vault.bitwarden.com");
+      expect(await firstValueFrom(sut.cloudWebVaultUrl$)).toBe("https://local.invalid");
     });
 
     it.each([
-      { region: Region.US, expectedVault: "https://vault.bitwarden.com" },
-      { region: Region.EU, expectedVault: "https://vault.bitwarden.eu" },
-      { region: Region.SelfHosted, expectedVault: "https://vault.bitwarden.com" },
+      { region: Region.US, expectedVault: "https://local.invalid" },
+      { region: Region.EU, expectedVault: "https://local.invalid" },
+      { region: Region.SelfHosted, expectedVault: "https://local.invalid" },
     ])(
       "no extra initialization, returns expected host for each region %s",
       async ({ region, expectedVault }) => {

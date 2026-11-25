@@ -3,11 +3,11 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Send } from "@bitwarden/common/tools/send/models/domain/send";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Send } from "@localpass/common/tools/send/models/domain/send";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 
 import { SendPolicyService } from "../../..";
 import { SendFormService } from "../../abstractions/send-form.service";

@@ -12,7 +12,7 @@ import {
 
 import { IconComponent } from "../icon";
 import { IconTileComponent } from "../icon-tile";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 import { AccordionGroupComponent } from "./accordion-group.component";
 
@@ -54,7 +54,7 @@ export class AccordionComponent {
   readonly title = input.required<string>();
   readonly subtitle = input<string>();
   readonly open = model<boolean>(false);
-  readonly startIcon = input<BitwardenIcon>();
+  readonly startIcon = input<LocalPassIcon>();
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly size = input<AccordionSize>("default");
   readonly variant = input<AccordionVariant>("default");

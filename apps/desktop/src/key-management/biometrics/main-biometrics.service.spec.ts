@@ -1,16 +1,16 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { newGuid } from "@bitwarden/guid";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { newGuid } from "@localpass/guid";
 import {
   BiometricsService,
   BiometricsStatus,
   BiometricStateService,
-} from "@bitwarden/key-management";
+} from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptionType, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { EncryptionType, SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { WindowMain } from "../../main/window.main";
 
@@ -21,7 +21,7 @@ import { OsBiometricService } from "./os-biometrics.service";
 
 jest.mock("electron", () => ({
   app: {
-    getName: jest.fn().mockReturnValue("Bitwarden"),
+    getName: jest.fn().mockReturnValue("LocalPass"),
   },
   systemPreferences: {
     canPromptTouchID: jest.fn(),
@@ -29,7 +29,7 @@ jest.mock("electron", () => ({
   },
 }));
 
-jest.mock("@bitwarden/desktop-napi", () => {
+jest.mock("@localpass/desktop-napi", () => {
   return {
     passwords: jest.fn(),
   };

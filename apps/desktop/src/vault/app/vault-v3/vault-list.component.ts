@@ -7,20 +7,20 @@ import { Component, input, output, effect, inject, computed } from "@angular/cor
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { Observable, of, switchMap } from "rxjs";
 
-import { BitSvg } from "@bitwarden/assets/svg";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { BitSvg } from "@localpass/assets/svg";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherAuthorizationService } from "@localpass/common/vault/services/cipher-authorization.service";
 import {
   RestrictedCipherType,
   RestrictedItemTypesService,
-} from "@bitwarden/common/vault/services/restricted-item-types.service";
+} from "@localpass/common/vault/services/restricted-item-types.service";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   SortDirection,
   TableDataSource,
@@ -32,14 +32,14 @@ import {
   CalloutComponent,
   CheckboxModule,
   SvgComponent,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 import {
   NewCipherMenuComponent,
   VaultBatchBarService,
   VaultCopyButtonsService,
   VaultItem,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultCipherRowComponent } from "./vault-items/vault-cipher-row.component";
 import { VaultCollectionRowComponent } from "./vault-items/vault-collection-row.component";
@@ -83,7 +83,7 @@ type EmptyStateItem = {
   icon: BitSvg;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-list",

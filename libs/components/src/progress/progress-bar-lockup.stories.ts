@@ -1,8 +1,8 @@
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
-import { SpotReport } from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { SpotReport } from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { FormFieldModule } from "../form-field";
 import { SvgComponent } from "../svg/svg.component";

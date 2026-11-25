@@ -1,5 +1,5 @@
-import { LogService } from "@bitwarden/logging";
-import { AbstractStorageService } from "@bitwarden/storage-core";
+import { LogService } from "@localpass/logging";
+import { AbstractStorageService } from "@localpass/storage-core";
 
 import { MigrationBuilder } from "./migration-builder";
 import { EverHadUserKeyMigrator } from "./migrations/10-move-ever-had-user-key-to-state-providers";

@@ -1,9 +1,9 @@
 import { combineLatest, distinctUntilChanged, mergeMap, of, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BadgeSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/badge-settings.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BadgeSettingsServiceAbstraction } from "@localpass/common/autofill/services/badge-settings.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
 
 import { Tab } from "../../platform/badge/badge-browser-api";
 import { BadgeService } from "../../platform/badge/badge.service";

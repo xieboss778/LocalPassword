@@ -1,8 +1,8 @@
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SecurityTask, SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SecurityTask, SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
 
 import { Tab } from "../../platform/badge/badge-browser-api";
 import { BadgeService, BadgeStateFunction } from "../../platform/badge/badge.service";
@@ -57,7 +57,7 @@ describe("AtRiskCipherBadgeUpdaterService", () => {
   });
 
   it("clears the tab state when there are no ciphers and no pending tasks", async () => {
-    const tab: Tab = { tabId: 1, url: "https://bitwarden.com" };
+    const tab: Tab = { tabId: 1, url: "https://local.invalid" };
     const stateFunction = setState.mock.calls[0][1];
 
     const state = await firstValueFrom(stateFunction(tab));
@@ -66,7 +66,7 @@ describe("AtRiskCipherBadgeUpdaterService", () => {
   });
 
   it("sets state when there are pending tasks for the tab", async () => {
-    const tab: Tab = { tabId: 3, url: "https://bitwarden.com" };
+    const tab: Tab = { tabId: 3, url: "https://local.invalid" };
     const stateFunction: BadgeStateFunction = setState.mock.calls[0][1];
     const pendingTasks: SecurityTask[] = [
       {

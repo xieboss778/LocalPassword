@@ -3,11 +3,11 @@ import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 
 import {
   DefaultImportDestinationService,

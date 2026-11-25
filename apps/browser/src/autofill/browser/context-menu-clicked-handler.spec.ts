@@ -1,9 +1,9 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 import {
   AUTOFILL_ID,
   AUTOFILL_TRIAGE_ID,
@@ -13,16 +13,16 @@ import {
   COPY_VERIFICATION_CODE_ID,
   GENERATE_PASSWORD_ID,
   NOOP_COMMAND_SUFFIX,
-} from "@bitwarden/common/autofill/constants";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs";
-import { IntraprocessMessageSender } from "@bitwarden/common/platform/messaging";
-import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+} from "@localpass/common/autofill/constants";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs";
+import { IntraprocessMessageSender } from "@localpass/common/platform/messaging";
+import { FakeAccountService, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../platform/browser/browser-popup-utils";

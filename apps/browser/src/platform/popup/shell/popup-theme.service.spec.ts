@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject } from "rxjs";
 
-import { Theme } from "@bitwarden/common/platform/enums";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { Theme } from "@localpass/common/platform/enums";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
 
 import { POPUP_THEME_STORAGE_KEY } from "../../browser/popup-view";
 

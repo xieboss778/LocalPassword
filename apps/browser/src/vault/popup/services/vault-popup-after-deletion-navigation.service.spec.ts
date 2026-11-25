@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popup-router-cache.service";
 import { RouteHistoryCacheState } from "../../../platform/services/popup-view-cache-background.service";

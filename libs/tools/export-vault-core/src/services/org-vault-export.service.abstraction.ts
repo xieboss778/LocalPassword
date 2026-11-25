@@ -1,4 +1,4 @@
-import { UserId, OrganizationId } from "@bitwarden/common/types/guid";
+import { UserId, OrganizationId } from "@localpass/common/types/guid";
 
 import { ExportedVaultAsString } from "../types";
 

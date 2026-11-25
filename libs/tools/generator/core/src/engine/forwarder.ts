@@ -1,12 +1,12 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   ApiSettings,
   IntegrationRequest,
   RestClient,
-} from "@bitwarden/common/tools/integration/rpc";
-import { GenerationRequest } from "@bitwarden/common/tools/types";
+} from "@localpass/common/tools/integration/rpc";
+import { GenerationRequest } from "@localpass/common/tools/types";
 
 import { Type } from "../metadata";
 import { CredentialGenerator, GeneratedCredential } from "../types";

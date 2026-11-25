@@ -1,5 +1,5 @@
-import { FakeAccountService, FakeStateProvider } from "@bitwarden/common/spec";
-import { AcquiredCookie, ServerCommunicationConfig } from "@bitwarden/sdk-internal";
+import { FakeAccountService, FakeStateProvider } from "@localpass/common/spec";
+import { AcquiredCookie, ServerCommunicationConfig } from "@localpass/sdk-internal";
 
 import { ServerCommunicationConfigRepository } from "./server-communication-config.repository";
 
@@ -38,7 +38,7 @@ describe("ServerCommunicationConfigRepository", () => {
         cookieName: "auth_token",
         cookieDomain: ".acme.com",
         cookieValue: [{ name: "auth_token", value: "abc123" }] satisfies AcquiredCookie[],
-        vaultUrl: "https://vault.bitwarden.com",
+        vaultUrl: "https://vault.local.invalid",
       },
     };
 
@@ -56,7 +56,7 @@ describe("ServerCommunicationConfigRepository", () => {
         cookieName: "auth_token",
         cookieDomain: ".acme.com",
         cookieValue: undefined,
-        vaultUrl: "https://vault.bitwarden.com",
+        vaultUrl: "https://vault.local.invalid",
       },
     };
 
@@ -79,7 +79,7 @@ describe("ServerCommunicationConfigRepository", () => {
         cookieName: "token",
         cookieDomain: ".acme.com",
         cookieValue: [{ name: "token", value: "xyz789" }] satisfies AcquiredCookie[],
-        vaultUrl: "https://vault.bitwarden.com",
+        vaultUrl: "https://vault.local.invalid",
       },
     };
     await repository.save("vault.acme.com", newConfig);
@@ -99,7 +99,7 @@ describe("ServerCommunicationConfigRepository", () => {
         cookieName: "token",
         cookieDomain: ".example.com",
         cookieValue: [{ name: "token", value: "token123" }] satisfies AcquiredCookie[],
-        vaultUrl: "https://vault2.bitwarden.com",
+        vaultUrl: "https://vault2.local.invalid",
       },
     };
 
@@ -144,7 +144,7 @@ describe("ServerCommunicationConfigRepository", () => {
           cookieName: "token",
           cookieDomain: ".acme.com",
           cookieValue: [{ name: "token", value: "abc123" }] satisfies AcquiredCookie[],
-          vaultUrl: "https://vault.bitwarden.com",
+          vaultUrl: "https://vault.local.invalid",
         },
       };
 

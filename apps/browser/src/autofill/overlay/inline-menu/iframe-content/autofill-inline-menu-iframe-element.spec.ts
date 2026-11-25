@@ -15,7 +15,7 @@ describe("AutofillInlineMenuIframeElement", () => {
           this,
           AutofillOverlayPort.Button,
           { background: "transparent", border: "none" },
-          "bitwardenInlineMenuButton",
+          "localpassInlineMenuButton",
         );
       }
     },

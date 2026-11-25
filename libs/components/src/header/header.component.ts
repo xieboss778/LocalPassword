@@ -15,12 +15,12 @@ import {
 import { toSignal } from "@angular/core/rxjs-interop";
 import { of } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { safeProvider } from "@bitwarden/ui-common";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { safeProvider } from "@localpass/ui-common";
 
 import { IconComponent } from "../icon";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TypographyDirective } from "../typography/typography.directive";
 
 import { HeaderContext } from "./header-context";
@@ -71,7 +71,7 @@ export class HeaderComponent {
   /**
    * Icon to show before the title
    */
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
 
   // remove when VFO1 flag is removed
   protected readonly vfo1Enabled = toSignal(

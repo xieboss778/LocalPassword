@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from "@storybook/angular";
 
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
-import { BITWARDEN_ICONS } from "../shared/icon";
+import { LOCALPASS_ICONS } from "../shared/icon";
 
 import { IconTileComponent } from "./icon-tile.component";
 
@@ -42,7 +42,7 @@ export default {
       control: { type: "select" },
     },
     icon: {
-      options: BITWARDEN_ICONS,
+      options: LOCALPASS_ICONS,
       control: { type: "select" },
     },
     color: {

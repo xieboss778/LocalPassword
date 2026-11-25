@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BehaviorSubject } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
 
 import { HealthIntroComponent } from "./health-intro.component";
 

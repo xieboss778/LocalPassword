@@ -1,5 +1,5 @@
-import { IntegrationContext } from "@bitwarden/common/tools/integration";
-import { JsonRpc, IntegrationRequest, ApiSettings } from "@bitwarden/common/tools/integration/rpc";
+import { IntegrationContext } from "@localpass/common/tools/integration";
+import { JsonRpc, IntegrationRequest, ApiSettings } from "@localpass/common/tools/integration/rpc";
 
 import { ForwarderConfiguration } from "../forwarder-configuration";
 import { ForwarderContext } from "../forwarder-context";

@@ -1,15 +1,15 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { Subject, of } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { FetchMiddleware, FetchFn } from "@bitwarden/common/platform/misc/fetch-middleware";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { FetchMiddleware, FetchFn } from "@localpass/common/platform/misc/fetch-middleware";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   ServerCommunicationConfig,
   ServerCommunicationConfigClient,
   ServerCommunicationConfigPlatformApi,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { DefaultServerCommunicationConfigService } from "./default-server-communication-config.service";
 import { ServerCommunicationConfigRepository } from "./server-communication-config.repository";
@@ -29,7 +29,7 @@ class MockRequest {
 }
 
 // Mock SdkLoadService
-jest.mock("@bitwarden/common/platform/abstractions/sdk/sdk-load.service", () => ({
+jest.mock("@localpass/common/platform/abstractions/sdk/sdk-load.service", () => ({
   SdkLoadService: {
     Ready: Promise.resolve(),
   },
@@ -43,7 +43,7 @@ const mockClientInstance = {
   acquireCookie: jest.fn(),
 };
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   ServerCommunicationConfigClient: jest.fn().mockImplementation(() => mockClientInstance),
 }));
 
@@ -95,7 +95,7 @@ describe("DefaultServerCommunicationConfigService", () => {
           cookieName: "exampleCookie",
           cookieDomain: "example.com",
           cookieValue: undefined,
-          vaultUrl: "vault.bitwarden.com",
+          vaultUrl: "vault.local.invalid",
         },
       };
       serverCommunicationConfig$.next(config);

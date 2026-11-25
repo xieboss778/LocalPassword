@@ -1,17 +1,17 @@
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, distinctUntilChanged, firstValueFrom, map, switchMap } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
 import {
   StateProvider,
   UserKeyDefinition,
   VAULT_ORG_USER_NOTIFICATION_DISK_LOCAL,
-} from "@bitwarden/common/platform/state";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 export interface OrganizationUserNotificationBannerData {
   organizationId: OrganizationId;

@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { SshKeyView as SdkSshKeyView } from "@bitwarden/sdk-internal";
+import { SshKeyView as SdkSshKeyView } from "@localpass/sdk-internal";
 
 import { ItemView } from "./item.view";
 

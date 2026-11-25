@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { ThemeTypes } from "@bitwarden/common/platform/enums/theme-type.enum";
+import { ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 
 import { CloseButton, CloseButtonProps } from "../../buttons/close-button";
 import { mockI18n } from "../mock-data";

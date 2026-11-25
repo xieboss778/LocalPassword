@@ -1,16 +1,16 @@
 import { DatePipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, input, signal } from "@angular/core";
 
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
 import {
   SectionHeaderComponent,
   TypographyModule,
   FormFieldModule,
   IconButtonModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CopyCipherFieldDirective } from "../../components/copy-cipher-field.directive";
 import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-cipher-card.component";

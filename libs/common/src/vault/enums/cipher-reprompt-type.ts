@@ -1,4 +1,4 @@
-import { CipherRepromptType as SdkCipherRepromptType } from "@bitwarden/sdk-internal";
+import { CipherRepromptType as SdkCipherRepromptType } from "@localpass/sdk-internal";
 
 import { UnionOfValues } from "../types/union-of-values";
 

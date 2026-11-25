@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
-import { BitwardenPasswordProtectedFileFormat } from "@bitwarden/vault-export-core";
+import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
+import { LocalPassPasswordProtectedFileFormat } from "@localpass/vault-export-core";
 
 import { kdfConfigFromPasswordProtectedExport } from "./password-protected-kdf-config";
 
@@ -8,11 +8,11 @@ describe("kdfConfigFromPasswordProtectedExport", () => {
   function fileWith(
     kdf: Partial<
       Pick<
-        BitwardenPasswordProtectedFileFormat,
+        LocalPassPasswordProtectedFileFormat,
         "kdfType" | "kdfIterations" | "kdfMemory" | "kdfParallelism"
       >
     >,
-  ): BitwardenPasswordProtectedFileFormat {
+  ): LocalPassPasswordProtectedFileFormat {
     return {
       encrypted: true,
       passwordProtected: true,
@@ -66,9 +66,9 @@ describe("kdfConfigFromPasswordProtectedExport", () => {
   describe("Argon2id", () => {
     function argon2FileWith(
       kdf: Partial<
-        Pick<BitwardenPasswordProtectedFileFormat, "kdfIterations" | "kdfMemory" | "kdfParallelism">
+        Pick<LocalPassPasswordProtectedFileFormat, "kdfIterations" | "kdfMemory" | "kdfParallelism">
       > = {},
-    ): BitwardenPasswordProtectedFileFormat {
+    ): LocalPassPasswordProtectedFileFormat {
       return fileWith({
         kdfType: KdfType.Argon2id,
         kdfIterations: 3,

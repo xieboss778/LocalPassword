@@ -6,7 +6,7 @@ import {
   ImportAscendoIcon,
   ImportAvastIcon,
   ImportAviraIcon,
-  ImportBitwardenIcon,
+  ImportLocalPassIcon,
   ImportBlackberryIcon,
   ImportBlackberryDarkIcon,
   ImportBlurIcon,
@@ -60,7 +60,7 @@ import {
   ImportVivaldiIcon,
   ImportYotiIcon,
   ImportZohoIcon,
-} from "@bitwarden/assets/svg";
+} from "@localpass/assets/svg";
 
 import { UpgradeImportType } from "../../models";
 
@@ -76,7 +76,7 @@ interface PickerVendorIcon {
 }
 
 const PICKER_VENDOR_ICONS: Partial<Record<UpgradeImportType, PickerVendorIcon>> = {
-  bitwarden: { icon: ImportBitwardenIcon },
+  localpass: { icon: ImportLocalPassIcon },
   chromecsv: { icon: ImportChromeIcon },
   dashlane: { icon: ImportDashlaneIcon, darkIcon: ImportDashlaneDarkIcon },
   firefoxcsv: { icon: ImportFirefoxIcon },

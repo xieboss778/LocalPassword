@@ -6,13 +6,13 @@ import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendDisabledReason } from "@bitwarden/common/tools/models/send-disabled-reason";
-import { WhoCanAccessType } from "@bitwarden/common/tools/models/send-who-can-access-type";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendDisabledReason } from "@localpass/common/tools/models/send-disabled-reason";
+import { WhoCanAccessType } from "@localpass/common/tools/models/send-who-can-access-type";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 import {
   DIALOG_DATA,
   DialogRef,
@@ -25,10 +25,10 @@ import {
   DialogModule,
   ButtonComponent,
   CalloutComponent,
-} from "@bitwarden/components";
-import { AlgorithmInfo } from "@bitwarden/generator-core";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { CipherFormGeneratorComponent } from "@bitwarden/vault";
+} from "@localpass/components";
+import { AlgorithmInfo } from "@localpass/generator-core";
+import { I18nPipe } from "@localpass/ui-common";
+import { CipherFormGeneratorComponent } from "@localpass/vault";
 
 import { SendFormComponent, SendFormConfig, SendFormModule, SendFormService } from "../send-form";
 import { SendPolicyService } from "../services/send-policy.service";
@@ -64,7 +64,7 @@ export type SendItemDialogResult = {
 /**
  * Component for adding or editing a send item.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "send-add-edit-dialog.component.html",

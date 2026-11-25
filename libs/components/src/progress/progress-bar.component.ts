@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, input, ChangeDetectionStrategy, computed, inject } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { FormFieldModule } from "../form-field";
 import { TypographyModule } from "../typography";

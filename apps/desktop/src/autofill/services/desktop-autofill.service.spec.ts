@@ -1,27 +1,27 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { DeviceType } from "@bitwarden/common/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { DeviceType } from "@localpass/common/enums";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
-} from "@bitwarden/common/models/domain/domain-service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+} from "@localpass/common/models/domain/domain-service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@localpass/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
 
 import { AutofillIpcErrorKind } from "../models/autofill-ipc-channels";
 
@@ -61,7 +61,7 @@ describe("DesktopAutofillService", () => {
     authService = mock<AuthService>();
     platformUtilsService = mock<PlatformUtilsService>();
     environmentService = mock<EnvironmentService>();
-    webVaultUrl = "https://vault.bitwarden.com";
+    webVaultUrl = "https://vault.local.invalid";
     environmentService.environment$ = of({ getWebVaultUrl: () => webVaultUrl } as Environment);
     fido2UserInterfaceService = mock<DesktopFido2UserInterfaceService>();
 
@@ -200,7 +200,7 @@ describe("DesktopAutofillService", () => {
   });
 
   describe("blocked RP IDs", () => {
-    it.each(["vault.bitwarden.com", "Vault.Bitwarden.COM"])(
+    it.each(["vault.local.invalid", "Vault.LocalPass.COM"])(
       "tells the user why, then rejects registration, assertion, and UI-less assertion for the active vault's RP ID (%s)",
       async (rpId) => {
         (global as any).ipc = {
@@ -280,12 +280,12 @@ describe("DesktopAutofillService", () => {
       }
 
       it.each([
-        ["https://vault.bitwarden.com", "vault.bitwarden.com"],
-        ["https://vault.bitwarden.eu", "Vault.Bitwarden.EU"],
-        ["https://bitwarden.example.com", "bitwarden.example.com"],
-        ["https://bitwarden.example.com/", "bitwarden.example.com"],
-        ["https://Bitwarden.Example.COM", "bitwarden.example.com"],
-        ["https://bitwarden.example.com:443", "bitwarden.example.com"],
+        ["https://vault.local.invalid", "vault.local.invalid"],
+        ["https://vault.local.invalid", "Vault.LocalPass.EU"],
+        ["https://localpass.example.com", "localpass.example.com"],
+        ["https://localpass.example.com/", "localpass.example.com"],
+        ["https://LocalPass.Example.COM", "localpass.example.com"],
+        ["https://localpass.example.com:443", "localpass.example.com"],
       ])("does not sync passkeys for the vault at %s (RP ID %s)", async (url, rpId) => {
         webVaultUrl = url;
 
@@ -294,11 +294,11 @@ describe("DesktopAutofillService", () => {
 
       it.each([
         ["https://example.com:8443", "example.com"],
-        ["https://example.com/bitwarden", "example.com"],
-        ["http://bitwarden.example.com", "bitwarden.example.com"],
+        ["https://example.com/localpass", "example.com"],
+        ["http://localpass.example.com", "localpass.example.com"],
         ["https://localhost", "localhost"],
-        ["https://bitwarden.localhost", "bitwarden.localhost"],
-        ["not a url", "bitwarden.example.com"],
+        ["https://localpass.localhost", "localpass.localhost"],
+        ["not a url", "localpass.example.com"],
       ])(
         "syncs passkeys for the host of a vault at %s, which can't be told apart from other services",
         async (url, rpId) => {
@@ -320,7 +320,7 @@ describe("DesktopAutofillService", () => {
         await expect(
           service.doPasskeyAssertion(
             {
-              rpId: "bitwarden.com",
+              rpId: "local.invalid",
               clientDataHash: [],
               allowedCredentials: [],
               userVerification: "preferred",

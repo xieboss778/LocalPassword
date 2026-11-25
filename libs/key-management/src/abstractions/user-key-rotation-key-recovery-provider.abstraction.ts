@@ -1,5 +1,5 @@
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 
 /**
  * Constructs key rotation requests for key recovery encryption of the userkey.

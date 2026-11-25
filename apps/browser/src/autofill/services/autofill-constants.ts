@@ -1,9 +1,9 @@
 import {
   AutofillTargetingRuleTypes,
   FormPurposeCategories,
-} from "@bitwarden/common/autofill/constants";
-import { AutofillTargetingRuleType, FormPurposeCategory } from "@bitwarden/common/autofill/types";
-import { CipherType } from "@bitwarden/common/vault/enums";
+} from "@localpass/common/autofill/constants";
+import { AutofillTargetingRuleType, FormPurposeCategory } from "@localpass/common/autofill/types";
+import { CipherType } from "@localpass/common/vault/enums";
 
 /**
  * Authoritative cipher-type mapping for targeting-rule form categories whose

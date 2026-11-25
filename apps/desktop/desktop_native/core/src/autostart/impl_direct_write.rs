@@ -1,6 +1,6 @@
 //! Direct `.desktop` autostart-file management for plain Linux and Snap.
 //!
-//! On Snap the autostart Exec uses the bare `bitwarden` command (the snap package name from
+//! On Snap the autostart Exec uses the bare `localpass` command (the snap package name from
 //! `electron-builder.json`), not the unpacked `exec_path`, because the exec path is different
 //! since the snap sandbox has a filesystem namespace.
 
@@ -12,18 +12,18 @@ use tracing::{error, info};
 use super::AutostartConfig;
 
 /// The snap package name, used as the autostart Exec command under Snap confinement.
-const SNAP_COMMAND: &str = "bitwarden";
+const SNAP_COMMAND: &str = "localpass";
 /// The autostart file name we write under both plain Linux and Snap.
-const DESKTOP_FILE_NAME: &str = "bitwarden.desktop";
+const DESKTOP_FILE_NAME: &str = "localpass.desktop";
 
-/// Plain-Linux autostart: write/remove `~/.config/autostart/bitwarden.desktop`.
+/// Plain-Linux autostart: write/remove `~/.config/autostart/localpass.desktop`.
 pub fn set_autostart_linux(enabled: bool, config: &AutostartConfig) -> Result<()> {
     let home_dir = dirs::home_dir().ok_or_else(|| anyhow!("could not determine home directory"))?;
     let autostart_dir = home_dir.join(".config").join("autostart");
     set_autostart_in_dir(enabled, config, &autostart_dir)
 }
 
-/// Write/remove `bitwarden.desktop` in the given autostart directory.
+/// Write/remove `localpass.desktop` in the given autostart directory.
 fn set_autostart_in_dir(
     enabled: bool,
     config: &AutostartConfig,
@@ -53,7 +53,7 @@ fn set_autostart_in_dir(
 }
 
 /// Snap autostart: remove every `*.desktop` in `$SNAP_USER_DATA/.config/autostart` (clearing the
-/// electron-builder-generated entry), then place a single fresh `bitwarden.desktop` when enabling.
+/// electron-builder-generated entry), then place a single fresh `localpass.desktop` when enabling.
 pub fn set_autostart_snap(
     enabled: bool,
     config: &AutostartConfig,
@@ -85,8 +85,8 @@ fn desktop_file_contents(exec: &str) -> String {
     format!(
         "[Desktop Entry]
 Type=Application
-Name=Bitwarden
-Comment=Bitwarden startup script
+Name=LocalPass
+Comment=LocalPass startup script
 Exec={exec}
 StartupNotify=false
 Terminal=false
@@ -152,7 +152,7 @@ mod tests {
 
     fn config() -> AutostartConfig {
         AutostartConfig {
-            exec_path: "/opt/Bitwarden/bitwarden".to_string(),
+            exec_path: "/opt/LocalPass/localpass".to_string(),
             autostart_flag: "--autostart".to_string(),
         }
     }
@@ -160,18 +160,18 @@ mod tests {
     #[test]
     fn linux_enable_writes_file_with_exec_and_flag() {
         let dir = TempDir::new();
-        let target = dir.path.join("bitwarden.desktop");
+        let target = dir.path.join("localpass.desktop");
 
         set_autostart_in_dir(true, &config(), &dir.path).unwrap();
 
         let contents = fs::read_to_string(&target).unwrap();
-        assert!(contents.contains("Exec=/opt/Bitwarden/bitwarden --autostart"));
+        assert!(contents.contains("Exec=/opt/LocalPass/localpass --autostart"));
     }
 
     #[test]
     fn linux_disable_removes_file() {
         let dir = TempDir::new();
-        let target = dir.path.join("bitwarden.desktop");
+        let target = dir.path.join("localpass.desktop");
 
         set_autostart_in_dir(true, &config(), &dir.path).unwrap();
         assert!(target.exists());
@@ -183,9 +183,9 @@ mod tests {
     #[test]
     fn linux_enable_rejects_relative_exec_path() {
         let dir = TempDir::new();
-        let target = dir.path.join("bitwarden.desktop");
+        let target = dir.path.join("localpass.desktop");
         let cfg = AutostartConfig {
-            exec_path: "bitwarden".to_string(),
+            exec_path: "localpass".to_string(),
             autostart_flag: "--autostart".to_string(),
         };
 
@@ -210,8 +210,8 @@ mod tests {
         let autostart_dir = snap.path.join(".config/autostart");
         fs::create_dir_all(&autostart_dir).unwrap();
 
-        fs::write(autostart_dir.join("com.bitwarden.desktop.desktop"), "stale").unwrap();
-        fs::write(autostart_dir.join("bitwarden.desktop"), "old contents").unwrap();
+        fs::write(autostart_dir.join("com.localpass.desktop.desktop"), "stale").unwrap();
+        fs::write(autostart_dir.join("localpass.desktop"), "old contents").unwrap();
 
         set_autostart_snap(true, &cfg, &snap.path).unwrap();
 
@@ -219,10 +219,10 @@ mod tests {
             .unwrap()
             .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
             .collect();
-        assert_eq!(remaining, vec!["bitwarden.desktop".to_string()]);
+        assert_eq!(remaining, vec!["localpass.desktop".to_string()]);
 
-        let contents = fs::read_to_string(autostart_dir.join("bitwarden.desktop")).unwrap();
-        assert!(contents.contains("Exec=bitwarden --autostart"));
+        let contents = fs::read_to_string(autostart_dir.join("localpass.desktop")).unwrap();
+        assert!(contents.contains("Exec=localpass --autostart"));
         assert!(!contents.contains("old contents"));
     }
 
@@ -232,8 +232,8 @@ mod tests {
         let cfg = config();
         let autostart_dir = snap.path.join(".config/autostart");
         fs::create_dir_all(&autostart_dir).unwrap();
-        fs::write(autostart_dir.join("com.bitwarden.desktop.desktop"), "stale").unwrap();
-        fs::write(autostart_dir.join("bitwarden.desktop"), "old").unwrap();
+        fs::write(autostart_dir.join("com.localpass.desktop.desktop"), "stale").unwrap();
+        fs::write(autostart_dir.join("localpass.desktop"), "old").unwrap();
 
         set_autostart_snap(false, &cfg, &snap.path).unwrap();
 
@@ -249,10 +249,10 @@ mod tests {
         // No .config/autostart directory exists yet; enabling should create it and place our file.
         set_autostart_snap(true, &cfg, &snap.path).unwrap();
 
-        let target = snap.path.join(".config/autostart/bitwarden.desktop");
+        let target = snap.path.join(".config/autostart/localpass.desktop");
         assert!(target.exists());
         assert!(fs::read_to_string(&target)
             .unwrap()
-            .contains("Exec=bitwarden --autostart"));
+            .contains("Exec=localpass --autostart"));
     }
 }

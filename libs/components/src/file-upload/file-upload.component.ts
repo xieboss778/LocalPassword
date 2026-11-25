@@ -13,7 +13,7 @@ import {
 } from "@angular/core";
 import { ControlValueAccessor, NgControl } from "@angular/forms";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BitHintDirective } from "../form-control/hint.directive";
 import { BitLabelComponent } from "../form-control/label.component";

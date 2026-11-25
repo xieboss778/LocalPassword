@@ -4,11 +4,11 @@ import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { CollectionService } from "@localpass/admin-console/common";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
 
 import { VaultNavItemType, VaultsNavViewModel } from "../../models/vault-nav-view-model";
 import { VaultScope, VaultScopeType } from "../../models/vault-scope";

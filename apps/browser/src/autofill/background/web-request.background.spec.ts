@@ -1,25 +1,25 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, defer, NEVER, of, Subject } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
-} from "@bitwarden/common/models/domain/domain-service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { devFlagEnabled } from "@bitwarden/common/platform/misc/flags";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+} from "@localpass/common/models/domain/domain-service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { devFlagEnabled } from "@localpass/common/platform/misc/flags";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 
 import { CipherUse } from "../services/abstractions/fill-cipher-policy";
 import { DefaultFillCipherPolicy } from "../services/default-fill-cipher-policy";
@@ -30,8 +30,8 @@ import WebRequestBackground, {
   shouldAnswerAuthChallenge,
 } from "./web-request.background";
 
-jest.mock("@bitwarden/common/platform/misc/flags", () => ({
-  ...jest.requireActual("@bitwarden/common/platform/misc/flags"),
+jest.mock("@localpass/common/platform/misc/flags", () => ({
+  ...jest.requireActual("@localpass/common/platform/misc/flags"),
   devFlagEnabled: jest.fn(),
 }));
 

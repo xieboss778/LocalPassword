@@ -30,7 +30,7 @@ This document maps all of our password management flows to the components that h
 
 ## The Base `InputPasswordComponent`
 
-Central to our master password management flows is the base [InputPasswordComponent](https://components.bitwarden.com/?path=/docs/auth-input-password--docs), which is responsible for displaying the appropriate form fields in the UI, performing form validation, and generating appropriate cryptographic properties for each flow. This keeps our UI, validation, and key generation consistent across all master password management flows.
+Central to our master password management flows is the base [InputPasswordComponent](https://components.local.invalid/?path=/docs/auth-input-password--docs), which is responsible for displaying the appropriate form fields in the UI, performing form validation, and generating appropriate cryptographic properties for each flow. This keeps our UI, validation, and key generation consistent across all master password management flows.
 
 <br>
 
@@ -133,7 +133,7 @@ Central to our master password management flows is the base [InputPasswordCompon
       <td>
         <br>
         <strong>Account Settings</strong>
-        (<small><a href="https://bitwarden.com/help/master-password/#change-master-password">Docs</a></small>)
+        (<small><a href="https://github.com/xieboss778/LocalPass/tree/main/docs">Docs</a></small>)
         <br>
         <small>(🌐 web only)</small>
         <br><br>
@@ -182,7 +182,7 @@ Central to our master password management flows is the base [InputPasswordCompon
       <td>
         <br>
         <strong>Emergency Access Takeover</strong>
-        <small>(<a href="https://bitwarden.com/help/emergency-access/">Docs</a>)</small>
+        <small>(<a href="https://github.com/xieboss778/LocalPass/tree/main/docs">Docs</a>)</small>
         <br>
         <small>(🌐 web only)</small>
         <br><br>
@@ -199,7 +199,7 @@ Central to our master password management flows is the base [InputPasswordCompon
       <td>
         <br>
         <strong>Account Recovery</strong>
-        <small>(<a href="https://bitwarden.com/help/account-recovery/">Docs</a>)</small>
+        <small>(<a href="https://github.com/xieboss778/LocalPass/tree/main/docs">Docs</a>)</small>
         <br>
         <small>(🌐 web only)</small>
         <br><br>

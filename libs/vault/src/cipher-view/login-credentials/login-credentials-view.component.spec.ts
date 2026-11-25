@@ -4,27 +4,27 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { RiskCategory } from "@bitwarden/common/dirt/vault-health/models";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { RiskCategory } from "@localpass/common/dirt/vault-health/models";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { mockAccountInfoWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   BitFormFieldComponent,
   BitPasswordInputToggleDirective,
   ColorPasswordComponent,
   CopyClickDirective,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { LoginCredentialsViewComponent } from "./login-credentials-view.component";
 

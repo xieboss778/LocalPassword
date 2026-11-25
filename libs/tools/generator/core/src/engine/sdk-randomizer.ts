@@ -1,5 +1,5 @@
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { SdkRandomNumberClient } from "@bitwarden/sdk-internal";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { SdkRandomNumberClient } from "@localpass/sdk-internal";
 
 import { Randomizer } from "../abstractions";
 import { WordOptions } from "../types";

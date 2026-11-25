@@ -1,1 +1,1 @@
-export * from "@bitwarden/messaging";
+export * from "@localpass/messaging";

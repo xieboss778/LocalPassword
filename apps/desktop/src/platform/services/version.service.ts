@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 
 @Injectable({
   providedIn: "root",

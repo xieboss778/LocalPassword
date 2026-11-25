@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
 
-import { CipherHealthView } from "@bitwarden/common/dirt/models/view";
-import { RiskCategory } from "@bitwarden/common/dirt/vault-health/models";
+import { CipherHealthView } from "@localpass/common/dirt/models/view";
+import { RiskCategory } from "@localpass/common/dirt/vault-health/models";
 import {
   CardComponent,
   IconTileComponent,
   SectionComponent,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** Lists the risks a login has below the category it is listed in. Renders nothing when there are none. */
 @Component({

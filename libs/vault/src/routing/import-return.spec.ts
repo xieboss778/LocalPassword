@@ -1,6 +1,6 @@
 import { ActivatedRoute, convertToParamMap } from "@angular/router";
 
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 
 import { VaultNavItemType, VaultsNavViewModel } from "../models/vault-nav-view-model";
 import { MY_ITEMS_ROUTE, VaultScope, VaultScopeType } from "../models/vault-scope";

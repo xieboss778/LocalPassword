@@ -1,7 +1,7 @@
 import { firstValueFrom, map, Observable } from "rxjs";
 
-import { PasswordManagerClient, UserId as SdkUserId } from "@bitwarden/sdk-internal";
-import { UserId } from "@bitwarden/user-core";
+import { PasswordManagerClient, UserId as SdkUserId } from "@localpass/sdk-internal";
+import { UserId } from "@localpass/user-core";
 
 import { assertNonNullish } from "../auth/utils";
 import { SdkService } from "../platform/abstractions/sdk/sdk.service";

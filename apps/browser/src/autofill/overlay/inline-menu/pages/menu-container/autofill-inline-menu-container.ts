@@ -1,4 +1,4 @@
-import { EVENTS } from "@bitwarden/common/autofill/constants";
+import { EVENTS } from "@localpass/common/autofill/constants";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import { generateRandomChars, setElementStyles } from "../../../../utils";

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { Card as CardDomain } from "../../vault/models/domain/card";
 import { CardView } from "../../vault/models/view/card.view";

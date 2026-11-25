@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/importer",
+  "name": "@localpass/importer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/importer/src",
   "projectType": "library",

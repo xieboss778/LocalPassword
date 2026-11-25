@@ -7,12 +7,12 @@ import {
   KdfConfig,
   KdfType,
   PBKDF2KdfConfig,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 import {
   EncString,
   MasterPasswordUnlockData as SdkMasterPasswordUnlockData,
   MasterPasswordAuthenticationData as SdkMasterPasswordAuthenticationData,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 /**
  * The Base64-encoded master password authentication hash, that is sent to the server for authentication.

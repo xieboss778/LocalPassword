@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { CipherType, isCipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherType, isCipherType } from "@localpass/common/vault/enums";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import {
   CipherStatus,

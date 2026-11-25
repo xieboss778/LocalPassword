@@ -1,10 +1,10 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CommandDefinition, MessageSender } from "@bitwarden/common/platform/messaging";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CommandDefinition, MessageSender } from "@localpass/common/platform/messaging";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { getCommand } from "@bitwarden/common/platform/messaging/internal";
+import { getCommand } from "@localpass/common/platform/messaging/internal";
 
 type ErrorHandler = (logger: LogService, command: string) => void;
 

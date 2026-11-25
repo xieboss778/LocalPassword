@@ -3,10 +3,10 @@ import { Component } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { combineLatest, map, Observable } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { TypographyModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { TypographyModule } from "@localpass/components";
 
 import BrowserPopupUtils from "../../../../../platform/browser/browser-popup-utils";
 import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
@@ -15,7 +15,7 @@ import { PopupCipherViewLike } from "../../../views/popup-cipher.view";
 import { SimplifiedAutofillInfoComponent } from "../simplified-autofill-info/simplified-autofill-info.component";
 import { VaultListItemsContainerComponent } from "../vault-list-items-container/vault-list-items-container.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   imports: [

@@ -1,14 +1,14 @@
 import { Injectable, inject } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { DialogService, ToastService, Translation } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { DialogService, ToastService, Translation } from "@localpass/components";
 import {
   BulkDeleteDialogParams,
   BulkDeleteDialogRef,
   BulkDeleteDialogResult,
   BulkDeleteService,
   Vfo1TerminologyService,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 @Injectable()
 export class BulkDeleteDialogDesktopAdapter implements BulkDeleteDialogRef {

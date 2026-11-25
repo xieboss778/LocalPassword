@@ -6,7 +6,7 @@
  */
 
 $icomoon-font-family: "bwi-font" !default;
-$icomoon-font-path: "~@bitwarden/angular/src/scss/bwicons/fonts/" !default;
+$icomoon-font-path: "~@localpass/angular/src/scss/bwicons/fonts/" !default;
 
 // New font sheet? Update the font-face information below
 @font-face {
@@ -132,7 +132,7 @@ $icons: (
   "autofill": "\f16c",
   "bank": "\f16b",
   "bitcoin": "\f16a",
-  "bitwarden-shield": "\f169",
+  "localpass-shield": "\f169",
   "browser": "\f168",
   "bug": "\f167",
   "business": "\f166",

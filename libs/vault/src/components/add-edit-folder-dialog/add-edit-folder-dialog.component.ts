@@ -12,16 +12,16 @@ import { takeUntilDestroyed, toObservable, toSignal } from "@angular/core/rxjs-i
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from "@angular/forms";
 import { firstValueFrom, map } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   DIALOG_DATA,
   DialogRef,
@@ -34,8 +34,8 @@ import {
   FormFieldModule,
   IconButtonModule,
   ToastService,
-} from "@bitwarden/components";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/components";
+import { KeyService } from "@localpass/key-management";
 
 export const AddEditFolderDialogResult = {
   Created: "created",
@@ -51,7 +51,7 @@ export type AddEditFolderDialogData = {
   hideDelete?: boolean;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-add-edit-folder-dialog",
@@ -69,10 +69,10 @@ export type AddEditFolderDialogData = {
 })
 export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
   private readonly configService = inject(ConfigService);
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(BitSubmitDirective) private bitSubmit?: BitSubmitDirective;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild("submitBtn") private submitBtn?: ButtonComponent;
 

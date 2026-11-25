@@ -2,7 +2,7 @@
 
 exports[`AutofillInlineMenuButton initAutofillInlineMenuButton creates the button element with the locked icon when the user's auth status is not Unlocked 1`] = `
 <button
-  aria-label="toggleBitwardenVaultOverlay"
+  aria-label="toggleLocalPassVaultOverlay"
   class="inline-menu-button"
   tabindex="-1"
   type="button"
@@ -56,7 +56,7 @@ exports[`AutofillInlineMenuButton initAutofillInlineMenuButton creates the butto
 
 exports[`AutofillInlineMenuButton initAutofillInlineMenuButton creates the button element with the normal icon when the user's auth status is Unlocked  1`] = `
 <button
-  aria-label="toggleBitwardenVaultOverlay"
+  aria-label="toggleLocalPassVaultOverlay"
   class="inline-menu-button"
   tabindex="-1"
   type="button"

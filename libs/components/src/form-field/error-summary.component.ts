@@ -3,7 +3,7 @@ import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { AbstractControl, UntypedFormGroup } from "@angular/forms";
 import { EMPTY, switchMap } from "rxjs";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 @Component({
   selector: "bit-error-summary",

@@ -8,32 +8,32 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of, Subject } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EventCollectionService } from "@bitwarden/common/dirt/event-logs";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CipherId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
-import { NoopRevealedCipherService } from "@bitwarden/common/vault/services/noop-revealed-cipher.service";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { SearchTextDebounceInterval } from "@bitwarden/common/vault/services/search.service";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { CollectionService } from "@localpass/admin-console/common";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { WINDOW } from "@localpass/angular/services/injection-tokens";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EventCollectionService } from "@localpass/common/dirt/event-logs";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { CipherAuthorizationService } from "@localpass/common/vault/services/cipher-authorization.service";
+import { NoopRevealedCipherService } from "@localpass/common/vault/services/noop-revealed-cipher.service";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { SearchTextDebounceInterval } from "@localpass/common/vault/services/search.service";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   ChipFilterOption,
   CompactModeService,
@@ -42,10 +42,10 @@ import {
   FilterOptionRow,
   FilterSectionComponent,
   ToastService,
-} from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
-import { StateProvider } from "@bitwarden/state";
-import { ShareLinkService } from "@bitwarden/tools-share";
+} from "@localpass/components";
+import { LogService } from "@localpass/logging";
+import { StateProvider } from "@localpass/state";
+import { ShareLinkService } from "@localpass/tools-share";
 import {
   CoachmarkService,
   NO_FOLDER,
@@ -57,7 +57,7 @@ import {
   VaultNavService,
   VaultScopeType,
   VaultsNavViewModel,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { ImportUpgradeNavigationService } from "../../../../../tools/popup/settings/import/import-upgrade-navigation.service";
 import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
@@ -326,7 +326,7 @@ describe("VaultPopupListTableComponent", () => {
         // more-options menu), mirroring the Storybook setup.
         {
           provide: EnvironmentService,
-          useValue: { environment$: of({ getIconsUrl: () => "https://icons.bitwarden.net" }) },
+          useValue: { environment$: of({ getIconsUrl: () => "https://icons.local.invalid" }) },
         },
         { provide: DomainSettingsService, useValue: { showFavicons$: of(true) } },
         { provide: VaultCopyButtonsService, useValue: { showQuickCopyActions$: of(false) } },

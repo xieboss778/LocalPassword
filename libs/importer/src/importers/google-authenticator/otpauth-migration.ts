@@ -165,7 +165,7 @@ export function parseMigrationUri(uri: string): MigrationOtp[] {
   return decodeMigrationPayload(data);
 }
 
-/** Builds the `otpauth://` URI Bitwarden stores in a login's TOTP field. */
+/** Builds the `otpauth://` URI LocalPass stores in a login's TOTP field. */
 export function toOtpauthUri(otp: MigrationOtp): string {
   const label = otp.issuer ? `${otp.issuer}:${otp.name}` : otp.name;
   const params = new URLSearchParams({

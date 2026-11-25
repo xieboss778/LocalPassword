@@ -1,8 +1,8 @@
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { BankAccountView } from "@bitwarden/common/vault/models/view/bank-account.view";
-import { DriversLicenseView } from "@bitwarden/common/vault/models/view/drivers-license.view";
-import { PassportView } from "@bitwarden/common/vault/models/view/passport.view";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { CipherType } from "@localpass/common/vault/enums";
+import { BankAccountView } from "@localpass/common/vault/models/view/bank-account.view";
+import { DriversLicenseView } from "@localpass/common/vault/models/view/drivers-license.view";
+import { PassportView } from "@localpass/common/vault/models/view/passport.view";
 
 import { ImportResult } from "../../models/import-result";
 import { Importer } from "../importer";

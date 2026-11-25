@@ -13,11 +13,11 @@ import {
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ReactiveFormsModule } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 import {
   AsyncActionsModule,
   BitSubmitDirective,
@@ -30,16 +30,16 @@ import {
   SelectModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { ItemDetailsV2Component } from "@bitwarden/vault";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { ItemDetailsV2Component } from "@localpass/vault";
 
 import { SendFormConfig } from "../abstractions/send-form-config.service";
 import { SendFormService } from "../abstractions/send-form.service";
 
 import { SendDetailsComponent } from "./send-details/send-details.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-send-form",

@@ -1,5 +1,5 @@
-import type { Cart, InvoicePreview } from "@bitwarden/pricing";
-import type { Storage, SubscriptionPreview, SubscriptionStatus } from "@bitwarden/subscription";
+import type { Cart, InvoicePreview } from "@localpass/pricing";
+import type { Storage, SubscriptionPreview, SubscriptionStatus } from "@localpass/subscription";
 
 import { BaseResponse } from "../../../models/response/base.response";
 

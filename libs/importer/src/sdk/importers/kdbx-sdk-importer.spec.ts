@@ -1,9 +1,9 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { isImportError, PasswordManagerClient } from "@bitwarden/sdk-internal";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { isImportError, PasswordManagerClient } from "@localpass/sdk-internal";
 
 import { toSdkCollectionType } from "../sdk-collection-type";
 import { SdkImportContext } from "../sdk-vault-importer";
@@ -11,8 +11,8 @@ import { SdkImportContext } from "../sdk-vault-importer";
 import { KdbxSdkImporter } from "./kdbx-sdk-importer";
 
 // `isImportError` is a WASM call; override just it so the error-mapping is unit-testable.
-jest.mock("@bitwarden/sdk-internal", () => ({
-  ...jest.requireActual("@bitwarden/sdk-internal"),
+jest.mock("@localpass/sdk-internal", () => ({
+  ...jest.requireActual("@localpass/sdk-internal"),
   isImportError: jest.fn(),
 }));
 

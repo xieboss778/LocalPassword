@@ -1,14 +1,14 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { DevicePendingAuthRequest } from "@bitwarden/common/auth/abstractions/devices/responses/device.response";
-import { BadgeModule, ItemModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { DevicePendingAuthRequest } from "@localpass/common/auth/abstractions/devices/responses/device.response";
+import { BadgeModule, ItemModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { DeviceDisplayData } from "./device-management.component";
 
 /** Displays user devices in an item list view */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   standalone: true,
@@ -17,10 +17,10 @@ import { DeviceDisplayData } from "./device-management.component";
   imports: [BadgeModule, CommonModule, ItemModule, I18nPipe],
 })
 export class DeviceManagementItemGroupComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() devices: DeviceDisplayData[] = [];
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() onAuthRequestAnswered = new EventEmitter<DevicePendingAuthRequest>();
 

@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { LogLevelType } from "@bitwarden/common/platform/enums/log-level-type.enum";
-import { ConsoleLogService as BaseLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { LogRecorder } from "@bitwarden/logging";
+import { LogLevelType } from "@localpass/common/platform/enums/log-level-type.enum";
+import { ConsoleLogService as BaseLogService } from "@localpass/common/platform/services/console-log.service";
+import { LogRecorder } from "@localpass/logging";
 
 export class ElectronLogRendererService extends BaseLogService {
   constructor(

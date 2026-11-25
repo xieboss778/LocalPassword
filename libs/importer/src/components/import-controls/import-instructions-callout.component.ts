@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-import { CalloutModule, LinkModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { CalloutModule, LinkModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 @Component({
   selector: "importer-instructions-callout",

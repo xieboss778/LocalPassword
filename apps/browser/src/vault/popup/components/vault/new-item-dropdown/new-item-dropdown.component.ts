@@ -6,15 +6,15 @@ import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterLink } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { CipherMenuItem, CIPHER_MENU_ITEMS } from "@bitwarden/common/vault/types/cipher-menu-items";
-import { ButtonModule, DialogService, MenuModule, TooltipDirective } from "@bitwarden/components";
-import { AddEditFolderDialogComponent } from "@bitwarden/vault";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { CipherMenuItem, CIPHER_MENU_ITEMS } from "@localpass/common/vault/types/cipher-menu-items";
+import { ButtonModule, DialogService, MenuModule, TooltipDirective } from "@localpass/components";
+import { AddEditFolderDialogComponent } from "@localpass/vault";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/browser/browser-popup-utils";
@@ -26,7 +26,7 @@ export interface NewItemInitialValues {
   collectionId?: CollectionId;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-new-item-dropdown",
@@ -39,7 +39,7 @@ export class NewItemDropdownComponent implements OnInit {
   /**
    * Optional initial values to pass to the add cipher form
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   initialValues: NewItemInitialValues;

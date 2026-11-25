@@ -7,13 +7,13 @@ import { firstValueFrom } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { UserVerificationFormInputComponent } from "@bitwarden/auth/angular";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AccountDeletionService } from "@bitwarden/common/auth/account-deletion";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { Verification } from "@bitwarden/common/auth/types/verification";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { UserVerificationFormInputComponent } from "@localpass/auth/angular";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AccountDeletionService } from "@localpass/common/auth/account-deletion";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { Verification } from "@localpass/common/auth/types/verification";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   CalloutModule,
   ButtonModule,
@@ -22,10 +22,10 @@ import {
   DialogRef,
   DialogService,
   ToastService,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "delete-account-dialog.component.html",

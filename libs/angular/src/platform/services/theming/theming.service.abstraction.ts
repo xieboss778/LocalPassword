@@ -1,6 +1,6 @@
 import { Observable, Subscription } from "rxjs";
 
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 /**
  * A service for managing and observing the current application theme.

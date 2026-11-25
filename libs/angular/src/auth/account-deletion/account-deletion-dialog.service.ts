@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { DialogService } from "@bitwarden/components";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserStatusType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { DialogService } from "@localpass/components";
 
 import { DeleteAccountDialogComponent } from "./delete-account-dialog/delete-account-dialog.component";
 

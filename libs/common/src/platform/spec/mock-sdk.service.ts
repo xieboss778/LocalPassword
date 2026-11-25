@@ -7,7 +7,7 @@ import {
   throwIfEmpty,
 } from "rxjs";
 
-import { PasswordManagerClient } from "@bitwarden/sdk-internal";
+import { PasswordManagerClient } from "@localpass/sdk-internal";
 
 import { UserId } from "../../types/guid";
 import { SdkService, UserNotLoggedInError } from "../abstractions/sdk/sdk.service";

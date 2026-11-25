@@ -10,12 +10,12 @@ import {
 
 import {
   BaseButtonDirective,
-  BitwardenIcon,
+  LocalPassIcon,
   FocusableElement,
   IconComponent,
   TooltipDirective,
   setA11yTitleAndAriaLabel,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 @Component({
   selector: "button[vaultFab]",
@@ -39,7 +39,7 @@ export class VaultFabComponent implements FocusableElement {
   private readonly tooltip = inject(TooltipDirective, { host: true, optional: true });
 
   /** The icon to display inside the FAB. */
-  readonly vaultFab = model.required<BitwardenIcon>();
+  readonly vaultFab = model.required<LocalPassIcon>();
 
   /** Accessible label used for the tooltip and screen readers. */
   readonly label = input<string>();

@@ -1,4 +1,4 @@
-import { KeyDefinition, SSO_DISK, SSO_DISK_LOCAL, UserKeyDefinition } from "@bitwarden/state";
+import { KeyDefinition, SSO_DISK, SSO_DISK_LOCAL, UserKeyDefinition } from "@localpass/state";
 
 import { SsoRequiredCacheEntry } from "../../abstractions/sso-login.service.abstraction";
 
@@ -55,7 +55,7 @@ export const SSO_REQUIRED_CACHE = new KeyDefinition<SsoRequiredCacheEntry[]>(
   "ssoRequiredCache",
   {
     deserializer: (cache) => {
-      // TODO: Remove deserializer check - https://bitwarden.atlassian.net/browse/PM-35145
+      // TODO: Remove deserializer check - https://localpass.atlassian.net/browse/PM-35145
       if (cache == null || cache.length === 0) {
         return cache;
       }

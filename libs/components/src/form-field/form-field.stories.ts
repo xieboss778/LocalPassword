@@ -10,7 +10,7 @@ import {
 } from "@angular/forms";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { A11yTitleDirective } from "../a11y/a11y-title.directive";
 import { AsyncActionsModule } from "../async-actions";

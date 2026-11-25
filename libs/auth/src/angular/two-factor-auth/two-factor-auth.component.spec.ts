@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, convertToParamMap } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
+import { WINDOW } from "@localpass/angular/services/injection-tokens";
 import {
   LoginStrategyServiceAbstraction,
   LoginEmailServiceAbstraction,
@@ -14,40 +14,40 @@ import {
   FakeUserDecryptionOptions as UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
   LoginSuccessHandlerService,
-} from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
-import { TwoFactorService } from "@bitwarden/common/auth/two-factor";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
+} from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { AuthenticationType } from "@localpass/common/auth/enums/authentication-type";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { TokenTwoFactorRequest } from "@localpass/common/auth/models/request/identity-token/token-two-factor.request";
+import { TwoFactorService } from "@localpass/common/auth/two-factor";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
 import {
   InternalMasterPasswordServiceAbstraction,
   MasterPasswordServiceAbstraction,
-} from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@localpass/common/platform/abstractions/state.service";
+import { FakeAccountService, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { DialogService, ToastService, AnonLayoutWrapperDataService } from "@bitwarden/components";
+import { DialogService, ToastService, AnonLayoutWrapperDataService } from "@localpass/components";
 
 import { TwoFactorAuthComponentCacheService } from "./two-factor-auth-component-cache.service";
 import { TwoFactorAuthComponentService } from "./two-factor-auth-component.service";
 import { TwoFactorAuthComponent } from "./two-factor-auth.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({ standalone: false })
 class TestTwoFactorComponent extends TwoFactorAuthComponent {}

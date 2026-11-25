@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 import { nothing, render } from "lit";
 
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import { InlineMenuCipherData } from "../../../../background/abstractions/overlay.background";

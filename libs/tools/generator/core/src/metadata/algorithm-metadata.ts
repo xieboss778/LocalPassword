@@ -1,4 +1,4 @@
-import { I18nKeyOrLiteral } from "@bitwarden/common/tools/types";
+import { I18nKeyOrLiteral } from "@localpass/common/tools/types";
 
 import { CredentialAlgorithm, CredentialType } from "./type";
 
@@ -55,7 +55,7 @@ export type AlgorithmMetadata = {
     /** `true` when the generator supports autogeneration
      *  @remarks this property is useful when credential generation
      *   carries side effects, such as configuring a service external
-     *   to Bitwarden.
+     *   to LocalPass.
      */
     autogenerate: boolean;
 

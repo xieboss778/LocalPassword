@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { CardView as SdkCardView } from "@bitwarden/sdk-internal";
+import { CardView as SdkCardView } from "@localpass/sdk-internal";
 
 import { normalizeExpiryYearFormat } from "../../../autofill/utils";
 import { CardLinkedId as LinkedId } from "../../enums";

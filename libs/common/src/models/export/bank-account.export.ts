@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 import { BankAccount as BankAccountDomain } from "../../vault/models/domain/bank-account";
 import { BankAccountView } from "../../vault/models/view/bank-account.view";

@@ -4,17 +4,17 @@ import { By } from "@angular/platform-browser";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of, Subject } from "rxjs";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { CipherRowMenuService, VaultScopeType, VaultCopyButtonsService } from "@bitwarden/vault";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { I18nPipe } from "@localpass/ui-common";
+import { CipherRowMenuService, VaultScopeType, VaultCopyButtonsService } from "@localpass/vault";
 
 import { VaultListTableComponent } from "./vault-list-table.component";
 

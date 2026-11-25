@@ -11,28 +11,28 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { firstValueFrom, map, Observable, of, switchMap, tap, withLatestFrom } from "rxjs";
 
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
 import {
   AutoConfirmWarningDialogComponent,
   AutomaticUserConfirmationService,
-} from "@bitwarden/auto-confirm/angular";
-import { PopOutComponent } from "@bitwarden/browser/platform/popup/components/pop-out.component";
-import { PopupHeaderComponent } from "@bitwarden/browser/platform/popup/layout/popup-header.component";
-import { PopupPageComponent } from "@bitwarden/browser/platform/popup/layout/popup-page.component";
-import { InternalOrganizationServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
+} from "@localpass/auto-confirm/angular";
+import { PopOutComponent } from "@localpass/browser/platform/popup/components/pop-out.component";
+import { PopupHeaderComponent } from "@localpass/browser/platform/popup/layout/popup-header.component";
+import { PopupPageComponent } from "@localpass/browser/platform/popup/layout/popup-page.component";
+import { InternalOrganizationServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
 import {
   CardComponent,
   DialogService,
   FormFieldModule,
   SwitchComponent,
   CalloutModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { UserId } from "@localpass/user-core";
 
 @Component({
   templateUrl: "./admin-settings.component.html",

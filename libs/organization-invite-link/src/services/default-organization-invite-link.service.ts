@@ -1,13 +1,13 @@
 import { concatMap, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
 
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { asUuid, SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { asUuid, SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
 import {
   OrganizationId as SdkOrganizationId,
   OrganizationInviteLinkView as SdkOrganizationInviteLinkView,
-} from "@bitwarden/sdk-internal";
-import { StateProvider } from "@bitwarden/state";
+} from "@localpass/sdk-internal";
+import { StateProvider } from "@localpass/state";
 
 import { OrganizationInviteLinkService } from "../abstractions/organization-invite-link.service";
 import { OrganizationInviteLinkView } from "../models/organization-invite-link.view";

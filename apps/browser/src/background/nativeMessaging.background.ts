@@ -1,17 +1,17 @@
 import { firstValueFrom, Subscription, timer } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService,
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import { BrowserApi } from "../platform/browser/browser-api";
 
@@ -91,7 +91,7 @@ export class NativeMessagingBackground {
     private logService: LogService,
     private accountService: AccountService,
   ) {
-    // Always try to keep a connection to the Bitwarden Desktop app alive so that there is no wait
+    // Always try to keep a connection to the LocalPass Desktop app alive so that there is no wait
     // when biometrics are used. `connect` is a no-op when the native messaging permission is missing.
     this.startConnecting();
   }
@@ -104,19 +104,19 @@ export class NativeMessagingBackground {
       return;
     }
 
-    this.logService.info("[Native Messaging IPC] Connecting to Bitwarden Desktop app...");
+    this.logService.info("[Native Messaging IPC] Connecting to LocalPass Desktop app...");
     const appId = await this.appIdService.getAppId();
     this.appId = appId;
 
     return new Promise<void>((resolve, reject) => {
-      this.port = BrowserApi.connectNative("com.localpassword.desktop");
+      this.port = BrowserApi.connectNative("com.localpass.desktop");
 
       this.connecting = true;
 
       const connectedCallback = () => {
         if (!this.platformUtilsService.isSafari()) {
           this.logService.info(
-            "[Native Messaging IPC] Connection to Bitwarden Desktop app established!",
+            "[Native Messaging IPC] Connection to LocalPass Desktop app established!",
           );
         } else {
           this.logService.info(
@@ -141,7 +141,7 @@ export class NativeMessagingBackground {
             connectedCallback();
             break;
           case "disconnected":
-            this.logService.info("[Native Messaging IPC] Disconnected from Bitwarden Desktop app.");
+            this.logService.info("[Native Messaging IPC] Disconnected from LocalPass Desktop app.");
             if (this.connecting) {
               reject(new Error("startDesktop"));
             }
@@ -242,7 +242,7 @@ export class NativeMessagingBackground {
   }
 
   /**
-   * Starts attempting to keep a connection to the Bitwarden Desktop app alive. If a connection is
+   * Starts attempting to keep a connection to the LocalPass Desktop app alive. If a connection is
    * not established, it retries every 10 seconds. Calling this while the loop is already running is
    * a no-op.
    */
@@ -287,7 +287,7 @@ export class NativeMessagingBackground {
       await this.send(message);
     } catch (e) {
       this.logService.info(
-        `[Native Messaging IPC] Error sending message of type ${message.command} to Bitwarden Desktop app. Error: ${e}`,
+        `[Native Messaging IPC] Error sending message of type ${message.command} to LocalPass Desktop app. Error: ${e}`,
       );
       const callback = this.callbacks.get(messageId);
       this.callbacks.delete(messageId);
@@ -352,7 +352,7 @@ export class NativeMessagingBackground {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       this.logService.info(
-        "[Native Messaging IPC] Disconnected from Bitwarden Desktop app because of the native port disconnecting.",
+        "[Native Messaging IPC] Disconnected from LocalPass Desktop app because of the native port disconnecting.",
       );
 
       this.disconnect();

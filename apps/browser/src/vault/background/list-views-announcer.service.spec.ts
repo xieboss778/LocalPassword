@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Subject } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { MessageSender } from "@bitwarden/common/platform/messaging";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { MessageSender } from "@localpass/common/platform/messaging";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { CIPHER_LIST_VIEWS_CHANGED } from "../services/foreground-cipher.service";
 

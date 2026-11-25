@@ -6,25 +6,25 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   RestrictedCipherType,
   RestrictedItemTypesService,
-} from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { DialogService } from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { FakeGlobalStateProvider } from "@bitwarden/state-test-utils";
+} from "@localpass/common/vault/services/restricted-item-types.service";
+import { DialogService } from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
+import { FakeGlobalStateProvider } from "@localpass/state-test-utils";
 import {
   AddEditFolderDialogComponent,
   AddItemGridComponent,
   AddItemGridResult,
   Vfo1TerminologyService,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import BrowserPopupUtils from "../../../../../platform/browser/browser-popup-utils";
 

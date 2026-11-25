@@ -15,24 +15,24 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { AutotypeFeatureFlagState } from "@bitwarden/common/desktop-native/enums/autotype-feature-flag-state.enum";
-import { autotypeFeatureFlagState$ } from "@bitwarden/common/desktop-native/services/autotype-feature-flags";
-import { DeviceType } from "@bitwarden/common/enums";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { AutotypeFeatureFlagState } from "@localpass/common/desktop-native/enums/autotype-feature-flag-state.enum";
+import { autotypeFeatureFlagState$ } from "@localpass/common/desktop-native/services/autotype-feature-flags";
+import { DeviceType } from "@localpass/common/enums";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   GlobalStateProvider,
   AUTOTYPE_SETTINGS_DISK,
   KeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LogService } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/common/platform/state";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LogService } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 import { AutotypeConfig } from "../models/autotype-config";
 import { AutotypeVaultData } from "../models/autotype-vault-data";

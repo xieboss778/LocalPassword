@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { DriversLicenseView as SdkDriversLicenseView } from "@bitwarden/sdk-internal";
+import { DriversLicenseView as SdkDriversLicenseView } from "@localpass/sdk-internal";
 
 import { ItemView } from "./item.view";
 

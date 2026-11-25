@@ -4,21 +4,21 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, Subject } from "rxjs";
 
-import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
-import { generate_ssh_key } from "@bitwarden/sdk-internal";
+import { ClientType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { SshKeyView } from "@localpass/common/vault/models/view/ssh-key.view";
+import { generate_ssh_key } from "@localpass/sdk-internal";
 
 import { SshImportPromptService } from "../../../services/ssh-import-prompt.service";
 import { CipherFormContainer } from "../../cipher-form-container";
 
 import { SshKeySectionComponent } from "./sshkey-section.component";
 
-jest.mock("@bitwarden/sdk-internal", () => {
+jest.mock("@localpass/sdk-internal", () => {
   return {
-    ...jest.requireActual("@bitwarden/sdk-internal"),
+    ...jest.requireActual("@localpass/sdk-internal"),
     generate_ssh_key: jest.fn(),
   };
 });

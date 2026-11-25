@@ -1,4 +1,4 @@
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 
 import { DevFlags } from "../../../platform/flags";
 

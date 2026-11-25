@@ -16,7 +16,7 @@ import {
   viewChildren,
 } from "@angular/core";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { OverflowItemDirective } from "../../overflow-list/overflow-item.directive";
 import { OverflowListDirective } from "../../overflow-list/overflow-list.directive";

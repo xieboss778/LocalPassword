@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { SecureNoteType, CipherType } from "@localpass/common/vault/enums";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 
 import { ImportResult } from "../models/import-result";
 

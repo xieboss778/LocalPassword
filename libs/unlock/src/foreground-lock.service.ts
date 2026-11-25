@@ -4,9 +4,9 @@ import {
   CommandDefinition,
   MessageListener,
   MessageSender,
-} from "@bitwarden/common/platform/messaging";
-import { newGuid } from "@bitwarden/guid";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/common/platform/messaging";
+import { newGuid } from "@localpass/guid";
+import { UserId } from "@localpass/user-core";
 
 import { LockSource } from "./lock-source.enum";
 import { LockService } from "./lock.service";

@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ToastService } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ToastService } from "@localpass/components";
 
 import { OtpResult } from "../../../../importers/lastpass/access/models";
 import {

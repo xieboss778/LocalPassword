@@ -4,7 +4,7 @@ import { combineLatest, filter, firstValueFrom, map, Observable, of, switchMap }
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
 // eslint-disable-next-line no-restricted-imports
 import {
   Argon2KdfConfig,
@@ -13,10 +13,10 @@ import {
   LegacyCompatKeyService,
   PBKDF2KdfConfig,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { PureCrypto } from "@bitwarden/sdk-internal";
-import { UnlockService } from "@bitwarden/unlock";
+} from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { PureCrypto } from "@localpass/sdk-internal";
+import { UnlockService } from "@localpass/unlock";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { OrganizationService } from "../../../admin-console/abstractions/organization/organization.service.abstraction";
@@ -145,7 +145,7 @@ export class KeyConnectorService implements KeyConnectorServiceAbstraction {
     await this.setUsesKeyConnector(true, userId);
 
     // Clear master password unlock from state
-    // TODO(https://bitwarden.atlassian.net/browse/PM-43754): move to sdk's migrate_to_key_connector
+    // TODO(https://localpass.atlassian.net/browse/PM-43754): move to sdk's migrate_to_key_connector
     await this.masterPasswordService.clearMasterPasswordUnlockData(userId);
 
     const userDecryptionOptions = await firstValueFrom(
@@ -243,7 +243,7 @@ export class KeyConnectorService implements KeyConnectorServiceAbstraction {
     return organizationInviteAccepted;
   }
 
-  // TODO: Remove with https://bitwarden.atlassian.net/browse/PM-27328 (V1 Key Connector registration).
+  // TODO: Remove with https://localpass.atlassian.net/browse/PM-27328 (V1 Key Connector registration).
   async convertNewSsoUserToKeyConnectorV1(
     userId: UserId,
     orgId: OrganizationId,
@@ -284,7 +284,7 @@ export class KeyConnectorService implements KeyConnectorServiceAbstraction {
     );
     // Same endpoint choice as the SDK makes for V2. The legacy endpoint always accepts the invite.
     // TODO: Remove the legacy endpoint when the pm-34429-invite-link-auto-confirm flag is removed
-    // with https://bitwarden.atlassian.net/browse/PM-40052
+    // with https://localpass.atlassian.net/browse/PM-40052
     if (await this.configService.getFeatureFlag(FeatureFlag.InviteLinkAutoConfirm)) {
       await this.ssoJitProvisionFinishApiService.postKeyConnector(
         new SsoJitProvisionFinishSetKeyConnectorKeyRequest(

@@ -2,15 +2,15 @@
 // @ts-strict-ignore
 import { map, of } from "rxjs";
 
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
-import { UserKeyEncryptor } from "@bitwarden/common/tools/cryptography/user-key-encryptor";
-import { BufferedState } from "@bitwarden/common/tools/state/buffered-state";
-import { DataPacker } from "@bitwarden/common/tools/state/data-packer.abstraction";
-import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
-import { SecretState } from "@bitwarden/common/tools/state/secret-state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CredentialType } from "@bitwarden/generator-core";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { SingleUserState, StateProvider } from "@localpass/common/platform/state";
+import { UserKeyEncryptor } from "@localpass/common/tools/cryptography/user-key-encryptor";
+import { BufferedState } from "@localpass/common/tools/state/buffered-state";
+import { DataPacker } from "@localpass/common/tools/state/data-packer.abstraction";
+import { PaddedDataPacker } from "@localpass/common/tools/state/padded-data-packer";
+import { SecretState } from "@localpass/common/tools/state/secret-state";
+import { UserId } from "@localpass/common/types/guid";
+import { CredentialType } from "@localpass/generator-core";
 
 import { GeneratedCredential } from "./generated-credential";
 import { GeneratorHistoryService } from "./generator-history.abstraction";

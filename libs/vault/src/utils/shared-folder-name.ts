@@ -1,8 +1,8 @@
 import {
   CollectionView,
   NestingDelimiter,
-} from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+} from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 /**
  * A shared folder's own name, without the parent path its full name carries: "Deepest" for

@@ -3,8 +3,8 @@
 import * as lunr from "lunr";
 import { Opaque } from "type-fest";
 
-import { measured, PerfTrackGroup } from "@bitwarden/logging";
-import { UserId } from "@bitwarden/user-core";
+import { measured, PerfTrackGroup } from "@localpass/logging";
+import { UserId } from "@localpass/user-core";
 
 import { UriMatchStrategy } from "../../models/domain/domain-service";
 import { LogService } from "../../platform/abstractions/log.service";

@@ -1,23 +1,23 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   DialogRef,
   AsyncActionsModule,
   ButtonModule,
   DIALOG_DATA,
   DialogModule,
-} from "@bitwarden/components";
-import type { chromium_importer } from "@bitwarden/desktop-napi";
-import { ImportMetadataServiceAbstraction } from "@bitwarden/importer-core";
+} from "@localpass/components";
+import type { chromium_importer } from "@localpass/desktop-napi";
+import { ImportMetadataServiceAbstraction } from "@localpass/importer-core";
 import {
   ImportComponent,
   ImporterProviders,
   OnePasswordSsoBrowser,
   SYSTEM_SERVICE_PROVIDER,
-} from "@bitwarden/importer-ui";
-import { I18nPipe, safeProvider } from "@bitwarden/ui-common";
+} from "@localpass/importer-ui";
+import { I18nPipe, safeProvider } from "@localpass/ui-common";
 
 import { DesktopImportMetadataService } from "./desktop-import-metadata.service";
 import { DesktopOnePasswordSsoBrowser } from "./desktop-onepassword-sso-browser";
@@ -29,7 +29,7 @@ interface ImportDesktopDialogData {
   defaultCollectionId?: string;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "import-desktop.component.html",

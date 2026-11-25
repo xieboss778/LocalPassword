@@ -4,15 +4,15 @@ import { NgClass } from "@angular/common";
 import { Component, HostListener, computed, inject, input, output, viewChild } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge/premium-badge.component";
-import { IconComponent } from "@bitwarden/angular/vault/components/icon.component";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge/premium-badge.component";
+import { IconComponent } from "@localpass/angular/vault/components/icon.component";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   BitIconButtonComponent,
   CheckboxModule,
@@ -21,9 +21,9 @@ import {
   TableModule,
   LinkModule,
   IconModule,
-} from "@bitwarden/components";
-import { ShareLinkMenuItemDirective } from "@bitwarden/tools-share";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { ShareLinkMenuItemDirective } from "@localpass/tools-share";
+import { I18nPipe } from "@localpass/ui-common";
 import {
   GetOrgNameFromIdPipe,
   OrganizationNameBadgeComponent,
@@ -31,11 +31,11 @@ import {
   VaultItemCopyActionsComponent,
   Vfo1I18nPipe,
   Vfo1IconPipe,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultItemEvent } from "./vault-item-event";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tr[appVaultCipherRow]",

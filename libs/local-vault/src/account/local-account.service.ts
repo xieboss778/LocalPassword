@@ -1,11 +1,11 @@
 import { Observable, firstValueFrom, map } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { LOCAL_VAULT_DISK, StateProvider, UserKeyDefinition } from "@bitwarden/state";
+import { UserId } from "@localpass/common/types/guid";
+import { LOCAL_VAULT_DISK, StateProvider, UserKeyDefinition } from "@localpass/state";
 
 /**
- * Marks a vault as local-only: created on this device, never backed by a Bitwarden server.
+ * Marks a vault as local-only: created on this device, never backed by a LocalPass server.
  *
  * The flag lives in user state, so removing the account removes it. Callers gate the login,
  * sync and billing UI on it instead of trying to detect the sentinel environment URL.

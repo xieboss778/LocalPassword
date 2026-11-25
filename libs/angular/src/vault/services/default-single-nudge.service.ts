@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { NudgeStatus, NUDGE_DISMISSED_DISK_KEY, NudgeType } from "./nudges.service";
 

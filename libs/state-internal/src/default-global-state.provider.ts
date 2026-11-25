@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { LogService } from "@bitwarden/logging";
-import { GlobalState, GlobalStateProvider, KeyDefinition } from "@bitwarden/state";
-import { StorageServiceProvider } from "@bitwarden/storage-core";
+import { LogService } from "@localpass/logging";
+import { GlobalState, GlobalStateProvider, KeyDefinition } from "@localpass/state";
+import { StorageServiceProvider } from "@localpass/storage-core";
 
 import { DefaultGlobalState } from "./default-global-state";
 

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { Route } from "@angular/router";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 
 import { featureFlaggedRoute } from "./feature-flagged-route";
 

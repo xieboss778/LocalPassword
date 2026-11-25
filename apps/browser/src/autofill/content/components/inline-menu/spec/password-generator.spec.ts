@@ -1,4 +1,4 @@
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { EventSecurity } from "../../../../utils/event-security";
 import { keyupEvent, litHandler, litValues } from "../../lit-stories/lit-values";

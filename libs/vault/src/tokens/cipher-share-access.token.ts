@@ -1,5 +1,5 @@
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 /**
  * Sharing for a vault item, as the row overflow menu needs it. The implementation lives with the
@@ -18,7 +18,7 @@ export interface CipherShareAccess {
 }
 
 /**
- * Lets the row menu offer sharing without importing `@bitwarden/tools-share`, which already depends
- * on `@bitwarden/vault`. A client that provides no implementation shows no share action.
+ * Lets the row menu offer sharing without importing `@localpass/tools-share`, which already depends
+ * on `@localpass/vault`. A client that provides no implementation shows no share action.
  */
 export const CIPHER_SHARE_ACCESS = new SafeInjectionToken<CipherShareAccess>("CIPHER_SHARE_ACCESS");

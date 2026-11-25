@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { SignedPublicKey, UnsignedPublicKey, WrappedPrivateKey } from "@bitwarden/legacy-crypto";
+import { SignedPublicKey, UnsignedPublicKey, WrappedPrivateKey } from "@localpass/legacy-crypto";
 
 import { Utils } from "../../../platform/misc/utils";
 

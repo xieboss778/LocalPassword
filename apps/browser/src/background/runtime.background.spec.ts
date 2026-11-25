@@ -1,23 +1,23 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogoutReason } from "@bitwarden/common/auth/logout";
-import { ExtensionCommand } from "@bitwarden/common/autofill/constants";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogoutReason } from "@localpass/common/auth/logout";
+import { ExtensionCommand } from "@localpass/common/autofill/constants";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   Environment,
   Region,
   RegionConfig,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { Message, IntraprocessMessageSender } from "@bitwarden/common/platform/messaging";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { VaultMessages } from "@bitwarden/common/vault/enums/vault-messages.enum";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { Message, IntraprocessMessageSender } from "@localpass/common/platform/messaging";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { VaultMessages } from "@localpass/common/vault/enums/vault-messages.enum";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports
@@ -451,10 +451,10 @@ describe("RuntimeBackground collection dispatch", () => {
     beforeEach(() => {
       const environmentService = mock<BrowserEnvironmentService>();
       environmentService.availableRegions.mockReturnValue([
-        { urls: { webVault: "https://vault.bitwarden.com" } } as any,
+        { urls: { webVault: "https://vault.local.invalid" } } as any,
       ]);
       environmentService.environment$ = of({
-        getWebVaultUrl: () => "https://vault.bitwarden.com",
+        getWebVaultUrl: () => "https://vault.local.invalid",
       } as any);
 
       runtimeBackground = createRuntimeBackground({
@@ -467,9 +467,9 @@ describe("RuntimeBackground collection dispatch", () => {
     });
 
     it.each([
-      ["vault sender origin", { origin: "https://vault.bitwarden.com" }, undefined, true],
+      ["vault sender origin", { origin: "https://vault.local.invalid" }, undefined, true],
       ["non-vault sender origin", { origin: "https://example.com" }, undefined, false],
-      ["referrer fallback", {}, "vault.bitwarden.com", true],
+      ["referrer fallback", {}, "vault.local.invalid", true],
     ] as const)("%s", async (_name, messageSender, referrer, expected) => {
       await expect(
         runtimeBackground.processMessageWithSender(
@@ -665,7 +665,7 @@ describe("RuntimeBackground logout dispatch", () => {
 
 describe("RuntimeBackground vault referrer gating", () => {
   const environmentWebVaultUrl = "https://vault.selfhosted.test";
-  const regionWebVaultUrl = "https://vault.bitwarden.com";
+  const regionWebVaultUrl = "https://vault.local.invalid";
 
   let runtimeBackground: RuntimeBackground;
   let environmentService: MockProxy<BrowserEnvironmentService>;
@@ -678,7 +678,7 @@ describe("RuntimeBackground vault referrer gating", () => {
       getWebVaultUrl: () => environmentWebVaultUrl,
     } as Environment);
     environmentService.availableRegions.mockReturnValue([
-      { key: Region.US, domain: "bitwarden.com", urls: { webVault: regionWebVaultUrl } },
+      { key: Region.US, domain: "local.invalid", urls: { webVault: regionWebVaultUrl } },
     ] as RegionConfig[]);
 
     runtimeBackground = createRuntimeBackground({
@@ -710,7 +710,7 @@ describe("RuntimeBackground vault referrer gating", () => {
 
     it("opens the SSO popout when the referrer is a known region's web vault", async () => {
       await runtimeBackground.processMessageWithSender(
-        message("vault.bitwarden.com"),
+        message("vault.local.invalid"),
         {} as chrome.runtime.MessageSender,
       );
 
@@ -751,7 +751,7 @@ describe("RuntimeBackground vault referrer gating", () => {
     });
 
     it("opens the WebAuthn popout when the referrer is a known region's web vault", async () => {
-      await runtimeBackground.processMessage(message("vault.bitwarden.com"));
+      await runtimeBackground.processMessage(message("vault.local.invalid"));
 
       expect(openTwoFactorAuthWebAuthnPopout).toHaveBeenCalled();
     });

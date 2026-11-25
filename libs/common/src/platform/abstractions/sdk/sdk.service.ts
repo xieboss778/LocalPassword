@@ -6,7 +6,7 @@ import {
   Uuid,
   DeviceType as SdkDeviceType,
   UnsignedSharedKey,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { DeviceType } from "../../../enums";
 import { OrganizationId, UserId } from "../../../types/guid";

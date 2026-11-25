@@ -47,7 +47,7 @@ if [ "$SETUP_MKCERT" = "yes" ]; then
     echo "Generating SSL certificates..."
     mkcert -install
     cd /workspace/apps/web
-    mkcert -cert-file dev-server.local.pem -key-file dev-server.local.pem localhost bitwarden.test
+    mkcert -cert-file dev-server.local.pem -key-file dev-server.local.pem localhost localpass.test
     cd /workspace
 fi
 

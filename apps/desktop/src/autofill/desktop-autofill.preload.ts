@@ -1,6 +1,6 @@
 import { ipcRenderer } from "electron";
 
-import type { passkey_authenticator } from "@bitwarden/desktop-napi";
+import type { passkey_authenticator } from "@localpass/desktop-napi";
 
 import { RunCommandParams, RunCommandResult } from "./main/main-desktop-autofill.service";
 import { AutofillCommand } from "./models/autofill-command";
@@ -24,7 +24,7 @@ export const DesktopAutofillPreload = {
   listenerReady: () => ipcRenderer.send("autofill.listenerReady"),
 
   /**
-   * Returns the native handle of the Bitwarden app window, for native prompts
+   * Returns the native handle of the LocalPass app window, for native prompts
    * that must attach themselves to a window. Resolves to null when there is no
    * window, e.g. while the app is starting up.
    */

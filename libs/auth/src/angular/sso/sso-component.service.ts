@@ -1,4 +1,4 @@
-import { ClientType } from "@bitwarden/common/enums";
+import { ClientType } from "@localpass/common/enums";
 
 export type SsoClientType =
   ClientType.Web | ClientType.Browser | ClientType.Desktop | ClientType.Cli;

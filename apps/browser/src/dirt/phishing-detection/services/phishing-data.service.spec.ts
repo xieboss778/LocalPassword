@@ -1,14 +1,14 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   DefaultTaskSchedulerService,
   TaskSchedulerService,
-} from "@bitwarden/common/platform/scheduling";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/platform/scheduling";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { LogService } from "@localpass/logging";
 
 import { PhishingDataService } from "./phishing-data.service";
 import type { PhishingIndexedDbService } from "./phishing-indexeddb.service";
@@ -90,7 +90,7 @@ describe("PhishingDataService", () => {
     });
 
     it("should detect QA test addresses - infinite loading page", async () => {
-      const url = new URL("https://bitwarden.github.io/phishing-test-page/inf-load/");
+      const url = new URL("https://localpass.github.io/phishing-test-page/inf-load/");
       expect(await service.isPhishingWebAddress(url)).toBe(true);
       expect(mockIndexedDbService.hasUrl).not.toHaveBeenCalled();
     });

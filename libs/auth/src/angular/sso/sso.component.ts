@@ -5,7 +5,7 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angula
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LoginStrategyServiceAbstraction,
   SsoLoginCredentials,
@@ -13,26 +13,26 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
   LoginSuccessHandlerService,
-} from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
-import { VerifiedOrganizationDomainSsoDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-domain/responses/verified-organization-domain-sso-details.response";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
-import { ClientType, HttpStatusCode } from "@bitwarden/common/enums";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+} from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { OrgDomainApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
+import { VerifiedOrganizationDomainSsoDetailsResponse } from "@localpass/common/admin-console/abstractions/organization-domain/responses/verified-organization-domain-sso-details.response";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { SsoPreValidateResponse } from "@localpass/common/auth/models/response/sso-pre-validate.response";
+import { ClientType, HttpStatusCode } from "@localpass/common/enums";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -44,10 +44,10 @@ import {
   IconModule,
   LinkModule,
   ToastService,
-} from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+} from "@localpass/components";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { SsoClientType, SsoComponentService } from "./sso-component.service";
 
@@ -64,7 +64,7 @@ interface QueryParams {
 /**
  * This component handles the SSO flow.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "sso.component.html",

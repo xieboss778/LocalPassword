@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { AutofocusDirective, ButtonModule, DIALOG_DATA, DialogModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { AutofocusDirective, ButtonModule, DIALOG_DATA, DialogModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportedFile } from "../../models";
 

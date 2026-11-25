@@ -1,13 +1,13 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { ClientType } from "@bitwarden/common/enums";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { ClientType } from "@localpass/common/enums";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { LoginComponentService } from "..";
 

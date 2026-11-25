@@ -1,19 +1,19 @@
-import MainBackground from "@bitwarden/browser/background/main.background";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/process-reload";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { BiometricsService, KeyService } from "@bitwarden/key-management";
-import { LogService } from "@bitwarden/logging";
-import { StateEventRunnerService } from "@bitwarden/state";
-import { DefaultLockService, LockSource } from "@bitwarden/unlock";
-import { UserId } from "@bitwarden/user-core";
+import MainBackground from "@localpass/browser/background/main.background";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { ProcessReloadServiceAbstraction } from "@localpass/common/key-management/process-reload";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { SystemService } from "@localpass/common/platform/abstractions/system.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { BiometricsService, KeyService } from "@localpass/key-management";
+import { LogService } from "@localpass/logging";
+import { StateEventRunnerService } from "@localpass/state";
+import { DefaultLockService, LockSource } from "@localpass/unlock";
+import { UserId } from "@localpass/user-core";
 
 export class ExtensionLockService extends DefaultLockService {
   constructor(

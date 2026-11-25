@@ -60,8 +60,8 @@ async function launch(
     ],
     env: {
       ...process.env,
-      BITWARDEN_APPDATA_DIR: APPDATA_DIR,
-      BITWARDEN_IPC_SOCKET_DIR: IPC_SOCKET_DIR,
+      LOCALPASS_APPDATA_DIR: APPDATA_DIR,
+      LOCALPASS_IPC_SOCKET_DIR: IPC_SOCKET_DIR,
       NODE_ENV: "development",
       ...extraEnv,
     },
@@ -117,7 +117,7 @@ export const test = base.extend<{
   window: async ({ app }, use) => {
     const window = await app.firstWindow({ timeout: WINDOW_TIMEOUT_MS });
     await window.waitForLoadState("domcontentloaded");
-    // E.g. "Bitwarden has a new look" opens over the vault after login.
+    // E.g. "LocalPass has a new look" opens over the vault after login.
     await skipOnboardingDialogs(window);
     await closeSideNavOverlay(window);
 

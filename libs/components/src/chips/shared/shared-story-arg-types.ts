@@ -1,13 +1,13 @@
 import { ArgTypes } from "@storybook/angular";
 
-import { BITWARDEN_ICONS } from "../../shared/icon";
+import { LOCALPASS_ICONS } from "../../shared/icon";
 
 import { CHIP_SIZES, CHIP_VARIANTS } from "./base-chip.directive";
 
 const sharedArgTypes = {
   startIcon: {
     control: "select",
-    options: BITWARDEN_ICONS,
+    options: LOCALPASS_ICONS,
     description: "Icon to display at the start of the chip",
   },
   disabled: {
@@ -31,7 +31,7 @@ const sizeArgType = {
 const endIconArgType = {
   endIcon: {
     control: "select",
-    options: BITWARDEN_ICONS,
+    options: LOCALPASS_ICONS,
     description: "Icon to display at the end of the chip",
   },
 } satisfies Partial<ArgTypes>;

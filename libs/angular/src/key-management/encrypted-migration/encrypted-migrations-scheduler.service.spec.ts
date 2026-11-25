@@ -2,16 +2,16 @@ import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { EncryptedMigrator } from "@bitwarden/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { mockAccountInfoWith, FakeAccountService } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { EncryptedMigrator } from "@localpass/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SingleUserState, StateProvider } from "@localpass/common/platform/state";
+import { SyncService } from "@localpass/common/platform/sync";
+import { mockAccountInfoWith, FakeAccountService } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService, ToastService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 import {
   DefaultEncryptedMigrationsSchedulerService,

@@ -16,38 +16,38 @@ import {
   switchMap,
 } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
 import {
   AutofillOverlayVisibility,
   BrowserClientVendors,
   BrowserShortcutsUris,
   ClearClipboardDelay,
   DisablePasswordManagerUris,
-} from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+} from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
 import {
   BrowserClientVendor,
   BrowserShortcutsUri,
   ClearClipboardDelaySetting,
   DisablePasswordManagerUri,
   InlineMenuVisibilitySetting,
-} from "@bitwarden/common/autofill/types";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+} from "@localpass/common/autofill/types";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
-} from "@bitwarden/common/models/domain/domain-service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
+} from "@localpass/common/models/domain/domain-service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import {
   ButtonModule,
   CalloutModule,
@@ -62,8 +62,8 @@ import {
   SectionHeaderComponent,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { AdvancedUriOptionDialogComponent } from "@bitwarden/vault";
+} from "@localpass/components";
+import { AdvancedUriOptionDialogComponent } from "@localpass/vault";
 
 import { AutofillBrowserSettingsService } from "../../../autofill/services/autofill-browser-settings.service";
 import { BrowserApi } from "../../../platform/browser/browser-api";
@@ -74,7 +74,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
 
 import { FillAssistPopoverComponent } from "./fill-assist-popover/fill-assist-popover.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "autofill.component.html",
@@ -151,14 +151,14 @@ export class AutofillComponent implements OnInit {
    * Gates the settings UI for controlling if `data-bwignore` and
    * `data-bwautofill` attributes should be honored by autofill heuristics.
    */
-  protected bitwardenAutofillAttributesSettingsAreAvailable = devFlagEnabled(
-    "useBitwardenAutofillAttributes",
+  protected localpassAutofillAttributesSettingsAreAvailable = devFlagEnabled(
+    "useLocalPassAutofillAttributes",
   );
 
   protected additionalOptionsForm = new FormGroup({
     enableFillAssist: new FormControl(),
-    honorBitwardenIgnoreAttribute: new FormControl(),
-    honorBitwardenAutofillAttribute: new FormControl(),
+    honorLocalPassIgnoreAttribute: new FormControl(),
+    honorLocalPassAutofillAttribute: new FormControl(),
     enableContextMenuItem: new FormControl(),
     enableAutoTotpCopy: new FormControl(),
     enableBasicAuthResponse: new FormControl(),
@@ -345,34 +345,34 @@ export class AutofillComponent implements OnInit {
         void this.domainSettingsService.setEnableFillAssist(value);
       });
 
-    const honorBitwardenIgnoreAttribute = await firstValueFrom(
-      this.autofillSettingsService.honorBitwardenIgnoreAttribute$,
+    const honorLocalPassIgnoreAttribute = await firstValueFrom(
+      this.autofillSettingsService.honorLocalPassIgnoreAttribute$,
     );
 
-    this.additionalOptionsForm.controls.honorBitwardenIgnoreAttribute.patchValue(
-      honorBitwardenIgnoreAttribute,
+    this.additionalOptionsForm.controls.honorLocalPassIgnoreAttribute.patchValue(
+      honorLocalPassIgnoreAttribute,
       { emitEvent: false },
     );
 
-    this.additionalOptionsForm.controls.honorBitwardenIgnoreAttribute.valueChanges
+    this.additionalOptionsForm.controls.honorLocalPassIgnoreAttribute.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        void this.autofillSettingsService.setHonorBitwardenIgnoreAttribute(value);
+        void this.autofillSettingsService.setHonorLocalPassIgnoreAttribute(value);
       });
 
-    const honorBitwardenAutofillAttribute = await firstValueFrom(
-      this.autofillSettingsService.honorBitwardenAutofillAttribute$,
+    const honorLocalPassAutofillAttribute = await firstValueFrom(
+      this.autofillSettingsService.honorLocalPassAutofillAttribute$,
     );
 
-    this.additionalOptionsForm.controls.honorBitwardenAutofillAttribute.patchValue(
-      honorBitwardenAutofillAttribute,
+    this.additionalOptionsForm.controls.honorLocalPassAutofillAttribute.patchValue(
+      honorLocalPassAutofillAttribute,
       { emitEvent: false },
     );
 
-    this.additionalOptionsForm.controls.honorBitwardenAutofillAttribute.valueChanges
+    this.additionalOptionsForm.controls.honorLocalPassAutofillAttribute.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        void this.autofillSettingsService.setHonorBitwardenAutofillAttribute(value);
+        void this.autofillSettingsService.setHonorLocalPassAutofillAttribute(value);
       });
 
     this.enableContextMenuItem = await firstValueFrom(

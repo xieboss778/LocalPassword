@@ -4,9 +4,9 @@ import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { OrganizationId } from "@localpass/common/types/guid";
 import {
   ALL_ITEMS_SCOPE,
   CoachmarkService,
@@ -14,7 +14,7 @@ import {
   VaultNavItemType,
   VaultNavService,
   VaultScopeType,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultPopupListTableFiltersService } from "../../../services/vault-popup-list-table-filters.service";
 import { VaultPopupScrollPositionService } from "../../../services/vault-popup-scroll-position.service";

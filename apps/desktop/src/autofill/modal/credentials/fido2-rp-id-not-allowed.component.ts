@@ -2,15 +2,15 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { AccountWarning } from "@bitwarden/assets/svg";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountWarning } from "@localpass/assets/svg";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   ButtonModule,
   SectionComponent,
   StatusLockupComponent,
   SvgComponent,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { DesktopSettingsService } from "../../../platform/services/desktop-settings.service";
 import { DesktopFido2UserInterfaceService } from "../../services/desktop-fido2-user-interface.service";

@@ -17,11 +17,11 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterLink } from "@angular/router";
 import { combineLatest, lastValueFrom, map, switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 import {
   BitCellComponent,
   BitCellDefDirective,
@@ -42,8 +42,8 @@ import {
   SkeletonTextComponent,
   TooltipDirective,
   defineTable,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { TableRowNameDirective } from "../../directives/table-row-name.directive";
 import { buildFolderRows, FolderTableRow } from "../../models/folder-table-row";

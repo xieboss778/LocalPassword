@@ -2,32 +2,32 @@
 // @ts-strict-ignore
 import { filter, firstValueFrom } from "rxjs";
 
-import { Collection } from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { Collection } from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   CipherWithIdExport,
   CollectionWithIdExport,
   FolderWithIdExport,
-} from "@bitwarden/common/models/export";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { OrgKey, UserKey } from "@bitwarden/common/types/key";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/models/export";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { OrgKey, UserKey } from "@localpass/common/types/key";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString } from "@bitwarden/legacy-crypto";
-import { UserId } from "@bitwarden/user-core";
+import { EncryptService, EncString } from "@localpass/legacy-crypto";
+import { UserId } from "@localpass/user-core";
 import {
-  BitwardenEncryptedIndividualJsonExport,
-  BitwardenEncryptedJsonExport,
-  BitwardenEncryptedOrgJsonExport,
-  BitwardenJsonExport,
-  BitwardenPasswordProtectedFileFormat,
+  LocalPassEncryptedIndividualJsonExport,
+  LocalPassEncryptedJsonExport,
+  LocalPassEncryptedOrgJsonExport,
+  LocalPassJsonExport,
+  LocalPassPasswordProtectedFileFormat,
   isOrgEncrypted,
   isPasswordProtected,
   isUnencrypted,
-} from "@bitwarden/vault-export-core";
+} from "@localpass/vault-export-core";
 
 import { ImportResult } from "../../models/import-result";
 import { Importer } from "../importer";
@@ -47,7 +47,7 @@ export class BitwardenEncryptedJsonImporter extends BitwardenJsonImporter implem
   }
 
   async parse(data: string): Promise<ImportResult> {
-    const results: BitwardenPasswordProtectedFileFormat | BitwardenJsonExport = JSON.parse(data);
+    const results: LocalPassPasswordProtectedFileFormat | LocalPassJsonExport = JSON.parse(data);
 
     if (isPasswordProtected(results)) {
       throw new Error(
@@ -68,7 +68,7 @@ export class BitwardenEncryptedJsonImporter extends BitwardenJsonImporter implem
     return await this.parseEncrypted(results);
   }
 
-  private async parseEncrypted(data: BitwardenEncryptedJsonExport): Promise<ImportResult> {
+  private async parseEncrypted(data: LocalPassEncryptedJsonExport): Promise<ImportResult> {
     const result = new ImportResult();
     const account = await firstValueFrom(this.accountService.activeAccount$);
 
@@ -138,7 +138,7 @@ export class BitwardenEncryptedJsonImporter extends BitwardenJsonImporter implem
 
   private async parseEncryptedFolders(
     userId: UserId,
-    data: BitwardenEncryptedIndividualJsonExport,
+    data: LocalPassEncryptedIndividualJsonExport,
     importResult: ImportResult,
   ): Promise<Map<string, number>> {
     const groupingsMap = new Map<string, number>();
@@ -166,7 +166,7 @@ export class BitwardenEncryptedJsonImporter extends BitwardenJsonImporter implem
 
   private async parseEncryptedCollections(
     userId: UserId,
-    data: BitwardenEncryptedOrgJsonExport,
+    data: LocalPassEncryptedOrgJsonExport,
     importResult: ImportResult,
   ): Promise<Map<string, number>> {
     const groupingsMap = new Map<string, number>();

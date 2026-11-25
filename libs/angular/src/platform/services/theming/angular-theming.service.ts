@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@angular/core";
 import { fromEvent, map, merge, Observable, of, Subscription, switchMap } from "rxjs";
 
-import { ThemeTypes, Theme } from "@bitwarden/common/platform/enums";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { ThemeTypes, Theme } from "@localpass/common/platform/enums";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
 
 import { SYSTEM_THEME_OBSERVABLE } from "../../../services/injection-tokens";
 

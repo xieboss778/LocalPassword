@@ -1,4 +1,4 @@
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
 
 class BrowserClipboardService {
   private static consoleLogService: ConsoleLogService = new ConsoleLogService(false);

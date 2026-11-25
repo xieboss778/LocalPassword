@@ -2,16 +2,16 @@ import { CommonModule } from "@angular/common";
 import { Component, input, inject } from "@angular/core";
 import { combineLatest, map, shareReplay } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { NavigationModule, A11yTitleDirective } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { VaultFilter, CipherTypeFilter } from "@bitwarden/vault";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { NavigationModule, A11yTitleDirective } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { VaultFilter, CipherTypeFilter } from "@localpass/vault";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-type-filter",

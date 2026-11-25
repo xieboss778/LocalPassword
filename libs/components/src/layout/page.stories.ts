@@ -1,8 +1,8 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalStateProvider } from "@bitwarden/state";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalStateProvider } from "@localpass/state";
 
 import { ButtonModule } from "../button";
 import { NavigationModule } from "../navigation";

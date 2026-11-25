@@ -3,7 +3,7 @@
 import { app, ipcMain } from "electron";
 import { firstValueFrom } from "rxjs";
 
-import { autostart } from "@bitwarden/desktop-napi";
+import { autostart } from "@localpass/desktop-napi";
 
 import { Main } from "../main";
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";

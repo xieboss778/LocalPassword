@@ -1,6 +1,6 @@
 import { convertToParamMap } from "@angular/router";
 
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 import { importOwnerFromParams } from "./import-owner";
 

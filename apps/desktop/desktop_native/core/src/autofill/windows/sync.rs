@@ -181,7 +181,7 @@ mod tests {
         assert_eq!([9u8; 32].as_slice(), details.user_id.as_ref());
         assert_eq!("example.com", details.rp_id);
         assert_eq!("user@example.com", details.user_name);
-        // Both are placeholders today. If Bitwarden starts sending real friendly names,
+        // Both are placeholders today. If LocalPass starts sending real friendly names,
         // these assertions should be updated deliberately rather than silently drift.
         assert_eq!(Some("example.com".to_string()), details.rp_friendly_name);
         assert_eq!("user@example.com", details.user_display_name);
@@ -357,7 +357,7 @@ mod tests {
                 "credentialId":"Y3JlZGVudGlhbElk-v_D",
                 "rpId":"example.com",
                 "userHandle":"dXNlckhhbmRsZQD6_8M-",
-                "userName":"bitwarden-windows-demo1"
+                "userName":"localpass-windows-demo1"
             }]}
         }"#;
         let request: RunCommandRequest = serde_json::from_str(json).unwrap();
@@ -386,7 +386,7 @@ mod tests {
             b"userHandle\x00\xfa\xff\xc3>",
             user_handle.as_ref().unwrap().as_slice()
         );
-        assert_eq!("bitwarden-windows-demo1", user_name.as_ref().unwrap());
+        assert_eq!("localpass-windows-demo1", user_name.as_ref().unwrap());
     }
 
     #[test]

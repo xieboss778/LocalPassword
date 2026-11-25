@@ -1,4 +1,4 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 export const FillAssistEventName = Object.freeze({
   QualificationFailed: "fill_assist_rule_qualification_failed",

@@ -4,13 +4,13 @@ Object.assign(global, { TextDecoder, TextEncoder });
 
 import { BehaviorSubject, ReplaySubject, Subject, catchError, firstValueFrom, of } from "rxjs";
 
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { Site, VendorId } from "@bitwarden/common/tools/extension";
-import { Bitwarden } from "@bitwarden/common/tools/extension/vendor/bitwarden";
-import { Vendor } from "@bitwarden/common/tools/extension/vendor/data";
-import { SemanticLogger, ifEnabledSemanticLoggerProvider } from "@bitwarden/common/tools/log";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
+import { Site, VendorId } from "@localpass/common/tools/extension";
+import { LocalPass } from "@localpass/common/tools/extension/vendor/bitwarden";
+import { Vendor } from "@localpass/common/tools/extension/vendor/data";
+import { SemanticLogger, ifEnabledSemanticLoggerProvider } from "@localpass/common/tools/log";
+import { UserId } from "@localpass/common/types/guid";
 
 import { awaitAsync, mockAccountInfoWith } from "../../../../../common/spec";
 import {
@@ -356,7 +356,7 @@ describe("DefaultCredentialGeneratorService", () => {
       const mockSettings = new BehaviorSubject({ value: { length: 12 } });
       const vendorId = Vendor.bitwarden;
       const forwarderProfile = {
-        id: { forwarder: Bitwarden.id },
+        id: { forwarder: LocalPass.id },
         site: Site.forwarder,
         type: "extension",
       };

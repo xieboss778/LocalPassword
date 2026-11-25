@@ -1,16 +1,16 @@
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { LogoutService } from "@bitwarden/common/auth/logout";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { LogoutService } from "@localpass/common/auth/logout";
 import {
   VaultTimeoutAction,
   VaultTimeoutService,
   VaultTimeoutSettingsService,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { ServerNotificationsService } from "@bitwarden/common/platform/server-notifications";
-import { LockService, LockSource } from "@bitwarden/unlock";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/common/key-management/vault-timeout";
+import { ServerNotificationsService } from "@localpass/common/platform/server-notifications";
+import { LockService, LockSource } from "@localpass/unlock";
+import { UserId } from "@localpass/user-core";
 
 const IdleInterval = 60 * 5; // 5 minutes
 

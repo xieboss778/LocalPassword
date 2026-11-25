@@ -17,7 +17,7 @@ import { SshServer } from "../../src/ssh/ssh-server";
 const VAULT_URL = /#\/vault/;
 // ssh exits 255 when it cannot log in, e.g. because the agent refused to sign.
 const SSH_LOGIN_FAILED = 255;
-const SIGNED_CONTENTS = "signed by the Bitwarden SSH agent\n";
+const SIGNED_CONTENTS = "signed by the LocalPass SSH agent\n";
 const KEY_TYPES = Object.values(SshKeyType);
 
 let dir: string;

@@ -1,7 +1,7 @@
-import { RangeWithDefault } from "@bitwarden/common/platform/misc/range-with-default";
+import { RangeWithDefault } from "@localpass/common/platform/misc/range-with-default";
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, KdfConfig, KdfType, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
-import { BitwardenPasswordProtectedFileFormat } from "@bitwarden/vault-export-core";
+import { Argon2KdfConfig, KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
+import { LocalPassPasswordProtectedFileFormat } from "@localpass/vault-export-core";
 
 /**
  * Floor for PBKDF2 iteration counts accepted on password-protected import files.
@@ -72,7 +72,7 @@ const ARGON2_IMPORT_PARALLELISM = new RangeWithDefault(
  * @returns the configuration, or `null` if any parameter is out of bounds or the KDF type is unknown.
  */
 export function kdfConfigFromPasswordProtectedExport(
-  jdoc: BitwardenPasswordProtectedFileFormat,
+  jdoc: LocalPassPasswordProtectedFileFormat,
 ): KdfConfig | null {
   switch (jdoc.kdfType) {
     case KdfType.PBKDF2_SHA256:

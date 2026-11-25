@@ -23,13 +23,13 @@ switch (platform) {
       case "arm64":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.android-arm64.node"],
-          "@bitwarden/desktop-napi-android-arm64",
+          "@localpass/desktop-napi-android-arm64",
         );
         break;
       case "arm":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.android-arm.node"],
-          "@bitwarden/desktop-napi-android-arm",
+          "@localpass/desktop-napi-android-arm",
         );
         break;
       default:
@@ -41,13 +41,13 @@ switch (platform) {
       case "x64":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.win32-x64-msvc.node"],
-          "@bitwarden/desktop-napi-win32-x64-msvc",
+          "@localpass/desktop-napi-win32-x64-msvc",
         );
         break;
       case "arm64":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.win32-arm64-msvc.node"],
-          "@bitwarden/desktop-napi-win32-arm64-msvc",
+          "@localpass/desktop-napi-win32-arm64-msvc",
         );
         break;
       default:
@@ -59,13 +59,13 @@ switch (platform) {
       case "x64":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.darwin-x64.node"],
-          "@bitwarden/desktop-napi-darwin-x64",
+          "@localpass/desktop-napi-darwin-x64",
         );
         break;
       case "arm64":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.darwin-arm64.node"],
-          "@bitwarden/desktop-napi-darwin-arm64",
+          "@localpass/desktop-napi-darwin-arm64",
         );
         break;
       default:
@@ -77,13 +77,13 @@ switch (platform) {
       case "x64":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.linux-x64-gnu.node"],
-          "@bitwarden/desktop-napi-linux-x64-gnu",
+          "@localpass/desktop-napi-linux-x64-gnu",
         );
         break;
       case "arm64":
         nativeBinding = loadFirstAvailable(
           ["desktop_napi.linux-arm64-gnu.node"],
-          "@bitwarden/desktop-napi-linux-arm64-gnu",
+          "@localpass/desktop-napi-linux-arm64-gnu",
         );
         break;
       default:

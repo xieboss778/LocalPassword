@@ -7,8 +7,8 @@ import {
   PopoverComponent,
   PopoverModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CoachmarkStepId } from "./coachmark-step";
 import { CoachmarkService } from "./coachmark.service";

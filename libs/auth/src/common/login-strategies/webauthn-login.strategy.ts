@@ -1,12 +1,12 @@
 import { BehaviorSubject } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/webauthn-login-token.request";
-import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { UnlockService } from "@bitwarden/unlock";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { WebAuthnLoginTokenRequest } from "@localpass/common/auth/models/request/identity-token/webauthn-login-token.request";
+import { IdentityTokenResponse } from "@localpass/common/auth/models/response/identity-token.response";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { UnlockService } from "@localpass/unlock";
 
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
 import { CacheData } from "../services/login-strategies/login-strategy.state";

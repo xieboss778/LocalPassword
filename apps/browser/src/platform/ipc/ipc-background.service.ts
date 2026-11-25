@@ -1,7 +1,7 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { IpcService } from "@localpass/common/platform/ipc";
 import {
   BroadcastGroup,
   BroadcastResolution,
@@ -10,7 +10,7 @@ import {
   OutgoingMessage,
   ipcRegisterDiscoverHandler,
   IpcClient,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { BrowserForegroundIpcTransport, DesktopIpcTransport, WebIpcTransport } from "./transports";
 

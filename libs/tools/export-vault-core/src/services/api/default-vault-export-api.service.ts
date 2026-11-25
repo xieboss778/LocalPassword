@@ -1,6 +1,6 @@
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationExportResponse } from "@bitwarden/common/admin-console/models/response/organization-export.response";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { OrganizationExportResponse } from "@localpass/common/admin-console/models/response/organization-export.response";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 import { VaultExportApiService } from "./vault-export-api.service.abstraction";
 

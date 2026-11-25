@@ -1,4 +1,4 @@
-import { PinLockType } from "@bitwarden/sdk-internal";
+import { PinLockType } from "@localpass/sdk-internal";
 
 import { UserId } from "../../types/guid";
 

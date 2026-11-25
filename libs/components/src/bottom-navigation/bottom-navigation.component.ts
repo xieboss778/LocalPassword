@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { BitSvg } from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { BitSvg } from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { A11yTitleDirective } from "../a11y";
 import { BerryComponent } from "../berry";

@@ -6,7 +6,7 @@ import * as stories from "./icons.stories";
 
 # Iconography
 
-Bitwarden has a suite of presentational icons available for use, as well as a few helper classes for
+LocalPass has a suite of presentational icons available for use, as well as a few helper classes for
 sizing and rotation.
 
 The preferred way to render an icon is the `bit-icon` component, passing the icon name to its `name`
@@ -35,9 +35,9 @@ or an options menu icon.
 
 <Canvas of={stories.StatusIcons} />
 
-## Bitwarden Objects
+## LocalPass Objects
 
-<Canvas of={stories.BitwardenObjects} />
+<Canvas of={stories.LocalPassObjects} />
 
 ## Actions
 
@@ -101,7 +101,7 @@ This script will:
 4. ✅ **Auto-generate** `libs/components/src/shared/icon.ts` with the new icon
 5. ✅ Clean up temporary build artifacts
 
-> **Note:** `icon.ts` is auto-generated (`BITWARDEN_ICONS` array and the derived `BitwardenIcon`
+> **Note:** `icon.ts` is auto-generated (`LOCALPASS_ICONS` array and the derived `LocalPassIcon`
 > type) — do not edit it by hand. The build overwrites it.
 
 ### 3. Add to Storybook Documentation
@@ -111,7 +111,7 @@ Add your icon to the appropriate category in `libs/components/src/stories/icons/
 ```typescript
 // Choose the appropriate category:
 // - statusIndicators
-// - bitwardenObjects
+// - localpassObjects
 // - actions
 // - directionalMenuIndicators
 // - miscObjects
@@ -263,7 +263,7 @@ libs/angular/src/scss/bwicons/
 
 libs/components/src/
 ├── shared/
-│   └── icon.ts                      # Auto-generated icon list + BitwardenIcon type
+│   └── icon.ts                      # Auto-generated icon list + LocalPassIcon type
 └── stories/icons/
     └── icon-data.ts                 # Storybook documentation
 ```

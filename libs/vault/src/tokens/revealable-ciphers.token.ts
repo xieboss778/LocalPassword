@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherId, UserId } from "@localpass/common/types/guid";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 /**
  * The restricted ciphers a user may reveal now, as the row overflow menu needs them. The

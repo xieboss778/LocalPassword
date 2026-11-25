@@ -1,6 +1,6 @@
 /** A type of encrypted export. */
 export const EncryptedExportType = Object.freeze({
-  /** Export is encrypted using the Bitwarden account key. */
+  /** Export is encrypted using the LocalPass account key. */
   AccountEncrypted: 0,
   /** Export is encrypted using a separate file password/key. */
   FileEncrypted: 1,

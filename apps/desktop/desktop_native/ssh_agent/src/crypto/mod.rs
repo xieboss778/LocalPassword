@@ -1,7 +1,7 @@
 //! Cryptographic key management for the SSH agent.
 //!
 //! This module provides the core primitive types and functionality for managing
-//! SSH keys in the Bitwarden SSH agent.
+//! SSH keys in the LocalPass SSH agent.
 //!
 //! # Supported signing algorithms
 //!

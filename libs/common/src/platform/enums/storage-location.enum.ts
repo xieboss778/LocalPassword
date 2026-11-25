@@ -1,1 +1,1 @@
-export { StorageLocationEnum as StorageLocation } from "@bitwarden/storage-core";
+export { StorageLocationEnum as StorageLocation } from "@localpass/storage-core";

@@ -5,12 +5,12 @@ Object.assign(global, { TextDecoder, TextEncoder });
 import { mock } from "jest-mock-extended";
 import { of, firstValueFrom } from "rxjs";
 
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 
 import { DefaultPasswordGenerationOptions } from "../data";
 import { PasswordRandomizer } from "../engine";

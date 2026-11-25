@@ -20,7 +20,7 @@ const SomeVendorId = SomeVendor.id;
 const SomeExtension: ExtensionMetadata = deepFreeze({
   site: SomeSite,
   product: { vendor: SomeVendor, name: "Some Product" },
-  host: { authorization: "bearer", selfHost: "maybe", baseUrl: "https://vault.bitwarden.com" },
+  host: { authorization: "bearer", selfHost: "maybe", baseUrl: "https://vault.local.invalid" },
   requestedFields: [],
 });
 

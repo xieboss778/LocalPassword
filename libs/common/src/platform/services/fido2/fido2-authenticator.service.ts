@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { filter, firstValueFrom, map, timeout } from "rxjs";
 
-import { SdkRandomNumberClient } from "@bitwarden/sdk-internal";
+import { SdkRandomNumberClient } from "@localpass/sdk-internal";
 
 import { AccountService } from "../../../auth/abstractions/account.service";
 import { getUserId } from "../../../auth/services/account.service";
@@ -46,7 +46,7 @@ export const AAGUID = new Uint8Array([
 const KeyUsages: KeyUsage[] = ["sign"];
 
 /**
- * Bitwarden implementation of the WebAuthn Authenticator Model as described by W3C
+ * LocalPass implementation of the WebAuthn Authenticator Model as described by W3C
  * https://www.w3.org/TR/webauthn-3/#sctn-authenticator-model
  *
  * It is highly recommended that the W3C specification is used a reference when reading this code.

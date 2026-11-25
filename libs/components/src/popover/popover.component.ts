@@ -11,7 +11,7 @@ import {
   inject,
 } from "@angular/core";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { IconButtonModule } from "../icon-button/icon-button.module";
 import { TypographyModule } from "../typography";

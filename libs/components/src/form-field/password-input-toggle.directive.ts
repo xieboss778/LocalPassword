@@ -1,6 +1,6 @@
 import { AfterContentInit, Directive, inject, model, OnChanges } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { BitIconButtonComponent } from "../icon-button/icon-button.component";
 

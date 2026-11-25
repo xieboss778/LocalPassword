@@ -4,7 +4,7 @@ import {
   EncString,
   SignedSecurityState as SdkSignedSecurityState,
   SignedPublicKey as SdkSignedPublicKey,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 /**
  * A private key, encrypted with a symmetric key.

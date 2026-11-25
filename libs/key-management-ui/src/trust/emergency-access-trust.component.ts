@@ -3,8 +3,8 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit, Inject } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -14,9 +14,9 @@ import {
   FormFieldModule,
   LinkModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
+import { LegacyCompatKeyService } from "@localpass/legacy-crypto";
 
 type EmergencyAccessTrustDialogData = {
   /** display name of the user */
@@ -26,7 +26,7 @@ type EmergencyAccessTrustDialogData = {
   /** user public key */
   publicKey: Uint8Array;
 };
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "emergency-access-trust",

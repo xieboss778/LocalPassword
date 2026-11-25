@@ -1,10 +1,10 @@
 import { of } from "rxjs";
 
-import { UserDecryptionOptions } from "@bitwarden/auth/common";
-import { VaultTimeoutAction } from "@bitwarden/common/key-management/vault-timeout";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { UserDecryptionOptions } from "@localpass/auth/common";
+import { VaultTimeoutAction } from "@localpass/common/key-management/vault-timeout";
+import { Utils } from "@localpass/common/platform/misc/utils";
 // eslint-disable-next-line no-restricted-imports
-import { DEFAULT_KDF_CONFIG } from "@bitwarden/legacy-crypto";
+import { DEFAULT_KDF_CONFIG } from "@localpass/legacy-crypto";
 
 import { CreateLocalAccountService } from "./create-local-account.service";
 import { LocalAccountService } from "./local-account.service";

@@ -1,12 +1,12 @@
-import type { OutgoingMessage, Source } from "@bitwarden/sdk-internal";
+import type { OutgoingMessage, Source } from "@localpass/sdk-internal";
 
 export interface IpcMessage {
-  type: "bitwarden-ipc-message";
+  type: "localpass-ipc-message";
   message: SerializedOutgoingMessage;
 }
 
 export interface ForwardedIpcMessage {
-  type: "forwarded-bitwarden-ipc-message";
+  type: "forwarded-localpass-ipc-message";
   message: SerializedOutgoingMessage;
   originalSource: Source;
 }
@@ -19,7 +19,7 @@ export interface SerializedOutgoingMessage extends Omit<
 }
 
 export function isIpcMessage(message: any): message is IpcMessage {
-  return message != null && message.type === "bitwarden-ipc-message";
+  return message != null && message.type === "localpass-ipc-message";
 }
 
 /**
@@ -36,7 +36,7 @@ export function isIpcMessage(message: any): message is IpcMessage {
 export function reconstructIpcMessage(message: IpcMessage): IpcMessage {
   const { destination, payload, topic } = message.message ?? ({} as SerializedOutgoingMessage);
   return {
-    type: "bitwarden-ipc-message",
+    type: "localpass-ipc-message",
     message: { destination, payload, topic },
   };
 }
@@ -81,7 +81,7 @@ export function isIpcClientTypeMessage(message: any): message is IpcClientTypeMe
 }
 
 export function isForwardedIpcMessage(message: any): message is ForwardedIpcMessage {
-  return message != null && message.type === "forwarded-bitwarden-ipc-message";
+  return message != null && message.type === "forwarded-localpass-ipc-message";
 }
 
 /**

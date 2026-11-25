@@ -3,8 +3,8 @@ import { DefaultUrlSerializer, NavigationEnd, NavigationStart, Router } from "@a
 import { mock, MockProxy } from "jest-mock-extended";
 import { Subject } from "rxjs";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DIALOG_DATA, DialogRef } from "@bitwarden/components";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DIALOG_DATA, DialogRef } from "@localpass/components";
 
 import { ShareItemDrawerComponent } from "./share-item-drawer.component";
 

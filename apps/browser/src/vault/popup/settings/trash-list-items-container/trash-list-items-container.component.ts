@@ -1,19 +1,19 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-// FIXME(https://bitwarden.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
-/* eslint-disable @bitwarden/components/enforce-readonly-angular-properties */
+// FIXME(https://localpass.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
+/* eslint-disable @localpass/components/enforce-readonly-angular-properties */
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import {
   DialogService,
   IconButtonModule,
@@ -23,13 +23,13 @@ import {
   SectionHeaderComponent,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   CanDeleteCipherDirective,
   DecryptionFailureDialogComponent,
   OrgIconDirective,
   PasswordRepromptService,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { PopupCipherViewLike } from "../../views/popup-cipher.view";
 
@@ -54,12 +54,12 @@ export class TrashListItemsContainerComponent {
   /**
    * The list of trashed items to display.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   ciphers: PopupCipherViewLike[] = [];
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   headerText: string;

@@ -2,8 +2,8 @@
 
 cd "$(dirname "$0")"
 
-if [ -d "BitwardenMacosProviderFFI.xcframework" ]; then
-  rm -r "BitwardenMacosProviderFFI.xcframework"
+if [ -d "LocalPassMacosProviderFFI.xcframework" ]; then
+  rm -r "LocalPassMacosProviderFFI.xcframework"
 fi
 if [ -d "tmp" ]; then
   rm -r "tmp"
@@ -44,7 +44,7 @@ cat ./tmp/bindings/*.modulemap > ./tmp/Headers/module.modulemap
 xcodebuild -create-xcframework \
   -library ./tmp/target/universal-darwin/release/libautofill_provider.a \
   -headers ./tmp/Headers \
-  -output ./BitwardenMacosProviderFFI.xcframework
+  -output ./LocalPassMacosProviderFFI.xcframework
 
 # Cleanup temporary files
 rm -r tmp

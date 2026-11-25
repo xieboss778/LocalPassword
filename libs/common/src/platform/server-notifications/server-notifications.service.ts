@@ -22,9 +22,9 @@ export abstract class ServerNotificationsService {
    */
   abstract startListening(): Subscription;
   // TODO: Delete this method in favor of an `ActivityService` that notifications can depend on.
-  // https://bitwarden.atlassian.net/browse/PM-14264
+  // https://localpass.atlassian.net/browse/PM-14264
   abstract reconnectFromActivity(): void;
   // TODO: Delete this method in favor of an `ActivityService` that notifications can depend on.
-  // https://bitwarden.atlassian.net/browse/PM-14264
+  // https://localpass.atlassian.net/browse/PM-14264
   abstract disconnectFromInactivity(): void;
 }

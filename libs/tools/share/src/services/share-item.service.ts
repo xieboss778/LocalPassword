@@ -1,6 +1,6 @@
 import { inject, Injectable, Injector } from "@angular/core";
 
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { SHARE_ITEM_PRESENTER, ShareItemPresenter } from "../tokens/share-item-presenter.token";
 import {

@@ -1,5 +1,5 @@
-import { DevicePendingAuthRequest } from "@bitwarden/common/auth/abstractions/devices/responses/device.response";
-import { SortDirection, SortFn } from "@bitwarden/components";
+import { DevicePendingAuthRequest } from "@localpass/common/auth/abstractions/devices/responses/device.response";
+import { SortDirection, SortFn } from "@localpass/components";
 
 import { DeviceDisplayData } from "../device-management.component";
 

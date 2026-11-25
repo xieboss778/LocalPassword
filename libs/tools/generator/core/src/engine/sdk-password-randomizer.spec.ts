@@ -4,7 +4,7 @@ Object.assign(global, { TextDecoder, TextEncoder });
 
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { GeneratorClient, PasswordManagerClient } from "@bitwarden/sdk-internal";
+import { GeneratorClient, PasswordManagerClient } from "@localpass/sdk-internal";
 
 import { Algorithm, Type } from "../metadata";
 import { PassphraseGenerationOptions, PasswordGenerationOptions } from "../types";

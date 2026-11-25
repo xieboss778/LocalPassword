@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { BitwardenLogo } from "@bitwarden/assets/svg";
-import { DeviceType } from "@bitwarden/common/enums";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ActionsService } from "@bitwarden/common/platform/actions";
-import { SvgModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { LocalPassLogo } from "@localpass/assets/svg";
+import { DeviceType } from "@localpass/common/enums";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ActionsService } from "@localpass/common/platform/actions";
+import { SvgModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 
@@ -44,7 +44,7 @@ export class ImportConfirmationBrowserComponent {
     inject(PlatformUtilsService).getDevice(),
   );
 
-  protected readonly logo = BitwardenLogo;
+  protected readonly logo = LocalPassLogo;
 
   // A refresh or deep link lands here with nothing to show.
   protected readonly confirmation = this.confirmationState.current();

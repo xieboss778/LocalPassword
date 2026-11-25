@@ -1,4 +1,4 @@
-import type { AnonLayoutWrapperData } from "@bitwarden/components";
+import type { AnonLayoutWrapperData } from "@localpass/components";
 
 import type { ExtensionAnonLayoutWrapperData } from "./extension-anon-layout-wrapper.component";
 

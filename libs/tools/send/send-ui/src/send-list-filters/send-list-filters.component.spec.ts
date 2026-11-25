@@ -4,9 +4,9 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { ChipFilterComponent } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { ChipFilterComponent } from "@localpass/components";
 
 import { SendListFiltersService } from "../services/send-list-filters.service";
 import { SendPolicyService } from "../services/send-policy.service";

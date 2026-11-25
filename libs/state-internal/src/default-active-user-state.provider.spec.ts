@@ -4,21 +4,21 @@
  */
 import { Observable, of } from "rxjs";
 
-import { awaitAsync, trackEmissions } from "@bitwarden/core-test-utils";
+import { awaitAsync, trackEmissions } from "@localpass/core-test-utils";
 import {
   DeriveDefinition,
   KeyDefinition,
   StateDefinition,
   UserKeyDefinition,
-} from "@bitwarden/state";
+} from "@localpass/state";
 import {
   FakeActiveUserAccessor,
   FakeActiveUserStateProvider,
   FakeDerivedStateProvider,
   FakeGlobalStateProvider,
   FakeSingleUserStateProvider,
-} from "@bitwarden/state-test-utils";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state-test-utils";
+import { UserId } from "@localpass/user-core";
 
 import { DefaultStateProvider } from "./default-state.provider";
 

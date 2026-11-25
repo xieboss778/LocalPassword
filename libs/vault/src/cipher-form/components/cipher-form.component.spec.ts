@@ -4,17 +4,17 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { mock } from "jest-mock-extended";
 import { Observable, of } from "rxjs";
 
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { RestrictedCipherWriteError } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
-import { ToastService } from "@bitwarden/components";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { RestrictedCipherWriteError } from "@localpass/common/vault/abstractions/cipher.service";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { AttachmentView } from "@localpass/common/vault/models/view/attachment.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
+import { ToastService } from "@localpass/components";
 
 import { CipherFormConfig } from "../abstractions/cipher-form-config.service";
 import { CipherFormService } from "../abstractions/cipher-form.service";

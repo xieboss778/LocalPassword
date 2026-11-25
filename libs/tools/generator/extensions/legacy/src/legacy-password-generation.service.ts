@@ -14,8 +14,8 @@ import {
   timeout,
 } from "rxjs";
 
-import { PasswordGeneratorPolicyOptions } from "@bitwarden/common/admin-console/models/domain/password-generator-policy-options";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { PasswordGeneratorPolicyOptions } from "@localpass/common/admin-console/models/domain/password-generator-policy-options";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   GeneratorService,
   PassphraseGenerationOptions,
@@ -23,17 +23,17 @@ import {
   PasswordGenerationOptions,
   PasswordGeneratorPolicy,
   PolicyEvaluator,
-} from "@bitwarden/generator-core";
+} from "@localpass/generator-core";
 import {
   GeneratedCredential,
   GeneratorHistoryService,
   GeneratedPasswordHistory,
-} from "@bitwarden/generator-history";
+} from "@localpass/generator-history";
 import {
   GeneratorNavigationService,
   GeneratorNavigation,
   GeneratorNavigationPolicy,
-} from "@bitwarden/generator-navigation";
+} from "@localpass/generator-navigation";
 
 import { PasswordGenerationServiceAbstraction } from "./password-generation.service.abstraction";
 import { PasswordGeneratorOptions } from "./password-generator-options";

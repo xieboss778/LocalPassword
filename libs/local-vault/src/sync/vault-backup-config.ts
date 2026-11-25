@@ -2,7 +2,7 @@ import {
   LOCAL_VAULT_BACKUP_DISK,
   LOCAL_VAULT_SYNC_DISK,
   UserKeyDefinition,
-} from "@bitwarden/state";
+} from "@localpass/state";
 
 import { Snapshot } from "./snapshot-merge";
 

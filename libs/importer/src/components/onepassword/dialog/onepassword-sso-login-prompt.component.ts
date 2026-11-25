@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { SsoKeyIcon } from "@bitwarden/assets/svg";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { SsoKeyIcon } from "@localpass/assets/svg";
 import {
   DIALOG_DATA,
   DialogRef,
@@ -11,7 +11,7 @@ import {
   IconButtonModule,
   SvgModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export interface OnePasswordSsoLoginPromptData {
   email: string;

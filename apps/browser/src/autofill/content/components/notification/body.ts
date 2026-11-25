@@ -1,7 +1,7 @@
 import createEmotion from "@emotion/css/create-instance";
 import { html } from "lit";
 
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
 
 import { NotificationType } from "../../../notification/abstractions/notification-bar";
 import { NotificationCipherData } from "../cipher/types";

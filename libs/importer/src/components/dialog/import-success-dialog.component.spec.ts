@@ -2,13 +2,13 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DialogRef, DIALOG_DATA } from "@bitwarden/components";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { DialogRef, DIALOG_DATA } from "@localpass/components";
 
 import { ImportResult } from "../../models";
 

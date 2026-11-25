@@ -1,8 +1,8 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { newGuid } from "@bitwarden/guid";
-import { Policy as SdkPolicy } from "@bitwarden/sdk-internal";
+import { newGuid } from "@localpass/guid";
+import { Policy as SdkPolicy } from "@localpass/sdk-internal";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { FakeSingleUserState } from "../../../../spec/fake-state";

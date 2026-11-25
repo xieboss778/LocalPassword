@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { FieldType, CipherType } from "@localpass/common/vault/enums";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
 
 import { ApplicationPasswordsData } from "../spec-data/psono-json/application-passwords";
 import { BookmarkData } from "../spec-data/psono-json/bookmark.json";
@@ -61,7 +61,7 @@ describe("PSONO JSON Importer", () => {
     expect(cipher.login.username).toEqual("testUser");
     expect(cipher.login.password).toEqual("testPassword");
     expect(cipher.login.uris.length).toEqual(1);
-    expect(cipher.login.uri).toEqual("http://bitwarden.com");
+    expect(cipher.login.uri).toEqual("https://local.invalid");
 
     expect(cipher.fields.length).toBe(7);
     validateCustomField(cipher.fields, "website_password_auto_submit", "true", FieldType.Boolean);
@@ -118,10 +118,10 @@ describe("PSONO JSON Importer", () => {
 
     expect(cipher.type).toEqual(CipherType.Login);
     expect(cipher.name).toEqual("MyBookmark");
-    expect(cipher.notes).toEqual("my notes for bitwarden.com");
+    expect(cipher.notes).toEqual("my notes for local.invalid");
 
     expect(cipher.login.uris.length).toEqual(1);
-    expect(cipher.login.uri).toEqual("https://bitwarden.com");
+    expect(cipher.login.uri).toEqual("https://local.invalid");
 
     expect(cipher.fields.length).toBe(4);
     validateCustomField(cipher.fields, "create_date", "2022-12-13T19:39:26.631530Z");

@@ -3,21 +3,21 @@ import { Router, UrlTree } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, Observable, of } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   FakeStateProvider,
   mockAccountServiceWith,
   ObservableTracker,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
 
 import { canAccessHealthDetail, HealthAccessService } from "./health-access.service";
 

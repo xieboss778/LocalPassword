@@ -171,9 +171,9 @@ describe("setupAutofillInitDisconnectAction", () => {
     jest.clearAllMocks();
   });
 
-  it("skips setting up the extension disconnect action if the bitwardenAutofillInit object is not populated", () => {
+  it("skips setting up the extension disconnect action if the localpassAutofillInit object is not populated", () => {
     const onDisconnectCallback = jest.fn();
-    window.bitwardenAutofillInit = undefined;
+    window.localpassAutofillInit = undefined;
     const portConnectSpy = jest.spyOn(chrome.runtime, "connect").mockImplementation(() => {
       return {
         onDisconnect: {
@@ -191,7 +191,7 @@ describe("setupAutofillInitDisconnectAction", () => {
   it("destroys the autofill init instance when the port is disconnected", () => {
     let port: chrome.runtime.Port;
     const autofillInitDestroy: CallableFunction = jest.fn();
-    window.bitwardenAutofillInit = {
+    window.localpassAutofillInit = {
       destroy: autofillInitDestroy,
     } as any;
     jest.spyOn(chrome.runtime, "connect").mockImplementation(() => {
@@ -211,7 +211,7 @@ describe("setupAutofillInitDisconnectAction", () => {
     expect(chrome.runtime.connect).toHaveBeenCalled();
     expect(port.onDisconnect.addListener).toHaveBeenCalled();
     expect(autofillInitDestroy).toHaveBeenCalled();
-    expect(window.bitwardenAutofillInit).toBeUndefined();
+    expect(window.localpassAutofillInit).toBeUndefined();
   });
 });
 

@@ -1,4 +1,4 @@
-//! Contains structures that bridge between raw cryptographic keys and Bitwarden's business logic
+//! Contains structures that bridge between raw cryptographic keys and LocalPass's business logic
 //! data.
 
 use anyhow::{anyhow, Result};

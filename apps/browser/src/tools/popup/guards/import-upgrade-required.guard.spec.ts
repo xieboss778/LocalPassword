@@ -6,8 +6,8 @@ import {
   UrlTree,
 } from "@angular/router";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { importUpgradeRequiredGuard as guard } from "./import-upgrade-required.guard";
 

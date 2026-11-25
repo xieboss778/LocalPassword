@@ -13,7 +13,7 @@ describe("buildCipherIcon", () => {
       },
     } as any as CipherView;
 
-    // @TODO Uncomment once we have Android and iOS icons https://bitwarden.atlassian.net/browse/PM-29028
+    // @TODO Uncomment once we have Android and iOS icons https://localpass.atlassian.net/browse/PM-29028
     // it.each([true, false])("handles android app URIs for showFavicon setting %s", (showFavicon) => {
     //   setUri("androidapp://test.example");
 
@@ -41,7 +41,7 @@ describe("buildCipherIcon", () => {
       });
     });
 
-    // @TODO Uncomment once we have Android and iOS icons https://bitwarden.atlassian.net/browse/PM-29028
+    // @TODO Uncomment once we have Android and iOS icons https://localpass.atlassian.net/browse/PM-29028
     // it.each([true, false])("handles ios app URIs for showFavicon setting %s", (showFavicon) => {
     //   setUri("iosapp://test.example");
 

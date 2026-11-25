@@ -1,5 +1,5 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherType as SdkCipherType } from "@bitwarden/sdk-internal";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherType as SdkCipherType } from "@localpass/sdk-internal";
 
 import { toSdkCipherType } from "./sdk-cipher-type";
 

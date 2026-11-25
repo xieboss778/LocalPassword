@@ -5,14 +5,14 @@ import { BehaviorSubject, of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { SideNavService } from "@bitwarden/components";
-import { StateProvider } from "@bitwarden/state";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
+import { SideNavService } from "@localpass/components";
+import { StateProvider } from "@localpass/state";
 
 import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service";
 
@@ -135,7 +135,7 @@ describe("CoachmarkService", () => {
 
     it("returns the learn more URL for a step that has one", () => {
       const url = service.getStepLearnMoreUrl("importData");
-      expect(url).toBe("https://bitwarden.com/help/import-data/");
+      expect(url).toBe("https://github.com/xieboss778/LocalPass/tree/main/docs");
     });
 
     it("returns undefined for an unknown step", () => {

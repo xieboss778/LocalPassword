@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 import { firstValueFrom } from "rxjs";
 
-import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider } from "@bitwarden/state";
+import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider } from "@localpass/state";
 
 import { POPUP_ROUTE_HISTORY_KEY } from "../../../../platform/services/popup-view-cache-background.service";
 

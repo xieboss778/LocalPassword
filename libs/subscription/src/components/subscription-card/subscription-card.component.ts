@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   BadgeModule,
   BadgeVariant,
@@ -11,10 +11,10 @@ import {
   TypographyModule,
   CalloutTypes,
   ButtonType,
-  BitwardenIcon,
-} from "@bitwarden/components";
-import { CartSummaryComponent, Maybe } from "@bitwarden/pricing";
-import { I18nPipe } from "@bitwarden/ui-common";
+  LocalPassIcon,
+} from "@localpass/components";
+import { CartSummaryComponent, Maybe } from "@localpass/pricing";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SubscriptionPreview, SubscriptionStatuses } from "../..";
 
@@ -35,13 +35,13 @@ type Badge = { text: string; variant: BadgeVariant };
 type Callout = Maybe<{
   title: string;
   type: CalloutTypes;
-  icon?: BitwardenIcon;
+  icon?: LocalPassIcon;
   description: string;
   callsToAction?: {
     text: string;
     buttonType: ButtonType;
     action: SubscriptionCardAction;
-    endIcon?: BitwardenIcon;
+    endIcon?: LocalPassIcon;
   }[];
 }>;
 

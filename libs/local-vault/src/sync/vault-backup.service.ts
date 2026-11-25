@@ -1,11 +1,11 @@
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService } from "@bitwarden/key-management";
+import { UserId } from "@localpass/common/types/guid";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncString, EncryptService } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { StateProvider } from "@bitwarden/state";
+import { EncString, EncryptService } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { StateProvider } from "@localpass/state";
 
 import {
   DEFAULT_BACKUP_SETTINGS,
@@ -22,9 +22,9 @@ export interface BackupResult {
 const BACKUP_PASSWORD_BYTES = 24;
 
 /**
- * Writes a standard, password-protected Bitwarden export into storage on a schedule.
+ * Writes a standard, password-protected LocalPass export into storage on a schedule.
  *
- * The export is the same JSON every Bitwarden client can import, which is what makes it a usable
+ * The export is the same JSON every LocalPass client can import, which is what makes it a usable
  * disaster recovery path even if this project disappears.
  */
 export class VaultBackupService {

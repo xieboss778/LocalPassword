@@ -33,8 +33,8 @@ import {
 } from "rxjs";
 import { filter, map, shareReplay, concatMap, tap } from "rxjs/operators";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
+import { CollectionService } from "@localpass/admin-console/common";
+import { SearchPipe } from "@localpass/angular/pipes/search.pipe";
 import {
   NoResults,
   DeactivatedOrg,
@@ -42,48 +42,48 @@ import {
   FavoritesIcon,
   ItemTypes,
   BitSvg,
-} from "@bitwarden/assets/svg";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { CollectionView, Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+} from "@localpass/assets/svg";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { CollectionView, Unassigned } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
 import {
   getNestedCollectionTree,
   getFlatCollectionTree,
-} from "@bitwarden/common/admin-console/utils";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { CipherId, OrganizationId, UserId, CollectionId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherType, toCipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { SearchTextDebounceInterval } from "@bitwarden/common/vault/services/search.service";
+} from "@localpass/common/admin-console/utils";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { BroadcasterService } from "@localpass/common/platform/abstractions/broadcaster.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { SyncService } from "@localpass/common/platform/sync";
+import { CipherId, OrganizationId, UserId, CollectionId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherType, toCipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { SearchTextDebounceInterval } from "@localpass/common/vault/services/search.service";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { filterOutNullish } from "@bitwarden/common/vault/utils/observable-utilities";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { filterOutNullish } from "@localpass/common/vault/utils/observable-utilities";
 import {
   DialogRef,
   DialogService,
@@ -92,9 +92,9 @@ import {
   AutofocusDirective,
   IconTileComponent,
   SideNavService,
-} from "@bitwarden/components";
-import { isGuid } from "@bitwarden/guid";
-import { importQueryParamsForVault } from "@bitwarden/importer-ui";
+} from "@localpass/components";
+import { isGuid } from "@localpass/guid";
+import { importQueryParamsForVault } from "@localpass/importer-ui";
 import {
   AddEditFolderDialogComponent,
   AddEditFolderDialogResult,
@@ -159,7 +159,7 @@ import {
   VaultScopeType,
   defaultUserCollectionId,
   VAULT_RENDERED_MARK,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { DesktopHeaderComponent } from "../../../app/layout/header/desktop-header.component";
 import { ImportDesktopComponent } from "../../../app/tools/import/import-desktop.component";
@@ -191,7 +191,7 @@ type EmptyStateItem = {
 
 type EmptyStateMap = Record<EmptyStateType, EmptyStateItem>;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-v3",

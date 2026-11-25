@@ -7,7 +7,7 @@
  * - Add the listener in both `../main/main-desktop-autofill.service.ts` and `../preload.ts` {@link ipc.autofill}.
  */
 
-import type { autofill } from "@bitwarden/desktop-napi";
+import type { autofill } from "@localpass/desktop-napi";
 type LockStatusResponse = autofill.LockStatusResponse;
 type NativeStatus = autofill.NativeStatus;
 type PasskeyAssertionRequest = autofill.PasskeyAssertionRequest;

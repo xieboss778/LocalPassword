@@ -1,4 +1,4 @@
-import * as sdk from "@bitwarden/sdk-internal";
+import * as sdk from "@localpass/sdk-internal";
 
 import { SdkClientFactory } from "../../abstractions/sdk/sdk-client-factory";
 

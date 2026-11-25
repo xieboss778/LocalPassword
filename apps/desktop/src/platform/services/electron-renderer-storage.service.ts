@@ -3,7 +3,7 @@ import { Subject } from "rxjs";
 import {
   AbstractStorageService,
   StorageUpdate,
-} from "@bitwarden/common/platform/abstractions/storage.service";
+} from "@localpass/common/platform/abstractions/storage.service";
 
 export class ElectronRendererStorageService implements AbstractStorageService {
   private updatesSubject = new Subject<StorageUpdate>();

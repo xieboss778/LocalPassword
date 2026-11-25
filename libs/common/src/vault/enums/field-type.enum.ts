@@ -1,4 +1,4 @@
-import { FieldType as SdkFieldType } from "@bitwarden/sdk-internal";
+import { FieldType as SdkFieldType } from "@localpass/sdk-internal";
 
 const _FieldType = Object.freeze({
   Text: 0,

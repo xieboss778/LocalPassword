@@ -1,4 +1,4 @@
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { CipherType } from "../enums";
 import { Cipher } from "../models/domain/cipher";

@@ -14,17 +14,17 @@ import { of } from "rxjs";
 import {
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { buildTestOrganization } from "@bitwarden/common/spec";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { buildTestOrganization } from "@localpass/common/spec";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { LogService } from "@localpass/logging";
 
 import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service";
 import { ITEM_DETAILS_BADGE } from "../../tokens/item-details-badge.token";

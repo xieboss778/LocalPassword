@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { PassportView as SdkPassportView } from "@bitwarden/sdk-internal";
+import { PassportView as SdkPassportView } from "@localpass/sdk-internal";
 
 import { ItemView } from "./item.view";
 

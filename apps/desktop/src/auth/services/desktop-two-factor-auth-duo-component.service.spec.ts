@@ -4,10 +4,10 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 import {
   Environment,
   EnvironmentService,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { MessageListener } from "@bitwarden/common/platform/messaging";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { MessageListener } from "@localpass/common/platform/messaging";
 
 import { DesktopTwoFactorAuthDuoComponentService } from "./desktop-two-factor-auth-duo-component.service";
 

@@ -1,5 +1,5 @@
-// FIXME(https://bitwarden.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
-/* eslint-disable @bitwarden/components/enforce-readonly-angular-properties */
+// FIXME(https://localpass.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
+/* eslint-disable @localpass/components/enforce-readonly-angular-properties */
 import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
@@ -26,26 +26,26 @@ import {
 } from "@angular/forms";
 import { filter, map, Observable, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { getFirstPolicy } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { getFirstPolicy } from "@localpass/common/admin-console/services/policy/default-policy.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
 import {
   MaximumSessionTimeoutPolicyData,
   SessionTimeoutTypeService,
-} from "@bitwarden/common/key-management/session-timeout";
+} from "@localpass/common/key-management/session-timeout";
 import {
   isVaultTimeoutTypeNumeric,
   VaultTimeout,
   VaultTimeoutOption,
   VaultTimeoutNumberType,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FormFieldModule, SelectModule } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FormFieldModule, SelectModule } from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 type SessionTimeoutForm = FormGroup<{
   vaultTimeout: FormControl<VaultTimeout | null>;

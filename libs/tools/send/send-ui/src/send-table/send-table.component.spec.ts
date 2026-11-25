@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { MenuTriggerForDirective, TableDataSource } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { MenuTriggerForDirective, TableDataSource } from "@localpass/components";
 
 import { SendTableComponent } from "./send-table.component";
 

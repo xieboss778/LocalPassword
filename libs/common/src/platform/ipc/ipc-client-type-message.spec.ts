@@ -27,7 +27,7 @@ describe("isIpcClientTypeMessage", () => {
     },
   );
 
-  it.each([null, undefined, {}, { type: "bitwarden-ipc-message" }, "cli"])(
+  it.each([null, undefined, {}, { type: "localpass-ipc-message" }, "cli"])(
     "rejects %p",
     (message) => {
       expect(isIpcClientTypeMessage(message)).toBe(false);

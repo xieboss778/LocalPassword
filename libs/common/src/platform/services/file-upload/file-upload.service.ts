@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer, EncString } from "@bitwarden/legacy-crypto";
+import { EncArrayBuffer, EncString } from "@localpass/legacy-crypto";
 
 import { ApiService } from "../../../abstractions/api.service";
 import {
@@ -13,18 +13,18 @@ import { LogService } from "../../abstractions/log.service";
 import { FileUploadType } from "../../enums";
 
 import { AzureFileUploadService } from "./azure-file-upload.service";
-import { BitwardenFileUploadService } from "./bitwarden-file-upload.service";
+import { LocalPassFileUploadService } from "./localpass-file-upload.service";
 
 export class FileUploadService implements FileUploadServiceAbstraction {
   private azureFileUploadService: AzureFileUploadService;
-  private bitwardenFileUploadService: BitwardenFileUploadService;
+  private localpassFileUploadService: LocalPassFileUploadService;
 
   constructor(
     protected logService: LogService,
     apiService: ApiService,
   ) {
     this.azureFileUploadService = new AzureFileUploadService(logService, apiService);
-    this.bitwardenFileUploadService = new BitwardenFileUploadService();
+    this.localpassFileUploadService = new LocalPassFileUploadService();
   }
 
   async upload(
@@ -37,7 +37,7 @@ export class FileUploadService implements FileUploadServiceAbstraction {
     try {
       switch (uploadData.fileUploadType) {
         case FileUploadType.Direct:
-          await this.bitwardenFileUploadService.upload(
+          await this.localpassFileUploadService.upload(
             fileName.encryptedString,
             encryptedFileData,
             (fd) => fileUploadMethods.postDirect(fd),

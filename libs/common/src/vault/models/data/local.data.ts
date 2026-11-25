@@ -1,7 +1,7 @@
 import {
   LocalDataView as SdkLocalDataView,
   LocalData as SdkLocalData,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 export type LocalData = {
   lastUsedDate?: number;

@@ -1,9 +1,9 @@
 import { Observable, switchMap } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherListView } from "@localpass/sdk-internal";
 
 /**
  * The ciphers the vault page lists. Restricted ciphers are included only under VFO1, whose table

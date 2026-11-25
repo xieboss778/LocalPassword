@@ -1,4 +1,4 @@
-# Bitwarden SSH Agent
+# LocalPass SSH Agent
 
 The SSH Agent feature is a Desktop client feature that acts as a drop in replacement for native SSH Agents, and utilizes the Vault for the secure and encrypted storage of SSH keys.
 
@@ -30,17 +30,17 @@ The agent currently supports the following high level functionalities:
               ApprovalRequester[Electron Approval Requester]
               AgentState[SSH Agent State]
           end
-          BitwardenSSHAgent[BitwardenSSHAgent]
-          Napi ~~~ BitwardenSSHAgent
-          BitwardenSSHAgent -.->|has a| ApprovalRequester
-          AgentState -.->|has a| BitwardenSSHAgent
+          LocalPassSSHAgent[LocalPassSSHAgent]
+          Napi ~~~ LocalPassSSHAgent
+          LocalPassSSHAgent -.->|has a| ApprovalRequester
+          AgentState -.->|has a| LocalPassSSHAgent
       end
 
       MainSvc <-->|Node-API| ApprovalRequester
       MainSvc -.->|has a| AgentState
 ```
 
-Bitwarden’s SSH Agent is primarily implemented in the Rust language, as a server that accepts ssh
+LocalPass’s SSH Agent is primarily implemented in the Rust language, as a server that accepts ssh
 client connections over the SSH Agent protocol. This server interfaces with the Desktop UI through
 napi bindings and the Electron services.
 
@@ -60,7 +60,7 @@ Our agent is unique from native OS ones in that:
       Client[SSH Client]
       User((User))
 
-      subgraph BWD[Bitwarden Desktop]
+      subgraph BWD[LocalPass Desktop]
           Agent[SSH Agent]
           Electron[Electron app]
       end
@@ -75,7 +75,7 @@ When the user enables the SSH Agent feature in user settings, the SSH key vault 
 from the vault and sent to the agent. The agent server is started and its keystore populated with
 the new keys.
 
-The Bitwarden SSH Agent server spawns a thread to handle each new client connection. Each
+The LocalPass SSH Agent server spawns a thread to handle each new client connection. Each
 connection results in an async callback chain.
 
 The Electron app replaces the keys in the agent’s keystore when there are vault changes to SSH key
@@ -93,7 +93,7 @@ items.
           PrivKey[PrivateKey]
       end
 
-      BWAgent{Bitwarden SSH Agent}
+      BWAgent{LocalPass SSH Agent}
 
       subgraph approval
           ApprovalTrait{{ApprovalRequester Trait}}
@@ -105,7 +105,7 @@ items.
       end
 
       subgraph auth
-          BWAuthPolicy[BitwardenAuthPolicy]
+          BWAuthPolicy[LocalPassAuthPolicy]
       end
 
       subgraph server
@@ -131,7 +131,7 @@ It is an almost entirely self-contained workspace crate within desktop_native.
 The architecture of the agent was designed with these goals:
 
 - efficient adherence to the SSH agent protocol spec
-- clean interfaces isolating the server protocol, Bitwarden’s business logic, and user interface
+- clean interfaces isolating the server protocol, LocalPass’s business logic, and user interface
 - maintainability
 - testability
 

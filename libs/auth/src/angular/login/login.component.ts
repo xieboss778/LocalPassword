@@ -13,33 +13,33 @@ import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angu
 import { ActivatedRoute, Params, Router, RouterModule } from "@angular/router";
 import { firstValueFrom, Subject, take, takeUntil, skip, combineLatest, startWith } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { LockIcon, VaultIcon, WaveIcon } from "@bitwarden/assets/svg";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { LockIcon, VaultIcon, WaveIcon } from "@localpass/assets/svg";
 import {
   LoginEmailServiceAbstraction,
   LoginStrategyServiceAbstraction,
   LoginSuccessHandlerService,
   PasswordLoginCredentials,
-} from "@bitwarden/auth/common";
-import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { OrganizationInviteService } from "@bitwarden/common/auth/organization-invite";
-import { PasswordPreloginService } from "@bitwarden/common/auth/password-prelogin";
-import { ClientType, HttpStatusCode } from "@bitwarden/common/enums";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
+} from "@localpass/auth/common";
+import { InternalPolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { DevicesApiServiceAbstraction } from "@localpass/common/auth/abstractions/devices-api.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { OrganizationInviteService } from "@localpass/common/auth/organization-invite";
+import { PasswordPreloginService } from "@localpass/common/auth/password-prelogin";
+import { ClientType, HttpStatusCode } from "@localpass/common/enums";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { BroadcasterService } from "@localpass/common/platform/abstractions/broadcaster.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -54,14 +54,14 @@ import {
   LinkModule,
   ToastService,
   TooltipDirective,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { LoginComponentService, PasswordPolicies } from "./login-component.service";
 
 const BroadcasterSubscriptionId = "LoginComponent";
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum LoginUiState {
   /** Display the email input field + continue button */
   EMAIL_ENTRY = "EmailEntry",
@@ -69,7 +69,7 @@ export enum LoginUiState {
   MASTER_PASSWORD_ENTRY = "MasterPasswordEntry",
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "./login.component.html",
@@ -89,7 +89,7 @@ export enum LoginUiState {
   ],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild("masterPasswordInputRef") masterPasswordInputRef: ElementRef | undefined;
 

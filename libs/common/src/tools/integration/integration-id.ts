@@ -9,5 +9,5 @@ export const IntegrationIds = [
   "simplelogin",
 ] as const;
 
-/** Identifies a vendor integrated into bitwarden */
+/** Identifies a vendor integrated into localpass */
 export type IntegrationId = Opaque<string, "IntegrationId">;

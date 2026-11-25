@@ -6,7 +6,7 @@ import {
   EnvironmentService,
   Region,
   RegionConfig,
-} from "@bitwarden/common/platform/abstractions/environment.service";
+} from "@localpass/common/platform/abstractions/environment.service";
 
 import { isValidVaultReferrer } from "./valid-vault-referrer";
 
@@ -23,19 +23,19 @@ describe("isValidVaultReferrer", () => {
 
   const usRegion = {
     key: Region.US,
-    domain: "bitwarden.com",
-    urls: { webVault: "https://vault.bitwarden.com" },
+    domain: "local.invalid",
+    urls: { webVault: "https://vault.local.invalid" },
   } as RegionConfig;
 
   const euRegion = {
     key: Region.EU,
-    domain: "bitwarden.eu",
-    urls: { webVault: "https://vault.bitwarden.eu" },
+    domain: "local.invalid",
+    urls: { webVault: "https://vault.local.invalid" },
   } as RegionConfig;
 
   beforeEach(() => {
     environmentService = mock<EnvironmentService>();
-    configure("https://vault.bitwarden.com", [usRegion, euRegion]);
+    configure("https://vault.local.invalid", [usRegion, euRegion]);
   });
 
   it("accepts the hostname of the configured web vault", async () => {
@@ -47,21 +47,21 @@ describe("isValidVaultReferrer", () => {
   });
 
   it("accepts the hostname of any selectable region, even when it is not the configured one", async () => {
-    configure("https://vault.bitwarden.com", [usRegion, euRegion]);
+    configure("https://vault.local.invalid", [usRegion, euRegion]);
 
-    await expect(isValidVaultReferrer(environmentService, "vault.bitwarden.eu")).resolves.toBe(
+    await expect(isValidVaultReferrer(environmentService, "vault.local.invalid")).resolves.toBe(
       true,
     );
   });
 
   it("accepts a self-hosted web vault served under a path", async () => {
-    configure("https://selfhosted.test/bitwarden", []);
+    configure("https://selfhosted.test/localpass", []);
 
     await expect(isValidVaultReferrer(environmentService, "selfhosted.test")).resolves.toBe(true);
   });
 
   it("falls back to the region's base URL when it declares no web vault URL", async () => {
-    configure("https://vault.bitwarden.com", [
+    configure("https://vault.local.invalid", [
       { key: Region.SelfHosted, domain: "base.test", urls: { base: "https://base.test" } },
     ] as RegionConfig[]);
 
@@ -69,12 +69,12 @@ describe("isValidVaultReferrer", () => {
   });
 
   it("skips a region that declares neither a web vault nor a base URL", async () => {
-    configure("https://vault.bitwarden.com", [
+    configure("https://vault.local.invalid", [
       { key: Region.SelfHosted, domain: "incomplete.test", urls: {} },
       usRegion,
     ] as RegionConfig[]);
 
-    await expect(isValidVaultReferrer(environmentService, "vault.bitwarden.com")).resolves.toBe(
+    await expect(isValidVaultReferrer(environmentService, "vault.local.invalid")).resolves.toBe(
       true,
     );
     await expect(isValidVaultReferrer(environmentService, "incomplete.test")).resolves.toBe(false);
@@ -86,7 +86,7 @@ describe("isValidVaultReferrer", () => {
 
   it("rejects a hostname that merely contains a known vault hostname", async () => {
     await expect(
-      isValidVaultReferrer(environmentService, "vault.bitwarden.com.attacker.test"),
+      isValidVaultReferrer(environmentService, "vault.local.invalid.attacker.test"),
     ).resolves.toBe(false);
   });
 

@@ -10,8 +10,8 @@ import { ExtensionRegistry } from "./extension-registry.abstraction";
 import { ExtensionProfileMetadata, SiteId, VendorId } from "./type";
 import { toObjectKey } from "./util";
 
-/** Provides configuration and storage support for Bitwarden client extensions.
- *  These extensions integrate 3rd party services into Bitwarden.
+/** Provides configuration and storage support for LocalPass client extensions.
+ *  These extensions integrate 3rd party services into LocalPass.
  */
 export class ExtensionService {
   /** Instantiate the extension service.

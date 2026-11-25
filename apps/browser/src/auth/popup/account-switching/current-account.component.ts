@@ -6,15 +6,15 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { Observable, combineLatest, of, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { AvatarModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { UserId } from "@localpass/common/types/guid";
+import { AvatarModule } from "@localpass/components";
 
 export type CurrentAccount = {
   id: UserId;
@@ -24,7 +24,7 @@ export type CurrentAccount = {
   avatarColor: string;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-current-account",

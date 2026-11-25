@@ -1,15 +1,15 @@
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
-import { ENCRYPTED_CIPHERS } from "@bitwarden/common/vault/services/key-state/ciphers.state";
-import { FOLDER_ENCRYPTED_FOLDERS } from "@bitwarden/common/vault/services/key-state/folder.state";
-import { KeyService } from "@bitwarden/key-management";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { FolderData } from "@localpass/common/vault/models/data/folder.data";
+import { ENCRYPTED_CIPHERS } from "@localpass/common/vault/services/key-state/ciphers.state";
+import { FOLDER_ENCRYPTED_FOLDERS } from "@localpass/common/vault/services/key-state/folder.state";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncString, EncryptService } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
-import { StateProvider } from "@bitwarden/state";
+import { EncString, EncryptService } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
+import { StateProvider } from "@localpass/state";
 
 import { LocalAccountService } from "../account/local-account.service";
 import { S3Client, S3PreconditionFailedError } from "../s3/s3-client";

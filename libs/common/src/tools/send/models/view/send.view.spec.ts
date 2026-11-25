@@ -2,7 +2,7 @@ import {
   AuthType as SdkAuthType,
   SendType as SdkSendType,
   SendView as SdkSendView,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { Utils } from "../../../../platform/misc/utils";
 import { CipherType } from "../../../../vault/enums";

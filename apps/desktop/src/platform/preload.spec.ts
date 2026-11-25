@@ -1,6 +1,6 @@
 import { ipcRenderer, IpcRendererEvent } from "electron";
 
-import { ThemeType } from "@bitwarden/common/platform/enums";
+import { ThemeType } from "@localpass/common/platform/enums";
 
 import preload from "./preload";
 

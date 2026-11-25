@@ -13,29 +13,29 @@ import {
   switchMap,
 } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView, Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { uuidAsString } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView, Unassigned } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { uuidAsString } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { CipherId, CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@localpass/common/vault/services/cipher-authorization.service";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 import {
   RestrictedCipherAction,
   RestrictedCipherPolicy,
-} from "@bitwarden/common/vault/utils/restricted-cipher-policy";
-import { DialogService, ToastService } from "@bitwarden/components";
+} from "@localpass/common/vault/utils/restricted-cipher-policy";
+import { DialogService, ToastService } from "@localpass/components";
 
 import {
   BulkMoveDialogResult,

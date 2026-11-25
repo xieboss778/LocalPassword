@@ -1,7 +1,7 @@
-import { DeviceType } from "@bitwarden/common/enums";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ActionsService } from "@bitwarden/common/platform/actions/actions-service";
-import { LogService } from "@bitwarden/logging";
+import { DeviceType } from "@localpass/common/enums";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ActionsService } from "@localpass/common/platform/actions/actions-service";
+import { LogService } from "@localpass/logging";
 
 import { SafariApp } from "../../browser/safariApp";
 import { BrowserApi } from "../browser/browser-api";

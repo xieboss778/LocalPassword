@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { ListResponse } from "@localpass/common/models/response/list.response";
 
 import { OrganizationUserConfirmRequest, OrganizationUserBulkResponse } from "../..";
 import { OrganizationUserUpdateRequest } from "../models/requests";

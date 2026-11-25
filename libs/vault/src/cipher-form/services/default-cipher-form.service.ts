@@ -3,18 +3,18 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom, map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherId, UserId, OrganizationId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherId, UserId, OrganizationId } from "@localpass/common/types/guid";
 import {
   CipherService,
   RestrictedCipherWriteError,
-} from "@bitwarden/common/vault/abstractions/cipher.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
+} from "@localpass/common/vault/abstractions/cipher.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
 
 import { CipherFormConfig } from "../abstractions/cipher-form-config.service";
 import { CipherFormService } from "../abstractions/cipher-form.service";

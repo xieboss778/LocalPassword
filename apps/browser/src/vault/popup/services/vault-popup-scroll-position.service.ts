@@ -3,8 +3,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router } from "@angular/router";
 import { filter, fromEvent, Subscription } from "rxjs";
 
-import { ScrollCollapseService, ScrollLayoutService } from "@bitwarden/components";
-import { VAULT_BASE_ROUTE } from "@bitwarden/vault";
+import { ScrollCollapseService, ScrollLayoutService } from "@localpass/components";
+import { VAULT_BASE_ROUTE } from "@localpass/vault";
 
 @Injectable({
   providedIn: "root",

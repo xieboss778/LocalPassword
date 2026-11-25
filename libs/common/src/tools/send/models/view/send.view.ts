@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { SendId as SdkSendId, SendView as SdkSendView } from "@bitwarden/sdk-internal";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { SendId as SdkSendId, SendView as SdkSendView } from "@localpass/sdk-internal";
 
 import { View } from "../../../../models/view/view";
 import { asUuid, uuidAsString } from "../../../../platform/abstractions/sdk/sdk.service";

@@ -3,13 +3,13 @@ import { compareValues } from "./compare-values";
 describe("compareValues", () => {
   it("should return true for equal primitive values", () => {
     expect(compareValues(1, 1)).toEqual(true);
-    expect(compareValues("bitwarden", "bitwarden")).toEqual(true);
+    expect(compareValues("localpass", "localpass")).toEqual(true);
     expect(compareValues(true, true)).toEqual(true);
   });
 
   it("should return false for different primitive values", () => {
     expect(compareValues(1, 2)).toEqual(false);
-    expect(compareValues("bitwarden", "bitwarden.com")).toEqual(false);
+    expect(compareValues("localpass", "local.invalid")).toEqual(false);
     expect(compareValues(true, false)).toEqual(false);
   });
 

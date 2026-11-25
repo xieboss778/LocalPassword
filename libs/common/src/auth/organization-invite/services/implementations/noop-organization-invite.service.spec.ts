@@ -1,6 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { DirectOrganizationInvite } from "../../models/direct-organization-invite";
 import { OpenOrganizationInvite } from "../../models/open-organization-invite";

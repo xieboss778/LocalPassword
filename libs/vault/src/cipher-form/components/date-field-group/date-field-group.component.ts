@@ -22,9 +22,9 @@ import {
   ValidationErrors,
 } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FormFieldModule, SelectModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FormFieldModule, SelectModule } from "@localpass/components";
 
 interface DateParts {
   month: string;
@@ -56,11 +56,11 @@ export class DateFieldGroupComponent implements OnInit, ControlValueAccessor, Va
   readonly internalForm: FormGroup;
 
   // These callbacks are reassigned by Angular's ControlValueAccessor interface
-  // eslint-disable-next-line @bitwarden/components/enforce-readonly-angular-properties
+  // eslint-disable-next-line @localpass/components/enforce-readonly-angular-properties
   private onChange = (value: string | undefined) => {};
-  // eslint-disable-next-line @bitwarden/components/enforce-readonly-angular-properties
+  // eslint-disable-next-line @localpass/components/enforce-readonly-angular-properties
   private onTouched = () => {};
-  // eslint-disable-next-line @bitwarden/components/enforce-readonly-angular-properties
+  // eslint-disable-next-line @localpass/components/enforce-readonly-angular-properties
   private onValidatorChange = () => {};
 
   constructor(

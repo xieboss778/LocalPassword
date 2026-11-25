@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncryptedString } from "@bitwarden/legacy-crypto";
+import { EncryptedString } from "@localpass/legacy-crypto";
 
 import { ProviderId } from "../../../types/guid";
 import { CRYPTO_DISK, UserKeyDefinition } from "../../state";

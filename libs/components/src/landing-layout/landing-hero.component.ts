@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
 
-import { BitSvg } from "@bitwarden/assets/svg";
+import { BitSvg } from "@localpass/assets/svg";
 
 import { SvgModule } from "../svg";
 import { TypographyModule } from "../typography";

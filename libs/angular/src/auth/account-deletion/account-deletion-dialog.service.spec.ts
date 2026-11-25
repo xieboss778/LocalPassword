@@ -1,20 +1,20 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
 import {
   OrganizationUserStatusType,
   OrganizationUserType,
-} from "@bitwarden/common/admin-console/enums";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
+} from "@localpass/common/admin-console/enums";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { ProductTierType } from "@localpass/common/billing/enums";
 import {
   buildTestOrganization,
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogRef, DialogService } from "@bitwarden/components";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogRef, DialogService } from "@localpass/components";
 
 import { AccountDeletionDialogService } from "./account-deletion-dialog.service";
 import { DeleteAccountDialogComponent } from "./delete-account-dialog/delete-account-dialog.component";

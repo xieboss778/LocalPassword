@@ -3,12 +3,12 @@ import { CanActivateFn, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { CollectionService } from "@localpass/admin-console/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 
 import { VaultNavItemType } from "../models/vault-nav-view-model";
 import {

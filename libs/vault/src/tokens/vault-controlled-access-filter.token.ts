@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
 
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { BitwardenIcon } from "@bitwarden/components";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { LocalPassIcon } from "@localpass/components";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 export const MY_REQUESTS_FILTER_ID = "my-requests";
 export const PRIVILEGED_FILTER_ID = "privileged";
@@ -14,7 +14,7 @@ export const ACTIVE_FILTER_ID = "active";
 export type ControlledAccessFilterOption = {
   readonly id: string;
   readonly name: string;
-  readonly icon: BitwardenIcon;
+  readonly icon: LocalPassIcon;
 };
 
 /**

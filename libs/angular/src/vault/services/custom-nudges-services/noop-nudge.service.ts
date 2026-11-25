@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserId } from "@localpass/common/types/guid";
 
 import { SingleNudgeService } from "../default-single-nudge.service";
 import { NudgeStatus, NudgeType } from "../nudges.service";

@@ -1,7 +1,7 @@
-import { Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { Unassigned } from "@localpass/common/admin-console/models/collections";
+import { CollectionId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
 
 import { RoutedVaultFilterBridgeService } from "../services/routed-vault-filter-bridge.service";
 

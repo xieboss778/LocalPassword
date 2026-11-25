@@ -1,5 +1,5 @@
-// FIXME(https://bitwarden.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
-/* eslint-disable @bitwarden/components/enforce-readonly-angular-properties */
+// FIXME(https://localpass.atlassian.net/browse/CL-1062): `OnPush` components should not use mutable properties
+/* eslint-disable @localpass/components/enforce-readonly-angular-properties */
 import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
@@ -22,21 +22,21 @@ import {
 } from "@angular/forms";
 import { firstValueFrom, of, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { AttachmentView } from "@localpass/common/vault/models/view/attachment.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@localpass/common/vault/services/cipher-authorization.service";
 import {
   AsyncActionsModule,
   BitSubmitDirective,
@@ -48,7 +48,7 @@ import {
   ItemModule,
   ProgressBarComponent,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { DownloadAttachmentComponent } from "../../../components/download-attachment/download-attachment.component";
 import { TruncatedFilenameComponent } from "../../../components/truncated-filename";

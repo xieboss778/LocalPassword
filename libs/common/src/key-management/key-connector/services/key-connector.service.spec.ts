@@ -6,7 +6,7 @@ import { firstValueFrom, of, timeout, TimeoutError } from "rxjs";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
   UserDecryptionOptions,
-} from "@bitwarden/auth/common";
+} from "@localpass/auth/common";
 // eslint-disable-next-line no-restricted-imports
 import {
   Argon2KdfConfig,
@@ -15,9 +15,9 @@ import {
   LegacyCompatKeyService,
   PBKDF2KdfConfig,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { KeyConnectorRegistrationResult, PureCrypto } from "@bitwarden/sdk-internal";
-import { UnlockService } from "@bitwarden/unlock";
+} from "@localpass/legacy-crypto";
+import { KeyConnectorRegistrationResult, PureCrypto } from "@localpass/sdk-internal";
+import { UnlockService } from "@localpass/unlock";
 
 import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { ApiService } from "../../../abstractions/api.service";

@@ -1,6 +1,6 @@
-import { MasterPasswordSalt } from "@bitwarden/common/key-management/master-password/types/master-password.types";
+import { MasterPasswordSalt } from "@localpass/common/key-management/master-password/types/master-password.types";
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfig } from "@bitwarden/legacy-crypto";
+import { KdfConfig } from "@localpass/legacy-crypto";
 
 export interface PasswordInputResult {
   currentPassword?: string;

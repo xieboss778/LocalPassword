@@ -1,4 +1,4 @@
-import { LoginView as SdkLoginView } from "@bitwarden/sdk-internal";
+import { LoginView as SdkLoginView } from "@localpass/sdk-internal";
 
 import { UriMatchStrategySetting } from "../../../models/domain/domain-service";
 import { Utils } from "../../../platform/misc/utils";

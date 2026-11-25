@@ -5,28 +5,28 @@ import { mock } from "jest-mock-extended";
 import { EMPTY, Subject, firstValueFrom, of } from "rxjs";
 import { ZXCVBNResult } from "zxcvbn";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { ClientType, DeviceType } from "@bitwarden/common/enums";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { EncryptedMigrator } from "@bitwarden/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { mockAccountServiceWith } from "@bitwarden/common/spec";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { InternalPolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { ClientType, DeviceType } from "@localpass/common/enums";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { EncryptedMigrator } from "@localpass/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { BroadcasterService } from "@localpass/common/platform/abstractions/broadcaster.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SyncService } from "@localpass/common/platform/sync";
+import { mockAccountServiceWith } from "@localpass/common/spec";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 import {
   AnonLayoutWrapperDataService,
   AsyncActionsModule,
@@ -35,17 +35,17 @@ import {
   FormFieldModule,
   IconButtonModule,
   ToastService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   BiometricsService,
   BiometricsStatus,
   BiometricStateService,
   KeyService,
   UserAsymmetricKeysRegenerationService,
-} from "@bitwarden/key-management";
+} from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { UnlockEvent, UnlockMethod, UnlockService } from "@bitwarden/unlock";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { UnlockEvent, UnlockMethod, UnlockService } from "@localpass/unlock";
 
 import {
   LockComponentService,

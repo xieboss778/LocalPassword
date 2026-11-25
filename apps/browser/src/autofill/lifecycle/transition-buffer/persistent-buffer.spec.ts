@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, Subject } from "rxjs";
 
-import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { GlobalState, KeyDefinition } from "@bitwarden/state";
+import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { GlobalState, KeyDefinition } from "@localpass/state";
 
 import { TabEdgeCause, TabState } from "../enums";
 import type { TabEdge } from "../types";

@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/client-type",
+  "name": "@localpass/client-type",
   "version": "0.0.1",
   "description": "Exports the ClientType enum",
   "private": true,

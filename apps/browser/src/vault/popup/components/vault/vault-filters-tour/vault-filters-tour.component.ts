@@ -9,8 +9,8 @@ import {
   viewChild,
 } from "@angular/core";
 
-import { BitTableToolbarComponent, PopoverService } from "@bitwarden/components";
-import { CoachmarkComponent, CoachmarkService } from "@bitwarden/vault";
+import { BitTableToolbarComponent, PopoverService } from "@localpass/components";
+import { CoachmarkComponent, CoachmarkService } from "@localpass/vault";
 
 import { VaultPopupTourService } from "../../../services/vault-popup-tour.service";
 

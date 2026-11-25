@@ -1,11 +1,11 @@
 import { concatMap, filter, firstValueFrom, Observable } from "rxjs";
 
-import { Duo2faResult, TwoFactorAuthDuoComponentService } from "@bitwarden/auth/angular";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Message } from "@bitwarden/common/platform/messaging";
+import { Duo2faResult, TwoFactorAuthDuoComponentService } from "@localpass/auth/angular";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Message } from "@localpass/common/platform/messaging";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports

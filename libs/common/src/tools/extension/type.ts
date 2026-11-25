@@ -10,7 +10,7 @@ export type SiteId = keyof typeof Site;
 /** well-known name for a field surfaced from an extension site to a vendor. */
 export type FieldId = keyof typeof Field;
 
-/** Identifies a vendor extending bitwarden */
+/** Identifies a vendor extending localpass */
 export type VendorId = Opaque<"vendor", string>;
 
 /** uniquely identifies an extension. */
@@ -81,7 +81,7 @@ export type ProductMetadata = {
 
 /** Describes an extension provided by a vendor */
 export type ExtensionMetadata = {
-  /** The part of Bitwarden extended by the vendor's services */
+  /** The part of LocalPass extended by the vendor's services */
   readonly site: Readonly<SiteMetadata>;
 
   /** Product description */

@@ -1,8 +1,8 @@
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { I18nMockService } from "../utils";
 

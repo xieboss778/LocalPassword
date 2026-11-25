@@ -1,7 +1,7 @@
 import createEmotion from "@emotion/css/create-instance";
 import { html, nothing } from "lit";
 
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 import { EventSecurity } from "../../../utils/event-security";
 import { Option } from "../common-types";

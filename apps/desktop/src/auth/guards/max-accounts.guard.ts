@@ -4,9 +4,9 @@ import { inject } from "@angular/core";
 import { CanActivateFn } from "@angular/router";
 import { Observable, map } from "rxjs";
 
-import { AccountSwitcherService } from "@bitwarden/common/auth/account-switcher";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ToastService } from "@bitwarden/components";
+import { AccountSwitcherService } from "@localpass/common/auth/account-switcher";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ToastService } from "@localpass/components";
 
 function maxAccountsGuard(): Observable<boolean> {
   const accountSwitcherService = inject(AccountSwitcherService);

@@ -19,11 +19,11 @@ import {
   timer,
 } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ScheduledTaskNames, TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
-import { LogService } from "@bitwarden/logging";
-import { GlobalStateProvider, KeyDefinition, PHISHING_DETECTION_DISK } from "@bitwarden/state";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ScheduledTaskNames, TaskSchedulerService } from "@localpass/common/platform/scheduling";
+import { LogService } from "@localpass/logging";
+import { GlobalStateProvider, KeyDefinition, PHISHING_DETECTION_DISK } from "@localpass/state";
 
 import { devFlagEnabled, devFlagValue } from "../../../platform/flags";
 import { PhishingManifest } from "../phishing-manifest.types";
@@ -255,7 +255,7 @@ export class PhishingDataService {
       new URL("http://phishing.testcategory.com").href,
       new URL("https://phishing.testcategory.com").href,
       new URL("https://phishing.testcategory.com/block").href,
-      new URL("https://bitwarden.github.io/phishing-test-page/inf-load/").href, // infinite loading page
+      new URL("https://localpass.github.io/phishing-test-page/inf-load/").href, // infinite loading page
     ];
     if (!flag) {
       return testWebAddresses;

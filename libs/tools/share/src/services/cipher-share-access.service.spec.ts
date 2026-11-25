@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { CipherShareAccessService } from "./cipher-share-access.service";
 import { ShareItemService } from "./share-item.service";

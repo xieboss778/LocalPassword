@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { KdfType } from "@bitwarden/legacy-crypto";
+import { KdfType } from "@localpass/legacy-crypto";
 
 import { UserDecryptionResponse } from "./user-decryption.response";
 

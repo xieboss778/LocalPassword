@@ -1,4 +1,4 @@
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { ImportResult } from "../../models";
 import { ImportRecordError, ImportRecordErrorReason } from "../../models/import-record-error";

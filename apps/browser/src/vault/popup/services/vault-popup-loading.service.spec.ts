@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { firstValueFrom, NEVER, of, skip, Subject } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { VaultCopyButtonsService } from "@bitwarden/vault";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { VaultCopyButtonsService } from "@localpass/vault";
 
 import { VaultPopupItemsService } from "./vault-popup-items.service";
 import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";

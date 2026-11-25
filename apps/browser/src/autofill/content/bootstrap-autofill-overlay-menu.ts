@@ -8,7 +8,7 @@ import { setupAutofillInitDisconnectAction } from "../utils";
 import AutofillInit from "./autofill-init";
 
 (function (windowContext) {
-  if (!windowContext.bitwardenAutofillInit) {
+  if (!windowContext.localpassAutofillInit) {
     let inlineMenuContentService: undefined | AutofillInlineMenuContentService;
     if (globalThis.self === globalThis.top) {
       inlineMenuContentService = new AutofillInlineMenuContentService();
@@ -24,7 +24,7 @@ import AutofillInit from "./autofill-init";
       inlineMenuContentService,
     );
 
-    windowContext.bitwardenAutofillInit = new AutofillInit(
+    windowContext.localpassAutofillInit = new AutofillInit(
       domQueryService,
       domElementVisibilityService,
       autofillOverlayContentService,
@@ -32,6 +32,6 @@ import AutofillInit from "./autofill-init";
     );
     setupAutofillInitDisconnectAction(windowContext);
 
-    windowContext.bitwardenAutofillInit.init();
+    windowContext.localpassAutofillInit.init();
   }
 })(window);

@@ -4,7 +4,7 @@ use std::{
 };
 
 use autofill_provider::{
-    BitwardenError, CallbackError, PasskeyAssertionRequest, PasskeyAssertionResponse, Position,
+    LocalPassError, CallbackError, PasskeyAssertionRequest, PasskeyAssertionResponse, Position,
     TimedCallback, UserVerification, WindowDetails,
 };
 use desktop_core::autofill::create_context_string;
@@ -110,13 +110,13 @@ fn send_assertion_request(
         })?
         .map_err(|err| -> Box<dyn std::error::Error> {
             match err {
-                BitwardenError::CredentialNotFound => Box::new(PluginError::CredentialNotFound),
+                LocalPassError::CredentialNotFound => Box::new(PluginError::CredentialNotFound),
                 err => format!("Failed to get assertion response from IPC channel: {err}").into(),
             }
         })
 }
 
-/// Creates a WebAuthn get assertion response from Bitwarden's assertion response
+/// Creates a WebAuthn get assertion response from LocalPass's assertion response
 fn create_get_assertion_response(
     credential_id: Vec<u8>,
     authenticator_data: Vec<u8>,
@@ -189,7 +189,7 @@ mod tests {
         }
     }
 
-    fn send_failing_assertion(error: fn() -> BitwardenError) -> Box<dyn std::error::Error> {
+    fn send_failing_assertion(error: fn() -> LocalPassError) -> Box<dyn std::error::Error> {
         let (_cancel_tx, cancel_rx) = mpsc::channel();
         send_assertion_request(&FailingIpcClient { error }, assertion_request(), cancel_rx)
             .expect_err("assertion should fail")
@@ -197,7 +197,7 @@ mod tests {
 
     #[test]
     fn reports_a_missing_credential_as_a_plugin_error() {
-        let err = send_failing_assertion(|| BitwardenError::CredentialNotFound);
+        let err = send_failing_assertion(|| LocalPassError::CredentialNotFound);
 
         assert!(matches!(
             err.downcast_ref::<PluginError>(),
@@ -207,7 +207,7 @@ mod tests {
 
     #[test]
     fn reports_other_assertion_failures_as_generic_errors() {
-        let err = send_failing_assertion(|| BitwardenError::Internal("boom".to_string()));
+        let err = send_failing_assertion(|| LocalPassError::Internal("boom".to_string()));
 
         assert!(err.downcast_ref::<PluginError>().is_none());
         assert!(err.to_string().contains("boom"));

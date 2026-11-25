@@ -1,4 +1,4 @@
-//! Bitwarden's auth policy for SSH agent operations.
+//! LocalPass's auth policy for SSH agent operations.
 
 use std::sync::Arc;
 
@@ -28,12 +28,12 @@ pub enum AuthError {
     KeystoreError(#[source] anyhow::Error),
 }
 
-/// Bitwarden's SSH operation authorization policy:
+/// LocalPass's SSH operation authorization policy:
 ///
 /// - Allows listing keys when the keystore is initialized and otherwise requests approval.
 /// - Always requires approval for signing operations
 /// - Delegates approval decisions to the provided handler
-pub struct BitwardenAuthPolicy<K, H>
+pub struct LocalPassAuthPolicy<K, H>
 where
     K: KeyStore,
     H: ApprovalRequester,
@@ -42,7 +42,7 @@ where
     approval_handler: H,
 }
 
-impl<K, H> BitwardenAuthPolicy<K, H>
+impl<K, H> LocalPassAuthPolicy<K, H>
 where
     K: KeyStore,
     H: ApprovalRequester,
@@ -56,7 +56,7 @@ where
 }
 
 #[async_trait::async_trait]
-impl<K, H> AuthPolicy for BitwardenAuthPolicy<K, H>
+impl<K, H> AuthPolicy for LocalPassAuthPolicy<K, H>
 where
     K: KeyStore,
     H: ApprovalRequester,
@@ -181,7 +181,7 @@ mod tests {
         // Approval handler must NOT be called when keystore is already initialized.
         let approval_handler = MockApprovalRequester::new();
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let result = policy.authorize(&AuthRequest::List).await;
 
@@ -201,7 +201,7 @@ mod tests {
             .once()
             .returning(|| Ok(true));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let result = policy.authorize(&AuthRequest::List).await;
 
@@ -221,7 +221,7 @@ mod tests {
             .once()
             .returning(|| Ok(false));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let result = policy.authorize(&AuthRequest::List).await;
 
@@ -244,7 +244,7 @@ mod tests {
             .times(1)
             .returning(|_| Ok(None));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let request = create_default_test_sign_request(test_pub_key);
         let result = policy.authorize(&request).await;
@@ -268,7 +268,7 @@ mod tests {
             .times(1)
             .returning(|_| Err(anyhow!("Keystore error")));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let request = create_default_test_sign_request(test_pub_key);
         let result = policy.authorize(&request).await;
@@ -294,7 +294,7 @@ mod tests {
             .times(1)
             .returning(|_| Ok(true));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let request = create_default_test_sign_request(test_pub_key);
         let result = policy.authorize(&request).await;
@@ -319,7 +319,7 @@ mod tests {
             .times(1)
             .returning(|_| Ok(false));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let request = create_default_test_sign_request(test_pub_key);
         let result = policy.authorize(&request).await;
@@ -344,7 +344,7 @@ mod tests {
             .times(1)
             .returning(|_| Err(ApprovalError::HandlerFailed(anyhow!("Handler failed"))));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let request = create_default_test_sign_request(test_pub_key);
         let result = policy.authorize(&request).await;
@@ -390,7 +390,7 @@ mod tests {
             .times(1)
             .returning(|_| Ok(true));
 
-        let policy = BitwardenAuthPolicy::new(Arc::new(keystore), approval_handler);
+        let policy = LocalPassAuthPolicy::new(Arc::new(keystore), approval_handler);
 
         let request = create_test_sign_request(
             test_pub_key,

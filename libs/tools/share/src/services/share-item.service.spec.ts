@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { SHARE_ITEM_PRESENTER, ShareItemPresenter } from "../tokens/share-item-presenter.token";
 import {

@@ -9,7 +9,7 @@ use serde_with::{
     serde_as,
 };
 
-use crate::{BitwardenError, Callback, TimedCallback};
+use crate::{LocalPassError, Callback, TimedCallback};
 
 /// Response to window handle request.
 #[serde_as]
@@ -42,7 +42,7 @@ impl Callback for Arc<dyn GetWindowHandleQueryCallback> {
         Ok(())
     }
 
-    fn error(&self, error: BitwardenError) {
+    fn error(&self, error: LocalPassError) {
         self.as_ref().on_error(error);
     }
 }
@@ -53,7 +53,7 @@ pub trait GetWindowHandleQueryCallback: Send + Sync {
     fn on_complete(&self, response: WindowHandleQueryResponse);
 
     /// Function to call if an error response is returned.
-    fn on_error(&self, error: BitwardenError);
+    fn on_error(&self, error: LocalPassError);
 }
 
 impl GetWindowHandleQueryCallback for TimedCallback<WindowHandleQueryResponse> {
@@ -61,7 +61,7 @@ impl GetWindowHandleQueryCallback for TimedCallback<WindowHandleQueryResponse> {
         self.send(Ok(response));
     }
 
-    fn on_error(&self, error: BitwardenError) {
+    fn on_error(&self, error: LocalPassError) {
         self.send(Err(error));
     }
 }

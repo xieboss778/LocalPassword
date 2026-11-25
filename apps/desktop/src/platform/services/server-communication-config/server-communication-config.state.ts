@@ -1,5 +1,5 @@
-import { ServerCommunicationConfig } from "@bitwarden/sdk-internal";
-import { KeyDefinition, SERVER_COMMUNICATION_CONFIG_DISK } from "@bitwarden/state";
+import { ServerCommunicationConfig } from "@localpass/sdk-internal";
+import { KeyDefinition, SERVER_COMMUNICATION_CONFIG_DISK } from "@localpass/state";
 
 /**
  * Key definition for server communication configurations.

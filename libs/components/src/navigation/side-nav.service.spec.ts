@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Subject } from "rxjs";
 
-import { GlobalState, GlobalStateProvider } from "@bitwarden/state";
+import { GlobalState, GlobalStateProvider } from "@localpass/state";
 
 import { getRootFontSizePx } from "../shared";
 

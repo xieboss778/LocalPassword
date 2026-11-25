@@ -8,23 +8,23 @@ import { of } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KeyService } from "@bitwarden/key-management";
+import { CollectionService } from "@localpass/admin-console/common";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KeyGenerationService } from "@bitwarden/legacy-crypto";
+import { EncryptService, KeyGenerationService } from "@localpass/legacy-crypto";
 
 import { BitwardenCsvImporter } from "../importers";
 import { UpgradeBitwardenPasswordProtectedImporter } from "../importers/bitwarden-upgrade/upgrade-bitwarden-password-protected-importer";
@@ -302,7 +302,7 @@ describe("ImportUpgradeService", () => {
   describe("getImporter", () => {
     const prompt = () => Promise.resolve("password");
 
-    it.each(["bitwardenjson", "bitwardenpasswordprotected"] as const)(
+    it.each(["localpassjson", "localpasspasswordprotected"] as const)(
       "returns the failure-key reporting importer for %s",
       (format) => {
         expect(importService.getImporter(format, prompt)).toBeInstanceOf(
@@ -311,12 +311,12 @@ describe("ImportUpgradeService", () => {
       },
     );
 
-    it("returns null for the Bitwarden formats without a password callback", () => {
-      expect(importService.getImporter("bitwardenjson", null)).toBeNull();
+    it("returns null for the LocalPass formats without a password callback", () => {
+      expect(importService.getImporter("localpassjson", null)).toBeNull();
     });
 
     it("delegates every other real format to the shared service", () => {
-      expect(importService.getImporter("bitwardencsv", prompt)).toBeInstanceOf(
+      expect(importService.getImporter("localpasscsv", prompt)).toBeInstanceOf(
         BitwardenCsvImporter,
       );
     });

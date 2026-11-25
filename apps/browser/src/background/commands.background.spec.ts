@@ -1,19 +1,19 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { of, Subject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ExtensionCommand, ExtensionCommandType } from "@bitwarden/common/autofill/constants";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { ExtensionCommand, ExtensionCommandType } from "@localpass/common/autofill/constants";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   IntraprocessMessageSender,
   Message,
   MessageListener,
-} from "@bitwarden/common/platform/messaging";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { LockService } from "@bitwarden/unlock";
+} from "@localpass/common/platform/messaging";
+import { CipherType } from "@localpass/common/vault/enums";
+import { LockService } from "@localpass/unlock";
 
 import {
   LockedVaultPendingNotificationsData,

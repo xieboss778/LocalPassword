@@ -2,11 +2,11 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 import { expect, userEvent, waitFor } from "storybook/test";
 
-import { PasswordManagerLogo } from "@bitwarden/assets/svg";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { enabledFlags, formatArgsForCodeSnippet } from "@bitwarden/storybook";
+import { PasswordManagerLogo } from "@localpass/assets/svg";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalStateProvider } from "@localpass/state";
+import { enabledFlags, formatArgsForCodeSnippet } from "@localpass/storybook";
 
 import { BannerModule } from "../banner";
 import { ButtonModule } from "../button";

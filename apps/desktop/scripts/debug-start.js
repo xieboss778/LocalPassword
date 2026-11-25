@@ -2,12 +2,12 @@
 
 ////
 // Same watch + Electron pipeline as start.js, but state is isolated in `.debug`
-// so it does not interfere with the host system's bitwarden desktop installation.
+// so it does not interfere with the host system's localpass desktop installation.
 //
 //   .debug/desktop-profile/           app data (vault, settings, logs)
 //   .debug/desktop-profile/secure-storage.json  plaintext secrets, in place of the OS keyring
 //   .debug/chrome-profile/            native messaging manifest for the debug browser
-//   .debug/.bitwarden-ssh-agent.sock  SSH agent socket
+//   .debug/.localpass-ssh-agent.sock  SSH agent socket
 //   .debug/s.<name>                   IPC sockets
 ////
 
@@ -23,13 +23,13 @@ const args = process.argv.splice(2);
 
 const DEBUG_DIR = path.resolve(__dirname, "../../..", ".debug");
 
-process.env.BITWARDEN_APPDATA_DIR = path.join(DEBUG_DIR, "desktop-profile");
-process.env.BITWARDEN_CHROME_PROFILE_DIR = path.join(DEBUG_DIR, "chrome-profile");
-process.env.BITWARDEN_SSH_AUTH_SOCK = path.join(DEBUG_DIR, ".bitwarden-ssh-agent.sock");
-process.env.BITWARDEN_IPC_SOCKET_DIR = DEBUG_DIR;
+process.env.LOCALPASS_APPDATA_DIR = path.join(DEBUG_DIR, "desktop-profile");
+process.env.LOCALPASS_CHROME_PROFILE_DIR = path.join(DEBUG_DIR, "chrome-profile");
+process.env.LOCALPASS_SSH_AUTH_SOCK = path.join(DEBUG_DIR, ".localpass-ssh-agent.sock");
+process.env.LOCALPASS_IPC_SOCKET_DIR = DEBUG_DIR;
 // Read only by native builds with the `file_secure_storage` feature (see the Main command).
-process.env.BITWARDEN_SECURE_STORAGE_FILE = path.join(
-  process.env.BITWARDEN_APPDATA_DIR,
+process.env.LOCALPASS_SECURE_STORAGE_FILE = path.join(
+  process.env.LOCALPASS_APPDATA_DIR,
   "secure-storage.json",
 );
 
@@ -41,7 +41,7 @@ const INSPECT_FLAG = "--inspect=5858";
 // spawns `require("electron")`) with the same debug ports, so neither the binary path nor a port
 // can tell the two sessions apart. This marker is what killStrayClients matches on. The main
 // process only ever scans argv for known flags, so an extra one is inert.
-const DEBUG_MARKER = "--bitwarden-debug-run";
+const DEBUG_MARKER = "--localpass-debug-run";
 
 const WEBPACK = path.resolve(__dirname, "../../../node_modules/.bin/webpack");
 

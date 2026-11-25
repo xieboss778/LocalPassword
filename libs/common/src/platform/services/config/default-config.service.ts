@@ -16,7 +16,7 @@ import {
 } from "rxjs";
 import { SemVer } from "semver";
 
-import { ServerCommunicationConfig } from "@bitwarden/sdk-internal";
+import { ServerCommunicationConfig } from "@localpass/sdk-internal";
 
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";

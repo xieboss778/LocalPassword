@@ -9,8 +9,8 @@ import {
   RadioButtonModule,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportInstructionsCalloutComponent } from "./import-instructions-callout.component";
 

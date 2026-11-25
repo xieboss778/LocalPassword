@@ -1,10 +1,10 @@
 import { firstValueFrom, Observable } from "rxjs";
 
-import { KDF_CONFIG } from "@bitwarden/common/key-management/state-definitions";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
+import { KDF_CONFIG } from "@localpass/common/key-management/state-definitions";
+import { StateProvider } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfig } from "@bitwarden/legacy-crypto";
+import { KdfConfig } from "@localpass/legacy-crypto";
 
 import { KdfConfigService } from "./abstractions/kdf-config.service";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/admin-console",
+  "name": "@localpass/admin-console",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/admin-console/src",
   "projectType": "library",

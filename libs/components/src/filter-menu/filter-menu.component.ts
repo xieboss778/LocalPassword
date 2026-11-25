@@ -23,7 +23,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { map } from "rxjs";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BerryComponent } from "../berry/berry.component";
 import { ButtonModule } from "../button";
@@ -45,7 +45,7 @@ import { MenuComponent } from "../menu/menu.component";
 import { OverflowItemDirective } from "../overflow-list";
 import { radioInputClasses } from "../radio-button";
 import { SearchComponent } from "../search/search.component";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TooltipDirective } from "../tooltip";
 import { TypographyModule } from "../typography";
 import { focusAfterRender } from "../utils/focus-after-render";
@@ -221,7 +221,7 @@ export class FilterMenuComponent
   readonly disabledTooltip = input("");
 
   /** Leading icon, shown on the chip and beside the filter's row in the responsive dialog. */
-  readonly icon = input<BitwardenIcon>();
+  readonly icon = input<LocalPassIcon>();
 
   /**
    * Shows the in-menu search however few options there are. Without it, the search shows once

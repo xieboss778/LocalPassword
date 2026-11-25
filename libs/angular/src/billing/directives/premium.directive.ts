@@ -1,8 +1,8 @@
 import { Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 import { of, Subject, switchMap, takeUntil } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
 
 /**
  * Only shows the element if the user has premium.

@@ -8,8 +8,8 @@ import {
   DialogModule,
   DialogService,
   LinkModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

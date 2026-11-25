@@ -3,16 +3,16 @@ import "module-alias/register";
 
 import { randomUUID } from "crypto";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptServiceImplementation,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 // eslint-disable-next-line no-restricted-imports
-import { NodeCryptoFunctionService } from "@bitwarden/legacy-crypto/node";
+import { NodeCryptoFunctionService } from "@localpass/legacy-crypto/node";
 
 // eslint-disable-next-line no-restricted-imports
 import { DecryptedCommandData } from "../../src/models/native-messaging/decrypted-command-data";
@@ -49,7 +49,7 @@ export default class NativeMessageService {
 
   constructor(private apiVersion: number) {
     console.log("Starting native messaging service");
-    this.ipcService = new IPCService(`bitwarden`, (rawMessage) => {
+    this.ipcService = new IPCService(`localpass`, (rawMessage) => {
       console.log(`Received unexpected: `, rawMessage);
     });
 

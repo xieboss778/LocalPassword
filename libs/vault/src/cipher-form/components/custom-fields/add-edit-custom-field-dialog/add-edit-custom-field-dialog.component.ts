@@ -4,9 +4,9 @@ import { CommonModule } from "@angular/common";
 import { Component, Inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherType, FieldType } from "@bitwarden/common/vault/enums";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherType, FieldType } from "@localpass/common/vault/enums";
 import {
   DIALOG_DATA,
   AsyncActionsModule,
@@ -15,7 +15,7 @@ import {
   FormFieldModule,
   IconButtonModule,
   SelectModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export type AddEditCustomFieldDialogData = {
   addField: (type: FieldType, label: string) => void;
@@ -28,7 +28,7 @@ export type AddEditCustomFieldDialogData = {
   disallowHiddenField?: boolean;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-add-edit-custom-field-dialog",

@@ -6,7 +6,7 @@
     (click)="currentAccountClicked()"
     data-testid="current-account-button"
   >
-    <span class="tw-sr-only"> {{ "bitwardenAccount" | i18n }} {{ currentAccount.email }}</span>
+    <span class="tw-sr-only"> {{ "localpassAccount" | i18n }} {{ currentAccount.email }}</span>
     <!-- TODO: remove size binding and lock to "sm" when VFO1Foundation flag is removed -->
     <bit-avatar
       [id]="currentAccount.id"

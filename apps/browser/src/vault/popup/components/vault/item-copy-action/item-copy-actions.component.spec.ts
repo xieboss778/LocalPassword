@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { BehaviorSubject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { VaultCopyButtonsService, VaultItemCopyActionsComponent } from "@bitwarden/vault";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { VaultCopyButtonsService, VaultItemCopyActionsComponent } from "@localpass/vault";
 
 import { ItemCopyActionsComponent } from "./item-copy-actions.component";
 

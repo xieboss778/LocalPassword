@@ -4,38 +4,38 @@ import { firstValueFrom, map, switchMap } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService, CollectionWithIdRequest } from "@bitwarden/admin-console/common";
+import { CollectionService, CollectionWithIdRequest } from "@localpass/admin-console/common";
 import {
   CollectionView,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ImportCiphersRequest } from "@bitwarden/common/models/request/import-ciphers.request";
-import { ImportOrganizationCiphersRequest } from "@bitwarden/common/models/request/import-organization-ciphers.request";
-import { KvpRequest } from "@bitwarden/common/models/request/kvp.request";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { asUuid, SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
-import { CipherType, toCipherTypeName } from "@bitwarden/common/vault/enums";
-import { CipherRequest } from "@bitwarden/common/vault/models/request/cipher.request";
-import { FolderWithOptionalIdRequest } from "@bitwarden/common/vault/models/request/folder-with-optional-id.request";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { NoopLocalVaultWriter } from "@bitwarden/common/vault/services/noop-local-vault-writer.service";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/admin-console/models/collections";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ImportCiphersRequest } from "@localpass/common/models/request/import-ciphers.request";
+import { ImportOrganizationCiphersRequest } from "@localpass/common/models/request/import-organization-ciphers.request";
+import { KvpRequest } from "@localpass/common/models/request/kvp.request";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { asUuid, SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
+import { CipherType, toCipherTypeName } from "@localpass/common/vault/enums";
+import { CipherRequest } from "@localpass/common/vault/models/request/cipher.request";
+import { FolderWithOptionalIdRequest } from "@localpass/common/vault/models/request/folder-with-optional-id.request";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { NoopLocalVaultWriter } from "@localpass/common/vault/services/noop-local-vault-writer.service";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KeyGenerationService } from "@bitwarden/legacy-crypto";
-import { ImportOptions, ImporterClient } from "@bitwarden/sdk-internal";
+import { EncryptService, KeyGenerationService } from "@localpass/legacy-crypto";
+import { ImportOptions, ImporterClient } from "@localpass/sdk-internal";
 
 import {
   ArcCsvImporter,
@@ -266,7 +266,7 @@ export class ImportService implements ImportServiceAbstraction {
   }
 
   getImporter(
-    format: ImportType | "bitwardenpasswordprotected",
+    format: ImportType | "localpasspasswordprotected",
     promptForPassword_callback: () => Promise<string>,
     organizationId: OrganizationId = null,
   ): Importer {
@@ -436,7 +436,7 @@ export class ImportService implements ImportServiceAbstraction {
   // Intentionally redundant with respect to importOptions/SdkImporterRegistry because of heterogeneous
   // constructor dependencies (e.g. BitwardenPasswordProtectedImporter needs 6 injected services)
   private getImporterInstance(
-    format: ImportType | "bitwardenpasswordprotected",
+    format: ImportType | "localpasspasswordprotected",
     promptForPassword_callback: () => Promise<string>,
   ) {
     if (format == null) {
@@ -444,10 +444,10 @@ export class ImportService implements ImportServiceAbstraction {
     }
 
     switch (format) {
-      case "bitwardencsv":
+      case "localpasscsv":
         return new BitwardenCsvImporter(this.logService);
-      case "bitwardenjson":
-      case "bitwardenpasswordprotected":
+      case "localpassjson":
+      case "localpasspasswordprotected":
         return new BitwardenPasswordProtectedImporter(
           this.keyService,
           this.encryptService,
@@ -847,7 +847,7 @@ export class ImportService implements ImportServiceAbstraction {
     }
 
     // Decide which ciphers have no folder from the folder relationships, not `cipher.folderId`.
-    // Bitwarden JSON exports carry the source vault's folder ids on each item, so `folderId` can be
+    // LocalPass JSON exports carry the source vault's folder ids on each item, so `folderId` can be
     // set on a cipher that has no folder in this import.
     const noFolderRelationShips: FolderRelationship[] = [];
     importResult.ciphers.forEach((c, index) => {

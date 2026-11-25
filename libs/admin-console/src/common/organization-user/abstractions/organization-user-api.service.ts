@@ -1,5 +1,5 @@
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { UserId } from "@bitwarden/common/types/guid";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { UserId } from "@localpass/common/types/guid";
 
 import {
   OrganizationUserAcceptInitRequest,

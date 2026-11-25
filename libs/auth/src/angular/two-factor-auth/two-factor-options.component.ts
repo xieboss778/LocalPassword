@@ -1,16 +1,16 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   TwoFactorAuthAuthenticatorIcon,
   TwoFactorAuthDuoIcon,
   EmailCodeSentIcon,
   TwoFactorAuthWebAuthnIcon,
   TwoFactorAuthYubicoIcon,
-} from "@bitwarden/assets/svg";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
-import { TwoFactorProviderDetails, TwoFactorService } from "@bitwarden/common/auth/two-factor";
+} from "@localpass/assets/svg";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
+import { TwoFactorProviderDetails, TwoFactorService } from "@localpass/common/auth/two-factor";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -21,13 +21,13 @@ import {
   SvgModule,
   ItemModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export type TwoFactorOptionsDialogResult = {
   type: TwoFactorProviderType;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-two-factor-options",

@@ -1,4 +1,4 @@
-import { LinkedIdType as SdkLinkedIdType } from "@bitwarden/sdk-internal";
+import { LinkedIdType as SdkLinkedIdType } from "@localpass/sdk-internal";
 
 import { UnionOfValues } from "../types/union-of-values";
 

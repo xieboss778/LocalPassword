@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
-import { EncString as SdkEncString, SshKey as SdkSshKey } from "@bitwarden/sdk-internal";
+import { EncString } from "@localpass/legacy-crypto";
+import { EncString as SdkEncString, SshKey as SdkSshKey } from "@localpass/sdk-internal";
 
 import { mockContainerService } from "../../../../spec";
 import { SshKeyApi } from "../api/ssh-key.api";

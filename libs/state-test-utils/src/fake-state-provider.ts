@@ -17,8 +17,8 @@ import {
   DeriveDefinition,
   DerivedStateProvider,
   UserKeyDefinition,
-} from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 import {
   FakeActiveUserState,

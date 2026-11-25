@@ -3,14 +3,14 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { BehaviorSubject } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   BitIconButtonComponent,
   I18nMockService,
   ScrollLayoutService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { PopupRouterCacheService } from "../view-cache/popup-router-cache.service";
 
@@ -107,7 +107,7 @@ describe("PopupHeaderComponent", () => {
         { provide: PopupRouterCacheService, useValue: { back: jest.fn() } },
         {
           provide: I18nService,
-          useValue: new I18nMockService({ back: "Back", appLogoLabel: "Bitwarden" }),
+          useValue: new I18nMockService({ back: "Back", appLogoLabel: "LocalPass" }),
         },
       ],
     }).compileComponents();

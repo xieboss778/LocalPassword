@@ -4,10 +4,10 @@ import { By } from "@angular/platform-browser";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { DIALOG_DATA, DialogRef } from "@bitwarden/components";
-import { AlgorithmInfo } from "@bitwarden/generator-core";
-import { CipherFormGeneratorComponent } from "@bitwarden/vault";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { DIALOG_DATA, DialogRef } from "@localpass/components";
+import { AlgorithmInfo } from "@localpass/generator-core";
+import { CipherFormGeneratorComponent } from "@localpass/vault";
 
 import { PopupRouterCacheService } from "../../../../../platform/popup/view-cache/popup-router-cache.service";
 
@@ -18,25 +18,25 @@ import {
   VaultGeneratorDialogComponent,
 } from "./vault-generator-dialog.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-cipher-form-generator",
   template: "",
 })
-// FIXME(https://bitwarden.atlassian.net/browse/PM-28231): Use Component suffix
+// FIXME(https://localpass.atlassian.net/browse/PM-28231): Use Component suffix
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 class MockCipherFormGenerator {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() type: "password" | "username" = "password";
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() algorithmSelected: EventEmitter<AlgorithmInfo> = new EventEmitter();
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() uri: string = "";
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() valueGenerated = new EventEmitter<string>();
 }

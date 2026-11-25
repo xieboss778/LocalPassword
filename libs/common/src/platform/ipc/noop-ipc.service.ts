@@ -1,4 +1,4 @@
-import { IpcClient, IpcCommunicationBackend, OutgoingMessage } from "@bitwarden/sdk-internal";
+import { IpcClient, IpcCommunicationBackend, OutgoingMessage } from "@localpass/sdk-internal";
 
 import { LogService } from "../abstractions/log.service";
 import { SdkLoadService } from "../abstractions/sdk/sdk-load.service";

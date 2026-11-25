@@ -5,14 +5,14 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { GlobalStateProvider } from "@bitwarden/common/platform/state";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { GlobalStateProvider } from "@localpass/common/platform/state";
 import {
   FakeGlobalStateProvider,
   FakeStateProvider,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { POPUP_ROUTE_HISTORY_KEY } from "../../services/popup-view-cache-background.service";
 
@@ -24,7 +24,7 @@ import {
 
 const flushPromises = async () => await new Promise(process.nextTick);
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   template: "",

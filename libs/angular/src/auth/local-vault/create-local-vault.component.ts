@@ -9,15 +9,15 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 import {
   AsyncActionsModule,
   ButtonModule,
   FormFieldModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { CreateLocalAccountService } from "@bitwarden/local-vault";
+} from "@localpass/components";
+import { CreateLocalAccountService } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
 

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService } from "@localpass/legacy-crypto";
 
 import { ApiService } from "../abstractions/api.service";
 import { HibpApiService } from "../dirt/services/hibp-api.service";

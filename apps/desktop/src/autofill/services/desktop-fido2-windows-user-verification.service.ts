@@ -1,4 +1,4 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { WindowsAutofillUserVerificationParams } from "../models/autofill-user-verification.command";
 

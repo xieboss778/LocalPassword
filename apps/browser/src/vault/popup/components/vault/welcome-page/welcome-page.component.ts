@@ -3,18 +3,18 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { map } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { BitwardenLogo } from "@bitwarden/assets/svg";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { LocalPassLogo } from "@localpass/assets/svg";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 import {
   ButtonModule,
   IconTileComponent,
   SvgModule,
   ToastService,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { consumeDefaultPasswordManagerSuccessToast } from "../../../../../autofill/default-password-manager-session.util";
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
@@ -55,7 +55,7 @@ export class WelcomePageComponent implements OnInit {
     { initialValue: false },
   );
 
-  protected readonly logo = BitwardenLogo;
+  protected readonly logo = LocalPassLogo;
   protected readonly backgroundIllustration = computed(() =>
     this.isDarkTheme() ? WelcomeBackgroundDark : WelcomeBackgroundLight,
   );

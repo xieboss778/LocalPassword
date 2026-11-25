@@ -3,16 +3,16 @@ import { Component, computed, input, OnInit, signal, ChangeDetectionStrategy } f
 import { outputFromObservable } from "@angular/core/rxjs-interop";
 import { Subject } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { IconModule } from "../icon";
 import { IconButtonModule } from "../icon-button";
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 import { TypographyModule } from "../typography";
 
 export type CalloutTypes = "success" | "info" | "warning" | "danger" | "subtle" | "accent-primary";
 
-const defaultIcon: Record<CalloutTypes, BitwardenIcon> = {
+const defaultIcon: Record<CalloutTypes, LocalPassIcon> = {
   success: "bwi-check-circle",
   info: "bwi-info-circle",
   warning: "bwi-exclamation-triangle",
@@ -45,7 +45,7 @@ export class CalloutComponent implements OnInit {
   /** The variant type of the callout. Defaults to "info". */
   readonly type = input<CalloutTypes>("info");
   /** The icon to display in the callout. If not provided, a default icon based on the type will be used. Pass in `null` to not display an icon. */
-  readonly icon = input<BitwardenIcon | null>();
+  readonly icon = input<LocalPassIcon | null>();
   /** The title of the callout. If not provided, a default title will be used if callout type is `warning | danger`. Pass in `null` to not display a title. */
   readonly title = input<string | null>();
   /** If a title is not supplied, provide a screenreader-accessible unique name for this callout */

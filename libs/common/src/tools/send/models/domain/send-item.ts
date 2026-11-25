@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { SendEncryptionType, SendItem as SdkSendItem } from "@bitwarden/sdk-internal";
+import { SendEncryptionType, SendItem as SdkSendItem } from "@localpass/sdk-internal";
 
 import { asUuid, uuidAsString } from "../../../../platform/abstractions/sdk/sdk.service";
 import Domain from "../../../../platform/models/domain/domain-base";

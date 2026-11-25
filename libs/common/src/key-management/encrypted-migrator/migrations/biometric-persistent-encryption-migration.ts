@@ -1,9 +1,9 @@
 import { firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { BiometricStateService, BiometricsService, KeyService } from "@bitwarden/key-management";
-import { LogService } from "@bitwarden/logging";
-import { CryptoClient } from "@bitwarden/sdk-internal";
+import { BiometricStateService, BiometricsService, KeyService } from "@localpass/key-management";
+import { LogService } from "@localpass/logging";
+import { CryptoClient } from "@localpass/sdk-internal";
 
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";

@@ -1,8 +1,8 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { ViewPasswordHistoryService } from "@localpass/common/vault/abstractions/view-password-history.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 /**
  * This class handles the premium upgrade process for the browser extension.

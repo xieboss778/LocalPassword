@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { CredentialType } from "@bitwarden/generator-core";
+import { CredentialType } from "@localpass/generator-core";
 
 /** A credential generation result */
 export class GeneratedCredential {

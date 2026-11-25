@@ -1,18 +1,18 @@
 {
-  "name": "@bitwarden/desktop",
-  "productName": "Bitwarden",
-  "desktopName": "bitwarden.desktop",
-  "description": "A secure and free password manager for all of your devices.",
+  "name": "@localpass/desktop",
+  "productName": "LocalPass",
+  "desktopName": "localpass.desktop",
+  "description": "A fully offline password manager.",
   "version": "2026.11.1",
-  "author": "Bitwarden Inc. <hello@bitwarden.com> (https://bitwarden.com)",
-  "homepage": "https://bitwarden.com",
+  "author": "LocalPass contributors (https://github.com/xieboss778/LocalPass)",
+  "homepage": "https://github.com/xieboss778/LocalPass",
   "license": "GPL-3.0",
   "main": "main.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitwarden/clients.git"
+    "url": "git+https://github.com/xieboss778/LocalPassword.git"
   },
   "dependencies": {
-    "@bitwarden/desktop-napi": "file:../desktop_native/napi"
+    "@localpass/desktop-napi": "file:../desktop_native/napi"
   }
 }

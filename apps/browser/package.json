@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/browser",
+  "name": "@localpass/browser",
   "version": "2026.11.0",
   "scripts": {
     "build": "npm run build:chrome",

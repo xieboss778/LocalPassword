@@ -1,8 +1,8 @@
 import { Session } from "electron";
 import { concatMap } from "rxjs/operators";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { GlobalStateProvider } from "@bitwarden/common/platform/state";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { GlobalStateProvider } from "@localpass/common/platform/state";
 
 import { SERVER_COMMUNICATION_CONFIGS } from "../platform/services/server-communication-config";
 

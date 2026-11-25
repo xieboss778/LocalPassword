@@ -1,5 +1,5 @@
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { ImportResult } from "../../models/import-result";
 import { BaseImporter } from "../base-importer";

@@ -12,14 +12,14 @@ import {
 } from "@angular/forms";
 import { BehaviorSubject, Subject, takeUntil } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { UserVerificationBiometricsIcon } from "@bitwarden/assets/svg";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
-import { UserVerificationOptions } from "@bitwarden/common/auth/types/user-verification-options";
-import { VerificationWithSecret } from "@bitwarden/common/auth/types/verification";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { UserVerificationBiometricsIcon } from "@localpass/assets/svg";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { VerificationType } from "@localpass/common/auth/enums/verification-type";
+import { UserVerificationOptions } from "@localpass/common/auth/types/user-verification-options";
+import { VerificationWithSecret } from "@localpass/common/auth/types/verification";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -31,7 +31,7 @@ import {
   SvgModule,
   IconModule,
   LinkModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { ActiveClientVerificationOption } from "./active-client-verification-option.enum";
 
@@ -41,7 +41,7 @@ import { ActiveClientVerificationOption } from "./active-client-verification-opt
  * This is exposed to the parent component via the ControlValueAccessor interface (e.g. bind it to a FormControl).
  * Use UserVerificationService to verify the user's input.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-user-verification-form-input",
@@ -73,11 +73,11 @@ import { ActiveClientVerificationOption } from "./active-client-verification-opt
   ],
 })
 export class UserVerificationFormInputComponent implements ControlValueAccessor, OnInit, OnDestroy {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() verificationType: "server" | "client" = "server"; // server represents original behavior
   private _invalidSecret = false;
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   get invalidSecret() {
@@ -96,19 +96,19 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
     }
     this.secret.updateValueAndValidity({ emitEvent: false });
   }
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() invalidSecretChange = new EventEmitter<boolean>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() activeClientVerificationOptionChange =
     new EventEmitter<ActiveClientVerificationOption>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() biometricsVerificationResultChange = new EventEmitter<boolean>();
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() pasteSubmit = new EventEmitter<void>();
 

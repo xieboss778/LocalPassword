@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from "@angu
 import { toSignal } from "@angular/core/rxjs-interop";
 import { map, of, switchMap } from "rxjs";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { ButtonModule, ButtonType, IconModule, MenuModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { ButtonModule, ButtonType, IconModule, MenuModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SendPolicyService } from "../services/send-policy.service";
 

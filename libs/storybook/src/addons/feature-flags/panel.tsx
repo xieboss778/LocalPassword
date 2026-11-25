@@ -4,7 +4,7 @@
  * Renders a checkbox per flag from the catalog the preview publishes as a
  * parameter, and writes the enabled set back to the `FEATURE_FLAGS_GLOBAL`
  * global. The preview's mock `ConfigService` reads that global. This file must
- * not import from `@bitwarden/*` — the manager bundle can't resolve those
+ * not import from `@localpass/*` — the manager bundle can't resolve those
  * aliases, which is why the catalog arrives over the preview/manager boundary
  * rather than via a direct import. It is imported directly (relatively) by
  * `.storybook/manager.js` as a manager entry, so it is intentionally not

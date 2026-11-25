@@ -3,16 +3,16 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { ClientType } from "@bitwarden/common/enums";
-import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { devFlagEnabled } from "@bitwarden/common/platform/misc/flags";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { DialogService } from "@bitwarden/components";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { ClientType } from "@localpass/common/enums";
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { devFlagEnabled } from "@localpass/common/platform/misc/flags";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { DialogService } from "@localpass/components";
 
 import { PasswordRepromptService } from "../../../services/password-reprompt.service";
 import { CipherFormConfig } from "../../abstractions/cipher-form-config.service";
@@ -22,21 +22,21 @@ import { CustomFieldsComponent } from "../custom-fields/custom-fields.component"
 
 import { AdditionalOptionsSectionComponent } from "./additional-options-section.component";
 
-jest.mock("@bitwarden/common/platform/misc/flags", () => ({
-  ...jest.requireActual("@bitwarden/common/platform/misc/flags"),
+jest.mock("@localpass/common/platform/misc/flags", () => ({
+  ...jest.requireActual("@localpass/common/platform/misc/flags"),
   devFlagEnabled: jest.fn(),
 }));
 
 const mockDevFlagEnabled = devFlagEnabled as jest.Mock;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-custom-fields",
   template: "",
 })
 class MockCustomFieldsComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() disableSectionMargin: boolean;
 }
@@ -250,7 +250,7 @@ describe("AdditionalOptionsSectionComponent", () => {
       link.click();
 
       expect(platformUtilsService.launchUri).toHaveBeenCalledWith(
-        "https://bitwarden.com/help/basic-auth-autofill/",
+        "https://github.com/xieboss778/LocalPass/tree/main/docs",
       );
     });
 

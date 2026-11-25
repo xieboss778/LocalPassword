@@ -1,9 +1,9 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { IpcService } from "@bitwarden/common/platform/ipc";
-import { BroadcastGroup, BroadcastResolution, Endpoint } from "@bitwarden/sdk-internal";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { IpcService } from "@localpass/common/platform/ipc";
+import { BroadcastGroup, BroadcastResolution, Endpoint } from "@localpass/sdk-internal";
 
 import { IpcBackgroundService } from "./ipc-background.service";
 import { BrowserForegroundIpcTransport } from "./transports";
@@ -11,7 +11,7 @@ import { BrowserForegroundIpcTransport } from "./transports";
 /** The `resolve` the service hands to the SDK's communication backend. */
 let backendResolve: (group: BroadcastGroup) => Promise<BroadcastResolution>;
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   IpcCommunicationBackend: jest.fn().mockImplementation((sender) => {
     backendResolve = sender.resolve;
     return {};
@@ -21,7 +21,7 @@ jest.mock("@bitwarden/sdk-internal", () => ({
   IncomingMessage: jest.fn(),
 }));
 
-jest.mock("@bitwarden/common/platform/abstractions/sdk/sdk-load.service", () => ({
+jest.mock("@localpass/common/platform/abstractions/sdk/sdk-load.service", () => ({
   SdkLoadService: { Ready: Promise.resolve() },
 }));
 

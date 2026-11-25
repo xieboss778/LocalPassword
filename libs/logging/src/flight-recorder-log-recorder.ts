@@ -1,4 +1,4 @@
-import { type FlightRecorderClient, LogLevel as SdkLogLevel } from "@bitwarden/sdk-internal";
+import { type FlightRecorderClient, LogLevel as SdkLogLevel } from "@localpass/sdk-internal";
 
 import { LogLevel } from "./log-level";
 import { LogRecorder } from "./log-recorder";
@@ -10,9 +10,9 @@ const MAX_QUEUE = 1000;
 /**
  * The SDK carries a `Trace` level the clients have no equivalent for.
  *
- * Read at call time: `libs/common` re-exports the `@bitwarden/logging` barrel, so touching
+ * Read at call time: `libs/common` re-exports the `@localpass/logging` barrel, so touching
  * the SDK enum during module evaluation breaks every spec that stubs
- * `@bitwarden/sdk-internal` with a partial mock.
+ * `@localpass/sdk-internal` with a partial mock.
  */
 function toSdkLevel(level: LogLevel): SdkLogLevel {
   switch (level) {

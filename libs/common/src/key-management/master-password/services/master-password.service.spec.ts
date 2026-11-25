@@ -2,7 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { USER_DECRYPTION_OPTIONS } from "@bitwarden/auth/common";
+import { USER_DECRYPTION_OPTIONS } from "@localpass/auth/common";
 // eslint-disable-next-line no-restricted-imports
 import {
   Argon2KdfConfig,
@@ -10,7 +10,7 @@ import {
   KdfConfig,
   KeyGenerationService,
   PBKDF2KdfConfig,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import {
   FakeAccountService,
@@ -48,7 +48,7 @@ describe("MasterPasswordService", () => {
 
   const kdfPBKDF2: KdfConfig = new PBKDF2KdfConfig(600_000);
   const kdfArgon2: KdfConfig = new Argon2KdfConfig(4, 64, 3);
-  const salt = "test@bitwarden.com" as MasterPasswordSalt;
+  const salt = "test@local.invalid" as MasterPasswordSalt;
   const userKey = makeSymmetricCryptoKey(64, 2) as UserKey;
   const sdkLoadServiceReady = jest.fn();
 
@@ -201,7 +201,7 @@ describe("MasterPasswordService", () => {
   describe("makeMasterPasswordAuthenticationData", () => {
     const password = "test-password";
     const kdf: KdfConfig = new PBKDF2KdfConfig(600_000);
-    const salt = "test@bitwarden.com" as MasterPasswordSalt;
+    const salt = "test@local.invalid" as MasterPasswordSalt;
     const masterKey = makeSymmetricCryptoKey(32, 2);
     const masterKeyHash = makeSymmetricCryptoKey(32, 3).toEncoded();
 
@@ -252,7 +252,7 @@ describe("MasterPasswordService", () => {
   describe("wrapUnwrapUserKeyWithPassword", () => {
     const password = "test-password";
     const kdf: KdfConfig = new PBKDF2KdfConfig(600_000);
-    const salt = "test@bitwarden.com" as MasterPasswordSalt;
+    const salt = "test@local.invalid" as MasterPasswordSalt;
     const userKey = makeSymmetricCryptoKey(64, 2) as UserKey;
 
     it("wraps and unwraps user key with password", async () => {

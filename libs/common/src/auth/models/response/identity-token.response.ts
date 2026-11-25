@@ -8,8 +8,8 @@ import {
   KdfConfig,
   KdfType,
   PBKDF2KdfConfig,
-} from "@bitwarden/legacy-crypto";
-import { KeyConnectorUnlockData } from "@bitwarden/unlock";
+} from "@localpass/legacy-crypto";
+import { KeyConnectorUnlockData } from "@localpass/unlock";
 
 import { PrivateKeysResponseModel } from "../../../key-management/keys/response/private-keys.response";
 import { BaseResponse } from "../../../models/response/base.response";
@@ -32,7 +32,7 @@ export class IdentityTokenResponse extends BaseResponse {
    */
   privateKey: string;
 
-  // TODO: https://bitwarden.atlassian.net/browse/PM-30124 - Rename to just accountKeys
+  // TODO: https://localpass.atlassian.net/browse/PM-30124 - Rename to just accountKeys
   accountKeysResponseModel: PrivateKeysResponseModel | null = null;
 
   /**

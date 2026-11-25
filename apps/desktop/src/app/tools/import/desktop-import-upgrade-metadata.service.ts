@@ -1,6 +1,6 @@
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
-import type { chromium_importer } from "@bitwarden/desktop-napi";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
+import type { chromium_importer } from "@localpass/desktop-napi";
 import {
   UpgradeImportType,
   ImportOptionData,
@@ -11,7 +11,7 @@ import {
   DataLoader,
   Loader,
   chromiumBrowserNameFor,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 
 import { loadChromiumLogins } from "./chromium-login-loader";
 import { loadChromiumProfiles } from "./chromium-profile-loader";

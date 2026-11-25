@@ -19,7 +19,7 @@ describe("import source groups", () => {
     expect(importSourceGroupForFormat("1password1pif")?.name).toBe("1Password");
     expect(importSourceGroupForFormat("1passwordmaccsv")?.name).toBe("1Password 6 and 7");
     expect(importSourceGroupForFormat("1passwordwincsv")?.name).toBe("1Password 6 and 7");
-    expect(importSourceGroupForFormat("bitwardenjson")).toBeUndefined();
+    expect(importSourceGroupForFormat("localpassjson")).toBeUndefined();
   });
 
   it("tells group ids apart from formats", () => {

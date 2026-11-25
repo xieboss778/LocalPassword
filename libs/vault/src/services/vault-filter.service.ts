@@ -13,39 +13,39 @@ import {
 } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { sortDefaultCollections } from "@bitwarden/angular/vault/vault-filter/services/vault-filter.service";
+import { CollectionService } from "@localpass/admin-console/common";
+import { sortDefaultCollections } from "@localpass/angular/vault/vault-filter/services/vault-filter.service";
 import {
   OrganizationService,
   singleOrganizationPolicyApplies$,
-} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+} from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 import {
   CollectionView,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { OrganizationData } from "@bitwarden/common/admin-console/models/data/organization.data";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProfileOrganizationResponse } from "@bitwarden/common/admin-console/models/response/profile-organization.response";
-import { cloneCollection } from "@bitwarden/common/admin-console/utils/collection-utils";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { COLLAPSED_GROUPINGS } from "@bitwarden/common/vault/services/key-state/collapsed-groupings.state";
-import { CipherListView } from "@bitwarden/sdk-internal";
+} from "@localpass/common/admin-console/models/collections";
+import { OrganizationData } from "@localpass/common/admin-console/models/data/organization.data";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { ProfileOrganizationResponse } from "@localpass/common/admin-console/models/response/profile-organization.response";
+import { cloneCollection } from "@localpass/common/admin-console/utils/collection-utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { SingleUserState, StateProvider } from "@localpass/common/platform/state";
+import { OrganizationId, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
+import { COLLAPSED_GROUPINGS } from "@localpass/common/vault/services/key-state/collapsed-groupings.state";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { VaultFilterService as VaultFilterServiceAbstraction } from "../abstractions/vault-filter.service";
 import {

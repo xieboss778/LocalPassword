@@ -19,9 +19,9 @@ import {
 } from "@angular/forms";
 import { takeUntil, Subject, map, filter, tap, skip, ReplaySubject, withLatestFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   SectionComponent,
   SectionHeaderComponent,
@@ -30,13 +30,13 @@ import {
   FormFieldModule,
   TypographyModule,
   CheckboxModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 import {
   CredentialGeneratorService,
   PasswordGenerationOptions,
   BuiltIn,
-} from "@bitwarden/generator-core";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/generator-core";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { hasRangeOfValues } from "./util";
 
@@ -52,7 +52,7 @@ const Controls = Object.freeze({
 });
 
 /** Options group for passwords */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-password-settings",
@@ -87,7 +87,7 @@ export class PasswordSettingsComponent implements OnInit, OnChanges, OnDestroy {
    *  @remarks this is initialized to null but since it's a required input it'll
    *     never have that value in practice.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ required: true })
   account: Account = null!;
@@ -101,19 +101,19 @@ export class PasswordSettingsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /** When `true`, an options header is displayed by the component. Otherwise, the header is hidden. */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   showHeader: boolean = true;
 
   /** Number of milliseconds to wait before accepting user input. */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   waitMs: number = 100;
 
   /** Removes bottom margin from `bit-section` */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input({ transform: coerceBooleanProperty }) disableMargin = false;
 
@@ -122,7 +122,7 @@ export class PasswordSettingsComponent implements OnInit, OnChanges, OnDestroy {
    *   to receive live settings updates including the initial update,
    *   use `CredentialGeneratorService.settings(...)` instead.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   readonly onUpdated = new EventEmitter<PasswordGenerationOptions>();

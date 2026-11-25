@@ -1,8 +1,8 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { ManagedSettingsService } from "@bitwarden/managed-settings";
-import { ManagedSettingsClient } from "@bitwarden/sdk-internal";
+import { ManagedSettingsService } from "@localpass/managed-settings";
+import { ManagedSettingsClient } from "@localpass/sdk-internal";
 
 /**
  * A `ManagedSettingsService` whose `client$` emits a mock handle.

@@ -1,22 +1,22 @@
 import { Observable } from "rxjs";
 
-import { ProfileOrganizationResponse } from "@bitwarden/common/admin-console/models/response/profile-organization.response";
-import { SdkUnlockRequest } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
+import { ProfileOrganizationResponse } from "@localpass/common/admin-console/models/response/profile-organization.response";
+import { SdkUnlockRequest } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import {
   ProfileProviderOrganizationResponse,
   ProfileProviderResponse,
-} from "@bitwarden/common/provider";
-import { OrganizationId, ProviderId, UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/provider";
+import { OrganizationId, ProviderId, UserId } from "@localpass/common/types/guid";
 import {
   UserKey,
   OrgKey,
   ProviderKey,
   UserPrivateKey,
   UserPublicKey,
-} from "@bitwarden/common/types/key";
+} from "@localpass/common/types/key";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptedString, EncString } from "@bitwarden/legacy-crypto";
-import { UnsignedSharedKey } from "@bitwarden/sdk-internal";
+import { EncryptedString, EncString } from "@localpass/legacy-crypto";
+import { UnsignedSharedKey } from "@localpass/sdk-internal";
 
 export class UserPrivateKeyDecryptionFailedError extends Error {
   constructor() {

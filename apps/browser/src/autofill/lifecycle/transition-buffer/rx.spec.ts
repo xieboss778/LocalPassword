@@ -2,7 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, NEVER, Subject } from "rxjs";
 import { TestScheduler } from "rxjs/testing";
 
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserId } from "@localpass/common/types/guid";
 
 import { AccountEventKind, TabEdgeCause, TabState } from "../enums";
 import type { AccountEvent, TabEdge } from "../types";

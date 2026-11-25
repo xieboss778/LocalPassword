@@ -1,12 +1,12 @@
 import { Jsonify } from "type-fest";
 
-import { CollectionView, CollectionData } from "@bitwarden/common/admin-console/models/collections";
+import { CollectionView, CollectionData } from "@localpass/common/admin-console/models/collections";
 import {
   COLLECTION_DISK,
   COLLECTION_MEMORY,
   UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
-import { CollectionId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/platform/state";
+import { CollectionId } from "@localpass/common/types/guid";
 
 export const ENCRYPTED_COLLECTION_DATA_KEY = UserKeyDefinition.record<CollectionData, CollectionId>(
   COLLECTION_DISK,

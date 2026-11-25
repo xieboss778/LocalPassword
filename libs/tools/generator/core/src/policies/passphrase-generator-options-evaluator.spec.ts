@@ -1,5 +1,5 @@
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { deepFreeze } from "@bitwarden/common/tools/util";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { deepFreeze } from "@localpass/common/tools/util";
 
 import { DefaultPassphraseBoundaries } from "../data";
 import {

@@ -5,27 +5,27 @@ import { Component, Input } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NEVER, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { EmergencyAccessId, OrganizationId } from "@bitwarden/common/types/guid";
-import { OrgKey } from "@bitwarden/common/types/key";
-import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { EmergencyAccessId, OrganizationId } from "@localpass/common/types/guid";
+import { OrgKey } from "@localpass/common/types/key";
+import { AttachmentView } from "@localpass/common/vault/models/view/attachment.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   ItemModule,
   IconButtonModule,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/components";
+import { KeyService } from "@localpass/key-management";
 
 import { DownloadAttachmentComponent } from "../../components/download-attachment/download-attachment.component";
 import { TruncatedFilenameComponent } from "../../components/truncated-filename";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-attachments-v2-view",
@@ -42,16 +42,16 @@ import { TruncatedFilenameComponent } from "../../components/truncated-filename"
   ],
 })
 export class AttachmentsV2ViewComponent {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() cipher: CipherView;
 
   // Required for fetching attachment data when viewed from cipher via emergency access
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() emergencyAccessId?: EmergencyAccessId;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() admin: boolean = false;
 

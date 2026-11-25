@@ -1,5 +1,5 @@
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 /** Which tab the collection dialog opens on. */
 export const CollectionDialogTab = Object.freeze({

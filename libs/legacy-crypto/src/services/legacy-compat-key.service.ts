@@ -1,18 +1,18 @@
 import * as bigInt from "big-integer";
 import { firstValueFrom, map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 // Type-only: master-password.types imports KdfConfig from this package, so a value import would be circular.
-import type { MasterPasswordSalt } from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EFFLongWordList } from "@bitwarden/common/platform/misc/wordlist";
-import { UserId } from "@bitwarden/common/types/guid";
-import { OrgKey, UserKey, MasterKey, ProviderKey } from "@bitwarden/common/types/key";
-// Type-only: @bitwarden/key-management re-exports this package, so a value import would be circular.
-import type { KdfConfigService, KeyService } from "@bitwarden/key-management";
-import { LogService, measured, PerfTrackGroup } from "@bitwarden/logging";
-import { PureCrypto } from "@bitwarden/sdk-internal";
+import type { MasterPasswordSalt } from "@localpass/common/key-management/master-password/types/master-password.types";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { EFFLongWordList } from "@localpass/common/platform/misc/wordlist";
+import { UserId } from "@localpass/common/types/guid";
+import { OrgKey, UserKey, MasterKey, ProviderKey } from "@localpass/common/types/key";
+// Type-only: @localpass/key-management re-exports this package, so a value import would be circular.
+import type { KdfConfigService, KeyService } from "@localpass/key-management";
+import { LogService, measured, PerfTrackGroup } from "@localpass/logging";
+import { PureCrypto } from "@localpass/sdk-internal";
 
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { EncryptService } from "../abstractions/encrypt.service";
@@ -208,7 +208,7 @@ export class DefaultLegacyCompatKeyService implements LegacyCompatKeyServiceAbst
   async makeSendKey(keyMaterial: CsprngArray): Promise<SymmetricCryptoKey> {
     return await this.keyGenerationService.deriveKeyFromMaterial(
       keyMaterial,
-      "bitwarden-send",
+      "localpass-send",
       "send",
     );
   }

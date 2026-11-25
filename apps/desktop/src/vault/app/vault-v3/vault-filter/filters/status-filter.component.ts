@@ -4,16 +4,16 @@ import { CommonModule } from "@angular/common";
 import { Component, viewChild, input, inject } from "@angular/core";
 import { combineLatest, firstValueFrom, map, switchMap } from "rxjs";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { NavigationModule, A11yTitleDirective } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { VaultFilter, CipherStatus, CipherTypeFilter } from "@bitwarden/vault";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { NavigationModule, A11yTitleDirective } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { VaultFilter, CipherStatus, CipherTypeFilter } from "@localpass/vault";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-status-filter",

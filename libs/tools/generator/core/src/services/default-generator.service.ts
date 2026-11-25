@@ -4,8 +4,8 @@ import { firstValueFrom, Observable } from "rxjs";
 
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { UserId } from "@bitwarden/common/types/guid";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { UserId } from "@localpass/common/types/guid";
 
 import { GeneratorStrategy, GeneratorService, PolicyEvaluator } from "../abstractions";
 

@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString as SdkEncString } from "@bitwarden/sdk-internal";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { EncString as SdkEncString } from "@localpass/sdk-internal";
 
 import {
   EncryptionType,

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, input, inject } from "@angular/core";
 
-import { BitwardenIcon } from "../../shared/icon";
+import { LocalPassIcon } from "../../shared/icon";
 import { BaseChipDirective } from "../shared/base-chip.directive";
 import { ChipContentComponent } from "../shared/chip-content.component";
 
@@ -24,6 +24,6 @@ import { ChipContentComponent } from "../shared/chip-content.component";
 export class ChipActionComponent {
   readonly baseChip = inject(BaseChipDirective, { host: true });
 
-  readonly startIcon = input<BitwardenIcon>();
+  readonly startIcon = input<LocalPassIcon>();
   readonly label = input<string>("");
 }

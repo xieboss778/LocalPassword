@@ -1,18 +1,18 @@
 import { mock } from "jest-mock-extended";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { biometrics } from "@bitwarden/desktop-napi";
-import { BiometricsStatus } from "@bitwarden/key-management";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
+import { biometrics } from "@localpass/desktop-napi";
+import { BiometricsStatus } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { LogService } from "@bitwarden/logging";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { LogService } from "@localpass/logging";
 
 import { WindowMain } from "../../main/window.main";
 
 import OsBiometricsServiceWindows from "./os-biometrics-windows.service";
 
-jest.mock("@bitwarden/desktop-napi", () => ({
+jest.mock("@localpass/desktop-napi", () => ({
   biometrics: {
     initBiometricSystem: jest.fn(() => "mockSystem"),
     provideKey: jest.fn(),

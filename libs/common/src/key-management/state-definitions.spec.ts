@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { Argon2KdfConfig, KdfConfig, KdfType, PBKDF2KdfConfig } from "@bitwarden/legacy-crypto";
-import { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
+import { Argon2KdfConfig, KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
+import { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
 
 import {
   MasterKeyWrappedUserKey,
@@ -35,7 +35,7 @@ describe("MASTER_PASSWORD_UNLOCK_DATA", () => {
   describe("deserializer", () => {
     const kdfPBKDF2: KdfConfig = new PBKDF2KdfConfig(600_000);
     const kdfArgon2: KdfConfig = new Argon2KdfConfig(4, 64, 3);
-    const salt = "test@bitwarden.com" as MasterPasswordSalt;
+    const salt = "test@local.invalid" as MasterPasswordSalt;
     const encryptedUserKey = "testUserKet" as MasterKeyWrappedUserKey;
 
     it("returns null when value is null", () => {

@@ -1,16 +1,16 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { KdfConfigService } from "@bitwarden/key-management";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { KdfConfigService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, KdfConfig, KdfType, KeyGenerationService } from "@bitwarden/legacy-crypto";
-import { SdkRandomNumberClient } from "@bitwarden/sdk-internal";
+import { EncryptService, KdfConfig, KdfType, KeyGenerationService } from "@localpass/legacy-crypto";
+import { SdkRandomNumberClient } from "@localpass/sdk-internal";
 
-import { BitwardenCsvExportType, BitwardenPasswordProtectedFileFormat } from "../types";
+import { LocalPassCsvExportType, LocalPassPasswordProtectedFileFormat } from "../types";
 export class BaseVaultExportService {
   constructor(
     protected keyGenerationService: KeyGenerationService,
@@ -33,7 +33,7 @@ export class BaseVaultExportService {
     const encKeyValidation = await this.encryptService.encryptString(Utils.newGuid(), key);
     const encText = await this.encryptService.encryptString(clearText, key);
 
-    const jsonDoc: BitwardenPasswordProtectedFileFormat = {
+    const jsonDoc: LocalPassPasswordProtectedFileFormat = {
       encrypted: true,
       passwordProtected: true,
       salt: salt,
@@ -52,9 +52,9 @@ export class BaseVaultExportService {
   }
 
   protected buildCommonCipher(
-    cipher: BitwardenCsvExportType,
+    cipher: LocalPassCsvExportType,
     c: CipherView,
-  ): BitwardenCsvExportType {
+  ): LocalPassCsvExportType {
     cipher.type = null;
     cipher.name = c.name;
     cipher.notes = c.notes;

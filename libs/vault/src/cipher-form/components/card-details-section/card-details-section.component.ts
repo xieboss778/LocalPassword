@@ -5,12 +5,12 @@ import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { normalizeExpiryYearFormat } from "@bitwarden/common/autofill/utils";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { normalizeExpiryYearFormat } from "@localpass/common/autofill/utils";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   CardComponent,
   FormFieldModule,
@@ -18,11 +18,11 @@ import {
   SectionHeaderComponent,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormContainer } from "../../cipher-form-container";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-card-details-section",
@@ -41,12 +41,12 @@ import { CipherFormContainer } from "../../cipher-form-container";
 })
 export class CardDetailsSectionComponent implements OnInit {
   /** The original cipher */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() originalCipherView: CipherView;
 
   /** True when all fields should be disabled */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() disabled: boolean;
 

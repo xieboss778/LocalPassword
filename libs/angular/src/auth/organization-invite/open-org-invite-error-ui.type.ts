@@ -1,4 +1,4 @@
-import { AnonLayoutWrapperData } from "@bitwarden/components";
+import { AnonLayoutWrapperData } from "@localpass/components";
 
 import { OpenOrgInviteErrorButton } from "./open-org-invite-error-button.type";
 

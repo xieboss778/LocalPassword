@@ -2,7 +2,7 @@ import type {
   CipherRiskResult,
   CipherRiskOptions,
   PasswordReuseMap,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { RiskCategory } from "../../dirt/vault-health/models/risk-category";
 import { UserId, CipherId } from "../../types/guid";

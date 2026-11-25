@@ -4,7 +4,7 @@ export const testData: PasskyJsonExport = {
   encrypted: false,
   passwords: [
     {
-      website: "https://bitwarden.com/",
+      website: "https://local.invalid/",
       username: "testUser",
       password: "testPassword",
       message: "my notes",

@@ -1,8 +1,8 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { UserId } from "@localpass/common/types/guid";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { ImportResult } from "../../models";
 import { ImportOutcomePresenter } from "../import-confirmation/import-outcome-presenter";

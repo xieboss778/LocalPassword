@@ -12,7 +12,7 @@ get access to the passwords.
 The Windows **Application Bound Encryption (ABE)** subsystem consists of two main components that work together:
 
 - **client library** — a library that is part of the desktop client application
-- **bitwarden_chromium_import_helper.exe** — a password decryptor running as **ADMINISTRATOR** and later as **SYSTEM**
+- **localpass_chromium_import_helper.exe** — a password decryptor running as **ADMINISTRATOR** and later as **SYSTEM**
 
 See the last section for a concise summary of the entire process.
 
@@ -38,28 +38,28 @@ The following sections describe how the key is decrypted at each level.
 ### 1. Client Library
 
 This is a Rust module that is part of the Chromium importer. It compiles and runs only on Windows (see `abe.rs` and
-`abe_config.rs`). Its main task is to launch `bitwarden_chromium_import_helper.exe` with elevated privileges, presenting
+`abe_config.rs`). Its main task is to launch `localpass_chromium_import_helper.exe` with elevated privileges, presenting
 the user with the UAC prompt. See the `abe::decrypt_with_admin` call in `platform/windows/mod.rs`.
 
 This function takes two arguments:
 
-1. Absolute path to `bitwarden_chromium_import_helper.exe`
+1. Absolute path to `localpass_chromium_import_helper.exe`
 2. Base64 string of the ABE key extracted from the browser's local state
 
-First, `bitwarden_chromium_import_helper.exe` is launched by calling a variant of `ShellExecute` with the `runas` verb.
-This displays the UAC screen. If the user accepts, `bitwarden_chromium_import_helper.exe` starts with **ADMINISTRATOR**
+First, `localpass_chromium_import_helper.exe` is launched by calling a variant of `ShellExecute` with the `runas` verb.
+This displays the UAC screen. If the user accepts, `localpass_chromium_import_helper.exe` starts with **ADMINISTRATOR**
 privileges.
 
 > **The user must approve the UAC prompt or the process is aborted.**
 
 Because it is not possible to read the standard output of an application launched in this way, a named pipe server is
-created at the user level before `bitwarden_chromium_import_helper.exe` is launched. This pipe is used to send the
-decryption result from `bitwarden_chromium_import_helper.exe` back to the client.
+created at the user level before `localpass_chromium_import_helper.exe` is launched. This pipe is used to send the
+decryption result from `localpass_chromium_import_helper.exe` back to the client.
 
-The data to be decrypted are passed via the command line to `bitwarden_chromium_import_helper.exe` like this:
+The data to be decrypted are passed via the command line to `localpass_chromium_import_helper.exe` like this:
 
 ```bat
-bitwarden_chromium_import_helper.exe --encrypted "QVBQQgEAAADQjJ3fARXREYx6AMBPwpfrAQAAA..."
+localpass_chromium_import_helper.exe --encrypted "QVBQQgEAAADQjJ3fARXREYx6AMBPwpfrAQAAA..."
 ```
 
 ### 2. Admin Executable
@@ -67,7 +67,7 @@ bitwarden_chromium_import_helper.exe --encrypted "QVBQQgEAAADQjJ3fARXREYx6AMBPwp
 Although the process starts with **ADMINISTRATOR** privileges, its ultimate goal is to elevate to **SYSTEM**. To achieve
 this, it uses a technique to impersonate a system-level process.
 
-First, `bitwarden_chromium_import_helper.exe` ensures that the `SE_DEBUG_PRIVILEGE` privilege is enabled by calling
+First, `localpass_chromium_import_helper.exe` ensures that the `SE_DEBUG_PRIVILEGE` privilege is enabled by calling
 `RtlAdjustPrivilege`. This allows it to enumerate running system-level processes.
 
 Next, it finds an instance of `services.exe` or `winlogon.exe`, which are known to run at the **SYSTEM** level. Once a
@@ -75,7 +75,7 @@ system process is found, its token is duplicated by calling `DuplicateToken`.
 
 With the duplicated token, `ImpersonateLoggedOnUser` is called to impersonate a system-level process.
 
-> **At this point `bitwarden_chromium_import_helper.exe` is running as SYSTEM.**
+> **At this point `localpass_chromium_import_helper.exe` is running as SYSTEM.**
 
 The received encryption key can now be decrypted using DPAPI at the **system level**.
 
@@ -95,7 +95,7 @@ For other browsers like Google Chrome, some additional processing is required. T
 4. blob starts with 0x03: the blob contains a random key, encrypted with CNG API with a random key stored in the
    **system keychain** under the name `Google Chromekey1`. After that key is decrypted (under **system level** impersonation again), the key is xor'ed with a fixed key from the Chrome binary and the it is used to decrypt the key from the last DPAPI decryption stage.
 
-The decrypted key is sent back to the client via the named pipe. `bitwarden_chromium_import_helper.exe` connects to the
+The decrypted key is sent back to the client via the named pipe. `localpass_chromium_import_helper.exe` connects to the
 pipe and writes the result.
 
 The response can indicate success or failure:
@@ -106,11 +106,11 @@ The response can indicate success or failure:
 In either case, the response is sent to the named pipe server created by the client. The client responds with `ok`
 (ignored).
 
-Finally, `bitwarden_chromium_import_helper.exe` exits.
+Finally, `localpass_chromium_import_helper.exe` exits.
 
 ### 3. Back to the Client Library
 
-The decrypted Base64-encoded key is returned from `bitwarden_chromium_import_helper.exe` to the named pipe server at the
+The decrypted Base64-encoded key is returned from `localpass_chromium_import_helper.exe` to the named pipe server at the
 user level. The key is used to decrypt the stored passwords and notes.
 
 ### TL;DR Steps
@@ -119,9 +119,9 @@ user level. The key is used to decrypt the stored passwords and notes.
 
     1. Extract the encrypted key from Chrome’s settings.
     2. Create a named pipe server.
-    3. Launch `bitwarden_chromium_import_helper.exe` with **ADMINISTRATOR** privileges, passing the key to be decrypted
+    3. Launch `localpass_chromium_import_helper.exe` with **ADMINISTRATOR** privileges, passing the key to be decrypted
        via CLI arguments.
-    4. Wait for the response from `bitwarden_chromium_import_helper.exe`.
+    4. Wait for the response from `localpass_chromium_import_helper.exe`.
 
 2. **Admin side:**
 

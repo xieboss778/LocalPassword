@@ -4,27 +4,27 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { IconComponent } from "@bitwarden/angular/vault/components/icon.component";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { FakeAccountService, FakeStateProvider } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { EndUserNotificationService } from "@bitwarden/common/vault/notifications";
-import { NotificationView } from "@bitwarden/common/vault/notifications/models";
-import { SecurityTask, SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { PasswordRepromptService, AtRiskPasswordCalloutService } from "@bitwarden/vault";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { IconComponent } from "@localpass/angular/vault/components/icon.component";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AutofillOverlayVisibility } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { InlineMenuVisibilitySetting } from "@localpass/common/autofill/types";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { FakeAccountService, FakeStateProvider } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { EndUserNotificationService } from "@localpass/common/vault/notifications";
+import { NotificationView } from "@localpass/common/vault/notifications/models";
+import { SecurityTask, SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
+import { DialogService, ToastService } from "@localpass/components";
+import { PasswordRepromptService, AtRiskPasswordCalloutService } from "@localpass/vault";
 
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
@@ -57,7 +57,7 @@ class MockPopupPageComponent {
   template: `<ng-content></ng-content>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-// FIXME(https://bitwarden.atlassian.net/browse/PM-28231): Use Component suffix
+// FIXME(https://localpass.atlassian.net/browse/PM-28231): Use Component suffix
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 class MockAppIcon {
   readonly cipher = input<CipherView | undefined>(undefined);

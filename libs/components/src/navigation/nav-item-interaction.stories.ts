@@ -2,10 +2,10 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { StoryObj, Meta, moduleMetadata, applicationConfig } from "@storybook/angular";
 import { expect, waitFor } from "storybook/test";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { enabledFlags } from "@bitwarden/storybook";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { GlobalStateProvider } from "@localpass/state";
+import { enabledFlags } from "@localpass/storybook";
 
 import { IconButtonModule } from "../icon-button";
 import { LayoutComponent } from "../layout";

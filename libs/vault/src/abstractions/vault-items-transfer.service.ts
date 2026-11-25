@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
 
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { OrganizationId, CollectionId } from "@bitwarden/common/types/guid";
-import { UserId } from "@bitwarden/user-core";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { OrganizationId, CollectionId } from "@localpass/common/types/guid";
+import { UserId } from "@localpass/user-core";
 
 export type UserMigrationInfo =
   | {

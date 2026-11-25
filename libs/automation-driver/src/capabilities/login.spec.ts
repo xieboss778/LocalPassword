@@ -5,11 +5,11 @@ import {
   LoginStrategyServiceAbstraction,
   LoginSuccessHandlerService,
   PasswordLoginCredentials,
-} from "@bitwarden/auth/common";
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { ClientType } from "@bitwarden/common/enums";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/auth/common";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { ClientType } from "@localpass/common/enums";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
 
 import { LoginCapability } from "./login";
 

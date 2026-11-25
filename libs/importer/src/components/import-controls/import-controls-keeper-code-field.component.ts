@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { ControlContainer, ReactiveFormsModule } from "@angular/forms";
 
-import { InputVerbatimDirective } from "@bitwarden/angular/directives/input-verbatim.directive";
-import { FormFieldModule, LinkModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { InputVerbatimDirective } from "@localpass/angular/directives/input-verbatim.directive";
+import { FormFieldModule, LinkModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /** The verification code field, with Resend in its hint when the prompt allows it. The `keeperCode`
  *  control belongs to the login card's form; this only draws it. */

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 
-import { AutofocusDirective, CheckboxModule, FormFieldModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { AutofocusDirective, CheckboxModule, FormFieldModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 @Component({
   selector: "importer-controls-lastpass-credentials",

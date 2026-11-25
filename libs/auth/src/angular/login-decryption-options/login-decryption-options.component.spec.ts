@@ -4,28 +4,28 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { SsoJitProvisionFinishService } from "@bitwarden/common/auth/sso-jit-provision-finish";
-import { ClientType } from "@bitwarden/common/enums";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { SharedUnlockSettingsService } from "@bitwarden/common/key-management/shared-unlock";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { SsoLoginServiceAbstraction } from "@localpass/common/auth/abstractions/sso-login.service.abstraction";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { SsoJitProvisionFinishService } from "@localpass/common/auth/sso-jit-provision-finish";
+import { ClientType } from "@localpass/common/enums";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { SharedUnlockSettingsService } from "@localpass/common/key-management/shared-unlock";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
+import { UserId } from "@localpass/common/types/guid";
 // eslint-disable-next-line no-restricted-imports
-import { AnonLayoutWrapperDataService, DialogService, ToastService } from "@bitwarden/components";
+import { AnonLayoutWrapperDataService, DialogService, ToastService } from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
-import { SignedSecurityState, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { UnlockService } from "@bitwarden/unlock";
+import { SignedSecurityState, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { UnlockService } from "@localpass/unlock";
 
 import { LoginDecryptionOptionsComponent } from "./login-decryption-options.component";
 import { LoginDecryptionOptionsService } from "./login-decryption-options.service";

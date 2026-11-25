@@ -68,7 +68,7 @@ export const DelineaXmlTestDataLogin = `<?xml version="1.0" encoding="utf-8"?>
         <SecretItem>
           <FieldName>URL</FieldName>
           <Slug>url</Slug>
-          <Value>https://bitwarden.com</Value>
+          <Value>https://local.invalid</Value>
         </SecretItem>
         <SecretItem>
           <FieldName>Password</FieldName>

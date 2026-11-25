@@ -62,15 +62,15 @@ describe("isSnapStore", () => {
 
   it("returns true for the stable snap on Linux", () => {
     setPlatform("linux");
-    process.env.SNAP = "/snap/bitwarden/x1";
-    process.env.SNAP_NAME = "bitwarden";
+    process.env.SNAP = "/snap/localpass/x1";
+    process.env.SNAP_NAME = "localpass";
     expect(isSnapStore()).toBe(true);
   });
 
   it("returns true for the beta snap on Linux", () => {
     setPlatform("linux");
-    process.env.SNAP = "/snap/bitwarden-beta/x1";
-    process.env.SNAP_NAME = "bitwarden-beta";
+    process.env.SNAP = "/snap/localpass-beta/x1";
+    process.env.SNAP_NAME = "localpass-beta";
     expect(isSnapStore()).toBe(true);
   });
 
@@ -84,14 +84,14 @@ describe("isSnapStore", () => {
   it("returns false when SNAP is unset", () => {
     setPlatform("linux");
     delete process.env.SNAP;
-    process.env.SNAP_NAME = "bitwarden";
+    process.env.SNAP_NAME = "localpass";
     expect(isSnapStore()).toBe(false);
   });
 
   it("returns false on non-Linux platforms", () => {
     setPlatform("darwin");
-    process.env.SNAP = "/snap/bitwarden/x1";
-    process.env.SNAP_NAME = "bitwarden";
+    process.env.SNAP = "/snap/localpass/x1";
+    process.env.SNAP_NAME = "localpass";
     expect(isSnapStore()).toBe(false);
   });
 });

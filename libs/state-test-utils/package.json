@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/state-test-utils",
+  "name": "@localpass/state-test-utils",
   "version": "0.0.1",
   "description": "Test utilities and fakes for state management",
   "private": true,

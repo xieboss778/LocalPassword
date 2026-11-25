@@ -9,14 +9,14 @@
 
   const script = globalContext.document.createElement("script");
   // We're removing stack trace information in the page script instead
-  // eslint-disable-next-line @bitwarden/platform/no-page-script-url-leakage
+  // eslint-disable-next-line @localpass/platform/no-page-script-url-leakage
   script.src = chrome.runtime.getURL("content/fido2-page-script.js");
   script.async = false;
 
   // We are ensuring that the script injection is delayed in the event that we are loading
   // within an iframe element. This prevents an issue with web mail clients that load content
   // using ajax within iframes. In particular, Zimbra web mail client was observed to have this issue.
-  // @see https://github.com/bitwarden/clients/issues/9618
+  // @see https://github.com/xieboss778/LocalPassword/issues/9618
   const delayScriptInjection =
     globalContext.window.top !== globalContext.window &&
     globalContext.document.readyState !== "complete";

@@ -1,6 +1,6 @@
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfig, KdfType } from "@bitwarden/legacy-crypto";
+import { KdfConfig, KdfType } from "@localpass/legacy-crypto";
 
 import {
   MasterPasswordAuthenticationData,
@@ -23,7 +23,7 @@ import { KeysRequest } from "../../../models/request/keys.request";
 // DELETE: Search the repo for the text SetPasswordRequest. Update every
 // file that imports it, including api service files and test files. Once
 // no file imports this class, delete this file. Delete newConstructor() at
-// the same time. See https://github.com/bitwarden/clients/pull/20643 for
+// the same time. See https://github.com/xieboss778/LocalPassword/pull/20643 for
 // initial pass at this refactor.
 // ============================================================
 export class SetPasswordRequest {
@@ -66,7 +66,7 @@ export class SetPasswordRequest {
 
   // This will eventually be changed to be an actual constructor, once all callers are updated.
   // The body of this request will be changed to carry the authentication data and unlock data.
-  // https://bitwarden.atlassian.net/browse/PM-23234
+  // https://localpass.atlassian.net/browse/PM-23234
   static newConstructor(
     authenticationData: MasterPasswordAuthenticationData,
     unlockData: MasterPasswordUnlockData,

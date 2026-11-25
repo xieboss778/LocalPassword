@@ -2,7 +2,7 @@
 import { TextEncoder, TextDecoder } from "util";
 Object.assign(global, { TextDecoder, TextEncoder });
 
-import { Algorithm, Type } from "@bitwarden/generator-core";
+import { Algorithm, Type } from "@localpass/generator-core";
 
 import { GeneratedCredential } from ".";
 

@@ -5,37 +5,37 @@ import { firstValueFrom } from "rxjs";
 import {
   OrganizationUserApiService,
   OrganizationUserResetPasswordEnrollmentRequest,
-} from "@bitwarden/admin-console/common";
+} from "@localpass/admin-console/common";
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { MasterPasswordApiService } from "@bitwarden/common/auth/abstractions/master-password-api.service.abstraction";
-import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { SetPasswordRequest } from "@bitwarden/common/auth/models/request/set-password.request";
-import { UpdateTdeOffboardingPasswordRequest } from "@bitwarden/common/auth/models/request/update-tde-offboarding-password.request";
-import { SsoJitProvisionFinishService } from "@bitwarden/common/auth/sso-jit-provision-finish";
-import { assertNonNullish, assertTruthy } from "@bitwarden/common/auth/utils";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { InternalUserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { OrganizationApiServiceAbstraction } from "@localpass/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { MasterPasswordApiService } from "@localpass/common/auth/abstractions/master-password-api.service.abstraction";
+import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/force-set-password-reason";
+import { SetPasswordRequest } from "@localpass/common/auth/models/request/set-password.request";
+import { UpdateTdeOffboardingPasswordRequest } from "@localpass/common/auth/models/request/update-tde-offboarding-password.request";
+import { SsoJitProvisionFinishService } from "@localpass/common/auth/sso-jit-provision-finish";
+import { assertNonNullish, assertTruthy } from "@localpass/common/auth/utils";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import {
   MasterPasswordAuthenticationData,
   MasterPasswordUnlockData,
-} from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey } from "@bitwarden/common/types/key";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/key-management/master-password/types/master-password.types";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptService,
   fromSdkKdfConfig,
   KdfConfig,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { UnlockService } from "@bitwarden/unlock";
+} from "@localpass/legacy-crypto";
+import { UnlockService } from "@localpass/unlock";
 
 import {
   InitializeJitPasswordCredentials,
@@ -105,7 +105,7 @@ export class DefaultSetInitialPasswordService implements SetInitialPasswordServi
 
     await this.masterPasswordApiService.putUpdateTdeOffboardingPassword(request);
 
-    // TODO: investigate removing this call to clear forceSetPasswordReason in https://bitwarden.atlassian.net/browse/PM-32660
+    // TODO: investigate removing this call to clear forceSetPasswordReason in https://localpass.atlassian.net/browse/PM-32660
     // Clear force set password reason to allow navigation back to vault.
     await this.masterPasswordService.setForceSetPasswordReason(ForceSetPasswordReason.None, userId);
   }
@@ -236,7 +236,7 @@ export class DefaultSetInitialPasswordService implements SetInitialPasswordServi
     // constructor. No other change is needed here.
     //
     // DELETE: Nothing to delete at this call site. See
-    // https://github.com/bitwarden/clients/pull/20643 for initial pass at this
+    // https://github.com/xieboss778/LocalPassword/pull/20643 for initial pass at this
     // refactor.
     // ============================================================
     const request = SetPasswordRequest.newConstructor(
@@ -268,7 +268,7 @@ export class DefaultSetInitialPasswordService implements SetInitialPasswordServi
 
   // Deprecated legacy support - to be removed in future
   private async updateLegacyState(kdfConfig: KdfConfig, userId: UserId) {
-    // TODO Remove HasMasterPassword from UserDecryptionOptions https://bitwarden.atlassian.net/browse/PM-23475
+    // TODO Remove HasMasterPassword from UserDecryptionOptions https://localpass.atlassian.net/browse/PM-23475
     const userDecryptionOpts = await firstValueFrom(
       this.userDecryptionOptionsService.userDecryptionOptionsById$(userId),
     );
@@ -278,7 +278,7 @@ export class DefaultSetInitialPasswordService implements SetInitialPasswordServi
       userDecryptionOpts,
     );
 
-    // TODO Remove KDF state https://bitwarden.atlassian.net/browse/PM-30661
+    // TODO Remove KDF state https://localpass.atlassian.net/browse/PM-30661
     await this.kdfConfigService.setKdfConfig(userId, kdfConfig);
   }
 

@@ -3,7 +3,7 @@
 import { Observable } from "rxjs";
 import { SemVer } from "semver";
 
-import { ServerCommunicationConfig } from "@bitwarden/sdk-internal";
+import { ServerCommunicationConfig } from "@localpass/sdk-internal";
 
 import { FeatureFlag, FeatureFlagValueType } from "../../../enums/feature-flag.enum";
 import { UserId } from "../../../types/guid";

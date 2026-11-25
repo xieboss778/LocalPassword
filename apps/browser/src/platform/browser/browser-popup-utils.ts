@@ -161,7 +161,7 @@ export default class BrowserPopupUtils {
     const coordsMaybeNotPrecise = senderWindow.left === 0 && senderWindow.top === 0;
     // Firefox can place popouts off-screen on displays with different scaling when given
     // explicit coordinates. Omit both coordinates to use native window placement.
-    // See https://github.com/bitwarden/clients/issues/10049.
+    // See https://github.com/xieboss778/LocalPassword/issues/10049.
     const canPositionWindow =
       !BrowserApi.isFirefox && !(operatingSystemIsLinux && coordsMaybeNotPrecise);
     const positionOptions = canPositionWindow

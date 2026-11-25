@@ -3,7 +3,7 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncryptService, EncString } from "@bitwarden/legacy-crypto";
+import { EncryptService, EncString } from "@localpass/legacy-crypto";
 
 import { OrganizationId } from "../../types/guid";
 import { OrgKey } from "../../types/key";

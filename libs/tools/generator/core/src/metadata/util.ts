@@ -1,4 +1,4 @@
-import { VendorId } from "@bitwarden/common/tools/extension";
+import { VendorId } from "@localpass/common/tools/extension";
 
 import { AlgorithmsByType } from "./data";
 import { CoreProfileMetadata, ForwarderProfileMetadata, ProfileMetadata } from "./profile-metadata";

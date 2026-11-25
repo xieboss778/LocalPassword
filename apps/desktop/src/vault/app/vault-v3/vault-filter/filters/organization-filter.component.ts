@@ -2,19 +2,19 @@
 // @ts-strict-ignore
 import { Component, computed, input, inject } from "@angular/core";
 
-import { DisplayMode } from "@bitwarden/angular/vault/vault-filter/models/display-mode";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { DisplayMode } from "@localpass/angular/vault/vault-filter/models/display-mode";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
 import {
   ToastService,
   NavigationModule,
   A11yTitleDirective,
   IconModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { OrganizationFilter, VaultFilter, VaultFilterServiceAbstraction } from "@bitwarden/vault";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { OrganizationFilter, VaultFilter, VaultFilterServiceAbstraction } from "@localpass/vault";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-organization-filter",

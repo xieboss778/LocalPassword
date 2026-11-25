@@ -1,12 +1,12 @@
 import { firstValueFrom } from "rxjs";
 
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogService } from "@bitwarden/components";
-import { V1EmergencyAccessMembership, V1OrganizationMembership } from "@bitwarden/sdk-internal";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { DialogService } from "@localpass/components";
+import { V1EmergencyAccessMembership, V1OrganizationMembership } from "@localpass/sdk-internal";
 import {
   TrustVerificationResult,
   UserCryptoDialogService,
-} from "@bitwarden/user-crypto-management";
+} from "@localpass/user-crypto-management";
 
 import { KeyRotationTrustInfoComponent } from "../key-rotation/key-rotation-trust-info.component";
 

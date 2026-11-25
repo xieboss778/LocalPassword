@@ -7,12 +7,12 @@ import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { trackEmissions, awaitAsync } from "@bitwarden/core-test-utils";
-import { newGuid } from "@bitwarden/guid";
-import { LogService } from "@bitwarden/logging";
-import { StateDefinition, StateEventRegistrarService, UserKeyDefinition } from "@bitwarden/state";
-import { FakeStorageService } from "@bitwarden/storage-test-utils";
-import { UserId } from "@bitwarden/user-core";
+import { trackEmissions, awaitAsync } from "@localpass/core-test-utils";
+import { newGuid } from "@localpass/guid";
+import { LogService } from "@localpass/logging";
+import { StateDefinition, StateEventRegistrarService, UserKeyDefinition } from "@localpass/state";
+import { FakeStorageService } from "@localpass/storage-test-utils";
+import { UserId } from "@localpass/user-core";
 
 import { DefaultSingleUserState } from "./default-single-user-state";
 

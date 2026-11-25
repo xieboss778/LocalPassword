@@ -1,4 +1,4 @@
-/* eslint-disable @bitwarden/components/require-theme-colors-in-svg -- third-party vendor brand mark(s), fixed brand colors rather than theme illustration tokens */
+/* eslint-disable @localpass/components/require-theme-colors-in-svg -- third-party vendor brand mark(s), fixed brand colors rather than theme illustration tokens */
 
 import { svg } from "../svg";
 

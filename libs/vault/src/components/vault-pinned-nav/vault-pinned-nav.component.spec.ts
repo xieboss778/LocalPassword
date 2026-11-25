@@ -4,23 +4,23 @@ import { NavigationEnd, provideRouter, Router } from "@angular/router";
 import {
   FakeAccountService,
   mockAccountServiceWith,
-} from "@bitwarden/common/../spec/fake-account-service";
-import { FakeStateProvider } from "@bitwarden/common/../spec/fake-state-provider";
+} from "@localpass/common/../spec/fake-account-service";
+import { FakeStateProvider } from "@localpass/common/../spec/fake-state-provider";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, filter, firstValueFrom, of } from "rxjs";
 
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { NavigationModule, SideNavService, ToastService } from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
+import { CollectionService } from "@localpass/admin-console/common";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@localpass/common/platform/state";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { NavigationModule, SideNavService, ToastService } from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
 
 import { PinnedSharedFoldersService } from "../../services/pinned-shared-folders.service";
 import { BULK_DELETE_DIALOG, BulkDeleteDialogRef } from "../../tokens/bulk-delete-dialog.token";

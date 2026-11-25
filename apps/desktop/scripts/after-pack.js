@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports, no-console */
 require("dotenv").config();
-const child_process = require("child_process");
 const path = require("path");
 
 const { flipFuses, FuseVersion, FuseV1Options } = require("@electron/fuses");
@@ -9,16 +8,6 @@ const fse = require("fs-extra");
 exports.default = run;
 
 const IS_GITHUB_ACTIONS = process.env.GITHUB_ACTIONS == "true";
-
-/// The native messaging proxy's entitlements, per app ID. The browser launches the proxy rather
-/// than the app, so it inherits nothing and has to name the App Group itself -- and the group is
-/// named after the app, so each channel needs its own.
-const PROXY_ENTITLEMENTS = {
-  "com.bitwarden.desktop": "entitlements.desktop_proxy.plist",
-  "com.bitwarden.beta.desktop": "entitlements.desktop_proxy.beta.plist",
-  // LocalPassword reuses the same proxy entitlements.
-  "com.localpassword.desktop": "entitlements.desktop_proxy.plist",
-};
 
 /**
  *
@@ -69,9 +58,9 @@ async function doBuild(context) {
     console.log("Creating memory-protection wrapper script");
     const appOutDir = context.appOutDir;
     const oldBin = path.join(appOutDir, context.packager.executableName);
-    const newBin = path.join(appOutDir, "bitwarden-app");
+    const newBin = path.join(appOutDir, "localpass-app");
     fse.moveSync(oldBin, newBin);
-    console.log("Moved binary to bitwarden-app");
+    console.log("Moved binary to localpass-app");
 
     const wrapperScript = path.join(__dirname, "../resources/linux-wrapper.sh");
     const wrapperBin = path.join(appOutDir, context.packager.executableName);
@@ -80,121 +69,16 @@ async function doBuild(context) {
     console.log("Copied memory-protection wrapper script");
   }
 
-  if (isMacOsBuild) {
-    if (isTargetArch) {
-      console.log("[macOS] Copying extensions...");
-      copyMacOsAutofillExtension(context);
-      copySafariExtension(context);
-    }
-    const is_mas = context.electronPlatformName === "mas";
-
-    let id;
-
-    // 本地未签名打包（CSC_IDENTITY_AUTO_DISCOVERY=false）不需要访问钥匙串：直接跳过代理签名，
-    // 否则 codesign 会去签名 desktop_proxy 并因钥匙串权限失败（errSecInternalComponent）。
-    if (
-      process.env.GITHUB_ACTIONS !== "true" &&
-      process.env.CSC_IDENTITY_AUTO_DISCOVERY === "false"
-    ) {
-      console.log("[macOS] 代码签名已禁用 —— 跳过 desktop_proxy 签名");
-      return;
-    }
-
-    // Only use the Bitwarden Identities on CI
-    if (process.env.GITHUB_ACTIONS === "true") {
-      if (is_mas) {
-        id = "3rd Party Mac Developer Application: Bitwarden Inc";
-      } else {
-        id = "Developer ID Application: Bitwarden Inc";
-      }
-      // Locally, use the first valid code signing identity, unless CSC_NAME is set
-    } else if (process.env.CSC_NAME) {
-      id = process.env.CSC_NAME;
-    } else {
-      const identities = getIdentities();
-      if (identities.length === 0) {
-        throw new Error("No valid identities found");
-      }
-      id = identities[0].id;
-    }
-
-    console.log(
-      `Signing proxy binary before the main bundle, using identity '${id}', for build ${context.electronPlatformName}`,
-    );
-
-    const appName = context.packager.appInfo.productFilename;
-    const appPath = `${context.appOutDir}/${appName}.app`;
-    const proxyPath = path.join(appPath, "Contents", "MacOS", "desktop_proxy");
-    const inheritProxyPath = path.join(appPath, "Contents", "MacOS", "desktop_proxy.inherit");
-
-    const packageId = context.packager.appInfo.id;
-
-    // Sandbox the proxy and scope it to the App Group on Developer ID builds as well as App Store
-    // ones, so both reach the same shared container the app listens on. Without the group the
-    // proxy resolves its socket to its own cache directory, which the app cannot see.
-    const entitlementsName = PROXY_ENTITLEMENTS[packageId];
-    if (entitlementsName === undefined) {
-      throw new Error(`No desktop_proxy entitlements for app ID '${packageId}'`);
-    }
-    const entitlementsPath = path.join(__dirname, "..", "resources", entitlementsName);
-    child_process.execSync(
-      `codesign -s '${id}' -i ${packageId} -f --timestamp --options runtime --entitlements "${entitlementsPath}" "${proxyPath}"`,
-    );
-
-    // The App Store build spawns the inherit helper as a child of the sandboxed app, so it takes
-    // the app's sandbox -- and its App Group membership -- through the inherit entitlement. For
-    // non-Appstore builds, we don't need the inherit binary as they are not sandboxed, but we sign
-    // and include it anyway for consistency. It should be removed once DDG supports the proxy
-    // directly.
-    const inheritEntitlementsName = is_mas
-      ? "entitlements.desktop_proxy.inherit.plist"
-      : "entitlements.mac.inherit.plist";
-    const inheritEntitlementsPath = path.join(
-      __dirname,
-      "..",
-      "resources",
-      inheritEntitlementsName,
-    );
-    child_process.execSync(
-      `codesign -s '${id}' -i ${packageId} -f --timestamp --options runtime --entitlements "${inheritEntitlementsPath}" "${inheritProxyPath}"`,
-    );
+  if (isMacOsBuild && isTargetArch) {
+    console.log("[macOS] Copying extensions...");
+    copyMacOsAutofillExtension(context);
+    copySafariExtension(context);
   }
 }
 
 // Partially based on electron-builder code:
 // https://github.com/electron-userland/electron-builder/blob/master/packages/app-builder-lib/src/macPackager.ts
 // https://github.com/electron-userland/electron-builder/blob/master/packages/app-builder-lib/src/codeSign/macCodeSign.ts
-
-const appleCertificatePrefixes = [
-  "Developer ID Application:",
-  // "Developer ID Installer:",
-  // "3rd Party Mac Developer Application:",
-  // "3rd Party Mac Developer Installer:",
-  "Apple Development:",
-];
-
-function getIdentities() {
-  const ids = child_process
-    .execSync("/usr/bin/security find-identity -v -p codesigning")
-    .toString();
-
-  return ids
-    .split("\n")
-    .filter((line) => {
-      for (const prefix of appleCertificatePrefixes) {
-        if (line.includes(prefix)) {
-          return true;
-        }
-      }
-      return false;
-    })
-    .map((line) => {
-      const split = line.trim().split(" ");
-      const id = split[1];
-      const name = split.slice(2).join(" ").replace(/"/g, "");
-      return { id, name };
-    });
-}
 
 /**
  * @param {import("electron-builder").AfterPackContext} context
@@ -252,7 +136,7 @@ async function addElectronFuses(context) {
 
 function copyMacOsAutofillExtension(context) {
   const extensionPath = path.join(__dirname, "../macos/dist/autofill-extension.appex");
-  // LocalPassword ships Chrome + Electron only, so there is no Safari autofill extension to embed.
+  // LocalPass ships Chrome + Electron only, so there is no Safari autofill extension to embed.
   // `copyMacOsPlugin` skips gracefully when the appex is absent.
   copyMacOsPlugin(context, "Autofill extension", extensionPath);
 }
@@ -270,7 +154,7 @@ function copyMacOsPlugin(context, targetName, extensionPath) {
   // resource is missing or invalid") and notarization rejects it unless the
   // whole package is signed a second time. electron-builder never signs
   // anything under Contents/PlugIns, so the extension keeps the signature and
-  // entitlements XCode gave it.
+  // signature XCode gave it (signing is disabled for this build).
   //
   // We cannot use extraFiles because it modifies the extension's .plist and makes it invalid. Cf.
   // https://github.com/electron-userland/electron-builder/issues/5552.

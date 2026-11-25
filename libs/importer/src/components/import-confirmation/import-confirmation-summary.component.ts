@@ -1,9 +1,9 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CalloutComponent, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CalloutComponent, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportedFile } from "../../models";
 

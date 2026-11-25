@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { GeneratorServicesModule } from "@bitwarden/generator-components";
+import { GeneratorServicesModule } from "@localpass/generator-components";
 
 import { SendFormGenerationService } from "./abstractions/send-form-generation.service";
 import { SendFormService } from "./abstractions/send-form.service";

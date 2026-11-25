@@ -17,7 +17,7 @@ export class AutofillInlineMenuListIframe extends AutofillInlineMenuIframeElemen
         borderStyle: "solid",
         borderColor: "rgb(206, 212, 220)",
       },
-      chrome.i18n.getMessage("bitwardenVault"),
+      chrome.i18n.getMessage("localpassVault"),
     );
   }
 }

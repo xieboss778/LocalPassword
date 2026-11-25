@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/scheduling",
+  "name": "@localpass/scheduling",
   "version": "0.0.1",
   "description": "Task scheduling domain: enum, abstract service, and default implementation",
   "private": true,

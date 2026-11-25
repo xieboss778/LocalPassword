@@ -3,8 +3,8 @@ import { Observable, Subject, filter, firstValueFrom, map } from "rxjs";
 import {
   AbstractStorageService,
   StorageUpdate,
-} from "@bitwarden/common/platform/abstractions/storage.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+} from "@localpass/common/platform/abstractions/storage.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { fromChromeEvent } from "../browser/from-chrome-event";
 

@@ -4,10 +4,10 @@ import {
   CollectionView,
   Collection,
   CollectionData,
-} from "@bitwarden/common/admin-console/models/collections";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { OrgKey } from "@bitwarden/common/types/key";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+} from "@localpass/common/admin-console/models/collections";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { OrgKey } from "@localpass/common/types/key";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
 
 export abstract class CollectionService {
   abstract encryptedCollections$(userId: UserId): Observable<Collection[] | null>;

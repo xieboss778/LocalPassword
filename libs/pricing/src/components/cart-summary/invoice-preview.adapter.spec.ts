@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { DiscountTypes } from "../../types/discount";
 import { InvoicePreview, PurchasableReference } from "../../types/invoice-preview";

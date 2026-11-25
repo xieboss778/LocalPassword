@@ -8,7 +8,7 @@ import {
   KdfType,
   PBKDF2KdfConfig,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 import {
   EncString,
   KeyId,
@@ -16,7 +16,7 @@ import {
   V2UpgradeToken,
   WebAuthnPrfUnlockData,
   WrappedAccountCryptographicState,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 import {
   CRYPTO_DISK,
   CRYPTO_MEMORY,
@@ -26,7 +26,7 @@ import {
   PIN_DISK,
   PIN_MEMORY,
   UserKeyDefinition,
-} from "@bitwarden/state";
+} from "@localpass/state";
 
 import { UserKey } from "../types/key";
 

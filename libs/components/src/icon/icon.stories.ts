@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/angular";
 
-import { BITWARDEN_ICONS } from "../shared/icon";
+import { LOCALPASS_ICONS } from "../shared/icon";
 
 import { IconComponent } from "./icon.component";
 
@@ -16,7 +16,7 @@ export default {
   argTypes: {
     name: {
       control: { type: "select" },
-      options: BITWARDEN_ICONS,
+      options: LOCALPASS_ICONS,
     },
   },
 } as Meta<IconComponent>;
@@ -42,7 +42,7 @@ export const AllIcons: Story = {
       </div>
     `,
     props: {
-      icons: BITWARDEN_ICONS,
+      icons: LOCALPASS_ICONS,
     },
   }),
 };

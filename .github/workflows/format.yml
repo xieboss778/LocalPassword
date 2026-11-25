@@ -26,8 +26,8 @@ jobs:
         run: npx prettier --write .
       - name: 提交并推送
         run: |
-          git config user.name "localpassword-bot"
-          git config user.email "localpassword-bot@users.noreply.github.com"
+          git config user.name "localpass-bot"
+          git config user.email "localpass-bot@users.noreply.github.com"
           git checkout -B chore/prettier
           git add -A
           git commit -m "chore: prettier --write 全仓库格式化" || echo "nothing to commit"

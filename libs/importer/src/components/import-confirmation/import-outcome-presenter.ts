@@ -1,4 +1,4 @@
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserId } from "@localpass/common/types/guid";
 
 import { ImportedFile } from "../../models";
 import { FinishedImportOutcome } from "../import-controls/import-outcome";

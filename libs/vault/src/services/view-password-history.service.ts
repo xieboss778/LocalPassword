@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 
-import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
+import { ViewPasswordHistoryService } from "@localpass/common/vault/abstractions/view-password-history.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { DialogService } from "@localpass/components";
 
 import { openPasswordHistoryDialog } from "../components/password-history/password-history.component";
 

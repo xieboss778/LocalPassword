@@ -4,14 +4,14 @@ import { Router, RouterModule } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { NavigationModule, SideNavService } from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { NavigationModule, SideNavService } from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
 
 import { ARCHIVE_ROUTE, FOLDERS_ROUTE, TRASH_ROUTE } from "../../models/vault-scope";
 

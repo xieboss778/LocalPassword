@@ -1,7 +1,7 @@
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfig, fromSdkKdfConfig } from "@bitwarden/legacy-crypto";
-import { PasswordPreloginResponse as SdkPasswordPreloginResponse } from "@bitwarden/sdk-internal";
+import { KdfConfig, fromSdkKdfConfig } from "@localpass/legacy-crypto";
+import { PasswordPreloginResponse as SdkPasswordPreloginResponse } from "@localpass/sdk-internal";
 
 import { MasterPasswordSalt } from "../../key-management/master-password/types/master-password.types";
 

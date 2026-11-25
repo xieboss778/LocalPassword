@@ -3,17 +3,17 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, Subject, firstValueFrom, map, of, startWith, switchMap } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { LogoutService } from "@bitwarden/common/auth/logout";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { LogoutService } from "@localpass/common/auth/logout";
 import {
   VaultTimeoutAction,
   VaultTimeoutService,
   VaultTimeoutSettingsService,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/key-management/vault-timeout";
+import { UserId } from "@localpass/common/types/guid";
 import {
   AvatarModule,
   ButtonModule,
@@ -23,8 +23,8 @@ import {
   SectionComponent,
   SectionHeaderComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { LockService, LockSource } from "@bitwarden/unlock";
+} from "@localpass/components";
+import { LockService, LockSource } from "@localpass/unlock";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
@@ -34,7 +34,7 @@ import { AccountComponent } from "./account.component";
 import { CurrentAccountComponent } from "./current-account.component";
 import { AccountSwitcherService } from "./services/account-switcher.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "account-switcher.component.html",
@@ -142,7 +142,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     this.loading = true;
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "logOut" },
-      // LocalPassword: logging out wipes a vault that has no server copy, so say so plainly.
+      // LocalPass: logging out wipes a vault that has no server copy, so say so plainly.
       content: { key: "localVaultLogoutWarning" },
       type: "danger",
     });

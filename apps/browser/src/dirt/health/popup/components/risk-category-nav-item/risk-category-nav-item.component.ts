@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, input } from "@angular/co
 import { RouterModule } from "@angular/router";
 
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   IconComponent,
   IconTileComponent,
   IconTileVariant,
   ItemModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * A single row on the Health Overview: one vault-health risk category with its
@@ -49,7 +49,7 @@ export class RiskCategoryNavItemComponent {
   /** Number of at-risk logins counted under this category. */
   readonly count = input.required<number>();
   /** BWI icon shown in the leading icon tile while the category has items. */
-  readonly icon = input.required<BitwardenIcon>();
+  readonly icon = input.required<LocalPassIcon>();
   /** Icon tile theme while the category has items. */
   readonly variant = input<IconTileVariant>("primary");
   /** Whether Health details are locked behind Premium. */
@@ -85,7 +85,7 @@ export class RiskCategoryNavItemComponent {
   );
 
   /** The healthy state replaces the category icon with a check, per the design. */
-  protected readonly tileIcon = computed<BitwardenIcon>(() =>
+  protected readonly tileIcon = computed<LocalPassIcon>(() =>
     this.isHealthy() ? "bwi-check" : this.icon(),
   );
 

@@ -10,21 +10,21 @@ import {
   map,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { EncryptedMigrator } from "@bitwarden/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { EncryptedMigrator } from "@localpass/common/key-management/encrypted-migrator/encrypted-migrator.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   UserKeyDefinition,
   ENCRYPTED_MIGRATION_DISK,
   StateProvider,
-} from "@bitwarden/common/platform/state";
-import { SyncService } from "@bitwarden/common/platform/sync";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/platform/state";
+import { SyncService } from "@localpass/common/platform/sync";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService, ToastService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 import { EncryptedMigrationsSchedulerService } from "./encrypted-migrations-scheduler.service.abstraction";
 import { PromptMigrationPasswordComponent } from "./prompt-migration-password.component";

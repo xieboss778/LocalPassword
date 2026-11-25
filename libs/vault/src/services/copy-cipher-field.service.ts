@@ -1,19 +1,19 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { uuidAsString } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { uuidAsString } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherRepromptType } from "@localpass/common/vault/enums";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { ToastService } from "@bitwarden/components";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { ToastService } from "@localpass/components";
 
 import { PasswordRepromptService } from "./password-reprompt.service";
 

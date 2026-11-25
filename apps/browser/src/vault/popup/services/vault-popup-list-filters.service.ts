@@ -14,46 +14,46 @@ import {
   take,
 } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { ViewCacheService } from "@bitwarden/angular/platform/view-cache";
-import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dynamic-tree-node.model";
-import { sortDefaultCollections } from "@bitwarden/angular/vault/vault-filter/services/vault-filter.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { CollectionService } from "@localpass/admin-console/common";
+import { ViewCacheService } from "@localpass/angular/platform/view-cache";
+import { DynamicTreeNode } from "@localpass/angular/vault/vault-filter/models/dynamic-tree-node.model";
+import { sortDefaultCollections } from "@localpass/angular/vault/vault-filter/services/vault-filter.service";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 import {
   CollectionView,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { asUuid } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { asUuid } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import {
   KeyDefinition,
   StateProvider,
   VAULT_SETTINGS_DISK,
-} from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
+} from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
+import { ITreeNodeObject, TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import {
   CIPHER_MENU_ITEMS,
   DIALOG_CIPHER_MENU_ITEMS,
-} from "@bitwarden/common/vault/types/cipher-menu-items";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { BitwardenIcon, ChipFilterOption } from "@bitwarden/components";
-import { Vfo1TerminologyService } from "@bitwarden/vault";
+} from "@localpass/common/vault/types/cipher-menu-items";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { LocalPassIcon, ChipFilterOption } from "@localpass/components";
+import { Vfo1TerminologyService } from "@localpass/vault";
 
 import { PopupCipherViewLike } from "../views/popup-cipher.view";
 
@@ -306,7 +306,7 @@ export class VaultPopupListFiltersService {
         .map((item) => ({
           value: item.type,
           label: this.i18nService.t(item.labelKey),
-          icon: item.icon as BitwardenIcon,
+          icon: item.icon as LocalPassIcon,
         }));
     }),
   );
@@ -360,7 +360,7 @@ export class VaultPopupListFiltersService {
         return [
           ...myVaultOrg,
           ...orgs.map((org) => {
-            let icon: BitwardenIcon = "bwi-business";
+            let icon: LocalPassIcon = "bwi-business";
             let iconClass: string | undefined = undefined;
 
             if (!org.enabled) {
@@ -533,7 +533,7 @@ export class VaultPopupListFiltersService {
    */
   private convertToChipFilterOption<T extends ITreeNodeObject>(
     item: TreeNode<T>,
-    icon: BitwardenIcon,
+    icon: LocalPassIcon,
   ): ChipFilterOption<T> {
     return {
       value: item.node,

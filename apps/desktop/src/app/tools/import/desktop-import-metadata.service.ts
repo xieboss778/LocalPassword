@@ -1,5 +1,5 @@
-import { SystemServiceProvider } from "@bitwarden/common/tools/providers";
-import type { chromium_importer } from "@bitwarden/desktop-napi";
+import { SystemServiceProvider } from "@localpass/common/tools/providers";
+import type { chromium_importer } from "@localpass/desktop-napi";
 import {
   ImportType,
   ImportOptionData,
@@ -7,7 +7,7 @@ import {
   ImportMetadataServiceAbstraction,
   DataLoader,
   Loader,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 
 export class DesktopImportMetadataService
   extends DefaultImportMetadataService

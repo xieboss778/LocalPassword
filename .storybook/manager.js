@@ -6,10 +6,10 @@ import "../libs/storybook/src/addons/feature-flags/panel";
 const lightTheme = create({
   base: "light",
   //logo and Title
-  brandTitle: "Bitwarden Component Library",
+  brandTitle: "LocalPass Component Library",
   brandUrl: "/",
   brandImage:
-    "https://github.com/bitwarden/brand/blob/51942f8d6e55e96a078a524e0f739efbf1997bcf/logos/logo-horizontal-blue.png?raw=true",
+    "https://github.com/localpass/brand/blob/51942f8d6e55e96a078a524e0f739efbf1997bcf/logos/logo-horizontal-blue.png?raw=true",
   brandTarget: "_self",
 
   //Colors
@@ -40,10 +40,10 @@ const darkTheme = create({
   base: "dark",
 
   //logo and Title
-  brandTitle: "Bitwarden Component Library",
+  brandTitle: "LocalPass Component Library",
   brandUrl: "/",
   brandImage:
-    "https://github.com/bitwarden/brand/blob/51942f8d6e55e96a078a524e0f739efbf1997bcf/logos/logo-horizontal-white.png?raw=true",
+    "https://github.com/localpass/brand/blob/51942f8d6e55e96a078a524e0f739efbf1997bcf/logos/logo-horizontal-white.png?raw=true",
   brandTarget: "_self",
 
   //Colors

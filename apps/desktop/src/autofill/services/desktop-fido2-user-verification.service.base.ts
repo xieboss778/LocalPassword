@@ -1,5 +1,5 @@
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/logging";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/logging";
 
 import {
   AutofillUserVerificationCommand,

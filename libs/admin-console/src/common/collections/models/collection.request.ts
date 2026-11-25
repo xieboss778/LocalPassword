@@ -1,6 +1,6 @@
-import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
+import { SelectionReadOnlyRequest } from "@localpass/common/admin-console/models/request/selection-read-only.request";
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
+import { EncString } from "@localpass/legacy-crypto";
 
 export abstract class BaseCollectionRequest {
   externalId: string | undefined;

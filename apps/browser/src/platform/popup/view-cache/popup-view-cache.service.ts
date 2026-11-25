@@ -19,9 +19,9 @@ import {
   FormCacheOptions,
   SignalCacheOptions,
   ViewCacheService,
-} from "@bitwarden/angular/platform/view-cache";
-import { MessageSender } from "@bitwarden/common/platform/messaging";
-import { GlobalStateProvider } from "@bitwarden/common/platform/state";
+} from "@localpass/angular/platform/view-cache";
+import { MessageSender } from "@localpass/common/platform/messaging";
+import { GlobalStateProvider } from "@localpass/common/platform/state";
 
 import {
   ClEAR_VIEW_CACHE_COMMAND,

@@ -1,6 +1,6 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { ImportResult } from "../models/import-result";
 

@@ -1,5 +1,5 @@
-import { EVENTS } from "@bitwarden/common/autofill/constants";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { EVENTS } from "@localpass/common/autofill/constants";
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
 import { sendExtensionMessage, setElementStyles } from "../../../utils";

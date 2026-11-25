@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
-import { DefaultLoginViaWebAuthnComponentService } from "@bitwarden/angular/auth/login-via-webauthn/default-login-via-webauthn-component.service";
-import { LoginViaWebAuthnComponentService } from "@bitwarden/angular/auth/login-via-webauthn/login-via-webauthn-component.service";
+import { DefaultLoginViaWebAuthnComponentService } from "@localpass/angular/auth/login-via-webauthn/default-login-via-webauthn-component.service";
+import { LoginViaWebAuthnComponentService } from "@localpass/angular/auth/login-via-webauthn/login-via-webauthn-component.service";
 
 @Injectable()
 export class ExtensionLoginViaWebAuthnComponentService

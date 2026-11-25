@@ -2,7 +2,7 @@
 export type EmailDomainSettings = {
   /** The domain part of the generated email address.
    *  @remarks The domain should be authorized by the forwarder before
-   *           submitting a request through bitwarden.
+   *           submitting a request through localpass.
    *  @example If the domain is `domain.io` and the generated username
    *  is `jd`, then the generated email address will be `jd@domain.io`
    */

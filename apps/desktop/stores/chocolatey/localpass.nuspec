@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>localpass</id>
+    <version>0.0.0</version>
+    <packageSourceUrl>https://github.com/xieboss778/LocalPass/tree/main/apps/desktop/stores/chocolatey</packageSourceUrl>
+    <owners>kspearrin</owners>
+    <title>LocalPass</title>
+    <authors>LocalPass contributors</authors>
+    <projectUrl>https://github.com/xieboss778/LocalPass</projectUrl>
+    <iconUrl>https://github.com/xieboss778/LocalPass/raw/main/apps/desktop/resources/icon.ico</iconUrl>
+    <copyright>Copyright © 2026 LocalPass contributors</copyright>
+    <projectSourceUrl>https://github.com/xieboss778/LocalPass/</projectSourceUrl>
+    <docsUrl>https://github.com/xieboss778/LocalPass#readme</docsUrl>
+    <bugTrackerUrl>https://github.com/xieboss778/LocalPass/issues</bugTrackerUrl>
+    <releaseNotes>https://github.com/xieboss778/LocalPass/releases</releaseNotes>
+    <licenseUrl>https://github.com/xieboss778/LocalPass/blob/master/LICENSE.txt</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>localpass password manager offline</tags>
+    <summary>A secure and free password manager for all of your devices.</summary>
+    <description>
+      LocalPass 是一个完全离线的密码管理器。
+
+      数据只存在你自己的电脑上：没有注册、没有云端同步、没有厂商服务器。保险库在本地用
+      AES-256 加密后写入磁盘，主密码与解锁密钥永不离开设备。
+
+      内置密码生成器、动态口令（TOTP）、Passkey 与自动填充；可选把密文备份到你自己的
+      S3 兼容存储。
+
+      许可证：GPL-3.0。源代码：https://github.com/xieboss778/LocalPass
+    </description>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

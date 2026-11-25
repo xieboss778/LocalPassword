@@ -21,8 +21,8 @@ import {
   TypographyModule,
   CopyClickDirective,
   A11yTitleDirective,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ApiActionDirective } from "./directives/api-action.directive";
 import { BoxRowDirective } from "./directives/box-row.directive";
@@ -41,7 +41,7 @@ import { EllipsisPipe } from "./platform/pipes/ellipsis.pipe";
 import { IconComponent } from "./vault/components/icon.component";
 
 /**
- * @deprecated In 95% of cases you want I18nPipe from `@bitwarden/ui-common`. In the other 5%
+ * @deprecated In 95% of cases you want I18nPipe from `@localpass/ui-common`. In the other 5%
  * directly import the relevant directive/pipe/component. If you need one of the non standalone
  * pipes/directives/components, make it standalone and import directly.
  *

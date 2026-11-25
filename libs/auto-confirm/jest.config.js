@@ -10,7 +10,7 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/test.setup.ts"],
   coverageDirectory: "../../coverage/libs/auto-confirm",
   moduleNameMapper: pathsToModuleNameMapper(
-    { "@bitwarden/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
+    { "@localpass/common/spec": ["libs/common/spec"], ...(compilerOptions?.paths ?? {}) },
     {
       prefix: "<rootDir>/../../",
     },

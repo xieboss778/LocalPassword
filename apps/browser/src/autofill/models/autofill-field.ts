@@ -1,4 +1,4 @@
-import { AutofillTargetingRuleType, FormPurposeCategory } from "@bitwarden/common/autofill/types";
+import { AutofillTargetingRuleType, FormPurposeCategory } from "@localpass/common/autofill/types";
 
 import { FieldRect } from "../background/abstractions/overlay.background";
 import { AutofillFieldQualifierType } from "../enums/autofill-field.enums";

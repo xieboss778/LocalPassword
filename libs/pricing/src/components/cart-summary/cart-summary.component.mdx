@@ -6,7 +6,7 @@ import * as CartSummaryStories from "./cart-summary.component.stories";
 # Cart Summary
 
 A reusable UI component for displaying order summary information with consistent styling and
-behavior across Bitwarden applications.
+behavior across LocalPass applications.
 
 <Canvas of={CartSummaryStories.Default} />
 
@@ -51,7 +51,7 @@ The cart summary component is designed to be used in checkout and subscription i
 order details, prices, totals, and discounts.
 
 ```ts
-import { CartSummaryComponent, Cart } from "@bitwarden/pricing";
+import { CartSummaryComponent, Cart } from "@localpass/pricing";
 ```
 
 ```html
@@ -126,7 +126,7 @@ export type Credit = {
   value: number; // Credit amount to subtract from subtotal
 };
 
-import { DiscountTypes, DiscountType } from "@bitwarden/pricing";
+import { DiscountTypes, DiscountType } from "@localpass/pricing";
 
 // The renderer's discount shape. Locally built fallback carts (no server preview) supply only
 // `type` and `value`, and the component
@@ -208,7 +208,7 @@ The cart summary component provides flexibility through its structured Cart inpu
 
 ## Design
 
-The component follows the Bitwarden design system with:
+The component follows the LocalPass design system with:
 
 - **Collapsible Interface**: Toggles between compact and detailed views
 - **Clean Styling**: Uses Tailwind utility classes for consistent appearance

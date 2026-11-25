@@ -1,15 +1,15 @@
 {
-  "name": "@bitwarden/pricing",
+  "name": "@localpass/pricing",
   "version": "0.0.0",
-  "description": "Components and services that facilitate the retrieval and display of Bitwarden's pricing.",
+  "description": "Components and services that facilitate the retrieval and display of LocalPass's pricing.",
   "keywords": [
-    "bitwarden"
+    "localpass"
   ],
-  "author": "Bitwarden Inc.",
-  "homepage": "https://bitwarden.com",
+  "author": "LocalPass Inc.",
+  "homepage": "https://github.com/xieboss778/LocalPass",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitwarden/clients"
+    "url": "https://github.com/xieboss778/LocalPassword"
   },
   "license": "GPL-3.0",
   "scripts": {

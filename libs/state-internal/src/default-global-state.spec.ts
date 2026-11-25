@@ -7,10 +7,10 @@ import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { trackEmissions, awaitAsync } from "@bitwarden/core-test-utils";
-import { LogService } from "@bitwarden/logging";
-import { KeyDefinition, StateDefinition } from "@bitwarden/state";
-import { FakeStorageService } from "@bitwarden/storage-test-utils";
+import { trackEmissions, awaitAsync } from "@localpass/core-test-utils";
+import { LogService } from "@localpass/logging";
+import { KeyDefinition, StateDefinition } from "@localpass/state";
+import { FakeStorageService } from "@localpass/storage-test-utils";
 
 import { DefaultGlobalState } from "./default-global-state";
 import { globalKeyBuilder } from "./util";

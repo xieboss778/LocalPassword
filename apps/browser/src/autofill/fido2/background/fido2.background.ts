@@ -1,11 +1,11 @@
 import { firstValueFrom, startWith, Subscription } from "rxjs";
 import { pairwise } from "rxjs/operators";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { isUrlInList } from "@bitwarden/common/autofill/utils";
-import { Fido2ActiveRequestManager } from "@bitwarden/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { isUrlInList } from "@localpass/common/autofill/utils";
+import { Fido2ActiveRequestManager } from "@localpass/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
 import {
   AssertCredentialParams,
   AssertCredentialResult,
@@ -13,10 +13,10 @@ import {
   CreateCredentialResult,
   FallbackRequestedError,
   Fido2ClientService,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
+} from "@localpass/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import { ScriptInjectorService } from "../../../platform/services/abstractions/script-injector.service";

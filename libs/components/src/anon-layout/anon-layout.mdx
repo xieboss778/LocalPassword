@@ -65,8 +65,8 @@ example) to construct the page via routable composition:
 
 ```typescript
 // File: oss-routing.module.ts
-import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
-import { LockIcon } from "@bitwarden/assets/svg";
+import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@localpass/auth/angular";
+import { LockIcon } from "@localpass/assets/svg";
 
 {
   path: "",
@@ -112,13 +112,13 @@ in the `AnonLayoutWrapperData` interface:
 - For the `pageIcon` - import an icon (of type `Icon`) into the router file and use the icon
   directly.
 - `showReadonlyHostname` - set to `true` if you want to show the hostname in the footer (ex:
-  "Accessing bitwarden.com")
+  "Accessing localpass.com")
 
 All of these properties are optional.
 
 ```typescript
-import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
-import { LockIcon } from "@bitwarden/assets/svg";
+import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@localpass/auth/angular";
+import { LockIcon } from "@localpass/assets/svg";
 
 {
   // ...
@@ -139,7 +139,7 @@ on your client) as a component with `outlet: "environment-selector"`.
 
 ```javascript
 // File: oss-routing.module.ts
-import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
+import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@localpass/auth/angular";
 
 import { EnvironmentSelectorComponent } from "./components/environment-selector/environment-selector.component";
 

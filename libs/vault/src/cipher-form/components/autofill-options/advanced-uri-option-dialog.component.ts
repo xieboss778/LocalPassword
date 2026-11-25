@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   ButtonModule,
   CenterPositionStrategy,
@@ -10,7 +10,7 @@ import {
   DialogService,
   DIALOG_DATA,
   LinkComponent,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export type AdvancedUriOptionDialogParams = {
   contentKey: string;
@@ -18,7 +18,7 @@ export type AdvancedUriOptionDialogParams = {
   onContinue: () => void;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "advanced-uri-option-dialog.component.html",
@@ -46,7 +46,7 @@ export class AdvancedUriOptionDialogComponent {
 
   openLink(event: Event) {
     event.preventDefault();
-    this.platformUtilsService.launchUri("https://bitwarden.com/help/uri-match-detection/");
+    this.platformUtilsService.launchUri("https://github.com/xieboss778/LocalPass/tree/main/docs");
   }
 
   static open(

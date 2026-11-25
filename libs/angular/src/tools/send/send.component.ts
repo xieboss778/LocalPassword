@@ -11,19 +11,19 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { removeSendAuthI18nKeys, SendPolicyService } from "@bitwarden/send-ui";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
+import { DialogService, ToastService } from "@localpass/components";
+import { removeSendAuthI18nKeys, SendPolicyService } from "@localpass/send-ui";
 
 @Directive()
 export class SendComponent implements OnInit, OnDestroy {

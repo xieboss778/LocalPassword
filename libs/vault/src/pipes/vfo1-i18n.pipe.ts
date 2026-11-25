@@ -1,6 +1,6 @@
 import { inject, Pipe, PipeTransform } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { Vfo1TerminologyService } from "../services/vfo1-terminology.service";
 

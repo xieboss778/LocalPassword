@@ -5,17 +5,17 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SelfHostedEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
-import { ButtonModule, I18nMockService, SvgModule, ToastService } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SelfHostedEnvironment } from "@localpass/common/platform/services/default-environment.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
+import { ButtonModule, I18nMockService, SvgModule, ToastService } from "@localpass/components";
 
 import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils";
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";

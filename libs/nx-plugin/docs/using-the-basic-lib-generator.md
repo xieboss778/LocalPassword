@@ -1,6 +1,6 @@
 # Using the basic-lib Generator
 
-The `basic-lib` generator creates a new library with Bitwarden's standard configuration and
+The `basic-lib` generator creates a new library with LocalPass's standard configuration and
 structure. It sets up all the necessary files, configurations, and hooks with global configuration
 files.
 
@@ -9,7 +9,7 @@ files.
 You can use the basic lib generator by running this command:
 
 ```bash
-npx nx g @bitwarden/nx-plugin:basic-lib
+npx nx g @localpass/nx-plugin:basic-lib
 ```
 
 ## Available Options
@@ -28,10 +28,10 @@ interactively for each of these if they are not supplied as CLI flags.
 
 Let's create a new utility library called "password-insulter":
 
-1. Open your terminal and navigate to the root of the Bitwarden clients repository
+1. Open your terminal and navigate to the root of the LocalPass clients repository
 2. Run the generator command:
    ```bash
-   nx g @bitwarden/nx-plugin:basic-lib --name=password-insulter --description="Like the password strength meter, but more judgemental" --team=tools
+   nx g @localpass/nx-plugin:basic-lib --name=password-insulter --description="Like the password strength meter, but more judgemental" --team=tools
    ```
 3. The generator will create the library structure and update necessary configuration files
 4. The new library is now ready to use
@@ -99,11 +99,11 @@ design a library.
 
 One strategy to employ is a feature-scoped library.
 
-The import for such a library would be `@bitwarden/[feature]`. For example the `global-state`
-feature would be imported with `@bitwarden/global-state`.
+The import for such a library would be `@localpass/[feature]`. For example the `global-state`
+feature would be imported with `@localpass/global-state`.
 
 If the feature has both a UI component and needs to be used in the CLI it would probably result in a
-`@bitwarden/[feature]-ui` or `@bitwarden/[feature]-angular` library as well.
+`@localpass/[feature]-ui` or `@localpass/[feature]-angular` library as well.
 
 > [!NOTE]
 > With more things being added to the SDK and the CLI eventually being written directly in Rust there
@@ -166,7 +166,7 @@ You can also split libraries based on the primary kind of file that it holds. Fo
 have a library holding all `type`’s, one for `abstractions`, and on more `services`. Since one
 library for all type’s would be mean having a library that has multiple owners it would be highly
 discouraged and therefore this would likely be split by team as well, resulting in packages like
-`@bitwarden/platform-types`; this library strategy is really a subset of the team-based one.
+`@localpass/platform-types`; this library strategy is really a subset of the team-based one.
 
 Pros
 
@@ -209,7 +209,7 @@ which would then resemble the type-based approach. We will be forced to do this 
 things like storage where it’s only really useful which the implementations made in the individual
 apps.
 
-Example Platform feature libraries (all of these would be imported like `@bitwarden/[feature]`:
+Example Platform feature libraries (all of these would be imported like `@localpass/[feature]`:
 
 - `storage-core`
 - `user-state`

@@ -1,10 +1,10 @@
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { getNestedFolderTree } from "@bitwarden/common/vault/utils/folder-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { getNestedFolderTree } from "@localpass/common/vault/utils/folder-utils";
 
 /** A row of the My folders table: a top-level folder. */
 export type FolderTableRow = {

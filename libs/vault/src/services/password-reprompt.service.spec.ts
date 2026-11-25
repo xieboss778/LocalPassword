@@ -1,7 +1,7 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { DialogService } from "@bitwarden/components";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { DialogService } from "@localpass/components";
 
 import { PasswordRepromptService } from "./password-reprompt.service";
 

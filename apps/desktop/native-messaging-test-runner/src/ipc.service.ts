@@ -16,7 +16,7 @@ const DEFAULT_MESSAGE_TIMEOUT = 10 * 1000; // 10 seconds
 export type MessageHandler = (message: MessageCommon) => void;
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum IPCConnectionState {
   Disconnected = "disconnected",
   Connecting = "connecting",
@@ -250,7 +250,7 @@ function selectProxyPath(): string {
   }
 
   // On MacOS, try the release build (sandboxed)
-  const macReleaseProxyPath = `/Applications/Bitwarden.app/Contents/MacOS/desktop_proxy${proxyExtension}`;
+  const macReleaseProxyPath = `/Applications/LocalPass.app/Contents/MacOS/desktop_proxy${proxyExtension}`;
   if (process.platform === "darwin" && fs.existsSync(macReleaseProxyPath)) {
     return macReleaseProxyPath;
   }

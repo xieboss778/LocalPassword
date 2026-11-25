@@ -1,4 +1,4 @@
-import { SendAccessCredentials, SendAccessTokenError } from "@bitwarden/sdk-internal";
+import { SendAccessCredentials, SendAccessTokenError } from "@localpass/sdk-internal";
 
 import { GetSendAccessTokenError } from "../types/get-send-access-token-error.type";
 import { SendAccessDomainCredentials } from "../types/send-access-domain-credentials.type";

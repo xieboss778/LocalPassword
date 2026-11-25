@@ -4,27 +4,27 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, filter, firstValueFrom, of } from "rxjs";
 
-import { ClientType } from "@bitwarden/client-type";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { ClientType } from "@localpass/client-type";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Policy } from "@localpass/common/admin-console/models/domain/policy";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import {
   MaximumSessionTimeoutPolicyData,
   SessionTimeoutTypeService,
-} from "@bitwarden/common/key-management/session-timeout";
+} from "@localpass/common/key-management/session-timeout";
 import {
   VaultTimeout,
   VaultTimeoutAction,
   VaultTimeoutOption,
   VaultTimeoutSettingsService,
   VaultTimeoutStringType,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DialogService, ToastService } from "@bitwarden/components";
-import { LogService } from "@bitwarden/logging";
+} from "@localpass/common/key-management/vault-timeout";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { FakeAccountService, mockAccountServiceWith } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { DialogService, ToastService } from "@localpass/components";
+import { LogService } from "@localpass/logging";
 
 import { SessionTimeoutInputComponent } from "../components/session-timeout-input.component";
 import { SessionTimeoutSettingsComponentService } from "../services/session-timeout-settings-component.service";

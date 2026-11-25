@@ -1,11 +1,11 @@
 import { mock } from "jest-mock-extended";
 
-import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
+import { SdkClientFactory } from "@localpass/common/platform/abstractions/sdk/sdk-client-factory";
 import type {
   CryptoClient,
   ManagedSettingsClient,
   PasswordManagerClient,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { BrowserForegroundSdkClientFactory } from "./browser-foreground-sdk-client-factory";
 

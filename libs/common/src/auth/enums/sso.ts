@@ -1,7 +1,7 @@
-import { MemberDecryptionType as SdkMemberDecryptionType } from "@bitwarden/sdk-internal";
+import { MemberDecryptionType as SdkMemberDecryptionType } from "@localpass/sdk-internal";
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum SsoType {
   None = 0,
   OpenIdConnect = 1,
@@ -10,26 +10,26 @@ export enum SsoType {
 
 // Re-export the SdkMemberDecryptionType so we have a single source of truth
 export {
-  /** @deprecated Import directly from @bitwarden/sdk-internal instead. **/
+  /** @deprecated Import directly from @localpass/sdk-internal instead. **/
   SdkMemberDecryptionType as MemberDecryptionType,
 };
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum OpenIdConnectRedirectBehavior {
   RedirectGet = 0,
   FormPost = 1,
 }
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum Saml2BindingType {
   HttpRedirect = 1,
   HttpPost = 2,
 }
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum Saml2NameIdFormat {
   NotConfigured = 0,
   Unspecified = 1,
@@ -43,7 +43,7 @@ export enum Saml2NameIdFormat {
 }
 
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum Saml2SigningBehavior {
   IfIdpWantAuthnRequestsSigned = 0,
   Always = 1,

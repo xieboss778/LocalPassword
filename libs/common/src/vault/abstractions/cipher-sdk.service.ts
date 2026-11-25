@@ -2,7 +2,7 @@ import {
   CipherListView,
   CreateAttachmentRequest,
   CreatedAttachment,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import {
   CipherId,

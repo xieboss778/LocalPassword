@@ -192,7 +192,7 @@ describe("KeyDefinition", () => {
       expect(arrayDefinition).toBeTruthy();
       expect(arrayDefinition.deserializer).toBeTruthy();
 
-      // NOTE: `as any` is here until we migrate to Nx: https://bitwarden.atlassian.net/browse/PM-6493
+      // NOTE: `as any` is here until we migrate to Nx: https://localpass.atlassian.net/browse/PM-6493
       const deserializedValue = arrayDefinition.deserializer([false, true] as any);
 
       expect(deserializedValue).toBeTruthy();

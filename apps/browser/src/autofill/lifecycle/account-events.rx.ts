@@ -1,7 +1,7 @@
 import { combineLatest, concatMap, from, Observable, scan } from "rxjs";
 
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { getOptionalUserId } from "@bitwarden/common/auth/services/account.service";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { getOptionalUserId } from "@localpass/common/auth/services/account.service";
 
 import { reduceAccounts } from "./account-events";
 import type { AccountEvent, AccountReduction, AccountStatuses } from "./types";

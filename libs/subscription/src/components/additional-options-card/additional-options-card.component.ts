@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, output, input } from "@angular/core";
 
-import { ButtonModule, CardComponent, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { ButtonModule, CardComponent, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 export const AdditionalOptionsCardActions = {
   DownloadLicense: "download-license",

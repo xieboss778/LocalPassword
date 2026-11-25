@@ -2,20 +2,20 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, take } from "rxjs";
 
-import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { AutotypeFeatureFlagState } from "@bitwarden/common/desktop-native/enums/autotype-feature-flag-state.enum";
-import { autotypeFeatureFlagState$ } from "@bitwarden/common/desktop-native/services/autotype-feature-flags";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { Account, UserId } from "@bitwarden/common/platform/models/domain/account";
-import { mockAccountInfoWith } from "@bitwarden/common/spec";
+import { InternalPolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { AutotypeFeatureFlagState } from "@localpass/common/desktop-native/enums/autotype-feature-flag-state.enum";
+import { autotypeFeatureFlagState$ } from "@localpass/common/desktop-native/services/autotype-feature-flags";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { Account, UserId } from "@localpass/common/platform/models/domain/account";
+import { mockAccountInfoWith } from "@localpass/common/spec";
 
 import { DesktopAutotypeDefaultSettingPolicy } from "./desktop-autotype-policy.service";
 
-jest.mock("@bitwarden/common/desktop-native/services/autotype-feature-flags", () => ({
+jest.mock("@localpass/common/desktop-native/services/autotype-feature-flags", () => ({
   autotypeFeatureFlagState$: jest.fn(),
 }));
 

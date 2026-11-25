@@ -5,34 +5,34 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, combineLatest, map, of } from "rxjs";
 
-import { IconComponent as AppVaultIconComponent } from "@bitwarden/angular/vault/components/icon.component";
-import { BitSvg, ReportExposedPasswords, LockIcon, NoCredentialsIcon } from "@bitwarden/assets/svg";
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherHealthView } from "@bitwarden/common/dirt/models/view";
+import { IconComponent as AppVaultIconComponent } from "@localpass/angular/vault/components/icon.component";
+import { BitSvg, ReportExposedPasswords, LockIcon, NoCredentialsIcon } from "@localpass/assets/svg";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherHealthView } from "@localpass/common/dirt/models/view";
 import {
   RiskCategory,
   VaultHealthReportStatus,
   VaultHealthReportView,
-} from "@bitwarden/common/dirt/vault-health/models";
-import { VaultHealthReportService } from "@bitwarden/common/dirt/vault-health/services";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
-import { ChangeLoginPasswordService } from "@bitwarden/common/vault/abstractions/change-login-password.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+} from "@localpass/common/dirt/vault-health/models";
+import { VaultHealthReportService } from "@localpass/common/dirt/vault-health/services";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
+import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
 import {
   CompactModeService,
   DialogRef,
   DialogService,
   ScrollLayoutHostDirective,
-} from "@bitwarden/components";
-import { PasswordRepromptService } from "@bitwarden/vault";
+} from "@localpass/components";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
@@ -119,7 +119,7 @@ class MockHealthScanErrorComponent {
   template: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-// FIXME(https://bitwarden.atlassian.net/browse/PM-28231): Use Component suffix
+// FIXME(https://localpass.atlassian.net/browse/PM-28231): Use Component suffix
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 class MockAppVaultIcon {
   readonly cipher = input<CipherView | undefined>(undefined);

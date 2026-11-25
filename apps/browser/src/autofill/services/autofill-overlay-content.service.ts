@@ -8,9 +8,9 @@ import {
   AUTOFILL_OVERLAY_HANDLE_SCROLL,
   AUTOFILL_TRIGGER_FORM_FIELD_SUBMIT,
   EVENTS,
-} from "@bitwarden/common/autofill/constants";
-import { AutofillTargetingRuleType } from "@bitwarden/common/autofill/types";
-import { CipherType } from "@bitwarden/common/vault/enums";
+} from "@localpass/common/autofill/constants";
+import { AutofillTargetingRuleType } from "@localpass/common/autofill/types";
+import { CipherType } from "@localpass/common/vault/enums";
 
 import { ModifyLoginCipherFormData } from "../background/abstractions/overlay-notifications.background";
 import {

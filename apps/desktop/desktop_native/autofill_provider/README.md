@@ -1,12 +1,12 @@
 # Autofill Provider
 
-A library for native autofill providers to interact with a host Bitwarden desktop app.
+A library for native autofill providers to interact with a host LocalPass desktop app.
 
-In this desktop context, "native autofill providers" are operating system frameworks or APIs (like the macOS [autofill framework](https://developer.apple.com/documentation/Security/password-autofill)) that allow Bitwarden to provide provide user credentials for things like autofill, passkey operations, etc.
+In this desktop context, "native autofill providers" are operating system frameworks or APIs (like the macOS [autofill framework](https://developer.apple.com/documentation/Security/password-autofill)) that allow LocalPass to provide provide user credentials for things like autofill, passkey operations, etc.
 
 # Explainer: Mac OS Native Passkey Provider
 
-This document describes the changes introduced in https://github.com/bitwarden/clients/pull/13963, where we introduce the MacOS Native Passkey Provider. It gives the high level explanation of the architecture and some of the quirks and additional good to know context.
+This document describes the changes introduced in https://github.com/xieboss778/LocalPassword/pull/13963, where we introduce the MacOS Native Passkey Provider. It gives the high level explanation of the architecture and some of the quirks and additional good to know context.
 
 ## The high level
 
@@ -23,7 +23,7 @@ Footnotes:
 
 Electron receives the messages and passes it to Angular (through the electron-renderer event system).
 
-Our existing fido2 services in the renderer respond to events, displaying UI as necessary, and returns the signature back through the same mechanism, allowing people to authenticate with passkeys through the native system + UI. See [Mac OS Native Passkey Workflows](https://bitwarden.atlassian.net/wiki/spaces/EN/pages/1828356098/Mac+OS+Native+Passkey+Workflows) for demo videos.
+Our existing fido2 services in the renderer respond to events, displaying UI as necessary, and returns the signature back through the same mechanism, allowing people to authenticate with passkeys through the native system + UI. See [Mac OS Native Passkey Workflows](https://localpass.atlassian.net/wiki/spaces/EN/pages/1828356098/Mac+OS+Native+Passkey+Workflows) for demo videos.
 
 ## Typescript + UI implementations
 

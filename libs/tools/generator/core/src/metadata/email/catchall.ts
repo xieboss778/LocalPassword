@@ -1,6 +1,6 @@
-import { GENERATOR_DISK } from "@bitwarden/common/platform/state";
-import { PublicClassifier } from "@bitwarden/common/tools/public-classifier";
-import { deepFreeze } from "@bitwarden/common/tools/util";
+import { GENERATOR_DISK } from "@localpass/common/platform/state";
+import { PublicClassifier } from "@localpass/common/tools/public-classifier";
+import { deepFreeze } from "@localpass/common/tools/util";
 
 import { EmailRandomizer } from "../../engine";
 import { CatchallConstraints } from "../../policies/catchall-constraints";

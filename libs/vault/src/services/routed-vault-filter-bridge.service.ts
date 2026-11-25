@@ -4,9 +4,9 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { combineLatest, map, Observable, of, switchMap } from "rxjs";
 
-import { Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
+import { Unassigned } from "@localpass/common/admin-console/models/collections";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { ServiceUtils } from "@localpass/common/vault/service-utils";
 
 import { VaultFilterService } from "../abstractions/vault-filter.service";
 import { RoutedVaultFilterBridge } from "../models/routed-vault-filter-bridge.model";

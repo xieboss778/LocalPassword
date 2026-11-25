@@ -1,10 +1,10 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { buildTestOrganization } from "@bitwarden/common/spec";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { buildTestOrganization } from "@localpass/common/spec";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherType } from "@localpass/common/vault/enums";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { VaultFilter } from "./vault-filter.model";
 import {

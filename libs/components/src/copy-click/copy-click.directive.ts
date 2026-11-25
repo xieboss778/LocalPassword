@@ -1,8 +1,8 @@
 import { Directive, HostListener, Inject, Optional, input, computed } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 import { ToastService, ToastVariant } from "../";
 

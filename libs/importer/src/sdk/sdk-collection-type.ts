@@ -1,8 +1,8 @@
 import {
   CollectionType,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { CollectionType as SdkCollectionType } from "@bitwarden/sdk-internal";
+} from "@localpass/common/admin-console/models/collections";
+import { CollectionType as SdkCollectionType } from "@localpass/sdk-internal";
 
 /**
  * Maps a client {@link CollectionType} to the SDK's `CollectionType`. The two enums share numeric

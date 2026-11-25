@@ -14,38 +14,38 @@ import {
   Subscription,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
 import {
   Fido2AuthenticatorError,
   Fido2AuthenticatorErrorCode,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
+} from "@localpass/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
 import {
   Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction,
   Fido2UserInterfaceSession,
   NewCredentialParams,
   PickCredentialParams,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
-import { Fido2Utils } from "@bitwarden/common/platform/services/fido2/fido2-utils";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherRepromptType, CipherType, SecureNoteType } from "@bitwarden/common/vault/enums";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+} from "@localpass/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { CommandDefinition, MessageListener } from "@localpass/common/platform/messaging";
+import { Fido2Utils } from "@localpass/common/platform/services/fido2/fido2-utils";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherRepromptType, CipherType, SecureNoteType } from "@localpass/common/vault/enums";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { SecureNoteView } from "@localpass/common/vault/models/view/secure-note.view";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { PasswordRepromptService } from "@bitwarden/vault";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 
@@ -70,7 +70,7 @@ export type NativeWindowObject = {
   clientWindowHandle: Uint8Array | null;
 
   /**
-   * The native handle of the Bitwarden app window, or null if the app has no
+   * The native handle of the LocalPass app window, or null if the app has no
    * window at the time of the request.
    */
   appWindowHandle: Uint8Array | null;
@@ -328,7 +328,7 @@ export class DesktopFido2UserInterfaceSession implements Fido2UserInterfaceSessi
   }
 
   /**
-   * Attempts to satisfy user verification without prompting the Bitwarden
+   * Attempts to satisfy user verification without prompting the LocalPass
    * app UI. OS user verification dialogs still may appear.
    *
    * @param params Parameters for the assertion flow.
@@ -376,7 +376,7 @@ export class DesktopFido2UserInterfaceSession implements Fido2UserInterfaceSessi
         return undefined;
       }
 
-      // Reprompts require showing Bitwarden UI, so stop if we detect that.
+      // Reprompts require showing LocalPass UI, so stop if we detect that.
       if (cipherView.reprompt !== CipherRepromptType.None) {
         return undefined;
       }
@@ -864,7 +864,7 @@ export class DesktopFido2UserInterfaceSession implements Fido2UserInterfaceSessi
         throw new Error("Vault is not unlocked");
       }
 
-      // The user authenticated to Bitwarden to get here, which satisfies user
+      // The user authenticated to LocalPass to get here, which satisfies user
       // verification for the rest of this ceremony.
       this.vaultUnlockedDuringCeremony = true;
       // Stay on the lock screen. The caller either shows the next modal screen

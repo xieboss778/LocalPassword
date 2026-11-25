@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { Observable } from "rxjs";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { CipherFormConfig } from "..";
 

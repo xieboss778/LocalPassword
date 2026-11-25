@@ -52,7 +52,7 @@ if(-not $skipcheckout) {
 cd $distSafariDir
 
 if(-not $skipcheckout) {
-  git clone git@github.com:bitwarden/browser.git
+  git clone git@github.com:localpass/browser.git
 }
 
 cd browser

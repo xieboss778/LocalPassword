@@ -17,18 +17,18 @@ import {
 import { toObservable } from "@angular/core/rxjs-interop";
 import { Observable, switchMap } from "rxjs";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { RiskCategory } from "@bitwarden/common/dirt/vault-health/models";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { RiskCategory } from "@localpass/common/dirt/vault-health/models";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import {
   BadgeComponent,
   BadgeVariant,
-  BitwardenIcon,
+  LocalPassIcon,
   FormFieldModule,
   SectionHeaderComponent,
   TypographyModule,
@@ -36,7 +36,7 @@ import {
   IconButtonModule,
   ColorPasswordModule,
   DialogService,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { BitTotpCountdownComponent } from "../../components/totp-countdown/totp-countdown.component";
 import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-cipher-card.component";
@@ -46,7 +46,7 @@ import { TotpQrDialogComponent } from "./totp-qr-dialog.component";
 type RiskBadge = {
   labelKey: string;
   tooltipKey: string;
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
   variant: BadgeVariant;
 };
 
@@ -85,7 +85,7 @@ type TotpCodeValues = {
   totpCodeFormatted?: string;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-login-credentials-view",
@@ -106,11 +106,11 @@ type TotpCodeValues = {
   ],
 })
 export class LoginCredentialsViewComponent implements OnChanges {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() cipher: CipherView;
   protected readonly activeUserId = input<UserId | null>(null);
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() showChangePasswordLink: boolean;
   readonly changePasswordLink = input<string | undefined>();
@@ -119,10 +119,10 @@ export class LoginCredentialsViewComponent implements OnChanges {
     const category = this.passwordRiskCategory();
     return category ? RISK_BADGES[category] : FLAGGED_RISK_BADGE;
   });
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() handleChangePassword = new EventEmitter<void>();
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild("passwordInput")
   private passwordInput!: ElementRef<HTMLInputElement>;

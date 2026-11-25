@@ -1,10 +1,10 @@
 import { DialogRef } from "@angular/cdk/dialog";
 import { Component } from "@angular/core";
 
-import { ChangePasswordComponent } from "@bitwarden/angular/auth/password-management/change-password";
-import { InputPasswordFlow } from "@bitwarden/auth/angular";
-import { ButtonModule, DialogModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { ChangePasswordComponent } from "@localpass/angular/auth/password-management/change-password";
+import { InputPasswordFlow } from "@localpass/auth/angular";
+import { ButtonModule, DialogModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 /**
  * Temporary dialog wrapper for change password until desktop UI refresh adds proper settings routes.

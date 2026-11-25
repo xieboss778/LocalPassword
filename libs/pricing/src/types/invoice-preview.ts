@@ -29,8 +29,8 @@ export type SeatReference = Extract<PurchasableReference, "pm-seat" | "sm-seat" 
 
 /**
  * Mirrors the server's `InvoicePreviewDiscount` record — a type deliberately separate from the
- * legacy discount contract (the server's Core `BitwardenDiscount` is untouched by the preview
- * work; only `BitwardenDiscountType` is shared, mirrored here as {@link DiscountType}).
+ * legacy discount contract (the server's Core `LocalPassDiscount` is untouched by the preview
+ * work; only `LocalPassDiscountType` is shared, mirrored here as {@link DiscountType}).
  */
 export type InvoicePreviewDiscount = {
   type: DiscountType;

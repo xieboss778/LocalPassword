@@ -1,7 +1,7 @@
-import { UserId } from "@bitwarden/common/types/guid";
-import { BiometricsStatus } from "@bitwarden/key-management";
+import { UserId } from "@localpass/common/types/guid";
+import { BiometricsStatus } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 export interface OsBiometricService {
   supportsBiometrics(): Promise<boolean>;

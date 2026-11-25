@@ -1,22 +1,22 @@
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
 
-import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
-import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { buildTestOrganization } from "@bitwarden/common/spec";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { OrgKey } from "@bitwarden/common/types/key";
-import { KeyService } from "@bitwarden/key-management";
+import { OrganizationUserType } from "@localpass/common/admin-console/enums";
+import { PermissionsApi } from "@localpass/common/admin-console/models/api/permissions.api";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ListResponse } from "@localpass/common/models/response/list.response";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { buildTestOrganization } from "@localpass/common/spec";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { OrgKey } from "@localpass/common/types/key";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   CsprngArray,
   EncryptService,
   EncString,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
+} from "@localpass/legacy-crypto";
 
 import {
   OrganizationUserConfirmRequest,

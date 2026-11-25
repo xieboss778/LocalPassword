@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 import {
   CipherCreateRequest,
   CipherEditRequest,
   CipherPartialEditRequest,
   CipherViewType,
   CipherView as SdkCipherView,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { View } from "../../../models/view/view";
 import { asUuid, uuidAsString } from "../../../platform/abstractions/sdk/sdk.service";

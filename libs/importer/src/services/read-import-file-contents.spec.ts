@@ -15,7 +15,7 @@ describe("readImportFileContents", () => {
   it("reads a plain text file as-is", async () => {
     const file = new File(["hello,world"], "export.csv", { type: "text/csv" });
 
-    await expect(readImportFileContents("bitwardencsv", file)).resolves.toBe("hello,world");
+    await expect(readImportFileContents("localpasscsv", file)).resolves.toBe("hello,world");
   });
 
   it("extracts the <pre> content from a LastPass html export", async () => {
@@ -132,7 +132,7 @@ describe("readImportFileContents", () => {
 
     try {
       const file = new File(["hello,world"], "export.csv", { type: "text/csv" });
-      await expect(readImportFileContents("bitwardencsv", file)).rejects.toThrow(
+      await expect(readImportFileContents("localpasscsv", file)).rejects.toThrow(
         "permission denied",
       );
     } finally {

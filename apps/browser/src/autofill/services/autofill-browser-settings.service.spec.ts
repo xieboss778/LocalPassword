@@ -1,4 +1,4 @@
-import { BrowserClientVendors } from "@bitwarden/common/autofill/constants";
+import { BrowserClientVendors } from "@localpass/common/autofill/constants";
 
 jest.mock("../default-password-manager-session.util", () => ({
   applyDefaultPasswordManagerOverride: jest.fn().mockResolvedValue(undefined),

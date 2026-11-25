@@ -1,20 +1,20 @@
 {
   "appName": {
-    "message": "LocalPassword"
+    "message": "LocalPass"
   },
   "appLogoLabel": {
-    "message": "LocalPassword Logo"
+    "message": "LocalPass Logo"
   },
   "extName": {
-    "message": "LocalPassword",
+    "message": "LocalPass",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extNameBeta": {
-    "message": "LocalPassword Beta",
+    "message": "LocalPass Beta",
     "description": "Extension name for the beta channel, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "无论是在家中、工作中还是在旅途中，LocalPassword 都可以轻松地保护您的所有密码、通行密钥和敏感信息。",
+    "message": "无论是在家中、工作中还是在旅途中，LocalPass 都可以轻松地保护您的所有密码、通行密钥和敏感信息。",
     "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
@@ -26,14 +26,14 @@
   "createAccount": {
     "message": "创建账户"
   },
-  "welcomeToBitwarden": {
-    "message": "欢迎使用 Bitwarden"
+  "welcomeToLocalPass": {
+    "message": "欢迎使用 LocalPass"
   },
   "createYourAccountOrLogIn": {
     "message": "创建您的账户或登录"
   },
-  "newToBitwarden": {
-    "message": "Bitwarden 新手吗？"
+  "newToLocalPass": {
+    "message": "LocalPass 新手吗？"
   },
   "logInWithPasskey": {
     "message": "使用通行密钥登录"
@@ -330,22 +330,22 @@
     "message": "前往网页 App 吗？"
   },
   "continueToWebAppDesc": {
-    "message": "在网页 App 上探索 Bitwarden 账户的更多功能。"
+    "message": "在网页 App 上探索 LocalPass 账户的更多功能。"
   },
   "continueToHelpCenter": {
     "message": "前往帮助中心吗？"
   },
   "continueToHelpCenterDesc": {
-    "message": "访问帮助中心进一步了解如何使用 Bitwarden。"
+    "message": "访问帮助中心进一步了解如何使用 LocalPass。"
   },
   "continueToBrowserExtensionStore": {
     "message": "前往浏览器扩展商店吗？"
   },
   "continueToBrowserExtensionStoreDesc": {
-    "message": "帮助他人了解 Bitwarden 是否适合他们。立即访问浏览器扩展商店并留下评分。"
+    "message": "帮助他人了解 LocalPass 是否适合他们。立即访问浏览器扩展商店并留下评分。"
   },
   "changeMasterPasswordOnWebConfirmation": {
-    "message": "您可以在 Bitwarden 网页 App 上更改您的主密码。"
+    "message": "您可以在 LocalPass 网页 App 上更改您的主密码。"
   },
   "fingerprintPhrase": {
     "message": "指纹短语",
@@ -361,44 +361,44 @@
   "logOut": {
     "message": "注销"
   },
-  "aboutBitwarden": {
-    "message": "关于 Bitwarden"
+  "aboutLocalPass": {
+    "message": "关于 LocalPass"
   },
   "about": {
     "message": "关于"
   },
-  "moreFromBitwarden": {
-    "message": "更多来自 Bitwarden 的产品"
+  "moreFromLocalPass": {
+    "message": "更多来自 LocalPass 的产品"
   },
-  "continueToBitwardenDotCom": {
-    "message": "前往 bitwarden.com 吗？"
+  "continueToLocalPassDotCom": {
+    "message": "前往 local.invalid 吗？"
   },
-  "bitwardenForBusiness": {
-    "message": "Bitwarden 商业版"
+  "localpassForBusiness": {
+    "message": "LocalPass 商业版"
   },
-  "bitwardenAuthenticator": {
-    "message": "Bitwarden Authenticator"
+  "localpassAuthenticator": {
+    "message": "LocalPass Authenticator"
   },
   "continueToAuthenticatorPageDesc": {
-    "message": "Bitwarden Authenticator 允许您存储验证器密钥以及为两步验证流程生成 TOTP 代码。访问 bitwarden.com 网站了解更多信息"
+    "message": "LocalPass Authenticator 允许您存储验证器密钥以及为两步验证流程生成 TOTP 代码。访问 local.invalid 网站了解更多信息"
   },
-  "bitwardenSecretsManager": {
-    "message": "Bitwarden Secrets Manager"
+  "localpassSecretsManager": {
+    "message": "LocalPass Secrets Manager"
   },
   "continueToSecretsManagerPageDesc": {
-    "message": "使用 Bitwarden Secrets Manager 安全地存储、管理以及共享开发人员的机密。访问 bitwarden.com 网站了解更多信息。"
+    "message": "使用 LocalPass Secrets Manager 安全地存储、管理以及共享开发人员的机密。访问 local.invalid 网站了解更多信息。"
   },
   "passwordlessDotDev": {
     "message": "Passwordless.dev"
   },
   "continueToPasswordlessDotDevPageDesc": {
-    "message": "使用 Passwordless.dev 摆脱传统密码束缚，打造流畅且安全的登录体验。访问 bitwarden.com 网站了解更多信息。"
+    "message": "使用 Passwordless.dev 摆脱传统密码束缚，打造流畅且安全的登录体验。访问 local.invalid 网站了解更多信息。"
   },
-  "freeBitwardenFamilies": {
-    "message": "免费 Bitwarden 家庭版"
+  "freeLocalPassFamilies": {
+    "message": "免费 LocalPass 家庭版"
   },
-  "freeBitwardenFamiliesPageDesc": {
-    "message": "您有资格获得免费的 Bitwarden 家庭版。立即在网页 App 中兑换此优惠。"
+  "freeLocalPassFamiliesPageDesc": {
+    "message": "您有资格获得免费的 LocalPass 家庭版。立即在网页 App 中兑换此优惠。"
   },
   "version": {
     "message": "版本"
@@ -464,13 +464,13 @@
     "message": "帮助与反馈"
   },
   "helpCenter": {
-    "message": "Bitwarden 帮助中心"
+    "message": "LocalPass 帮助中心"
   },
   "communityForums": {
-    "message": "探索 Bitwarden 社区论坛"
+    "message": "探索 LocalPass 社区论坛"
   },
   "contactSupport": {
-    "message": "联系 Bitwarden 支持"
+    "message": "联系 LocalPass 支持"
   },
   "sync": {
     "message": "同步"
@@ -492,7 +492,7 @@
     "message": "自动为您的登录生成强大且唯一的密码。"
   },
   "bitWebVaultApp": {
-    "message": "Bitwarden 网页 App"
+    "message": "LocalPass 网页 App"
   },
   "select": {
     "message": "选择"
@@ -869,9 +869,9 @@
   "downloadDiagnosticReportWith": {
     "message": "下载诊断报告然后将其分享给"
   },
-  "bitwardenSupport": {
-    "message": "Bitwarden 支持",
-    "description": "Link text following the troubleshooting description sentence. 'Bitwarden' should not be translated."
+  "localpassSupport": {
+    "message": "LocalPass 支持",
+    "description": "Link text following the troubleshooting description sentence. 'LocalPass' should not be translated."
   },
   "download": {
     "message": "下载"
@@ -912,7 +912,7 @@
       },
       "hostname": {
         "content": "$2",
-        "example": "bitwarden.com"
+        "example": "local.invalid"
       }
     }
   },
@@ -924,7 +924,7 @@
     "placeholders": {
       "host": {
         "content": "$1",
-        "example": "vault.bitwarden.com"
+        "example": "vault.local.invalid"
       }
     }
   },
@@ -1087,10 +1087,10 @@
     "message": "无缝两步验证"
   },
   "totpHelper": {
-    "message": "Bitwarden 可以存储并填充两步验证码。复制并粘贴密钥到此字段中。"
+    "message": "LocalPass 可以存储并填充两步验证码。复制并粘贴密钥到此字段中。"
   },
   "totpHelperWithCapture": {
-    "message": "Bitwarden 可以存储并填充两步验证码。选择相机图标来拍摄此网站的验证器二维码，或复制并粘贴密钥到此字段中。"
+    "message": "LocalPass 可以存储并填充两步验证码。选择相机图标来拍摄此网站的验证器二维码，或复制并粘贴密钥到此字段中。"
   },
   "learnMoreAboutAuthenticators": {
     "message": "进一步了解验证器"
@@ -1177,10 +1177,10 @@
     "message": "输入名称。"
   },
   "twoStepLoginConfirmation": {
-    "message": "两步登录要求您从其他设备（例如安全密钥、验证器 App、短信、电话或者电子邮件）来验证您的登录，这能使您的账户更加安全。两步登录需要在 bitwarden.com 网页密码库中设置。现在要访问此网站吗？"
+    "message": "两步登录要求您从其他设备（例如安全密钥、验证器 App、短信、电话或者电子邮件）来验证您的登录，这能使您的账户更加安全。两步登录需要在 local.invalid 网页密码库中设置。现在要访问此网站吗？"
   },
   "twoStepLoginConfirmationContent": {
-    "message": "在 Bitwarden 网页 App 中设置两步登录，让您的账户更加安全。"
+    "message": "在 LocalPass 网页 App 中设置两步登录，让您的账户更加安全。"
   },
   "twoStepLoginConfirmationTitle": {
     "message": "前往网页 App 吗？"
@@ -1231,7 +1231,7 @@
   },
   "addDomain": {
     "message": "添加域名",
-    "description": "'Domain' here refers to an internet domain name (e.g. 'bitwarden.com') and the message in whole described the act of putting a domain value into the context."
+    "description": "'Domain' here refers to an internet domain name (e.g. 'local.invalid') and the message in whole described the act of putting a domain value into the context."
   },
   "addedItem": {
     "message": "项目已添加"
@@ -1339,7 +1339,7 @@
     "message": "跳转到设置"
   },
   "notificationAddDesc": {
-    "message": "希望 Bitwarden 为您保存这个密码吗？"
+    "message": "希望 LocalPass 为您保存这个密码吗？"
   },
   "notificationAddSave": {
     "message": "保存"
@@ -1375,11 +1375,11 @@
     }
   },
   "notificationLoginSaveConfirmation": {
-    "message": "已保存到 Bitwarden。",
+    "message": "已保存到 LocalPass。",
     "description": "Shown to user after item is saved."
   },
   "notificationLoginUpdatedConfirmation": {
-    "message": "已在 Bitwarden 中更新。",
+    "message": "已在 LocalPass 中更新。",
     "description": "Shown to user after item is updated."
   },
   "selectItemAriaLabel": {
@@ -1477,13 +1477,13 @@
     "message": "询问保存新的通行密钥或使用存储在密码库中的通行密钥登录。适用于所有已登录的账户。"
   },
   "notificationChangeDesc": {
-    "message": "要在 Bitwarden 中更新此密码吗？"
+    "message": "要在 LocalPass 中更新此密码吗？"
   },
   "notificationChangeSave": {
     "message": "更新"
   },
   "notificationUnlockDesc": {
-    "message": "解锁 Bitwarden 密码库以完成自动填充请求。"
+    "message": "解锁 LocalPass 密码库以完成自动填充请求。"
   },
   "notificationUnlock": {
     "message": "解锁​​​​"
@@ -1503,16 +1503,16 @@
   "aboutFillAssistLabelV2": {
     "message": "关于填充辅助"
   },
-  "honorDataBitwardenIgnoreAttributeLabel": {
+  "honorDataLocalPassIgnoreAttributeLabel": {
     "message": "允许网站排除自动填充字段"
   },
-  "honorDataBitwardenIgnoreAttributeHint": {
+  "honorDataLocalPassIgnoreAttributeHint": {
     "message": "跳过网站上标记有 `data bwignore` 属性的字段。"
   },
-  "honorDataBitwardenAutofillAttributeLabel": {
+  "honorDataLocalPassAutofillAttributeLabel": {
     "message": "允许网站添加自动填充字段"
   },
-  "honorDataBitwardenAutofillAttributeHint": {
+  "honorDataLocalPassAutofillAttributeHint": {
     "message": "使用网站上标记有 `data-bwautofill` 属性的任何 span 元素。"
   },
   "enableBasicAuthResponseLabel": {
@@ -1792,10 +1792,10 @@
     "message": "此密码将用于导出和导入此文件"
   },
   "accountRestrictedOptionDescription": {
-    "message": "使用衍生自您账户用户名和主密码的账户加密密钥以加密此导出，并限制只能导入到当前 Bitwarden 账户。"
+    "message": "使用衍生自您账户用户名和主密码的账户加密密钥以加密此导出，并限制只能导入到当前 LocalPass 账户。"
   },
   "passwordProtectedOptionDescription": {
-    "message": "设置一个文件密码以加密此导出，并使用此密码解密以导入到任意 Bitwarden 账户。"
+    "message": "设置一个文件密码以加密此导出，并使用此密码解密以导入到任意 LocalPass 账户。"
   },
   "exportTypeHeading": {
     "message": "导出类型"
@@ -1824,7 +1824,7 @@
     "message": "此导出将使用您的账户加密密钥来加密您的数据。如果您曾经轮换过您的账户加密密钥，您应将其重新导出，否则您将无法解密导出的文件。"
   },
   "encExportAccountWarningDesc": {
-    "message": "每个 Bitwarden 用户账户的账户加密密钥都是唯一的，因此您无法将加密的导出导入到另一个账户。"
+    "message": "每个 LocalPass 用户账户的账户加密密钥都是唯一的，因此您无法将加密的导出导入到另一个账户。"
   },
   "exportMasterPassword": {
     "message": "输入您的主密码以导出您的密码库数据。"
@@ -1847,8 +1847,8 @@
   "addSharedFolder": {
     "message": "添加共享文件夹"
   },
-  "bitwardenForBusinessPageDesc": {
-    "message": "Bitwarden 商业版允许您使用组织与他人共享您的密码库项目。访问 bitwarden.com 网站了解更多信息。"
+  "localpassForBusinessPageDesc": {
+    "message": "LocalPass 商业版允许您使用组织与他人共享您的密码库项目。访问 local.invalid 网站了解更多信息。"
   },
   "moveToOrganization": {
     "message": "移动到组织"
@@ -2002,7 +2002,7 @@
     "message": "管理成员资格"
   },
   "premiumManageAlert": {
-    "message": "您可以在 bitwarden.com 网页密码库管理您的成员资格。现在要访问此网站吗？"
+    "message": "您可以在 local.invalid 网页密码库管理您的成员资格。现在要访问此网站吗？"
   },
   "premiumRefresh": {
     "message": "刷新成员资格"
@@ -2050,7 +2050,7 @@
     "message": "购买高级版"
   },
   "premiumPurchaseAlertV2": {
-    "message": "您可以在 Bitwarden 网页 App 的账户设置中购买高级版。"
+    "message": "您可以在 LocalPass 网页 App 的账户设置中购买高级版。"
   },
   "premiumFeatures": {
     "message": "升级到高级版并接收："
@@ -2156,8 +2156,8 @@
     "message": "验证器 App"
   },
   "authenticatorAppDescV2": {
-    "message": "输入验证器 App（例如 Bitwarden Authenticator）生成的代码。",
-    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
+    "message": "输入验证器 App（例如 LocalPass Authenticator）生成的代码。",
+    "description": "'LocalPass Authenticator' is a product name and should not be translated."
   },
   "yubiKeyTitleV2": {
     "message": "Yubico OTP 安全密钥"
@@ -2189,7 +2189,7 @@
     "message": "自托管环境"
   },
   "selfHostedBaseUrlHint": {
-    "message": "指定您的本地托管 Bitwarden 安装的基础 URL。示例：https://bitwarden.company.com"
+    "message": "指定您的本地托管 LocalPass 安装的基础 URL。示例：https://local.invalid"
   },
   "selfHostedCustomEnvHeader": {
     "message": "对于高级配置，您可以单独指定每个服务的基础 URL。"
@@ -2242,7 +2242,7 @@
     "message": "轻松找到自动填充建议"
   },
   "autofillSpotlightDesc": {
-    "message": "关闭您浏览器的自动填充设置，以免与 Bitwarden 产生冲突。"
+    "message": "关闭您浏览器的自动填充设置，以免与 LocalPass 产生冲突。"
   },
   "turnOffBrowserAutofill": {
     "message": "关闭 $BROWSER$ 自动填充",
@@ -2298,8 +2298,8 @@
   "showInlineMenuLabel": {
     "message": "在表单字段上显示自动填充建议"
   },
-  "howDoesBitwardenProtectFromPhishing": {
-    "message": "Bitwarden 如何保护您的数据免遭网络钓鱼？"
+  "howDoesLocalPassProtectFromPhishing": {
+    "message": "LocalPass 如何保护您的数据免遭网络钓鱼？"
   },
   "currentWebsite": {
     "message": "当前网站"
@@ -3208,7 +3208,7 @@
     "message": "脆弱的主密码"
   },
   "weakMasterPasswordDesc": {
-    "message": "您选择的主密码较弱。您应该使用强密码（或密码短语）来正确保护您的 Bitwarden 账户。确定要使用这个主密码吗？"
+    "message": "您选择的主密码较弱。您应该使用强密码（或密码短语）来正确保护您的 LocalPass 账户。确定要使用这个主密码吗？"
   },
   "rotateAccountEncKey": {
     "message": "同时轮换我的账户加密密钥"
@@ -3220,7 +3220,7 @@
     "message": "确定要轮换您的账户加密密钥吗？"
   },
   "updateEncryptionKeyWarning": {
-    "message": "更新加密密钥后，您需要注销当前正在使用的所有 Bitwarden 应用程序（例如移动 App 或浏览器扩展）然后重新登录。注销然后重新登录（这将下载新的加密密钥）失败可能会导致数据损坏。我们会尝试自动为您注销，但可能会有所延迟。"
+    "message": "更新加密密钥后，您需要注销当前正在使用的所有 LocalPass 应用程序（例如移动 App 或浏览器扩展）然后重新登录。注销然后重新登录（这将下载新的加密密钥）失败可能会导致数据损坏。我们会尝试自动为您注销，但可能会有所延迟。"
   },
   "updateEncryptionKeyAccountExportWarning": {
     "message": "所有您已保存的账户限制的导出文件将失效。"
@@ -3248,10 +3248,10 @@
     "message": "设置 PIN 码"
   },
   "setYourPinCode": {
-    "message": "设置用于解锁 Bitwarden 的 PIN 码。您的 PIN 设置将在您完全注销应用程序时被重置。"
+    "message": "设置用于解锁 LocalPass 的 PIN 码。您的 PIN 设置将在您完全注销应用程序时被重置。"
   },
   "setPinCode": {
-    "message": "您可以使用此 PIN 码解锁 Bitwarden。您的 PIN 码将在您完全注销此应用程序时被重置。"
+    "message": "您可以使用此 PIN 码解锁 LocalPass。您的 PIN 码将在您完全注销此应用程序时被重置。"
   },
   "pinRequired": {
     "message": "必须填写 PIN 码。"
@@ -3272,7 +3272,7 @@
     "message": "等待来自桌面端的确认"
   },
   "awaitDesktopDesc": {
-    "message": "请确认在 Bitwarden 桌面应用程序中使用了生物识别以设置浏览器的生物识别。"
+    "message": "请确认在 LocalPass 桌面应用程序中使用了生物识别以设置浏览器的生物识别。"
   },
   "lockWithMasterPassOnRestart": {
     "message": "浏览器重启后使用主密码锁定"
@@ -3387,7 +3387,7 @@
     "message": "该表单由与您保存的登录 URI 不同的域名托管。选择「确定」继续自动填充，或选择「取消」停止自动填充。"
   },
   "autofillIframeWarningTip": {
-    "message": "要防止以后出现此警告，请将此站点的 URI $HOSTNAME$ 保存到您的 Bitwarden 登录项目中。",
+    "message": "要防止以后出现此警告，请将此站点的 URI $HOSTNAME$ 保存到您的 LocalPass 登录项目中。",
     "placeholders": {
       "hostname": {
         "content": "$1",
@@ -3396,7 +3396,7 @@
     }
   },
   "topLayerHijackWarning": {
-    "message": "此页面正在干扰 Bitwarden 的使用体验。出于安全考虑，Bitwarden 内嵌菜单已被暂时禁用。"
+    "message": "此页面正在干扰 LocalPass 的使用体验。出于安全考虑，LocalPass 内嵌菜单已被暂时禁用。"
   },
   "setMasterPassword": {
     "message": "设置主密码"
@@ -3453,7 +3453,7 @@
     "message": "您的新主密码不符合策略要求。"
   },
   "receiveMarketingEmails": {
-    "message": "通过电子邮件接收 Bitwarden 的最新动态。"
+    "message": "通过电子邮件接收 LocalPass 的最新动态。"
   },
   "unsubscribe": {
     "message": "取消订阅"
@@ -3498,13 +3498,13 @@
     "message": "浏览器集成未设置"
   },
   "desktopIntegrationDisabledDesc": {
-    "message": "浏览器集成在 Bitwarden 桌面应用程序中未设置。请在桌面应用程序的设置中设置它。"
+    "message": "浏览器集成在 LocalPass 桌面应用程序中未设置。请在桌面应用程序的设置中设置它。"
   },
   "startDesktopTitle": {
-    "message": "启动 Bitwarden 桌面应用程序"
+    "message": "启动 LocalPass 桌面应用程序"
   },
   "startDesktopDesc": {
-    "message": "Bitwarden 桌面应用程序需要已启动才能使用生物识别解锁。"
+    "message": "LocalPass 桌面应用程序需要已启动才能使用生物识别解锁。"
   },
   "errorEnableBiometricTitle": {
     "message": "无法设置生物识别"
@@ -3558,13 +3558,13 @@
     "message": "生物识别失败"
   },
   "biometricsFailedDesc": {
-    "message": "生物识别无法完成，请尝试使用主密码或注销。如果仍无法解决，请联系 Bitwarden 支持。"
+    "message": "生物识别无法完成，请尝试使用主密码或注销。如果仍无法解决，请联系 LocalPass 支持。"
   },
   "nativeMessagingPermissionErrorTitle": {
     "message": "未提供权限"
   },
   "nativeMessagingPermissionErrorDesc": {
-    "message": "由于没有与 Bitwarden 桌面应用程序通信的权限，我们无法在浏览器扩展中提供生物识别。请重试。"
+    "message": "由于没有与 LocalPass 桌面应用程序通信的权限，我们无法在浏览器扩展中提供生物识别。请重试。"
   },
   "nativeMessagingPermissionSidebarTitle": {
     "message": "权限请求错误"
@@ -3601,7 +3601,7 @@
     "message": "排除域名"
   },
   "excludedDomainsDesc": {
-    "message": "Bitwarden 将不会提示保存这些域名的登录信息。您必须刷新页面才能使更改生效。"
+    "message": "LocalPass 将不会提示保存这些域名的登录信息。您必须刷新页面才能使更改生效。"
   },
   "blockedDomainsDesc": {
     "message": "将不会为这些网站提供自动填充和其他相关功能。您必须刷新页面才能使更改生效。"
@@ -3733,24 +3733,24 @@
     "message": "存在风险的登录列表示意图。"
   },
   "welcomeDialogGraphicAlt": {
-    "message": "Bitwarden 密码库页面布局示意图。"
+    "message": "LocalPass 密码库页面布局示意图。"
   },
   "generatePasswordSlideDesc": {
-    "message": "在存在风险的站点上，使用 Bitwarden 自动填充菜单快速生成强大且唯一的密码。",
+    "message": "在存在风险的站点上，使用 LocalPass 自动填充菜单快速生成强大且唯一的密码。",
     "description": "Description of the generate password slide on the at-risk password page carousel"
   },
   "generatePasswordSlideImgAltPeriod": {
-    "message": "显示生成的密码的 Bitwarden 自动填充菜单示意图。"
+    "message": "显示生成的密码的 LocalPass 自动填充菜单示意图。"
   },
-  "updateInBitwarden": {
-    "message": "在 Bitwarden 中更新"
+  "updateInLocalPass": {
+    "message": "在 LocalPass 中更新"
   },
-  "updateInBitwardenSlideDesc": {
-    "message": "然后，Bitwarden 会提示您更新密码管理器中的密码。",
-    "description": "Description of the update in Bitwarden slide on the at-risk password page carousel"
+  "updateInLocalPassSlideDesc": {
+    "message": "然后，LocalPass 会提示您更新密码管理器中的密码。",
+    "description": "Description of the update in LocalPass slide on the at-risk password page carousel"
   },
-  "updateInBitwardenSlideImgAltPeriod": {
-    "message": "提示用户更新登录的 Bitwarden 通知示意图。"
+  "updateInLocalPassSlideImgAltPeriod": {
+    "message": "提示用户更新登录的 LocalPass 通知示意图。"
   },
   "turnOnAutofill": {
     "message": "开启自动填充"
@@ -3804,11 +3804,11 @@
   },
   "send": {
     "message": "Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendDetails": {
     "message": "Send 详细信息",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendTypeText": {
     "message": "文本 Send"
@@ -3824,7 +3824,7 @@
   },
   "sendsCount": {
     "message": "$COUNT$ 个 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -3834,11 +3834,11 @@
   },
   "oneSendCount": {
     "message": "1 个 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendsTitleNoItemsV2": {
     "message": "您没有 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendsBodyNoItemsV2": {
     "message": "与任何人安全地分享文本和文件。您的信息将经过端到端加密。"
@@ -3848,7 +3848,7 @@
   },
   "allSends": {
     "message": "所有 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "maxAccessCountReached": {
     "message": "已达最大访问次数",
@@ -3868,7 +3868,7 @@
   },
   "copySendLink": {
     "message": "复制 Send 链接",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "removeAuth": {
     "message": "移除密码或电子邮箱验证"
@@ -3881,11 +3881,11 @@
   },
   "deletedSend": {
     "message": "Send 已删除",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendLink": {
     "message": "Send 链接",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "disabled": {
     "message": "已禁用"
@@ -3907,34 +3907,34 @@
   },
   "removeSendPasswordConfirmation": {
     "message": "确定要从此 Send 中移除密码要求吗？",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "removeSendEmailVerificationConfirmation": {
     "message": "确定要从此 Send 中移除电子邮箱验证要求吗？",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deleteSend": {
     "message": "删除 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deleteSendConfirmation": {
     "message": "确定要删除此 Send 吗？",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deleteSendPermanentConfirmation": {
     "message": "确定要永久删除此 Send 吗？",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "editSend": {
     "message": "编辑 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "deletionDate": {
     "message": "删除日期"
   },
   "deletionDateDescV2": {
     "message": "此 Send 将在此日期后被永久删除。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "expirationDate": {
     "message": "到期日期"
@@ -3956,38 +3956,38 @@
   },
   "createSend": {
     "message": "创建 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "createSendV2": {
     "message": "创建 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "newPassword": {
     "message": "新密码"
   },
   "sendDisabled": {
     "message": "Send 已禁用",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendDisabledWarning": {
     "message": "由于某个企业策略，您只能删除现有的 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "createdSend": {
     "message": "Send 已创建",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "createdSendSuccessfully": {
     "message": "Send 创建成功！",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendExpiresInHoursSingle": {
     "message": "在接下来的 1 小时内，拥有链接的任何人都可以访问此 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendExpiresInHours": {
     "message": "在接下来的 $HOURS$ 小时内，拥有链接的任何人都可以访问此 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -3997,11 +3997,11 @@
   },
   "sendExpiresInDaysSingle": {
     "message": "在接下来的 1 天内，拥有链接的任何人都可以访问此 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendExpiresInDays": {
     "message": "在接下来的 $DAYS$ 天内，拥有链接的任何人都可以访问此 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "days": {
         "content": "$1",
@@ -4020,7 +4020,7 @@
   },
   "sendCreatedDescriptionV2": {
     "message": "复制并分享此 Send 链接。在接下来的 $TIME$ 内，拥有链接的任何人都可以访问此 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "time": {
         "content": "$1",
@@ -4030,7 +4030,7 @@
   },
   "sendCreatedDescriptionPassword": {
     "message": "复制并分享此 Send 链接。在接下来的 $TIME$ 内，拥有链接以及您设置的密码的任何人都可以访问此 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "time": {
         "content": "$1",
@@ -4040,7 +4040,7 @@
   },
   "sendCreatedDescriptionEmail": {
     "message": "复制并分享此 Send 链接。在接下来的 $TIME$ 内，您指定的人员可查看此 Send。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated.",
     "placeholders": {
       "time": {
         "content": "$1",
@@ -4050,11 +4050,11 @@
   },
   "sendLinkCopied": {
     "message": "Send 链接已复制",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "editedSend": {
     "message": "Send 已保存",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "popOut": {
     "message": "弹出"
@@ -4312,10 +4312,10 @@
     "message": "获取自动填充数据时出错"
   },
   "couldNotDecryptVaultItem": {
-    "message": "Bitwarden 无法解密下面列出的密码库项目。请联系 Bitwarden 客户支持并提供下面的项目 ID，以查看它是否可以恢复。"
+    "message": "LocalPass 无法解密下面列出的密码库项目。请联系 LocalPass 客户支持并提供下面的项目 ID，以查看它是否可以恢复。"
   },
   "couldNotDecryptVaultItems": {
-    "message": "Bitwarden 无法解密下面列出的密码库项目。请联系 Bitwarden 客户支持并提供下面的项目 ID，以查看它们是否可以恢复。"
+    "message": "LocalPass 无法解密下面列出的密码库项目。请联系 LocalPass 客户支持并提供下面的项目 ID，以查看它们是否可以恢复。"
   },
   "itemId": {
     "message": "项目 ID",
@@ -4425,11 +4425,11 @@
     }
   },
   "forwarderGeneratedBy": {
-    "message": "由 Bitwarden 生成。",
+    "message": "由 LocalPass 生成。",
     "description": "Displayed with the address on the forwarding service's configuration screen."
   },
   "forwarderGeneratedByWithWebsite": {
-    "message": "网站：$WEBSITE$。由 Bitwarden 生成。",
+    "message": "网站：$WEBSITE$。由 LocalPass 生成。",
     "description": "Displayed with the address on the forwarding service's configuration screen.",
     "placeholders": {
       "WEBSITE": {
@@ -4651,7 +4651,7 @@
     "message": "通知已发送到您的设备。"
   },
   "notificationSentDevicePart1": {
-    "message": "解锁您设备上的 Bitwarden 或解锁"
+    "message": "解锁您设备上的 LocalPass 或解锁"
   },
   "notificationSentDeviceAnchor": {
     "message": "网页 App"
@@ -5009,11 +5009,11 @@
   },
   "sendsTitleNoItems": {
     "message": "安全地发送敏感信息",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendsBodyNoItems": {
     "message": "在任何平台上与任何人安全地分享文件和数据。您的信息将在限制暴露的同时保持端到端加密。",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "inputRequired": {
     "message": "必须输入内容。"
@@ -5150,16 +5150,16 @@
   "skipToContent": {
     "message": "跳转到内容"
   },
-  "bitwardenOverlayButton": {
-    "message": "Bitwarden 自动填充菜单按钮",
+  "localpassOverlayButton": {
+    "message": "LocalPass 自动填充菜单按钮",
     "description": "Page title for the iframe containing the overlay button"
   },
-  "toggleBitwardenVaultOverlay": {
-    "message": "切换 Bitwarden 自动填充菜单",
+  "toggleLocalPassVaultOverlay": {
+    "message": "切换 LocalPass 自动填充菜单",
     "description": "Screen reader and tool tip label for the overlay button"
   },
-  "bitwardenVault": {
-    "message": "Bitwarden 自动填充菜单",
+  "localpassVault": {
+    "message": "LocalPass 自动填充菜单",
     "description": "Page title in overlay"
   },
   "unlockYourAccountToViewMatchingLogins": {
@@ -5230,8 +5230,8 @@
     "message": "添加新的密码库身份项目（在新窗口中打开）",
     "description": "Screen reader text (aria-label) for new identity button within inline menu"
   },
-  "bitwardenOverlayMenuAvailable": {
-    "message": "Bitwarden 自动填充菜单可用。按向下箭头键进行选择。",
+  "localpassOverlayMenuAvailable": {
+    "message": "LocalPass 自动填充菜单可用。按向下箭头键进行选择。",
     "description": "Screen reader text for announcing when the overlay opens on the page"
   },
   "turnOn": {
@@ -5268,7 +5268,7 @@
     "message": "导入成功"
   },
   "importConfirmationBody": {
-    "message": "您已成功将 $AMOUNT$ 个项目导入 Bitwarden。",
+    "message": "您已成功将 $AMOUNT$ 个项目导入 LocalPass。",
     "placeholders": {
       "amount": {
         "content": "$1",
@@ -5277,7 +5277,7 @@
     }
   },
   "importConfirmationBodySingular": {
-    "message": "您已成功将 1 个项目导入 Bitwarden。"
+    "message": "您已成功将 1 个项目导入 LocalPass。"
   },
   "importConfirmationTipLabel": {
     "message": "提示："
@@ -5287,7 +5287,7 @@
     "placeholders": {
       "filename": {
         "content": "$1",
-        "example": "bitwarden_export.json"
+        "example": "localpass_export.json"
       }
     }
   },
@@ -5322,18 +5322,18 @@
     "message": "出错了..."
   },
   "openingExtensionError": {
-    "message": "打开 Bitwarden 浏览器扩展时出现问题。点击按钮立即将其打开。"
+    "message": "打开 LocalPass 浏览器扩展时出现问题。点击按钮立即将其打开。"
   },
   "openExtension": {
     "message": "打开扩展"
   },
   "openingExtensionToolbarErrorPart1": {
-    "message": "打开 Bitwarden 浏览器扩展时出现问题。请从工具栏打开 Bitwarden 图标 ",
-    "description": "This will be used as part of a larger sentence, broken up to include the Bitwarden icon. The full sentence will read 'We had trouble opening the Bitwarden browser extension. Open the Bitwarden icon [Bitwarden Icon] from the toolbar.'"
+    "message": "打开 LocalPass 浏览器扩展时出现问题。请从工具栏打开 LocalPass 图标 ",
+    "description": "This will be used as part of a larger sentence, broken up to include the LocalPass icon. The full sentence will read 'We had trouble opening the LocalPass browser extension. Open the LocalPass icon [LocalPass Icon] from the toolbar.'"
   },
   "openingExtensionToolbarErrorPart2": {
     "message": "。",
-    "description": "This will be used as part of a larger sentence, broken up to include the Bitwarden icon. The full sentence will read 'We had trouble opening the Bitwarden browser extension. Open the Bitwarden icon [Bitwarden Icon] from the toolbar.'"
+    "description": "This will be used as part of a larger sentence, broken up to include the LocalPass icon. The full sentence will read 'We had trouble opening the LocalPass browser extension. Open the LocalPass icon [LocalPass Icon] from the toolbar.'"
   },
   "tryAgain": {
     "message": "重试"
@@ -5674,7 +5674,7 @@
     "message": "设计即安全"
   },
   "importDataSecureByDesignBody": {
-    "message": "端到端加密传输。Bitwarden 绝不会获取您的 $VENDOR$ 登录详细信息。",
+    "message": "端到端加密传输。LocalPass 绝不会获取您的 $VENDOR$ 登录详细信息。",
     "placeholders": {
       "vendor": {
         "content": "$1",
@@ -5849,7 +5849,7 @@
     "description": "Followed by a literal filename (my_passwords.json) rendered as code."
   },
   "importGnomeInstructionsFileHere": {
-    "message": "文件上传到 Bitwarden。",
+    "message": "文件上传到 LocalPass。",
     "description": "Follows the my_passwords.json filename."
   },
   "importPasswordagentInstructions": {
@@ -6321,7 +6321,7 @@
     "message": "Log in with SSO"
   },
   "onePasswordSsoSwitchToSignInPage": {
-    "message": "Switch to the SSO sign-in page to finish importing into Bitwarden."
+    "message": "Switch to the SSO sign-in page to finish importing into LocalPass."
   },
   "onePasswordSsoEncryptionKeyTransfer": {
     "message": "Encryption key transfer"
@@ -6545,8 +6545,8 @@
   "activeAccount": {
     "message": "活动账户"
   },
-  "bitwardenAccount": {
-    "message": "Bitwarden 账户"
+  "localpassAccount": {
+    "message": "LocalPass 账户"
   },
   "availableAccounts": {
     "message": "可用账户"
@@ -6592,8 +6592,8 @@
     "description": "Label indicating the most common import formats"
   },
   "uriMatchDefaultStrategyHint": {
-    "message": "Bitwarden 根据 URI 匹配检测来识别自动填充建议。",
-    "description": "Explains to the user that URI match detection determines how Bitwarden suggests autofill options, and clarifies that this default strategy applies when no specific match detection is set for a login item."
+    "message": "LocalPass 根据 URI 匹配检测来识别自动填充建议。",
+    "description": "Explains to the user that URI match detection determines how LocalPass suggests autofill options, and clarifies that this default strategy applies when no specific match detection is set for a login item."
   },
   "regExAdvancedOptionWarning": {
     "message": "「正则表达方式」是一种高级选项，会增加暴露凭据的风险。",
@@ -6636,24 +6636,24 @@
     "description": "Body content for dialog which asks if the user wants to proceed to the browser's keyboard shortcut settings page"
   },
   "overrideDefaultBrowserAutofillTitle": {
-    "message": "将 Bitwarden 设置为默认密码管理器吗？",
+    "message": "将 LocalPass 设置为默认密码管理器吗？",
     "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillDescription": {
-    "message": "忽略此选项可能会导致 Bitwarden 自动填充建议与浏览器产生冲突。",
+    "message": "忽略此选项可能会导致 LocalPass 自动填充建议与浏览器产生冲突。",
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutoFillSettings": {
-    "message": "将 Bitwarden 设置为默认密码管理器",
+    "message": "将 LocalPass 设置为默认密码管理器",
     "description": "Label for the setting that allows overriding the default browser autofill settings"
   },
   "defaultPasswordManagerCalloutTitle": {
     "message": "提升您的自动填充体验",
-    "description": "Title for the callout that prompts users to set Bitwarden as their default password manager"
+    "description": "Title for the callout that prompts users to set LocalPass as their default password manager"
   },
   "defaultPasswordManagerCalloutDesc": {
-    "message": "您将被请求授予 $BROWSER$ 浏览器权限，以将 Bitwarden 设为默认密码管理器。",
-    "description": "Description for the callout that prompts users to set Bitwarden as their default password manager",
+    "message": "您将被请求授予 $BROWSER$ 浏览器权限，以将 LocalPass 设为默认密码管理器。",
+    "description": "Description for the callout that prompts users to set LocalPass as their default password manager",
     "placeholders": {
       "browser": {
         "content": "$1",
@@ -6662,11 +6662,11 @@
     }
   },
   "privacyPermissionAdditionNotGrantedTitle": {
-    "message": "无法将 Bitwarden 设置为默认密码管理器",
+    "message": "无法将 LocalPass 设置为默认密码管理器",
     "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "privacyPermissionAdditionNotGrantedDescription": {
-    "message": "您必须授予 Bitwarden 浏览器隐私权限才能将其设置为默认密码管理器。",
+    "message": "您必须授予 LocalPass 浏览器隐私权限才能将其设置为默认密码管理器。",
     "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "makeDefault": {
@@ -6674,11 +6674,11 @@
     "description": "Button text for the setting that allows overriding the default browser autofill settings"
   },
   "defaultPasswordManagerPromptTitle": {
-    "message": "将 Bitwarden 设置为浏览器的默认密码管理器"
+    "message": "将 LocalPass 设置为浏览器的默认密码管理器"
   },
   "defaultPasswordManagerPromptTitleV2": {
-    "message": "将 Bitwarden 设置为默认密码管理器",
-    "description": "Label for the setting to make Bitwarden the default password manager"
+    "message": "将 LocalPass 设置为默认密码管理器",
+    "description": "Label for the setting to make LocalPass the default password manager"
   },
   "defaultPasswordManagerSettingHintV2": {
     "message": "关闭浏览器自动填充设置以避免冲突。",
@@ -6689,13 +6689,13 @@
     "description": "Link text to browser autofill settings in the default password manager setting hint."
   },
   "defaultPasswordManagerPromptStep2AfterAllow": {
-    "message": "根据浏览器提示授予 Bitwarden 更改您的设置的权限。"
+    "message": "根据浏览器提示授予 LocalPass 更改您的设置的权限。"
   },
   "defaultPasswordManagerPromptStep3": {
     "message": "我们将关闭您浏览器的内置密码管理器，以便您可以享受安全的登录体验。"
   },
   "defaultPasswordManagerSuccessToast": {
-    "message": "已将 Bitwarden 设置为浏览器的默认密码管理器"
+    "message": "已将 LocalPass 设置为浏览器的默认密码管理器"
   },
   "allow": {
     "message": "允许",
@@ -7102,17 +7102,17 @@
   "downloadAttachmentLabel": {
     "message": "下载附件"
   },
-  "downloadBitwarden": {
-    "message": "下载 Bitwarden"
+  "downloadLocalPass": {
+    "message": "下载 LocalPass"
   },
-  "downloadBitwardenOnAllDevices": {
-    "message": "在所有设备上下载 Bitwarden"
+  "downloadLocalPassOnAllDevices": {
+    "message": "在所有设备上下载 LocalPass"
   },
   "getTheMobileApp": {
     "message": "获取移动 App"
   },
   "getTheMobileAppDesc": {
-    "message": "使用 Bitwarden 移动 App，随时随地访问您的密码。"
+    "message": "使用 LocalPass 移动 App，随时随地访问您的密码。"
   },
   "getTheDesktopApp": {
     "message": "获取桌面 App"
@@ -7120,8 +7120,8 @@
   "getTheDesktopAppDesc": {
     "message": "无需使用浏览器访问您的密码库。在桌面 App 和浏览器扩展中同时设置生物识别解锁，即可实现快速解锁。"
   },
-  "downloadFromBitwardenNow": {
-    "message": "立即从 bitwarden.com 下载"
+  "downloadFromLocalPassNow": {
+    "message": "立即从 local.invalid 下载"
   },
   "getItOnGooglePlay": {
     "message": "从 Google Play 获取"
@@ -7554,15 +7554,15 @@
   },
   "fileSends": {
     "message": "文件 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "textSends": {
     "message": "文本 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "itemSends": {
     "message": "Send 项目",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "accountActions": {
     "message": "账户操作"
@@ -7667,10 +7667,10 @@
     "message": "由于系统文件配置错误，生物识别解锁不可用。"
   },
   "biometricsStatusHelptextDesktopDisconnected": {
-    "message": "生物识别解锁不可用，因为 Bitwarden 桌面 App 已关闭。"
+    "message": "生物识别解锁不可用，因为 LocalPass 桌面 App 已关闭。"
   },
   "biometricsStatusHelptextNotEnabledInDesktop": {
-    "message": "生物识别解锁不可用，因为在 Bitwarden 桌面 App 中没有为 $EMAIL$ 启用生物识别解锁。",
+    "message": "生物识别解锁不可用，因为在 LocalPass 桌面 App 中没有为 $EMAIL$ 启用生物识别解锁。",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -7701,9 +7701,9 @@
     "message": "密码已重新生成",
     "description": "Notification message for when a password has been regenerated"
   },
-  "saveToBitwarden": {
-    "message": "保存到 Bitwarden",
-    "description": "Confirmation message for saving a login to Bitwarden"
+  "saveToLocalPass": {
+    "message": "保存到 LocalPass",
+    "description": "Confirmation message for saving a login to LocalPass"
   },
   "spaceCharacterDescriptor": {
     "message": "空格",
@@ -7946,13 +7946,13 @@
     "message": "使用文件夹来整理密码库项目。文件夹只对您可用，其他人无法看到或使用它们。"
   },
   "introCarouselLabel": {
-    "message": "欢迎使用 Bitwarden"
+    "message": "欢迎使用 LocalPass"
   },
   "securityPrioritized": {
     "message": "以安全为首要"
   },
   "securityPrioritizedBody": {
-    "message": "将登录、支付卡和身份保存到您的安全密码库。Bitwarden 使用零知识、端到端的加密来保护您的重要信息。"
+    "message": "将登录、支付卡和身份保存到您的安全密码库。LocalPass 使用零知识、端到端的加密来保护您的重要信息。"
   },
   "quickLogin": {
     "message": "快速便捷的登录"
@@ -7970,7 +7970,7 @@
     "message": "随时随地在您需要时获取您的数据"
   },
   "secureDevicesBody": {
-    "message": "使用 Bitwarden 移动端、浏览器和桌面 App 在无限制的设备上保存无限数量的密码。"
+    "message": "使用 LocalPass 移动端、浏览器和桌面 App 在无限制的设备上保存无限数量的密码。"
   },
   "nudgeBadgeAria": {
     "message": "1 个通知"
@@ -7979,7 +7979,7 @@
     "message": "导入现有密码"
   },
   "emptyVaultNudgeBody": {
-    "message": "使用导入器快速将登录转移到 Bitwarden 而无需手动添加。"
+    "message": "使用导入器快速将登录转移到 LocalPass 而无需手动添加。"
   },
   "emptyVaultNudgeButton": {
     "message": "立即导入"
@@ -8015,7 +8015,7 @@
     "placeholders": {
       "product": {
         "content": "$1",
-        "example": "Bitwarden Phishing Blocker"
+        "example": "LocalPass Phishing Blocker"
       }
     }
   },
@@ -8098,7 +8098,7 @@
     "message": "关于此设置"
   },
   "permitCipherDetailsDescription": {
-    "message": "Bitwarden 将使用已保存的登录 URI 来确定应使用的图标或更改密码的 URL，以提升您的使用体验。使用此服务时不会收集或保存任何信息。"
+    "message": "LocalPass 将使用已保存的登录 URI 来确定应使用的图标或更改密码的 URL，以提升您的使用体验。使用此服务时不会收集或保存任何信息。"
   },
   "showQuickCopyActionsDetailsDescription": {
     "message": "在项目旁边添加 3 个快速复制按钮，以将您的用户名、密码或验证码复制到剪贴板。"
@@ -8107,7 +8107,7 @@
     "message": "您没有查看此页面的权限。请尝试使用其他账户登录。"
   },
   "wasmNotSupported": {
-    "message": "您的浏览器不支持 WebAssembly 或 WebAssembly 未启用。需要 WebAssembly 才能使用 Bitwarden App。",
+    "message": "您的浏览器不支持 WebAssembly 或 WebAssembly 未启用。需要 WebAssembly 才能使用 LocalPass App。",
     "description": "'WebAssembly' is a technical term and should not be translated."
   },
   "showMore": {
@@ -8195,7 +8195,7 @@
     "message": "错误：无法解密"
   },
   "removeMasterPasswordForOrgUserKeyConnector": {
-    "message": "您的组织已不再使用主密码登录 Bitwarden。要继续，请验证组织和域名。"
+    "message": "您的组织已不再使用主密码登录 LocalPass。要继续，请验证组织和域名。"
   },
   "continueWithLogIn": {
     "message": "继续登录"
@@ -8281,7 +8281,7 @@
     "message": "设置一个解锁方式以更改您的超时动作"
   },
   "sessionTimeoutSuppressedByConnectedDevice": {
-    "message": "由 Bitwarden 桌面 App 管理。打开桌面 App 进行编辑。"
+    "message": "由 LocalPass 桌面 App 管理。打开桌面 App 进行编辑。"
   },
   "percentageCompleted": {
     "message": "完成 $PERCENT$%",
@@ -8374,20 +8374,20 @@
     "message": "使用逗号分隔输入多个电子邮箱。"
   },
   "emailPlaceholder": {
-    "message": "user@bitwarden.com, user@acme.com"
+    "message": "user@local.invalid, user@acme.com"
   },
   "emailPlaceholderMultiple": {
-    "message": "user@bitwarden.com, user@acme.com"
+    "message": "user@local.invalid, user@acme.com"
   },
-  "downloadBitwardenApps": {
-    "message": "下载 Bitwarden App"
+  "downloadLocalPassApps": {
+    "message": "下载 LocalPass App"
   },
   "emailProtected": {
     "message": "电子邮箱保护"
   },
   "sendPasswordHelperText": {
     "message": "个人需要输入密码才能查看此 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "userVerificationFailed": {
     "message": "用户验证失败。"
@@ -8399,7 +8399,7 @@
     "message": "与桌面端同步解锁"
   },
   "syncUnlockWithDesktopDescription1": {
-    "message": "Bitwarden 浏览器扩展与桌面 App 将同步锁定和解锁。若可用，将使用生物识别。"
+    "message": "LocalPass 浏览器扩展与桌面 App 将同步锁定和解锁。若可用，将使用生物识别。"
   },
   "sharedUnlockUnavailableUntrustedDevice": {
     "message": "共享解锁不可用，因为您选择了不记住此设备。要启用此设置，请尝试重新登录。"
@@ -8408,13 +8408,13 @@
     "message": "需要新权限"
   },
   "sharedUnlockDesktopPermissionDesc": {
-    "message": "要使用共享解锁，Bitwarden 需要与桌面应用程序通信的权限。继续操作后，浏览器将向您请求授权。"
+    "message": "要使用共享解锁，LocalPass 需要与桌面应用程序通信的权限。继续操作后，浏览器将向您请求授权。"
   },
   "sharedUnlockDesktopPermissionWarning": {
-    "message": "Bitwarden 将锁定并重新加载。在您批准后，扩展将重新加载并锁定您的密码库。"
+    "message": "LocalPass 将锁定并重新加载。在您批准后，扩展将重新加载并锁定您的密码库。"
   },
   "biometricPermissionDesc": {
-    "message": "要使用生物识别解锁，Bitwarden 需要与桌面应用程序通信的权限。继续操作后，浏览器将向您请求授权。"
+    "message": "要使用生物识别解锁，LocalPass 需要与桌面应用程序通信的权限。继续操作后，浏览器将向您请求授权。"
   },
   "enterMonth": {
     "message": "输入月份。"
@@ -8537,7 +8537,7 @@
   },
   "sendCreated": {
     "message": "Send 已创建",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "numericInputError": {
     "message": "必须输入数字"
@@ -8572,26 +8572,26 @@
   },
   "sendNotCompliantWithYourOrgsPolicy": {
     "message": "不符合您组织的 Send 策略",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendDisabledNonCompliantBannerMessage": {
     "message": "要编辑此 Send，请创建副本。如果此 Send 可以在设置的删除日期过期，则无需任何操作",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "makeACopy": {
     "message": "创建副本"
   },
   "orgDoesNotAllowTextSends": {
     "message": "您的组织不允许文本 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "orgDoesNotAllowFileSends": {
     "message": "您的组织不允许文件 Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "sendWillAutomaticallyExpire": {
     "message": "此 Send 将在设置的删除日期自动过期",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+    "description": "'Send' is a noun and the name of a feature called 'LocalPass Send'. It should not be translated."
   },
   "errorImportingMyItemsMultiCollectionV2": {
     "message": "您不能将属于多个集合的项目导入「我的项目」"
@@ -8917,15 +8917,15 @@
     "message": "无法确定项目 ID"
   },
   "newExperienceDialogTitle": {
-    "message": "Bitwarden 拥有一个新的外观",
+    "message": "LocalPass 拥有一个新的外观",
     "description": "Title of the dialog that introduces the redesigned vault to existing users."
   },
   "newExperienceDialogDesc": {
-    "message": "体验更佳，安全如初。我们根据您们的反馈重新设计了 Bitwarden 密码库，让查找更便捷，操作更符合您的预期。",
+    "message": "体验更佳，安全如初。我们根据您们的反馈重新设计了 LocalPass 密码库，让查找更便捷，操作更符合您的预期。",
     "description": "Body copy of the dialog that introduces the redesigned vault to existing users."
   },
   "newExperienceDialogImgAlt": {
-    "message": "重新设计后的 Bitwarden 密码库预览。",
+    "message": "重新设计后的 LocalPass 密码库预览。",
     "description": "Alt text for the screenshot shown in the dialog that introduces the redesigned vault."
   },
   "exploreTheNewVault": {
@@ -9444,7 +9444,7 @@
     "message": "已请求访问权限"
   },
   "localVaultStartTitle": {
-    "message": "LocalPassword"
+    "message": "LocalPass"
   },
   "localVaultIntro": {
     "message": "这个保险库只存在于本机。没有账户，也没有服务器——你保存的一切都不会离开这台电脑。"

@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType, FieldType } from "@bitwarden/common/vault/enums";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType, FieldType } from "@localpass/common/vault/enums";
 
 import { PasswordBossJsonImporter } from "./passwordboss-json-importer";
 

@@ -8,7 +8,7 @@ import {
   viewChildren,
 } from "@angular/core";
 
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { BitIconButtonComponent } from "../icon-button/icon-button.component";
 import { IconTileComponent } from "../icon-tile/icon-tile.component";

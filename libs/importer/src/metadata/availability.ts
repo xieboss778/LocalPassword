@@ -1,5 +1,5 @@
-import { ClientType } from "@bitwarden/client-type";
-import { deepFreeze } from "@bitwarden/common/tools/util";
+import { ClientType } from "@localpass/client-type";
+import { deepFreeze } from "@localpass/common/tools/util";
 
 import { DataLoader, Loader } from "./data";
 

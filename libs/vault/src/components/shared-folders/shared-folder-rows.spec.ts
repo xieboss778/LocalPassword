@@ -1,10 +1,10 @@
 import {
   CollectionTypes,
   CollectionView,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { SharedFolderPermission } from "./shared-folder-permission";
 import { sharedFolderRows } from "./shared-folder-rows";

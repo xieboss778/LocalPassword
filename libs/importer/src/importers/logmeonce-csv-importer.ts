@@ -1,4 +1,4 @@
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { ImportResult } from "../models/import-result";
 

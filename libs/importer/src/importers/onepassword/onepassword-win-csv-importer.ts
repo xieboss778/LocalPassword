@@ -1,9 +1,9 @@
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 
 import { Importer } from "../importer";
 

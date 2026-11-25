@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { ButtonModule, TypographyModule } from "@bitwarden/components";
+import { ButtonModule, TypographyModule } from "@localpass/components";
 
 import { JslibModule } from "../../jslib.module";
 

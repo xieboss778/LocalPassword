@@ -1,4 +1,4 @@
-import { ThemeType } from "@bitwarden/common/platform/enums";
+import { ThemeType } from "@localpass/common/platform/enums";
 
 import { fromIpcSystemTheme } from "./from-ipc-system-theme";
 

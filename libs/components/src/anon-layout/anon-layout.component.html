@@ -36,14 +36,16 @@
         <ng-content select="[slot=footer-secondary]"></ng-content>
 
         @if (showReadonlyHostname()) {
-          <div bitTypography="body2">{{ "accessing" | i18n }} {{ hostname() }}</div>
+          @if (hostname()) {
+            <div bitTypography="body2">{{ "accessing" | i18n }} {{ hostname() }}</div>
+          }
         } @else {
           <ng-content select="[slot=environment-selector]"></ng-content>
         }
       </div>
 
       @if (!hideYearAndVersion) {
-        <div bitTypography="body2">&copy; {{ year }} Bitwarden Inc.</div>
+        <div bitTypography="body2">&copy; {{ year }} LocalPass Inc.</div>
         <div bitTypography="body2">{{ version() }}</div>
       }
     </bit-landing-footer>

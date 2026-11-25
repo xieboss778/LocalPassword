@@ -2,7 +2,7 @@ import { importOptions, importOptionsById } from "./import-options";
 import { importUpgradeOptions, importUpgradeOptionsById } from "./import-upgrade-options";
 
 const VENDOR_ONLY_IDS = [
-  "bitwarden",
+  "localpass",
   "dashlane",
   "keepass",
   "1password",
@@ -34,7 +34,7 @@ describe("importUpgradeOptions", () => {
   it("points the KeePass formats at the Help Center article instead of the legacy instruction text", () => {
     for (const id of ["keepass2xml", "keepassxcsv"] as const) {
       expect(importUpgradeOptionsById[id].instructionLink).toBe(
-        "https://bitwarden.com/help/import-from-keepass/",
+        "https://github.com/xieboss778/LocalPass/tree/main/docs",
       );
       expect("instructionKey" in importUpgradeOptionsById[id]).toBe(false);
     }

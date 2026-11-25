@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 import {
   CipherView as SdkCipherView,
   CipherType as SdkCipherType,
@@ -9,7 +9,7 @@ import {
   LoginView as SdkLoginView,
   FieldView as SdkFieldView,
   FieldType as SdkFieldType,
-} from "@bitwarden/sdk-internal";
+} from "@localpass/sdk-internal";
 
 import { mockFromJson, mockFromSdk } from "../../../../spec";
 import { asUuid } from "../../../platform/abstractions/sdk/sdk.service";
@@ -198,7 +198,7 @@ describe("CipherView", () => {
         login: {
           username: "username",
           password: "password",
-          uris: [{ uri: "bitwarden.com" } as SdkLoginUriView],
+          uris: [{ uri: "local.invalid" } as SdkLoginUriView],
           totp: "totp",
           autofillOnPageLoad: true,
         } as SdkLoginView,
@@ -256,7 +256,7 @@ describe("CipherView", () => {
           password: "password",
           uris: [
             {
-              uri: "bitwarden.com",
+              uri: "local.invalid",
             },
           ],
           totp: "totp",

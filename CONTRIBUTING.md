@@ -1,10 +1,10 @@
 # 参与贡献
 
-感谢你愿意为 LocalPassword 出力。这是一个离线密码管理器，安全性和可审查性比功能速度更重要，因此下面这些约定请认真读一遍。
+感谢你愿意为 LocalPass 出力。这是一个离线密码管理器，安全性和可审查性比功能速度更重要，因此下面这些约定请认真读一遍。
 
 ## 开始之前
 
-- 先看 [README](README.md) 了解项目定位，以及 [docs/LocalPassword-实施计划.md](docs/LocalPassword-实施计划.md) 了解架构决策。
+- 先看 [README](README.md) 了解项目定位，以及 [docs/LocalPass-实施计划.md](docs/LocalPass-实施计划.md) 了解架构决策。
 - 较大的改动（新增依赖、修改保险库写入路径、改动加密相关代码）请**先开 issue 讨论**，避免白做工。
 - 参与本项目即表示你同意遵守 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
 
@@ -13,8 +13,8 @@
 需要 Node.js（版本见 `.nvmrc`）与 npm。
 
 ```bash
-git clone https://github.com/xieboss778/LocalPassword.git
-cd LocalPassword
+git clone https://github.com/xieboss778/LocalPass.git
+cd LocalPass
 npm ci
 npm run build:chrome
 ```
@@ -36,7 +36,7 @@ npm run build:chrome
 1. **不要引入网络请求。** 除备份存储和用户主动触发的泄露查询外，任何新的出站请求都需要在 PR 里说明理由，并经过维护者确认。
 2. **不要绕过加密。** 条目必须先经 SDK 加密再落盘，明文不得写入 `chrome.storage`、日志或错误上报。
 3. **对上游改动保持最小。** 优先新建文件承载逻辑；必须改上游文件时，把改动控制在尽量少的行数，并在 PR 描述里列出改动位置，方便后续合并上游。
-4. **不要碰 `bitwarden_license/` 目录。** 该目录在上游适用另一套许可，本项目不包含、也不修改其中的代码。
+4. **不要碰 `localpass_license/` 目录。** 该目录在上游适用另一套许可，本项目不包含、也不修改其中的代码。
 5. **补充测试。** 涉及加密、同步合并、本地写入的改动必须有单元测试覆盖。
 
 ## 数据库 / 状态变更

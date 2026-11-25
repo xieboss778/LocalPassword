@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { CryptoFunctionService, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { CryptoFunctionService, SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import { PrfKey } from "../../../types/key";
 import { WebAuthnLoginPrfKeyServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-key.service.abstraction";

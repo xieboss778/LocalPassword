@@ -1,45 +1,46 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "extraMetadata": {
-    "name": "bitwarden-beta",
-    "productName": "Bitwarden Beta"
+    "name": "localpass-beta",
+    "productName": "LocalPass Beta"
   },
-  "productName": "Bitwarden Beta",
-  "appId": "com.bitwarden.beta.desktop",
+  "productName": "LocalPass Beta",
+  "appId": "com.localpass.desktop.beta",
   "buildDependenciesFromSource": true,
-  "copyright": "Copyright © 2015-2026 Bitwarden Inc.",
+  "copyright": "Copyright © 2015-2026 LocalPass Inc.",
   "directories": {
     "buildResources": "resources",
     "output": "dist",
     "app": "build"
   },
-  "afterSign": "scripts/after-sign.js",
+  
   "afterPack": "scripts/after-pack.js",
   "beforePack": "scripts/before-pack.js",
   "appxManifestCreated": "scripts/appx-manifest-created.js",
   "files": [
-    "!node_modules/@bitwarden/desktop-napi/scripts",
-    "!node_modules/@bitwarden/desktop-napi/src",
-    "!node_modules/@bitwarden/desktop-napi/Cargo.toml",
-    "!node_modules/@bitwarden/desktop-napi/build.rs",
-    "!node_modules/@bitwarden/desktop-napi/package.json"
+    "!node_modules/@localpass/desktop-napi/scripts",
+    "!node_modules/@localpass/desktop-napi/src",
+    "!node_modules/@localpass/desktop-napi/Cargo.toml",
+    "!node_modules/@localpass/desktop-napi/build.rs",
+    "!node_modules/@localpass/desktop-napi/package.json"
   ],
   "electronVersion": "45.2.3",
   "generateUpdatesFilesForAllChannels": true,
   "publish": {
     "provider": "generic",
-    "url": "https://artifacts.bitwarden.com/desktop"
+    "url": "https://artifacts.local.invalid/desktop"
   },
   "mac": {
+    "identity": null,
     "electronUpdaterCompatibility": ">=0.0.1",
     "category": "public.app-category.productivity",
     "darkModeSupport": true,
-    "gatekeeperAssess": false,
-    "hardenedRuntime": true,
-    "entitlements": "resources/entitlements.mac.beta.plist",
-    "entitlementsInherit": "resources/entitlements.mac.inherit.plist",
+    
+    
+    
+    
     "extendInfo": {
-      "BitwardenAppGroupIdentifier": "LTZ2PFU5D6.com.bitwarden.beta.desktop",
+      "LocalPassAppGroupIdentifier": "LTZ2PFU5D6.com.localpass.desktop.beta",
       "ITSAppUsesNonExemptEncryption": false,
       "CFBundleLocalizations": [
         "en",
@@ -72,9 +73,9 @@
       ],
       "CFBundleDevelopmentRegion": "en"
     },
-    "provisioningProfile": "bitwarden_beta_desktop_developer_id.provisionprofile",
+    "provisioningProfile": "localpass_beta_desktop_developer_id.provisionprofile",
     "icon": "icon.beta.icns",
-    "singleArchFiles": "node_modules/@bitwarden/desktop-napi/desktop_napi.darwin-*.node",
+    "singleArchFiles": "node_modules/@localpass/desktop-napi/desktop_napi.darwin-*.node",
     "x64ArchFiles": "{**/desktop_napi.darwin-*.node,**/bufferutil/**/darwin-*/*.node}",
     "extraFiles": [
       {
@@ -86,14 +87,8 @@
         "to": "MacOS/desktop_proxy.inherit"
       }
     ],
-    "signIgnore": [
-      "MacOS/desktop_proxy",
-      "MacOS/desktop_proxy.inherit",
-      "Contents/PlugIns/autofill-extension.appex",
-      "Frameworks/Electron Framework.framework/(Electron Framework|Libraries|Resources|Versions/Current)/.*"
-    ],
     "target": ["dmg", "zip"],
-    "artifactName": "Bitwarden-${version}-${arch}-mac.${ext}"
+    "artifactName": "LocalPass-${version}-${arch}-mac.${ext}"
   },
   "dmg": {
     "icon": "dmg.beta.icns",
@@ -116,7 +111,7 @@
       "width": 540,
       "height": 380
     },
-    "artifactName": "Bitwarden-${version}-${arch}.${ext}"
+    "artifactName": "LocalPass-${version}-${arch}.${ext}"
   },
   "win": {
     "electronUpdaterCompatibility": ">=0.0.1",
@@ -125,7 +120,7 @@
     "signExts": [".dll", ".node"],
     "signtoolOptions": {
       "sign": "./sign.js",
-      "publisherName": "Bitwarden Inc."
+      "publisherName": "LocalPass Inc."
     },
     "extraFiles": [
       {
@@ -133,12 +128,12 @@
         "to": "desktop_proxy.exe"
       },
       {
-        "from": "desktop_native/dist/bitwarden_chromium_import_helper.win32-${arch}.exe",
-        "to": "bitwarden_chromium_import_helper.exe"
+        "from": "desktop_native/dist/localpass_chromium_import_helper.win32-${arch}.exe",
+        "to": "localpass_chromium_import_helper.exe"
       },
       {
         "from": "desktop_native/dist/windows_plugin_authenticator.win32-${arch}.exe",
-        "to": "bitwarden_plugin_authenticator.exe"
+        "to": "localpass_plugin_authenticator.exe"
       }
     ],
     "extraResources": [
@@ -160,24 +155,24 @@
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": false,
-    "artifactName": "Bitwarden-Beta-Installer-${version}.${ext}",
+    "artifactName": "LocalPass-Beta-Installer-${version}.${ext}",
     "uninstallDisplayName": "${productName}",
     "deleteAppDataOnUninstall": true,
     "include": "installer.nsh"
   },
   "portable": {
-    "artifactName": "Bitwarden-Beta-Portable-${version}.${ext}"
+    "artifactName": "LocalPass-Beta-Portable-${version}.${ext}"
   },
   "appx": {
-    "artifactName": "Bitwarden-Beta-${version}-${arch}.${ext}",
+    "artifactName": "LocalPass-Beta-${version}-${arch}.${ext}",
     "backgroundColor": "#175DDC",
     "customExtensionsPath": "../custom-appx-extensions.beta.xml",
     "minVersion": "10.0.14393.0",
     "maxVersionTested": "10.0.26100.0",
-    "applicationId": "BitwardenBeta",
-    "identityName": "8bitSolutionsLLC.BitwardenBeta",
+    "applicationId": "LocalPassBeta",
+    "identityName": "8bitSolutionsLLC.LocalPassBeta",
     "publisher": "CN=14D52771-DE3C-4886-B8BF-825BA7690418",
-    "publisherDisplayName": "Bitwarden Inc",
+    "publisherDisplayName": "LocalPass Inc",
     "languages": [
       "en-US",
       "af",
@@ -245,8 +240,8 @@
   },
   "protocols": [
     {
-      "name": "Bitwarden",
-      "schemes": ["bitwarden"]
+      "name": "LocalPass",
+      "schemes": ["localpass"]
     }
   ]
 }

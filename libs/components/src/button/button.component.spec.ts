@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DebugElement, signal } from "@angul
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { BUTTON_SPINNER_DELAY_MS } from "../shared/base-button.directive";
 import { I18nMockService } from "../utils/i18n-mock.service";

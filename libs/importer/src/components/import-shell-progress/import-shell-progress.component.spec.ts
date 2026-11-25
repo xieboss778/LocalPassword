@@ -20,10 +20,10 @@ import { RouterTestingHarness } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, Subject, throwError } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ProgressBarComponent, ScrollLayoutService, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ProgressBarComponent, ScrollLayoutService, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { ImportDestinationKind, ImportDestinations } from "../../models";
 import { ImportDestinationServiceAbstraction } from "../../services";

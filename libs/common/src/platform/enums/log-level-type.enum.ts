@@ -1,1 +1,1 @@
-export { LogLevel as LogLevelType } from "@bitwarden/logging";
+export { LogLevel as LogLevelType } from "@localpass/logging";

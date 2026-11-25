@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { CipherType, FieldType } from "@bitwarden/common/vault/enums";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CipherType, FieldType } from "@localpass/common/vault/enums";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { ImportResult } from "../models/import-result";
 

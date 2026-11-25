@@ -1,14 +1,14 @@
 import { mock } from "jest-mock-extended";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { BankAccountType } from "@bitwarden/common/vault/enums";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { FieldType } from "@bitwarden/common/vault/enums/field-type.enum";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { newGuid } from "@bitwarden/guid";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { BankAccountType } from "@localpass/common/vault/enums";
+import { CipherType } from "@localpass/common/vault/enums/cipher-type";
+import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { newGuid } from "@localpass/guid";
 
 import { ImportResult } from "../../models";
 import { assertCustomFieldsStructure } from "../spec-data/importer-test-utils";
@@ -803,7 +803,7 @@ describe("Keeper Json Importer", () => {
     // TOTP fields
     expect(login.fields.length).toEqual(1);
     expect(getField(login, "TOTP")?.value).toEqual(
-      "otpauth://totp/Google%3Asbolina%40bitwarden.com?secret=6whhjvsb3taxmlf4e7fk4v7lsusuv2m5&issuer=Google",
+      "otpauth://totp/Google%3Asbolina%40local.invalid?secret=6whhjvsb3taxmlf4e7fk4v7lsusuv2m5&issuer=Google",
     );
   });
 

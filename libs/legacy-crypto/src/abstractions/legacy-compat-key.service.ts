@@ -1,7 +1,7 @@
 // Type-only: master-password.types imports KdfConfig from this package, so a value import would be circular.
-import type { MasterPasswordSalt } from "@bitwarden/common/key-management/master-password/types/master-password.types";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UserKey, MasterKey, OrgKey, ProviderKey } from "@bitwarden/common/types/key";
+import type { MasterPasswordSalt } from "@localpass/common/key-management/master-password/types/master-password.types";
+import { UserId } from "@localpass/common/types/guid";
+import { UserKey, MasterKey, OrgKey, ProviderKey } from "@localpass/common/types/key";
 
 import { EncString } from "../models/enc-string";
 import { KdfConfig } from "../models/kdf-config";

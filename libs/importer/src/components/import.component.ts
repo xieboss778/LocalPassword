@@ -32,31 +32,31 @@ import { combineLatestWith, filter, map, switchMap, takeUntil } from "rxjs/opera
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { CollectionService } from "@bitwarden/admin-console/common";
-import { InputVerbatimDirective } from "@bitwarden/angular/directives/input-verbatim.directive";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { CollectionService } from "@localpass/admin-console/common";
+import { InputVerbatimDirective } from "@localpass/angular/directives/input-verbatim.directive";
+import { OrganizationService } from "@localpass/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
 import {
   CollectionView,
   CollectionTypes,
-} from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { ClientType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { getById } from "@bitwarden/common/platform/misc";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { isId, OrganizationId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
+} from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClientType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { getById } from "@localpass/common/platform/misc";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { isId, OrganizationId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import {
   AsyncActionsModule,
   BitSubmitDirective,
@@ -73,9 +73,9 @@ import {
   SelectModule,
   ToastService,
   LinkModule,
-  BitwardenIcon,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+  LocalPassIcon,
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { Importer } from "../importers/importer";
 import { KeeperCsvImporter } from "../importers/keeper/keeper-csv-importer";
@@ -125,7 +125,7 @@ interface ImportSource {
   name: string;
 }
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "tools-import",
@@ -158,7 +158,7 @@ export class ImportComponent implements OnInit, OnDestroy, AfterViewInit {
   DefaultCollectionType = CollectionTypes.DefaultUserCollection;
 
   // `Vfo1TerminologyService` and `Vfo1IconPipe` cannot be imported here because
-  // `@bitwarden/vault` depends on `@bitwarden/importer`, creating a circular
+  // `@localpass/vault` depends on `@localpass/importer`, creating a circular
   // module dependency at the webpack level. ConfigService is used directly instead.
   private readonly configService = inject(ConfigService);
   protected readonly vfo1Enabled = toSignal(
@@ -166,7 +166,7 @@ export class ImportComponent implements OnInit, OnDestroy, AfterViewInit {
     { initialValue: false },
   );
 
-  protected collectionIcon(type: number): BitwardenIcon {
+  protected collectionIcon(type: number): LocalPassIcon {
     if (type === CollectionTypes.DefaultUserCollection) {
       return "bwi-user";
     }
@@ -195,7 +195,7 @@ export class ImportComponent implements OnInit, OnDestroy, AfterViewInit {
    * Enables the hosting control to pass in an organizationId
    * If a organizationId is provided, the organization selection is disabled.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() set organizationId(value: OrganizationId | string | undefined) {
     if (Utils.isNullOrEmpty(value)) {
@@ -238,12 +238,12 @@ export class ImportComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   readonly defaultCollectionId = input<string | undefined>(undefined);
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   onLoadProfilesFromBrowser: (browser: string) => Promise<any[]>;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   onImportFromBrowser: (browser: string, profile: string) => Promise<any[]>;
@@ -278,32 +278,32 @@ export class ImportComponent implements OnInit, OnDestroy, AfterViewInit {
     chromiumLoader: [Loader.file as DataLoader],
   });
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(BitSubmitDirective)
   private bitSubmit: BitSubmitDirective;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(ImportKeeperComponent)
   private importKeeper?: ImportKeeperComponent;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChild(ImportOnePasswordComponent)
   private importOnePassword?: ImportOnePasswordComponent;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   formLoading = new EventEmitter<boolean>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   formDisabled = new EventEmitter<boolean>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output()
   onSuccessfulImport = new EventEmitter<string>();

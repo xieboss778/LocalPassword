@@ -1,4 +1,4 @@
-import type { CipherRiskResult, CipherId } from "@bitwarden/sdk-internal";
+import type { CipherRiskResult, CipherId } from "@localpass/sdk-internal";
 
 import { RiskCategory } from "../../dirt/vault-health/models/risk-category";
 

@@ -1,4 +1,4 @@
-//! Desktop native core functionality for Bitwarden.
+//! Desktop native core functionality for LocalPass.
 //!
 //! Modules in this crate should fall into one of these categories:
 //!  * infrastructure to interface with the Electron client
@@ -23,7 +23,7 @@ pub mod process_isolation;
 #[cfg(not(target_os = "windows"))]
 use zeroizing_alloc::ZeroAlloc;
 
-// On windows we import bitwarden-crypto which has a global allocator.
+// On windows we import localpass-crypto which has a global allocator.
 #[cfg(not(target_os = "windows"))]
 #[global_allocator]
 static ALLOC: ZeroAlloc<std::alloc::System> = ZeroAlloc(std::alloc::System);

@@ -1,4 +1,4 @@
-import { ROOT_ID } from "@bitwarden/common/autofill/constants";
+import { ROOT_ID } from "@localpass/common/autofill/constants";
 
 import { ACTION_KEYS, FIELD_KEYS } from "./keys";
 import {
@@ -23,7 +23,7 @@ describe("webmapper menu", () => {
       expect(ungated).toEqual([]);
     });
 
-    it("hangs every item off the webmapper root, and the root off the Bitwarden root", () => {
+    it("hangs every item off the webmapper root, and the root off the LocalPass root", () => {
       const ids = new Set(items.map((i) => i.id));
       const root = items.find((i) => i.id === WEBMAPPER_ROOT_ID);
 

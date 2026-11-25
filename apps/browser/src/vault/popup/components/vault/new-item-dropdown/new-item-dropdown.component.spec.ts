@@ -5,21 +5,21 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   RestrictedCipherType,
   RestrictedItemTypesService,
-} from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { ButtonModule, DialogService, MenuModule } from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
-import { FakeGlobalStateProvider } from "@bitwarden/state-test-utils";
+} from "@localpass/common/vault/services/restricted-item-types.service";
+import { ButtonModule, DialogService, MenuModule } from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
+import { FakeGlobalStateProvider } from "@localpass/state-test-utils";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/browser/browser-popup-utils";

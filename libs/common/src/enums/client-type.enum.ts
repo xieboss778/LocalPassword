@@ -1,1 +1,1 @@
-export { ClientType } from "@bitwarden/client-type";
+export { ClientType } from "@localpass/client-type";

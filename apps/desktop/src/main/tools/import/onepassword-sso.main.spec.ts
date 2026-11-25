@@ -3,7 +3,7 @@ import { EventEmitter } from "events";
 import { BrowserWindow, ipcMain, session } from "electron";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { OnePasswordSsoLoginOutcome } from "../../../types/onepassword-sso-login-outcome";
 import { WindowMain } from "../../window.main";
@@ -122,7 +122,7 @@ describe("OnePasswordSsoMain", () => {
       getUserAgent: jest
         .fn()
         .mockReturnValue(
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Bitwarden/2025.1.0 Chrome/140.0.0.0 Electron/43.5.0 Safari/537.36",
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) LocalPass/2025.1.0 Chrome/140.0.0.0 Electron/43.5.0 Safari/537.36",
         ),
       setUserAgent: jest.fn(),
       setPermissionRequestHandler: jest.fn(),
@@ -696,7 +696,7 @@ describe("withoutAppTokens", () => {
   it("removes the app and electron tokens and keeps the rest", () => {
     expect(
       withoutAppTokens(
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Bitwarden/2025.1.0 Chrome/140.0.0.0 Electron/43.5.0 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) LocalPass/2025.1.0 Chrome/140.0.0.0 Electron/43.5.0 Safari/537.36",
       ),
     ).toBe(
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
@@ -704,7 +704,7 @@ describe("withoutAppTokens", () => {
   });
 
   it("removes the token of a build with a longer name", () => {
-    expect(withoutAppTokens("Mozilla/5.0 Bitwarden-Beta/2025.1.0 Chrome/140.0.0.0")).toBe(
+    expect(withoutAppTokens("Mozilla/5.0 LocalPass-Beta/2025.1.0 Chrome/140.0.0.0")).toBe(
       "Mozilla/5.0 Chrome/140.0.0.0",
     );
   });

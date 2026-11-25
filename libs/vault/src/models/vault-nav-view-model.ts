@@ -1,5 +1,5 @@
-import { CollectionId } from "@bitwarden/common/types/guid";
-import { AvatarColor, BitwardenIcon } from "@bitwarden/components";
+import { CollectionId } from "@localpass/common/types/guid";
+import { AvatarColor, LocalPassIcon } from "@localpass/components";
 
 export const VaultNavItemType = Object.freeze({
   Personal: "personal",
@@ -24,7 +24,7 @@ export interface VaultNavItemViewModel {
    * See {@link navIconTile}.
    */
   color?: VaultNavColor;
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
   type: VaultNavItemType;
   /** The org's default user collection ("My items"); set only on org items under data ownership. */
   defaultUserCollectionId?: CollectionId;

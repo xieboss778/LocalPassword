@@ -4,7 +4,7 @@ Object.assign(global, { TextDecoder, TextEncoder });
 
 import { mock } from "jest-mock-extended";
 
-import { EFFLongWordList } from "@bitwarden/common/platform/misc/wordlist";
+import { EFFLongWordList } from "@localpass/common/platform/misc/wordlist";
 
 import { Randomizer } from "../abstractions";
 import { Algorithm, Type } from "../metadata";

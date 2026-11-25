@@ -1,47 +1,47 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, of } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
-import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
-import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
-import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
-import { UserDecryptionOptionsResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { TokenService } from "@localpass/common/auth/abstractions/token.service";
+import { AuthenticationType } from "@localpass/common/auth/enums/authentication-type";
+import { TwoFactorProviderType } from "@localpass/common/auth/enums/two-factor-provider-type";
+import { AuthResult } from "@localpass/common/auth/models/domain/auth-result";
+import { TokenTwoFactorRequest } from "@localpass/common/auth/models/request/identity-token/token-two-factor.request";
+import { IdentityTokenResponse } from "@localpass/common/auth/models/response/identity-token.response";
+import { IdentityTwoFactorResponse } from "@localpass/common/auth/models/response/identity-two-factor.response";
+import { UserDecryptionOptionsResponse } from "@localpass/common/auth/models/response/user-decryption-options/user-decryption-options.response";
 import {
   PasswordPreloginData,
   PasswordPreloginService,
-} from "@bitwarden/common/auth/password-prelogin";
-import { TwoFactorService } from "@bitwarden/common/auth/two-factor";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { DefaultAccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/default-account-cryptographic-state.service";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
-import { KeyConnectorService } from "@bitwarden/common/key-management/key-connector/abstractions/key-connector.service";
-import { FakeMasterPasswordService } from "@bitwarden/common/key-management/master-password/services/fake-master-password.service";
-import { MasterPasswordSalt } from "@bitwarden/common/key-management/master-password/types/master-password.types";
+} from "@localpass/common/auth/password-prelogin";
+import { TwoFactorService } from "@localpass/common/auth/two-factor";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
+import { DefaultAccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/default-account-cryptographic-state.service";
+import { DeviceTrustServiceAbstraction } from "@localpass/common/key-management/device-trust/abstractions/device-trust.service.abstraction";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
+import { FakeMasterPasswordService } from "@localpass/common/key-management/master-password/services/fake-master-password.service";
+import { MasterPasswordSalt } from "@localpass/common/key-management/master-password/types/master-password.types";
 import {
   VaultTimeoutAction,
   VaultTimeoutSettingsService,
-} from "@bitwarden/common/key-management/vault-timeout";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/key-management/vault-timeout";
+import { ErrorResponse } from "@localpass/common/models/response/error.response";
+import { AppIdService } from "@localpass/common/platform/abstractions/app-id.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   FakeAccountService,
   FakeGlobalStateProvider,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { UserId } from "@bitwarden/common/types/guid";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/spec";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
+import { UserId } from "@localpass/common/types/guid";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   Argon2KdfConfig,
@@ -49,8 +49,8 @@ import {
   KdfType,
   LegacyCompatKeyService,
   PBKDF2KdfConfig,
-} from "@bitwarden/legacy-crypto";
-import { UnlockService } from "@bitwarden/unlock";
+} from "@localpass/legacy-crypto";
+import { UnlockService } from "@localpass/unlock";
 
 import {
   AuthRequestServiceAbstraction,

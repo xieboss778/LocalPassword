@@ -5,7 +5,7 @@ import {
   PlanTier,
   PurchasableProration,
   PurchasableReference,
-} from "@bitwarden/pricing";
+} from "@localpass/pricing";
 
 import { BaseResponse } from "../../../models/response/base.response";
 import { SubscriptionCadence, SubscriptionCadenceIds } from "../../types/subscription-pricing-tier";

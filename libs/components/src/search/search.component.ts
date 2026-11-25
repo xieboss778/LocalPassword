@@ -15,8 +15,8 @@ import {
   FormsModule,
 } from "@angular/forms";
 
-import { isBrowserSafariApi } from "@bitwarden/platform";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { isBrowserSafariApi } from "@localpass/platform";
+import { I18nPipe } from "@localpass/ui-common";
 
 import {
   BitFieldContainerDirective,

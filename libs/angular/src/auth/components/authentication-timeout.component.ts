@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { ButtonModule } from "@bitwarden/components";
+import { ButtonModule } from "@localpass/components";
 
 import { JslibModule } from "../../jslib.module";
 
@@ -10,7 +10,7 @@ import { JslibModule } from "../../jslib.module";
  * This component is used to display a message to the user that their authentication session has expired.
  * It provides a button to navigate to the login page.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-authentication-timeout",

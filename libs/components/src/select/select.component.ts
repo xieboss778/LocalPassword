@@ -20,7 +20,7 @@ import {
 import { ControlValueAccessor, NgControl, ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { NgSelectComponent, NgSelectModule } from "@ng-select/ng-select";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { BitFormFieldControlDirective } from "../form-field";
 import { IconComponent } from "../icon";

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { isForwardedIpcMessage, isIpcMessage } from "@bitwarden/common/platform/ipc";
+import { isForwardedIpcMessage, isIpcMessage } from "@localpass/common/platform/ipc";
 
 import { LegacyMessageWrapper } from "../models/native-messaging/legacy-message-wrapper";
 import { Message } from "../models/native-messaging/message";

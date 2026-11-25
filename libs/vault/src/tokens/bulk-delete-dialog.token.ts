@@ -1,7 +1,7 @@
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 export interface BulkDeleteDialogParams {
   cipherIds?: string[];

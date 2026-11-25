@@ -4,7 +4,7 @@
  * with their master password (set via client evaluation).
  */
 // FIXME: update to use a const object instead of a typescript enum
-// eslint-disable-next-line @bitwarden/platform/no-enums
+// eslint-disable-next-line @localpass/platform/no-enums
 export enum ForceSetPasswordReason {
   /**
    * A password set/change should not be forced.

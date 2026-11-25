@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/ui-common",
+  "name": "@localpass/ui-common",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui/common/src",
   "projectType": "library",

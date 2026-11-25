@@ -2,10 +2,10 @@
 // @ts-strict-ignore
 import { Injectable } from "@angular/core";
 
-import { FileDownloadBuilder } from "@bitwarden/common/platform/abstractions/file-download/file-download.builder";
-import { FileDownloadRequest } from "@bitwarden/common/platform/abstractions/file-download/file-download.request";
-import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { FileDownloadBuilder } from "@localpass/common/platform/abstractions/file-download/file-download.builder";
+import { FileDownloadRequest } from "@localpass/common/platform/abstractions/file-download/file-download.request";
+import { FileDownloadService } from "@localpass/common/platform/abstractions/file-download/file-download.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 
 import { SafariApp } from "../../../browser/safariApp";
 import { BrowserApi } from "../../browser/browser-api";

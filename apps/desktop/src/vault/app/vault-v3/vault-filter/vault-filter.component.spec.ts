@@ -5,21 +5,21 @@ import { provideRouter } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { DialogService, SideNavService } from "@bitwarden/components";
-import { GlobalStateProvider } from "@bitwarden/state";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { TreeNode } from "@localpass/common/vault/models/domain/tree-node";
+import { DialogService, SideNavService } from "@localpass/components";
+import { GlobalStateProvider } from "@localpass/state";
 import {
   VaultFilter,
   VaultFilterServiceAbstraction,
   RoutedVaultFilterBridgeService,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { CollectionFilterComponent } from "./filters/collection-filter.component";
 import { FolderFilterComponent } from "./filters/folder-filter.component";

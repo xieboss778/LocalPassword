@@ -331,7 +331,7 @@ describe("DesktopAutotypePairingUri", () => {
       DESKTOP_APP_URI_PREFIX,
       // No query
       "desktopapp://autotype",
-      "https://bitwarden.com",
+      "https://local.invalid",
     ])("returns null for the string '%s'", (uri) => {
       expect(DesktopAutotypePairingUri.fromString(uri)).toBeNull();
     });

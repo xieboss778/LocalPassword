@@ -1,7 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
-import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
-import { FakeGlobalStateProvider } from "@bitwarden/common/spec";
+import { AuthenticationType } from "@localpass/common/auth/enums/authentication-type";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
 
 import { DefaultLoginStrategyCacheService } from "./default-login-strategy-cache.service";
 import {

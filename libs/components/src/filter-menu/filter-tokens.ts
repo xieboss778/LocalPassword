@@ -7,7 +7,7 @@ import {
   signal,
 } from "@angular/core";
 
-import { BitwardenIcon } from "../shared/icon";
+import { LocalPassIcon } from "../shared/icon";
 
 // Type-only: the components import this module for their tokens, so a value import
 // would close a cycle.
@@ -79,7 +79,7 @@ export interface FilterPresenter {
   /** Row + drill-in title — the chip's `placeholderText` or the toggle's `label`. */
   readonly label: Signal<string>;
   /** Leading icon for the filter's row, when the consumer supplies one. */
-  readonly icon: Signal<BitwardenIcon | undefined>;
+  readonly icon: Signal<LocalPassIcon | undefined>;
   /** Whether the filter has a selection (drives the row's active dot and the applied count). */
   readonly active: Signal<boolean>;
   /** Whether the filter can hold more than one value. `false` for a single-select or a toggle. */

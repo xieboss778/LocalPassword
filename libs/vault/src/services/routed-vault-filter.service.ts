@@ -2,8 +2,8 @@ import { Injectable, OnDestroy, inject } from "@angular/core";
 import { ActivatedRoute, NavigationExtras } from "@angular/router";
 import { combineLatest, map, Observable, Subject, takeUntil } from "rxjs";
 
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
-import { SafeInjectionToken } from "@bitwarden/ui-common";
+import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
+import { SafeInjectionToken } from "@localpass/ui-common";
 
 import {
   isRoutedVaultFilterItemType,

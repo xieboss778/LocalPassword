@@ -1,9 +1,9 @@
 import { firstValueFrom, Observable, of } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId, OrganizationId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId, OrganizationId } from "@localpass/common/types/guid";
 
 import { ExportedVault } from "../types";
 

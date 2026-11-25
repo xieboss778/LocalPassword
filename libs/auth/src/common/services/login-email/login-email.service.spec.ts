@@ -1,15 +1,15 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 import {
   FakeAccountService,
   FakeGlobalState,
   FakeStateProvider,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
 
 import { LoginEmailService, STORED_EMAIL } from "./login-email.service";
 
@@ -43,7 +43,7 @@ describe("LoginEmailService", () => {
 
   describe("rememberedEmail$", () => {
     it("returns the remembered email when not adding an account", async () => {
-      const testEmail = "test@bitwarden.com";
+      const testEmail = "test@local.invalid";
 
       await service.setRememberedEmailChoice(testEmail, true);
 
@@ -53,7 +53,7 @@ describe("LoginEmailService", () => {
     });
 
     it("returns the remembered email when not adding an account and the user has just logged in", async () => {
-      const testEmail = "test@bitwarden.com";
+      const testEmail = "test@local.invalid";
 
       await service.setRememberedEmailChoice(testEmail, true);
 
@@ -66,7 +66,7 @@ describe("LoginEmailService", () => {
     });
 
     it("returns null when adding an account", async () => {
-      const testEmail = "test@bitwarden.com";
+      const testEmail = "test@local.invalid";
 
       await service.setRememberedEmailChoice(testEmail, true);
 
@@ -83,7 +83,7 @@ describe("LoginEmailService", () => {
 
   describe("setRememberedEmailChoice", () => {
     it("sets the remembered email when remember is true", async () => {
-      const testEmail = "test@bitwarden.com";
+      const testEmail = "test@local.invalid";
 
       await service.setRememberedEmailChoice(testEmail, true);
 
@@ -93,9 +93,9 @@ describe("LoginEmailService", () => {
     });
 
     it("clears the remembered email when remember is false", async () => {
-      storedEmailState.stateSubject.next("initialEmail@bitwarden.com");
+      storedEmailState.stateSubject.next("initialEmail@local.invalid");
 
-      const testEmail = "test@bitwarden.com";
+      const testEmail = "test@local.invalid";
 
       await service.setRememberedEmailChoice(testEmail, false);
 
@@ -107,7 +107,7 @@ describe("LoginEmailService", () => {
 
   describe("setLoginEmail", () => {
     it("sets the login email", async () => {
-      const testEmail = "test@bitwarden.com";
+      const testEmail = "test@local.invalid";
       await service.setLoginEmail(testEmail);
 
       expect(await firstValueFrom(service.loginEmail$)).toEqual(testEmail);
@@ -116,7 +116,7 @@ describe("LoginEmailService", () => {
 
   describe("clearLoginEmail", () => {
     it("clears the login email", async () => {
-      const testEmail = "test@bitwarden.com";
+      const testEmail = "test@local.invalid";
       await service.setLoginEmail(testEmail);
       await service.clearLoginEmail();
 

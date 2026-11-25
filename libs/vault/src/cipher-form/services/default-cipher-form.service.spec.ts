@@ -2,19 +2,19 @@ import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CipherId, UserId } from "@bitwarden/common/types/guid";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { CipherId, UserId } from "@localpass/common/types/guid";
 import {
   CipherService,
   EncryptionContext,
   RestrictedCipherWriteError,
-} from "@bitwarden/common/vault/abstractions/cipher.service";
-import { RevealedCipherService } from "@bitwarden/common/vault/abstractions/revealed-cipher.service";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
-import { CipherType } from "@bitwarden/sdk-internal";
+} from "@localpass/common/vault/abstractions/cipher.service";
+import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
+import { CipherType } from "@localpass/sdk-internal";
 
 import { CipherFormConfig } from "../abstractions/cipher-form-config.service";
 

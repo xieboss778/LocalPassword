@@ -3,14 +3,14 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { SYSTEM_THEME_OBSERVABLE } from "@bitwarden/angular/services/injection-tokens";
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { Theme, ThemeTypes } from "@bitwarden/common/platform/enums";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { DIALOG_DATA, DialogRef, DialogService } from "@bitwarden/components";
+import { SYSTEM_THEME_OBSERVABLE } from "@localpass/angular/services/injection-tokens";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Theme, ThemeTypes } from "@localpass/common/platform/enums";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { UserId } from "@localpass/common/types/guid";
+import { DIALOG_DATA, DialogRef, DialogService } from "@localpass/components";
 
 import {
   NEW_EXPERIENCE_LEARN_MORE_URL,

@@ -1,12 +1,12 @@
 import { map, Observable, Subscription } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import {
   CommandDefinition,
   MessageListener,
   MessageSender,
-} from "@bitwarden/common/platform/messaging";
-import { ScheduledTaskNames, TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
+} from "@localpass/common/platform/messaging";
+import { ScheduledTaskNames, TaskSchedulerService } from "@localpass/common/platform/scheduling";
 
 import { LoginStrategyCacheService } from "../../abstractions/login-strategy-cache.service";
 import { LoginStrategySessionTimeoutService } from "../../abstractions/login-strategy-session-timeout.service";

@@ -11,13 +11,13 @@ import {
   pairwise,
 } from "rxjs";
 
-import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { buildCipherIcon, CipherIconDetails } from "@bitwarden/common/vault/icon/build-cipher-icon";
-import { CipherViewLike } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { LogService, Measurement, PerfTrackGroup } from "@bitwarden/logging";
+import { DomainSettingsService } from "@localpass/common/autofill/services/domain-settings.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { buildCipherIcon, CipherIconDetails } from "@localpass/common/vault/icon/build-cipher-icon";
+import { CipherViewLike } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { LogService, Measurement, PerfTrackGroup } from "@localpass/logging";
 
 const PERF_TRACK = "Icons";
 const PERF_ENTRY = "Load icon";

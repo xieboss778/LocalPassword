@@ -1,4 +1,4 @@
-import { AuthType as SdkAuthType, SendType as SdkSendType } from "@bitwarden/sdk-internal";
+import { AuthType as SdkAuthType, SendType as SdkSendType } from "@localpass/sdk-internal";
 
 import { AuthType } from "../../types/auth-type";
 import { SendType } from "../../types/send-type";

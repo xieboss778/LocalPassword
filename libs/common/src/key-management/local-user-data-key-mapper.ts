@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
-import { LocalUserDataKey } from "@bitwarden/legacy-crypto";
-import { LocalUserDataKeyState } from "@bitwarden/sdk-internal";
+import { LocalUserDataKey } from "@localpass/legacy-crypto";
+import { LocalUserDataKeyState } from "@localpass/sdk-internal";
 
 import { LOCAL_USER_DATA_KEY } from "../platform/services/key-state/local-user-data-key.state";
 import { SdkRecordMapper } from "../platform/services/sdk/client-managed-state";

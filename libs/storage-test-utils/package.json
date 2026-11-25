@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/storage-test-utils",
+  "name": "@localpass/storage-test-utils",
   "version": "0.0.1",
   "description": "Test tools for the storage library",
   "private": true,

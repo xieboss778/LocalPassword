@@ -2,7 +2,7 @@ import { FormsModule } from "@angular/forms";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { getAllByRole, userEvent } from "storybook/test";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { MenuModule } from "../../menu";
 import { I18nMockService } from "../../utils/i18n-mock.service";

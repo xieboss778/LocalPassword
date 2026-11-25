@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
-import { NoFolders } from "@bitwarden/assets/svg";
+import { NoFolders } from "@localpass/assets/svg";
 
 import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
 

@@ -1,7 +1,7 @@
 {
-  "name": "@bitwarden/subscription",
+  "name": "@localpass/subscription",
   "version": "0.0.1",
-  "description": "Components and services for managing Bitwarden subscriptions.",
+  "description": "Components and services for managing LocalPass subscriptions.",
   "private": true,
   "type": "commonjs",
   "main": "index.js",

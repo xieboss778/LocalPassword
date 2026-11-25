@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, Subject, toArray } from "rxjs";
 
-import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { CipherUse } from "./abstractions/fill-cipher-policy";
 import { DefaultFillCipherPolicy } from "./default-fill-cipher-policy";

@@ -1,16 +1,16 @@
 import { CommonModule, DatePipe } from "@angular/common";
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import {
   BadgeModule,
   ButtonModule,
   CalloutModule,
   CardComponent,
   TypographyModule,
-} from "@bitwarden/components";
-import { CartSummaryComponent, DiscountTypes } from "@bitwarden/pricing";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { CartSummaryComponent, DiscountTypes } from "@localpass/pricing";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { SubscriptionPreview } from "../../types/subscription-preview";
 

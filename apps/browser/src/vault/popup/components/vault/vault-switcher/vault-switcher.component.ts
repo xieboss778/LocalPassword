@@ -3,10 +3,10 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { switchMap } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { OrganizationId } from "@localpass/common/types/guid";
 import {
   IconButtonModule,
   IconModule,
@@ -15,8 +15,8 @@ import {
   MenuModule,
   PopoverModule,
   TypographyModule,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 import {
   ALL_ITEMS_SCOPE,
   CoachmarkComponent,
@@ -34,7 +34,7 @@ import {
   type VaultScope,
   VaultScopeType,
   vaultScopeCommands,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { VaultPopupListTableFiltersService } from "../../../services/vault-popup-list-table-filters.service";
 import { VaultPopupScrollPositionService } from "../../../services/vault-popup-scroll-position.service";

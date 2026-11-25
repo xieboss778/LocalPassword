@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/core-test-utils",
+  "name": "@localpass/core-test-utils",
   "version": "0.0.1",
   "description": "Async test tools for state and clients",
   "private": true,

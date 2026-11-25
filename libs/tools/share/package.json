@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/tools-share",
+  "name": "@localpass/tools-share",
   "version": "0.0.1",
   "description": "Components developed by the Tools Team for sharing ciphers via Send",
   "private": true,

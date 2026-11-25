@@ -1,10 +1,10 @@
 import { DIALOG_DATA } from "@angular/cdk/dialog";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { CipherHealthView } from "@bitwarden/common/dirt/models/view";
-import { RiskCategory } from "@bitwarden/common/dirt/vault-health/models";
-import { ButtonModule, DialogModule, IconModule, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { CipherHealthView } from "@localpass/common/dirt/models/view";
+import { RiskCategory } from "@localpass/common/dirt/vault-health/models";
+import { ButtonModule, DialogModule, IconModule, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { HealthAdditionalRisksComponent } from "../health-additional-risks/health-additional-risks.component";
 

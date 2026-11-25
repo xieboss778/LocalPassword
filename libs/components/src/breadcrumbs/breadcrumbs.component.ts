@@ -15,8 +15,8 @@ import {
 } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { HeaderContext } from "../header/header-context";
 import { IconModule } from "../icon";
@@ -40,7 +40,7 @@ const TITLE_SUFFIX_GAP_PX = 4;
 
 /**
  * Breadcrumbs are used to help users understand where they are in a products navigation. Typically
- * Bitwarden uses this component to indicate the user's current location in a set of data organized in
+ * LocalPass uses this component to indicate the user's current location in a set of data organized in
  * containers (Collections, Folders, or Projects).
  */
 @Component({

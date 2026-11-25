@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { EMPTY, Observable, of, Subscription } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
 
 import { RawBadgeState } from "./badge-browser-api";
 import { BadgeService, BadgeStateFunction } from "./badge.service";

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   DIALOG_DATA,
   DialogConfig,
@@ -14,7 +14,7 @@ import {
   LinkModule,
   TypographyModule,
   CenterPositionStrategy,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 export interface TransferItemsDialogParams {
   organizationName: string;
@@ -55,7 +55,7 @@ export class TransferItemsDialogComponent {
 
   protected openLearnMore(e: Event) {
     e.preventDefault();
-    this.platformUtilsService.launchUri("https://bitwarden.com/help/transfer-ownership/");
+    this.platformUtilsService.launchUri("https://github.com/xieboss778/LocalPass/tree/main/docs");
   }
 
   static open(dialogService: DialogService, config: DialogConfig<TransferItemsDialogParams>) {

@@ -2,9 +2,9 @@ import { dialog, IpcMainEvent, ipcMain, Notification } from "electron";
 import log from "electron-log";
 import { autoUpdater, UpdateDownloadedEvent, VerifyUpdateSupport } from "electron-updater";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UrlType } from "@bitwarden/common/platform/misc/safe-urls";
-import { LogService } from "@bitwarden/logging";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UrlType } from "@localpass/common/platform/misc/safe-urls";
+import { LogService } from "@localpass/logging";
 
 import { SafeShell } from "../platform/main/safe-shell.main";
 import { isDev } from "../utils";
@@ -74,7 +74,7 @@ export class UpdaterMain {
 
         const result = await dialog.showMessageBox(this.windowMain.win, {
           type: "info",
-          title: this.i18nService.t("bitwarden") + " - " + this.i18nService.t("updateAvailable"),
+          title: this.i18nService.t("localpass") + " - " + this.i18nService.t("updateAvailable"),
           message: this.i18nService.t("updateAvailable"),
           detail: this.i18nService.t("updateAvailableDesc"),
           buttons: [this.i18nService.t("yes"), this.i18nService.t("no")],
@@ -142,7 +142,7 @@ export class UpdaterMain {
     if (!this.canUpdate) {
       if (withFeedback) {
         void this.shell.openExternal(
-          "https://github.com/bitwarden/clients/releases",
+          "https://github.com/xieboss778/LocalPassword/releases",
           UrlType.WebUrl,
         );
       }
@@ -197,7 +197,7 @@ export class UpdaterMain {
     }
 
     this.openedNotification = new Notification({
-      title: this.i18nService.t("bitwarden") + " - " + this.i18nService.t("restartToUpdate"),
+      title: this.i18nService.t("localpass") + " - " + this.i18nService.t("restartToUpdate"),
       body: this.i18nService.t("restartToUpdateDesc", info.version),
       timeoutType: "never",
       silent: false,
@@ -218,7 +218,7 @@ export class UpdaterMain {
   private async promptRestartUpdateUsingDialog(info: UpdateDownloadedEvent) {
     const result = await dialog.showMessageBox(this.windowMain.win, {
       type: "info",
-      title: this.i18nService.t("bitwarden") + " - " + this.i18nService.t("restartToUpdate"),
+      title: this.i18nService.t("localpass") + " - " + this.i18nService.t("restartToUpdate"),
       message: this.i18nService.t("restartToUpdate"),
       detail: this.i18nService.t("restartToUpdateDesc", info.version),
       buttons: [this.i18nService.t("restart"), this.i18nService.t("later")],
@@ -271,10 +271,10 @@ export class UpdaterMain {
       if (arg != null && arg.toUpperCase().indexOf("--ELECTRON_NO_UPDATER=1") > -1) {
         return true;
       }
-      if (arg != null && arg.toUpperCase().indexOf("--BITWARDEN_NO_UPDATER=1") > -1) {
+      if (arg != null && arg.toUpperCase().indexOf("--LOCALPASS_NO_UPDATER=1") > -1) {
         return true;
       }
     }
-    return process.env.ELECTRON_NO_UPDATER === "1" || process.env.BITWARDEN_NO_UPDATER === "1";
+    return process.env.ELECTRON_NO_UPDATER === "1" || process.env.LOCALPASS_NO_UPDATER === "1";
   }
 }

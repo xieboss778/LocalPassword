@@ -5,10 +5,10 @@ import * as path from "path";
 import { ipcMain } from "electron";
 import log from "electron-log/main";
 
-import { LogLevelType } from "@bitwarden/common/platform/enums/log-level-type.enum";
-import { ConsoleLogService as BaseLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { logging } from "@bitwarden/desktop-napi";
-import { LogRecorder } from "@bitwarden/logging";
+import { LogLevelType } from "@localpass/common/platform/enums/log-level-type.enum";
+import { ConsoleLogService as BaseLogService } from "@localpass/common/platform/services/console-log.service";
+import { logging } from "@localpass/desktop-napi";
+import { LogRecorder } from "@localpass/logging";
 
 import { isDev } from "../../utils";
 

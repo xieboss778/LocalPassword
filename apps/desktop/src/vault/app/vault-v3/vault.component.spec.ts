@@ -1,11 +1,11 @@
 import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { DialogService } from "@bitwarden/components";
-import { ALL_ITEMS_SCOPE, MY_ITEMS_ROUTE, VaultScope, VaultScopeType } from "@bitwarden/vault";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { DialogService } from "@localpass/components";
+import { ALL_ITEMS_SCOPE, MY_ITEMS_ROUTE, VaultScope, VaultScopeType } from "@localpass/vault";
 
 import { ImportDesktopComponent } from "../../../app/tools/import/import-desktop.component";
 

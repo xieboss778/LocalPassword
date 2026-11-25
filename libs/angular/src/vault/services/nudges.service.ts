@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, map, Observable } from "rxjs";
 
-import { UserKeyDefinition, NUDGES_DISK } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { UserKeyDefinition, NUDGES_DISK } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 
 import {
   NewAccountNudgeService,
@@ -33,7 +33,7 @@ export const NudgeType = {
   HasVaultItems: "has-vault-items",
   AutofillNudge: "autofill-nudge",
   AccountSecurity: "account-security",
-  DownloadBitwarden: "download-bitwarden",
+  DownloadLocalPass: "download-localpass",
   NewLoginItemStatus: "new-login-item-status",
   NewCardItemStatus: "new-card-item-status",
   NewIdentityItemStatus: "new-identity-item-status",
@@ -89,7 +89,7 @@ export class NudgesService {
     [NudgeType.VaultSettingsImportNudge]: inject(VaultSettingsImportNudgeService),
     [NudgeType.AccountSecurity]: inject(AccountSecurityNudgeService),
     [NudgeType.AutofillNudge]: this.autofillNudgeService ?? this.noOpNudgeService,
-    [NudgeType.DownloadBitwarden]: this.newAcctNudgeService,
+    [NudgeType.DownloadLocalPass]: this.newAcctNudgeService,
     [NudgeType.GeneratorNudgeStatus]: this.newAcctNudgeService,
     [NudgeType.NewLoginItemStatus]: this.newItemNudgeService,
     [NudgeType.NewCardItemStatus]: this.newItemNudgeService,
@@ -163,7 +163,7 @@ export class NudgesService {
     // Add more nudge types here if they have the settings badge feature
     const nudgeTypes = [
       NudgeType.EmptyVaultNudge,
-      NudgeType.DownloadBitwarden,
+      NudgeType.DownloadLocalPass,
       NudgeType.AutofillNudge,
       NudgeType.AutoConfirmNudge,
     ];

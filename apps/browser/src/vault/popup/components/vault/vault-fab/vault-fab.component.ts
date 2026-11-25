@@ -4,21 +4,21 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterLink } from "@angular/router";
 import { map } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CollectionView } from "@bitwarden/common/admin-console/models/collections";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { CIPHER_MENU_ITEMS } from "@bitwarden/common/vault/types/cipher-menu-items";
-import { BitwardenIcon, DialogService, IconModule, MenuModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { CollectionView } from "@localpass/common/admin-console/models/collections";
+import { Organization } from "@localpass/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { CipherType } from "@localpass/common/vault/enums";
+import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
+import { CIPHER_MENU_ITEMS } from "@localpass/common/vault/types/cipher-menu-items";
+import { LocalPassIcon, DialogService, IconModule, MenuModule } from "@localpass/components";
 import {
   AddEditFolderDialogComponent,
   MY_VAULT,
   NO_FOLDER,
   VaultFabComponent,
-} from "@bitwarden/vault";
+} from "@localpass/vault";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/browser/browser-popup-utils";
@@ -51,7 +51,7 @@ export class AppVaultFabComponent {
     this.restrictedItemTypesService.restricted$.pipe(
       map((restricted) =>
         CIPHER_MENU_ITEMS.filter((item) => !restricted.some((r) => r.cipherType === item.type)).map(
-          (item) => ({ ...item, icon: item.icon as BitwardenIcon }),
+          (item) => ({ ...item, icon: item.icon as LocalPassIcon }),
         ),
       ),
     ),
@@ -66,7 +66,7 @@ export class AppVaultFabComponent {
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
 
-  /* eslint-disable-next-line @bitwarden/components/enforce-readonly-angular-properties */
+  /* eslint-disable-next-line @localpass/components/enforce-readonly-angular-properties */
   private tab?: chrome.tabs.Tab;
 
   constructor() {

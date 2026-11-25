@@ -1,9 +1,9 @@
-import { Unassigned } from "@bitwarden/common/admin-console/models/collections";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { Unassigned } from "@localpass/common/admin-console/models/collections";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   CipherViewLike,
   CipherViewLikeUtils,
-} from "@bitwarden/common/vault/utils/cipher-view-like-utils";
+} from "@localpass/common/vault/utils/cipher-view-like-utils";
 
 import { All, RoutedVaultFilterModel } from "./routed-vault-filter.model";
 

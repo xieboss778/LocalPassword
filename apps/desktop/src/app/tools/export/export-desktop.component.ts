@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component, signal } from "@angular/core";
 
-import { DialogRef, AsyncActionsModule, ButtonModule, DialogModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { ExportComponent } from "@bitwarden/vault-export-ui";
+import { DialogRef, AsyncActionsModule, ButtonModule, DialogModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { ExportComponent } from "@localpass/vault-export-ui";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "export-desktop.component.html",

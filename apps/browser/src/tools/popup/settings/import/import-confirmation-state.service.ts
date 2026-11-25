@@ -1,10 +1,10 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { ImportedFile } from "@bitwarden/importer-core";
-import { ImportSummary } from "@bitwarden/importer-ui";
-import { IMPORT_CONFIRMATION_MEMORY, StateProvider, UserKeyDefinition } from "@bitwarden/state";
+import { UserId } from "@localpass/common/types/guid";
+import { ImportedFile } from "@localpass/importer-core";
+import { ImportSummary } from "@localpass/importer-ui";
+import { IMPORT_CONFIRMATION_MEMORY, StateProvider, UserKeyDefinition } from "@localpass/state";
 
 import { resetPopupRouteHistory } from "../../../../platform/popup/view-cache/popup-router-cache.service";
 

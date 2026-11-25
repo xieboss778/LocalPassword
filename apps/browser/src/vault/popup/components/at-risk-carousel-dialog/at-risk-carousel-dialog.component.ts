@@ -1,7 +1,7 @@
 import { Component, inject, signal } from "@angular/core";
 
-import { DarkImageSourceDirective } from "@bitwarden/angular/directives/dark-image-source.directive";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { DarkImageSourceDirective } from "@localpass/angular/directives/dark-image-source.directive";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   DialogRef,
   ButtonModule,
@@ -9,9 +9,9 @@ import {
   DialogService,
   TypographyModule,
   CenterPositionStrategy,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { VaultCarouselModule } from "@bitwarden/vault";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
+import { VaultCarouselModule } from "@localpass/vault";
 
 export const AtRiskCarouselDialogResult = {
   Dismissed: "dismissed",
@@ -19,7 +19,7 @@ export const AtRiskCarouselDialogResult = {
 
 type AtRiskCarouselDialogResult = UnionOfValues<typeof AtRiskCarouselDialogResult>;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-at-risk-carousel-dialog",
@@ -36,7 +36,7 @@ type AtRiskCarouselDialogResult = UnionOfValues<typeof AtRiskCarouselDialogResul
 export class AtRiskCarouselDialogComponent {
   private dialogRef = inject(DialogRef);
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   protected dismissBtnEnabled = signal(false);
 

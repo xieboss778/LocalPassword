@@ -9,7 +9,7 @@ import {
   DefaultImportStagingService,
   ImportResult,
   ImportStagingServiceAbstraction,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 
 import { ImportDestinationDesktopComponent } from "./import-destination-desktop.component";
 

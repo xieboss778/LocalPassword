@@ -2,19 +2,19 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AsyncActionsModule, ButtonModule, DialogModule } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AsyncActionsModule, ButtonModule, DialogModule } from "@localpass/components";
 import {
   DefaultImportMetadataService,
   ImportMetadataServiceAbstraction,
-} from "@bitwarden/importer-core";
+} from "@localpass/importer-core";
 import {
   ImportComponent,
   ImporterProviders,
   OnePasswordSsoBrowser,
   SYSTEM_SERVICE_PROVIDER,
-} from "@bitwarden/importer-ui";
-import { safeProvider } from "@bitwarden/ui-common";
+} from "@localpass/importer-ui";
+import { safeProvider } from "@localpass/ui-common";
 
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
 import { PopupFooterComponent } from "../../../../platform/popup/layout/popup-footer.component";
@@ -23,7 +23,7 @@ import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page
 
 import { BrowserOnePasswordSsoBrowser } from "./browser-onepassword-sso-browser";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "import-browser-v2.component.html",

@@ -2,8 +2,8 @@ import { DialogRef } from "@angular/cdk/dialog";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { DialogService } from "../../../dialog";
 import { KitchenSinkSharedModule } from "../kitchen-sink-shared.module";
@@ -121,7 +121,7 @@ export class KitchenSinkDialogWithAutofocusComponent {
       @if (bannerVisible()) {
         <div>
           <bit-banner (dismiss)="hideBanner()">
-            Bitwarden is the most trusted password manager.
+            LocalPass is the most trusted password manager.
             <a bitLink [linkType]="variant">Click me</a>
           </bit-banner>
         </div>
@@ -164,7 +164,7 @@ export class KitchenSinkDialogWithAutofocusComponent {
         />
         <bit-avatar text="BW"></bit-avatar>
         <bit-tab-nav-bar slot="tabs">
-          <bit-tab-link [route]="['bitwarden']">Vault</bit-tab-link>
+          <bit-tab-link [route]="['localpass']">Vault</bit-tab-link>
           <bit-tab-link [route]="['empty']">Empty</bit-tab-link>
         </bit-tab-nav-bar>
       </bit-header>

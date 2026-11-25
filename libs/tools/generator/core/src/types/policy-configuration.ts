@@ -1,5 +1,5 @@
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { Policy as AdminPolicy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { Policy as AdminPolicy } from "@localpass/common/admin-console/models/domain/policy";
 
 import { PolicyEvaluator } from "../abstractions";
 

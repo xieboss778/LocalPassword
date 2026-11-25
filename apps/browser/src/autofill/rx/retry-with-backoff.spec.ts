@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { concat, defer, of, throwError } from "rxjs";
 
-import type { LogService } from "@bitwarden/logging";
+import type { LogService } from "@localpass/logging";
 
 import { retryWithBackoff } from "./retry-with-backoff";
 

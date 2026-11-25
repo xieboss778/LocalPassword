@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { html } from "lit";
 
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 import { Globe } from "../../../content/components/icons";
 

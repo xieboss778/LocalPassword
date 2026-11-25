@@ -17,26 +17,26 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { FingerprintDialogComponent } from "@bitwarden/angular/auth/fingerprint-dialog";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { getFirstPolicy } from "@bitwarden/common/admin-console/services/policy/default-policy.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { LogoutService } from "@bitwarden/common/auth/logout";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { PhishingDetectionSettingsServiceAbstraction } from "@bitwarden/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { SharedUnlockSettingsService } from "@bitwarden/common/key-management/shared-unlock";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { FingerprintDialogComponent } from "@localpass/angular/auth/fingerprint-dialog";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@localpass/common/admin-console/enums";
+import { getFirstPolicy } from "@localpass/common/admin-console/services/policy/default-policy.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { UserVerificationService } from "@localpass/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { LogoutService } from "@localpass/common/auth/logout";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { PhishingDetectionSettingsServiceAbstraction } from "@localpass/common/dirt/services/abstractions/phishing-detection-settings.service.abstraction";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { SharedUnlockSettingsService } from "@localpass/common/key-management/shared-unlock";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import {
   CardComponent,
   CheckboxModule,
@@ -54,12 +54,12 @@ import {
   SwitchComponent,
   CalloutModule,
   SpinnerComponent,
-} from "@bitwarden/components";
-import { KeyService, BiometricStateService } from "@bitwarden/key-management";
-import { SessionTimeoutSettingsComponent } from "@bitwarden/key-management-ui";
+} from "@localpass/components";
+import { KeyService, BiometricStateService } from "@localpass/key-management";
+import { SessionTimeoutSettingsComponent } from "@localpass/key-management-ui";
 // eslint-disable-next-line no-restricted-imports
-import { LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-import { LockService, LockSource } from "@bitwarden/unlock";
+import { LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { LockService, LockSource } from "@localpass/unlock";
 
 import {
   NativeMessagingPermissionDialogComponent,
@@ -73,7 +73,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
 import { SetPinComponent } from "../components/set-pin.component";
 import { AuthExtensionRoute } from "../constants/auth-extension-route.constant";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "account-security.component.html",
@@ -477,7 +477,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     if (confirmed) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      BrowserApi.createNewTab("https://bitwarden.com/help/setup-two-step-login/");
+      BrowserApi.createNewTab("https://github.com/xieboss778/LocalPass/tree/main/docs");
     }
   }
 
@@ -509,7 +509,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
   async logOut() {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "logOut" },
-      // LocalPassword: logging out wipes a vault that has no server copy, so say so plainly.
+      // LocalPass: logging out wipes a vault that has no server copy, so say so plainly.
       content: { key: "localVaultLogoutWarning" },
       type: "danger",
     });

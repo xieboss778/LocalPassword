@@ -2,11 +2,11 @@ import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, first, Subject } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { UserId } from "@bitwarden/common/types/guid";
-import { SearchService } from "@bitwarden/common/vault/abstractions/search.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendService } from "@localpass/common/tools/send/services/send.service.abstraction";
+import { UserId } from "@localpass/common/types/guid";
+import { SearchService } from "@localpass/common/vault/abstractions/search.service";
 
 import { mockAccountServiceWith } from "../../../../../common/spec";
 

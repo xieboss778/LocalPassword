@@ -2,8 +2,8 @@ import { Type, inject } from "@angular/core";
 import { Route, Routes } from "@angular/router";
 import { map } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { componentRouteSwap } from "../../utils/component-route-swap";
 

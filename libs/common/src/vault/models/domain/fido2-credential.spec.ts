@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncryptionType, EncString } from "@bitwarden/legacy-crypto";
+import { EncryptionType, EncString } from "@localpass/legacy-crypto";
 
 import { Fido2CredentialData } from "../data/fido2-credential.data";
 

@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { Directive, ElementRef, Input, OnChanges } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 
 /**
  * Provides error handling, in particular for any error returned by the server in an api call.
@@ -18,7 +18,7 @@ import { ValidationService } from "@bitwarden/common/platform/abstractions/valid
   standalone: false,
 })
 export class ApiActionDirective implements OnChanges {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() appApiAction: Promise<any>;
 

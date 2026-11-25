@@ -1,8 +1,8 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nMockService, ItemModule } from "@bitwarden/components";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { I18nMockService, ItemModule } from "@localpass/components";
 
 import { RiskCategoryNavItemComponent } from "./risk-category-nav-item.component";
 

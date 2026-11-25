@@ -14,8 +14,8 @@ import {
   firstValueFrom,
 } from "rxjs";
 
-import { ManagedSettingsService } from "@bitwarden/managed-settings";
-import { PasswordManagerClient, ClientSettings, TokenProvider } from "@bitwarden/sdk-internal";
+import { ManagedSettingsService } from "@localpass/managed-settings";
+import { PasswordManagerClient, ClientSettings, TokenProvider } from "@localpass/sdk-internal";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { AccountService } from "../../../auth/abstractions/account.service";

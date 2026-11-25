@@ -5,15 +5,15 @@ import { Component, Input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { AuthType } from "@bitwarden/common/tools/send/types/auth-type";
-import { SendType } from "@bitwarden/common/tools/send/types/send-type";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
+import { SendApiService } from "@localpass/common/tools/send/services/send-api.service.abstraction";
+import { AuthType } from "@localpass/common/tools/send/types/auth-type";
+import { SendType } from "@localpass/common/tools/send/types/send-type";
 import {
   BadgeModule,
   ButtonModule,
@@ -26,11 +26,11 @@ import {
   ToastService,
   TooltipDirective,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { getSendItemIcon } from "../send-item-icon";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   imports: [
@@ -57,12 +57,12 @@ export class SendListItemsContainerComponent {
   /**
    * The list of sends to display.
    */
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   sends: SendView[] = [];
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input()
   headerText: string;

@@ -1,4 +1,4 @@
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { OrganizationId } from "@localpass/common/types/guid";
 
 import { Importer } from "../importers/importer";
 import { ImportOption } from "../models/import-options";
@@ -22,7 +22,7 @@ export abstract class ImportUpgradeServiceAbstraction {
     organizationId: OrganizationId,
   ) => void;
   abstract getImporter: (
-    format: UpgradeImportType | "bitwardenpasswordprotected",
+    format: UpgradeImportType | "localpasspasswordprotected",
     promptForPassword_callback: () => Promise<string>,
     organizationId?: string,
   ) => Importer | null;

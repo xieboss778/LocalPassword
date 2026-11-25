@@ -1,4 +1,4 @@
-import { InitializerMetadata } from "@bitwarden/common/platform/interfaces/initializer-metadata.interface";
+import { InitializerMetadata } from "@localpass/common/platform/interfaces/initializer-metadata.interface";
 
 import { SymmetricCryptoKey } from "../models/symmetric-crypto-key";
 

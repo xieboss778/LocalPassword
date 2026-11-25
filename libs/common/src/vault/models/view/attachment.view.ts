@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { DECRYPT_ERROR, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { AttachmentView as SdkAttachmentView } from "@bitwarden/sdk-internal";
+import { DECRYPT_ERROR, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { AttachmentView as SdkAttachmentView } from "@localpass/sdk-internal";
 
 import { View } from "../../../models/view/view";
 import { Attachment } from "../domain/attachment";

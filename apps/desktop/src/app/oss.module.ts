@@ -3,9 +3,9 @@ import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { IconModule, SpinnerComponent } from "@bitwarden/components";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { IconModule, SpinnerComponent } from "@localpass/components";
 
 import { SshAgentService } from "../autofill/services/ssh-agent.service";
 import { DesktopPremiumUpgradePromptService } from "../billing/services/desktop-premium-upgrade-prompt.service";

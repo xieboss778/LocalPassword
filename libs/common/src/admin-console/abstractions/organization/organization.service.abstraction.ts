@@ -104,7 +104,7 @@ export function getOrganizationById(id: string) {
 
 /**
  * Publishes an observable stream of organizations. This service is meant to
- * be used widely across Bitwarden as the primary way of fetching organizations.
+ * be used widely across LocalPass as the primary way of fetching organizations.
  * Risky operations like updates are isolated to the
  * internal extension `InternalOrganizationServiceAbstraction`.
  */
@@ -128,14 +128,14 @@ export abstract class OrganizationService {
   abstract acceptedOrganizations$(userId: UserId): Observable<Organization[]>;
 
   // @todo Clean these up. Continuing to expand them is not recommended.
-  // @see https://bitwarden.atlassian.net/browse/AC-2252
+  // @see https://localpass.atlassian.net/browse/AC-2252
   abstract memberOrganizations$(userId: UserId): Observable<Organization[]>;
   /**
-   * Emits true if the user can create or manage a Free Bitwarden Families sponsorship.
+   * Emits true if the user can create or manage a Free LocalPass Families sponsorship.
    */
   abstract canManageSponsorships$(userId: UserId): Observable<boolean>;
   /**
-   * Emits true if any of the user's organizations have a Free Bitwarden Families sponsorship available.
+   * Emits true if any of the user's organizations have a Free LocalPass Families sponsorship available.
    */
   abstract familySponsorshipAvailable$(userId: UserId): Observable<boolean>;
   abstract hasOrganizations(userId: UserId): Observable<boolean>;

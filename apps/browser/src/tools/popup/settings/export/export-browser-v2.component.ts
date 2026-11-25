@@ -2,9 +2,9 @@ import { CommonModule } from "@angular/common";
 import { Component, signal } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AsyncActionsModule, ButtonModule, DialogModule } from "@bitwarden/components";
-import { ExportComponent } from "@bitwarden/vault-export-ui";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { AsyncActionsModule, ButtonModule, DialogModule } from "@localpass/components";
+import { ExportComponent } from "@localpass/vault-export-ui";
 
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
 import { PopupBackBrowserDirective } from "../../../../platform/popup/layout/popup-back.directive";
@@ -12,7 +12,7 @@ import { PopupFooterComponent } from "../../../../platform/popup/layout/popup-fo
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "export-browser-v2.component.html",

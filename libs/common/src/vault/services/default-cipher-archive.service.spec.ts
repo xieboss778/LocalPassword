@@ -5,7 +5,7 @@
 import { mock } from "jest-mock-extended";
 import { of, firstValueFrom } from "rxjs";
 
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { ApiService } from "../../abstractions/api.service";
 import { BillingAccountProfileStateService } from "../../billing/abstractions";

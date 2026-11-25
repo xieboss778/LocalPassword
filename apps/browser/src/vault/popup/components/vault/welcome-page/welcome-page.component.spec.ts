@@ -3,10 +3,10 @@ import { Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ThemeTypes } from "@bitwarden/common/platform/enums";
-import { ToastService } from "@bitwarden/components";
+import { AbstractThemingService } from "@localpass/angular/platform/services/theming/theming.service.abstraction";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { ThemeTypes } from "@localpass/common/platform/enums";
+import { ToastService } from "@localpass/components";
 
 import { consumeDefaultPasswordManagerSuccessToast } from "../../../../../autofill/default-password-manager-session.util";
 import { IntroCarouselService } from "../../../services/intro-carousel.service";
@@ -55,13 +55,13 @@ describe("WelcomePageComponent", () => {
 
   it("shows the success toast when the default password manager was applied", async () => {
     jest.mocked(consumeDefaultPasswordManagerSuccessToast).mockResolvedValue(true);
-    mockI18nService.t.mockReturnValue("Made Bitwarden your default browser password manager");
+    mockI18nService.t.mockReturnValue("Made LocalPass your default browser password manager");
 
     await component.ngOnInit();
 
     expect(mockToastService.showToast).toHaveBeenCalledWith({
       variant: "success",
-      message: "Made Bitwarden your default browser password manager",
+      message: "Made LocalPass your default browser password manager",
     });
   });
 

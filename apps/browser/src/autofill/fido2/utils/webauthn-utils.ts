@@ -1,8 +1,8 @@
 import {
   CreateCredentialResult,
   AssertCredentialResult,
-} from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
-import { Fido2Utils } from "@bitwarden/common/platform/services/fido2/fido2-utils";
+} from "@localpass/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+import { Fido2Utils } from "@localpass/common/platform/services/fido2/fido2-utils";
 
 import {
   InsecureAssertCredentialParams,

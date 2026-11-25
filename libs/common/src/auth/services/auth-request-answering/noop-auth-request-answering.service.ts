@@ -1,4 +1,4 @@
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { SystemNotificationEvent } from "../../../platform/system-notifications/system-notifications.service";
 import { AuthRequestAnsweringService } from "../../abstractions/auth-request-answering/auth-request-answering.service.abstraction";

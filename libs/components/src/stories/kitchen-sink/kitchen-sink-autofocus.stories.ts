@@ -26,7 +26,7 @@ async function navigateTo(path: string) {
 export const DialogHeaderFocus: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     await fireEvent.click(getByRole(canvas, "button", { name: "Open Dialog from Menu" }));
     await fireEvent.click(
       getByRole(canvas.ownerDocument.body, "menuitem", { name: "Open Dialog" }),
@@ -46,7 +46,7 @@ export const DialogHeaderFocus: Story = {
 export const DialogAutofocusFieldFocus: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     await fireEvent.click(getByRole(canvas, "button", { name: "Open Dialog from Menu" }));
     await fireEvent.click(
       getByRole(canvas.ownerDocument.body, "menuitem", { name: "Open Dialog with Autofocus" }),
@@ -63,7 +63,7 @@ export const DialogAutofocusFieldFocus: Story = {
 export const SimpleDialogButtonFocus: Story = {
   play: async (context) => {
     const canvas = context.canvasElement;
-    await navigateTo("/bitwarden");
+    await navigateTo("/localpass");
     await fireEvent.click(getByRole(canvas, "button", { name: "Open Dialog from Menu" }));
     await fireEvent.click(
       getByRole(canvas.ownerDocument.body, "menuitem", { name: "Open Simple Dialog" }),

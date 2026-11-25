@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/node",
+  "name": "@localpass/node",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/node/src",
   "projectType": "library",

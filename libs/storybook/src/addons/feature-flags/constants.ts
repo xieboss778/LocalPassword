@@ -1,13 +1,13 @@
 /**
  * Shared, dependency-free constants for the feature-flags Storybook addon.
  *
- * This file must not import from `@bitwarden/*` so it can be safely bundled into
+ * This file must not import from `@localpass/*` so it can be safely bundled into
  * BOTH the preview (iframe) and the manager (Storybook UI shell), which use
  * different builders. The manager bundle in particular cannot resolve the
- * `@bitwarden/*` path aliases.
+ * `@localpass/*` path aliases.
  */
 
-export const ADDON_ID = "bitwarden/feature-flags";
+export const ADDON_ID = "localpass/feature-flags";
 export const PANEL_ID = `${ADDON_ID}/panel`;
 
 /**

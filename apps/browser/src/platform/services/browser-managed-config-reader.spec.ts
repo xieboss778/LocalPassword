@@ -1,7 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/logging";
-import { ManagedSettingsService } from "@bitwarden/managed-settings";
+import { LogService } from "@localpass/logging";
+import { ManagedSettingsService } from "@localpass/managed-settings";
 
 import { BrowserApi } from "../browser/browser-api";
 

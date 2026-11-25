@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/vault-export-core",
+  "name": "@localpass/vault-export-core",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tools/export-vault-core/src",
   "projectType": "library",

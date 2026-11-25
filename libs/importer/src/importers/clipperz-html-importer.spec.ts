@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { FieldType } from "@bitwarden/common/vault/enums";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { FieldType } from "@localpass/common/vault/enums";
 
 import { ClipperzHtmlImporter } from "./clipperz-html-importer";
 

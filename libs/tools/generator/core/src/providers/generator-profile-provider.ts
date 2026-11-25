@@ -9,13 +9,13 @@ import {
   of,
 } from "rxjs";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Account } from "@bitwarden/common/auth/abstractions/account.service";
-import { BoundDependency } from "@bitwarden/common/tools/dependencies";
-import { SemanticLogger } from "@bitwarden/common/tools/log";
-import { anyComplete } from "@bitwarden/common/tools/rx";
-import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
-import { UserStateSubjectDependencyProvider } from "@bitwarden/common/tools/state/user-state-subject-dependency-provider";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Account } from "@localpass/common/auth/abstractions/account.service";
+import { BoundDependency } from "@localpass/common/tools/dependencies";
+import { SemanticLogger } from "@localpass/common/tools/log";
+import { anyComplete } from "@localpass/common/tools/rx";
+import { UserStateSubject } from "@localpass/common/tools/state/user-state-subject";
+import { UserStateSubjectDependencyProvider } from "@localpass/common/tools/state/user-state-subject-dependency-provider";
 
 import { ProfileContext, CoreProfileMetadata, ProfileMetadata } from "../metadata";
 import { GeneratorConstraints } from "../types/generator-constraints";

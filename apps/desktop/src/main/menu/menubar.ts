@@ -2,8 +2,8 @@
 // @ts-strict-ignore
 import { Menu, MenuItemConstructorOptions } from "electron";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 import { SafeShell } from "../../platform/main/safe-shell.main";
 import { VersionMain } from "../../platform/main/version.main";
@@ -14,7 +14,7 @@ import { WindowMain } from "../window.main";
 
 import { AboutMenu } from "./menu.about";
 import { AccountMenu } from "./menu.account";
-import { BitwardenMenu } from "./menu.bitwarden";
+import { LocalPassMenu } from "./menu.localpass";
 import { EditMenu } from "./menu.edit";
 import { FileMenu } from "./menu.file";
 import { HelpMenu } from "./menu.help";
@@ -123,7 +123,7 @@ export class Menubar {
     if (isMac()) {
       this.items = [
         ...[
-          new BitwardenMenu(
+          new LocalPassMenu(
             i18nService,
             messagingService,
             updaterMain,

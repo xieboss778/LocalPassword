@@ -13,11 +13,11 @@ import {
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { EncArrayBuffer, EncryptService, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
-import { Measurement, PerfTrackGroup } from "@bitwarden/logging";
-import { CipherListView } from "@bitwarden/sdk-internal";
+import { EncArrayBuffer, EncryptService, LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { Measurement, PerfTrackGroup } from "@localpass/logging";
+import { CipherListView } from "@localpass/sdk-internal";
 
 import { ApiService } from "../../abstractions/api.service";
 import { AccountService } from "../../auth/abstractions/account.service";
@@ -385,7 +385,7 @@ export class CipherService implements CipherServiceAbstraction {
         PERF_TRACK,
         "getAllDecrypted",
       );
-      // Temporary serial decrypt until https://bitwarden.atlassian.net/browse/PM-46138 merges.
+      // Temporary serial decrypt until https://localpass.atlassian.net/browse/PM-46138 merges.
       // const result = await this.cipherSdkService.getAllDecrypted(userId);
       const result = await this.temporary_get_all_decrypted(userId);
       sdkMeasurement.finish([

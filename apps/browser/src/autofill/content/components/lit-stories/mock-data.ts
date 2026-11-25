@@ -1,6 +1,6 @@
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { ProductTierType } from "@localpass/common/billing/enums";
+import { CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 
 import { InlineMenuCipherData } from "../../../background/abstractions/overlay.background";
 
@@ -108,7 +108,7 @@ export const mockI18n = {
   addNewCardItemAria: "Add new vault card item, opens in a new window",
   addNewIdentityItemAria: "Add new vault identity item, opens in a new window",
   addNewVaultItem: "Add new vault item",
-  appName: "Bitwarden",
+  appName: "LocalPass",
   atRiskPassword: "At-risk password",
   atRiskNavigatePromptV2:
     "Your password for this site is at-risk. $ORGANIZATION$ has requested that you navigate to your account settings and change it.",
@@ -135,9 +135,9 @@ export const mockI18n = {
   passkeys: "Passkeys",
   passwords: "Passwords",
   loginSaveSuccess: "Login saved",
-  notificationLoginSaveConfirmation: "saved to Bitwarden.",
+  notificationLoginSaveConfirmation: "saved to LocalPass.",
   loginUpdateSuccess: "Login updated",
-  notificationLoginUpdatedConfirmation: "updated in Bitwarden.",
+  notificationLoginUpdatedConfirmation: "updated in LocalPass.",
   loginUpdateTaskSuccess:
     "Great job! You took the steps to make you and $ORGANIZATION$ more secure.",
   loginUpdateTaskSuccessAdditional:
@@ -150,14 +150,14 @@ export const mockI18n = {
   never: "Never",
   noItemsToShow: "No items to show",
   myVault: "My vault",
-  notificationAddDesc: "Should Bitwarden remember this password for you?",
+  notificationAddDesc: "Should LocalPass remember this password for you?",
   notificationAddSave: "Save",
-  notificationChangeDesc: "Do you want to update this password in Bitwarden?",
+  notificationChangeDesc: "Do you want to update this password in LocalPass?",
   notificationUpdate: "Update",
   notificationEdit: "Edit",
   notificationEditTooltip: "Edit before saving",
   notificationUnlock: "Unlock",
-  notificationUnlockDesc: "Unlock your Bitwarden vault to complete the autofill request.",
+  notificationUnlockDesc: "Unlock your LocalPass vault to complete the autofill request.",
   notificationViewAria: `View $ITEMNAME$, opens in new window`,
   notificationNewItemAria: "New Item, opens in new window",
   opensInANewWindow: "Opens in a new window",
@@ -166,7 +166,7 @@ export const mockI18n = {
   saveFailure: "Error saving",
   saveFailureDetails: "Oh no! We couldn't save this. Try entering the details manually.",
   saveLogin: "Save login",
-  saveToBitwarden: "Save to Bitwarden",
+  saveToLocalPass: "Save to LocalPass",
   selectItemAriaLabel: "Select $ITEMTYPE$, $ITEMNAME$",
   totpCodeAria: "Time-based One-Time Password Verification Code",
   typeLogin: "Login",
@@ -238,9 +238,9 @@ export function makeCipher(
 export const mockLoginCiphers: InlineMenuCipherData[] = [
   makeCipher({
     id: "1",
-    name: "bitwarden.com",
+    name: "local.invalid",
     type: CipherType.Login,
-    login: { username: "test@bitwarden.com", passkey: null },
+    login: { username: "test@local.invalid", passkey: null },
   }),
   makeCipher({
     id: "2",
@@ -286,13 +286,13 @@ export const mockTotpCiphers: InlineMenuCipherData[] = [
 export const mockPasskeyCiphers: InlineMenuCipherData[] = [
   makeCipher({
     id: "1",
-    name: "bitwarden.com",
+    name: "local.invalid",
     type: CipherType.Login,
     login: {
-      username: "test@bitwarden.com",
+      username: "test@local.invalid",
       passkey: {
-        rpName: "Bitwarden",
-        userName: "test@bitwarden.com",
+        rpName: "LocalPass",
+        userName: "test@local.invalid",
       },
     },
   }),
@@ -313,9 +313,9 @@ export const mockPasskeysAndPasswords: InlineMenuCipherData[] = [
   ...mockPasskeyCiphers,
   makeCipher({
     id: "3",
-    name: "bitwarden.com",
+    name: "local.invalid",
     type: CipherType.Login,
-    login: { username: "password-user@bitwarden.com", passkey: null },
+    login: { username: "password-user@local.invalid", passkey: null },
   }),
 ];
 
@@ -345,7 +345,7 @@ export const mockIdentityCiphers: InlineMenuCipherData[] = [
     id: "2",
     name: "Work Profile",
     type: CipherType.Identity,
-    identity: { fullName: "Jane Doe", username: "jane.doe@bitwarden.com" },
+    identity: { fullName: "Jane Doe", username: "jane.doe@local.invalid" },
   }),
 ];
 

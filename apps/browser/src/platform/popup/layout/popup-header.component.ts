@@ -14,11 +14,11 @@ import {
 import { toSignal } from "@angular/core/rxjs-interop";
 import { of } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { BitwardenLogo, BitwardenLogoBeta } from "@bitwarden/assets/svg";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { flagEnabled } from "@bitwarden/common/platform/misc/flags";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { LocalPassLogo, LocalPassLogoBeta } from "@localpass/assets/svg";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { flagEnabled } from "@localpass/common/platform/misc/flags";
 import {
   AsyncActionsModule,
   ButtonType,
@@ -30,7 +30,7 @@ import {
   settledHeight,
   SvgModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { PopupRouterCacheService } from "../view-cache/popup-router-cache.service";
 
@@ -76,7 +76,7 @@ export class PopupHeaderComponent {
     { initialValue: false },
   );
 
-  protected readonly logo = flagEnabled("prereleaseBuild") ? BitwardenLogoBeta : BitwardenLogo;
+  protected readonly logo = flagEnabled("prereleaseBuild") ? LocalPassLogoBeta : LocalPassLogo;
 
   /**
    * Background treatment of the page title bar.

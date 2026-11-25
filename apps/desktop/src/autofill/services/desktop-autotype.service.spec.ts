@@ -2,18 +2,18 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, Observable, of } from "rxjs";
 
-import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { DeviceType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { GlobalStateProvider, KeyDefinition } from "@bitwarden/common/platform/state";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { LogService } from "@bitwarden/logging";
+import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
+import { DeviceType } from "@localpass/common/enums";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { GlobalStateProvider, KeyDefinition } from "@localpass/common/platform/state";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { LogService } from "@localpass/logging";
 
 import { DEFAULT_KEYBOARD_SHORTCUT } from "../models/main-autotype-keyboard-shortcut";
 
@@ -70,7 +70,7 @@ describe("DesktopAutotypeService", () => {
     autotypeGaPolicyShortcutSubject = new BehaviorSubject<string[] | null>(null);
     activeAccountSubject = new BehaviorSubject<Account | null>({
       id: "user-123" as UserId,
-      email: "user@bitwarden.com",
+      email: "user@local.invalid",
       emailVerified: true,
       name: "Test User",
       creationDate: undefined,

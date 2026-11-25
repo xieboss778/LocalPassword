@@ -1,8 +1,8 @@
-import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
-import { ServerConfig } from "@bitwarden/common/platform/abstractions/config/server-config";
-import { CommandDefinition } from "@bitwarden/common/platform/messaging";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { NeverDomains } from "@localpass/common/models/domain/domain-service";
+import { ServerConfig } from "@localpass/common/platform/abstractions/config/server-config";
+import { CommandDefinition } from "@localpass/common/platform/messaging";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 
 import { CollectionView } from "../../content/components/common-types";
 import { NotificationType } from "../../enums/notification-type.enum";

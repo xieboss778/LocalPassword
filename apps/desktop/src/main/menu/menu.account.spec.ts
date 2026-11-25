@@ -1,7 +1,7 @@
 import { BrowserWindow } from "electron";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 
 import { SafeShell } from "../../platform/main/safe-shell.main";
 import * as utils from "../platform-utils.main";
@@ -26,7 +26,7 @@ function makeMenu(isLocked = false, hasPremium = false): AccountMenu {
   return new AccountMenu(
     i18nService,
     messagingService,
-    "https://vault.bitwarden.com",
+    "https://vault.local.invalid",
     window,
     isLocked,
     true,

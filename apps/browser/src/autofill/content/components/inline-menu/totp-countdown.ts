@@ -2,7 +2,7 @@ import { css } from "@emotion/css";
 import { html } from "lit";
 import { ref } from "lit/directives/ref.js";
 
-import { Theme } from "@bitwarden/common/platform/enums";
+import { Theme } from "@localpass/common/platform/enums";
 
 import { spacing, themes, typography } from "../constants/styles";
 

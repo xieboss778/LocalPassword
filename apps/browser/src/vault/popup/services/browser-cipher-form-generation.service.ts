@@ -4,8 +4,8 @@ import { Overlay } from "@angular/cdk/overlay";
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DialogService } from "@bitwarden/components";
-import { CipherFormGenerationService } from "@bitwarden/vault";
+import { DialogService } from "@localpass/components";
+import { CipherFormGenerationService } from "@localpass/vault";
 
 import { VaultGeneratorDialogComponent } from "../components/vault/vault-generator-dialog/vault-generator-dialog.component";
 

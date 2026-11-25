@@ -1,4 +1,4 @@
-import { UserId } from "@bitwarden/user-core";
+import { UserId } from "@localpass/user-core";
 
 import { UserKey } from "../../../types/key";
 

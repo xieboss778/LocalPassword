@@ -3,8 +3,8 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { SendFile as SdkSendFile } from "@bitwarden/sdk-internal";
+import { EncString, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { SendFile as SdkSendFile } from "@localpass/sdk-internal";
 
 import Domain from "../../../../platform/models/domain/domain-base";
 import { SendFileData } from "../data/send-file.data";

@@ -20,14 +20,14 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormArray, FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Subject, zip } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { EventCollectionService, EventType } from "@bitwarden/common/dirt/event-logs";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherType, FieldType, LinkedIdType } from "@bitwarden/common/vault/enums";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherType, FieldType, LinkedIdType } from "@localpass/common/vault/enums";
+import { CardView } from "@localpass/common/vault/models/view/card.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   DialogRef,
   CardComponent,
@@ -39,7 +39,7 @@ import {
   SectionHeaderComponent,
   SelectModule,
   TypographyModule,
-} from "@bitwarden/components";
+} from "@localpass/components";
 
 import { CipherFormContainer } from "../../cipher-form-container";
 
@@ -67,7 +67,7 @@ export type CustomField = {
   newField: boolean;
 };
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "vault-custom-fields",
@@ -89,15 +89,15 @@ export type CustomField = {
   ],
 })
 export class CustomFieldsComponent implements OnInit, AfterViewInit {
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-output-emitter-ref
   @Output() numberOfFieldsChange = new EventEmitter<number>();
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @ViewChildren("customFieldRow") customFieldRows: QueryList<ElementRef<HTMLDivElement>>;
 
-  // FIXME(https://bitwarden.atlassian.net/browse/CL-903): Migrate to Signals
+  // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals
   // eslint-disable-next-line @angular-eslint/prefer-signals
   @Input() disableSectionMargin: boolean;
 

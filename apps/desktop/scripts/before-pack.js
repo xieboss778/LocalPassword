@@ -29,7 +29,7 @@ function removeExtraNodeFiles(context) {
 
   for (const platform of platforms) {
     if (platform != packagerPlatform) {
-      fileFilter.push(`!node_modules/@bitwarden/desktop-napi/desktop_napi.${platform}-*.node`);
+      fileFilter.push(`!node_modules/@localpass/desktop-napi/desktop_napi.${platform}-*.node`);
       fileFilter.push(`!node_modules/**/prebuilds/${platform}-*/*.node`);
     }
   }

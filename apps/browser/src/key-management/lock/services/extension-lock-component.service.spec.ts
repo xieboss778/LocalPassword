@@ -4,19 +4,19 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { PinServiceAbstraction } from "@bitwarden/common/key-management/pin/pin.service.abstraction";
-import { SharedUnlockSettingsService } from "@bitwarden/common/key-management/shared-unlock";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/key-management/vault-timeout";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
+import { UserDecryptionOptionsServiceAbstraction } from "@localpass/auth/common";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import { SharedUnlockSettingsService } from "@localpass/common/key-management/shared-unlock";
+import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
 import {
   BiometricsService,
   BiometricsStatus,
   BiometricStateService,
-} from "@bitwarden/key-management";
-import { UnlockOptions, WebAuthnPrfUnlockService } from "@bitwarden/key-management-ui";
+} from "@localpass/key-management";
+import { UnlockOptions, WebAuthnPrfUnlockService } from "@localpass/key-management-ui";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/browser/browser-popup-utils";

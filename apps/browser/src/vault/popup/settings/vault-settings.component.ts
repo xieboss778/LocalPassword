@@ -4,27 +4,27 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { firstValueFrom, map, switchMap } from "rxjs";
 
-import { PremiumBadgeComponent } from "@bitwarden/angular/billing/components/premium-badge";
-import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { NudgesService, NudgeType } from "@bitwarden/angular/vault";
-import { BrowserPremiumUpgradePromptService } from "@bitwarden/browser/billing/popup/services/browser-premium-upgrade-prompt.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { getUserId } from "@bitwarden/common/auth/services/account.service";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CipherArchiveService } from "@bitwarden/common/vault/abstractions/cipher-archive.service";
-import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { PremiumBadgeComponent } from "@localpass/angular/billing/components/premium-badge";
+import { JslibModule } from "@localpass/angular/jslib.module";
+import { NudgesService, NudgeType } from "@localpass/angular/vault";
+import { BrowserPremiumUpgradePromptService } from "@localpass/browser/billing/popup/services/browser-premium-upgrade-prompt.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
+import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { CipherArchiveService } from "@localpass/common/vault/abstractions/cipher-archive.service";
+import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
+import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
 import {
   BerryComponent,
   SpinnerComponent,
   ItemModule,
   ToastOptions,
   ToastService,
-} from "@bitwarden/components";
-import { Vfo1I18nPipe } from "@bitwarden/vault";
+} from "@localpass/components";
+import { Vfo1I18nPipe } from "@localpass/vault";
 
 import { FORCE_TARGETING_RULES_UPDATE_COMMAND } from "../../../autofill/services/targeting-rules-data.service";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
@@ -32,7 +32,7 @@ import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-heade
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { ImportUpgradeNavigationService } from "../../../tools/popup/settings/import/import-upgrade-navigation.service";
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "vault-settings.component.html",

@@ -2,52 +2,52 @@ import { mock, MockProxy, mockReset } from "jest-mock-extended";
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 import {
   AutofillOverlayVisibility,
   SHOW_AUTOFILL_BUTTON,
-} from "@bitwarden/common/autofill/constants";
-import { AutofillSettingsServiceAbstraction as AutofillSettingsService } from "@bitwarden/common/autofill/services/autofill-settings.service";
+} from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction as AutofillSettingsService } from "@localpass/common/autofill/services/autofill-settings.service";
 import {
   DefaultDomainSettingsService,
   DomainSettingsService,
-} from "@bitwarden/common/autofill/services/domain-settings.service";
-import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
-import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+} from "@localpass/common/autofill/services/domain-settings.service";
+import { InlineMenuVisibilitySetting } from "@localpass/common/autofill/types";
+import { NeverDomains } from "@localpass/common/models/domain/domain-service";
+import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import {
   Environment,
   EnvironmentService,
   Region,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { ThemeType } from "@bitwarden/common/platform/enums";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { ThemeType } from "@localpass/common/platform/enums";
 import {
   IntraprocessMessageSender,
   Message,
   MessageListener,
-} from "@bitwarden/common/platform/messaging";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CloudEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
-import { Fido2ActiveRequestManager } from "@bitwarden/common/platform/services/fido2/fido2-active-request-manager";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+} from "@localpass/common/platform/messaging";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { CloudEnvironment } from "@localpass/common/platform/services/default-environment.service";
+import { Fido2ActiveRequestManager } from "@localpass/common/platform/services/fido2/fido2-active-request-manager";
+import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
 import {
   FakeAccountService,
   FakeStateProvider,
   mockAccountServiceWith,
-} from "@bitwarden/common/spec";
-import { UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
-import { CredentialGeneratorService } from "@bitwarden/generator-core";
-import { GeneratedCredential, GeneratorHistoryService } from "@bitwarden/generator-history";
+} from "@localpass/common/spec";
+import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
+import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
+import { CredentialGeneratorService } from "@localpass/generator-core";
+import { GeneratedCredential, GeneratorHistoryService } from "@localpass/generator-history";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { BrowserPlatformUtilsService } from "../../platform/services/platform-utils/browser-platform-utils.service";
@@ -190,7 +190,7 @@ describe("OverlayBackground", () => {
     showFaviconsMock$ = new BehaviorSubject(true);
     neverDomainsMock$ = new BehaviorSubject({});
     const mockEnvironment = mock<Environment>();
-    mockEnvironment.getApiUrl.mockReturnValue("https://api.bitwarden.com");
+    mockEnvironment.getApiUrl.mockReturnValue("https://api.local.invalid");
     const environmentServiceForDomain = mock<EnvironmentService>();
     environmentServiceForDomain.environment$ = new BehaviorSubject(mockEnvironment);
 
@@ -226,8 +226,8 @@ describe("OverlayBackground", () => {
     environmentMock$ = new BehaviorSubject(
       new CloudEnvironment({
         key: Region.US,
-        domain: "bitwarden.com",
-        urls: { icons: "https://icons.bitwarden.com/" },
+        domain: "local.invalid",
+        urls: { icons: "https://icons.local.invalid/" },
       }),
     );
     environmentService = mock<EnvironmentService>();
@@ -1230,7 +1230,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             id: "inline-menu-cipher-0",
@@ -1421,7 +1421,7 @@ describe("OverlayBackground", () => {
               icon: {
                 fallbackImage: "images/bwi-globe.png",
                 icon: "bwi-globe",
-                image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+                image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
                 imageEnabled: true,
               },
               id: "inline-menu-cipher-1",
@@ -1543,7 +1543,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             accountCreationFieldType: undefined,
@@ -1565,7 +1565,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             accountCreationFieldType: undefined,
@@ -1584,7 +1584,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             accountCreationFieldType: undefined,
@@ -1632,7 +1632,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             accountCreationFieldType: undefined,
@@ -1651,7 +1651,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             accountCreationFieldType: undefined,
@@ -1699,7 +1699,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             accountCreationFieldType: undefined,
@@ -1718,7 +1718,7 @@ describe("OverlayBackground", () => {
             icon: {
               fallbackImage: "images/bwi-globe.png",
               icon: "bwi-globe",
-              image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+              image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
               imageEnabled: true,
             },
             accountCreationFieldType: undefined,
@@ -1764,7 +1764,7 @@ describe("OverlayBackground", () => {
               icon: {
                 fallbackImage: "images/bwi-globe.png",
                 icon: "bwi-globe",
-                image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+                image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
                 imageEnabled: true,
               },
               accountCreationFieldType: undefined,
@@ -1783,7 +1783,7 @@ describe("OverlayBackground", () => {
               icon: {
                 fallbackImage: "images/bwi-globe.png",
                 icon: "bwi-globe",
-                image: "https://icons.bitwarden.com//jest-testing-website.com/icon.png",
+                image: "https://icons.local.invalid//jest-testing-website.com/icon.png",
                 imageEnabled: true,
               },
               accountCreationFieldType: undefined,

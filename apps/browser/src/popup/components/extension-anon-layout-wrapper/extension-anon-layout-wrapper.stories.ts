@@ -15,21 +15,21 @@ import {
 } from "@storybook/angular";
 import { of } from "rxjs";
 
-import { LockIcon, RegistrationCheckEmailIcon } from "@bitwarden/assets/svg";
-import { PopupWidthOptions } from "@bitwarden/browser/platform/browser/browser-popup-utils";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { ClientType } from "@bitwarden/common/enums";
+import { LockIcon, RegistrationCheckEmailIcon } from "@localpass/assets/svg";
+import { PopupWidthOptions } from "@localpass/browser/platform/browser/browser-popup-utils";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
+import { AvatarService } from "@localpass/common/auth/abstractions/avatar.service";
+import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
+import { ClientType } from "@localpass/common/enums";
 import {
   EnvironmentService,
   Environment,
-} from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { UserId } from "@bitwarden/common/types/guid";
-import { AnonLayoutWrapperDataService, ButtonModule, I18nMockService } from "@bitwarden/components";
+} from "@localpass/common/platform/abstractions/environment.service";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { UserId } from "@localpass/common/types/guid";
+import { AnonLayoutWrapperDataService, ButtonModule, I18nMockService } from "@localpass/components";
 
 import { AccountSwitcherService } from "../../../auth/popup/account-switching/services/account-switcher.service";
 import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popup-router-cache.service";
@@ -82,7 +82,7 @@ const decorators = (options: {
         {
           provide: AccountService,
           useValue: {
-            // We can't use mockAccountInfoWith() here because we can't take a dependency on @bitwarden/common/spec.
+            // We can't use mockAccountInfoWith() here because we can't take a dependency on @localpass/common/spec.
             // This is because that package relies on jest dependencies that aren't available here.
             activeAccount$: of({
               id: "test-user-id" as UserId,
@@ -116,7 +116,7 @@ const decorators = (options: {
           provide: EnvironmentService,
           useValue: {
             environment$: of({
-              getHostname: () => options.hostName || "storybook.bitwarden.com",
+              getHostname: () => options.hostName || "storybook.local.invalid",
             } as Partial<Environment>),
           } as Partial<EnvironmentService>,
         },
@@ -143,7 +143,7 @@ const decorators = (options: {
               back: "Back",
               activeAccount: "Active account",
               appLogoLabel: "app logo label",
-              bitwardenAccount: "Bitwarden Account",
+              localpassAccount: "LocalPass Account",
             });
           },
         },
@@ -377,9 +377,9 @@ export const HasLoggedInAccountExample: Story = {
     accounts: [
       {
         name: "Test User",
-        email: "testuser@bitwarden.com",
+        email: "testuser@local.invalid",
         id: "123e4567-e89b-12d3-a456-426614174000",
-        server: "bitwarden.com",
+        server: "local.invalid",
         status: 2,
         isActive: false,
       },

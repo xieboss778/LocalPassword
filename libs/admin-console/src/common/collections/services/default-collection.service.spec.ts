@@ -14,24 +14,24 @@ import {
   CollectionView,
   CollectionTypes,
   CollectionData,
-} from "@bitwarden/common/admin-console/models/collections";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { FakeStateProvider, makeEncString, mockAccountServiceWith } from "@bitwarden/common/spec";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
-import { OrgKey } from "@bitwarden/common/types/key";
-import { newGuid } from "@bitwarden/guid";
-import { KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/admin-console/models/collections";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { ContainerService } from "@localpass/common/platform/services/container.service";
+import { FakeStateProvider, makeEncString, mockAccountServiceWith } from "@localpass/common/spec";
+import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { OrgKey } from "@localpass/common/types/key";
+import { newGuid } from "@localpass/guid";
+import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   EncryptService,
   EncString,
   LegacyCompatKeyService,
   SymmetricCryptoKey,
-} from "@bitwarden/legacy-crypto";
-import { Measurement } from "@bitwarden/logging";
+} from "@localpass/legacy-crypto";
+import { Measurement } from "@localpass/logging";
 
 import { CollectionEncryptionService } from "../abstractions/collection-encryption.service";
 
@@ -72,7 +72,7 @@ describe("DefaultCollectionService", () => {
         Promise.resolve(encString.data.replace("ENC_", "DEC_")),
       );
 
-    (window as any).bitwardenContainerService = new ContainerService(
+    (window as any).localpassContainerService = new ContainerService(
       keyService,
       encryptService,
       legacyCompatKeyService,
@@ -92,7 +92,7 @@ describe("DefaultCollectionService", () => {
   });
 
   afterEach(() => {
-    delete (window as any).bitwardenContainerService;
+    delete (window as any).localpassContainerService;
   });
 
   describe("decryptedCollections$", () => {

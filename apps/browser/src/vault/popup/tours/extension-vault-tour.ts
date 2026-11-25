@@ -1,8 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "@bitwarden/common/types/guid";
-import { StateProvider, UserKeyDefinition, VAULT_WELCOME_DIALOG_DISK } from "@bitwarden/state";
-import { CoachmarkStep, CoachmarkTour } from "@bitwarden/vault";
+import { UserId } from "@localpass/common/types/guid";
+import { StateProvider, UserKeyDefinition, VAULT_WELCOME_DIALOG_DISK } from "@localpass/state";
+import { CoachmarkStep, CoachmarkTour } from "@localpass/vault";
 
 const EXTENSION_VAULT_TOUR_COMPLETED_KEY = new UserKeyDefinition<boolean>(
   VAULT_WELCOME_DIALOG_DISK,

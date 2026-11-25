@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
 // eslint-disable-next-line no-restricted-imports
-import { EncString } from "@bitwarden/legacy-crypto";
-import { Field as SdkField } from "@bitwarden/sdk-internal";
+import { EncString } from "@localpass/legacy-crypto";
+import { Field as SdkField } from "@localpass/sdk-internal";
 
 import Domain from "../../../platform/models/domain/domain-base";
 import {

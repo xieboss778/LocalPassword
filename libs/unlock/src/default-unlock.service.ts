@@ -1,29 +1,29 @@
 import { Observable, Subject, firstValueFrom, map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { assertNonNullish } from "@bitwarden/common/auth/utils";
-import { AccountCryptographicStateService } from "@bitwarden/common/key-management/account-cryptography/account-cryptographic-state.service";
-import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/key-management/master-password/abstractions/master-password.service.abstraction";
-import { V2UpgradeTokenStateService } from "@bitwarden/common/key-management/upgrade-token/abstractions/v2-upgrade-token-state.service.abstraction";
-import { RegisterSdkService } from "@bitwarden/common/platform/abstractions/sdk/register-sdk.service";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { assertNonNullish } from "@localpass/common/auth/utils";
+import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
+import { V2UpgradeTokenStateService } from "@localpass/common/key-management/upgrade-token/abstractions/v2-upgrade-token-state.service.abstraction";
+import { RegisterSdkService } from "@localpass/common/platform/abstractions/sdk/register-sdk.service";
 import {
   asUuid,
   SdkService,
   SdkUnlockRequest,
-} from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { Ref } from "@bitwarden/common/platform/misc/reference-counting/rc";
-import { USER_EVER_HAD_USER_KEY } from "@bitwarden/common/platform/services/key-state/user-key.state";
-import { UserKey } from "@bitwarden/common/types/key";
+} from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { Ref } from "@localpass/common/platform/misc/reference-counting/rc";
+import { USER_EVER_HAD_USER_KEY } from "@localpass/common/platform/services/key-state/user-key.state";
+import { UserKey } from "@localpass/common/types/key";
 import {
   BiometricsService,
   BiometricStateService,
   KdfConfigService,
   KeyService,
   SdkUnlockData,
-} from "@bitwarden/key-management";
+} from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { KdfConfig, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
-import { LogService, measured, PerfTrackGroup } from "@bitwarden/logging";
+import { KdfConfig, SymmetricCryptoKey } from "@localpass/legacy-crypto";
+import { LogService, measured, PerfTrackGroup } from "@localpass/logging";
 import {
   EncString,
   InitUserCryptoMethod,
@@ -32,9 +32,9 @@ import {
   PasswordManagerClient,
   V2UpgradeToken,
   WrappedAccountCryptographicState,
-} from "@bitwarden/sdk-internal";
-import { StateProvider } from "@bitwarden/state";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/sdk-internal";
+import { StateProvider } from "@localpass/state";
+import { UserId } from "@localpass/user-core";
 
 import { AutoUnlockService } from "./auto-unlock.service";
 import { UnlockMethod } from "./unlock-method.enum";

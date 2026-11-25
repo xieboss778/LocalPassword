@@ -9,7 +9,7 @@ import {
   BulkActionComponent,
   BulkActionsBarComponent,
   BulkAdditionalActionComponent,
-} from "@bitwarden/components";
+} from "@localpass/components";
 ```
 
 <Title />
@@ -33,7 +33,7 @@ renders no DOM itself; the bar reads its inputs and renders the toolbar button.
   button (or activates it via keyboard).
 - `[label]` — required string. Becomes the button's visible text and, in compact mode, its tooltip /
   aria-label.
-- `[icon]` — required `BitwardenIcon`. Every action in the toolbar row carries an icon so it has
+- `[icon]` — required `LocalPassIcon`. Every action in the toolbar row carries an icon so it has
   something to fall back to when compact mode collapses labels.
 - `[disabled]` — optional boolean; propagates to the rendered button.
 

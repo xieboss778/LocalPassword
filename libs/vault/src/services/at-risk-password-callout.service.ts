@@ -6,11 +6,11 @@ import {
   StateProvider,
   UserKeyDefinition,
   VAULT_AT_RISK_PASSWORDS_MEMORY,
-} from "@bitwarden/common/platform/state";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SecurityTask, SecurityTaskType, TaskService } from "@bitwarden/common/vault/tasks";
-import { CipherViewLikeUtils } from "@bitwarden/common/vault/utils/cipher-view-like-utils";
-import { UserId } from "@bitwarden/user-core";
+} from "@localpass/common/platform/state";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { SecurityTask, SecurityTaskType, TaskService } from "@localpass/common/vault/tasks";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { UserId } from "@localpass/user-core";
 
 export type AtRiskPasswordCalloutData = {
   hasInteractedWithTasks: boolean;

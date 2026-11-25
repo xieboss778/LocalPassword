@@ -1,4 +1,4 @@
-# `@bitwarden/state`
+# `@localpass/state`
 
 # State Provider Framework
 
@@ -42,7 +42,7 @@ storage framework.
 `StateDefinition` is a simple API but a very core part of making the State Provider Framework work
 smoothly. It defines a storage location and top-level namespace for storage. Teams will interact
 with it only in a single `state-definitions.ts` file in the
-[`clients`](https://github.com/bitwarden/clients) repository. This file is located under Platform
+[`clients`](https://github.com/xieboss778/LocalPassword) repository. This file is located under Platform
 team code ownership but teams are expected to create edits to it. A team will edit this file to
 include a line such as:
 
@@ -419,7 +419,7 @@ chrome.storage.local.set({ key: true });
 
 The second instance of calling `set` will not log a changed event. As a result, the `state$` relying
 on this value will not emit. Due to nuances like this, using a `StateProvider` as an event stream is
-discouraged, and we recommend using [`MessageSender`](https://github.com/bitwarden/clients/blob/main/libs/messaging/src/message.sender.ts) for events that you always want sent to
+discouraged, and we recommend using [`MessageSender`](https://github.com/xieboss778/LocalPassword/blob/main/libs/messaging/src/message.sender.ts) for events that you always want sent to
 subscribers.
 
 ## Testing
@@ -443,7 +443,7 @@ methods for getting and setting using your `KeyDefinition` or `KeyDefinitionLike
 user and global state.
 
 For examples of migrations, you can reference the
-[existing](https://github.com/bitwarden/clients/tree/main/libs/common/src/state-migrations/migrations)
+[existing](https://github.com/xieboss778/LocalPassword/tree/main/libs/common/src/state-migrations/migrations)
 migrations list.
 
 ## FAQ

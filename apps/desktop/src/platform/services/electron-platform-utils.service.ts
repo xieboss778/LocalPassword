@@ -1,12 +1,12 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { ClientType, DeviceType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { ClientType, DeviceType } from "@localpass/common/enums";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 import {
   ClipboardOptions,
   PlatformUtilsService,
-} from "@bitwarden/common/platform/abstractions/platform-utils.service";
+} from "@localpass/common/platform/abstractions/platform-utils.service";
 
 import { ClipboardWriteMessage } from "../types/clipboard";
 

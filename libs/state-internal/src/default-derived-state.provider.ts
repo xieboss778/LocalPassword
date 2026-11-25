@@ -5,7 +5,7 @@ import {
   DerivedState,
   DerivedStateDependencies,
   DerivedStateProvider,
-} from "@bitwarden/state";
+} from "@localpass/state";
 
 import { DefaultDerivedState } from "./default-derived-state";
 

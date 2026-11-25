@@ -1,5 +1,5 @@
 {
-  "name": "@bitwarden/generator-components",
+  "name": "@localpass/generator-components",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tools/generator/components/src",
   "projectType": "library",

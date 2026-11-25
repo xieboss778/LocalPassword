@@ -3,33 +3,33 @@ import * as JSZip from "jszip";
 import * as papa from "papaparse";
 import { BehaviorSubject, of } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CipherWithIdExport } from "@bitwarden/common/models/export/cipher-with-ids.export";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { SdkLoadService } from "@bitwarden/common/platform/abstractions/sdk/sdk-load.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { BuildTestObject, GetUniqueString } from "@bitwarden/common/spec";
-import { CipherId, emptyGuid, UserId } from "@bitwarden/common/types/guid";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherType, FieldType } from "@bitwarden/common/vault/enums";
-import { AttachmentData } from "@bitwarden/common/vault/models/data/attachment.data";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { Attachment } from "@bitwarden/common/vault/models/domain/attachment";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { Folder } from "@bitwarden/common/vault/models/domain/folder";
-import { Login } from "@bitwarden/common/vault/models/domain/login";
-import { AttachmentResponse } from "@bitwarden/common/vault/models/response/attachment.response";
-import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { ApiService } from "@localpass/common/abstractions/api.service";
+import { CipherWithIdExport } from "@localpass/common/models/export/cipher-with-ids.export";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { SdkLoadService } from "@localpass/common/platform/abstractions/sdk/sdk-load.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { BuildTestObject, GetUniqueString } from "@localpass/common/spec";
+import { CipherId, emptyGuid, UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType, FieldType } from "@localpass/common/vault/enums";
+import { AttachmentData } from "@localpass/common/vault/models/data/attachment.data";
+import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { Attachment } from "@localpass/common/vault/models/domain/attachment";
+import { Cipher } from "@localpass/common/vault/models/domain/cipher";
+import { Folder } from "@localpass/common/vault/models/domain/folder";
+import { Login } from "@localpass/common/vault/models/domain/login";
+import { AttachmentResponse } from "@localpass/common/vault/models/response/attachment.response";
+import { AttachmentView } from "@localpass/common/vault/models/view/attachment.view";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
+import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import {
   RestrictedCipherType,
   RestrictedItemTypesService,
-} from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+} from "@localpass/common/vault/services/restricted-item-types.service";
+import { KdfConfigService, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import {
   DEFAULT_KDF_CONFIG,
@@ -39,11 +39,11 @@ import {
   KdfType,
   KeyGenerationService,
   PBKDF2KdfConfig,
-} from "@bitwarden/legacy-crypto";
-import { SdkRandomNumberClient } from "@bitwarden/sdk-internal";
+} from "@localpass/legacy-crypto";
+import { SdkRandomNumberClient } from "@localpass/sdk-internal";
 
 import {
-  BitwardenJsonExport,
+  LocalPassJsonExport,
   ExportedVault,
   ExportedVaultAsBlob,
   ExportedVaultAsString,
@@ -385,7 +385,7 @@ describe("VaultExportService", () => {
 
       const zip = await JSZip.loadAsync(exportedVault.data);
       const data = await zip.file("data.json")?.async("string");
-      const exportData: BitwardenJsonExport = JSON.parse(data);
+      const exportData: LocalPassJsonExport = JSON.parse(data);
       expect(exportData.items.length).toBe(1);
       expect(exportData.items[0].id).toBe("mock-id");
       expect(exportData.items[0].organizationId).toBeUndefined();

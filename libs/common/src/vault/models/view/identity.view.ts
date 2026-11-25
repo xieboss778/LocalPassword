@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { IdentityView as SdkIdentityView } from "@bitwarden/sdk-internal";
+import { IdentityView as SdkIdentityView } from "@localpass/sdk-internal";
 
 import { Utils } from "../../../platform/misc/utils";
 import { IdentityLinkedId as LinkedId } from "../../enums";

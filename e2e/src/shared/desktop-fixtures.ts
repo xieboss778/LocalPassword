@@ -7,11 +7,11 @@ import { NativeMessaging, popupUrl, test as browserTest } from "../browser/fixtu
 import { test as biometricsTest } from "../desktop/biometrics";
 import { CHROME_PROFILE_DIR } from "../paths";
 
-// Written by desktop's NativeMessagingMain into the profile BITWARDEN_CHROME_PROFILE_DIR names.
+// Written by desktop's NativeMessagingMain into the profile LOCALPASS_CHROME_PROFILE_DIR names.
 const HOST_MANIFEST = resolve(
   CHROME_PROFILE_DIR,
   "NativeMessagingHosts",
-  "com.localpassword.desktop.json",
+  "com.localpass.desktop.json",
 );
 const HOST_MANIFEST_TIMEOUT_MS = 60_000;
 
@@ -48,7 +48,7 @@ export const test = mergeTests(browserTest, biometricsTest).extend({
   // Depends on `context` so Chromium and its profile exist before desktop writes the manifest.
   extraEnv: async ({ extraEnv, context }, use) => {
     void context;
-    await use({ ...extraEnv, BITWARDEN_CHROME_PROFILE_DIR: CHROME_PROFILE_DIR });
+    await use({ ...extraEnv, LOCALPASS_CHROME_PROFILE_DIR: CHROME_PROFILE_DIR });
   },
   app: async ({ app, context }, use) => {
     await allowExtension(context);

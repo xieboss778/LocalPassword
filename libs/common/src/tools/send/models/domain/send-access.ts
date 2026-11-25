@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 // eslint-disable-next-line no-restricted-imports
-import { EncString, SymmetricCryptoKey } from "@bitwarden/legacy-crypto";
+import { EncString, SymmetricCryptoKey } from "@localpass/legacy-crypto";
 
 import Domain from "../../../../platform/models/domain/domain-base";
 import { SendType } from "../../types/send-type";

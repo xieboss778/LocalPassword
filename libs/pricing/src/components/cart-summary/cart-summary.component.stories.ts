@@ -1,9 +1,9 @@
 import { DatePipe } from "@angular/common";
 import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { IconButtonModule, TypographyModule } from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { IconButtonModule, TypographyModule } from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CartSummaryComponent, DiscountTypes } from "../..";
 import { Cart } from "../../types/cart";

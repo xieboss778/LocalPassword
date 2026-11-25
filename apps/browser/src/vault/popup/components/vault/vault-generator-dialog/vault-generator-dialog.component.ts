@@ -4,18 +4,18 @@ import { Overlay } from "@angular/cdk/overlay";
 import { CommonModule } from "@angular/common";
 import { Component, Inject } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   DIALOG_DATA,
   DialogConfig,
   DialogRef,
   ButtonModule,
   DialogService,
-} from "@bitwarden/components";
-import { AlgorithmInfo } from "@bitwarden/generator-core";
-import { I18nPipe } from "@bitwarden/ui-common";
-import { CipherFormGeneratorComponent } from "@bitwarden/vault";
+} from "@localpass/components";
+import { AlgorithmInfo } from "@localpass/generator-core";
+import { I18nPipe } from "@localpass/ui-common";
+import { CipherFormGeneratorComponent } from "@localpass/vault";
 
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup-header.component";
@@ -38,7 +38,7 @@ export const GeneratorDialogAction = {
 
 type GeneratorDialogAction = UnionOfValues<typeof GeneratorDialogAction>;
 
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-generator-dialog",

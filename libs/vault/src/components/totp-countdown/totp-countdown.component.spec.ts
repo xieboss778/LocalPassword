@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
 import { BitTotpCountdownComponent } from "./totp-countdown.component";
 

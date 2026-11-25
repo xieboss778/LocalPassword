@@ -2,7 +2,7 @@ import * as fs from "fs";
 
 import ElectronStore from "electron-store";
 
-import { NodeUtils } from "@bitwarden/node/node-utils";
+import { NodeUtils } from "@localpass/node/node-utils";
 
 import { isWindowsPortable } from "../../../main/platform-utils.main";
 
@@ -32,7 +32,7 @@ export class ElectronStoreBackend implements StorageBackend {
       configFileMode: fileMode,
     }) as unknown as ConfStore<Record<string, unknown>>;
 
-    // LocalPassword: keep one rolling copy of the last good store. The vault lives in this single
+    // LocalPass: keep one rolling copy of the last good store. The vault lives in this single
     // file, so a torn write would otherwise be unrecoverable.
     this.writeRollingBackup();
   }

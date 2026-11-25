@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { EncryptedString, EncString } from "@bitwarden/legacy-crypto";
+import { EncryptedString, EncString } from "@localpass/legacy-crypto";
 
 import { mockContainerService, mockFromJson } from "../../../../spec";
 import { UriMatchStrategy } from "../../../models/domain/domain-service";
@@ -108,7 +108,7 @@ describe("Login DTO", () => {
         password: "myPassword" as EncryptedString,
         passwordRevisionDate: passwordRevisionDate.toISOString(),
         totp: "myTotp" as EncryptedString,
-        // NOTE: `as any` is here until we migrate to Nx: https://bitwarden.atlassian.net/browse/PM-6493
+        // NOTE: `as any` is here until we migrate to Nx: https://localpass.atlassian.net/browse/PM-6493
         fido2Credentials: [
           {
             credentialId: "keyId" as EncryptedString,

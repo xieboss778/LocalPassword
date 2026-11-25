@@ -1,4 +1,4 @@
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { ApiService } from "@localpass/common/abstractions/api.service";
 
 import { OrganizationInviteLinkApiService } from "../abstractions/organization-invite-link-api.service";
 import { OrganizationInviteLinkValidateEmailDomainRequest } from "../models/requests/organization-invite-link-validate-email-domain.request";

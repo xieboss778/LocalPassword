@@ -1,12 +1,12 @@
 import { firstValueFrom } from "rxjs";
 
-import { ManagedSettingsClient, ManagementProfile } from "@bitwarden/sdk-internal";
+import { ManagedSettingsClient, ManagementProfile } from "@localpass/sdk-internal";
 
 import { DefaultManagedSettingsService } from "./default-managed-settings.service";
 
 const mockUpdateProfile = jest.fn();
 
-jest.mock("@bitwarden/sdk-internal", () => ({
+jest.mock("@localpass/sdk-internal", () => ({
   ManagedSettingsClient: jest.fn().mockImplementation(() => ({
     update_profile: mockUpdateProfile,
   })),

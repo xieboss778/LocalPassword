@@ -3,17 +3,17 @@
 import { CommonModule } from "@angular/common";
 import { Component, HostListener, Inject } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherId, OrganizationId } from "@bitwarden/common/types/guid";
-import { UnionOfValues } from "@bitwarden/common/vault/types/union-of-values";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherId, OrganizationId } from "@localpass/common/types/guid";
+import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
   ButtonModule,
   DialogModule,
   DialogService,
   DIALOG_DATA,
   DialogRef,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { CipherAttachmentsComponent } from "../../cipher-form/components/attachments/cipher-attachments.component";
 
@@ -42,7 +42,7 @@ export interface AttachmentDialogCloseResult {
 /**
  * Component for the attachments dialog.
  */
-// FIXME(https://bitwarden.atlassian.net/browse/CL-764): Migrate to OnPush
+// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "app-vault-attachments-v2",

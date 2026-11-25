@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { DialogService } from "@bitwarden/components";
+import { DialogService } from "@localpass/components";
 
 import { SendFormGenerationService } from "../abstractions/send-form-generation.service";
 import {

@@ -2,20 +2,20 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType } from "@localpass/common/vault/enums";
 import {
   RestrictedCipherType,
   RestrictedItemTypesService,
-} from "@bitwarden/common/vault/services/restricted-item-types.service";
-import { DIALOG_CIPHER_MENU_ITEMS } from "@bitwarden/common/vault/types/cipher-menu-items";
+} from "@localpass/common/vault/services/restricted-item-types.service";
+import { DIALOG_CIPHER_MENU_ITEMS } from "@localpass/common/vault/types/cipher-menu-items";
 import {
-  BitwardenIcon,
+  LocalPassIcon,
   IconComponent,
   ItemModule,
   TypographyModule,
   IconTileComponent,
-} from "@bitwarden/components";
-import { I18nPipe } from "@bitwarden/ui-common";
+} from "@localpass/components";
+import { I18nPipe } from "@localpass/ui-common";
 
 import { Vfo1TerminologyService } from "../../services/vfo1-terminology.service";
 
@@ -31,7 +31,7 @@ export type AddItemGridResult =
   | { result: typeof AddItemGridResult.Collection };
 
 type GridItem = {
-  icon: BitwardenIcon;
+  icon: LocalPassIcon;
   labelKey: string;
   subtitleKey: string;
   action: () => void;
@@ -64,7 +64,7 @@ export class AddItemGridComponent {
           }
           return !restrictedTypes.some((r) => r.cipherType === item.type);
         }).map((item) => ({
-          icon: item.icon as BitwardenIcon,
+          icon: item.icon as LocalPassIcon,
           labelKey: item.labelKey,
           subtitleKey: item.subtitleKey,
           action: () =>

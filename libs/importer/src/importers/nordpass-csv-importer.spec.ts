@@ -1,11 +1,11 @@
 import { mock } from "jest-mock-extended";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { OrganizationId } from "@bitwarden/common/types/guid";
-import { SecureNoteType, CipherType, FieldType } from "@bitwarden/common/vault/enums";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
+import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
+import { OrganizationId } from "@localpass/common/types/guid";
+import { SecureNoteType, CipherType, FieldType } from "@localpass/common/vault/enums";
+import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { IdentityView } from "@localpass/common/vault/models/view/identity.view";
 
 import { NordPassCsvImporter } from "./nordpass-csv-importer";
 import { data as creditCardData } from "./spec-data/nordpass-csv/nordpass.card.csv";
@@ -70,7 +70,7 @@ function expectLogin(cipher: CipherView) {
   expect(cipher.login.uri).toBe("https://example.com");
   expect(cipher.login.uris.length).toBe(1);
   expect(cipher.login.uris[0].uri).toBe("https://example.com");
-  expect(cipher.login.username).toBe("hello@bitwarden.com");
+  expect(cipher.login.username).toBe("hello@local.invalid");
   expect(cipher.login.password).toBe("someStrongPassword");
 }
 
@@ -83,7 +83,7 @@ function expectLoginWithAdditionalUrls(cipher: CipherView) {
   expect(cipher.login.uris.length).toBe(2);
   expect(cipher.login.uris[0].uri).toBe("https://example.com");
   expect(cipher.login.uris[1].uri).toBe("https://example.net");
-  expect(cipher.login.username).toBe("hello@bitwarden.com");
+  expect(cipher.login.username).toBe("hello@local.invalid");
   expect(cipher.login.password).toBe("someStrongPassword");
 }
 
@@ -107,7 +107,7 @@ function expectIdentity(cipher: CipherView) {
   expect(cipher.identity.firstName).toBe("MyFirstName");
   expect(cipher.identity.middleName).toBe("MyMiddleName");
   expect(cipher.identity.lastName).toBe("MyLastName");
-  expect(cipher.identity.email).toBe("hello@bitwarden.com");
+  expect(cipher.identity.email).toBe("hello@local.invalid");
   expect(cipher.identity.phone).toBe("123456789");
 
   expect(cipher.identity.address1).toBe("Test street 123");

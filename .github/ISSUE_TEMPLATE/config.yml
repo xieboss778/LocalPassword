@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: 安全问题
-    url: https://github.com/xieboss778/LocalPassword/blob/main/SECURITY.md
+    url: https://github.com/xieboss778/LocalPass/blob/main/SECURITY.md
     about: 请勿在公开 issue 中披露漏洞，请按 SECURITY.md 的流程私下报告。
   - name: 使用问题与讨论
-    url: https://github.com/xieboss778/LocalPassword/discussions
+    url: https://github.com/xieboss778/LocalPass/discussions
     about: 安装、构建、使用上的疑问，或者不确定是不是 bug，请到 Discussions 提问。

@@ -1,1 +1,1 @@
-export { FakeStorageService } from "@bitwarden/storage-test-utils";
+export { FakeStorageService } from "@localpass/storage-test-utils";

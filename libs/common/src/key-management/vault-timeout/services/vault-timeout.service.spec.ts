@@ -3,7 +3,7 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { BehaviorSubject, from, of } from "rxjs";
 
-import { LockService, LockSource } from "@bitwarden/unlock";
+import { LockService, LockSource } from "@localpass/unlock";
 
 import { FakeAccountService, mockAccountServiceWith, mockAccountInfoWith } from "../../../../spec";
 import { AccountInfo } from "../../../auth/abstractions/account.service";

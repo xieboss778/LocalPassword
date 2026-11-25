@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
-import { uuidAsString } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import { OrganizationInviteLinkView as SdkOrganizationInviteLinkView } from "@bitwarden/sdk-internal";
+import { uuidAsString } from "@localpass/common/platform/abstractions/sdk/sdk.service";
+import { OrganizationInviteLinkView as SdkOrganizationInviteLinkView } from "@localpass/sdk-internal";
 
 /**
  * Client-side view of an organization invite link, mirroring the SDK's

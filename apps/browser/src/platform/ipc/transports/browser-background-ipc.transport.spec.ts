@@ -1,5 +1,5 @@
-import { IpcMessage } from "@bitwarden/common/platform/ipc";
-import { IncomingMessage, OutgoingMessage } from "@bitwarden/sdk-internal";
+import { IpcMessage } from "@localpass/common/platform/ipc";
+import { IncomingMessage, OutgoingMessage } from "@localpass/sdk-internal";
 
 import { BrowserBackgroundIpcTransport } from "./browser-background-ipc.transport";
 import { DESTINATION_UNREACHABLE_ERROR } from "./errors";
@@ -112,7 +112,7 @@ describe("BrowserBackgroundIpcTransport", () => {
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
     expect(chrome.runtime.connect).toHaveBeenCalledWith({ name: IPC_FOREGROUND_PORT_NAME });
     expect(ports[0].port.postMessage).toHaveBeenCalledWith({
-      type: "bitwarden-ipc-message",
+      type: "localpass-ipc-message",
       message: {
         destination: { BrowserBackground: { id: "Own" } },
         payload: [1, 2],
@@ -125,7 +125,7 @@ describe("BrowserBackgroundIpcTransport", () => {
     await transport.send(toBackground);
 
     ports[0].emit({
-      type: "bitwarden-ipc-message",
+      type: "localpass-ipc-message",
       message: { destination: { BrowserForeground: { id: 3 } }, payload: [9], topic: "topic" },
     });
 
@@ -138,7 +138,7 @@ describe("BrowserBackgroundIpcTransport", () => {
     await transport.send(toBackground);
 
     ports[0].emit({
-      type: "bitwarden-ipc-message",
+      type: "localpass-ipc-message",
       message: { destination: "DesktopMain", payload: [9], topic: "topic" },
     });
 

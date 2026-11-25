@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=LocalPass
+Exec=localpass %u
+Terminal=false
+Type=Application
+Icon=com.localpass.desktop
+StartupWMClass=com.localpass.desktop
+GenericName=Password Manager
+Comment=A secure and free password manager for all of your devices.
+MimeType=x-scheme-handler/localpass;
+Categories=System;Security;

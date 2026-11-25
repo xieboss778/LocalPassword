@@ -1,6 +1,6 @@
-/* eslint-disable @bitwarden/components/require-theme-colors-in-svg */
+/* eslint-disable @localpass/components/require-theme-colors-in-svg */
 
-import { svg } from "@bitwarden/assets/svg";
+import { svg } from "@localpass/assets/svg";
 
 export const WelcomeBackgroundLight = svg`
 <svg width="480" height="569" viewBox="0 0 480 569" preserveAspectRatio="xMidYMin slice" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

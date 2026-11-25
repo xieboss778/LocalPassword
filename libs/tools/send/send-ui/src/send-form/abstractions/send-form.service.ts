@@ -2,8 +2,8 @@ import { signal, Signal } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { Observable } from "rxjs";
 
-import { Send } from "@bitwarden/common/tools/send/models/domain/send";
-import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
+import { Send } from "@localpass/common/tools/send/models/domain/send";
+import { SendView } from "@localpass/common/tools/send/models/view/send.view";
 
 import { SendForm } from "../send-form-container";
 

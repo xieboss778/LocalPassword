@@ -134,11 +134,11 @@
       </a>
     </bit-item>
     <bit-item>
-      <a bit-item-content routerLink="/download-bitwarden" [truncate]="false">
+      <a bit-item-content routerLink="/download-localpass" [truncate]="false">
         <i slot="start" class="bwi bwi-mobile" aria-hidden="true"></i>
         <div class="tw-flex tw-items-center">
-          <p class="tw-pr-2">{{ "downloadBitwardenApps" | i18n }}</p>
-          @if (showDownloadBitwardenNudge$ | async) {
+          <p class="tw-pr-2">{{ "downloadLocalPassApps" | i18n }}</p>
+          @if (showDownloadLocalPassNudge$ | async) {
             <bit-berry
               variant="danger"
               [value]="1"
@@ -150,9 +150,9 @@
       </a>
     </bit-item>
     <bit-item>
-      <a bit-item-content routerLink="/more-from-bitwarden" [truncate]="false">
+      <a bit-item-content routerLink="/more-from-localpass" [truncate]="false">
         <i slot="start" class="bwi bwi-grid" aria-hidden="true"></i>
-        {{ "moreFromBitwarden" | i18n }}
+        {{ "moreFromLocalPass" | i18n }}
         <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
       </a>
     </bit-item>

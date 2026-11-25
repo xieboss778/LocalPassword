@@ -16,9 +16,9 @@ import { DefaultAvailableRegionsService } from "./default-available-regions.serv
 describe("DefaultAvailableRegionsService", () => {
   const urls: Urls = {} as Urls;
   const allRegions: RegionConfig[] = [
-    { key: Region.US, domain: "bitwarden.com", urls },
-    { key: Region.EU, domain: "bitwarden.eu", urls },
-    { key: Region.Gov, domain: "bitwarden-gov.com", urls },
+    { key: Region.US, domain: "local.invalid", urls },
+    { key: Region.EU, domain: "local.invalid", urls },
+    { key: Region.Gov, domain: "local.invalid", urls },
   ];
 
   let environmentService: MockProxy<EnvironmentService>;
