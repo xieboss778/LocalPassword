@@ -9535,5 +9535,38 @@
   },
   "backupFailed": {
     "message": "备份上传失败"
+  },
+  "googleAuth": {
+    "message": "Google 身份验证器"
+  },
+  "googleAuthHint": {
+    "message": "在 Google 身份验证器里选「转移账号 → 导出账号」，把它显示的二维码保存或截图。这里不能用摄像头扫，所以请粘贴 otpauth-migration 链接，或选择截图。"
+  },
+  "googleAuthPasteLabel": {
+    "message": "迁移链接"
+  },
+  "googleAuthScanPaste": {
+    "message": "解析粘贴的链接"
+  },
+  "googleAuthReadImages": {
+    "message": "选择截图"
+  },
+  "googleAuthPreviewCount": {
+    "message": "找到的账号"
+  },
+  "googleAuthImportButton": {
+    "message": "导入账号"
+  },
+  "googleAuthNothingParsed": {
+    "message": "还没找到账号：粘贴迁移链接，或选择截图。"
+  },
+  "googleAuthImported": {
+    "message": "账号已导入"
+  },
+  "googleAuthUnreadableImage": {
+    "message": "没能从这张图片里读出二维码"
+  },
+  "googleAuthHotpSkipped": {
+    "message": "跳过基于计数器（HOTP）的账号"
   }
 }

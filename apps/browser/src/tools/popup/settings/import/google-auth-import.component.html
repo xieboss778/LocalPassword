@@ -1,0 +1,65 @@
+<div class="tw-flex tw-flex-col tw-gap-4">
+  <p bitTypography="body1" class="tw-text-main tw-mb-0">
+    {{ "googleAuthHint" | i18n }}
+  </p>
+
+  <bit-form-field>
+    <bit-label>{{ "googleAuthPasteLabel" | i18n }}</bit-label>
+    <textarea
+      rows="3"
+      class="tw-w-full"
+      [(ngModel)]="rawInput"
+      placeholder="otpauth-migration://offline?data=..."
+    ></textarea>
+  </bit-form-field>
+
+  <div class="tw-flex tw-gap-2 tw-flex-wrap">
+    <button type="button" bitButton buttonType="secondary" (click)="readInput()">
+      {{ "googleAuthScanPaste" | i18n }}
+    </button>
+    <label bitButton buttonType="secondary" class="tw-cursor-pointer">
+      {{ "googleAuthReadImages" | i18n }}
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        class="tw-hidden"
+        (change)="readImages($event)"
+      />
+    </label>
+  </div>
+
+  @if (accounts().length > 0) {
+    <ul class="tw-flex tw-flex-col tw-gap-1 tw-mb-0">
+      @for (account of accounts(); track account.totp) {
+        <li bitTypography="body2">
+          {{ account.issuer }} — {{ account.name }}
+        </li>
+      }
+    </ul>
+
+    <p bitTypography="helper" class="tw-mb-0">
+      {{ "googleAuthPreviewCount" | i18n }}: {{ accounts().length }}
+    </p>
+
+    <button
+      type="button"
+      bitButton
+      buttonType="primary"
+      [disabled]="busy()"
+      (click)="doImport()"
+    >
+      {{ "googleAuthImportButton" | i18n }}
+    </button>
+  } @else {
+    <p bitTypography="helper" class="tw-mb-0">
+      {{ "googleAuthNothingParsed" | i18n }}
+    </p>
+  }
+
+  @if (skippedHotp() > 0) {
+    <p bitTypography="helper" class="tw-text-danger tw-mb-0">
+      {{ "googleAuthHotpSkipped" | i18n }}: {{ skippedHotp() }}
+    </p>
+  }
+</div>
