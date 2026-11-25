@@ -395,6 +395,7 @@ import {
   KeyService,
   UserAsymmetricKeysRegenerationService,
 } from "@bitwarden/key-management";
+import { LocalWebAuthnPrfEnrollmentService } from "@bitwarden/key-management-ui";
 // eslint-disable-next-line no-restricted-imports
 import {
   CryptoFunctionService as CryptoFunctionServiceAbstraction,
@@ -813,6 +814,33 @@ const safeProviders: SafeProvider[] = [
         logService,
       ),
     deps: [LocalAccountService, CipherEncryptionService, StateProvider, LogService],
+  }),
+  safeProvider({
+    provide: LocalWebAuthnPrfEnrollmentService,
+    useFactory: (
+      prfKeyService: WebAuthnLoginPrfKeyServiceAbstraction,
+      rotateableKeySetService: RotateableKeySetService,
+      keyService: KeyService,
+      stateProvider: StateProvider,
+      logService: LogService,
+      window: Window,
+    ) =>
+      new LocalWebAuthnPrfEnrollmentService(
+        prfKeyService,
+        rotateableKeySetService,
+        keyService,
+        stateProvider,
+        logService,
+        window,
+      ),
+    deps: [
+      WebAuthnLoginPrfKeyServiceAbstraction,
+      RotateableKeySetService,
+      KeyService,
+      StateProvider,
+      LogService,
+      WINDOW,
+    ],
   }),
   safeProvider({
     provide: VaultBackupSyncService,

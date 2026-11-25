@@ -97,6 +97,7 @@ import { SendCreatedComponent } from "../tools/popup/send-v2/send-created/send-c
 import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
 import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-page-v2.component";
 import { ExportBrowserV2Component } from "../tools/popup/settings/export/export-browser-v2.component";
+import { SecurityKeyComponent } from "../auth/popup/security-key/security-key.component";
 import { GoogleAuthImportComponent } from "../tools/popup/settings/import/google-auth-import.component";
 import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { IMPORT_CONFIRMATION_ROUTE_PATH } from "../tools/popup/settings/import/import-confirmation-state.service";
@@ -371,6 +372,13 @@ const routes: Routes = [
     component: ExportBrowserV2Component,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPassword: register a security key (PRF) as an unlock method.
+    path: "security-key",
+    component: SecurityKeyComponent,
+    canActivate: [authGuard],
+    data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
     // LocalPassword: cloud backup settings for a local vault.

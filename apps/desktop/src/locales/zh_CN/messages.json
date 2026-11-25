@@ -7990,5 +7990,29 @@
   },
   "googleAuthHotpSkipped": {
     "message": "跳过基于计数器（HOTP）的账号"
+  },
+  "securityKey": {
+    "message": "安全密钥解锁"
+  },
+  "securityKeyDescription": {
+    "message": "登记一把安全密钥或 Passkey，之后不用输主密码就能解锁。密钥绑定在这个扩展上：换浏览器或到桌面端都不能用。"
+  },
+  "securityKeyEnroll": {
+    "message": "登记安全密钥"
+  },
+  "securityKeyRemove": {
+    "message": "移除全部密钥"
+  },
+  "securityKeyRegistered": {
+    "message": "已登记密钥"
+  },
+  "securityKeyEnrolled": {
+    "message": "安全密钥已登记"
+  },
+  "securityKeyEnrollFailed": {
+    "message": "安全密钥登记失败"
+  },
+  "securityKeyUnsupported": {
+    "message": "当前浏览器不支持在这里登记安全密钥。"
   }
 }
