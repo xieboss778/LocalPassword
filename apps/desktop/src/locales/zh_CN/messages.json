@@ -8032,5 +8032,140 @@
   },
   "backupConflicts": {
     "message": "远端与本地不一致，请先确认再同步。"
+  },
+  "change": {
+    "message": "更改"
+  },
+  "newItem": {
+    "message": "新增项目"
+  },
+  "itemKindLogin": {
+    "message": "登录"
+  },
+  "itemKindToken": {
+    "message": "令牌"
+  },
+  "itemKindSshKey": {
+    "message": "SSH 私钥"
+  },
+  "itemKindLicense": {
+    "message": "许可证"
+  },
+  "itemKindCard": {
+    "message": "卡片"
+  },
+  "itemKindIdentity": {
+    "message": "身份"
+  },
+  "itemKindServer": {
+    "message": "服务器"
+  },
+  "itemKindNote": {
+    "message": "笔记"
+  },
+  "newItemPickKind": {
+    "message": "先选类型，字段会跟着类型变"
+  },
+  "itemKindLoginBlurb": {
+    "message": "网站与 App 的账号"
+  },
+  "itemKindTokenBlurb": {
+    "message": "API Key、访问令牌"
+  },
+  "itemKindSshKeyBlurb": {
+    "message": "登录服务器用的私钥"
+  },
+  "itemKindLicenseBlurb": {
+    "message": "软件序列号与激活码"
+  },
+  "itemKindCardBlurb": {
+    "message": "银行卡与信用卡"
+  },
+  "itemKindIdentityBlurb": {
+    "message": "个人资料 / 护照 / 驾照"
+  },
+  "itemKindServerBlurb": {
+    "message": "主机与远程登录凭据"
+  },
+  "itemKindNoteBlurb": {
+    "message": "恢复码、配置片段"
+  },
+  "itemKindTokenScope": {
+    "message": "权限范围"
+  },
+  "itemKindTokenEnv": {
+    "message": "环境"
+  },
+  "itemKindSshKeyPublic": {
+    "message": "公钥"
+  },
+  "itemKindLicenseSeats": {
+    "message": "席位 / 版本"
+  },
+  "itemKindServerProtocol": {
+    "message": "协议"
+  },
+  "itemKindServerSudo": {
+    "message": "sudo 备注"
+  },
+  "emptyVaultHint": {
+    "message": "新建第一条，或者从别处导入。"
+  },
+  "noResults": {
+    "message": "没有匹配项"
+  },
+  "credentials": {
+    "message": "凭据"
+  },
+  "passwordReprompt": {
+    "message": "密码重提示"
+  },
+  "enabled": {
+    "message": "开启"
+  },
+  "identityNumber": {
+    "message": "证件号"
+  },
+  "settingsSubtitle": {
+    "message": "离线优先 · 无账号"
+  },
+  "securitySubtitle": {
+    "message": "本地解锁，不发一个请求"
+  },
+  "autoLock": {
+    "message": "自动锁定"
+  },
+  "autoLock15": {
+    "message": "15 分钟"
+  },
+  "backupManual": {
+    "message": "仅手动"
+  },
+  "backupTitle": {
+    "message": "备份"
+  },
+  "exportData": {
+    "message": "导出加密 JSON"
+  },
+  "importGoogleAuth": {
+    "message": "导入 Google 认证器"
+  },
+  "downloadDesktopApp": {
+    "message": "桌面端应用"
+  },
+  "networkGate": {
+    "message": "网络闸门"
+  },
+  "networkGateOn": {
+    "message": "已启用 · 3 条规则"
+  },
+  "system": {
+    "message": "系统"
+  },
+  "clearClipboard30s": {
+    "message": "30 秒"
+  },
+  "touchIdDesktopOnly": {
+    "message": "Touch ID 解锁在 macOS 桌面端「设置 → 安全」里，扩展里不提供这个开关。"
   }
 }

@@ -8059,5 +8059,140 @@
   },
   "backupConflicts": {
     "message": "The remote copy differs from this device; review before syncing again."
+  },
+  "change": {
+    "message": "Change"
+  },
+  "newItem": {
+    "message": "New item"
+  },
+  "itemKindLogin": {
+    "message": "Login"
+  },
+  "itemKindToken": {
+    "message": "Token"
+  },
+  "itemKindSshKey": {
+    "message": "SSH key"
+  },
+  "itemKindLicense": {
+    "message": "License"
+  },
+  "itemKindCard": {
+    "message": "Card"
+  },
+  "itemKindIdentity": {
+    "message": "Identity"
+  },
+  "itemKindServer": {
+    "message": "Server"
+  },
+  "itemKindNote": {
+    "message": "Note"
+  },
+  "newItemPickKind": {
+    "message": "Pick a type first — fields follow the type"
+  },
+  "itemKindLoginBlurb": {
+    "message": "Websites and apps"
+  },
+  "itemKindTokenBlurb": {
+    "message": "API keys, access tokens"
+  },
+  "itemKindSshKeyBlurb": {
+    "message": "Keys for logging into servers"
+  },
+  "itemKindLicenseBlurb": {
+    "message": "Serial numbers and activation codes"
+  },
+  "itemKindCardBlurb": {
+    "message": "Bank and credit cards"
+  },
+  "itemKindIdentityBlurb": {
+    "message": "Personal profile, passport, licence"
+  },
+  "itemKindServerBlurb": {
+    "message": "Hosts and remote credentials"
+  },
+  "itemKindNoteBlurb": {
+    "message": "Recovery codes, config snippets"
+  },
+  "itemKindTokenScope": {
+    "message": "Scope"
+  },
+  "itemKindTokenEnv": {
+    "message": "Environment"
+  },
+  "itemKindSshKeyPublic": {
+    "message": "Public key"
+  },
+  "itemKindLicenseSeats": {
+    "message": "Seats / version"
+  },
+  "itemKindServerProtocol": {
+    "message": "Protocol"
+  },
+  "itemKindServerSudo": {
+    "message": "sudo note"
+  },
+  "emptyVaultHint": {
+    "message": "Add your first item, or import from another manager."
+  },
+  "noResults": {
+    "message": "No matches"
+  },
+  "credentials": {
+    "message": "Credentials"
+  },
+  "passwordReprompt": {
+    "message": "Master password re-prompt"
+  },
+  "enabled": {
+    "message": "On"
+  },
+  "identityNumber": {
+    "message": "Document number"
+  },
+  "settingsSubtitle": {
+    "message": "Offline first · no account"
+  },
+  "securitySubtitle": {
+    "message": "Local unlock, nothing phones home"
+  },
+  "autoLock": {
+    "message": "Auto-lock"
+  },
+  "autoLock15": {
+    "message": "15 minutes"
+  },
+  "backupManual": {
+    "message": "Manual only"
+  },
+  "backupTitle": {
+    "message": "Backup"
+  },
+  "exportData": {
+    "message": "Export encrypted JSON"
+  },
+  "importGoogleAuth": {
+    "message": "Import Google Authenticator"
+  },
+  "downloadDesktopApp": {
+    "message": "Desktop app"
+  },
+  "networkGate": {
+    "message": "Network gate"
+  },
+  "networkGateOn": {
+    "message": "On · 3 rules"
+  },
+  "system": {
+    "message": "System"
+  },
+  "clearClipboard30s": {
+    "message": "30 seconds"
+  },
+  "touchIdDesktopOnly": {
+    "message": "Touch ID unlock lives in the macOS desktop app: Settings → Security. The extension never asks for it."
   }
 }

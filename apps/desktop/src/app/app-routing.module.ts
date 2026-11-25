@@ -80,6 +80,7 @@ import { Fido2RpIdNotAllowedComponent } from "../autofill/modal/credentials/fido
 import { Fido2VaultComponent } from "../autofill/modal/credentials/fido2-vault.component";
 import { MyFoldersComponent } from "../vault/app/my-folders/my-folders.component";
 import { SharedFoldersComponent } from "../vault/app/shared-folders/shared-folders.component";
+import { VaultDesktopV2Component } from "../vault/app/vault-desktop-v2/vault-desktop-v2.component";
 import { VaultComponent } from "../vault/app/vault-v3/vault.component";
 
 import { DesktopLayoutComponent } from "./layout/desktop-layout.component";
@@ -500,6 +501,12 @@ export const routes: Routes = [
     component: DesktopLayoutComponent,
     canActivate: [authGuard],
     children: [
+      {
+        // LocalPassword：方向 C 的桌面端三栏保险库（先独立路由，与旧界面对照）。
+        path: "vault-desktop-v2",
+        component: VaultDesktopV2Component,
+        data: { pageTitle: { key: "vault" } } satisfies RouteDataProperties,
+      },
       {
         path: "vault",
         canActivate: [vaultFilterLegacyRedirectGuard],
