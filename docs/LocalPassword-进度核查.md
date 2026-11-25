@@ -164,3 +164,11 @@ CI 只在 push 时产出未签名 artifact（`localpassword-chrome` / `localpass
 - 静态：types/eslint/prettier/locales/dep-ownership 全绿（prettier 基线通过 `format.yml` + 合并 `chore/prettier` 建立）。
 - 构建：Chrome 扩展 webpack 生产构建、桌面端 Windows NSIS 打包均成功；macOS 受 runner 排队限制，job 为 `continue-on-error`。
 - 验证清单：新增 `docs/LocalPassword-验证清单.md`，列出 CI 覆盖不到的人工验证步骤。
+
+
+## 2026-11-26 最终核对
+
+- `main` @ `fa224eb`：静态检查、改动范围单测（2158 用例）、Chrome 构建、Windows 打包四条全绿。
+- macOS：`macos-14` 在本仓库会被立即取消（无 step），已改回 `macos-15` 排队；job 设 `continue-on-error`，不阻塞流水线。
+- 文档格式由 `format.yml` → `chore/prettier` → 合并维护，避免手抄 prettier 输出。
+- 人工验证清单：`docs/LocalPassword-验证清单.md`（扩展 10 条 + 桌面 6 条 + 已知限制 3 条）。
