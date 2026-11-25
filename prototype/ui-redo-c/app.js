@@ -53,15 +53,21 @@ var DATA = {
 function pTop(title, sub, opts) {
   opts = opts || {};
   var nav = opts.back
-    ? '<div class="nav"><span style="color:#2f6bff;font-size:12px;display:flex;gap:4px;align-items:center;cursor:pointer" data-go="' + opts.back + '">' + ic("back", 14) + "返回</span><span></span></div>"
+    ? '<div class="nav"><span class="link" style="display:flex;gap:4px;align-items:center;font-size:12px;cursor:pointer" data-go="' + opts.back + '">' +
+      ic("back", 14) + "返回</span><span></span></div>"
+    : "";
+  var action = opts.action
+    ? '<button class="iconbtn" data-go="' + opts.action + '" aria-label="新建条目" style="margin-left:auto">' + ic("plus", 18) + "</button>"
     : "";
   return (
-    '<div class="p-top">' + nav + "<h1>" + title + "</h1>" +
-    (sub ? '<div class="sub">' + sub + "</div>" : "") + "</div>"
+    '<div class="p-top">' + nav +
+    '<div style="display:flex;align-items:flex-start;gap:8px"><div style="flex:1;min-width:0">' +
+    "<h1>" + title + '</h1>' + (sub ? '<div class="sub">' + sub + "</div>" : "") + "</div>" + action + "</div></div>"
   );
 }
 function pSearch(ph) {
-  return '<div class="p-search">' + ic("search", 14) + "<span>" + (ph || "搜索条目") + "</span></div>";
+  return '<div class="p-search">' + ic("search", 14) + "<span>" + (ph || "搜索条目") + "</span>" +
+    '<span class="kbd">⌘K</span></div>';
 }
 function pGroup(rows) { return '<div class="group">' + rows + "</div>"; }
 function pTitle(t) { return '<div class="gtitle">' + t + "</div>"; }
@@ -124,7 +130,7 @@ POPUP.unlock = function () {
 POPUP["unlock-wait"] = function () {
   return '<div class="p-scroll" style="padding:0">' +
     pHero("lock", "LocalPassword", "密码不对") +
-    '<div class="p-toast">' + ic("alert", 14) + " 连续输错 5 次，已等待 30 秒。再错会继续加长。<b>不会登出，也不会删数据。</b></div>" +
+    '<div class="note-row warn">' + ic("alert", 14) + " 连续输错 5 次，已等待 30 秒。再错会继续加长。<b>不会登出，也不会删数据。</b></div>" +
     '<div class="field"><div class="lab">安全密码</div><div class="val mono">••••••••</div></div>' +
     '<div class="p-actions"><button class="btn" data-go="vault">解锁</button>' +
     '<button class="btn ghost" data-go="restore-cloud">忘记密码，从备份恢复</button></div>' +
@@ -134,7 +140,7 @@ POPUP["unlock-wait"] = function () {
 POPUP.vault = function () {
   var fav = DATA.items.filter(function (i) { return i.fav; });
   var rest = DATA.items.filter(function (i) { return !i.fav; });
-  return pTop("保险库", "9 个条目 · 已加密 · 离线") + pSearch() +
+  return pTop("保险库", "9 个条目 · 已加密 · 离线", { action: "new-type" }) + pSearch() +
     '<div class="p-scroll">' +
     pTitle("收藏") + pGroup(fav.map(function (i) {
       return row({ emoji: typeOf(i.type).icon, k: i.n, sub: i.u, value: i.otp || "", mono: true, brand: !!i.otp, go: "item" });
@@ -146,10 +152,12 @@ POPUP.vault = function () {
 };
 
 POPUP["vault-empty"] = function () {
-  return pTop("保险库", "还没有条目") +
+  return pTop("保险库", "还没有条目", { action: "new-type" }) +
     '<div class="p-scroll">' +
-    pHero("vault", "空的保险库", "新建一个登录条目，或者从别处导入。") +
-    '<div class="p-actions"><button class="btn" data-go="new-type">新建条目</button>' +
+    '<div class="empty"><div class="ring">' + ic("vault", 26) + "</div>" +
+    "<h3>空的保险库</h3><p>新建第一条，或者从别处导入 —— 导入不会覆盖现有数据。</p></div>" +
+    '<div class="empty actions">' +
+    '<button class="btn primary" data-go="new-type">' + ic("plus", 15) + " 新建条目</button>" +
     '<button class="btn secondary" data-go="import-ga">从 Google 认证器导入</button>' +
     '<button class="btn secondary" data-go="restore-cloud">从备份恢复</button></div>' +
     "</div>" + pTabbar("vault");
@@ -174,8 +182,7 @@ POPUP["item-passkey"] = function () {
 POPUP.qr = function () {
   return pTop("动态口令二维码", "GitHub", { back: "item" }) +
     '<div class="p-scroll" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:24px">' +
-    '<div style="width:200px;height:200px;background:#fff;border-radius:14px;display:grid;place-items:center;box-shadow:0 1px 4px #0000001a">' +
-      '<div style="width:160px;height:160px;background:repeating-conic-gradient(#111 0% 25%, #fff 0% 50%) 0 0/16px 16px;border-radius:6px"></div></div>' +
+    '<div class="qr-box"><div class="code"></div></div>' +
     '<div class="mono mini" style="max-width:300px;word-break:break-all;text-align:center;color:#4b515b">otpauth://totp/GitHub:bossxie?secret=JBSWY3DPEHPK3PXP</div>' +
     '<div class="note" style="text-align:center">用另一台设备扫码，即可把这个动态口令搬过去。</div>' +
     '<button class="btn" data-go="item">完成</button>' +
@@ -258,7 +265,7 @@ POPUP.settings = function () {
 POPUP.backup = function () {
   return pTop("云备份", "只在你点的时候联网", { back: "settings" }) +
     '<div class="p-scroll">' +
-    '<div class="p-toast">没有后台任务：改动条目不会自动上传，也没有定时器。</div>' +
+    '<div class="note-row warn">没有后台任务：改动条目不会自动上传，也没有定时器。</div>' +
     '<div class="field"><div class="lab">存储</div><div class="val">Cloudflare R2 · r2://localpassword</div></div>' +
     '<div class="field"><div class="lab">上次同步</div><div class="val">今天 14:02 · 上传 1 个快照</div></div>' +
     '<div class="field"><div class="lab">上次备份</div><div class="val">今天 14:05 · 共 3 份</div></div>' +
@@ -356,7 +363,7 @@ POPUP["state-loading"] = function () {
   return pTop("从备份恢复", "正在读取 account.json", { back: "restore-cloud" }) +
     '<div class="p-scroll">' +
     '<div style="padding:24px 16px;display:flex;flex-direction:column;gap:14px;align-items:center">' +
-      '<div style="width:44px;height:44px;border-radius:999px;border:3px solid #dfe3ea;border-top-color:#2f6bff"></div>' +
+      '<div class="spinner"></div>' +
       '<div class="mini muted">验证密码 → 拉取快照 → 写入本地</div>' +
     "</div>" +
     '<div class="field"><div class="lab">进度</div><div class="val mini">已下载 128 KB / 412 KB</div></div>' +
@@ -367,7 +374,7 @@ POPUP["state-loading"] = function () {
 POPUP["state-conflict"] = function () {
   return pTop("同步冲突", "远端与本地不一致", { back: "backup" }) +
     '<div class="p-scroll">' +
-    '<div class="p-toast">' + ic("alert", 14) + " 另一台设备在你之后也改过同一个条目。同步不会覆盖任何一边，先让你选。</div>" +
+    '<div class="note-row warn">' + ic("alert", 14) + " 另一台设备在你之后也改过同一个条目。同步不会覆盖任何一边，先让你选。</div>" +
     '<div class="field"><div class="lab">冲突条目</div><div class="val">GitHub · 密码</div></div>' +
     '<div class="field"><div class="lab">本机</div><div class="val mono mini">•••• (14:02 修改)</div></div>' +
     '<div class="field"><div class="lab">远端</div><div class="val mono mini">•••• (14:19 修改)</div></div>' +
@@ -380,7 +387,7 @@ POPUP["state-conflict"] = function () {
 POPUP["state-error"] = function () {
   return pTop("连接失败", "存储没有回应", { back: "backup" }) +
     '<div class="p-scroll">' +
-    '<div class="p-toast" style="background:#fdecea;border-color:#f3c9c4;color:#8f2c22">' + ic("alert", 14) + " 403 Forbidden — 密钥没有这个桶的写权限。</div>" +
+    '<div class="note-row err">' + ic("alert", 14) + " 403 Forbidden — 密钥没有这个桶的写权限。</div>" +
     '<div class="field"><div class="lab">端点</div><div class="val mono mini">https://…r2.cloudflarestorage.com</div></div>' +
     '<div class="field"><div class="lab">请求</div><div class="val mono mini">PUT /localpassword/manifest.json</div></div>' +
     '<div class="p-actions"><button class="btn secondary" data-go="backup-config">改配置</button>' +
@@ -417,11 +424,12 @@ function dRail(active) {
 }
 
 function dList(title, sub, rows, action) {
-  return '<div class="d-list"><div class="hd"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div><h2>' + title + "</h2>" +
+  return '<div class="d-list"><div class="list-head"><div><h2>' + title + "</h2>" +
     '<div class="sub">' + sub + "</div></div>" +
-    (action ? '<button class="plus" data-go="' + action.go + '">' + action.label + "</button>" : "") +
+    (action ? '<div class="actions"><button class="btn primary sm" data-go="' + action.go + '">' +
+      ic("plus", 13) + action.label + '<span class="kbd">⌘N</span></button></div>' : "") +
     "</div></div>" +
-    '<div class="d-search">' + ic("search", 13) + " 搜索</div>" +
+    '<div class="d-search">' + ic("search", 13) + "<span>搜索条目</span>" + '<span class="kbd">⌘K</span></div>' +
     '<div class="d-rows">' + rows + "</div></div>";
 }
 
@@ -566,7 +574,11 @@ function inputRow(label, value, opts) {
 DESK["vault-desktop"] = function () {
   var main =
     '<div class="hd"><div><h2>GitHub</h2><div class="meta">github.com · 登录 · 开发</div></div>' +
-    '<div class="d-toolbar"><span class="t">' + star(true) + '</span><span class="t" data-go="d-form-login">编辑</span><span class="t" data-go="d-item-delete">删除</span><span class="t primary">复制密码</span></div></div>' +
+    '<div class="d-toolbar">' +
+      '<button class="btn secondary sm" aria-label="收藏">' + star(true) + "</button>" +
+      '<button class="btn secondary sm" data-go="d-form-login">' + ic("key", 13) + " 编辑</button>" +
+      '<button class="btn secondary sm" data-go="d-item-delete">' + ic("alert", 13) + " 删除</button>" +
+      '<button class="btn primary sm">' + ic("copy", 13) + ' 复制密码<span class="kbd">⌘C</span></button></div></div>' +
     '<div class="body">' +
     '<div class="gtitle">凭据</div><div class="group">' +
       kvRow("用户名", "bossxie", { mono: true, copy: true }) +
@@ -609,7 +621,8 @@ DESK["d-trash"] = function () {
   }).join("");
   var main =
     '<div class="hd"><div><h2>回收站</h2><div class="meta">2 个条目 · 30 天后自动清除</div></div>' +
-    '<div class="d-toolbar"><span class="t">恢复全部</span><span class="t" style="color:#d2483c;border-color:#f0d5d3">清空回收站</span></div></div>' +
+    '<div class="d-toolbar"><button class="btn secondary sm">恢复全部</button>' +
+    '<button class="btn danger sm">清空回收站</button></div></div>' +
     '<div class="body"><div class="gtitle">已删除</div><div class="group">' + rows + "</div>" +
     '<div class="note" style="padding:12px 24px">清空后无法恢复；云备份里可能有旧快照，但不包含删除前的最后一次改动。</div></div>' +
     '<div class="foot"><span>软删除 · 可恢复</span><span class="mono">回收站</span></div>';
@@ -781,7 +794,7 @@ DESK["d-pick-type"] = function () {
   }).join("");
   var main =
     '<div class="hd"><div><h2>新建条目</h2><div class="meta">先选类型，字段会按类型变化</div></div>' +
-    '<div class="d-toolbar"><span class="t" data-go="vault-desktop">取消</span></div></div>' +
+    '<div class="d-toolbar"><button class="btn secondary sm" data-go="vault-desktop">取消</button></div></div>' +
     '<div class="body"><div class="gtitle">类型（6）</div><div class="type-grid">' + grid + "</div>" +
     '<div class="note" style="padding:14px 24px">类型只影响表单字段与展示方式，加密方式完全相同。以后需要新类型时在这里加一格。</div></div>' +
     '<div class="foot"><span>选择后进入右栏内联表单</span><span class="mono">新建</span></div>';
@@ -811,7 +824,9 @@ function deskTypeForm(key) {
       : "";
   var main =
     '<div class="hd"><div><h2>新建「' + t.name + '」</h2><div class="meta">' + t.blurb + "</div></div>" +
-    '<div class="d-toolbar"><span class="t" data-go="d-pick-type">换类型</span><span class="t" data-go="vault-desktop">取消</span><span class="t primary" data-go="vault-desktop">保存</span></div></div>' +
+    '<div class="d-toolbar"><button class="btn ghost sm" data-go="d-pick-type">换类型</button>' +
+    '<button class="btn secondary sm" data-go="vault-desktop">取消</button>' +
+    '<button class="btn primary sm" data-go="vault-desktop">保存<span class="kbd">⌘S</span></button></div></div>' +
     '<div class="body">' +
     '<div class="gtitle">类型</div><div class="group"><div class="row" style="cursor:default;gap:6px;flex-wrap:wrap">' + typePills(key) + "</div></div>" +
     '<div class="gtitle">项目</div><div class="group">' +
@@ -996,7 +1011,33 @@ document.addEventListener("click", function (e) {
   }
 });
 
+var BACK = { item: "vault", "item-edit": "item", "item-card": "vault", "new-type": "vault",
+  "form-login": "new-type", "form-token": "new-type", "form-sshkey": "new-type", "form-license": "new-type",
+  "form-card": "new-type", "form-identity": "new-type", "form-server": "new-type", "form-note": "new-type",
+  backup: "settings", "backup-config": "backup", "restore-cloud": "setup", "offline": "settings",
+  data: "settings", trash: "item-delete", "item-delete": "item", "security-key": "settings",
+  "import-ga": "settings", "import-preview": "import-ga", "vault-empty": "vault", qr: "item",
+  "d-form-login": "vault-desktop", "d-form-token": "d-pick-type", "d-form-sshkey": "d-pick-type",
+  "d-form-license": "d-pick-type", "d-form-card": "d-pick-type", "d-form-identity": "d-pick-type",
+  "d-form-server": "d-pick-type", "d-form-note": "d-pick-type", "d-pick-type": "vault-desktop",
+  "d-trash": "vault-desktop", "d-item-delete": "vault-desktop", "settings-desktop": "vault-desktop",
+  "security-desktop": "settings-desktop", "gen-desktop": "vault-desktop" };
+
 document.addEventListener("keydown", function (e) {
+  var typing = e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName);
+  if (!typing && (e.metaKey || e.ctrlKey)) {
+    var k = (e.key || "").toLowerCase();
+    if (k === "n") {
+      e.preventDefault();
+      state.screen = state.device === "popup" ? "new-type" : "d-pick-type";
+      render(); return;
+    }
+  }
+  if (!typing && e.key === "Escape") {
+    var back = BACK[state.screen];
+    if (back) { state.screen = back; render(); }
+    return;
+  }
   if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
   var flat = screenGroups().reduce(function (a, g) { return a.concat(g.items.map(function (i) { return i[0]; })); }, []);
   var i = flat.indexOf(state.screen);

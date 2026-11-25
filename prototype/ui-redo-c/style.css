@@ -212,3 +212,159 @@ body { margin:0; background:#e8eaee; color:var(--ink); }
 .type-card .bl { font-size: 10.5px; color: var(--ink3); margin-top: 3px; line-height: 1.4; }
 .type-scroll { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px; }
 .type-scroll .type-pill { flex: none; padding: 7px 12px; }
+
+/* ==========================================================================
+   组件层 v2 —— 统一按钮、列表头、悬浮新建、状态与动效
+   （后定义覆盖前定义，令牌不变，只收敛间距/状态/焦点）
+   ========================================================================== */
+:root {
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px;
+  --r-sm: 8px; --r-md: 11px; --r-lg: 14px; --r-xl: 18px; --r-full: 999px;
+  --shadow-1: 0 1px 2px #10131812;
+  --shadow-2: 0 10px 26px #10131826;
+  --ring: 0 0 0 3px #2f6bff33;
+  --ease: cubic-bezier(.2, .7, .3, 1);
+}
+*:focus-visible { outline: none; box-shadow: var(--ring); border-radius: var(--r-sm); }
+button, .row, .d-row, .d-nav, .p-tab, .type-card { transition: background .12s var(--ease), color .12s var(--ease), border-color .12s var(--ease), transform .12s var(--ease); }
+@media (prefers-reduced-motion: reduce) { button, .row, .d-row, .d-nav, .p-tab, .type-card { transition: none; } }
+
+/* 按钮：统一 36（桌面）/ 44（弹窗）高度，主次分明，图标内联 */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 40px; padding: 0 16px; font-size: 13px; font-weight: 600;
+  border-radius: var(--r-md); border: 1px solid transparent; width: auto; cursor: pointer;
+}
+.popup .btn { min-height: 44px; width: 100%; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .45; cursor: default; transform: none; }
+.btn.primary { background: var(--brand); color: #fff; box-shadow: 0 1px 2px #2f6bff40; }
+.btn.primary:hover { background: #255ee0; }
+.btn.secondary { background: #fff; color: var(--ink); border-color: #dfe2e8; }
+.btn.secondary:hover { background: #f7f8fa; }
+.btn.danger { background: #fff; color: var(--red); border-color: #efd2cf; }
+.btn.danger:hover { background: #fdf5f4; }
+.btn.ghost { background: transparent; color: var(--brand); font-weight: 550; min-height: 36px; }
+.btn.ghost:hover { background: #2f6bff0f; }
+.btn.sm { min-height: 32px; padding: 0 12px; font-size: 12.5px; border-radius: var(--r-sm); }
+.btn .kbd {
+  font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 5px;
+  background: #ffffff2b; color: inherit; letter-spacing: .02em;
+}
+.btn.secondary .kbd { background: #0000000a; color: var(--ink3); }
+
+/* 图标按钮 */
+.iconbtn {
+  display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: transparent; border: 0; color: var(--ink3); cursor: pointer;
+}
+.iconbtn:hover { background: #0000000a; color: var(--ink); }
+
+/* 列表头：标题 + 计数 + 主操作 */
+.list-head { padding: 12px 14px 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.list-head h2 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.list-head .sub { font-size: 10.5px; color: var(--ink3); margin-top: 2px; }
+.list-head .actions { display: flex; gap: 6px; flex: none; }
+
+/* 搜索：统一的 pill，带图标与快捷键提示 */
+.p-search, .d-search {
+  display: flex; align-items: center; gap: 7px; background: #fff; border: 1px solid #e5e7eb;
+  border-radius: var(--r-md); padding: 8px 10px; font-size: 11.5px; color: var(--ink3);
+  margin: 0 12px 8px; box-shadow: var(--shadow-1);
+}
+.d-search { margin: 0 14px 10px; }
+.p-search .kbd, .d-search .kbd {
+  margin-left: auto; font-size: 9.5px; padding: 1px 5px; border-radius: 4px;
+  background: #0000000a; border: 1px solid #eceef2;
+}
+
+/* 行：统一 44 最小高度，hover 反馈，按下回弹 */
+.row { min-height: 44px; }
+.popup .row { padding: 10px 14px; }
+.d-row { min-height: 40px; }
+.d-row:hover { background: #f7f8fa; }
+.d-row:active { background: #eef1f7; }
+.row:active { background: #f2f4f9; }
+.row.static, .row[style*="cursor:default"] { cursor: default; }
+
+/* 悬浮新建（弹窗）：贴着 Tab 栏上方，右下 */
+.fab {
+  position: absolute; right: 16px; bottom: 88px; width: 52px; height: 52px; border-radius: var(--r-full);
+  background: var(--brand); color: #fff; border: 0; display: grid; place-items: center;
+  box-shadow: 0 8px 20px #2f6bff4d, 0 1px 2px #1013181a; cursor: pointer; z-index: 6;
+}
+.fab:hover { background: #255ee0; }
+.fab:active { transform: translateY(1px); }
+
+/* Tab 栏：激活用主色 + 顶部 2px 指示条 */
+.p-tabbar { padding: 6px 0 max(8px, env(safe-area-inset-bottom)); background: #ffffffe6; backdrop-filter: blur(8px); }
+.p-tab { padding-top: 2px; position: relative; }
+.p-tab[aria-current="true"]::before {
+  content: ""; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 2px; border-radius: 2px; background: var(--brand);
+}
+
+/* 空状态 */
+.empty { padding: 26px 24px 8px; text-align: center; }
+.empty .ring {
+  width: 64px; height: 64px; border-radius: var(--r-full); background: var(--brand-soft); color: var(--brand);
+  display: grid; place-items: center; margin: 0 auto 12px;
+}
+.empty h3 { margin: 0; font-size: 15px; font-weight: 650; }
+.empty p { margin: 6px 0 0; font-size: 11.5px; color: var(--ink3); line-height: 1.55; }
+.empty .actions { display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 0; }
+
+/* 提示条：提醒 / 失败 / 成功 */
+.note-row { margin: 0 12px 8px; display: flex; gap: 8px; align-items: flex-start; font-size: 11px; line-height: 1.55; color: var(--ink2); }
+.note-row.warn { background: #fff8e6; border: 1px solid #f4e2b4; color: #7a5b12; border-radius: var(--r-md); padding: 9px 11px; }
+.note-row.err { background: #fdecea; border: 1px solid #f3c9c4; color: #8f2c22; border-radius: var(--r-md); padding: 9px 11px; }
+.note-row.ok { background: #eef9f0; border: 1px solid #c6e9cd; color: #1f6b33; border-radius: var(--r-md); padding: 9px 11px; }
+
+/* 纸张（解锁 / 首次设置等居中卡片，替换行内宽度） */
+.paper {
+  width: 100%; max-width: 420px; margin: 0 auto; background: #fff; border-radius: var(--r-xl);
+  padding: 24px; box-shadow: var(--shadow-1);
+}
+.paper center, .paper .center { text-align: center; }
+.paper .big { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+.paper .sub { font-size: 11.5px; color: var(--ink3); margin-top: 4px; line-height: 1.5; }
+.paper .ring {
+  width: 64px; height: 64px; border-radius: var(--r-full); background: var(--brand-soft); color: var(--brand);
+  display: grid; place-items: center; margin: 0 auto 12px;
+}
+
+/* 其它小件 */
+.link { color: var(--brand); }
+.muted-2 { color: var(--ink2); }
+.center { text-align: center; }
+.flush { padding: 0; }
+.spinner {
+  width: 44px; height: 44px; border-radius: var(--r-full); border: 3px solid #e2e6ec;
+  border-top-color: var(--brand); animation: spin 900ms linear infinite; margin: 8px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.qr-box {
+  width: 200px; height: 200px; background: #fff; border-radius: var(--r-lg); display: grid;
+  place-items: center; box-shadow: var(--shadow-1); margin: 0 auto;
+}
+.qr-box .code { width: 160px; height: 160px; border-radius: 6px; background: repeating-conic-gradient(#111 0% 25%, #fff 0% 50%) 0 0/16px 16px; }
+.bar { height: 4px; border-radius: var(--r-full); background: #e5e7ec; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--brand); border-radius: var(--r-full); }
+
+/* 快捷键提示条（弹窗列表底部、Tab 栏之上） */
+.hintbar {
+  position: absolute; left: 0; right: 0; bottom: 62px; padding: 6px 14px;
+  font-size: 10px; color: var(--ink3); text-align: center; letter-spacing: .02em;
+  background: linear-gradient(#ffffff00, #ffffffe6 60%); pointer-events: none;
+}
+/* 兜底：仍使用 .t 的旧标记按次要按钮呈现 */
+.d-toolbar .t {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px;
+  font-size: 12.5px; border-radius: var(--r-sm); background: #fff; border: 1px solid #dfe2e8;
+  color: var(--ink); cursor: pointer;
+}
+.d-toolbar .t.primary { background: var(--brand); border-color: transparent; color: #fff; font-weight: 600; }
+.d-toolbar .t:hover { background: #f7f8fa; }
+.d-toolbar .t.primary:hover { background: #255ee0; }
+
+.popup .p-scroll { padding-bottom: 104px; }
