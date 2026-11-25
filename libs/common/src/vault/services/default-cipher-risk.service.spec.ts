@@ -500,7 +500,7 @@ describe("DefaultCipherRiskService", () => {
       });
     });
 
-    it("should default checkExposed to true when not provided", async () => {
+    it("should default checkExposed to false when not provided", async () => {
       const mockClient = sdkService.simulate.userLogin(mockUserId);
       const mockCipherRiskClient = mockClient.vault.mockDeep().cipher_risk.mockDeep();
 
@@ -525,7 +525,7 @@ describe("DefaultCipherRiskService", () => {
 
       expect(mockCipherRiskClient.compute_risk).toHaveBeenCalledWith(expect.any(Array), {
         passwordMap: expect.any(Object),
-        checkExposed: true,
+        checkExposed: false,
       });
     });
 

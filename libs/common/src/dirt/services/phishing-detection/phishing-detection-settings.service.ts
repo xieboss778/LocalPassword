@@ -19,7 +19,8 @@ const ENABLE_PHISHING_DETECTION = new UserKeyDefinition(
   PHISHING_DETECTION_DISK,
   "enablePhishingDetection",
   {
-    deserializer: (value: boolean) => value ?? true, // Default: enabled
+    // LocalPassword: the phishing list is downloaded from Bitwarden's CDN, so it stays off.
+    deserializer: (value: boolean) => value ?? false, // Default: disabled
     clearOn: [],
   },
 );

@@ -53,7 +53,8 @@ function fillAssistRulesCacheKey(apiUrl: string, effectiveUrl: string): string {
 }
 
 const SHOW_FAVICONS = new KeyDefinition(DOMAIN_SETTINGS_DISK, "showFavicons", {
-  deserializer: (value: boolean) => value ?? true,
+  // LocalPassword: icons are fetched from a remote icon service, so they stay off by default.
+  deserializer: (value: boolean) => value ?? false,
 });
 
 // Domain exclusion list for notifications
@@ -252,7 +253,7 @@ export class DefaultDomainSettingsService implements DomainSettingsService {
     private authService: AuthService,
   ) {
     this.showFaviconsState = this.stateProvider.getGlobal(SHOW_FAVICONS);
-    this.showFavicons$ = this.showFaviconsState.state$.pipe(map((x) => x ?? true));
+    this.showFavicons$ = this.showFaviconsState.state$.pipe(map((x) => x ?? false));
 
     this.neverDomainsState = this.stateProvider.getGlobal(NEVER_DOMAINS);
     this.neverDomains$ = this.neverDomainsState.state$.pipe(map((x) => x ?? null));
