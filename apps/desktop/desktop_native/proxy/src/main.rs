@@ -86,7 +86,7 @@ async fn main() {
     //
     // Firefox:
     // - The complete path to the app manifest. (in the form
-    //   `/Users/<user>/Library/.../Mozilla/NativeMessagingHosts/com.8bit.bitwarden.json`)
+    //   `/Users/<user>/Library/.../Mozilla/NativeMessagingHosts/com.localpassword.desktop.json`)
     // - (in Firefox 55+) the ID (as given in the manifest.json) of the add-on that started it (in
     //   the form `{[UUID]}`).
     //

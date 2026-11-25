@@ -11,7 +11,7 @@ import { CHROME_PROFILE_DIR } from "../paths";
 const HOST_MANIFEST = resolve(
   CHROME_PROFILE_DIR,
   "NativeMessagingHosts",
-  "com.8bit.bitwarden.json",
+  "com.localpassword.desktop.json",
 );
 const HOST_MANIFEST_TIMEOUT_MS = 60_000;
 

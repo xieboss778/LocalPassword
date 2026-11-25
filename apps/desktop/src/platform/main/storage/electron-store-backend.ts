@@ -31,6 +31,23 @@ export class ElectronStoreBackend implements StorageBackend {
       name: "data",
       configFileMode: fileMode,
     }) as unknown as ConfStore<Record<string, unknown>>;
+
+    // LocalPassword: keep one rolling copy of the last good store. The vault lives in this single
+    // file, so a torn write would otherwise be unrecoverable.
+    this.writeRollingBackup();
+  }
+
+  /** Copies `data.json` to `data.json.bak` when the store still holds something. */
+  private writeRollingBackup(): void {
+    const storePath = (this.electronStore as unknown as { path?: string }).path;
+    if (storePath == null || !fs.existsSync(storePath)) {
+      return;
+    }
+    try {
+      fs.copyFileSync(storePath, `${storePath}.bak`);
+    } catch {
+      // A missing backup is not fatal; the store itself is what matters.
+    }
   }
 
   read(): Record<string, unknown> {
