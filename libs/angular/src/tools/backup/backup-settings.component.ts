@@ -23,7 +23,7 @@ import {
   VaultBackupSyncService,
 } from "@bitwarden/local-vault";
 
-import { JslibModule } from "../../../jslib.module";
+import { JslibModule } from "../../jslib.module";
 
 /** What the page shows about the last sync and the newest backup. */
 type BackupStatus = {
@@ -103,7 +103,7 @@ export class BackupSettingsComponent implements OnInit {
       forcePathStyle: value.forcePathStyle ?? false,
     });
 
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("backupSaved"));
+    this.platformUtilsService.showToast("success", "", this.i18nService.t("backupSaved"));
     await this.refreshStatus();
   }
 
@@ -123,9 +123,9 @@ export class BackupSettingsComponent implements OnInit {
         },
       });
       await client.listObjects("");
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("backupTestOk"));
+      this.platformUtilsService.showToast("success", "", this.i18nService.t("backupTestOk"));
     } catch {
-      this.platformUtilsService.showToast("error", null, this.i18nService.t("backupTestFailed"));
+      this.platformUtilsService.showToast("error", "", this.i18nService.t("backupTestFailed"));
     } finally {
       this.busy = false;
     }
@@ -149,7 +149,7 @@ export class BackupSettingsComponent implements OnInit {
       const result = await this.backupService.backupNow(userId);
       this.platformUtilsService.showToast(
         result.uploaded ? "success" : "error",
-        null,
+        "",
         this.i18nService.t(result.uploaded ? "backupUploaded" : "backupFailed"),
       );
       await this.refreshStatus();
@@ -191,7 +191,7 @@ export class BackupSettingsComponent implements OnInit {
     const userId = await this.userId();
     const password = this.backupPassword ?? (await this.backupService.ensurePassword(userId));
     await this.platformUtilsService.copyToClipboard(password);
-    this.platformUtilsService.showToast("info", null, this.i18nService.t("valueCopied"));
+    this.platformUtilsService.showToast("info", "", this.i18nService.t("valueCopied"));
   }
 
   private async refreshStatus(): Promise<void> {
