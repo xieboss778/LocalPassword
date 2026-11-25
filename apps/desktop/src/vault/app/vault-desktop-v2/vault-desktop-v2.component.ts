@@ -8,8 +8,8 @@ import {
   signal,
 } from "@angular/core";
 import { takeUntilDestroyed, toObservable, toSignal } from "@angular/core/rxjs-interop";
-import { Router, RouterModule } from "@angular/router";
-import { firstValueFrom, of, switchMap } from "rxjs";
+import { NavigationEnd, Router, RouterModule } from "@angular/router";
+import { filter, firstValueFrom, map, of, startWith, switchMap } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
@@ -309,11 +309,25 @@ export class VaultDesktopV2Component implements OnInit {
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
-  protected readonly railEntries = [
-    { emoji: "🗄️", labelKey: "vault", route: "/vault-desktop-v2", active: true },
-    { emoji: "⚙️", labelKey: "generator", route: "/vault-desktop-v2", active: false },
-    { emoji: "🎛️", labelKey: "settings", route: "/settings-desktop-v2", active: false },
+  /** 左 rail 的三条主入口；active 由当前 URL 推出来，不写死。 */
+  private readonly railSpec = [
+    { emoji: "🗄️", labelKey: "vault", route: "/vault-desktop-v2" },
+    { emoji: "⚙️", labelKey: "generator", route: "/generator" },
+    { emoji: "🎛️", labelKey: "settings", route: "/settings-desktop-v2" },
   ] as const;
+
+  private readonly currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      map((event) => event.urlAfterRedirects),
+      startWith(this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  protected readonly railEntries = computed(() =>
+    this.railSpec.map((entry) => ({ ...entry, active: this.currentUrl().startsWith(entry.route) })),
+  );
 
   protected readonly editFields = computed<readonly FieldSpec[]>(() => FIELDS[this.editKind()]);
   protected readonly subtitle = computed(() => `${this.items().length} ` + this.i18n.t("items"));

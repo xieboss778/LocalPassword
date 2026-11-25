@@ -141,3 +141,14 @@
 - Passkey 的具体登记表单（现在只有列表与入口）。
 - 附件上传、Send、组织（本 fork 已删除或禁用，不做）。
 - 多语言下的字体与行宽回归（英文文案更短，需另测一遍）。
+
+## 注意项：Tailwind 类名
+
+仓库的 `tailwindcss/no-custom-classname` 会用本仓库的 tailwind 配置校验每个 `tw-` 类名，以下几条踩过：
+
+- **没有 `tw-bg-white`**：用 `tw-bg-[#fff]`
+- **没有 `tw-text-white`**：用 `tw-text-[#fff]`
+- 自定义设计的颜色一律走任意值，例如 `tw-bg-[var(--lp-card)]`、`tw-text-[var(--lp-ink-3)]`
+- 不允许自定义类名（如 `lp-row__label`）出现在模板里——要复用就做成组件
+
+同一份设计语言在两个客户端里都靠这套变量 + `lp-*` 组件，不写第二次样式。
