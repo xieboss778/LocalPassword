@@ -113,6 +113,7 @@ import { IntroCarouselComponent } from "../vault/popup/components/vault/intro-ca
 import { NewItemPageComponent } from "../vault/popup/components/vault/new-item-page/new-item-page.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/vault-password-history/vault-password-history.component";
 import { VaultComponent } from "../vault/popup/components/vault/vault.component";
+import { VaultItemViewV2Component } from "../vault/popup/components/item-view-v2/item-view-v2.component";
 import { VaultListV2Component } from "../vault/popup/components/vault-list-v2/vault-list-v2.component";
 import { ViewComponent } from "../vault/popup/components/vault/view/view.component";
 import { WelcomePageComponent } from "../vault/popup/components/vault/welcome-page/welcome-page.component";
@@ -246,6 +247,13 @@ const routes: Routes = [
         } satisfies ExtensionAnonLayoutWrapperData,
       },
     ],
+  },
+  {
+    // LocalPassword：方向 C 的条目详情（点行复制）。
+    path: "view-cipher-v2",
+    component: VaultItemViewV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 2 } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：方向 C 的新列表，逐个替换旧界面时先用独立路由对比。

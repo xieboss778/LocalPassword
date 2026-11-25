@@ -10,6 +10,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
+import { LpToastComponent } from "@localpass/angular/local-ui";
 import { UserVerificationDialogComponent } from "@localpass/auth/angular";
 import {
   DefaultVaultHealthReportService,
@@ -54,6 +55,7 @@ import "../platform/popup/locales";
 
 @NgModule({
   imports: [
+    LpToastComponent,
     A11yModule,
     AppRoutingModule,
     AutofillComponent,
