@@ -182,11 +182,7 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
     return true;
   }
 
-  private async stamp(
-    id: string,
-    userId: UserId,
-    deletedDate: Date | undefined,
-  ): Promise<boolean> {
+  private async stamp(id: string, userId: UserId, deletedDate: Date | undefined): Promise<boolean> {
     if (!(await this.isLocalAccount(userId))) {
       return false;
     }

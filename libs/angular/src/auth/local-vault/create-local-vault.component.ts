@@ -63,10 +63,7 @@ export class CreateLocalVaultComponent {
     {
       email: ["", [Validators.required, Validators.email]],
       name: [""],
-      masterPassword: [
-        "",
-        [Validators.required, Validators.minLength(MIN_MASTER_PASSWORD_LENGTH)],
-      ],
+      masterPassword: ["", [Validators.required, Validators.minLength(MIN_MASTER_PASSWORD_LENGTH)]],
       confirmMasterPassword: ["", [Validators.required]],
     },
     { validators: [passwordsMatch] },

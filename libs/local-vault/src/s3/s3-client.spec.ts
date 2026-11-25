@@ -97,10 +97,10 @@ describe("S3Client", () => {
   it("walks every page of list-objects-v2", async () => {
     const pages = [
       "<ListBucketResult><IsTruncated>true</IsTruncated><Contents>" +
-        "<Key>localpassword/user-a/a.json</Key><ETag>\"e1\"</ETag><Size>3</Size>" +
+        '<Key>localpassword/user-a/a.json</Key><ETag>"e1"</ETag><Size>3</Size>' +
         "</Contents><NextContinuationToken>next</NextContinuationToken></ListBucketResult>",
       "<ListBucketResult><IsTruncated>false</IsTruncated><Contents>" +
-        "<Key>localpassword/user-a/b.json</Key><ETag>\"e2\"</ETag><Size>4</Size>" +
+        '<Key>localpassword/user-a/b.json</Key><ETag>"e2"</ETag><Size>4</Size>' +
         "</Contents></ListBucketResult>",
     ];
     let page = 0;

@@ -235,11 +235,9 @@ export class VaultBackupSyncService {
 
     for (let attempt = 0; attempt < MAX_MANIFEST_RETRIES; attempt++) {
       const snapshotId = snapshotIdFor(this.clock());
-      await syncClient.putObject(
-        `${SNAPSHOT_PREFIX}${snapshotId}.json`,
-        JSON.stringify(snapshot),
-        { contentType: "application/json" },
-      );
+      await syncClient.putObject(`${SNAPSHOT_PREFIX}${snapshotId}.json`, JSON.stringify(snapshot), {
+        contentType: "application/json",
+      });
 
       const manifest: Manifest = {
         snapshot: snapshotId,

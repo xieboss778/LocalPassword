@@ -203,7 +203,10 @@ export class S3Client {
 
     if (this.config.forcePathStyle) {
       const parts = [endpoint.pathname.replace(/\/$/, ""), this.config.bucket, key];
-      endpoint.pathname = parts.filter((part) => part !== "").map(encodePath).join("/");
+      endpoint.pathname = parts
+        .filter((part) => part !== "")
+        .map(encodePath)
+        .join("/");
     } else {
       endpoint.hostname = `${this.config.bucket}.${endpoint.hostname}`;
       endpoint.pathname = key === "" ? "/" : `/${encodePath(key)}`;

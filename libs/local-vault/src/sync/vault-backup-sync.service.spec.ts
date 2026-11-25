@@ -165,9 +165,7 @@ describe("VaultBackupSyncService", () => {
     fakeS3.objects.set(`${SNAPSHOT_PREFIX}remote-1.json`, {
       body: JSON.stringify({
         updatedAt: "2026-11-24T11:00:00.000Z",
-        ciphers: [
-          { id: "c1", revisionDate: "2026-11-24T11:00:00.000Z", data: { blob: "remote" } },
-        ],
+        ciphers: [{ id: "c1", revisionDate: "2026-11-24T11:00:00.000Z", data: { blob: "remote" } }],
         folders: [],
         tombstones: [],
       } satisfies Snapshot),

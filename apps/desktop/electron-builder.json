@@ -83,16 +83,11 @@
       "Contents/PlugIns/autofill-extension.appex",
       "Frameworks/Electron Framework.framework/(Electron Framework|Libraries|Resources|Versions/Current)/.*"
     ],
-    "target": [
-      "dmg"
-    ]
+    "target": ["dmg"]
   },
   "win": {
     "electronUpdaterCompatibility": ">=0.0.1",
-    "target": [
-      "nsis",
-      "portable"
-    ],
+    "target": ["nsis", "portable"],
     "extraFiles": [
       {
         "from": "desktop_native/dist/desktop_proxy.win32-${arch}.exe",
@@ -117,10 +112,7 @@
         "to": "libprocess_isolation.so"
       }
     ],
-    "target": [
-      "deb",
-      "AppImage"
-    ],
+    "target": ["deb", "AppImage"],
     "desktop": {
       "entry": {
         "Name": "LocalPassword",
@@ -231,29 +223,19 @@
   },
   "deb": {
     "artifactName": "${productName}-${version}-${arch}.${ext}",
-    "depends": [
-      "libnotify4",
-      "libxtst6",
-      "libnss3",
-      "libxss1"
-    ]
+    "depends": ["libnotify4", "libxtst6", "libnss3", "libxss1"]
   },
   "appImage": {
     "artifactName": "${productName}-${version}-${arch}.${ext}"
   },
   "rpm": {
     "artifactName": "${productName}-${version}-${arch}.${ext}",
-    "fpm": [
-      "--rpm-rpmbuild-define",
-      "_build_id_links none"
-    ]
+    "fpm": ["--rpm-rpmbuild-define", "_build_id_links none"]
   },
   "protocols": [
     {
       "name": "Bitwarden",
-      "schemes": [
-        "bitwarden"
-      ]
+      "schemes": ["bitwarden"]
     }
   ],
   "nsis": {

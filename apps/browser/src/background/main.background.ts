@@ -1552,9 +1552,8 @@ export default class MainBackground {
     this.vaultBackupService = new VaultBackupService(
       this.vaultBackupSyncService,
       async (userId, password) =>
-        (
-          await this.individualVaultExportService.getPasswordProtectedExport(userId, password)
-        ).data as string,
+        (await this.individualVaultExportService.getPasswordProtectedExport(userId, password))
+          .data as string,
       this.stateProvider,
       this.keyService,
       this.encryptService,

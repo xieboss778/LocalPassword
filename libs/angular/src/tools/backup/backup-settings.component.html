@@ -94,7 +94,9 @@
       {{ "backupPasswordHint" | i18n }}
     </p>
     @if (backupPassword() != null) {
-      <p bitTypography="body2" class="tw-mb-0"><code>{{ backupPassword() }}</code></p>
+      <p bitTypography="body2" class="tw-mb-0">
+        <code>{{ backupPassword() }}</code>
+      </p>
     }
     <div class="tw-flex tw-gap-2">
       <button type="button" bitButton buttonType="secondary" (click)="revealPassword()">

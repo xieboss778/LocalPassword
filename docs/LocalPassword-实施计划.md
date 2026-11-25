@@ -134,7 +134,9 @@
 **四个桌面侧一次性验证**
 
 1. `electron-store` 后端（`apps/desktop/src/platform/main/storage/electron-store-backend.ts`）能读写任意状态键，重启后仍在。
+
 - 系统钥匙串可用：`@bitwarden/desktop-napi` 的 `passwords`（Windows 凭据管理器 / macOS Keychain / Linux Secret Service）能读写，且服务名（`main.ts:335` 传 `app.getName()`）已随 `productName` 改成 LocalPassword，不会与已安装的 Bitwarden 抢同名条目。
+
 3. Windows Hello 生物识别在当前机器上可登记、可解锁（`BiometricsService` 走 Rust 模块）。
 4. 自行打包的 NSIS 安装包能装、能开、卸载能清干净。
 
@@ -144,18 +146,18 @@
 
 ### 现状实测（2026-11-24）
 
-| 目标 | 体积 | 文件数 | 说明 |
-|---|---:|---:|---|
-| `apps/web` | 68 MB | 1,404 | Web 端，不做 |
-| `apps/cli` | 1.2 MB | 158 | CLI，不做 |
-| `bitwarden_license` | 9.9 MB | 1,311 | 企业版 PAM / SM，浏览器与桌面端零直接引用 |
-| `apps/browser/src/_locales` | 22 MB | 64 个语言文件 | 只保留 `en` + `zh_CN` |
-| `apps/desktop/src/locales` | 18 MB | 67 个语言文件 | 同上 |
-| `apps/browser/store` | 5.0 MB | 97 | Chrome 商店素材，自用不需要 |
-| `.github` | 519 KB | — | 只留浏览器/桌面相关 workflow |
-| `libs/pricing` / `subscription` / `organization-invite-link` | 351 / 203 / 83 KB | 95 | 仅 Web 直接引用 |
-| `libs/pam` / `billing` / `automation-driver` / `dirt` | 17 / 14 / 108 / 28 KB | 62 | 删除应用后基本无消费者 |
-| `libs/storybook` + `.storybook` | 96 KB | — | 开发辅助，可选 |
+| 目标                                                         |                  体积 |        文件数 | 说明                                      |
+| ------------------------------------------------------------ | --------------------: | ------------: | ----------------------------------------- |
+| `apps/web`                                                   |                 68 MB |         1,404 | Web 端，不做                              |
+| `apps/cli`                                                   |                1.2 MB |           158 | CLI，不做                                 |
+| `bitwarden_license`                                          |                9.9 MB |         1,311 | 企业版 PAM / SM，浏览器与桌面端零直接引用 |
+| `apps/browser/src/_locales`                                  |                 22 MB | 64 个语言文件 | 只保留 `en` + `zh_CN`                     |
+| `apps/desktop/src/locales`                                   |                 18 MB | 67 个语言文件 | 同上                                      |
+| `apps/browser/store`                                         |                5.0 MB |            97 | Chrome 商店素材，自用不需要               |
+| `.github`                                                    |                519 KB |             — | 只留浏览器/桌面相关 workflow              |
+| `libs/pricing` / `subscription` / `organization-invite-link` |     351 / 203 / 83 KB |            95 | 仅 Web 直接引用                           |
+| `libs/pam` / `billing` / `automation-driver` / `dirt`        | 17 / 14 / 108 / 28 KB |            62 | 删除应用后基本无消费者                    |
+| `libs/storybook` + `.storybook`                              |                 96 KB |             — | 开发辅助，可选                            |
 
 合计源码 **188 MB → 预计约 65 MB**，文件数 **10,510 → 约 7,300**。
 
@@ -381,24 +383,24 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 
 ## 复用的现有代码
 
-| 用途 | 位置 |
-|---|---|
-| 本地加密 | `DefaultCipherEncryptionService.encrypt / encryptMany` |
-| 本地读写 | `CipherService.upsert / delete / softDelete / restore`、`FolderService.encrypt / upsert / delete` |
-| 生成密钥对 | `LegacyCompatKeyService.makeKeyPair` |
-| 本地校验主密码 | `DefaultMasterPasswordUnlockService.proofOfDecryption` |
-| 加密导出 | `IndividualVaultExportService.getPasswordProtectedExport` |
-| 加密导出的导入 | `bitwarden-password-protected-importer.ts` |
-| 定时任务 | `ScheduledTaskNames`、`TaskSchedulerService` |
-| 请求拦截 | `ApiService.addMiddleware` |
-| 安全密钥解锁 | `DefaultWebAuthnPrfUnlockService`、`UnlockViaPrfComponent`、`RotateableKeySetService` |
-| 桌面持久化 | `ElectronStoreBackend`、`ElectronRendererStorageService`（IPC） |
-| 桌面密钥保护 | `@bitwarden/desktop-napi` 的 `passwords`（系统钥匙串，经 `DesktopCredentialStorageListener` IPC） |
-| 桌面生物识别 | `BiometricsService` + `desktop_native/biometric`（Rust） |
-| 桌面自动填充 | `apps/desktop/src/autofill/`、`autotype`（Rust） |
-| 二维码识别、生成 | `qrcode-parser`、`qrious`（都已依赖） |
-| 设置页模板 | `export-browser-v2.component.ts`、`import-browser-v2.component.ts` |
-| 文案 | `apps/browser/src/_locales/*/messages.json`、`apps/desktop/src/locales/*/messages.json`，中文 `zh_CN` |
+| 用途             | 位置                                                                                                  |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| 本地加密         | `DefaultCipherEncryptionService.encrypt / encryptMany`                                                |
+| 本地读写         | `CipherService.upsert / delete / softDelete / restore`、`FolderService.encrypt / upsert / delete`     |
+| 生成密钥对       | `LegacyCompatKeyService.makeKeyPair`                                                                  |
+| 本地校验主密码   | `DefaultMasterPasswordUnlockService.proofOfDecryption`                                                |
+| 加密导出         | `IndividualVaultExportService.getPasswordProtectedExport`                                             |
+| 加密导出的导入   | `bitwarden-password-protected-importer.ts`                                                            |
+| 定时任务         | `ScheduledTaskNames`、`TaskSchedulerService`                                                          |
+| 请求拦截         | `ApiService.addMiddleware`                                                                            |
+| 安全密钥解锁     | `DefaultWebAuthnPrfUnlockService`、`UnlockViaPrfComponent`、`RotateableKeySetService`                 |
+| 桌面持久化       | `ElectronStoreBackend`、`ElectronRendererStorageService`（IPC）                                       |
+| 桌面密钥保护     | `@bitwarden/desktop-napi` 的 `passwords`（系统钥匙串，经 `DesktopCredentialStorageListener` IPC）     |
+| 桌面生物识别     | `BiometricsService` + `desktop_native/biometric`（Rust）                                              |
+| 桌面自动填充     | `apps/desktop/src/autofill/`、`autotype`（Rust）                                                      |
+| 二维码识别、生成 | `qrcode-parser`、`qrious`（都已依赖）                                                                 |
+| 设置页模板       | `export-browser-v2.component.ts`、`import-browser-v2.component.ts`                                    |
+| 文案             | `apps/browser/src/_locales/*/messages.json`、`apps/desktop/src/locales/*/messages.json`，中文 `zh_CN` |
 
 ## 验证
 
@@ -409,15 +411,15 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 
 **手动（两端，全程断网）**
 
-| 场景 | 扩展 | 桌面 |
-|---|---|---|
-| 创建保险库 / 锁定 / 主密码解锁 / 重启后解锁 | ✅ | ✅ |
-| 增删改条目与文件夹、回收站、自动填充 | content script | autotype / Windows autofill |
-| 在测试站点创建并使用 Passkey | ✅ | ✅ |
-| 截图/粘贴导入 Google Authenticator、显示二维码 | ✅ | ✅（粘贴/选图） |
-| 登记安全密钥并解锁 | PRF | Windows Hello / Touch ID |
-| 断网操作无异常，恢复联网后无 `bitwarden.com` 请求 | DevTools Network | Fiddler / 主进程日志 |
-| 升级安装后保险库仍在 | 扩展重载 | 安装包覆盖安装 |
+| 场景                                              | 扩展             | 桌面                        |
+| ------------------------------------------------- | ---------------- | --------------------------- |
+| 创建保险库 / 锁定 / 主密码解锁 / 重启后解锁       | ✅               | ✅                          |
+| 增删改条目与文件夹、回收站、自动填充              | content script   | autotype / Windows autofill |
+| 在测试站点创建并使用 Passkey                      | ✅               | ✅                          |
+| 截图/粘贴导入 Google Authenticator、显示二维码    | ✅               | ✅（粘贴/选图）             |
+| 登记安全密钥并解锁                                | PRF              | Windows Hello / Touch ID    |
+| 断网操作无异常，恢复联网后无 `bitwarden.com` 请求 | DevTools Network | Fiddler / 主进程日志        |
+| 升级安装后保险库仍在                              | 扩展重载         | 安装包覆盖安装              |
 
 **R2（需要你提供测试用 R2 令牌和存储桶）**
 
@@ -429,34 +431,34 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 
 ## 风险与对策
 
-| 风险 | 对策 |
-|---|---|
-| **桌面端自动更新把应用替换成 Bitwarden 官方版** | 阶段 0 第一步就删 `publish` 与 updater 注册；打包后断网验证不发起更新请求 |
-| Rust SDK 黑盒，本地数据格式可能不一致 | 阶段 0 验证 + "导出再导入"交叉验证；失败停下来给替代方案 |
-| 服务器下发的功能开关默认全关 | 测试时逐个确认，确需的本地给默认值 |
-| 桌面构建链（Rust + MSVC + Electron 下载）在国内易失败 | 先单独跑通 `build-native`，配 Electron 镜像；失败即报，不硬试 |
-| 桌面未签名：SmartScreen / Gatekeeper 拦截 | 安装说明写明绕过步骤；后续可买证书 |
-| macOS 生物识别与 keychain 需要 entitlements | 保留并核对 `entitlements.mac.plist`；不做公证则只能右键打开 |
-| MV3 后台会被随时终止 | 上传中断后队列不清空，下次触发重试；每次推送新快照，重试不会损坏 |
-| 桌面端不在运行就没法定时备份 | 托盘常驻 + 启动时补做；设置页说明 |
-| 修改主密码不轮换密钥 | 旧备份仍能用旧密码打开；真正轮换放到附件之后 |
-| 瘦身造成上游补丁难合并 | 已决策不追 `main`；保留 `docs/removed-from-upstream.md` 做映射 |
-| 许可（GPL-3.0） | 分发即公开源码；桌面安装包附源码链接 |
-| 两端功能漂移 | 阶段 2 起所有业务逻辑进 `libs/local-vault`；两端只写适配器，代码评审时检查 |
+| 风险                                                  | 对策                                                                       |
+| ----------------------------------------------------- | -------------------------------------------------------------------------- |
+| **桌面端自动更新把应用替换成 Bitwarden 官方版**       | 阶段 0 第一步就删 `publish` 与 updater 注册；打包后断网验证不发起更新请求  |
+| Rust SDK 黑盒，本地数据格式可能不一致                 | 阶段 0 验证 + "导出再导入"交叉验证；失败停下来给替代方案                   |
+| 服务器下发的功能开关默认全关                          | 测试时逐个确认，确需的本地给默认值                                         |
+| 桌面构建链（Rust + MSVC + Electron 下载）在国内易失败 | 先单独跑通 `build-native`，配 Electron 镜像；失败即报，不硬试              |
+| 桌面未签名：SmartScreen / Gatekeeper 拦截             | 安装说明写明绕过步骤；后续可买证书                                         |
+| macOS 生物识别与 keychain 需要 entitlements           | 保留并核对 `entitlements.mac.plist`；不做公证则只能右键打开                |
+| MV3 后台会被随时终止                                  | 上传中断后队列不清空，下次触发重试；每次推送新快照，重试不会损坏           |
+| 桌面端不在运行就没法定时备份                          | 托盘常驻 + 启动时补做；设置页说明                                          |
+| 修改主密码不轮换密钥                                  | 旧备份仍能用旧密码打开；真正轮换放到附件之后                               |
+| 瘦身造成上游补丁难合并                                | 已决策不追 `main`；保留 `docs/removed-from-upstream.md` 做映射             |
+| 许可（GPL-3.0）                                       | 分发即公开源码；桌面安装包附源码链接                                       |
+| 两端功能漂移                                          | 阶段 2 起所有业务逻辑进 `libs/local-vault`；两端只写适配器，代码评审时检查 |
 
 ## 工作量估算（单人）
 
-| 阶段 | 估算 |
-|---|---|
-| 0 基线（工具链、双端构建、改名、验证） | 3–4 天 |
-| 1 瘦身 | 2–3 天 |
-| 2 本地保险库核心 + 扩展接线 | 6–8 天 |
-| 3 桌面端接入 | 6–8 天 |
-| 4 R2 同步 + 定时备份 | 5–7 天 |
-| 5 Passkey / 安全密钥 | 3–5 天 |
-| 6 TOTP 二维码 | 3–4 天 |
-| 7 打包发布 | 3–4 天 |
-| **合计** | **约 5–6 周** |
+| 阶段                                   | 估算          |
+| -------------------------------------- | ------------- |
+| 0 基线（工具链、双端构建、改名、验证） | 3–4 天        |
+| 1 瘦身                                 | 2–3 天        |
+| 2 本地保险库核心 + 扩展接线            | 6–8 天        |
+| 3 桌面端接入                           | 6–8 天        |
+| 4 R2 同步 + 定时备份                   | 5–7 天        |
+| 5 Passkey / 安全密钥                   | 3–5 天        |
+| 6 TOTP 二维码                          | 3–4 天        |
+| 7 打包发布                             | 3–4 天        |
+| **合计**                               | **约 5–6 周** |
 
 ## 不在本次范围
 

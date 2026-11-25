@@ -160,6 +160,8 @@ export function mergeSnapshots(
 
 /** True when two snapshots carry identical vault content (ignores `updatedAt`). */
 export function snapshotsEqual(a: Snapshot, b: Snapshot): boolean {
-  return JSON.stringify({ c: a.ciphers, f: a.folders, t: a.tombstones }) ===
-    JSON.stringify({ c: b.ciphers, f: b.folders, t: b.tombstones });
+  return (
+    JSON.stringify({ c: a.ciphers, f: a.folders, t: a.tombstones }) ===
+    JSON.stringify({ c: b.ciphers, f: b.folders, t: b.tombstones })
+  );
 }
