@@ -9568,5 +9568,38 @@
   },
   "backupFailed": {
     "message": "Backup upload failed"
+  },
+  "googleAuth": {
+    "message": "Google Authenticator"
+  },
+  "googleAuthHint": {
+    "message": "In Google Authenticator choose Transfer accounts → Export accounts and scan the code it shows. Bitwarden cannot read the code with the camera here, so paste the otpauth-migration link or pick the screenshot instead."
+  },
+  "googleAuthPasteLabel": {
+    "message": "Migration link"
+  },
+  "googleAuthScanPaste": {
+    "message": "Read the pasted link"
+  },
+  "googleAuthReadImages": {
+    "message": "Pick screenshots"
+  },
+  "googleAuthPreviewCount": {
+    "message": "Accounts found"
+  },
+  "googleAuthImportButton": {
+    "message": "Import accounts"
+  },
+  "googleAuthNothingParsed": {
+    "message": "No accounts found yet. Paste a migration link or pick a screenshot."
+  },
+  "googleAuthImported": {
+    "message": "Accounts imported"
+  },
+  "googleAuthUnreadableImage": {
+    "message": "Could not read a QR code from that image"
+  },
+  "googleAuthHotpSkipped": {
+    "message": "Counter-based (HOTP) accounts skipped"
   }
 }

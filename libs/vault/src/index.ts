@@ -1,4 +1,5 @@
 export { VaultFabComponent } from "./components/fab/fab.component";
+export { TotpQrComponent } from "./components/totp-qr/totp-qr.component";
 export {
   AtRiskPasswordCalloutService,
   AtRiskPasswordCalloutData,
