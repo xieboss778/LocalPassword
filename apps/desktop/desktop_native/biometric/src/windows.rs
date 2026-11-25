@@ -37,7 +37,7 @@ use std::{
 mod encryption;
 
 use anyhow::{anyhow, Result};
-use localpass_crypto::{LocalPassLegacyKeyBytes, SymmetricCryptoKey};
+use localpass_crypto::{BitwardenLegacyKeyBytes, SymmetricCryptoKey};
 use desktop_core::password::{self, PASSWORD_NOT_FOUND};
 use secure_memory::*;
 use tokio::sync::Mutex;
@@ -186,7 +186,7 @@ impl super::BiometricTrait for BiometricLockSystem {
         // `SecretProtectedKeyEnvelope`. The bundle of challenge and serialized envelope are stored
         // to the keychain.
 
-        let user_key = SymmetricCryptoKey::try_from(&LocalPassLegacyKeyBytes::from(key.to_vec()))
+        let user_key = SymmetricCryptoKey::try_from(&BitwardenLegacyKeyBytes::from(key.to_vec()))
             .map_err(|e| anyhow!("Failed to parse user key: {e}"))?;
 
         // Reuse the Windows Hello challenge and key from the last prompt, so re-enrolling right
@@ -494,7 +494,7 @@ unsafe fn as_mut_bytes(buffer: &mut IBuffer) -> Result<&mut [u8]> {
 #[cfg(test)]
 #[allow(clippy::print_stdout)]
 mod tests {
-    use localpass_crypto::{LocalPassLegacyKeyBytes, SymmetricCryptoKey};
+    use localpass_crypto::{BitwardenLegacyKeyBytes, SymmetricCryptoKey};
     use rand_core::Rng;
 
     use super::{
@@ -677,7 +677,7 @@ mod tests {
             .await
             .unwrap();
         let user_key =
-            SymmetricCryptoKey::try_from(&LocalPassLegacyKeyBytes::from(key.to_vec())).unwrap();
+            SymmetricCryptoKey::try_from(&BitwardenLegacyKeyBytes::from(key.to_vec())).unwrap();
         let legacy =
             WindowsHelloKeychainEntryV1::seal(challenge, &windows_hello_key, &user_key).unwrap();
         desktop_core::password::set_password(

@@ -15,7 +15,7 @@ use localpass_crypto::{
         HighEntropySecret, HighEntropySecretSource, SecretProtectedKeyEnvelope,
         SecretProtectedKeyEnvelopeNamespace,
     },
-    LocalPassLegacyKeyBytes, KeyStore, SymmetricCryptoKey,
+    BitwardenLegacyKeyBytes, KeyStore, SymmetricCryptoKey,
 };
 use localpass_sensitive_value::{Sensitive, SensitiveSlice};
 use chacha20poly1305::{aead::Aead, KeyInit, XChaCha20Poly1305, XNonce};
@@ -241,14 +241,14 @@ impl WindowsHelloKeychainEntryV1 {
         let decrypted = cipher
             .decrypt(&XNonce::from(self.nonce), self.wrapped_key.as_slice())
             .map_err(|e| anyhow!(e))?;
-        SymmetricCryptoKey::try_from(&LocalPassLegacyKeyBytes::from(decrypted))
+        SymmetricCryptoKey::try_from(&BitwardenLegacyKeyBytes::from(decrypted))
             .map_err(|e| anyhow!("Failed to parse user key: {e}"))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use localpass_crypto::{LocalPassLegacyKeyBytes, SymmetricCryptoKey, SymmetricKeyAlgorithm};
+    use localpass_crypto::{BitwardenLegacyKeyBytes, SymmetricCryptoKey, SymmetricKeyAlgorithm};
     use chacha20poly1305::{aead::Aead, KeyInit, XChaCha20Poly1305, XNonce};
 
     use super::{
@@ -258,7 +258,7 @@ mod tests {
     };
 
     fn user_key(encoded: &[u8]) -> SymmetricCryptoKey {
-        SymmetricCryptoKey::try_from(&LocalPassLegacyKeyBytes::from(encoded.to_vec())).unwrap()
+        SymmetricCryptoKey::try_from(&BitwardenLegacyKeyBytes::from(encoded.to_vec())).unwrap()
     }
 
     /// The legacy-encoded bytes of `TEST_VECTOR_XAES_USER_KEY_B64`, as handed to

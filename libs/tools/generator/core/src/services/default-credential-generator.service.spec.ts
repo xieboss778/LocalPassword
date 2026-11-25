@@ -7,7 +7,7 @@ import { BehaviorSubject, ReplaySubject, Subject, catchError, firstValueFrom, of
 import { Account } from "@localpass/common/auth/abstractions/account.service";
 import { ConsoleLogService } from "@localpass/common/platform/services/console-log.service";
 import { Site, VendorId } from "@localpass/common/tools/extension";
-import { LocalPass } from "@localpass/common/tools/extension/vendor/bitwarden";
+import { Bitwarden } from "@localpass/common/tools/extension/vendor/bitwarden";
 import { Vendor } from "@localpass/common/tools/extension/vendor/data";
 import { SemanticLogger, ifEnabledSemanticLoggerProvider } from "@localpass/common/tools/log";
 import { UserId } from "@localpass/common/types/guid";
@@ -356,7 +356,7 @@ describe("DefaultCredentialGeneratorService", () => {
       const mockSettings = new BehaviorSubject({ value: { length: 12 } });
       const vendorId = Vendor.bitwarden;
       const forwarderProfile = {
-        id: { forwarder: LocalPass.id },
+        id: { forwarder: Bitwarden.id },
         site: Site.forwarder,
         type: "extension",
       };

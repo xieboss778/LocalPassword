@@ -20,7 +20,7 @@ import {
   SiteMetadata,
 } from "@localpass/common/tools/extension";
 import { ExtensionService } from "@localpass/common/tools/extension/extension.service";
-import { LocalPass } from "@localpass/common/tools/extension/vendor/bitwarden";
+import { Bitwarden } from "@localpass/common/tools/extension/vendor/bitwarden";
 import { disabledSemanticLoggerProvider } from "@localpass/common/tools/log";
 import { SystemServiceProvider } from "@localpass/common/tools/providers";
 import { UserStateSubject } from "@localpass/common/tools/state/user-state-subject";
@@ -150,21 +150,21 @@ describe("GeneratorMetadataProvider", () => {
     it("returns forwarder metadata", async () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: LocalPass },
+        product: { vendor: Bitwarden },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);
 
-      const metadata = provider.metadata({ forwarder: LocalPass.id });
+      const metadata = provider.metadata({ forwarder: Bitwarden.id });
 
-      expect(metadata.id).toEqual({ forwarder: LocalPass.id });
+      expect(metadata.id).toEqual({ forwarder: Bitwarden.id });
     });
 
     it("panics when metadata not found", async () => {
@@ -220,21 +220,21 @@ describe("GeneratorMetadataProvider", () => {
     it("includes forwarder vendors in the email category's algorithms", () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: LocalPass },
+        product: { vendor: Bitwarden },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);
 
       const result = provider.algorithms({ type: Type.email });
 
-      expect(result).toEqual(expect.arrayContaining([{ forwarder: LocalPass.id }]));
+      expect(result).toEqual(expect.arrayContaining([{ forwarder: Bitwarden.id }]));
     });
 
     it.each([
@@ -254,21 +254,21 @@ describe("GeneratorMetadataProvider", () => {
     it("returns explicit forwarders", () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: LocalPass },
+        product: { vendor: Bitwarden },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);
 
-      const result = provider.algorithms({ algorithm: { forwarder: LocalPass.id } });
+      const result = provider.algorithms({ algorithm: { forwarder: Bitwarden.id } });
 
-      expect(result).toEqual(expect.arrayContaining([{ forwarder: LocalPass.id }]));
+      expect(result).toEqual(expect.arrayContaining([{ forwarder: Bitwarden.id }]));
     });
 
     it("returns an empty array when the algorithm is invalid", () => {
@@ -283,14 +283,14 @@ describe("GeneratorMetadataProvider", () => {
     it("returns an empty array when the forwarder is invalid", () => {
       const extensionMetadata: ExtensionMetadata = {
         site: SomeSite,
-        product: { vendor: LocalPass },
+        product: { vendor: Bitwarden },
         host: { authentication: true, selfHost: "maybe", baseUrl: "https://www.example.com" },
         requestedFields: [],
       };
       const application = {
         ...ApplicationProvider,
         extension: mock<ExtensionService>({
-          site: () => new ExtensionSite(SomeSite, new Map([[LocalPass.id, extensionMetadata]])),
+          site: () => new ExtensionSite(SomeSite, new Map([[Bitwarden.id, extensionMetadata]])),
         }),
       };
       const provider = new GeneratorMetadataProvider(SystemProvider, application, []);

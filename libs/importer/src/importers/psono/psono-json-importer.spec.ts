@@ -61,7 +61,7 @@ describe("PSONO JSON Importer", () => {
     expect(cipher.login.username).toEqual("testUser");
     expect(cipher.login.password).toEqual("testPassword");
     expect(cipher.login.uris.length).toEqual(1);
-    expect(cipher.login.uri).toEqual("https://local.invalid");
+    expect(cipher.login.uri).toEqual("http://local.invalid");
 
     expect(cipher.fields.length).toBe(7);
     validateCustomField(cipher.fields, "website_password_auto_submit", "true", FieldType.Boolean);
