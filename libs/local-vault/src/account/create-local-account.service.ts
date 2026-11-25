@@ -156,7 +156,7 @@ export class CreateLocalAccountService {
 
     const masterKey = await this.legacyCompatKeyService.makeMasterKey(
       request.masterPassword,
-      request.unlock.salt,
+      request.unlock.salt as MasterPasswordSalt,
       request.unlock.kdf,
     );
 
@@ -166,8 +166,7 @@ export class CreateLocalAccountService {
       masterKey,
     );
 
-    const name =
-      request.name?.trim() || email.split("@")[0] || DEFAULT_LOCAL_ACCOUNT_NAME;
+    const name = request.name?.trim() || email.split("@")[0] || DEFAULT_LOCAL_ACCOUNT_NAME;
 
     return await this.writeAccount(
       newGuid() as UserId,
