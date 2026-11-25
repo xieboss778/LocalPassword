@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { getUserId } from "@bitwarden/common/auth/services/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -10,8 +11,6 @@ import {
 } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { AsyncActionsModule, ButtonModule, TypographyModule } from "@bitwarden/components";
 import { LocalWebAuthnPrfEnrollmentService } from "@bitwarden/key-management-ui";
-
-import { JslibModule } from "../../../jslib.module";
 
 /**
  * Registers a security key (PRF) as an unlock method for the extension. The vault must be
@@ -42,9 +41,11 @@ export class SecurityKeyComponent implements OnInit {
     this.busy.set(true);
     try {
       const account = await firstValueFrom(this.accountService.activeAccount$);
-      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      if (account == null) {
+        return;
+      }
 
-      await this.enrollmentService.enroll(userId, account.email, account.name ?? account.email);
+      await this.enrollmentService.enroll(account.id, account.email, account.name ?? account.email);
       this.platformUtilsService.showToast("success", "", this.i18nService.t("securityKeyEnrolled"));
       await this.refresh();
     } catch {
