@@ -1,4 +1,5 @@
 export { LpEmptyComponent } from "./lp-empty.component";
+export { LpFieldComponent } from "./lp-field.component";
 export { LpGroupComponent } from "./lp-group.component";
 export { LpPageHeaderComponent } from "./lp-page-header.component";
 export { LpRowComponent } from "./lp-row.component";

@@ -26,7 +26,7 @@ import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
 import { FieldType } from "@localpass/common/vault/enums";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { ButtonModule, DialogService, IconButtonModule } from "@localpass/components";
-import { withoutKindField } from "@localpass/local-vault";
+import { kindOf, withoutKindField } from "@localpass/local-vault";
 
 /**
  * 条目详情（方向 C）。复制只有一个入口：点行 —— 行自己负责写剪贴板与三重反馈
@@ -196,9 +196,11 @@ export class VaultItemViewV2Component implements OnInit {
   }
 
   protected edit(): void {
-    const id = this.cipher()?.id;
-    if (id) {
-      void this.router.navigate(["/edit-cipher"], { queryParams: { cipherId: id } });
+    const item = this.cipher();
+    if (item?.id) {
+      void this.router.navigate(["/edit-item-v2"], {
+        queryParams: { cipherId: item.id, kind: kindOf(item) },
+      });
     }
   }
 

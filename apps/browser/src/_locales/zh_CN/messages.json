@@ -9634,5 +9634,50 @@
   },
   "itemKindNote": {
     "message": "笔记"
+  },
+  "newItemPickKind": {
+    "message": "先选类型，字段会跟着类型变"
+  },
+  "itemKindLoginBlurb": {
+    "message": "网站与 App 的账号"
+  },
+  "itemKindTokenBlurb": {
+    "message": "API Key、访问令牌"
+  },
+  "itemKindSshKeyBlurb": {
+    "message": "登录服务器用的私钥"
+  },
+  "itemKindLicenseBlurb": {
+    "message": "软件序列号与激活码"
+  },
+  "itemKindCardBlurb": {
+    "message": "银行卡与信用卡"
+  },
+  "itemKindIdentityBlurb": {
+    "message": "个人资料 / 护照 / 驾照"
+  },
+  "itemKindServerBlurb": {
+    "message": "主机与远程登录凭据"
+  },
+  "itemKindNoteBlurb": {
+    "message": "恢复码、配置片段"
+  },
+  "itemKindTokenScope": {
+    "message": "权限范围"
+  },
+  "itemKindTokenEnv": {
+    "message": "环境"
+  },
+  "itemKindSshKeyPublic": {
+    "message": "公钥"
+  },
+  "itemKindLicenseSeats": {
+    "message": "席位 / 版本"
+  },
+  "itemKindServerProtocol": {
+    "message": "协议"
+  },
+  "itemKindServerSudo": {
+    "message": "sudo 备注"
   }
 }

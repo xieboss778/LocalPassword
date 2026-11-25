@@ -9667,5 +9667,50 @@
   },
   "itemKindNote": {
     "message": "Note"
+  },
+  "newItemPickKind": {
+    "message": "Pick a type first — fields follow the type"
+  },
+  "itemKindLoginBlurb": {
+    "message": "Websites and apps"
+  },
+  "itemKindTokenBlurb": {
+    "message": "API keys, access tokens"
+  },
+  "itemKindSshKeyBlurb": {
+    "message": "Keys for logging into servers"
+  },
+  "itemKindLicenseBlurb": {
+    "message": "Serial numbers and activation codes"
+  },
+  "itemKindCardBlurb": {
+    "message": "Bank and credit cards"
+  },
+  "itemKindIdentityBlurb": {
+    "message": "Personal profile, passport, licence"
+  },
+  "itemKindServerBlurb": {
+    "message": "Hosts and remote credentials"
+  },
+  "itemKindNoteBlurb": {
+    "message": "Recovery codes, config snippets"
+  },
+  "itemKindTokenScope": {
+    "message": "Scope"
+  },
+  "itemKindTokenEnv": {
+    "message": "Environment"
+  },
+  "itemKindSshKeyPublic": {
+    "message": "Public key"
+  },
+  "itemKindLicenseSeats": {
+    "message": "Seats / version"
+  },
+  "itemKindServerProtocol": {
+    "message": "Protocol"
+  },
+  "itemKindServerSudo": {
+    "message": "sudo note"
   }
 }

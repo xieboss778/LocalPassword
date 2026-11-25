@@ -113,6 +113,8 @@ import { IntroCarouselComponent } from "../vault/popup/components/vault/intro-ca
 import { NewItemPageComponent } from "../vault/popup/components/vault/new-item-page/new-item-page.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/vault-password-history/vault-password-history.component";
 import { VaultComponent } from "../vault/popup/components/vault/vault.component";
+import { ItemFormV2Component } from "../vault/popup/components/item-form-v2/item-form-v2.component";
+import { NewItemV2Component } from "../vault/popup/components/new-item-v2/new-item-v2.component";
 import { VaultItemViewV2Component } from "../vault/popup/components/item-view-v2/item-view-v2.component";
 import { VaultListV2Component } from "../vault/popup/components/vault-list-v2/vault-list-v2.component";
 import { ViewComponent } from "../vault/popup/components/vault/view/view.component";
@@ -247,6 +249,20 @@ const routes: Routes = [
         } satisfies ExtensionAnonLayoutWrapperData,
       },
     ],
+  },
+  {
+    // LocalPassword：方向 C 的新建第一步——选类型。
+    path: "new-item-v2",
+    component: NewItemV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 2 } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPassword：方向 C 的新建 / 编辑表单，靠 query 上的 kind 与 cipherId 区分。
+    path: "edit-item-v2",
+    component: ItemFormV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 2 } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：方向 C 的条目详情（点行复制）。
