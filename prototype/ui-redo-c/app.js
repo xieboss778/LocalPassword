@@ -32,7 +32,9 @@ var DATA = {
   items: [
     { type: "login", n: "GitHub", u: "bossxie · 登录", otp: "742 913", fav: true },
     { type: "server", n: "生产跳板机", u: "10.0.2.14:22 · SSH" },
-    { type: "key", n: "Cloudflare API", u: "令牌 · 生产", otp: "118 402" },
+    { type: "token", n: "Cloudflare API", u: "令牌 · 生产", otp: "118 402" },
+    { type: "sshkey", n: "运维私钥 id_ed25519", u: "SHA256:9f2c…a71b" },
+    { type: "license", n: "Sublime Text 授权", u: "序列号 · 3 台设备" },
     { type: "card", n: "招商银行 储蓄卡", u: "•••• 8891 · 借记" },
     { type: "identity", n: "本人身份证", u: "居民身份证" },
     { type: "login", n: "Proton Mail", u: "bossxie@proton.me · 登录" },
@@ -132,7 +134,7 @@ POPUP["unlock-wait"] = function () {
 POPUP.vault = function () {
   var fav = DATA.items.filter(function (i) { return i.fav; });
   var rest = DATA.items.filter(function (i) { return !i.fav; });
-  return pTop("保险库", "7 个条目 · 已加密 · 离线") + pSearch() +
+  return pTop("保险库", "9 个条目 · 已加密 · 离线") + pSearch() +
     '<div class="p-scroll">' +
     pTitle("收藏") + pGroup(fav.map(function (i) {
       return row({ emoji: typeOf(i.type).icon, k: i.n, sub: i.u, value: i.otp || "", mono: true, brand: !!i.otp, go: "item" });
@@ -696,12 +698,14 @@ POPUP.trash = function () {
 
 /* ================= 类型体系（简约 6 类，覆盖真实使用） ================= */
 var TYPES = [
-  { key: "login",    name: "登录",   icon: "🔐", blurb: "网站与 App 的账号", hint: "账号" },
-  { key: "key",      name: "密钥",   icon: "🗝️", blurb: "API 令牌 / SSH 私钥 / 许可证", hint: "令牌" },
-  { key: "card",     name: "卡片",   icon: "💳", blurb: "银行卡与信用卡", hint: "卡" },
-  { key: "identity", name: "身份",   icon: "🪪", blurb: "个人资料 / 护照 / 驾照", hint: "证件" },
-  { key: "server",   name: "服务器", icon: "🖥️", blurb: "主机与远程登录凭据", hint: "主机" },
-  { key: "note",     name: "笔记",   icon: "📝", blurb: "恢复码、配置片段", hint: "笔记" },
+  { key: "login",    name: "登录",     icon: "🔐", blurb: "网站与 App 的账号", hint: "账号" },
+  { key: "token",    name: "令牌",     icon: "🔑", blurb: "API Key、访问令牌", hint: "令牌" },
+  { key: "sshkey",   name: "SSH 私钥", icon: "🗝️", blurb: "登录服务器用的私钥", hint: "私钥" },
+  { key: "license",  name: "许可证",   icon: "📜", blurb: "软件序列号与激活码", hint: "许可证" },
+  { key: "card",     name: "卡片",     icon: "💳", blurb: "银行卡与信用卡", hint: "卡" },
+  { key: "identity", name: "身份",     icon: "🪪", blurb: "个人资料 / 护照 / 驾照", hint: "证件" },
+  { key: "server",   name: "服务器",   icon: "🖥️", blurb: "主机与远程登录凭据", hint: "主机" },
+  { key: "note",     name: "笔记",     icon: "📝", blurb: "恢复码、配置片段", hint: "笔记" },
 ];
 
 function typeOf(key) {
@@ -716,12 +720,24 @@ var TYPE_FIELDS = {
     ["密码", "••••••••••••", { mask: true, action: "生成" }],
     ["验证码密钥", "JBSWY3DP••••", { action: "扫码" }],
   ],
-  key: [
-    ["用途", "API 令牌", { chev: true }],
+  token: [
     ["服务", "Cloudflare"],
-    ["密钥内容", "••••••••••••••••", { mask: true, action: "显示" }],
+    ["令牌", "••••••••••••••••", { mask: true, action: "显示" }],
+    ["权限范围", "Zone:Edit · DNS:Edit", { chev: true }],
     ["有效期", "2027-03-01", { action: "选择" }],
     ["环境", "生产", { chev: true }],
+  ],
+  sshkey: [
+    ["私钥", "-----BEGIN OPENSSH PRIVATE KEY----- （隐藏）", { mask: true, action: "显示" }],
+    ["公钥指纹", "SHA256:9f2c…a71b", { mono: true, action: "复制" }],
+    ["口令（passphrase）", "••••••••", { mask: true, action: "显示" }],
+    ["用于", "生产跳板机、GitHub", { chev: true }],
+  ],
+  license: [
+    ["软件", "Sublime Text 4"],
+    ["序列号 / 激活码", "•••••-•••••-•••••", { mask: true, action: "复制" }],
+    ["席位 / 版本", "个人 · 3 台设备"],
+    ["购买日期", "2026-01-18", { action: "选择" }],
   ],
   card: [
     ["持卡人", "XIE BOSS"],
@@ -799,8 +815,8 @@ function deskTypeForm(key) {
     '<div class="body">' +
     '<div class="gtitle">类型</div><div class="group"><div class="row" style="cursor:default;gap:6px;flex-wrap:wrap">' + typePills(key) + "</div></div>" +
     '<div class="gtitle">项目</div><div class="group">' +
-      inputRow("名称", key === "server" ? "生产跳板机" : key === "key" ? "Cloudflare API" : key === "card" ? "招商银行 储蓄卡" : key === "identity" ? "本人身份证" : key === "note" ? "恢复码" : "GitHub") +
-      inputRow("文件夹", key === "server" ? "运维" : key === "card" ? "金融" : key === "identity" ? "个人" : "开发", { action: "选择" }) +
+      inputRow("名称", ({ server: "生产跳板机", token: "Cloudflare API", sshkey: "运维私钥 id_ed25519", license: "Sublime Text 授权", card: "招商银行 储蓄卡", identity: "本人身份证", note: "恢复码" })[key] || "GitHub") +
+      inputRow("文件夹", ({ server: "运维", token: "开发", sshkey: "运维", license: "软件", card: "金融", identity: "个人", note: "个人" })[key] || "开发", { action: "选择" }) +
       '<div class="row"><span class="k">收藏</span><span class="switch off"></span></div></div>' +
     '<div class="gtitle">' + t.name + '信息</div><div class="group">' + rows + "</div>" +
     extra +
@@ -872,13 +888,13 @@ var GROUPS = [
   { g: "首次使用", device: "popup", items: [["setup", "设置安全密码"]] },
   { g: "解锁", device: "popup", items: [["unlock", "解锁（安全密码）"], ["unlock-wait", "输错等待（不登出）"]] },
   { g: "保险库", device: "popup", items: [["vault", "列表"], ["vault-empty", "空状态"], ["autofill", "页面内联菜单"]] },
-  { g: "条目", device: "popup", items: [["item", "详情（读）"], ["new-type", "类型选择"], ["form-login", "登录"], ["form-key", "密钥"], ["form-card", "卡片"], ["form-identity", "身份"], ["form-server", "服务器"], ["form-note", "笔记"], ["item-passkey", "Passkey"], ["qr", "动态口令二维码"]] },
+  { g: "条目", device: "popup", items: [["item", "详情（读）"], ["new-type", "类型选择"], ["form-login", "登录"], ["form-token", "令牌"], ["form-sshkey", "SSH 私钥"], ["form-license", "许可证"], ["form-card", "卡片"], ["form-identity", "身份"], ["form-server", "服务器"], ["form-note", "笔记"], ["item-passkey", "Passkey"], ["qr", "动态口令二维码"]] },
   { g: "工具", device: "popup", items: [["generator", "生成器"], ["import-ga", "Google 认证器导入"], ["import-preview", "导入预览"], ["security-key", "安全密钥"]] },
   { g: "备份（手动）", device: "popup", items: [["backup", "云备份"], ["backup-config", "存储配置"], ["restore-cloud", "从备份恢复"]] },
   { g: "回收站", device: "popup", items: [["item-delete", "删除（操作单）"], ["trash", "回收站（恢复 / 清空）"]] },
   { g: "状态与异常", device: "popup", items: [["state-loading", "恢复中"], ["state-conflict", "同步冲突"], ["state-error", "连接失败"]] },
   { g: "设置 / 系统", device: "popup", items: [["settings", "设置"], ["offline", "网络闸门"], ["data", "数据与安全"]] },
-  { g: "桌面端", device: "desktop", items: [["setup", "设置安全密码"], ["unlock", "解锁"], ["vault-desktop", "详情（读 · 全字段）"], ["d-pick-type", "新建 · 选类型"], ["d-form-login", "登录表单"], ["d-form-key", "密钥表单"], ["d-form-card", "卡片表单"], ["d-form-identity", "身份表单"], ["d-form-server", "服务器表单"], ["d-form-note", "笔记表单"], ["d-item-delete", "删除确认（删）"], ["d-trash", "回收站（恢复 / 永久删除）"], ["gen-desktop", "生成器"], ["security-desktop", "安全设置"], ["settings-desktop", "备份设置"]] },
+  { g: "桌面端", device: "desktop", items: [["setup", "设置安全密码"], ["unlock", "解锁"], ["vault-desktop", "详情（读 · 全字段）"], ["d-pick-type", "新建 · 选类型"], ["d-form-login", "登录表单"], ["d-form-token", "令牌表单"], ["d-form-sshkey", "SSH 私钥表单"], ["d-form-license", "许可证表单"], ["d-form-card", "卡片表单"], ["d-form-identity", "身份表单"], ["d-form-server", "服务器表单"], ["d-form-note", "笔记表单"], ["d-item-delete", "删除确认（删）"], ["d-trash", "回收站（恢复 / 永久删除）"], ["gen-desktop", "生成器"], ["security-desktop", "安全设置"], ["settings-desktop", "备份设置"]] },
 ];
 
 var state = { device: "popup", screen: "setup" };
@@ -943,7 +959,7 @@ document.addEventListener("click", function (e) {
       "setup": "setup", "offline": "offline", "data": "data", "vault-empty": "vault-empty",
       "item-card": "item-card", "autofill": "autofill",
       "state-loading": "state-loading", "state-conflict": "state-conflict", "state-error": "state-error",
-      "item-delete": "item-delete", "trash": "trash", "new-type": "new-type", "form-login": "form-login", "form-key": "form-key", "form-card": "form-card", "form-identity": "form-identity", "form-server": "form-server", "form-note": "form-note", "d-pick-type": "d-pick-type", "d-form-login": "d-form-login", "d-form-key": "d-form-key", "d-form-card": "d-form-card", "d-form-identity": "d-form-identity", "d-form-server": "d-form-server", "d-form-note": "d-form-note",
+      "item-delete": "item-delete", "trash": "trash", "new-type": "new-type", "form-login": "form-login", "form-token": "form-token", "form-sshkey": "form-sshkey", "form-license": "form-license", "form-card": "form-card", "form-identity": "form-identity", "form-server": "form-server", "form-note": "form-note", "d-pick-type": "d-pick-type", "d-form-login": "d-form-login", "d-form-token": "d-form-token", "d-form-sshkey": "d-form-sshkey", "d-form-license": "d-form-license", "d-form-card": "d-form-card", "d-form-identity": "d-form-identity", "d-form-server": "d-form-server", "d-form-note": "d-form-note",
       "vault-desktop": "vault-desktop", "gen-desktop": "gen-desktop", "settings-desktop": "settings-desktop",
       "security-desktop": "security-desktop",
       "d-item-delete": "d-item-delete", "d-trash": "d-trash",
