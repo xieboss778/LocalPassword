@@ -412,6 +412,7 @@ import {
   CreateLocalAccountService,
   DefaultLocalVaultWriter,
   LocalAccountService,
+  LocalAccountObjectReader,
   LocalPasswordApiService,
   LocalVaultNetworkGate,
   TimerVaultSchedulerAdapter,
@@ -767,6 +768,7 @@ const safeProviders: SafeProvider[] = [
       unlockService: UnlockService,
       legacyCompatKeyService: LegacyCompatKeyService,
       localAccountService: LocalAccountService,
+      encryptService: EncryptService,
       logService: LogService,
     ) =>
       new CreateLocalAccountService(
@@ -782,6 +784,7 @@ const safeProviders: SafeProvider[] = [
         unlockService,
         legacyCompatKeyService,
         localAccountService,
+        encryptService,
         logService,
       ),
     deps: [
@@ -797,6 +800,7 @@ const safeProviders: SafeProvider[] = [
       UnlockService,
       LegacyCompatKeyService,
       LocalAccountService,
+      EncryptService,
       LogService,
     ],
   }),
@@ -851,15 +855,36 @@ const safeProviders: SafeProvider[] = [
       keyService: KeyService,
       encryptService: EncryptService,
       logService: LogService,
-    ) =>
-      new VaultBackupSyncService(
+      accountService: AccountServiceAbstraction,
+      masterPasswordService: InternalMasterPasswordServiceAbstraction,
+      cryptoStateService: AccountCryptographicStateService,
+    ) => {
+      const reader = new LocalAccountObjectReader(
+        accountService,
+        masterPasswordService,
+        cryptoStateService,
+      );
+      return new VaultBackupSyncService(
         localAccountService,
         stateProvider,
         keyService,
         encryptService,
         logService,
-      ),
-    deps: [LocalAccountService, StateProvider, KeyService, EncryptService, LogService],
+        undefined,
+        undefined,
+        (userId) => reader.read(userId),
+      );
+    },
+    deps: [
+      LocalAccountService,
+      StateProvider,
+      KeyService,
+      EncryptService,
+      LogService,
+      AccountServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
+      AccountCryptographicStateService,
+    ],
   }),
   safeProvider({
     provide: VaultBackupService,

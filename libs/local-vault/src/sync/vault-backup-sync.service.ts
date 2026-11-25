@@ -14,6 +14,7 @@ import { StateProvider } from "@bitwarden/state";
 import { LocalAccountService } from "../account/local-account.service";
 import { S3Client, S3PreconditionFailedError } from "../s3/s3-client";
 
+import { LocalAccountObject } from "./local-account-object";
 import { mergeSnapshots, Snapshot, VaultRecord } from "./snapshot-merge";
 import {
   StoredVaultBackupConfig,
@@ -87,6 +88,10 @@ export class VaultBackupSyncService {
         },
       }),
     private readonly clock: () => Date = () => new Date(),
+    /** Supplies `account.json` for cross-device restore; null disables the upload. */
+    private readonly readLocalAccountObject: (
+      userId: UserId,
+    ) => Promise<LocalAccountObject | null> = async () => null,
   ) {}
 
   async getConfig(userId: UserId): Promise<VaultBackupConfig | null> {
@@ -286,11 +291,28 @@ export class VaultBackupSyncService {
         pending: false,
       }));
 
+      // account.json is what a new device restores from; a failure here must not fail the push.
+      await this.uploadAccountObject(userId, syncClient);
+
       return { uploaded: true, snapshotId };
     }
 
     this.logService.error("Gave up pushing the vault snapshot after repeated manifest races");
     return { uploaded: false, snapshotId: null };
+  }
+
+  private async uploadAccountObject(userId: UserId, client: S3Client): Promise<void> {
+    try {
+      const account = await this.readLocalAccountObject(userId);
+      if (account == null) {
+        return;
+      }
+      await client.putObject(ACCOUNT_OBJECT, JSON.stringify(account), {
+        contentType: "application/json",
+      });
+    } catch (error) {
+      this.logService.error("Failed to upload account.json", error);
+    }
   }
 
   /** Builds the snapshot that represents what this device holds right now. */

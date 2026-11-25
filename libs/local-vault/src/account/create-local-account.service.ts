@@ -20,7 +20,13 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { newGuid } from "@bitwarden/guid";
 import { KdfConfigService } from "@bitwarden/key-management";
 // eslint-disable-next-line no-restricted-imports
-import { DEFAULT_KDF_CONFIG, KdfConfig, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
+import {
+  DEFAULT_KDF_CONFIG,
+  EncString,
+  EncryptService,
+  KdfConfig,
+  LegacyCompatKeyService,
+} from "@bitwarden/legacy-crypto";
 import type { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
 import { UnlockService } from "@bitwarden/unlock";
 
@@ -42,6 +48,19 @@ export type CreateLocalAccountRequest = {
   readonly masterPassword: string;
   /** Defaults to PBKDF2-SHA256 with 600,000 iterations, the same as a new server account. */
   readonly kdfConfig?: KdfConfig;
+};
+
+/** Material read back from `account.json` in cloud storage. */
+export type RestoreLocalAccountRequest = {
+  readonly email: string;
+  readonly name?: string;
+  readonly masterPassword: string;
+  readonly unlock: {
+    readonly salt: string;
+    readonly kdf: KdfConfig;
+    readonly masterKeyWrappedUserKey: string;
+  };
+  readonly wrappedPrivateKey: string;
 };
 
 /**
@@ -66,6 +85,7 @@ export class CreateLocalAccountService {
     private readonly unlockService: UnlockService,
     private readonly legacyCompatKeyService: LegacyCompatKeyService,
     private readonly localAccountService: LocalAccountService,
+    private readonly encryptService: EncryptService,
     private readonly logService: LogService,
   ) {}
 
@@ -100,14 +120,87 @@ export class CreateLocalAccountService {
       await this.legacyCompatKeyService.makeUserKey(masterKey);
     const [, wrappedPrivateKey] = await this.legacyCompatKeyService.makeKeyPair(userKey);
 
+
     const userId = newGuid() as UserId;
 
+    return await this.writeAccount(
+      userId,
+      {
+        name,
+        email,
+        salt,
+        kdfConfig,
+        wrappedUserKey: masterKeyWrappedUserKey as unknown as string,
+        wrappedPrivateKey: wrappedPrivateKey.encryptedString ?? "",
+      },
+      masterPassword,
+    );
+  }
+
+  /**
+   * Re-creates a local account from the material stored in `account.json`, so a second device can
+   * open the same vault. The user key is unwrapped here purely to prove the master password is the
+   * right one; the state then holds the same wrapped values the first device pushed.
+   *
+   * @throws If the password does not open the wrapped user key.
+   */
+  async restoreAccount(request: RestoreLocalAccountRequest): Promise<UserId> {
+    const email = request.email?.trim().toLowerCase();
+    if (!email) {
+      throw new Error("An email is required to restore a local vault.");
+    }
+    if (!request.masterPassword) {
+      throw new Error("A master password is required to restore a local vault.");
+    }
+
+    const masterKey = await this.legacyCompatKeyService.makeMasterKey(
+      request.masterPassword,
+      request.unlock.salt,
+      request.unlock.kdf,
+    );
+
+    // Throws when the password is wrong; this is the same proof a server login would do.
+    await this.encryptService.unwrapSymmetricKey(
+      new EncString(request.unlock.masterKeyWrappedUserKey),
+      masterKey,
+    );
+
+    const name =
+      request.name?.trim() || email.split("@")[0] || DEFAULT_LOCAL_ACCOUNT_NAME;
+
+    return await this.writeAccount(
+      newGuid() as UserId,
+      {
+        name,
+        email,
+        salt: request.unlock.salt,
+        kdfConfig: request.unlock.kdf,
+        wrappedUserKey: request.unlock.masterKeyWrappedUserKey,
+        wrappedPrivateKey: request.wrappedPrivateKey,
+      },
+      request.masterPassword,
+    );
+  }
+
+  /** Writes the state a successful login would have written, then unlocks. */
+  private async writeAccount(
+    userId: UserId,
+    account: {
+      name: string;
+      email: string;
+      salt: string;
+      kdfConfig: KdfConfig;
+      wrappedUserKey: string;
+      wrappedPrivateKey: string;
+    },
+    masterPassword: string,
+  ): Promise<UserId> {
     // The environment has to be in place before the account is seeded from it, otherwise the
     // account would inherit a cloud region.
     await this.environmentService.setEnvironment(LOCAL_VAULT_REGION, LOCAL_VAULT_URLS);
     await this.accountService.addAccount(userId, {
-      name,
-      email,
+      name: account.name,
+      email: account.email,
       emailVerified: true,
       creationDate: new Date(),
     });
@@ -122,9 +215,9 @@ export class CreateLocalAccountService {
 
     await this.masterPasswordService.setMasterPasswordUnlockData(
       new MasterPasswordUnlockData(
-        salt,
-        kdfConfig,
-        masterKeyWrappedUserKey as unknown as MasterKeyWrappedUserKey,
+        account.salt as MasterPasswordUnlockData["salt"],
+        account.kdfConfig,
+        account.wrappedUserKey as unknown as MasterKeyWrappedUserKey,
       ),
       userId,
     );
@@ -137,12 +230,12 @@ export class CreateLocalAccountService {
     );
 
     await this.tokenService.setTokens(
-      buildLocalAccessToken({ userId, email, name }),
+      buildLocalAccessToken({ userId, email: account.email, name: account.name }),
       vaultTimeoutAction,
       vaultTimeout,
     );
 
-    await this.kdfConfigService.setKdfConfig(userId, kdfConfig);
+    await this.kdfConfigService.setKdfConfig(userId, account.kdfConfig);
 
     // Every paid feature — TOTP, attachments, security keys — is unlocked by this.
     await this.billingAccountProfileStateService.setHasPremium(true, false, userId);
@@ -150,7 +243,7 @@ export class CreateLocalAccountService {
     // V1 account: the private key is wrapped with the user key, exactly like a server account.
     await this.accountCryptographicStateService.setAccountCryptographicState(
       {
-        V1: { private_key: wrappedPrivateKey },
+        V1: { private_key: account.wrappedPrivateKey },
       } as unknown as WrappedAccountCryptographicState,
       userId,
     );
@@ -159,7 +252,7 @@ export class CreateLocalAccountService {
 
     await this.unlockService.unlockWithMasterPassword(userId, masterPassword);
 
-    this.logService.info("Created local vault", { userId });
+    this.logService.info("Opened local vault", { userId });
     return userId;
   }
 }
