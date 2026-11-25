@@ -12,6 +12,7 @@ import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
+  LpFieldComponent,
   LpGroupComponent,
   LpPageHeaderComponent,
   LpRowComponent,
@@ -21,7 +22,18 @@ import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
-import { ItemKind, kindOf, withoutKindField } from "@localpass/local-vault";
+import { ButtonModule, IconButtonModule } from "@localpass/components";
+import {
+  applyFieldValues,
+  FIELDS,
+  FieldSpec,
+  FieldValues,
+  ItemKind,
+  kindOf,
+  readFieldValues,
+  setKind,
+  withoutKindField,
+} from "@localpass/local-vault";
 
 const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
   login: { labelKey: "itemKindLogin", emoji: "🔐" },
@@ -35,9 +47,10 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
 };
 
 /**
- * 桌面端三栏保险库（方向 C）：左 rail + 中间列表 + 右栏详情。
+ * 桌面端三栏保险库（方向 C）：左 rail + 中间列表 + 右栏详情 / 内联表单。
  *
- * 先把骨架与「点行复制」跑通；右栏的内联表单与工具栏动作随后逐屏接入。
+ * 右栏的编辑表单与弹窗共用 `@localpass/local-vault` 里的字段清单与读写映射，
+ * 所以两边不会出现「同一个字段两边名字不一样」的漂移。
  */
 @Component({
   selector: "vault-desktop-v2",
@@ -46,6 +59,9 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
     CommonModule,
     RouterModule,
     JslibModule,
+    ButtonModule,
+    IconButtonModule,
+    LpFieldComponent,
     LpGroupComponent,
     LpPageHeaderComponent,
     LpRowComponent,
@@ -59,13 +75,14 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
             class="tw-grid tw-size-8 tw-place-items-center tw-rounded-[10px] tw-bg-[var(--lp-brand-soft)] tw-text-[13px] tw-font-bold tw-text-[var(--lp-brand)]"
             >LP</span
           >
-          <div class="tw-text-[12px] tw-font-semibold">本地保险库</div>
+          <div class="tw-text-[12px] tw-font-semibold">{{ i18n.t("localVault") }}</div>
         </div>
 
         @for (entry of railEntries; track entry.route) {
           <button
             type="button"
             class="tw-flex tw-items-center tw-gap-2 tw-rounded-[10px] tw-px-2.5 tw-py-2 tw-text-left tw-text-[12.5px]"
+            [class.tw-bg-[var(--lp-card)]]="entry.active"
             (click)="go(entry.route)"
           >
             <span aria-hidden="true">{{ entry.emoji }}</span>
@@ -113,62 +130,113 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
         </div>
       </section>
 
-      <!-- 右栏详情 -->
+      <!-- 右栏 -->
       <section class="tw-flex tw-min-w-0 tw-flex-1 tw-flex-col">
         @if (selected(); as item) {
-          <lp-page-header [title]="item.name" [sub]="item.subTitle ?? ''"></lp-page-header>
+          <lp-page-header
+            [title]="mode() === 'edit' ? i18n.t('editItem') : item.name"
+            [sub]="item.subTitle ?? ''"
+          >
+            @if (mode() === "edit") {
+              <button
+                type="button"
+                bitButton
+                buttonType="primary"
+                [disabled]="saving()"
+                (click)="save()"
+              >
+                {{ i18n.t("save") }}
+              </button>
+              <button type="button" bitButton buttonType="secondary" (click)="cancelEdit()">
+                {{ i18n.t("cancel") }}
+              </button>
+            } @else {
+              <button
+                type="button"
+                bitIconButton="bwi-pencil-square"
+                [label]="i18n.t('edit')"
+                (click)="startEdit()"
+              ></button>
+              <button
+                type="button"
+                bitIconButton="bwi-plus"
+                [label]="i18n.t('newItem')"
+                (click)="go('/new-item-v2')"
+              ></button>
+            }
+          </lp-page-header>
+
           <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
-            <lp-group [label]="i18n.t('credentials')">
-              @if (item.login.username) {
-                <lp-row
-                  [label]="i18n.t('username')"
-                  [value]="item.login.username"
-                  [mono]="true"
-                  [copyValue]="item.login.username"
-                  [copyLabel]="i18n.t('username')"
-                />
+            @if (mode() === "edit") {
+              <lp-group>
+                @for (field of editFields(); track field.id) {
+                  <lp-field
+                    [label]="i18n.t(field.labelKey)"
+                    [password]="!!field.password"
+                    [multiline]="!!field.multiline"
+                    [value]="values()[field.id] ?? ''"
+                    (valueChange)="setValue(field.id, $event)"
+                  />
+                }
+              </lp-group>
+              @if (errorMessage()) {
+                <p class="tw-px-4 tw-pt-3 tw-text-[11px] tw-text-[var(--lp-danger)]">
+                  {{ errorMessage() }}
+                </p>
               }
-              @if (item.login.password) {
-                <lp-row
-                  [label]="i18n.t('password')"
-                  [value]="masked"
-                  [mono]="true"
-                  [copyValue]="item.login.password"
-                  [copyLabel]="i18n.t('password')"
-                />
-              }
-            </lp-group>
-
-            @if (item.login.uris.length) {
-              <lp-group [label]="i18n.t('autofillOptions')">
-                @for (uri of item.login.uris; track uri.uri) {
+            } @else {
+              <lp-group [label]="i18n.t('credentials')">
+                @if (item.login.username) {
                   <lp-row
-                    [label]="uri.uri ?? ''"
+                    [label]="i18n.t('username')"
+                    [value]="item.login.username"
                     [mono]="true"
-                    [copyValue]="uri.uri ?? ''"
-                    [copyLabel]="i18n.t('uri')"
+                    [copyValue]="item.login.username"
+                    [copyLabel]="i18n.t('username')"
                   />
                 }
-              </lp-group>
-            }
-
-            @if (customFields(item).length) {
-              <lp-group [label]="i18n.t('customFields')">
-                @for (field of customFields(item); track field.name) {
+                @if (item.login.password) {
                   <lp-row
-                    [label]="field.name"
-                    [value]="field.value"
-                    [copyValue]="field.value"
-                    [copyLabel]="field.name"
+                    [label]="i18n.t('password')"
+                    [value]="masked"
+                    [mono]="true"
+                    [copyValue]="item.login.password"
+                    [copyLabel]="i18n.t('password')"
                   />
                 }
               </lp-group>
-            }
 
-            @if (item.notes) {
-              <lp-group [label]="i18n.t('notes')">
-                <lp-row [label]="i18n.t('notes')" [sub]="item.notes" [clickable]="false" />
-              </lp-group>
+              @if (item.login.uris.length) {
+                <lp-group [label]="i18n.t('autofillOptions')">
+                  @for (uri of item.login.uris; track uri.uri) {
+                    <lp-row
+                      [label]="uri.uri ?? ''"
+                      [mono]="true"
+                      [copyValue]="uri.uri ?? ''"
+                      [copyLabel]="i18n.t('uri')"
+                    />
+                  }
+                </lp-group>
+              }
+
+              @if (customFields(item).length) {
+                <lp-group [label]="i18n.t('customFields')">
+                  @for (field of customFields(item); track field.name) {
+                    <lp-row
+                      [label]="field.name"
+                      [value]="field.value"
+                      [copyValue]="field.value"
+                      [copyLabel]="field.name"
+                    />
+                  }
+                </lp-group>
+              }
+
+              @if (item.notes) {
+                <lp-group [label]="i18n.t('notes')">
+                  <lp-row [label]="i18n.t('notes')" [sub]="item.notes" [clickable]="false" />
+                </lp-group>
+              }
             }
           </div>
         } @else {
@@ -192,13 +260,19 @@ export class VaultDesktopV2Component implements OnInit {
   protected readonly query = signal("");
   protected readonly items = signal<CipherView[]>([]);
   protected readonly selectedId = signal<string | null>(null);
+  protected readonly mode = signal<"view" | "edit">("view");
+  protected readonly values = signal<FieldValues>({});
+  protected readonly editKind = signal<ItemKind>(ItemKind.Login);
+  protected readonly saving = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly railEntries = [
-    { emoji: "🗄️", labelKey: "vault", route: "/vault-desktop-v2" },
-    { emoji: "⚙️", labelKey: "generator", route: "/generator" },
-    { emoji: "🎛️", labelKey: "settings", route: "/settings" },
+    { emoji: "🗄️", labelKey: "vault", route: "/vault-desktop-v2", active: true },
+    { emoji: "⚙️", labelKey: "generator", route: "/generator", active: false },
+    { emoji: "🎛️", labelKey: "settings", route: "/settings", active: false },
   ] as const;
 
+  protected readonly editFields = computed<readonly FieldSpec[]>(() => FIELDS[this.editKind()]);
   protected readonly subtitle = computed(() => `${this.items().length} ` + this.i18n.t("items"));
   protected readonly selected = computed(
     () => this.items().find((item) => item.id === this.selectedId()) ?? null,
@@ -238,6 +312,52 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected select(item: CipherView): void {
     this.selectedId.set(item.id ?? null);
+    this.mode.set("view");
+  }
+
+  protected startEdit(): void {
+    const item = this.selected();
+    if (!item) {
+      return;
+    }
+    const kind = kindOf(item);
+    this.editKind.set(kind);
+    this.values.set(readFieldValues(item, kind));
+    this.errorMessage.set(null);
+    this.mode.set("edit");
+  }
+
+  protected cancelEdit(): void {
+    this.mode.set("view");
+  }
+
+  protected setValue(id: string, value: string): void {
+    this.values.update((current) => ({ ...current, [id]: value }));
+  }
+
+  protected async save(): Promise<void> {
+    const item = this.selected();
+    if (!item) {
+      return;
+    }
+
+    this.saving.set(true);
+    this.errorMessage.set(null);
+    try {
+      const kind = this.editKind();
+      applyFieldValues(item, kind, this.values());
+      setKind(item, kind);
+
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      await this.cipherService.updateWithServer(item, userId);
+
+      this.items.update((items) => items.map((entry) => (entry.id === item.id ? item : entry)));
+      this.mode.set("view");
+    } catch {
+      this.errorMessage.set(this.i18n.t("unexpectedError"));
+    } finally {
+      this.saving.set(false);
+    }
   }
 
   protected go(route: string): void {

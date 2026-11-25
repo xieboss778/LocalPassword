@@ -8194,5 +8194,8 @@
   },
   "touchIdDesktopOnly": {
     "message": "Touch ID unlock lives in the macOS desktop app: Settings → Security. The extension never asks for it."
+  },
+  "localVault": {
+    "message": "Local vault"
   }
 }

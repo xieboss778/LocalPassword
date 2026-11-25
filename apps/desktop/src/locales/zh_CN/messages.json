@@ -8167,5 +8167,8 @@
   },
   "touchIdDesktopOnly": {
     "message": "Touch ID 解锁在 macOS 桌面端「设置 → 安全」里，扩展里不提供这个开关。"
+  },
+  "localVault": {
+    "message": "本地保险库"
   }
 }
