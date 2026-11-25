@@ -8014,5 +8014,8 @@
   },
   "securityKeyUnsupported": {
     "message": "当前浏览器不支持在这里登记安全密钥。"
+  },
+  "showQrCode": {
+    "message": "显示二维码"
   }
 }
