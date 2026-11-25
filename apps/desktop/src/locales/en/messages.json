@@ -7912,5 +7912,11 @@
   },
   "passwordsDoNotMatch": {
     "message": "Passwords do not match."
+  },
+  "tooManyInvalidPinAttemptsWait": {
+    "message": "Too many invalid PIN attempts. The vault stays locked — wait a moment and try again."
+  },
+  "localVaultLogoutWarning": {
+    "message": "Logging out deletes this vault from this device. There is no server copy to restore from, so export a backup first if you have not already."
   }
 }

@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
-import { combineLatest, map, Observable, startWith, switchMap } from "rxjs";
+import { combineLatest, map, Observable, of, startWith, switchMap } from "rxjs";
 
 import { NudgesService } from "@bitwarden/angular/vault";
 import {
@@ -17,7 +17,6 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { getUserId } from "@bitwarden/common/auth/services/account.service";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { BottomNavigationButton } from "@bitwarden/components";
-import { SendPolicyService } from "@bitwarden/send-ui";
 import {
   ALL_ITEMS_SCOPE,
   parseVaultScope,
@@ -42,7 +41,6 @@ export class TabsV2Component {
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
   ) {}
 
-  private sendPolicyService = inject(SendPolicyService);
   private healthAccessService = inject(HealthAccessService);
   private readonly listFiltersService = inject(VaultPopupListTableFiltersService);
   private readonly vaultBasePath = inject(VAULT_BASE_ROUTE);
@@ -61,9 +59,8 @@ export class TabsV2Component {
     switchMap((userId) => this.healthAccessService.healthNavButton$(userId)),
   );
 
-  private sendEnabled$ = this.sendPolicyService.disableSend$.pipe(
-    map((disableSend) => !disableSend),
-  );
+  // LocalPassword: Send relays a secret through a server, so a local vault never offers it.
+  private sendEnabled$ = of(false);
 
   protected navButtons$: Observable<BottomNavigationButton[]> = combineLatest([
     this.showSettingsBerry$.pipe(startWith(false)),

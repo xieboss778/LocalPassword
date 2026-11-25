@@ -7885,5 +7885,11 @@
   },
   "passwordsDoNotMatch": {
     "message": "两次输入的密码不一致。"
+  },
+  "tooManyInvalidPinAttemptsWait": {
+    "message": "PIN 错误次数过多，保险库已锁定——请稍等片刻再试。"
+  },
+  "localVaultLogoutWarning": {
+    "message": "登出会把保险库从本机删除。没有服务器副本可以恢复，如果还没备份，请先去导出。"
   }
 }
