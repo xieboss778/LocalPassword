@@ -33,11 +33,18 @@
     />
   </bit-form-field>
 
-  <p *ngIf="errorMessage != null" bitTypography="helper" class="tw-text-danger">
-    {{ errorMessage }}
-  </p>
+  @if (errorMessage() != null) {
+    <p bitTypography="helper" class="tw-text-danger">{{ errorMessage() }}</p>
+  }
 
-  <button type="submit" bitButton bitFormButton buttonType="primary" [block]="true">
+  <button
+    type="submit"
+    bitButton
+    bitFormButton
+    buttonType="primary"
+    [block]="true"
+    [disabled]="submitting()"
+  >
     {{ "createLocalVault" | i18n }}
   </button>
 </form>

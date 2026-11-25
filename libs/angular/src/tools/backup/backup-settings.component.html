@@ -35,19 +35,19 @@
     </bit-form-field>
 
     <div class="tw-flex tw-gap-2 tw-flex-wrap">
-      <button type="submit" bitButton bitFormButton buttonType="primary" [disabled]="busy">
+      <button type="submit" bitButton bitFormButton buttonType="primary" [disabled]="busy()">
         {{ "save" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="secondary" [disabled]="busy" (click)="testConnection()">
+      <button type="button" bitButton buttonType="secondary" [disabled]="busy()" (click)="testConnection()">
         {{ "backupTest" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="secondary" [disabled]="busy" (click)="syncNow()">
+      <button type="button" bitButton buttonType="secondary" [disabled]="busy()" (click)="syncNow()">
         {{ "syncNow" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="secondary" [disabled]="busy" (click)="backupNow()">
+      <button type="button" bitButton buttonType="secondary" [disabled]="busy()" (click)="backupNow()">
         {{ "backupNow" | i18n }}
       </button>
-      <button type="button" bitButton buttonType="danger" [disabled]="busy" (click)="disconnect()">
+      <button type="button" bitButton buttonType="danger" [disabled]="busy()" (click)="disconnect()">
         {{ "disconnectBackup" | i18n }}
       </button>
     </div>
@@ -57,9 +57,9 @@
     <p bitTypography="helper" class="tw-mb-0">
       {{ "backupLastSynced" | i18n }}: {{ lastSyncedLabel }}
     </p>
-    <p bitTypography="helper" class="tw-mb-0" *ngIf="status.pending">
-      {{ "backupPending" | i18n }}
-    </p>
+    @if (status().pending) {
+      <p bitTypography="helper" class="tw-mb-0">{{ "backupPending" | i18n }}</p>
+    }
     <p bitTypography="helper" class="tw-mb-0">
       {{ "backupLastRun" | i18n }}: {{ lastBackupLabel }}
     </p>
@@ -69,9 +69,9 @@
     <p bitTypography="helper" class="tw-mb-0">
       {{ "backupPasswordHint" | i18n }}
     </p>
-    <p bitTypography="body2" class="tw-mb-0" *ngIf="backupPassword != null">
-      <code>{{ backupPassword }}</code>
-    </p>
+    @if (backupPassword() != null) {
+      <p bitTypography="body2" class="tw-mb-0"><code>{{ backupPassword() }}</code></p>
+    }
     <div class="tw-flex tw-gap-2">
       <button type="button" bitButton buttonType="secondary" (click)="revealPassword()">
         {{ "backupPassword" | i18n }}

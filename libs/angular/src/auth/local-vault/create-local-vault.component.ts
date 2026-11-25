@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -72,8 +72,8 @@ export class CreateLocalVaultComponent {
     { validators: [passwordsMatch] },
   );
 
-  protected submitting = false;
-  protected errorMessage: string | null = null;
+  protected readonly submitting = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
   get email() {
     return this.formGroup.controls.email;
@@ -91,22 +91,22 @@ export class CreateLocalVaultComponent {
     return this.formGroup.controls.confirmMasterPassword;
   }
 
-  submit = async (): Promise<void> => {
-    if (this.submitting) {
+  readonly submit = async (): Promise<void> => {
+    if (this.submitting()) {
       return;
     }
 
     this.formGroup.markAllAsTouched();
-    this.errorMessage = null;
+    this.errorMessage.set(null);
 
     if (this.formGroup.invalid) {
       if (this.formGroup.hasError("passwordsDoNotMatch")) {
-        this.errorMessage = this.i18nService.t("passwordsDoNotMatch");
+        this.errorMessage.set(this.i18nService.t("passwordsDoNotMatch"));
       }
       return;
     }
 
-    this.submitting = true;
+    this.submitting.set(true);
     try {
       await this.createLocalAccountService.createAccount({
         email: this.email.value ?? "",
@@ -119,9 +119,9 @@ export class CreateLocalVaultComponent {
       await this.router.navigate([next === "import" ? "/import" : "/"]);
     } catch (error) {
       this.validationService.showError(error);
-      this.errorMessage = this.i18nService.t("errorOccurred");
+      this.errorMessage.set(this.i18nService.t("errorOccurred"));
     } finally {
-      this.submitting = false;
+      this.submitting.set(false);
     }
   };
 }

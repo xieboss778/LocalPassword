@@ -3,7 +3,7 @@ import { of } from "rxjs";
 import { UserDecryptionOptions } from "@bitwarden/auth/common";
 import { VaultTimeoutAction } from "@bitwarden/common/key-management/vault-timeout";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
+// eslint-disable-next-line no-restricted-imports
 import { DEFAULT_KDF_CONFIG } from "@bitwarden/legacy-crypto";
 
 import { CreateLocalAccountService } from "./create-local-account.service";

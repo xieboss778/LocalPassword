@@ -3,8 +3,8 @@ import { LogService } from "@bitwarden/logging";
 
 import { LocalAccountService } from "../account/local-account.service";
 
-import { VaultBackupService } from "./vault-backup.service";
 import { SyncResult, VaultBackupSyncService } from "./vault-backup-sync.service";
+import { VaultBackupService } from "./vault-backup.service";
 
 /**
  * The timers a scheduler needs. The extension supplies `chrome.alarms`, the desktop its main

@@ -25,12 +25,12 @@ import { UserKey } from "@bitwarden/common/types/key";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { LocalVaultWriter } from "@bitwarden/common/vault/abstractions/local-vault-writer.abstraction";
-import { NoopLocalVaultWriter } from "@bitwarden/common/vault/services/noop-local-vault-writer.service";
 import { CipherType, toCipherTypeName } from "@bitwarden/common/vault/enums";
 import { CipherRequest } from "@bitwarden/common/vault/models/request/cipher.request";
 import { FolderWithOptionalIdRequest } from "@bitwarden/common/vault/models/request/folder-with-optional-id.request";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { NoopLocalVaultWriter } from "@bitwarden/common/vault/services/noop-local-vault-writer.service";
 import { RestrictedItemTypesService } from "@bitwarden/common/vault/services/restricted-item-types.service";
 import { KeyService } from "@bitwarden/key-management";
 // eslint-disable-next-line no-restricted-imports

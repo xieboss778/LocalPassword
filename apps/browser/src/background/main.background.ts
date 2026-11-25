@@ -209,7 +209,6 @@ import { UnsupportedSystemNotificationsService } from "@bitwarden/common/platfor
 import { DefaultThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common/provider";
 import { ProviderService } from "@bitwarden/common/provider/services/provider.service";
-import { ApiService } from "@bitwarden/common/services/api.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { KeyServiceLegacyEncryptorProvider } from "@bitwarden/common/tools/cryptography/key-service-legacy-encryptor-provider";
 import { buildExtensionRegistry } from "@bitwarden/common/tools/extension/factory";

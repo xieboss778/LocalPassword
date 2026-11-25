@@ -20,7 +20,7 @@ export class LocalVaultStartComponent {
   private readonly router = inject(Router);
 
   /** Creates a brand new vault on this device. */
-  createVault = async (): Promise<void> => {
+  readonly createVault = async (): Promise<void> => {
     await this.router.navigate(["/create-local-vault"]);
   };
 
@@ -28,7 +28,7 @@ export class LocalVaultStartComponent {
    * Restoring from a file means creating an empty vault first and then importing into it, because
    * the importer needs somewhere to write.
    */
-  restoreFromFile = async (): Promise<void> => {
+  readonly restoreFromFile = async (): Promise<void> => {
     await this.router.navigate(["/create-local-vault"], { queryParams: { next: "import" } });
   };
 }

@@ -1,17 +1,18 @@
 import { firstValueFrom } from "rxjs";
 
 import { UserId } from "@bitwarden/common/types/guid";
-import { EncString, EncryptService } from "@bitwarden/legacy-crypto";
 import { KeyService } from "@bitwarden/key-management";
+// eslint-disable-next-line no-restricted-imports
+import { EncString, EncryptService } from "@bitwarden/legacy-crypto";
 import { LogService } from "@bitwarden/logging";
 import { StateProvider } from "@bitwarden/state";
 
-import { BACKUP_PREFIX, VaultBackupSyncService } from "./vault-backup-sync.service";
 import {
   DEFAULT_BACKUP_SETTINGS,
   VAULT_BACKUP_SETTINGS,
   VaultBackupSettings,
 } from "./vault-backup-config";
+import { BACKUP_PREFIX, VaultBackupSyncService } from "./vault-backup-sync.service";
 
 export interface BackupResult {
   readonly uploaded: boolean;

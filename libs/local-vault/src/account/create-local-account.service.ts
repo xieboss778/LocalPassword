@@ -19,12 +19,13 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { UserId } from "@bitwarden/common/types/guid";
 import { newGuid } from "@bitwarden/guid";
 import { KdfConfigService } from "@bitwarden/key-management";
+// eslint-disable-next-line no-restricted-imports
 import { DEFAULT_KDF_CONFIG, KdfConfig, LegacyCompatKeyService } from "@bitwarden/legacy-crypto";
 import type { WrappedAccountCryptographicState } from "@bitwarden/sdk-internal";
 import { UnlockService } from "@bitwarden/unlock";
 
-import { LocalAccountService } from "./local-account.service";
 import { buildLocalAccessToken } from "./local-access-token";
+import { LocalAccountService } from "./local-account.service";
 import {
   DEFAULT_LOCAL_ACCOUNT_NAME,
   LOCAL_VAULT_REGION,

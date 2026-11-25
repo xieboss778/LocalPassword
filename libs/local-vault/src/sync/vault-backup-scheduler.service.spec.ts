@@ -3,8 +3,8 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { LocalAccountService } from "../account/local-account.service";
 
 import { VaultBackupScheduler, VaultSchedulerAdapter } from "./vault-backup-scheduler.service";
-import { VaultBackupService } from "./vault-backup.service";
 import { VaultBackupSyncService } from "./vault-backup-sync.service";
+import { VaultBackupService } from "./vault-backup.service";
 
 const userId = "11111111-1111-1111-1111-111111111111" as UserId;
 
@@ -94,7 +94,7 @@ describe("VaultBackupScheduler", () => {
   });
 
   it("skips syncing when cloud storage is not configured", async () => {
-    const { scheduler, sync } = setup({ backupFrequency: "off", lastBackupAt: null });
+    const { sync } = setup({ backupFrequency: "off", lastBackupAt: null });
     const unconfigured = new VaultBackupScheduler(
       { markPending: jest.fn(), sync: jest.fn(), getConfig: async () => null } as any,
       { getSettings: async () => ({ backupFrequency: "off", lastBackupAt: null }) } as any,
