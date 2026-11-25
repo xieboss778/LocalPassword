@@ -45,6 +45,8 @@ export interface VaultBackupSettings {
   readonly backupRetention: number;
   /** Wrapped export password; a backup cannot be restored without it. */
   readonly wrappedBackupPassword: string | null;
+  /** ISO timestamp of the newest backup this device uploaded. */
+  readonly lastBackupAt: string | null;
 }
 
 export const VAULT_BACKUP_CONFIG = new UserKeyDefinition<StoredVaultBackupConfig | null>(
@@ -83,6 +85,7 @@ export const VAULT_BACKUP_SETTINGS = new UserKeyDefinition<VaultBackupSettings>(
         backupFrequency: "daily",
         backupRetention: 10,
         wrappedBackupPassword: null,
+        lastBackupAt: null,
       },
     clearOn: ["logout"],
   },
@@ -92,4 +95,5 @@ export const DEFAULT_BACKUP_SETTINGS: VaultBackupSettings = {
   backupFrequency: "daily",
   backupRetention: 10,
   wrappedBackupPassword: null,
+  lastBackupAt: null,
 };
