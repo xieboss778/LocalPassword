@@ -9625,5 +9625,8 @@
   },
   "securityKeyUnsupported": {
     "message": "This browser cannot register a security key here."
+  },
+  "showQrCode": {
+    "message": "Show QR code"
   }
 }

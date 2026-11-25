@@ -35,9 +35,11 @@ import {
   LinkModule,
   IconButtonModule,
   ColorPasswordModule,
+  DialogService,
 } from "@bitwarden/components";
 
 import { BitTotpCountdownComponent } from "../../components/totp-countdown/totp-countdown.component";
+import { TotpQrDialogComponent } from "./totp-qr-dialog.component";
 import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-cipher-card.component";
 
 type RiskBadge = {
@@ -146,12 +148,25 @@ export class LoginCredentialsViewComponent implements OnChanges {
   totpCodeCopyObj: TotpCodeValues;
 
   private datePipe = inject(DatePipe);
+  private dialogService = inject(DialogService);
 
   constructor(
     private billingAccountProfileStateService: BillingAccountProfileStateService,
     private i18nService: I18nService,
     private eventCollectionService: EventCollectionService,
   ) {}
+
+  /** Shows the seed of this login's TOTP as a QR code. */
+  protected showTotpQr(): void {
+    const uri = this.cipher.login?.totp;
+    if (!uri) {
+      return;
+    }
+
+    this.dialogService.open(TotpQrDialogComponent, {
+      data: { uri, label: this.cipher.name },
+    });
+  }
 
   get fido2CredentialCreationDateValue(): string {
     const dateCreated = this.i18nService.t("dateCreated");
