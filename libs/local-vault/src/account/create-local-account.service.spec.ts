@@ -94,7 +94,7 @@ describe("CreateLocalAccountService", () => {
       name: "owner",
       email: "owner@example.com",
       emailVerified: true,
-      creationDate: expect.any(String),
+      creationDate: expect.any(Date),
     });
     expect(mocks.setEnvironment).toHaveBeenCalledWith(LOCAL_VAULT_REGION, LOCAL_VAULT_URLS);
     expect(mocks.seedUserEnvironment).toHaveBeenCalledWith(userId);
