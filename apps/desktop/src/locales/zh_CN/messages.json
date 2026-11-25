@@ -7931,9 +7931,6 @@
   "backupLastSynced": {
     "message": "上次同步"
   },
-  "backupPending": {
-    "message": "有改动等待上传"
-  },
   "backupLastRun": {
     "message": "上次备份"
   },
@@ -8032,5 +8029,8 @@
   },
   "restoreFailed": {
     "message": "保险库恢复失败"
+  },
+  "backupConflicts": {
+    "message": "远端与本地不一致，请先确认再同步。"
   }
 }

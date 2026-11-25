@@ -9542,9 +9542,6 @@
   "backupLastSynced": {
     "message": "Last sync"
   },
-  "backupPending": {
-    "message": "Changes are waiting to be uploaded"
-  },
   "backupLastRun": {
     "message": "Last backup"
   },
@@ -9643,5 +9640,8 @@
   },
   "restoreFailed": {
     "message": "The vault could not be restored"
+  },
+  "backupConflicts": {
+    "message": "The remote copy differs from this device; review before syncing again."
   }
 }

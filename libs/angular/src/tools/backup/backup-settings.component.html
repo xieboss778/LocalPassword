@@ -82,7 +82,7 @@
       {{ "backupLastSynced" | i18n }}: {{ lastSyncedLabel }}
     </p>
     @if (status().pending) {
-      <p bitTypography="helper" class="tw-mb-0">{{ "backupPending" | i18n }}</p>
+      <p bitTypography="helper" class="tw-text-danger tw-mb-0">{{ "backupConflicts" | i18n }}</p>
     }
     <p bitTypography="helper" class="tw-mb-0">
       {{ "backupLastRun" | i18n }}: {{ lastBackupLabel }}

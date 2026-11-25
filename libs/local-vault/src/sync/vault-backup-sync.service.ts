@@ -167,15 +167,6 @@ export class VaultBackupSyncService {
     return config == null ? null : this.clientFactory(config);
   }
 
-  /** Flags that local changes are waiting; the scheduler calls this after every write. */
-  async markPending(userId: UserId): Promise<void> {
-    await this.syncState(userId).update((state) => ({
-      ...EMPTY_SYNC_STATE,
-      ...(state ?? {}),
-      pending: true,
-    }));
-  }
-
   /** Pulls the remote snapshot, merges it in, then pushes the merged result back. */
   async sync(userId: UserId): Promise<SyncResult> {
     const config = await this.getConfig(userId);
