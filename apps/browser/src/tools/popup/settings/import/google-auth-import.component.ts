@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import qrcodeParser from "qrcode-parser";
 import { firstValueFrom } from "rxjs";
@@ -42,7 +41,6 @@ type PreviewedAccount = MigrationOtp & { readonly totp: string };
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    FormsModule,
     JslibModule,
     FormFieldModule,
     AsyncActionsModule,
@@ -60,11 +58,9 @@ export class GoogleAuthImportComponent {
   protected readonly accounts = signal<PreviewedAccount[]>([]);
   protected readonly skippedHotp = signal(0);
   protected readonly busy = signal(false);
-  protected rawInput = "";
-
   /** Parses whatever is currently in the textarea into a preview. */
-  protected readonly readInput = (): void => {
-    const uris = this.rawInput
+  protected readonly readInput = (rawInput: string): void => {
+    const uris = rawInput
       .split(/\s+/)
       .map((value) => value.trim())
       .filter((value) => value !== "");
@@ -125,7 +121,6 @@ export class GoogleAuthImportComponent {
           .map((totp) => secretOf(totp)),
       );
 
-      let imported = 0;
       for (const account of accounts) {
         if (knownSecrets.has(base32Encode(account.secret))) {
           continue;
@@ -139,7 +134,6 @@ export class GoogleAuthImportComponent {
         view.login.totp = account.totp;
 
         await this.cipherService.createWithServer(view, userId);
-        imported++;
       }
 
       this.platformUtilsService.showToast(
