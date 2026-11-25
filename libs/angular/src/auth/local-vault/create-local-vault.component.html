@@ -1,50 +1,65 @@
-<form [formGroup]="formGroup" [bitSubmit]="submit">
-  <p bitTypography="body1" class="tw-text-main tw-mb-4">
-    {{ "createLocalVaultDescription" | i18n }}
-  </p>
+<div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
+  <lp-page-header
+    [title]="'createLocalVaultTitle' | i18n"
+    [sub]="'createLocalVaultSubtitle' | i18n"
+  ></lp-page-header>
 
-  <bit-form-field>
-    <bit-label>{{ "emailAddress" | i18n }}</bit-label>
-    <input id="local-vault_email" bitInput type="email" formControlName="email" />
-  </bit-form-field>
+  <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
+    <lp-group [label]="'vaultIdentity' | i18n">
+      <lp-field
+        [label]="'emailAddress' | i18n"
+        [value]="email.value ?? ''"
+        (valueChange)="setField('email', $event)"
+      />
+      <lp-field
+        [label]="'name' | i18n"
+        [value]="name.value ?? ''"
+        (valueChange)="setField('name', $event)"
+      />
+    </lp-group>
 
-  <bit-form-field>
-    <bit-label>{{ "name" | i18n }}</bit-label>
-    <input id="local-vault_name" bitInput type="text" formControlName="name" />
-  </bit-form-field>
+    <lp-group [label]="'masterPassword' | i18n">
+      <lp-field
+        [label]="'masterPassword' | i18n"
+        [password]="true"
+        [autocomplete]="'new-password'"
+        [value]="masterPassword.value ?? ''"
+        (valueChange)="setField('masterPassword', $event)"
+      />
+      <lp-field
+        [label]="'confirmMasterPassword' | i18n"
+        [password]="true"
+        [autocomplete]="'new-password'"
+        [value]="confirmMasterPassword.value ?? ''"
+        (valueChange)="setField('confirmMasterPassword', $event)"
+      />
+    </lp-group>
 
-  <bit-form-field>
-    <bit-label>{{ "masterPassword" | i18n }}</bit-label>
-    <input
-      id="local-vault_master-password"
-      bitInput
-      type="password"
-      formControlName="masterPassword"
-    />
-  </bit-form-field>
+    @if (errorMessage() != null) {
+      <p class="tw-px-4 tw-pt-3 tw-text-[11px] tw-text-[var(--lp-danger)]">{{ errorMessage() }}</p>
+    }
 
-  <bit-form-field>
-    <bit-label>{{ "confirmMasterPassword" | i18n }}</bit-label>
-    <input
-      id="local-vault_confirm-master-password"
-      bitInput
-      type="password"
-      formControlName="confirmMasterPassword"
-    />
-  </bit-form-field>
+    <div class="tw-px-3 tw-pt-3">
+      <button
+        type="button"
+        bitButton
+        buttonType="primary"
+        [block]="true"
+        [disabled]="submitting()"
+        (click)="submit()"
+      >
+        {{ "createLocalVault" | i18n }}
+      </button>
+    </div>
 
-  @if (errorMessage() != null) {
-    <p bitTypography="helper" class="tw-text-danger">{{ errorMessage() }}</p>
-  }
+    <div class="tw-px-3 tw-pt-2 tw-text-center">
+      <button type="button" bitLink linkType="secondary" (click)="restoreFromBackup()">
+        {{ "restoreFromBackup" | i18n }}
+      </button>
+    </div>
 
-  <button
-    type="submit"
-    bitButton
-    bitFormButton
-    buttonType="primary"
-    [block]="true"
-    [disabled]="submitting()"
-  >
-    {{ "createLocalVault" | i18n }}
-  </button>
-</form>
+    <p class="tw-px-4 tw-pt-3 tw-text-[10.5px] tw-leading-relaxed tw-text-[var(--lp-ink-3)]">
+      {{ "createLocalVaultNote" | i18n }}
+    </p>
+  </div>
+</div>

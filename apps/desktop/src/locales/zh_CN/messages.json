@@ -8368,5 +8368,20 @@
   },
   "backupSyncFailed": {
     "message": "同步失败——本地保险库没有被改动"
+  },
+  "createLocalVaultTitle": {
+    "message": "设置安全密码"
+  },
+  "createLocalVaultSubtitle": {
+    "message": "没有账号，没有注册 —— 保险库只在这台机器上"
+  },
+  "vaultIdentity": {
+    "message": "身份"
+  },
+  "restoreFromBackup": {
+    "message": "改用备份恢复"
+  },
+  "createLocalVaultNote": {
+    "message": "你在这里输入的密码是这把保险库唯一的钥匙。忘了它，就没人能打开——进去以后记得开手动备份。"
   }
 }

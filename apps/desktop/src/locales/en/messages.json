@@ -8395,5 +8395,20 @@
   },
   "backupSyncFailed": {
     "message": "Sync failed — the local vault is untouched"
+  },
+  "createLocalVaultTitle": {
+    "message": "Set a master password"
+  },
+  "createLocalVaultSubtitle": {
+    "message": "No account, no sign-up — this vault lives on this machine"
+  },
+  "vaultIdentity": {
+    "message": "Identity"
+  },
+  "restoreFromBackup": {
+    "message": "Restore from a backup instead"
+  },
+  "createLocalVaultNote": {
+    "message": "The password you type here is the only key to this vault. Forget it and nothing can open the vault — enable manual backups once you are in."
   }
 }

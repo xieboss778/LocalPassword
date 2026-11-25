@@ -11,15 +11,11 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
-import {
-  AsyncActionsModule,
-  ButtonModule,
-  FormFieldModule,
-  TypographyModule,
-} from "@localpass/components";
+import { ButtonModule, LinkModule } from "@localpass/components";
 import { CreateLocalAccountService } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
+import { LpFieldComponent, LpGroupComponent, LpPageHeaderComponent } from "../../local-ui";
 
 /** Minimum length a local master password must have; deliberately longer than the server's floor. */
 const MIN_MASTER_PASSWORD_LENGTH = 8;
@@ -45,10 +41,11 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
     CommonModule,
     ReactiveFormsModule,
     JslibModule,
-    FormFieldModule,
-    AsyncActionsModule,
     ButtonModule,
-    TypographyModule,
+    LinkModule,
+    LpFieldComponent,
+    LpGroupComponent,
+    LpPageHeaderComponent,
   ],
 })
 export class CreateLocalVaultComponent {
@@ -71,6 +68,17 @@ export class CreateLocalVaultComponent {
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  protected setField(
+    field: "email" | "name" | "masterPassword" | "confirmMasterPassword",
+    value: string,
+  ): void {
+    this.formGroup.get(field)?.setValue(value);
+  }
+
+  protected restoreFromBackup(): void {
+    void this.router.navigate(["/restore-vault"]);
+  }
 
   get email() {
     return this.formGroup.controls.email;
