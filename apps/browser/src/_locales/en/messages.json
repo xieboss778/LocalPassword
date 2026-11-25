@@ -9730,5 +9730,53 @@
   },
   "identityNumber": {
     "message": "Document number"
+  },
+  "settingsSubtitle": {
+    "message": "Offline first · no account"
+  },
+  "securitySubtitle": {
+    "message": "Local unlock, nothing phones home"
+  },
+  "autoLock": {
+    "message": "Auto-lock"
+  },
+  "autoLock15": {
+    "message": "15 minutes"
+  },
+  "backupManual": {
+    "message": "Manual only"
+  },
+  "backupTitle": {
+    "message": "Backup"
+  },
+  "exportData": {
+    "message": "Export encrypted JSON"
+  },
+  "importGoogleAuth": {
+    "message": "Import Google Authenticator"
+  },
+  "downloadDesktopApp": {
+    "message": "Desktop app"
+  },
+  "networkGate": {
+    "message": "Network gate"
+  },
+  "networkGateOn": {
+    "message": "On · 3 rules"
+  },
+  "system": {
+    "message": "System"
+  },
+  "unlockAndAccess": {
+    "message": "Unlock and access"
+  },
+  "advanced": {
+    "message": "Advanced"
+  },
+  "clearClipboard30s": {
+    "message": "30 seconds"
+  },
+  "touchIdDesktopOnly": {
+    "message": "Touch ID unlock lives in the macOS desktop app: Settings → Security. The extension never asks for it."
   }
 }

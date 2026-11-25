@@ -9697,5 +9697,53 @@
   },
   "identityNumber": {
     "message": "证件号"
+  },
+  "settingsSubtitle": {
+    "message": "离线优先 · 无账号"
+  },
+  "securitySubtitle": {
+    "message": "本地解锁，不发一个请求"
+  },
+  "autoLock": {
+    "message": "自动锁定"
+  },
+  "autoLock15": {
+    "message": "15 分钟"
+  },
+  "backupManual": {
+    "message": "仅手动"
+  },
+  "backupTitle": {
+    "message": "备份"
+  },
+  "exportData": {
+    "message": "导出加密 JSON"
+  },
+  "importGoogleAuth": {
+    "message": "导入 Google 认证器"
+  },
+  "downloadDesktopApp": {
+    "message": "桌面端应用"
+  },
+  "networkGate": {
+    "message": "网络闸门"
+  },
+  "networkGateOn": {
+    "message": "已启用 · 3 条规则"
+  },
+  "system": {
+    "message": "系统"
+  },
+  "unlockAndAccess": {
+    "message": "解锁与访问"
+  },
+  "advanced": {
+    "message": "高级"
+  },
+  "clearClipboard30s": {
+    "message": "30 秒"
+  },
+  "touchIdDesktopOnly": {
+    "message": "Touch ID 解锁在 macOS 桌面端「设置 → 安全」里，扩展里不提供这个开关。"
   }
 }

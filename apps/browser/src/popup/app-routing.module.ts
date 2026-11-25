@@ -103,7 +103,8 @@ import { GoogleAuthImportComponent } from "../tools/popup/settings/import/google
 import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { IMPORT_CONFIRMATION_ROUTE_PATH } from "../tools/popup/settings/import/import-confirmation-state.service";
 import { ImportShellBrowserComponent } from "../tools/popup/settings/import/import-shell-browser.component";
-import { SettingsV2Component } from "../tools/popup/settings/settings-v2.component";
+import { SecuritySettingsV2Component } from "../tools/popup/settings/localpass/security-settings-v2.component";
+import { SettingsListV2Component } from "../tools/popup/settings/localpass/settings-list-v2.component";
 import { ShareItemComponent } from "../tools/popup/share/share-item.component";
 import { AtRiskPasswordsComponent } from "../vault/popup/components/at-risk-passwords/at-risk-passwords.component";
 import { ItemFormV2Component } from "../vault/popup/components/item-form-v2/item-form-v2.component";
@@ -404,6 +405,13 @@ const routes: Routes = [
     component: ExportBrowserV2Component,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPassword：方向 C 的安全设置页（扩展里不出现 Touch ID）。
+    path: "settings-security-v2",
+    component: SecuritySettingsV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
     // LocalPass: register a security key (PRF) as an unlock method.
@@ -937,7 +945,7 @@ const routes: Routes = [
       },
       {
         path: "settings",
-        component: SettingsV2Component,
+        component: SettingsListV2Component,
         canActivate: [authGuard],
         data: { elevation: 0 } satisfies RouteDataProperties,
       },
