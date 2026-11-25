@@ -7,9 +7,8 @@ const policy = new NetworkGatePolicy({
 
 describe("NetworkGatePolicy", () => {
   it("allows the configured storage host", () => {
-    expect(
-      policy.evaluate({ url: "https://acct123.r2.cloudflarestorage.com/vault/user-a/manifest.json" }),
-    ).toEqual({ action: "allow", reason: "storage" });
+    const storageUrl = "https://acct123.r2.cloudflarestorage.com/vault/user-a/manifest.json";
+    expect(policy.evaluate({ url: storageUrl })).toEqual({ action: "allow", reason: "storage" });
   });
 
   it("blocks the loopback sentinel before anything else", () => {
@@ -36,12 +35,14 @@ describe("NetworkGatePolicy", () => {
 
   it("respects the breach check opt-out", () => {
     const off = new NetworkGatePolicy({ storageHosts: [], breachCheckEnabled: false });
-    expect(off.evaluate({ url: `https://${BREACH_CHECK_HOST}/range/abc`, userInitiated: true }).action).toBe(
-      "block",
-    );
+    const breachUrl = `https://${BREACH_CHECK_HOST}/range/abc`;
+    expect(off.evaluate({ url: breachUrl, userInitiated: true }).action).toBe("block");
   });
 
   it("blocks malformed urls", () => {
-    expect(policy.evaluate({ url: "not a url" })).toEqual({ action: "block", reason: "invalid-url" });
+    expect(policy.evaluate({ url: "not a url" })).toEqual({
+      action: "block",
+      reason: "invalid-url",
+    });
   });
 });
