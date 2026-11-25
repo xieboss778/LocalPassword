@@ -1,0 +1,34 @@
+name: Format
+
+# 一次性工具：把整个仓库按 .prettierrc 跑一遍 prettier，结果推到 chore/prettier 分支。
+# CI 的静态检查目前只跑 eslint；这份格式化合并进 main 后，再把 prettier --check 加回去。
+
+on:
+  workflow_dispatch:
+
+jobs:
+  format:
+    name: prettier --write
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: 安装依赖
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: 格式化
+        run: npx prettier --write .
+      - name: 提交并推送
+        run: |
+          git config user.name "localpassword-bot"
+          git config user.email "localpassword-bot@users.noreply.github.com"
+          git checkout -B chore/prettier
+          git add -A
+          git commit -m "chore: prettier --write 全仓库格式化" || echo "nothing to commit"
+          git push -f origin chore/prettier
