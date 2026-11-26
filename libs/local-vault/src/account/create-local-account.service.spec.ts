@@ -32,6 +32,7 @@ function createService() {
   const setAccountCryptographicState = jest.fn().mockResolvedValue(undefined);
   const unlockWithMasterPassword = jest.fn().mockResolvedValue(undefined);
   const markAsLocalAccount = jest.fn().mockResolvedValue(undefined);
+  const setUsesKeyConnector = jest.fn().mockResolvedValue(undefined);
   const info = jest.fn();
 
   const makeMasterKey = jest.fn().mockResolvedValue("master-key");
@@ -60,6 +61,7 @@ function createService() {
     { unlockWithMasterPassword } as any,
     { makeMasterKey, makeUserKey, makeKeyPair } as any,
     { markAsLocalAccount } as unknown as LocalAccountService,
+    { setUsesKeyConnector } as any,
     { unwrapSymmetricKey: jest.fn() } as any,
     { info } as any,
   );
@@ -79,6 +81,7 @@ function createService() {
       setAccountCryptographicState,
       unlockWithMasterPassword,
       markAsLocalAccount,
+      setUsesKeyConnector,
       makeMasterKey,
       makeUserKey,
       makeKeyPair,
@@ -140,10 +143,24 @@ describe("CreateLocalAccountService", () => {
       userId,
     );
     expect(mocks.markAsLocalAccount).toHaveBeenCalledWith(userId, true);
+    expect(mocks.setUsesKeyConnector).toHaveBeenCalledWith(false, userId);
     expect(mocks.unlockWithMasterPassword).toHaveBeenCalledWith(
       userId,
       "correct horse battery staple",
     );
+  });
+
+  it("把 usesKeyConnector 写成 false，避免 authGuard 卡在等待首次同步", async () => {
+    const { service, mocks } = createService();
+
+    const userId = await service.createAccount({
+      email: "owner@example.com",
+      masterPassword: "pw",
+    });
+
+    // 服务器账号在首次同步时写入该状态；本地账号永远不同步。若它停在 null，
+    // authGuard 里 firstValueFrom(convertAccountRequired$) 永不返回，建库后导航卡死。
+    expect(mocks.setUsesKeyConnector).toHaveBeenCalledWith(false, userId);
   });
 
   it("keeps the master password out of the access token", async () => {

@@ -766,6 +766,7 @@ const safeProviders: SafeProvider[] = [
       unlockService: UnlockService,
       legacyCompatKeyService: LegacyCompatKeyService,
       localAccountService: LocalAccountService,
+      keyConnectorService: KeyConnectorServiceAbstraction,
       encryptService: EncryptService,
       logService: LogService,
     ) =>
@@ -782,6 +783,7 @@ const safeProviders: SafeProvider[] = [
         unlockService,
         legacyCompatKeyService,
         localAccountService,
+        keyConnectorService,
         encryptService,
         logService,
       ),
@@ -798,6 +800,7 @@ const safeProviders: SafeProvider[] = [
       UnlockService,
       LegacyCompatKeyService,
       LocalAccountService,
+      KeyConnectorServiceAbstraction,
       EncryptService,
       LogService,
     ],

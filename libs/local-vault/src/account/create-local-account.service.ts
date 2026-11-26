@@ -8,6 +8,7 @@ import { AccountService } from "@localpass/common/auth/abstractions/account.serv
 import { TokenService } from "@localpass/common/auth/abstractions/token.service";
 import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions/account/billing-account-profile-state.service";
 import { AccountCryptographicStateService } from "@localpass/common/key-management/account-cryptography/account-cryptographic-state.service";
+import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import {
   MasterKeyWrappedUserKey,
@@ -87,6 +88,7 @@ export class CreateLocalAccountService {
     private readonly unlockService: UnlockService,
     private readonly legacyCompatKeyService: LegacyCompatKeyService,
     private readonly localAccountService: LocalAccountService,
+    private readonly keyConnectorService: KeyConnectorService,
     private readonly encryptService: EncryptService,
     private readonly logService: LogService,
   ) {}
@@ -260,6 +262,11 @@ export class CreateLocalAccountService {
     );
 
     await this.localAccountService.markAsLocalAccount(userId, true);
+
+    // 服务器账号在首次同步时写入这个状态；本地账号永远不同步，而
+    // `KeyConnectorService.convertAccountRequired$` 会一直等到它不为 null 才发射。
+    // 不写的话，`authGuard` 里的 firstValueFrom 永远不返回，建库后导航会卡死。
+    await this.keyConnectorService.setUsesKeyConnector(false, userId);
 
     await this.unlockService.unlockWithMasterPassword(userId, masterPassword);
 

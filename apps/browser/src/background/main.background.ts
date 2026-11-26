@@ -1258,6 +1258,7 @@ export default class MainBackground {
       this.unlockService,
       this.legacyCompatKeyService,
       this.localAccountService,
+      this.keyConnectorService,
       this.encryptService,
       this.logService,
     );
