@@ -79,25 +79,49 @@ impl TryFrom<(PrivateKey, Option<SignFlags>)> for SignablePrivateKey {
     }
 }
 
-fn sign_rsa(kp: &RsaKeypair, data: &[u8], flag: SignFlags) -> Signature {
-    match flag {
-        SignFlags::RsaSha256 => {
-            // we don't expect this to fail because the RSA keypair was already validated at
-            // creation time.
-            let signing_key = rsa::pkcs1v15::SigningKey::<sha2::Sha256>::try_from(kp)
-                .expect("RSA keypair to convert to SHA-256 signing key");
-            let rsa_sig: Box<[u8]> = signing_key.sign(data).into();
+/// Builds an RSA signing key from ssh-key's key components.
+///
+/// ssh-key 0.6.7 reconstructs `RsaPrivateKey` with the first prime passed twice,
+/// which rsa 0.9.10 rejects during key validation. Rebuilding the key from the
+/// stored components keeps ssh-key 0.6.7 usable while picking up rsa's security
+/// fixes.
+pub(crate) fn rsa_signing_key<D>(kp: &RsaKeypair) -> rsa::pkcs1v15::SigningKey<D>
+where
+    D: sha2::digest::Digest + sha2::digest::const_oid::AssociatedOid,
+{
+    let (n, e, d, p, q) = match (
+        rsa::BigUint::try_from(&kp.public.n),
+        rsa::BigUint::try_from(&kp.public.e),
+        rsa::BigUint::try_from(&kp.private.d),
+        rsa::BigUint::try_from(&kp.private.p),
+        rsa::BigUint::try_from(&kp.private.q),
+    ) {
+        (Ok(n), Ok(e), Ok(d), Ok(p), Ok(q)) => (n, e, d, p, q),
+        _ => panic!("RSA keypair contains components that cannot be represented"),
+    };
+    let key = rsa::RsaPrivateKey::from_components(n, e, d, vec![p, q])
+        .expect("RSA keypair components should form a valid private key");
 
-            Signature::new(
-                ssh_key::Algorithm::Rsa {
-                    hash: Some(flag.hash_alg()),
-                },
-                rsa_sig.to_vec(),
-            )
-            .expect("RSA-SHA256 signature construction should succeed")
+    rsa::pkcs1v15::SigningKey::new(key)
+}
+
+fn sign_rsa(kp: &RsaKeypair, data: &[u8], flag: SignFlags) -> Signature {
+    let (hash, rsa_sig): (ssh_key::HashAlg, Box<[u8]>) = match flag {
+        SignFlags::RsaSha256 => {
+            let signing_key = rsa_signing_key::<sha2::Sha256>(kp);
+            (flag.hash_alg(), signing_key.sign(data).into())
         }
-        SignFlags::RsaSha512 => kp.sign(data),
-    }
+        SignFlags::RsaSha512 => {
+            let signing_key = rsa_signing_key::<sha2::Sha512>(kp);
+            (flag.hash_alg(), signing_key.sign(data).into())
+        }
+    };
+
+    Signature::new(
+        ssh_key::Algorithm::Rsa { hash: Some(hash) },
+        rsa_sig.to_vec(),
+    )
+    .expect("RSA signature construction should succeed")
 }
 
 impl TryFrom<ssh_key::private::PrivateKey> for PrivateKey {

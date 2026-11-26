@@ -11,9 +11,10 @@ async-trait = { workspace = true }
 base64 = { workspace = true }
 mockall = { workspace = true }
 rkyv = "=0.8.17"
-# rsa must stay pinned to 0.9.6 until ssh-key is updated to 0.7, otherwise tests break
-# see https://github.com/localpass/clients/pull/23847 for more details
-rsa = "=0.9.6"
+# rsa 0.9.10 carries the fix for the Marvin attack advisory. ssh-key 0.6.7's own
+# RsaPrivateKey conversion passes p twice as the prime pair, which 0.9.10 rejects,
+# so this crate rebuilds the RSA key from components before signing.
+rsa = "=0.9.10"
 secure_memory = { path = "../secure_memory" }
 sha2 = "=0.10.9"
 signature = "=2.2.0"

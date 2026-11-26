@@ -247,13 +247,11 @@ pub(crate) mod test_common {
 
         let sig_bytes = match alg {
             RSA_SHA2_256 => {
-                let signing_key =
-                    rsa::pkcs1v15::SigningKey::<sha2::Sha256>::try_from(keypair).unwrap();
+                let signing_key = crate::crypto::rsa_signing_key::<sha2::Sha256>(keypair);
                 signing_key.sign(session_id).to_vec()
             }
             RSA_SHA2_512 => {
-                let signing_key =
-                    rsa::pkcs1v15::SigningKey::<sha2::Sha512>::try_from(keypair).unwrap();
+                let signing_key = crate::crypto::rsa_signing_key::<sha2::Sha512>(keypair);
                 signing_key.sign(session_id).to_vec()
             }
             _ => vec![0u8; 16],
