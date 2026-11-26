@@ -107,6 +107,7 @@ import { IMPORT_CONFIRMATION_ROUTE_PATH } from "../tools/popup/settings/import/i
 import { ImportShellBrowserComponent } from "../tools/popup/settings/import/import-shell-browser.component";
 import { ImportSourceV2Component } from "../tools/popup/settings/import/import-source-v2.component";
 import { DataSafetyV2Component } from "../tools/popup/settings/localpass/data-safety-v2.component";
+import { NetworkGateV2Component } from "../tools/popup/settings/localpass/network-gate-v2.component";
 import { SecuritySettingsV2Component } from "../tools/popup/settings/localpass/security-settings-v2.component";
 import { SettingsListV2Component } from "../tools/popup/settings/localpass/settings-list-v2.component";
 import { ShareItemComponent } from "../tools/popup/share/share-item.component";
@@ -421,6 +422,13 @@ const routes: Routes = [
     component: ExportBrowserV2Component,
     canActivate: [authGuard],
     data: { elevation: 2 } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPassword：网络闸门（三条规则 + 当前存储端点）。
+    path: "settings-network-v2",
+    component: NetworkGateV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：数据与安全（只陈述事实，不做无确认的清空）。

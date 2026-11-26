@@ -8392,5 +8392,41 @@
   },
   "emptyTrashConfirmation": {
     "message": "清空后无法恢复。"
+  },
+  "networkGateSubtitle": {
+    "message": "只有三件事能出这台机器"
+  },
+  "networkGateRules": {
+    "message": "规则"
+  },
+  "networkGateStorage": {
+    "message": "存储端点"
+  },
+  "networkGateAllowed": {
+    "message": "允许"
+  },
+  "networkGateNotConfigured": {
+    "message": "还没配置"
+  },
+  "networkGateBreach": {
+    "message": "泄露检查"
+  },
+  "networkGateUserInitiated": {
+    "message": "仅在你点它时"
+  },
+  "networkGateEverythingElse": {
+    "message": "其它所有请求"
+  },
+  "networkGateBlocked": {
+    "message": "阻止"
+  },
+  "networkGateLocal": {
+    "message": "本地"
+  },
+  "networkGateSentinel": {
+    "message": "占位域名，永不外发"
+  },
+  "networkGateNote": {
+    "message": "闸门是个带单测的纯函数：请求出门之前先判允许或阻止，应用里没有第二套放行路径。"
   }
 }

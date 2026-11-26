@@ -121,6 +121,16 @@ import { kindOf, withoutKindField } from "@localpass/local-vault";
             </lp-group>
           }
 
+          @if (item.login.fido2Credentials.length) {
+            <lp-group label="Passkey">
+              <lp-row
+                [label]="i18n.t('passkey')"
+                [value]="passkeyCount(item)"
+                [clickable]="false"
+              />
+            </lp-group>
+          }
+
           @if (customFields().length) {
             <lp-group [label]="i18n.t('customFields')">
               @for (field of customFields(); track field.name) {
@@ -201,6 +211,10 @@ export class VaultItemViewV2Component implements OnInit {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  protected passkeyCount(item: CipherView): string {
+    return String(item.login.fido2Credentials.length);
   }
 
   protected openTotpQr(): void {

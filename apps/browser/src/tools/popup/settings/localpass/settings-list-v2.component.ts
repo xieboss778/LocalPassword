@@ -54,7 +54,12 @@ const GROUPS: readonly GroupSpec[] = [
   {
     labelKey: "system",
     rows: [
-      { emoji: "🛡️", labelKey: "networkGate", valueKey: "networkGateOn" },
+      {
+        emoji: "🛡️",
+        labelKey: "networkGate",
+        valueKey: "networkGateOn",
+        route: "/settings-network-v2",
+      },
       { emoji: "🧾", labelKey: "dataAndSafety", route: "/settings-data-v2" },
       { emoji: "ℹ️", labelKey: "about", route: "/about" },
     ],

@@ -9997,5 +9997,41 @@
   },
   "emptyTrashConfirmation": {
     "message": "This cannot be undone."
+  },
+  "networkGateSubtitle": {
+    "message": "Only three things may leave this machine"
+  },
+  "networkGateRules": {
+    "message": "Rules"
+  },
+  "networkGateStorage": {
+    "message": "Storage endpoint"
+  },
+  "networkGateAllowed": {
+    "message": "Allowed"
+  },
+  "networkGateNotConfigured": {
+    "message": "not configured yet"
+  },
+  "networkGateBreach": {
+    "message": "Breach check"
+  },
+  "networkGateUserInitiated": {
+    "message": "Only when you press it"
+  },
+  "networkGateEverythingElse": {
+    "message": "Everything else"
+  },
+  "networkGateBlocked": {
+    "message": "Blocked"
+  },
+  "networkGateLocal": {
+    "message": "Local"
+  },
+  "networkGateSentinel": {
+    "message": "Placeholder host, never leaves"
+  },
+  "networkGateNote": {
+    "message": "The gate is a pure function with unit tests: it decides allow or block before any request leaves. Nothing else in the app gets to skip it."
   }
 }
