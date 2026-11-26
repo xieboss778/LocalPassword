@@ -196,7 +196,10 @@ export class CreateLocalAccountService {
   ): Promise<UserId> {
     // The environment has to be in place before the account is seeded from it, otherwise the
     // account would inherit a cloud region.
-    await this.environmentService.setEnvironment(LOCAL_VAULT_REGION, LOCAL_VAULT_URLS);
+    // 上游的 setEnvironment 会原地改写传入的 urls（formatUrl 赋值回 base 等字段），
+    // 直接把 freeze 过的常量交进去会报 “Cannot assign to read only property 'base'”。
+    // 常量保持冻结，每次交一份可写副本。
+    await this.environmentService.setEnvironment(LOCAL_VAULT_REGION, { ...LOCAL_VAULT_URLS });
     await this.accountService.addAccount(userId, {
       name: account.name,
       email: account.email,

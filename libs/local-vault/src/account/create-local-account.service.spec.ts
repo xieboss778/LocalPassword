@@ -81,6 +81,20 @@ function createService() {
 }
 
 describe("CreateLocalAccountService", () => {
+  it("把可写的 urls 副本交给环境服务（上游会原地改写它）", async () => {
+    const { service, mocks } = createService();
+
+    await service.createAccount({ email: "owner@example.com", masterPassword: "pw" });
+
+    const urls = mocks.setEnvironment.mock.calls[0][1] as Record<string, string>;
+    // 上游 setEnvironment 会执行 urls.base = formatUrl(urls.base)；freeze 过的对象在这里会抛错。
+    expect(() => {
+      urls.base = urls.base;
+    }).not.toThrow();
+    expect(urls).not.toBe(LOCAL_VAULT_URLS);
+    expect(urls).toEqual(LOCAL_VAULT_URLS);
+  });
+
   it("writes a complete unlocked account", async () => {
     const { service, mocks } = createService();
 
