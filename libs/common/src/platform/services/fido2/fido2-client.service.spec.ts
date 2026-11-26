@@ -797,6 +797,14 @@ describe("FidoAuthenticatorService", () => {
 
       expect(result).toBe(false);
     });
+
+    it("returns true when there is no server config, as with the local vault", async () => {
+      configService.serverConfig$ = of(null);
+
+      const result = await client.isFido2FeatureEnabled(hostname, origin);
+
+      expect(result).toBe(true);
+    });
   });
 });
 

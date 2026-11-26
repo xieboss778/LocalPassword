@@ -100,8 +100,9 @@ export class Fido2ClientService<
       return false;
     }
 
+    // 本地保险库没有服务器配置，此时不存在“保险库站点”需要排除。
     const serverConfig = await firstValueFrom(this.configService.serverConfig$);
-    const isOriginEqualLocalPassVault = origin === serverConfig.environment?.vault;
+    const isOriginEqualLocalPassVault = origin === serverConfig?.environment?.vault;
     if (isOriginEqualLocalPassVault) {
       return false;
     }
