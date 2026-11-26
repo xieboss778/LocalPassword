@@ -1,0 +1,32 @@
+title = "LocalPass Gitleaks configuration"
+
+[extend]
+useDefault = true
+
+# These files contain synthetic keys and tokens used only by unit tests.
+# Keep exceptions limited to the exact fixture files and rule IDs below.
+[[allowlists]]
+description = "Synthetic SSH and WebAuthn private keys in unit tests"
+targetRules = ["private-key"]
+paths = [
+  '''^apps/desktop/desktop_native/ssh_agent/src/storage/keydata\.rs$''',
+  '''^apps/desktop/desktop_native/ssh_agent/src/storage/serialization\.rs$''',
+  '''^apps/desktop/desktop_native/ssh_agent/tests/common\.rs$''',
+  '''^apps/desktop/desktop_native/win_webauthn/src/api/plugin/crypto\.rs$''',
+  '''^libs/importer/src/importers/onepassword/onepassword-1pux-importer\.spec\.ts$''',
+  '''^libs/importer/src/importers/protonpass/protonpass-json-importer\.spec\.ts$''',
+  '''^libs/importer/src/importers/spec-data/bitwarden-json/account-encrypted-v1\.json\.ts$''',
+  '''^libs/importer/src/importers/spec-data/bitwarden-json/account-encrypted-v2\.json\.ts$''',
+  '''^libs/importer/src/importers/spec-data/keeper-json/testdata\.json\.ts$''',
+  '''^libs/importer/src/importers/spec-data/onepassword-1pux/ssh-key\.ts$''',
+  '''^libs/importer/src/importers/spec-data/protonpass-json/protonpass\.json\.ts$''',
+]
+
+[[allowlists]]
+description = "Synthetic JWTs in unit tests"
+targetRules = ["jwt"]
+paths = [
+  '''^libs/common/src/auth/jwt/decode-jwt-token-to-json\.utility\.spec\.ts$''',
+  '''^libs/common/src/auth/services/token\.service\.spec\.ts$''',
+  '''^libs/legacy-crypto/src/models/enc-string\.spec\.ts$''',
+]
