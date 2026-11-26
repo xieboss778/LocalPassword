@@ -500,7 +500,9 @@ export class SettingsDialogComponent implements OnInit {
         type: "warning",
       });
       if (confirmed) {
-        this.platformUtilsService.launchUri("https://github.com/xieboss778/LocalPass/tree/main/docs");
+        this.platformUtilsService.launchUri(
+          "https://github.com/xieboss778/LocalPass/tree/main/docs",
+        );
       }
       return;
     }

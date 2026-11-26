@@ -100,6 +100,13 @@ import { DesktopBiometricsService } from "../../key-management/biometrics/deskto
             [value]="i18n.t('networkGateOn')"
             [clickable]="false"
           />
+          <lp-row
+            emoji="🗑️"
+            [label]="i18n.t('trash')"
+            [chevron]="true"
+            [clickable]="true"
+            (activated)="go('/trash-desktop-v2')"
+          />
         </lp-group>
 
         @if (errorMessage()) {

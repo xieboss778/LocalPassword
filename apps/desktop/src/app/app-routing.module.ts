@@ -82,6 +82,7 @@ import { Fido2RpIdNotAllowedComponent } from "../autofill/modal/credentials/fido
 import { Fido2VaultComponent } from "../autofill/modal/credentials/fido2-vault.component";
 import { MyFoldersComponent } from "../vault/app/my-folders/my-folders.component";
 import { SharedFoldersComponent } from "../vault/app/shared-folders/shared-folders.component";
+import { TrashDesktopV2Component } from "../vault/app/trash-desktop-v2/trash-desktop-v2.component";
 import { VaultDesktopV2Component } from "../vault/app/vault-desktop-v2/vault-desktop-v2.component";
 import { VaultComponent } from "../vault/app/vault-v3/vault.component";
 
@@ -594,6 +595,12 @@ export const routes: Routes = [
         path: "generator",
         component: GeneratorV2Component,
         data: { pageTitle: { key: "generator" } } satisfies RouteDataProperties,
+      },
+      {
+        // LocalPassword：桌面端回收站。
+        path: "trash-desktop-v2",
+        component: TrashDesktopV2Component,
+        data: { pageTitle: { key: "trash" } } satisfies RouteDataProperties,
       },
       {
         // LocalPassword：方向 C 的桌面端设置（Touch ID 只在这一页出现）。
