@@ -61,7 +61,9 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
 
     const cipher = await this.encrypt(cipherView, userId);
     const now = new Date();
-    cipher.id = (cipherView.id as CipherId) ?? (newGuid() as CipherId);
+    // `CipherView.id` starts as an empty string, not null; `??` would keep it and store the
+    // cipher under "". The SDK then reads it back without an id, so the UI cannot select it.
+    cipher.id = (cipherView.id || newGuid()) as CipherId;
     cipher.creationDate = now;
     cipher.revisionDate = now;
     cipher.deletedDate = undefined;

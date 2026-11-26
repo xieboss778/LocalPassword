@@ -42,6 +42,12 @@ const DEFAULT_PARAMS = {
  */
 module.exports.buildConfig = function buildConfig(params) {
   params = { ...DEFAULT_PARAMS, ...params };
+  // ts-loader resolves a bare config name by walking up from each resource's own directory.
+  // Files under libs/ find no tsconfig.build.json that way and fall back to an empty config
+  // (TS18002), so pin the path here where the app's config lives.
+  params.tsConfig = path.isAbsolute(params.tsConfig)
+    ? params.tsConfig
+    : path.resolve(__dirname, params.tsConfig);
 
   if (process.env.NODE_ENV == null) {
     process.env.NODE_ENV = "development";
@@ -516,6 +522,11 @@ module.exports.buildConfig = function buildConfig(params) {
           {
             test: /\.tsx?$/,
             loader: "ts-loader",
+            options: {
+              // Without an explicit config the background compiler misses the app's ambient
+              // declarations (Window/ServiceWorkerGlobalScope/Opera types) and type-check fails.
+              configFile: params.tsConfig,
+            },
           },
         ],
       },

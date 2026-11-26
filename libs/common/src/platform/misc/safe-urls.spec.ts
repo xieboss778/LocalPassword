@@ -3,7 +3,7 @@ import { SafeUrls, UrlType } from "./safe-urls";
 describe("SafeUrls service", () => {
   it("should allow valid URLs", () => {
     expect(SafeUrls.canLaunch("https://local.invalid", UrlType.CipherUri)).toBe(true);
-    expect(SafeUrls.canLaunch("https://local.invalid", UrlType.CipherUri)).toBe(true);
+    expect(SafeUrls.canLaunch("http://local.invalid", UrlType.CipherUri)).toBe(true);
     expect(SafeUrls.canLaunch("ssh://my-server", UrlType.CipherUri)).toBe(true);
   });
 
@@ -32,7 +32,7 @@ describe("SafeUrls service", () => {
   it("should only allow https for WebUrl", () => {
     expect(SafeUrls.canLaunch("https://local.invalid", UrlType.WebUrl)).toBe(true);
     expect(SafeUrls.canLaunch("HTTPS://local.invalid", UrlType.WebUrl)).toBe(true);
-    expect(SafeUrls.canLaunch("https://local.invalid", UrlType.WebUrl)).toBe(false);
+    expect(SafeUrls.canLaunch("http://local.invalid", UrlType.WebUrl)).toBe(false);
     expect(SafeUrls.canLaunch("HTTP://local.invalid", UrlType.WebUrl)).toBe(false);
   });
 });

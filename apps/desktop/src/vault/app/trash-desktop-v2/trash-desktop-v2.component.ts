@@ -1,32 +1,31 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpEmptyComponent,
-  LpGroupComponent,
+  LpKindTileComponent,
   LpPageHeaderComponent,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
-import { CipherType } from "@localpass/common/vault/enums";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
-import { ButtonModule, DialogService, IconButtonModule } from "@localpass/components";
-
-const TYPE_EMOJI: Record<number, string> = {
-  [CipherType.Login]: "🔐",
-  [CipherType.SecureNote]: "📝",
-  [CipherType.Card]: "💳",
-  [CipherType.Identity]: "🪪",
-  [CipherType.SshKey]: "🗝️",
-};
+import { ButtonModule, DialogService, IconButtonModule, IconModule } from "@localpass/components";
+import { kindOf } from "@localpass/local-vault";
 
 /**
- * 桌面端回收站（方向 C）。
+ * 桌面端回收站。
  *
  * 与弹窗版的差别只在数据来源：桌面端没有扩展的 `VaultPopupItemsService`，
  * 直接用 `cipherService.getAllDecrypted` 过滤软删除的条目。
@@ -34,76 +33,95 @@ const TYPE_EMOJI: Record<number, string> = {
 @Component({
   selector: "trash-desktop-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "tw-block tw-h-full" },
   imports: [
     CommonModule,
     RouterModule,
     JslibModule,
     ButtonModule,
     IconButtonModule,
+    IconModule,
     LpEmptyComponent,
-    LpGroupComponent,
+    LpKindTileComponent,
     LpPageHeaderComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
+    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
       <lp-page-header [title]="i18n.t('trash')" [sub]="subtitle()">
         @if (items().length) {
           <button
             type="button"
-            bitIconButton="bwi-trash"
-            [label]="i18n.t('emptyTrash')"
+            bitButton
+            buttonType="secondary"
+            startIcon="bwi-trash"
             (click)="emptyTrash()"
-          ></button>
+          >
+            {{ i18n.t("emptyTrash") }}
+          </button>
         }
       </lp-page-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
-        @if (items().length === 0) {
-          <lp-empty
-            icon="🗑️"
-            [title]="i18n.t('noItemsInTrash')"
-            [text]="i18n.t('noItemsInTrashDesc')"
-          ></lp-empty>
-        } @else {
-          <lp-group [label]="i18n.t('itemsInTrash')">
-            @for (item of items(); track item.id) {
+      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-7 tw-pb-7">
+        @if (!loading() && items().length === 0) {
+          <div class="tw-grid tw-min-h-72 tw-place-items-center">
+            <lp-empty
+              icon="bwi-trash"
+              [title]="i18n.t('noItemsInTrash')"
+              [text]="i18n.t('noItemsInTrashDesc')"
+            ></lp-empty>
+          </div>
+        } @else if (items().length) {
+          <div
+            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-shadow-sm"
+          >
+            <div
+              class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-2.5"
+            >
+              <span class="tw-text-sm tw-font-semibold tw-text-main">{{
+                i18n.t("itemsInTrash")
+              }}</span>
+              <span class="tw-text-xs tw-text-muted">{{ items().length }}</span>
+            </div>
+            @for (item of items(); track item) {
               <div
-                class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-[#0000000a] tw-px-3.5 tw-py-2.5 last:tw-border-b-0"
+                class="tw-grid tw-grid-cols-12 tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0 hover:tw-bg-background-alt"
               >
-                <span
-                  class="tw-w-[26px] tw-flex-none tw-text-center tw-text-[15px]"
-                  aria-hidden="true"
-                  >{{ emojiFor(item) }}</span
-                >
-                <span class="tw-min-w-0 tw-flex-1">
-                  <span class="tw-block tw-truncate tw-text-[12.5px]">{{ item.name }}</span>
-                  <span class="tw-block tw-text-[10.5px] tw-text-[var(--lp-ink-3)]">{{
-                    i18n.t("itemsInTrash")
-                  }}</span>
-                </span>
-                <button
-                  type="button"
-                  bitButton
-                  buttonType="secondary"
-                  size="small"
-                  (click)="restore(item)"
-                >
-                  {{ i18n.t("restore") }}
-                </button>
-                <button
-                  type="button"
-                  bitButton
-                  buttonType="danger"
-                  size="small"
-                  (click)="purge(item)"
-                >
-                  {{ i18n.t("deleteForever") }}
-                </button>
+                <div class="tw-col-span-7 tw-flex tw-min-w-0 tw-items-center tw-gap-3">
+                  <lp-kind-tile [kind]="kindOf(item)" size="base"></lp-kind-tile>
+                  <span class="tw-min-w-0">
+                    <span class="tw-block tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
+                      item.name
+                    }}</span>
+                    <span class="tw-block tw-truncate tw-text-xs tw-text-muted">{{
+                      item.subTitle
+                    }}</span>
+                  </span>
+                </div>
+                <div class="tw-col-span-2 tw-text-sm tw-text-muted">
+                  {{ item.deletedDate ? (item.deletedDate | date: "mediumDate") : "—" }}
+                </div>
+                <div class="tw-col-span-3 tw-flex tw-justify-end tw-gap-1">
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="secondary"
+                    size="small"
+                    (click)="restore(item)"
+                  >
+                    {{ i18n.t("restore") }}
+                  </button>
+                  <button
+                    type="button"
+                    bitIconButton="bwi-trash"
+                    size="small"
+                    [label]="i18n.t('deleteForever')"
+                    (click)="purge(item)"
+                  ></button>
+                </div>
               </div>
             }
-          </lp-group>
-
-          <p class="tw-px-4 tw-pt-3 tw-text-[10.5px] tw-leading-relaxed tw-text-[var(--lp-ink-3)]">
+          </div>
+          <p class="tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
             {{ i18n.t("trashWarning") }}
           </p>
         }
@@ -117,18 +135,17 @@ export class TrashDesktopV2Component implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly dialogService = inject(DialogService);
 
+  protected readonly kindOf = kindOf;
+  protected readonly loading = signal(true);
   protected readonly items = signal<CipherView[]>([]);
+
+  protected readonly subtitle = computed(
+    () => `${this.items().length} ${this.i18n.t("items")} · ${this.i18n.t("trashHint")}`,
+  );
 
   async ngOnInit(): Promise<void> {
     await this.reload();
-  }
-
-  protected subtitle(): string {
-    return `${this.items().length} ` + this.i18n.t("items");
-  }
-
-  protected emojiFor(item: CipherView): string {
-    return TYPE_EMOJI[item.type] ?? "📄";
+    this.loading.set(false);
   }
 
   protected async restore(item: CipherView): Promise<void> {
@@ -139,8 +156,8 @@ export class TrashDesktopV2Component implements OnInit {
 
   protected async purge(item: CipherView): Promise<void> {
     const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "deleteItem" },
-      content: { key: "deleteItemConfirmation" },
+      title: { key: "deleteItemPermanently" },
+      content: { key: "permanentlyDeleteItemConfirmation" },
       type: "warning",
     });
     if (!confirmed) {

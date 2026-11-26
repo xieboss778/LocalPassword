@@ -1,11 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpGroupComponent,
   LpPageHeaderComponent,
+  LpPopupHeaderComponent,
   LpRowComponent,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -31,6 +33,7 @@ import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui"
     TypographyModule,
     LpGroupComponent,
     LpPageHeaderComponent,
+    LpPopupHeaderComponent,
     LpRowComponent,
   ],
 })
@@ -39,10 +42,18 @@ export class SecurityKeyComponent implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
   private readonly i18nService = inject(I18nService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
 
   protected readonly supported = signal(false);
   protected readonly registeredCount = signal(0);
   protected readonly busy = signal(false);
+
+  protected goBack(): void {
+    void this.router.navigateByUrl("/settings-security-v2");
+  }
 
   async ngOnInit(): Promise<void> {
     this.supported.set(this.enrollmentService.isSupported());

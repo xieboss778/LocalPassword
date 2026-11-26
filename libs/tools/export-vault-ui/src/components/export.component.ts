@@ -6,6 +6,7 @@ import {
   Component,
   EventEmitter,
   model,
+  input,
   Input,
   OnDestroy,
   OnInit,
@@ -202,6 +203,15 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly skippedAttachmentCount = model(0);
 
+  /**
+   * LocalPass default: exports are encrypted. Hosts that offer a local-only vault set this so the
+   * form opens on an encrypted format instead of the plaintext `.json` upstream default.
+   */
+  readonly defaultFormat = input<"json" | "csv" | "encrypted_json" | "zip" | undefined>(undefined);
+
+  /** Open on "password protected" instead of the account-restricted option. */
+  readonly defaultFileEncrypted = input(false);
+
   /** PAM-gated ("partial") items the currently-selected export scope would leave out. */
   protected readonly excludedGatedItemCount = signal(0);
 
@@ -270,6 +280,13 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   async ngOnInit() {
+    if (this.defaultFormat()) {
+      this.exportForm.get("format").setValue(this.defaultFormat());
+    }
+    if (this.defaultFileEncrypted()) {
+      this.exportForm.get("fileEncryptionType").setValue(EncryptedExportType.FileEncrypted);
+    }
+
     // Must precede observeFormSelections(): the Admin Console host's organizationId subject
     // already holds a value and emits immediately.
     this.onlyManagedCollections = !this.organizationId;

@@ -36,6 +36,16 @@ export class PopupRouterCacheService {
 
   private hasNavigated = false;
 
+  /**
+   * Whether a navigation has completed since this page was loaded. The route history is only
+   * meaningful for the first navigation of a page load: after that, navigating to the root is an
+   * in-app decision (for example, finishing vault creation) and must not be sent back to the page
+   * that happened to be visited last.
+   */
+  get hasCompletedNavigation() {
+    return this.hasNavigated;
+  }
+
   private _hasRestoredCache = false;
   get hasRestoredCache() {
     return this._hasRestoredCache;
@@ -164,7 +174,7 @@ export const popupRouterCacheGuard = ((): Observable<true | UrlTree> => {
   const popupHistoryService = inject(PopupRouterCacheService);
   const urlSerializer = inject(UrlSerializer);
 
-  if (popupHistoryService.hasRestoredCache) {
+  if (popupHistoryService.hasRestoredCache || popupHistoryService.hasCompletedNavigation) {
     return of(true);
   }
 

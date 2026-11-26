@@ -29,10 +29,7 @@
     "electronUpdaterCompatibility": ">=0.0.1",
     "category": "public.app-category.productivity",
     "darkModeSupport": true,
-    
-    
-    
-    
+
     "extendInfo": {
       "LocalPassAppGroupIdentifier": "com.localpass.desktop",
       "ITSAppUsesNonExemptEncryption": false,

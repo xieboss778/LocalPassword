@@ -26,6 +26,7 @@ function createService() {
   const seedUserEnvironment = jest.fn().mockResolvedValue(undefined);
   const setTokens = jest.fn().mockResolvedValue(undefined);
   const setMasterPasswordUnlockData = jest.fn().mockResolvedValue(undefined);
+  const unwrapUserKeyFromMasterPasswordUnlockData = jest.fn().mockResolvedValue("user-key");
   const setUserDecryptionOptions = jest.fn().mockResolvedValue(undefined);
   const setHasPremium = jest.fn().mockResolvedValue(undefined);
   const setKdfConfig = jest.fn().mockResolvedValue(undefined);
@@ -34,6 +35,8 @@ function createService() {
   const markAsLocalAccount = jest.fn().mockResolvedValue(undefined);
   const setUsesKeyConnector = jest.fn().mockResolvedValue(undefined);
   const info = jest.fn();
+  const updateVaultState = jest.fn().mockImplementation(async (configure) => configure(null));
+  const getUserState = jest.fn().mockReturnValue({ update: updateVaultState });
 
   const makeMasterKey = jest.fn().mockResolvedValue("master-key");
   // 真实的 makeUserKey / makeKeyPair 返回 EncString 对象而不是纯字符串；
@@ -49,7 +52,11 @@ function createService() {
     { addAccount, switchAccount } as any,
     { setEnvironment, seedUserEnvironment } as any,
     { setTokens } as any,
-    { emailToSalt: (email: string) => email, setMasterPasswordUnlockData } as any,
+    {
+      emailToSalt: (email: string) => email,
+      setMasterPasswordUnlockData,
+      unwrapUserKeyFromMasterPasswordUnlockData,
+    } as any,
     { setUserDecryptionOptionsById: setUserDecryptionOptions } as any,
     { setHasPremium } as any,
     {
@@ -62,7 +69,7 @@ function createService() {
     { makeMasterKey, makeUserKey, makeKeyPair } as any,
     { markAsLocalAccount } as unknown as LocalAccountService,
     { setUsesKeyConnector } as any,
-    { unwrapSymmetricKey: jest.fn() } as any,
+    { getUser: getUserState } as any,
     { info } as any,
   );
 
@@ -75,6 +82,7 @@ function createService() {
       seedUserEnvironment,
       setTokens,
       setMasterPasswordUnlockData,
+      unwrapUserKeyFromMasterPasswordUnlockData,
       setUserDecryptionOptions,
       setHasPremium,
       setKdfConfig,
@@ -85,6 +93,8 @@ function createService() {
       makeMasterKey,
       makeUserKey,
       makeKeyPair,
+      getUserState,
+      updateVaultState,
     },
   };
 }
@@ -102,6 +112,18 @@ describe("CreateLocalAccountService", () => {
     }).not.toThrow();
     expect(urls).not.toBe(LOCAL_VAULT_URLS);
     expect(urls).toEqual(LOCAL_VAULT_URLS);
+  });
+
+  it("seeds empty vault and folder collections before unlocking", async () => {
+    const { service, mocks } = createService();
+
+    await service.createAccount({ email: "owner@example.com", masterPassword: "pw" });
+
+    expect(mocks.getUserState).toHaveBeenCalledTimes(2);
+    expect(mocks.updateVaultState).toHaveBeenCalledTimes(2);
+    for (const [configure] of mocks.updateVaultState.mock.calls) {
+      expect(configure(null)).toEqual({});
+    }
   });
 
   it("writes a complete unlocked account", async () => {
@@ -209,5 +231,46 @@ describe("CreateLocalAccountService", () => {
       service.createAccount({ email: "owner@example.com", masterPassword: "" }),
     ).rejects.toThrow();
     expect(mocks.addAccount).not.toHaveBeenCalled();
+  });
+
+  describe("restoreAccount", () => {
+    const restoreRequest = {
+      email: "owner@example.com",
+      masterPassword: "pw",
+      unlock: {
+        salt: "owner@example.com",
+        kdf: DEFAULT_KDF_CONFIG,
+        masterKeyWrappedUserKey: fakeWrappedUserKey,
+      },
+      wrappedPrivateKey: fakeWrappedPrivateKey,
+    };
+
+    it("uses the normal unlock path, which stretches the master key like the create path", async () => {
+      const { service, mocks } = createService();
+
+      await service.restoreAccount(restoreRequest);
+
+      expect(mocks.unwrapUserKeyFromMasterPasswordUnlockData).toHaveBeenCalledWith(
+        "pw",
+        expect.objectContaining({
+          salt: "owner@example.com",
+          kdf: DEFAULT_KDF_CONFIG,
+          masterKeyWrappedUserKey: fakeWrappedUserKey,
+        }),
+      );
+      // makeMasterKey returns the unstretched key; unwrapping the stored key with it fails.
+      expect(mocks.makeMasterKey).not.toHaveBeenCalled();
+      expect(mocks.addAccount).toHaveBeenCalled();
+    });
+
+    it("does not write an account when the master password cannot open the stored key", async () => {
+      const { service, mocks } = createService();
+      mocks.unwrapUserKeyFromMasterPasswordUnlockData.mockRejectedValueOnce(
+        new Error("wrong password"),
+      );
+
+      await expect(service.restoreAccount(restoreRequest)).rejects.toThrow("wrong password");
+      expect(mocks.addAccount).not.toHaveBeenCalled();
+    });
   });
 });

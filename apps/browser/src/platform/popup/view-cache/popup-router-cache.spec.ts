@@ -91,15 +91,29 @@ describe("Popup router cache guard", () => {
     expect(response).toBe(true);
   });
 
-  it("redirects to the latest stored route", async () => {
-    await router.navigate(["a"]);
-    await router.navigate(["b"]);
+  it("redirects to the latest stored route on the first navigation of a page load", async () => {
+    // History left by the previous popup session; no navigation has happened in this one.
+    await service.setHistory([{ url: "/a" }, { url: "/b" }]);
 
     const response = (await firstValueFrom(
       testBed.runInInjectionContext(() => popupRouterCacheGuard()),
     )) as UrlTree;
 
     expect(serializer.serialize(response)).toBe("/b");
+  });
+
+  it("does not restore the history after a navigation completed in this session", async () => {
+    await service.setHistory([{ url: "/a" }]);
+    await router.navigate(["b"]);
+    await flushPromises();
+
+    // Navigating to the root after startup is an in-app decision (e.g. finishing vault
+    // creation), so it must fall through to the auth redirect instead of bouncing back.
+    const response = await firstValueFrom(
+      testBed.runInInjectionContext(() => popupRouterCacheGuard()),
+    );
+
+    expect(response).toBe(true);
   });
 
   it("back method redirects to the previous route", async () => {
@@ -140,12 +154,22 @@ describe("Popup router cache guard", () => {
     await router.navigate(["a"]);
     await router.navigate(["b"]);
     await router.navigate(["c"]);
+    await flushPromises();
 
-    const response = (await firstValueFrom(
-      testBed.runInInjectionContext(() => popupRouterCacheGuard()),
-    )) as UrlTree;
-
-    expect(serializer.serialize(response)).toBe("/b");
+    expect(await firstValueFrom(service.history$())).toEqual([
+      {
+        options: {
+          resetRouterCacheOnTabChange: false,
+        },
+        url: "/a",
+      },
+      {
+        options: {
+          resetRouterCacheOnTabChange: false,
+        },
+        url: "/b",
+      },
+    ]);
   });
 
   it("does not save duplicate routes", async () => {

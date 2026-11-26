@@ -15,6 +15,7 @@ import { Utils } from "@localpass/common/platform/misc/utils";
 import { OrganizationId } from "@localpass/common/types/guid";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { CipherType } from "@localpass/common/vault/enums";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
@@ -68,6 +69,7 @@ export class ImportUpgradeService extends ImportService implements ImportUpgrade
     configService: ConfigService,
     sdkService: SdkService,
     logService: LogService,
+    localVaultWriter: LocalVaultWriter,
   ) {
     super(
       cipherService,
@@ -83,6 +85,7 @@ export class ImportUpgradeService extends ImportService implements ImportUpgrade
       configService,
       sdkService,
       logService,
+      localVaultWriter,
     );
     this.localpassImporterDeps = {
       keyService,

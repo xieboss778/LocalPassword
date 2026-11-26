@@ -48,6 +48,7 @@ describe("DesktopCipherService", () => {
       mock<LogService>(),
       cipherEncryptionService,
       mock<CipherSdkService>(),
+      mock<CtorArgs[14]>(),
     );
   });
 

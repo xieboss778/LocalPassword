@@ -1,4 +1,4 @@
-<div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
+<div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
   <lp-page-header
     [title]="'createLocalVaultTitle' | i18n"
     [sub]="'createLocalVaultSubtitle' | i18n"
@@ -36,7 +36,7 @@
     </lp-group>
 
     @if (errorMessage() != null) {
-      <p class="tw-px-4 tw-pt-3 tw-text-[11px] tw-text-[var(--lp-danger)]">{{ errorMessage() }}</p>
+      <p class="tw-px-4 tw-pt-3 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
     }
 
     <div class="tw-px-3 tw-pt-3">
@@ -58,7 +58,7 @@
       </button>
     </div>
 
-    <p class="tw-px-4 tw-pt-3 tw-text-[10.5px] tw-leading-relaxed tw-text-[var(--lp-ink-3)]">
+    <p class="tw-px-4 tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
       {{ "createLocalVaultNote" | i18n }}
     </p>
   </div>

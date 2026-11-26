@@ -31,7 +31,11 @@ import {
 import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
 import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
-import { GeneratorV2Component } from "@localpass/angular/tools/generator";
+import { FoldersV2Component } from "@localpass/angular/tools/folders";
+import {
+  GeneratorHistoryV2Component,
+  GeneratorV2Component,
+} from "@localpass/angular/tools/generator";
 import { ItemFormV2Component, NewItemV2Component } from "@localpass/angular/tools/item-entry";
 import {
   DevicesIcon,
@@ -99,13 +103,14 @@ import { importUpgradeRequiredGuard } from "../tools/popup/guards/import-upgrade
 import { SendAddEditComponent as SendAddEditV2Component } from "../tools/popup/send-v2/add-edit/send-add-edit.component";
 import { SendCreatedComponent } from "../tools/popup/send-v2/send-created/send-created.component";
 import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
-import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-page-v2.component";
 import { ExportBrowserV2Component } from "../tools/popup/settings/export/export-browser-v2.component";
 import { GoogleAuthImportV2Component } from "../tools/popup/settings/import/google-auth-import-v2.component";
 import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { IMPORT_CONFIRMATION_ROUTE_PATH } from "../tools/popup/settings/import/import-confirmation-state.service";
 import { ImportShellBrowserComponent } from "../tools/popup/settings/import/import-shell-browser.component";
 import { ImportSourceV2Component } from "../tools/popup/settings/import/import-source-v2.component";
+import { AboutV2Component } from "../tools/popup/settings/localpass/about-v2.component";
+import { AppearanceV2Component } from "../tools/popup/settings/localpass/appearance-v2.component";
 import { DataSafetyV2Component } from "../tools/popup/settings/localpass/data-safety-v2.component";
 import { NetworkGateV2Component } from "../tools/popup/settings/localpass/network-gate-v2.component";
 import { SecuritySettingsV2Component } from "../tools/popup/settings/localpass/security-settings-v2.component";
@@ -132,10 +137,8 @@ import { clearVaultStateGuard } from "../vault/popup/guards/clear-vault-state.gu
 import { restoreVaultScopeGuard } from "../vault/popup/guards/restore-vault-scope.guard";
 import { restrictedCipherGuard } from "../vault/popup/guards/restricted-cipher.guard";
 import { AdminSettingsComponent } from "../vault/popup/settings/admin-settings.component";
-import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { ArchiveComponent } from "../vault/popup/settings/archive.component";
 import { DownloadLocalPassComponent } from "../vault/popup/settings/download-localpass.component";
-import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { MoreFromLocalPassPageComponent } from "../vault/popup/settings/more-from-localpass-page.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
@@ -155,6 +158,12 @@ export interface RouteDataProperties extends RouteCacheOptions {
 
   /** Marks the import shell route; NoRouteReuseStrategy reuses it across its child routes. */
   importShell?: boolean;
+
+  /** Renders a shared desktop page in its 380px popup layout. */
+  compact?: boolean;
+
+  /** The page the local-vault creation flow opens when the user chose restore-from-file. */
+  importRoute?: string;
 
   /**
    * A boolean to indicate that the URL should not be saved in memory in the BrowserRouterService.
@@ -258,21 +267,21 @@ const routes: Routes = [
     path: "new-item-v2",
     component: NewItemV2Component,
     canActivate: [authGuard],
-    data: { elevation: 2 } satisfies RouteDataProperties,
+    data: { elevation: 2, compact: true } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：方向 C 的新建 / 编辑表单，靠 query 上的 kind 与 cipherId 区分。
     path: "edit-item-v2",
     component: ItemFormV2Component,
     canActivate: [authGuard],
-    data: { elevation: 2 } satisfies RouteDataProperties,
+    data: { elevation: 2, compact: true } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：动态口令二维码（扫码进认证器）。
     path: "totp-qr-v2",
     component: TotpQrV2Component,
     canActivate: [authGuard],
-    data: { elevation: 3 } satisfies RouteDataProperties,
+    data: { elevation: 3, compact: true } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：方向 C 的条目详情（点行复制）。
@@ -363,7 +372,7 @@ const routes: Routes = [
     path: "import-source-v2",
     component: ImportSourceV2Component,
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
     path: "import-source-select",
@@ -415,7 +424,7 @@ const routes: Routes = [
     path: "import-google-auth",
     component: GoogleAuthImportV2Component,
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
     path: "export",
@@ -449,14 +458,14 @@ const routes: Routes = [
     path: "security-key",
     component: SecurityKeyComponent,
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
     // LocalPass: cloud backup settings for a local vault.
     path: "backup-settings",
     component: BackupSettingsV2Component,
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
     path: "autofill",
@@ -496,9 +505,9 @@ const routes: Routes = [
   },
   {
     path: "folders",
-    component: FoldersComponent,
+    component: FoldersV2Component,
     canActivate: [authGuard],
-    data: { elevation: 2 } satisfies RouteDataProperties,
+    data: { elevation: 2, compact: true } satisfies RouteDataProperties,
   },
   {
     path: "blocked-domains",
@@ -520,9 +529,9 @@ const routes: Routes = [
   },
   {
     path: "appearance",
-    component: AppearanceComponent,
+    component: AppearanceV2Component,
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
     path: "admin",
@@ -663,6 +672,9 @@ const routes: Routes = [
           pageTitle: {
             key: "createLocalVault",
           },
+          // After a restore-from-file the popup shows LocalPass's own import picker; the shared
+          // route would open the import wizard in a separate tab.
+          importRoute: "/import-source-v2",
           elevation: 1,
           showBackButton: true,
           hidePageIcon: true,
@@ -862,9 +874,9 @@ const routes: Routes = [
   },
   {
     path: "about",
-    component: AboutPageV2Component,
+    component: AboutV2Component,
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
     path: "more-from-localpass",
@@ -972,7 +984,13 @@ const routes: Routes = [
         path: "generator",
         component: GeneratorV2Component,
         canActivate: [authGuard],
-        data: { elevation: 0 } satisfies RouteDataProperties,
+        data: { elevation: 0, compact: true } satisfies RouteDataProperties,
+      },
+      {
+        path: "generator-history-v2",
+        component: GeneratorHistoryV2Component,
+        canActivate: [authGuard],
+        data: { elevation: 0, compact: true } satisfies RouteDataProperties,
       },
       {
         path: "settings",

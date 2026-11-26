@@ -18,6 +18,8 @@ import { StateProvider } from "../../platform/state";
 import { SyncService } from "../../platform/sync";
 import { UserId } from "../../types/guid";
 import { CipherService } from "../../vault/abstractions/cipher.service";
+import { LocalVaultWriter } from "../../vault/abstractions/local-vault-writer.abstraction";
+import { NoopLocalVaultWriter } from "../../vault/services/noop-local-vault-writer.service";
 import { InternalMasterPasswordServiceAbstraction } from "../master-password/abstractions/master-password.service.abstraction";
 
 import { EncryptedMigrator } from "./encrypted-migrator.abstraction";
@@ -49,6 +51,12 @@ export class DefaultEncryptedMigrator implements EncryptedMigrator {
     sdkService: SdkService,
     stateProvider: StateProvider,
     i18nService: I18nService,
+    /**
+     * Marks accounts that live only on this device. The encrypted migrations below exist to bring
+     * a server account's key state up to date, and several of them call the API. A local vault has
+     * no server, so none of them apply.
+     */
+    private readonly localVaultWriter: LocalVaultWriter = new NoopLocalVaultWriter(),
   ) {
     // Register migrations here
 
@@ -156,6 +164,13 @@ export class DefaultEncryptedMigrator implements EncryptedMigrator {
 
   async needsMigrations(userId: UserId): Promise<MigrationRequirement> {
     assertNonNullish(userId, "userId");
+
+    // Local accounts never sync and have no endpoint that would accept a key id, so every
+    // migration registered here is either meaningless or an outbound request that must not be
+    // attempted. The local write path already stores state in the shape the SDK expects.
+    if (await this.localVaultWriter.isLocalAccount(userId)) {
+      return "noMigrationNeeded";
+    }
 
     const migrationRequirements = await Promise.all(
       this.migrations.map(async ({ migration }) => migration.needsMigration(userId)),

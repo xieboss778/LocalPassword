@@ -90,11 +90,11 @@
 
 ## 6. 本地验证方式（每轮收工必须三绿）
 
-| 端 | 类型检查 | 模板检查 | 构建 |
-| --- | --- | --- | --- |
-| 扩展弹窗 | `npx tsc -p apps/browser/tsconfig.json --noEmit` | 由 webpack 构建覆盖 | `npm run build:prod:chrome --workspace @localpass/browser` |
-| 桌面端 | `npx tsc -p apps/desktop/tsconfig.json --noEmit` | `npx ngc -p apps/desktop/tsconfig.renderer.json --noEmit` | **本地不可用**，见下 |
-| 共享库 | `npx tsc -p libs/local-vault/tsconfig.json --noEmit` | — | `npx jest --config libs/local-vault/jest.config.js` |
+| 端       | 类型检查                                             | 模板检查                                                  | 构建                                                       |
+| -------- | ---------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------- |
+| 扩展弹窗 | `npx tsc -p apps/browser/tsconfig.json --noEmit`     | 由 webpack 构建覆盖                                       | `npm run build:prod:chrome --workspace @localpass/browser` |
+| 桌面端   | `npx tsc -p apps/desktop/tsconfig.json --noEmit`     | `npx ngc -p apps/desktop/tsconfig.renderer.json --noEmit` | **本地不可用**，见下                                       |
+| 共享库   | `npx tsc -p libs/local-vault/tsconfig.json --noEmit` | —                                                         | `npx jest --config libs/local-vault/jest.config.js`        |
 
 **桌面端 renderer 构建本地跑不了**：`npm run build:bit:renderer` 依赖 `localpass_license/bit-desktop/webpack.config.js`，本仓库没有这个覆盖层目录，webpack 直接报找不到配置。这不是代码问题——用 `ngc`（`strictTemplates: true`）做模板类型检查，等价覆盖 `NG8001` 这类模板错误。
 
@@ -116,13 +116,13 @@ CI 的 windows / chrome / 静态检查三个 job 仍然能验证真实构建，�
 
 **未完成**：
 
-| 屏 | 现状 | 说明 |
-| --- | --- | --- |
-| 自动填充确认（autofill） | 上游 AutofillConfirmationDialogComponent | 功能完整、样式沿用上游；换方向 C 需要改 dialog 壳 |
-| 导入确认/结果 | 上游 importer-ui 流程 | 只在导入后出现，方向 C 未覆盖 |
-| 组织范围保险库 | **已移植**（第 24 轮） | 新列表按 `organizationId` 收窄，`my-items` 再收缩到「不属于任何集合」；旧 806 行组件已删除 |
-| 集合级下钻 / 保险库切换器 | 未做 | 上游 `VaultScope` 完整语义（集合、共享文件夹下钻、vault switcher）不在这一版里；`shared-folders` 路由仍用各自组件 |
-| 桌面端文件夹 / Send | 上游组件 | Send 功能已从产品移除，应直接不渲染而非改样式 |
-| 解锁屏（unlock） | 上游 LockComponent | 与首次设置同源，可下一轮换 |
+| 屏                        | 现状                                     | 说明                                                                                                              |
+| ------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 自动填充确认（autofill）  | 上游 AutofillConfirmationDialogComponent | 功能完整、样式沿用上游；换方向 C 需要改 dialog 壳                                                                 |
+| 导入确认/结果             | 上游 importer-ui 流程                    | 只在导入后出现，方向 C 未覆盖                                                                                     |
+| 组织范围保险库            | **已移植**（第 24 轮）                   | 新列表按 `organizationId` 收窄，`my-items` 再收缩到「不属于任何集合」；旧 806 行组件已删除                        |
+| 集合级下钻 / 保险库切换器 | 未做                                     | 上游 `VaultScope` 完整语义（集合、共享文件夹下钻、vault switcher）不在这一版里；`shared-folders` 路由仍用各自组件 |
+| 桌面端文件夹 / Send       | 上游组件                                 | Send 功能已从产品移除，应直接不渲染而非改样式                                                                     |
+| 解锁屏（unlock）          | 上游 LockComponent                       | 与首次设置同源，可下一轮换                                                                                        |
 
 对齐原则：能复用同一份组件的就复用到两端；不能复用的先记在这里，不假装修好了。

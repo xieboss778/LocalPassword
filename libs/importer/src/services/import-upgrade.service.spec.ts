@@ -17,6 +17,7 @@ import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.serv
 import { OrganizationId } from "@localpass/common/types/guid";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { CipherType } from "@localpass/common/vault/enums";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
@@ -64,6 +65,7 @@ describe("ImportUpgradeService", () => {
       configService,
       mock<SdkService>(),
       mock<LogService>(),
+      mock<LocalVaultWriter>(),
     );
   });
 
@@ -250,6 +252,7 @@ describe("ImportUpgradeService", () => {
         configService,
         mock<SdkService>(),
         mock<LogService>(),
+        mock<LocalVaultWriter>(),
       );
       importService["handleIndividualImport"] = jest.fn();
       importService["handleOrganizationalImport"] = jest.fn();

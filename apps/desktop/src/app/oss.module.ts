@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
+import { LpToastComponent } from "@localpass/angular/local-ui";
 import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
 import { IconModule, SpinnerComponent } from "@localpass/components";
 
@@ -17,6 +18,7 @@ import { ServicesModule } from "./services/services.module";
   imports: [
     BrowserAnimationsModule,
     JslibModule,
+    LpToastComponent,
     IconModule,
     SpinnerComponent,
     ReactiveFormsModule,
@@ -27,6 +29,7 @@ import { ServicesModule } from "./services/services.module";
   exports: [
     BrowserAnimationsModule,
     JslibModule,
+    LpToastComponent,
     IconModule,
     SpinnerComponent,
     ReactiveFormsModule,

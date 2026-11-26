@@ -24,30 +24,6 @@
           <h2 bitTypography="h6">{{ "unlockMethods" | i18n }}</h2>
         </bit-section-header>
         <bit-card>
-          @if (!(sharedUnlockFeatureEnabled$ | async)) {
-            <bit-form-control [disableMargin]="!((pinEnabled$ | async) || this.form.value.pin)">
-              <input bitCheckbox id="biometric" type="checkbox" formControlName="biometric" />
-              <bit-label for="biometric" class="tw-whitespace-normal">
-                {{ "unlockWithBiometrics" | i18n }}
-              </bit-label>
-            </bit-form-control>
-          }
-          @if (this.form.value.biometric && !(sharedUnlockFeatureEnabled$ | async)) {
-            <bit-form-control
-              class="tw-pl-5"
-              [disableMargin]="!((pinEnabled$ | async) || this.form.value.pin)"
-            >
-              <input
-                bitCheckbox
-                id="autoBiometricsPrompt"
-                type="checkbox"
-                formControlName="enableAutoBiometricsPrompt"
-              />
-              <bit-label for="autoBiometricsPrompt" class="tw-whitespace-normal">
-                {{ "enableAutoBiometricsPrompt" | i18n }}
-              </bit-label>
-            </bit-form-control>
-          }
           @if ((pinEnabled$ | async) || this.form.value.pin) {
             <bit-form-control
               [disableMargin]="
@@ -122,38 +98,6 @@
         </bit-card>
       </bit-section>
 
-      <bit-section>
-        <bit-section-header>
-          <h2 bitTypography="h6">{{ "manageDevices" | i18n }}</h2>
-        </bit-section-header>
-        <bit-item>
-          <button bit-item-content type="button" appStopClick routerLink="/device-management">
-            {{ "devices" | i18n }}
-            <bit-icon slot="end" name="bwi-angle-right" class="tw-text-lg"></bit-icon>
-          </button>
-        </bit-item>
-      </bit-section>
-
-      @if (phishingDetectionAvailable$ | async) {
-        <bit-section>
-          <bit-section-header>
-            <h2 bitTypography="h6">{{ "phishingBlocker" | i18n }}</h2>
-          </bit-section-header>
-          <bit-card>
-            <bit-form-control disableMargin>
-              <bit-switch
-                formControlName="enablePhishingDetection"
-                id="phishingDetectionAction"
-              ></bit-switch>
-              <bit-label for="phishingDetectionAction">{{
-                "enablePhishingDetection" | i18n
-              }}</bit-label>
-              <bit-hint>{{ "enablePhishingDetectionDesc" | i18n }}</bit-hint>
-            </bit-form-control>
-          </bit-card>
-        </bit-section>
-      }
-
       <bit-section disableMargin>
         <bit-section-header>
           <h2 bitTypography="h6">{{ "otherOptions" | i18n }}</h2>
@@ -163,20 +107,6 @@
             {{ "fingerprintPhrase" | i18n }}
           </button>
         </bit-item>
-        <bit-item>
-          <button bit-item-content type="button" appStopClick (click)="twoStep()">
-            {{ "twoStepLogin" | i18n }}
-            <bit-icon slot="end" name="bwi-external-link"></bit-icon>
-          </button>
-        </bit-item>
-        @if (showChangeMasterPass) {
-          <bit-item>
-            <button bit-item-content type="button" appStopClick (click)="changePassword()">
-              {{ "changeMasterPassword" | i18n }}
-              <bit-icon slot="end" name="bwi-angle-right" class="tw-text-lg"></bit-icon>
-            </button>
-          </bit-item>
-        }
       </bit-section>
     </div>
   }

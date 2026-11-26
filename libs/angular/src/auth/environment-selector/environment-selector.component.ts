@@ -40,6 +40,14 @@ export class EnvironmentSelectorComponent implements OnDestroy {
       ),
     );
 
+  /**
+   * LocalPass 的地址固定指向哨兵域名，没有任何服务器可选。此时环境选择器只会在解锁页
+   * 暴露一个不存在的地址，直接不渲染。
+   */
+  protected localOnly$: Observable<boolean> = this.environmentService.globalEnvironment$.pipe(
+    map((env) => isSentinelUrl(env.getApiUrl())),
+  );
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -77,5 +85,14 @@ export class EnvironmentSelectorComponent implements OnDestroy {
     }
 
     await this.environmentService.setEnvironment(option);
+  }
+}
+
+/** `.invalid` 是保留域名，本地保险库用它占位；这样的地址没有可选的环境。 */
+function isSentinelUrl(url: string): boolean {
+  try {
+    return new URL(url).hostname.endsWith(".invalid");
+  } catch {
+    return false;
   }
 }

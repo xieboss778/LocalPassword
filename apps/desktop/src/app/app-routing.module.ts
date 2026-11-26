@@ -1,6 +1,5 @@
-import { inject, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { map } from "rxjs";
 
 import { AuthenticationTimeoutComponent } from "@localpass/angular/auth/components/authentication-timeout.component";
 import { AuthRoute } from "@localpass/angular/auth/constants";
@@ -29,7 +28,11 @@ import {
 import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
 import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
-import { GeneratorV2Component } from "@localpass/angular/tools/generator";
+import { FoldersV2Component } from "@localpass/angular/tools/folders";
+import {
+  GeneratorHistoryV2Component,
+  GeneratorV2Component,
+} from "@localpass/angular/tools/generator";
 import { ItemFormV2Component, NewItemV2Component } from "@localpass/angular/tools/item-entry";
 import {
   DevicesIcon,
@@ -51,7 +54,6 @@ import {
   NewDeviceVerificationComponent,
 } from "@localpass/auth/angular";
 import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
-import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@localpass/components";
 import { canActivateImportType, IMPORT_DESTINATION_ROUTE_PATH } from "@localpass/importer-ui";
 import {
@@ -87,8 +89,12 @@ import { VaultDesktopV2Component } from "../vault/app/vault-desktop-v2/vault-des
 import { VaultComponent } from "../vault/app/vault-v3/vault.component";
 
 import { DesktopLayoutComponent } from "./layout/desktop-layout.component";
+import { LocalVaultLayoutComponent } from "./layout/local-vault-layout.component";
 import { SettingsDesktopV2Component } from "./settings-desktop-v2/settings-desktop-v2.component";
+import { DataSafetyDesktopV2Component } from "./tools/data-safety/data-safety-desktop-v2.component";
+import { ExportDesktopV2Component } from "./tools/export/export-desktop-v2.component";
 import { ImportShellDesktopComponent } from "./tools/import/import-shell-desktop.component";
+import { NetworkGateDesktopV2Component } from "./tools/network-gate/network-gate-desktop-v2.component";
 import { unsavedSendEditsGuard } from "./tools/send/guards/unsaved-send-edits.guard";
 import { SendComponent } from "./tools/send/send.component";
 
@@ -501,16 +507,121 @@ export const routes: Routes = [
     ],
   },
   {
+    // LocalPassword：方向 C 的桌面端外壳（左 rail + 右侧内容）。所有本地保险库页面
+    // 都在这里，主界面不再是上游的 Bitwarden 侧栏。
+    path: "",
+    component: LocalVaultLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: "vault",
+        pathMatch: "full",
+        component: VaultDesktopV2Component,
+        data: { pageTitle: { key: "vault" } } satisfies RouteDataProperties,
+      },
+      {
+        // 旧链接与书签仍可用。
+        path: "vault-desktop-v2",
+        pathMatch: "full",
+        redirectTo: "vault",
+      },
+      {
+        path: "folders-desktop-v2",
+        component: FoldersV2Component,
+        data: { pageTitle: { key: "myFolders" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "new-item-v2",
+        component: NewItemV2Component,
+        data: { pageTitle: { key: "newItem" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "edit-item-v2",
+        component: ItemFormV2Component,
+        data: { pageTitle: { key: "editItem" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "generator",
+        component: GeneratorV2Component,
+        data: { pageTitle: { key: "generator" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "generator-history-v2",
+        component: GeneratorHistoryV2Component,
+        data: { pageTitle: { key: "generatorHistory" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "export",
+        component: ExportDesktopV2Component,
+        data: { pageTitle: { key: "exportNoun" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "trash-desktop-v2",
+        component: TrashDesktopV2Component,
+        data: { pageTitle: { key: "trash" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "settings-desktop-v2",
+        component: SettingsDesktopV2Component,
+        data: { pageTitle: { key: "settings" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "backup-settings",
+        component: BackupSettingsV2Component,
+        data: { pageTitle: { key: "cloudBackup" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "network-gate",
+        component: NetworkGateDesktopV2Component,
+        data: { pageTitle: { key: "networkGate" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "data-safety",
+        component: DataSafetyDesktopV2Component,
+        data: { pageTitle: { key: "dataAndSafety" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "import",
+        component: ImportShellDesktopComponent,
+        data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
+        children: [
+          {
+            path: "",
+            pathMatch: "full",
+            // Lazy load vendor icon set
+            loadComponent: () =>
+              import("./tools/import/import-source-select-desktop.component").then(
+                (mod) => mod.ImportSourceSelectDesktopComponent,
+              ),
+            data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
+          },
+          {
+            path: ":importType",
+            canActivate: [canActivateImportType("/import")],
+            loadComponent: () =>
+              import("./tools/import/import-controls-desktop.component").then(
+                (mod) => mod.ImportControlsDesktopComponent,
+              ),
+            data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
+          },
+          {
+            path: IMPORT_DESTINATION_ROUTE_PATH,
+            canActivate: [canActivateImportType("/import")],
+            loadComponent: () =>
+              import("./tools/import/import-destination-desktop.component").then(
+                (mod) => mod.ImportDestinationDesktopComponent,
+              ),
+            data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
+          },
+        ],
+      },
+    ],
+  },
+  {
     path: "",
     component: DesktopLayoutComponent,
     canActivate: [authGuard],
     children: [
-      {
-        // LocalPassword：方向 C 的桌面端三栏保险库（先独立路由，与旧界面对照）。
-        path: "vault-desktop-v2",
-        component: VaultDesktopV2Component,
-        data: { pageTitle: { key: "vault" } } satisfies RouteDataProperties,
-      },
       {
         path: "vault",
         canActivate: [vaultFilterLegacyRedirectGuard],
@@ -580,35 +691,6 @@ export const routes: Routes = [
         ],
       },
       {
-        // LocalPassword：新建条目第一步（与扩展共用组件），保存后回桌面列表。
-        path: "new-item-v2",
-        component: NewItemV2Component,
-        data: { pageTitle: { key: "newItem" } } satisfies RouteDataProperties,
-      },
-      {
-        path: "edit-item-v2",
-        component: ItemFormV2Component,
-        data: { pageTitle: { key: "editItem" } } satisfies RouteDataProperties,
-      },
-      {
-        // LocalPassword：方向 C 的生成器（与扩展共用同一个组件）。
-        path: "generator",
-        component: GeneratorV2Component,
-        data: { pageTitle: { key: "generator" } } satisfies RouteDataProperties,
-      },
-      {
-        // LocalPassword：桌面端回收站。
-        path: "trash-desktop-v2",
-        component: TrashDesktopV2Component,
-        data: { pageTitle: { key: "trash" } } satisfies RouteDataProperties,
-      },
-      {
-        // LocalPassword：方向 C 的桌面端设置（Touch ID 只在这一页出现）。
-        path: "settings-desktop-v2",
-        component: SettingsDesktopV2Component,
-        data: { pageTitle: { key: "settings" } } satisfies RouteDataProperties,
-      },
-      {
         path: "folders",
         component: MyFoldersComponent,
         canActivate: [canAccessFeature(FeatureFlag.VFO1Foundation, true, "/vault")],
@@ -630,54 +712,6 @@ export const routes: Routes = [
         component: SendComponent,
         data: { pageTitle: { key: "send" } } satisfies RouteDataProperties,
         canDeactivate: [unsavedSendEditsGuard],
-      },
-      {
-        // LocalPassword：方向 C 的备份设置（与扩展共用同一个组件）。
-        path: "backup-settings",
-        component: BackupSettingsV2Component,
-        canActivate: [authGuard],
-        data: { pageTitle: { key: "cloudBackup" } } satisfies RouteDataProperties,
-      },
-      {
-        path: "import",
-        canMatch: [
-          () =>
-            inject(ConfigService)
-              .getFeatureFlag$(FeatureFlag.ImportUpgrade)
-              .pipe(map((flagValue) => flagValue === true)),
-        ],
-        component: ImportShellDesktopComponent,
-        data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
-        children: [
-          {
-            path: "",
-            pathMatch: "full",
-            // Lazy load vendor icon set
-            loadComponent: () =>
-              import("./tools/import/import-source-select-desktop.component").then(
-                (mod) => mod.ImportSourceSelectDesktopComponent,
-              ),
-            data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
-          },
-          {
-            path: ":importType",
-            canActivate: [canActivateImportType("/import")],
-            loadComponent: () =>
-              import("./tools/import/import-controls-desktop.component").then(
-                (mod) => mod.ImportControlsDesktopComponent,
-              ),
-            data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
-          },
-          {
-            path: IMPORT_DESTINATION_ROUTE_PATH,
-            canActivate: [canActivateImportType("/import")],
-            loadComponent: () =>
-              import("./tools/import/import-destination-desktop.component").then(
-                (mod) => mod.ImportDestinationDesktopComponent,
-              ),
-            data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
-          },
-        ],
       },
     ],
   },

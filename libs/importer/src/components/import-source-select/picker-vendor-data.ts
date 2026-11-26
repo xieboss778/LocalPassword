@@ -94,6 +94,23 @@ export function isPickerVendor(id: string): boolean {
   return Object.prototype.hasOwnProperty.call(PICKER_VENDOR_DATA, id);
 }
 
+/**
+ * Resolve a concrete format id (e.g. `localpassjson`) to the vendor card that handles it.
+ * The custom LocalPass source list links each format directly; the import controls expect a
+ * vendor id. Unknown ids stay unresolved and fall back to the picker’s own redirect.
+ */
+export function pickerVendorFor(id: string): UpgradeImportType | undefined {
+  if (isPickerVendor(id)) {
+    return id as UpgradeImportType;
+  }
+  for (const [vendor, data] of Object.entries(PICKER_VENDOR_DATA)) {
+    if (data.formats?.includes(id as ImportType)) {
+      return vendor as UpgradeImportType;
+    }
+  }
+  return undefined;
+}
+
 // Caller must confirm isPickerVendor(id) first — the ! assumes an entry exists.
 export function pickerDisplayNameFor(id: string): string {
   return PICKER_VENDOR_DATA[id as UpgradeImportType]!.displayName;

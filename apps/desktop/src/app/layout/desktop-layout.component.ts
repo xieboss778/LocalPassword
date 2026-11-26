@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { of } from "rxjs";
 
-import { PasswordManagerLogo } from "@localpass/assets/svg";
+import { LocalPassLogo } from "@localpass/assets/svg";
 import { DeviceType } from "@localpass/common/enums";
 import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
@@ -43,7 +43,7 @@ export class DesktopLayoutComponent {
   private platformUtilsService = inject(PlatformUtilsService);
   private router = inject(Router);
 
-  protected readonly logo = PasswordManagerLogo;
+  protected readonly logo = LocalPassLogo;
 
   // LocalPass: Send relays a secret through a server, so a local vault never offers it.
   protected readonly sendEnabled = toSignal(of(false), { initialValue: false });
@@ -54,7 +54,9 @@ export class DesktopLayoutComponent {
   );
 
   // TODO: remove once pm-35053-import-upgrade is retired
-  protected readonly importUpgradeEnabled = toSignal(
+  // The flag's default is the literal `true`, so spell out `boolean` or the signal only accepts
+  // `true` as its initial value.
+  protected readonly importUpgradeEnabled = toSignal<boolean, boolean>(
     this.configService.getFeatureFlag$(FeatureFlag.ImportUpgrade),
     { initialValue: false },
   );

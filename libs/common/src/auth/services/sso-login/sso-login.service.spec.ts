@@ -196,7 +196,7 @@ describe("SSOLoginService ", () => {
 
       it("should add an entry to the cache when there already exists an entry in the cache that has the same email but a different webVaultUrl", async () => {
         // Arrange
-        const euUrl = "https://vault.local.invalid";
+        const euUrl = "https://vault.eu.local.invalid";
         mockStateProvider.global
           .getFake(SSO_REQUIRED_CACHE)
           .stateSubject.next([entry(email, euUrl)]);
@@ -366,7 +366,7 @@ describe("SSOLoginService ", () => {
 
     it("should NOT remove an entry when the email matches but the resolved webVaultUrl differs", async () => {
       // Arrange
-      const euUrl = "https://vault.local.invalid";
+      const euUrl = "https://vault.eu.local.invalid";
       mockEnvironmentService.getEnvironment$.mockReturnValue(
         of({ getWebVaultUrl: () => euUrl } as Environment),
       );

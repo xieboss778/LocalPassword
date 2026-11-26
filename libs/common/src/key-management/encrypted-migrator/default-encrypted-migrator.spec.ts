@@ -19,6 +19,7 @@ import { StateProvider } from "../../platform/state";
 import { SyncService } from "../../platform/sync";
 import { UserId } from "../../types/guid";
 import { CipherService } from "../../vault/abstractions/cipher.service";
+import { LocalVaultWriter } from "../../vault/abstractions/local-vault-writer.abstraction";
 import { InternalMasterPasswordServiceAbstraction } from "../master-password/abstractions/master-password.service.abstraction";
 
 import { DefaultEncryptedMigrator } from "./default-encrypted-migrator";
@@ -47,6 +48,7 @@ describe("EncryptedMigrator", () => {
   const mockPlatformUtilsService = mock<PlatformUtilsService>();
   const mockUserKeyRotationService = mock<UserKeyRotationServiceAbstraction>();
   const mockCipherService = mock<CipherService>();
+  const mockLocalVaultWriter = mock<LocalVaultWriter>();
 
   let sut: DefaultEncryptedMigrator;
   const mockMigration = mock<MinimumKdfMigration>();
@@ -85,6 +87,9 @@ describe("EncryptedMigrator", () => {
     // Biometric migration is only registered on desktop
     mockPlatformUtilsService.getClientType.mockReturnValue(ClientType.Desktop);
 
+    // Server-account migrations apply by default; local accounts opt out of all of them.
+    mockLocalVaultWriter.isLocalAccount.mockResolvedValue(false);
+
     sut = new DefaultEncryptedMigrator(
       mockKdfConfigService,
       mockLogService,
@@ -100,6 +105,7 @@ describe("EncryptedMigrator", () => {
       mockSdkService,
       mockStateProvider,
       mockI18nService,
+      mockLocalVaultWriter,
     );
   });
 
@@ -122,6 +128,16 @@ describe("EncryptedMigrator", () => {
       await sut.runMigrations(mockUserId, null);
 
       expect(mockMigration.needsMigration).toHaveBeenCalledWith(mockUserId);
+      expect(mockMigration.runMigrations).not.toHaveBeenCalled();
+    });
+
+    it("should not run any migration for a local account", async () => {
+      mockLocalVaultWriter.isLocalAccount.mockResolvedValue(true);
+      mockMigration.needsMigration.mockResolvedValue("needsMigration");
+
+      await sut.runMigrations(mockUserId, mockMasterPassword);
+
+      expect(mockMigration.needsMigration).not.toHaveBeenCalled();
       expect(mockMigration.runMigrations).not.toHaveBeenCalled();
     });
 
@@ -225,6 +241,18 @@ describe("EncryptedMigrator", () => {
 
       expect(result).toBe("noMigrationNeeded");
       expect(mockMigration.needsMigration).toHaveBeenCalledWith(mockUserId);
+    });
+
+    it("should return 'noMigrationNeeded' for a local account without consulting any migration", async () => {
+      mockLocalVaultWriter.isLocalAccount.mockResolvedValue(true);
+      mockMigration.needsMigration.mockResolvedValue("needsMigration");
+      mockUserKeyIdBackfillMigration.needsMigration.mockResolvedValue("needsMigration");
+
+      const result = await sut.needsMigrations(mockUserId);
+
+      expect(result).toBe("noMigrationNeeded");
+      expect(mockMigration.needsMigration).not.toHaveBeenCalled();
+      expect(mockUserKeyIdBackfillMigration.needsMigration).not.toHaveBeenCalled();
     });
 
     it("should return 'needsMigration' when at least one migration needs to run", async () => {

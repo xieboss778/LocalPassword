@@ -9,6 +9,7 @@ import {
   isSecretCarrier,
   ItemKind,
   KIND_FIELD,
+  kindFromFields,
   kindOf,
   nativeTypeOf,
   setKind,
@@ -60,6 +61,14 @@ describe("item kinds", () => {
     const cipher = cipherWith(CipherType.Login, [kindField("from-the-future")]);
 
     expect(kindOf(cipher)).toBe(ItemKind.Login);
+  });
+
+  it("reads a marker from a list view's plain field list", () => {
+    // SDK 列表视图里的字段只有明文名值，没有 FieldView 的方法。
+    expect(kindFromFields([{ name: KIND_FIELD, value: ItemKind.Server }], CipherType.Login)).toBe(
+      ItemKind.Server,
+    );
+    expect(kindFromFields([], CipherType.SecureNote)).toBe(ItemKind.Note);
   });
 
   it("ignores a marker that contradicts the native type", () => {

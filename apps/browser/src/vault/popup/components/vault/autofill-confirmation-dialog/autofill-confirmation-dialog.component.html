@@ -1,12 +1,12 @@
 <bit-dialog [title]="dialogTitle()">
   <div bitDialogContent class="tw-flex tw-flex-col tw-gap-2">
-    <p class="tw-m-0 tw-text-[12px] tw-leading-relaxed tw-text-[var(--lp-ink-2)]">
+    <p class="tw-m-0 tw-text-sm tw-leading-relaxed tw-text-main">
       {{ dialogBody() }}
     </p>
 
     @if (formattedSavedUrls().length === 1) {
       <p
-        class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+        class="tw-m-0 tw-mt-2 tw-text-xs tw-font-medium tw-uppercase tw-tracking-wider tw-text-muted"
       >
         {{ "savedWebsite" | i18n }}
       </p>
@@ -27,9 +27,7 @@
 
     @if (formattedSavedUrls().length > 1) {
       <div class="tw-mt-2 tw-flex tw-items-center tw-justify-between">
-        <p
-          class="tw-m-0 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
-        >
+        <p class="tw-m-0 tw-text-xs tw-font-medium tw-uppercase tw-tracking-wider tw-text-muted">
           {{ "savedWebsites" | i18n: formattedSavedUrls().length.toString() }}
         </p>
         <button
@@ -64,7 +62,7 @@
     }
 
     <p
-      class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+      class="tw-m-0 tw-mt-2 tw-text-xs tw-font-medium tw-uppercase tw-tracking-wider tw-text-muted"
     >
       {{ "currentWebsite" | i18n }}
     </p>
@@ -89,7 +87,7 @@
 
     @if (currentUrlMatchesNeverUri()) {
       <p
-        class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+        class="tw-m-0 tw-mt-2 tw-text-xs tw-font-medium tw-uppercase tw-tracking-wider tw-text-muted"
       >
         {{ "uriMatchRule" | i18n }}
       </p>

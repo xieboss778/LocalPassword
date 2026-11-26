@@ -84,7 +84,7 @@ export class AnonLayoutComponent {
     this.environmentService.environment$.pipe(
       map((env) => {
         const host = env.getHostname();
-        return host === "local.invalid" ? "" : host;
+        return host.endsWith(".invalid") ? "" : host;
       }),
     ),
   );

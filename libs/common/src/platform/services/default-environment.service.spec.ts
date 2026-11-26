@@ -130,11 +130,7 @@ describe("EnvironmentService", () => {
         expect(env.getNotificationsUrl()).toBe(expectedUrls.notifications);
         expect(env.getEventsUrl()).toBe(expectedUrls.events);
         expect(env.getScimUrl()).toBe(expectedUrls.scim);
-        if (region === "US") {
-          expect(env.getSendUrl()).toBe(expectedUrls.send + "/#");
-        } else {
-          expect(env.getSendUrl()).toBe(expectedUrls.send + "/#/send/");
-        }
+        expect(env.getSendUrl()).toBe(expectedUrls.send);
         expect(env.getKeyConnectorUrl()).toBe(undefined);
         expect(env.isCloud()).toBe(true);
         expect(env.getUrls()).toEqual({
@@ -297,11 +293,7 @@ describe("EnvironmentService", () => {
       expect(env.getNotificationsUrl()).toBe(expectedUrls.notifications);
       expect(env.getEventsUrl()).toBe(expectedUrls.events);
       expect(env.getScimUrl()).toBe(expectedUrls.scim);
-      if (region === "US") {
-        expect(env.getSendUrl()).toBe(expectedUrls.send + "/#");
-      } else {
-        expect(env.getSendUrl()).toBe(expectedUrls.send + "/#/send/");
-      }
+      expect(env.getSendUrl()).toBe(expectedUrls.send);
       expect(env.getKeyConnectorUrl()).toBe(undefined);
       expect(env.isCloud()).toBe(true);
       expect(env.getUrls()).toEqual({

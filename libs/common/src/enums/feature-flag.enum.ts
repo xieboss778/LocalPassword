@@ -139,7 +139,8 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.SSHecdsa]: FALSE,
 
   /* Tools */
-  [FeatureFlag.ImportUpgrade]: FALSE,
+  // LocalPass 没有服务器下发开关：导入向导是唯一可用的导入界面，默认开启。
+  [FeatureFlag.ImportUpgrade]: true,
   [FeatureFlag.PM34203TemporaryItemSharing]: FALSE,
 
   /* DIRT */

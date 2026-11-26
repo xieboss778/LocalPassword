@@ -25,7 +25,8 @@ import { CipherFormContainer } from "../../cipher-form-container";
 import { CipherFormHTTPAuthenticationService } from "../../services/cipher-form-http-authentication.service";
 import { CustomFieldsComponent } from "../custom-fields/custom-fields.component";
 
-const HTTP_AUTHENTICATION_HELP_ARTICLE_URL = "https://github.com/xieboss778/LocalPass/tree/main/docs";
+const HTTP_AUTHENTICATION_HELP_ARTICLE_URL =
+  "https://github.com/xieboss778/LocalPass/tree/main/docs";
 
 // FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

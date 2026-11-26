@@ -1,108 +1,111 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { RouterModule } from "@angular/router";
+import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpEmptyComponent,
-  LpGroupComponent,
-  LpPageHeaderComponent,
+  LpKindTileComponent,
+  LpPopupHeaderComponent,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
-import { CipherType } from "@localpass/common/vault/enums";
-import { ButtonModule, DialogService, IconButtonModule } from "@localpass/components";
+import { CipherType } from "@localpass/common/vault/enums/cipher-type";
+import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
+import { DialogService, IconModule } from "@localpass/components";
+import { ItemKind, kindOf } from "@localpass/local-vault";
 
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
+import { PopupCipherViewLike } from "../../views/popup-cipher.view";
 
-const TYPE_EMOJI: Record<number, string> = {
-  [CipherType.Login]: "🔐",
-  [CipherType.SecureNote]: "📝",
-  [CipherType.Card]: "💳",
-  [CipherType.Identity]: "🪪",
-  [CipherType.SshKey]: "🗝️",
-};
-
-/** 回收站（方向 C）：每行两个动作，清空需要二次确认。 */
+/** 回收站（弹窗）：每行恢复/永久删除，清空需要二次确认。 */
 @Component({
   selector: "trash-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "tw-block tw-h-full" },
   imports: [
     CommonModule,
-    RouterModule,
     JslibModule,
-    ButtonModule,
-    IconButtonModule,
+    IconModule,
     LpEmptyComponent,
-    LpGroupComponent,
-    LpPageHeaderComponent,
+    LpKindTileComponent,
+    LpPopupHeaderComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
-      <lp-page-header [title]="i18n.t('trash')" [sub]="subtitle()">
-        @if (items().length) {
-          <button
-            type="button"
-            bitIconButton="bwi-trash"
-            [label]="i18n.t('emptyTrash')"
-            (click)="emptyTrash()"
-          ></button>
-        }
-      </lp-page-header>
+    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+      <lp-popup-header
+        [title]="i18n.t('trash')"
+        [sub]="subtitle()"
+        [back]="true"
+        (backTriggered)="back()"
+      >
+        <div slot="actions">
+          @if (items().length) {
+            <button
+              type="button"
+              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
+              [attr.aria-label]="i18n.t('emptyTrash')"
+              [attr.title]="i18n.t('emptyTrash')"
+              (click)="emptyTrash()"
+            >
+              <bit-icon name="bwi-trash" class="tw-text-base"></bit-icon>
+            </button>
+          }
+        </div>
+      </lp-popup-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
+      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
         @if (items().length === 0) {
-          <lp-empty
-            icon="🗑️"
-            [title]="i18n.t('noItemsInTrash')"
-            [text]="i18n.t('noItemsInTrashDesc')"
-          >
-          </lp-empty>
+          <div class="tw-grid tw-min-h-72 tw-place-items-center">
+            <lp-empty
+              icon="bwi-trash"
+              [title]="i18n.t('noItemsInTrash')"
+              [text]="i18n.t('noItemsInTrashDesc')"
+            ></lp-empty>
+          </div>
         } @else {
-          <lp-group [label]="i18n.t('itemsInTrash')">
+          <div
+            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+          >
             @for (item of items(); track item.id) {
               <div
-                class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-[#0000000a] tw-px-3.5 tw-py-2.5 last:tw-border-b-0"
+                class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-px-3 tw-py-2.5 last:tw-border-b-0"
               >
-                <span
-                  class="tw-w-[26px] tw-flex-none tw-text-center tw-text-[15px]"
-                  aria-hidden="true"
-                >
-                  {{ emojiFor(item) }}
-                </span>
+                <lp-kind-tile [kind]="kindFor(item)" size="sm"></lp-kind-tile>
                 <span class="tw-min-w-0 tw-flex-1">
-                  <span class="tw-block tw-truncate tw-text-[12.5px]">{{ item.name }}</span>
-                  <span class="tw-block tw-text-[10.5px] tw-text-[var(--lp-ink-3)]">
-                    {{ i18n.t("itemsInTrash") }}
-                  </span>
+                  <span class="tw-block tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
+                    item.name
+                  }}</span>
+                  <span class="tw-block tw-truncate tw-text-xs tw-text-muted">{{
+                    deletedLabel(item)
+                  }}</span>
                 </span>
                 <button
                   type="button"
-                  bitButton
-                  buttonType="secondary"
-                  size="small"
+                  class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
+                  [attr.aria-label]="i18n.t('restore')"
+                  [attr.title]="i18n.t('restore')"
                   (click)="restore(item.id)"
                 >
-                  {{ i18n.t("restore") }}
+                  <bit-icon name="bwi-undo" class="tw-text-base"></bit-icon>
                 </button>
                 <button
                   type="button"
-                  bitButton
-                  buttonType="danger"
-                  size="small"
+                  class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-danger-soft hover:tw-text-fg-danger"
+                  [attr.aria-label]="i18n.t('deleteForever')"
+                  [attr.title]="i18n.t('deleteForever')"
                   (click)="purge(item.id)"
                 >
-                  {{ i18n.t("deleteForever") }}
+                  <bit-icon name="bwi-trash" class="tw-text-base"></bit-icon>
                 </button>
               </div>
             }
-          </lp-group>
-
-          <p class="tw-px-4 tw-pt-3 tw-text-[10.5px] tw-leading-relaxed tw-text-[var(--lp-ink-3)]">
+          </div>
+          <p class="tw-px-2.5 tw-pt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
             {{ i18n.t("trashWarning") }}
           </p>
         }
@@ -116,13 +119,54 @@ export class TrashV2Component {
   private readonly cipherService = inject(CipherService);
   private readonly accountService = inject(AccountService);
   private readonly dialogService = inject(DialogService);
+  private readonly router = inject(Router);
 
   protected readonly items = toSignal(this.itemsService.deletedCiphers$, { initialValue: [] });
-  protected readonly subtitle = signal("");
 
-  protected emojiFor(item: unknown): string {
-    const type = (item as { type?: CipherType }).type ?? CipherType.Login;
-    return TYPE_EMOJI[type] ?? "📄";
+  protected readonly subtitle = computed(
+    () => `${this.items().length} ${this.i18n.t("items")} · ${this.i18n.t("trashHint")}`,
+  );
+
+  protected back(): void {
+    void this.router.navigateByUrl("/tabs/settings");
+  }
+
+  /**
+   * 回收站的数据可能是完整 `CipherView`，也可能来自 SDK 的列表视图 —— 后者没有自定义字段，
+   * 只有原生类型。有原生数字类型时走 `kindOf`（能读到 `lp:kind` 标记），否则按列表类型退回。
+   */
+  protected kindFor(item: PopupCipherViewLike): ItemKind {
+    if (!CipherViewLikeUtils.isCipherListView(item)) {
+      return kindOf(item);
+    }
+
+    // 列表视图没有自定义字段，读不到 `lp:kind` 标记，只能按 SDK 的原生类型回退。
+    switch (CipherViewLikeUtils.getType(item)) {
+      case CipherType.SecureNote:
+        return ItemKind.Note;
+      case CipherType.Card:
+      case CipherType.BankAccount:
+        return ItemKind.Card;
+      case CipherType.Identity:
+      case CipherType.Passport:
+      case CipherType.DriversLicense:
+        return ItemKind.Identity;
+      case CipherType.SshKey:
+        return ItemKind.SshKey;
+      default:
+        return ItemKind.Login;
+    }
+  }
+
+  protected deletedLabel(item: PopupCipherViewLike): string {
+    if (!item.deletedDate) {
+      return "";
+    }
+    const date = item.deletedDate instanceof Date ? item.deletedDate : new Date(item.deletedDate);
+    if (Number.isNaN(date.getTime())) {
+      return "";
+    }
+    return this.i18n.t("deletedOn", date.toLocaleDateString());
   }
 
   protected async restore(rawId: unknown): Promise<void> {
@@ -134,8 +178,8 @@ export class TrashV2Component {
   protected async purge(rawId: unknown): Promise<void> {
     const id = rawId as string;
     const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "deleteItem" },
-      content: { key: "deleteItemConfirmation" },
+      title: { key: "permanentlyDeleteItem" },
+      content: { key: "permanentlyDeleteItemConfirmation" },
       type: "warning",
     });
     if (!confirmed) {

@@ -90,7 +90,9 @@ describe("NewItemNudgeComponent", () => {
     expect(component.nudgeTitle).toBe("newSshNudgeTitle");
     expect(component.nudgeBody).toBe("newSshNudgeBodyOne");
     expect(component.nudgeBodyLinkText).toBe("newSshNudgeBodyTwo");
-    expect(component.nudgeBodyLinkUrl).toBe("https://github.com/xieboss778/LocalPass/tree/main/docs");
+    expect(component.nudgeBodyLinkUrl).toBe(
+      "https://github.com/xieboss778/LocalPass/tree/main/docs",
+    );
     expect(component.nudgeBodyBold).toBe("");
     expect(component.nudgeBodySuffix).toBe("");
     expect(component.dismissalNudgeType).toBe(NudgeType.NewSshItemStatus);

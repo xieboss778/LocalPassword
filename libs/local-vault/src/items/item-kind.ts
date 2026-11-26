@@ -77,12 +77,29 @@ export function isItemKind(value: unknown): value is ItemKind {
 
 /** 读条目类别；标记缺失、非法或与原生类型冲突时退回默认值。 */
 export function kindOf(cipher: CipherView): ItemKind {
-  const marker = findKindField(cipher)?.value;
+  return kindFromFields(cipher.fields, cipher.type);
+}
+
+/**
+ * 从解密后的字段列表读类别。弹窗拿到的是 SDK 的列表视图，没有完整条目，
+ * 但保留了自定义字段的明文名值，足以还原 `lp:kind` 标记。
+ */
+export function kindFromFields(
+  fields: readonly KindMarkerField[] | null | undefined,
+  nativeType: CipherType,
+): ItemKind {
+  const marker = fields?.find((field) => field.name === KIND_FIELD)?.value;
   if (!isItemKind(marker)) {
-    return defaultKindOf(cipher.type);
+    return defaultKindOf(nativeType);
   }
   // 标记与原生类型不匹配说明数据被外部工具改过：按原生类型走，别让界面显示错的字段。
-  return nativeTypeOf(marker) === cipher.type ? marker : defaultKindOf(cipher.type);
+  return nativeTypeOf(marker) === nativeType ? marker : defaultKindOf(nativeType);
+}
+
+/** 标记字段只需要名字和值；完整 FieldView 与 SDK FieldListView 都能传进来。 */
+export interface KindMarkerField {
+  readonly name?: string | null;
+  readonly value?: string | null;
 }
 
 /** 写入类别标记并对齐原生类型。 */

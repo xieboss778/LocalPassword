@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
 /**
- * 一组同类的行：小号大写标题 + 一张圆角卡片。
+ * 一组同类的行：小号大写标题 + 一张带描边的卡片。
  * 原型里「凭据 / 自动填充 / 自定义字段」每一段都是它。
  */
 @Component({
@@ -10,17 +10,16 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
   template: `
     @if (label()) {
       <div
-        class="tw-px-[18px] tw-pt-4 tw-pb-1.5 tw-text-[10.5px] tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+        class="tw-px-1 tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-text-muted"
       >
         {{ label() }}
       </div>
     }
-    <div
-      class="tw-mx-3 tw-overflow-hidden tw-rounded-[14px] tw-bg-[var(--lp-card)] tw-shadow-[0_1px_2px_#10131812]"
-    >
+    <div class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background">
       <ng-content />
     </div>
   `,
+  host: { class: "tw-block tw-px-4" },
 })
 export class LpGroupComponent {
   readonly label = input<string>("");

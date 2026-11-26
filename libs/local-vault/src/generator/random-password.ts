@@ -1,5 +1,7 @@
 /** 密码生成的纯逻辑：不碰 DOM、不碰服务，方便单测。 */
 
+import { randomIndex } from "./random";
+
 export interface PasswordOptions {
   readonly length: number;
   readonly upper: boolean;
@@ -87,18 +89,6 @@ function enabledSets(options: PasswordOptions): string[] {
 
 function pick(chars: string): string {
   return chars[randomIndex(chars.length)];
-}
-
-/** 拒绝采样，避免 `% n` 带来的偏斜。 */
-function randomIndex(bound: number): number {
-  const limit = Math.floor(0x100000000 / bound) * bound;
-  const buffer = new Uint32Array(1);
-  for (;;) {
-    crypto.getRandomValues(buffer);
-    if (buffer[0] < limit) {
-      return buffer[0] % bound;
-    }
-  }
 }
 
 function shuffle(chars: string[]): string[] {

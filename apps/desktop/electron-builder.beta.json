@@ -13,7 +13,7 @@
     "output": "dist",
     "app": "build"
   },
-  
+
   "afterPack": "scripts/after-pack.js",
   "beforePack": "scripts/before-pack.js",
   "appxManifestCreated": "scripts/appx-manifest-created.js",
@@ -35,10 +35,7 @@
     "electronUpdaterCompatibility": ">=0.0.1",
     "category": "public.app-category.productivity",
     "darkModeSupport": true,
-    
-    
-    
-    
+
     "extendInfo": {
       "LocalPassAppGroupIdentifier": "LTZ2PFU5D6.com.localpass.desktop.beta",
       "ITSAppUsesNonExemptEncryption": false,

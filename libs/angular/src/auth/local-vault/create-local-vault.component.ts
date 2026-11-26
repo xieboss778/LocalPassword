@@ -120,8 +120,11 @@ export class CreateLocalVaultComponent {
       });
 
       // Restoring from a file goes straight to the importer; otherwise the vault is ready.
+      // The import destination lives in route data because the browser and desktop import at
+      // different routes: the popup has its own LocalPass picker, the desktop window the shared one.
       const next = this.route.snapshot.queryParamMap.get("next");
-      await this.router.navigate([next === "import" ? "/import" : "/"]);
+      const importRoute: string = this.route.snapshot.data["importRoute"] ?? "/import";
+      await this.router.navigate([next === "import" ? importRoute : "/"]);
     } catch (error) {
       this.validationService.showError(error);
       this.errorMessage.set(this.i18nService.t("errorOccurred"));

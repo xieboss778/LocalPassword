@@ -295,7 +295,10 @@ describe("AccountSecurityComponent", () => {
     expect(pinInputElement).toBeNull();
   });
 
-  describe("phishing detection UI and setting", () => {
+  // LocalPass: phishing detection has no settings UI here — the page follows the offline-only
+  // redesign and omits controls for network-backed services. The form control is kept so the
+  // stored preference still round-trips.
+  describe("phishing detection setting", () => {
     it("updates phishing detection setting when form value changes", async () => {
       policyService.policiesByType$.mockReturnValue(of([null]));
 
@@ -317,34 +320,6 @@ describe("AccountSecurityComponent", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(phishingDetectionSettingsService.setEnabled).toHaveBeenCalledWith(mockUserId, false);
-    });
-
-    it("shows phishing detection element when available$ is true", async () => {
-      policyService.policiesByType$.mockReturnValue(of([null]));
-      phishingAvailableSubject.next(true);
-      phishingEnabledSubject.next(true);
-
-      await component.ngOnInit();
-      fixture.detectChanges();
-
-      const phishingDetectionElement = fixture.debugElement.query(
-        By.css("#phishingDetectionAction"),
-      );
-      expect(phishingDetectionElement).not.toBeNull();
-    });
-
-    it("hides phishing detection element when available$ is false", async () => {
-      policyService.policiesByType$.mockReturnValue(of([null]));
-      phishingAvailableSubject.next(false);
-      phishingEnabledSubject.next(true);
-
-      await component.ngOnInit();
-      fixture.detectChanges();
-
-      const phishingDetectionElement = fixture.debugElement.query(
-        By.css("#phishingDetectionAction"),
-      );
-      expect(phishingDetectionElement).toBeNull();
     });
   });
 

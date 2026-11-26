@@ -51,7 +51,10 @@ export class HelpMenu implements IMenubarMenu {
       id: "fileBugReport",
       label: this.localize("fileBugReport"),
       click: () =>
-        this.shell.openExternal("https://github.com/xieboss778/LocalPassword/issues", UrlType.WebUrl),
+        this.shell.openExternal(
+          "https://github.com/xieboss778/LocalPassword/issues",
+          UrlType.WebUrl,
+        ),
     };
   }
 
@@ -101,22 +104,26 @@ export class HelpMenu implements IMenubarMenu {
       {
         id: "twitter",
         label: "Twitter",
-        click: () => this.shell.openExternal("https://github.com/xieboss778/LocalPass", UrlType.WebUrl),
+        click: () =>
+          this.shell.openExternal("https://github.com/xieboss778/LocalPass", UrlType.WebUrl),
       },
       {
         id: "facebook",
         label: "Facebook",
-        click: () => this.shell.openExternal("https://github.com/xieboss778/LocalPass", UrlType.WebUrl),
+        click: () =>
+          this.shell.openExternal("https://github.com/xieboss778/LocalPass", UrlType.WebUrl),
       },
       {
         id: "github",
         label: "GitHub",
-        click: () => this.shell.openExternal("https://github.com/xieboss778/LocalPassword", UrlType.WebUrl),
+        click: () =>
+          this.shell.openExternal("https://github.com/xieboss778/LocalPassword", UrlType.WebUrl),
       },
       {
         id: "mastodon",
         label: "Mastodon",
-        click: () => this.shell.openExternal("https://github.com/xieboss778/LocalPass", UrlType.WebUrl),
+        click: () =>
+          this.shell.openExternal("https://github.com/xieboss778/LocalPass", UrlType.WebUrl),
       },
     ];
   }

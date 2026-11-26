@@ -1172,10 +1172,10 @@
     }
   },
   "deleteItemDesc": {
-    "message": "This item will be sent to your trash. After 30 days there, it will be permanently deleted."
+    "message": "This item will be sent to your trash. It stays there until you restore or permanently delete it."
   },
   "deleteItemsDesc": {
-    "message": "These items will be sent to your trash. After 30 days there, they will be permanently deleted."
+    "message": "These items will be sent to your trash. They stay there until you restore or permanently delete them."
   },
   "deleteItemPermanently": {
     "message": "Delete item permanently"
@@ -1592,6 +1592,9 @@
   },
   "masterPassword": {
     "message": "Master password"
+  },
+  "masterPasswordLocalDesc": {
+    "message": "Protects this vault · stays on this device"
   },
   "masterPassImportant": {
     "message": "Your master password cannot be recovered if you forget it!"
@@ -2349,6 +2352,27 @@
   },
   "clearGeneratorHistoryDescription": {
     "message": "If you continue, all entries will be permanently deleted from generator's history. Are you sure you want to continue?"
+  },
+  "generatorHistorySubtitle": {
+    "message": "Kept on this device only, never uploaded"
+  },
+  "generatorHistoryEmpty": {
+    "message": "No generator history yet"
+  },
+  "generatorHistoryEmptyHint": {
+    "message": "Values you generate and copy will appear here."
+  },
+  "generatorHistoryLocalOnly": {
+    "message": "Generator history stays on this device. It is never synced or written to logs."
+  },
+  "generatorHistoryCleared": {
+    "message": "Generator history cleared"
+  },
+  "generatorUsernameNotice": {
+    "message": "Usernames are built from a local word list. No email domain is probed."
+  },
+  "usernameUseHyphen": {
+    "message": "Use hyphen"
   },
   "clear": {
     "message": "Clear",
@@ -7025,10 +7049,10 @@
     "message": "No items in trash"
   },
   "noItemsInTrashDesc": {
-    "message": "Items you delete will appear here and be permanently deleted after 30 days"
+    "message": "Items you delete will appear here and stay until you restore or permanently delete them"
   },
   "noItemsInTrashDescription": {
-    "message": "Items you delete will appear here and be permanently deleted after 30 days."
+    "message": "Items you delete will appear here and stay until you restore or permanently delete them."
   },
   "noItemsInVault": {
     "message": "No items in the vault"
@@ -8129,6 +8153,9 @@
   "itemKindLicenseSeats": {
     "message": "Seats / version"
   },
+  "itemKindLicenseSoftware": {
+    "message": "Software"
+  },
   "itemKindServerProtocol": {
     "message": "Protocol"
   },
@@ -8286,7 +8313,7 @@
     "message": "Turn on at least one character set"
   },
   "generatorStrength": {
-    "message": "$LENGTH chars × $CLASSES sets (score $SCORE)"
+    "message": "{LENGTH} chars × {CLASSES} sets (score {SCORE})"
   },
   "importPasteHint": {
     "message": "Paste the otpauth-migration:// link, or pick the export screenshots below"
@@ -8307,16 +8334,16 @@
     "message": "Skip"
   },
   "importHotpSkipped": {
-    "message": "$COUNT counter-based (HOTP) entries cannot be stored and were skipped"
+    "message": "{COUNT} counter-based (HOTP) entries cannot be stored and were skipped"
   },
   "importSelected": {
-    "message": "Import $COUNT selected"
+    "message": "Import {COUNT} selected"
   },
   "importDone": {
-    "message": "Imported $COUNT accounts"
+    "message": "Imported {COUNT} accounts"
   },
   "importFound": {
-    "message": "$COUNT accounts read"
+    "message": "{COUNT} accounts read"
   },
   "importNothingFound": {
     "message": "Nothing recognised in that input"
@@ -8361,7 +8388,7 @@
     "message": "Move data"
   },
   "trashHint": {
-    "message": "30 days"
+    "message": "Local only"
   },
   "dataFileWarning": {
     "message": "Both files sit next to each other in the app data folder. Delete them and the vault is gone — that is why backups are manual and why the rollback copy exists."
@@ -8455,5 +8482,220 @@
   },
   "networkGateNote": {
     "message": "The gate is a pure function with unit tests: it decides allow or block before any request leaves. Nothing else in the app gets to skip it."
+  },
+  "about": {
+    "message": "About"
+  },
+  "aboutOfflineNotice": {
+    "message": "LocalPass runs entirely on this device. It does not contact a server or collect usage data."
+  },
+  "allFolders": {
+    "message": "All folders"
+  },
+  "allTypes": {
+    "message": "All types"
+  },
+  "appearance": {
+    "message": "Appearance"
+  },
+  "clearFilters": {
+    "message": "Clear filters"
+  },
+  "deleteForever": {
+    "message": "Delete forever"
+  },
+  "folderLocalOnlyNotice": {
+    "message": "Folders are stored locally and encrypted with your vault key."
+  },
+  "generatorLocalOnlyNotice": {
+    "message": "Passwords are generated on this device and never sent anywhere."
+  },
+  "hideValue": {
+    "message": "Hide value"
+  },
+  "itemsInTrash": {
+    "message": "Items in trash"
+  },
+  "license": {
+    "message": "License"
+  },
+  "licenseGpl": {
+    "message": "GPL-3.0"
+  },
+  "lockVaultHint": {
+    "message": "Lock the vault now; you will need your master password or Touch ID to get back in."
+  },
+  "newItemKindNotice": {
+    "message": "Choose the kind of item. Fields change to match; everything is encrypted locally."
+  },
+  "noFolder": {
+    "message": "No folder"
+  },
+  "openWebsite": {
+    "message": "Open website"
+  },
+  "privacy": {
+    "message": "Privacy"
+  },
+  "privacySummary": {
+    "message": "Offline only"
+  },
+  "primaryNavigation": {
+    "message": "Primary navigation"
+  },
+  "session": {
+    "message": "Session"
+  },
+  "showValue": {
+    "message": "Show value"
+  },
+  "sourceCode": {
+    "message": "Source code"
+  },
+  "themeOnlyDisplayNotice": {
+    "message": "Theme only changes how LocalPass looks. Your vault data stays the same."
+  },
+  "trashWarning": {
+    "message": "Items in trash can be restored until you delete them forever."
+  },
+  "unlockAndAccess": {
+    "message": "Unlock and access"
+  },
+  "encryptedLocally": {
+    "message": "Encrypted locally"
+  },
+  "noResultsFor": {
+    "message": "No items match \"$QUERY$\".",
+    "placeholders": {
+      "query": {
+        "content": "$1"
+      }
+    }
+  },
+  "emptyFilterHint": {
+    "message": "Try another search, or clear the current filters."
+  },
+  "itemSaved": {
+    "message": "Item saved"
+  },
+  "itemCreated": {
+    "message": "Item created"
+  },
+  "lastModified": {
+    "message": "Last modified"
+  },
+  "favoriteAdded": {
+    "message": "Added to favorites"
+  },
+  "favoriteRemoved": {
+    "message": "Removed from favorites"
+  },
+  "movedToTrash": {
+    "message": "Moved to trash"
+  },
+  "themeLightDesc": {
+    "message": "Always use the light theme"
+  },
+  "themeDarkDesc": {
+    "message": "Best for dark and low-light rooms"
+  },
+  "themeSystemDesc": {
+    "message": "Follow the system appearance"
+  },
+  "cloneItemName": {
+    "message": "Copy of $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "itemCloned": {
+    "message": "Item cloned"
+  },
+  "copiedField": {
+    "message": "$FIELD$ copied",
+    "placeholders": {
+      "field": {
+        "content": "$1"
+      }
+    }
+  },
+  "removeFavorite": {
+    "message": "Remove from favorites"
+  },
+  "moveToTrash": {
+    "message": "Move to trash"
+  },
+  "securitySettingsDesc": {
+    "message": "Master password, auto-lock, PIN"
+  },
+  "foldersCount": {
+    "message": "{COUNT} folders"
+  },
+  "trashCount": {
+    "message": "{COUNT} items"
+  },
+  "importSettingsDesc": {
+    "message": "From a backup or another manager"
+  },
+  "exportSettingsDesc": {
+    "message": "Encrypted JSON"
+  },
+  "generatorSettingsDesc": {
+    "message": "Passwords, passphrases, and usernames"
+  },
+  "backupSettingsDesc": {
+    "message": "Manual sync to storage you own"
+  },
+  "networkSettingsDesc": {
+    "message": "Blocks unauthorized outbound requests"
+  },
+  "dataSettingsDesc": {
+    "message": "Local files and wiping the vault"
+  },
+  "appVersion": {
+    "message": "Version"
+  },
+  "settingsPrivacyNote": {
+    "message": "LocalPass has no account and no server. Export or back up before removing the extension."
+  },
+  "unlockOptionsDesc": {
+    "message": "PIN and other unlock methods"
+  },
+  "deletedOn": {
+    "message": "Deleted $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockNow": {
+    "message": "Lock now"
+  },
+  "searchResults": {
+    "message": "Search results"
+  },
+  "advanced": {
+    "message": "Advanced"
+  },
+  "simplifiedChinese": {
+    "message": "Simplified Chinese"
+  },
+  "appearanceSubtitle": {
+    "message": "Theme and language"
+  },
+  "dangerZone": {
+    "message": "Danger zone"
+  },
+  "clearVault": {
+    "message": "Clear vault"
+  },
+  "clearVaultConfirmation": {
+    "message": "This permanently deletes every item, including items in the trash. It cannot be undone."
+  },
+  "vaultCleared": {
+    "message": "Vault cleared"
   }
 }

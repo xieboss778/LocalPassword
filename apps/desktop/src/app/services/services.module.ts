@@ -128,6 +128,7 @@ import { CipherSdkService } from "@localpass/common/vault/abstractions/cipher-sd
 import { CipherService as CipherServiceAbstraction } from "@localpass/common/vault/abstractions/cipher.service";
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@localpass/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { COPY_CLICK_LISTENER, DialogService, ToastService } from "@localpass/components";
 import { GeneratorServicesModule } from "@localpass/generator-components";
 import { PasswordGenerationServiceAbstraction } from "@localpass/generator-legacy";
@@ -504,6 +505,7 @@ const safeProviders: SafeProvider[] = [
       LogService,
       CipherEncryptionService,
       CipherSdkService,
+      LocalVaultWriter,
     ],
   }),
   safeProvider({

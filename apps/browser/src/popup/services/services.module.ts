@@ -149,6 +149,7 @@ import { CipherService } from "@localpass/common/vault/abstractions/cipher.servi
 import { CipherFileUploadService } from "@localpass/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { TotpService as TotpServiceAbstraction } from "@localpass/common/vault/abstractions/totp.service";
 import { DefaultCipherArchiveService } from "@localpass/common/vault/services/default-cipher-archive.service";
 import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
@@ -303,6 +304,7 @@ const safeProviders: SafeProvider[] = [
       LogService,
       CipherEncryptionService,
       CipherSdkService,
+      LocalVaultWriter,
     ],
   }),
   safeProvider(DebounceNavigationService),

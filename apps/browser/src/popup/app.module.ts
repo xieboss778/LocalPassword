@@ -23,6 +23,7 @@ import {
   AvatarModule,
   ButtonModule,
   FormFieldModule,
+  IconModule,
   ToastModule,
   CalloutModule,
   LinkModule,
@@ -48,7 +49,6 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { ExtensionAnonLayoutWrapperComponent } from "./components/extension-anon-layout-wrapper/extension-anon-layout-wrapper.component";
 import { ServicesModule } from "./services/services.module";
-import { TabsV2Component } from "./tabs-v2.component";
 
 // Register the locales for the application
 import "../platform/popup/locales";
@@ -90,11 +90,12 @@ import "../platform/popup/locales";
     UserVerificationDialogComponent,
     CurrentAccountComponent,
     FormFieldModule,
+    IconModule,
     ExtensionAnonLayoutWrapperComponent,
     CalloutModule,
     LinkModule,
   ],
-  declarations: [AppComponent, TabsV2Component],
+  declarations: [AppComponent],
   exports: [CalloutModule],
   providers: [
     CurrencyPipe,

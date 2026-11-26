@@ -48,7 +48,7 @@ type RestoreState = "form" | "loading" | "conflict" | "error" | "done";
     LpRowComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
+    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-page-header
         [title]="i18n.t('restoreTitle')"
         [sub]="i18n.t('restoreSubtitle')"
@@ -107,22 +107,22 @@ type RestoreState = "form" | "loading" | "conflict" | "error" | "done";
               </button>
             </div>
             @if (errorMessage()) {
-              <p class="tw-px-4 tw-pt-3 tw-text-[11px] tw-text-[var(--lp-danger)]">
+              <p class="tw-px-4 tw-pt-3 tw-text-xs tw-text-fg-danger">
                 {{ errorMessage() }}
               </p>
             }
           }
 
           @case ("loading") {
-            <div class="tw-grid tw-h-[240px] tw-place-items-center">
+            <div class="tw-grid tw-h-60 tw-place-items-center">
               <div class="tw-text-center">
                 <div
-                  class="tw-mx-auto tw-mb-3 tw-size-8 tw-animate-spin tw-rounded-full tw-border-2 tw-border-[#dfe3ea] tw-border-t-[var(--lp-brand)]"
+                  class="tw-mx-auto tw-mb-3 tw-size-8 tw-animate-spin tw-rounded-full tw-border-2 tw-border-border-light tw-border-t-border-brand"
                 ></div>
-                <p class="tw-m-0 tw-text-[12px] tw-text-[var(--lp-ink-2)]">
+                <p class="tw-m-0 tw-text-sm tw-text-main">
                   {{ i18n.t("restoreLoading") }}
                 </p>
-                <p class="tw-m-0 tw-mt-1 tw-text-[10.5px] tw-text-[var(--lp-ink-3)]">
+                <p class="tw-m-0 tw-mt-1 tw-text-xs tw-text-muted">
                   {{ i18n.t("restoreLoadingHint") }}
                 </p>
               </div>
@@ -131,7 +131,7 @@ type RestoreState = "form" | "loading" | "conflict" | "error" | "done";
 
           @case ("conflict") {
             <div
-              class="tw-mx-3 tw-mb-2 tw-rounded-[11px] tw-border tw-border-[#f6e2b8] tw-bg-[#fdf6e6] tw-px-3 tw-py-2.5 tw-text-[11px] tw-leading-relaxed tw-text-[#8a5a00]"
+              class="tw-mx-3 tw-mb-2 tw-rounded-xl tw-border tw-border-border-warning-soft tw-bg-bg-warning-soft tw-px-3 tw-py-2.5 tw-text-xs tw-leading-relaxed tw-text-fg-warning-strong"
             >
               {{ i18n.t("restoreConflictHint") }}
             </div>
@@ -157,14 +157,12 @@ type RestoreState = "form" | "loading" | "conflict" | "error" | "done";
           }
 
           @case ("error") {
-            <div class="tw-grid tw-h-[240px] tw-place-items-center">
+            <div class="tw-grid tw-h-60 tw-place-items-center">
               <div class="tw-px-6 tw-text-center">
-                <p class="tw-m-0 tw-text-[13px] tw-font-semibold tw-text-[var(--lp-danger)]">
+                <p class="tw-m-0 tw-text-base tw-font-semibold tw-text-fg-danger">
                   {{ i18n.t("restoreFailed") }}
                 </p>
-                <p
-                  class="tw-m-0 tw-mt-2 tw-text-[11px] tw-leading-relaxed tw-text-[var(--lp-ink-3)]"
-                >
+                <p class="tw-m-0 tw-mt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
                   {{ errorMessage() }}
                 </p>
                 <button
@@ -181,10 +179,10 @@ type RestoreState = "form" | "loading" | "conflict" | "error" | "done";
           }
 
           @case ("done") {
-            <div class="tw-grid tw-h-[240px] tw-place-items-center">
+            <div class="tw-grid tw-h-60 tw-place-items-center">
               <div class="tw-text-center">
-                <div class="tw-text-[26px]">✅</div>
-                <p class="tw-m-0 tw-mt-2 tw-text-[13px] tw-font-semibold">
+                <div class="tw-text-4xl tw-text-fg-success">✓</div>
+                <p class="tw-m-0 tw-mt-2 tw-text-base tw-font-semibold tw-text-main">
                   {{ i18n.t("restoreFinished") }}
                 </p>
                 <button

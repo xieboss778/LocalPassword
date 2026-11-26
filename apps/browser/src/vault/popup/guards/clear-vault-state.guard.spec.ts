@@ -61,9 +61,7 @@ describe("clearVaultStateGuard", () => {
   it("should not clear vault state when not changing states", () => {
     setupModule(true);
 
-    const result = TestBed.runInInjectionContext(() =>
-      clearVaultStateGuard({}, null, null, null),
-    );
+    const result = TestBed.runInInjectionContext(() => clearVaultStateGuard({}, null, null, null));
 
     expect(result).toBe(true);
     expect(applyFilterSpy).not.toHaveBeenCalled();

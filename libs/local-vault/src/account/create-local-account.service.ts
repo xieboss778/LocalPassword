@@ -18,17 +18,14 @@ import {
 import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
 import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
+import { StateProvider } from "@localpass/common/platform/state";
 import { UserId } from "@localpass/common/types/guid";
+import { ENCRYPTED_CIPHERS } from "@localpass/common/vault/services/key-state/ciphers.state";
+import { FOLDER_ENCRYPTED_FOLDERS } from "@localpass/common/vault/services/key-state/folder.state";
 import { newGuid } from "@localpass/guid";
 import { KdfConfigService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
-import {
-  DEFAULT_KDF_CONFIG,
-  EncString,
-  EncryptService,
-  KdfConfig,
-  LegacyCompatKeyService,
-} from "@localpass/legacy-crypto";
+import { DEFAULT_KDF_CONFIG, KdfConfig, LegacyCompatKeyService } from "@localpass/legacy-crypto";
 import type { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
 import { UnlockService } from "@localpass/unlock";
 
@@ -89,7 +86,7 @@ export class CreateLocalAccountService {
     private readonly legacyCompatKeyService: LegacyCompatKeyService,
     private readonly localAccountService: LocalAccountService,
     private readonly keyConnectorService: KeyConnectorService,
-    private readonly encryptService: EncryptService,
+    private readonly stateProvider: StateProvider,
     private readonly logService: LogService,
   ) {}
 
@@ -156,16 +153,16 @@ export class CreateLocalAccountService {
       throw new Error("A master password is required to restore a local vault.");
     }
 
-    const masterKey = await this.legacyCompatKeyService.makeMasterKey(
+    // Same proof a server login performs, through the same SDK path the normal unlock uses.
+    // The legacy wrapped key is stretched before wrapping, so deriving the raw master key here
+    // and unwrapping it directly fails with "The provided key is not the expected type".
+    await this.masterPasswordService.unwrapUserKeyFromMasterPasswordUnlockData(
       request.masterPassword,
-      request.unlock.salt as MasterPasswordSalt,
-      request.unlock.kdf,
-    );
-
-    // Throws when the password is wrong; this is the same proof a server login would do.
-    await this.encryptService.unwrapSymmetricKey(
-      new EncString(request.unlock.masterKeyWrappedUserKey),
-      masterKey,
+      new MasterPasswordUnlockData(
+        request.unlock.salt as MasterPasswordSalt,
+        request.unlock.kdf,
+        request.unlock.masterKeyWrappedUserKey as MasterKeyWrappedUserKey,
+      ),
     );
 
     const name = request.name?.trim() || email.split("@")[0] || DEFAULT_LOCAL_ACCOUNT_NAME;
@@ -262,6 +259,15 @@ export class CreateLocalAccountService {
     );
 
     await this.localAccountService.markAsLocalAccount(userId, true);
+
+    // 服务器账号靠首次同步写入空的条目/文件夹集合；本地账号没有同步，缺了这两个空集合，
+    // 列表流会一直把 `null` 当作「尚未同步」而不发射，空保险库就永远停在加载中。
+    await Promise.all([
+      this.stateProvider.getUser(userId, ENCRYPTED_CIPHERS).update((current) => current ?? {}),
+      this.stateProvider
+        .getUser(userId, FOLDER_ENCRYPTED_FOLDERS)
+        .update((current) => current ?? {}),
+    ]);
 
     // 服务器账号在首次同步时写入这个状态；本地账号永远不同步，而
     // `KeyConnectorService.convertAccountRequired$` 会一直等到它不为 null 才发射。

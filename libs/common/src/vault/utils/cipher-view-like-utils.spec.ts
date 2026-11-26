@@ -554,7 +554,7 @@ describe("CipherViewLikeUtils", () => {
         uriView.uri = "local.invalid";
         cipherView.login.uris = [uriView];
 
-        expect(CipherViewLikeUtils.getLaunchUri(cipherView)).toBe("https://local.invalid");
+        expect(CipherViewLikeUtils.getLaunchUri(cipherView)).toBe("http://local.invalid");
       });
     });
 

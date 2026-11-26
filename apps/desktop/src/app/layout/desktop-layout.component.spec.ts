@@ -249,8 +249,9 @@ describe("DesktopLayoutComponent", () => {
   describe("flag off", () => {
     it("renders the current navigation unchanged", () => {
       expect(fixture.nativeElement.querySelector("app-vault-filter")).toBeTruthy();
-      expect(fixture.nativeElement.querySelector("app-send-filters-nav")).toBeTruthy();
-      expect(navText()).toEqual(["generator", "importNoun", "exportNoun"]);
+      // LocalPass never offers Send: it would relay a secret through a server.
+      expect(fixture.nativeElement.querySelector("app-send-filters-nav")).toBeNull();
+      expect(navText()).toEqual(["generator", "importNoun", "exportNoun", "cloudBackup"]);
     });
   });
 
@@ -270,6 +271,7 @@ describe("DesktopLayoutComponent", () => {
         "tools",
         "generator",
         "exportNoun",
+        "cloudBackup",
         "manage",
         "myFolders",
         "archiveNoun",
@@ -277,8 +279,8 @@ describe("DesktopLayoutComponent", () => {
       ]);
     });
 
-    it("keeps Send in Tools", () => {
-      expect(fixture.nativeElement.querySelector("app-send-filters-nav")).toBeTruthy();
+    it("does not offer Send in Tools", () => {
+      expect(fixture.nativeElement.querySelector("app-send-filters-nav")).toBeNull();
     });
 
     it("rounds the layout on macOS", () => {

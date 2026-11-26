@@ -15,6 +15,7 @@ import {
   merge,
   of,
   switchMap,
+  take,
   timeout,
 } from "rxjs";
 
@@ -625,6 +626,7 @@ export default class MainBackground {
   private idleBackground: IdleBackground;
   private notificationBackground: NotificationBackground;
   private overlayBackground: OverlayBackgroundInterface;
+  private overlayInitPromise: Promise<void> | null = null;
   private overlayNotificationsBackground: OverlayNotificationsBackgroundInterface;
   private runtimeBackground: RuntimeBackground;
   private fillAssistEventReceiver: FillAssistEventReceiver;
@@ -1259,7 +1261,7 @@ export default class MainBackground {
       this.legacyCompatKeyService,
       this.localAccountService,
       this.keyConnectorService,
-      this.encryptService,
+      this.stateProvider,
       this.logService,
     );
     this.localVaultWriter = new DefaultLocalVaultWriter(
@@ -2034,7 +2036,30 @@ export default class MainBackground {
       }
     }
 
+    // Starts with no active account and follows it when one appears. A local vault created in
+    // this browser session never passes through the startup auth check above, so initializing
+    // this inside the authenticated-only overlay block left open popups without list updates.
+    new ListViewsAnnouncerService(
+      this.accountService,
+      this.cipherService,
+      this.messagingService,
+    ).init();
+
     await this.initOverlayAndTabsBackground();
+
+    // A local vault created in this browser session writes its account and user key without
+    // sending `loggedIn`, so the startup auth check above ran before the account existed. Follow
+    // the status until an account is present so the inline menu and its tab-autofill background
+    // are built on first use instead of waiting for a service-worker restart.
+    this.authService.activeAccountStatus$
+      .pipe(
+        filter((status) => status !== AuthenticationStatus.LoggedOut),
+        take(1),
+      )
+      .subscribe(() => {
+        this.initOverlayAndTabsBackground().catch((error) => this.logService.error(error));
+      });
+
     this.badgeService.startListening();
 
     return new Promise<void>((resolve) => {
@@ -2385,17 +2410,34 @@ export default class MainBackground {
   /**
    * Temporary solution to handle initialization of the overlay background behind a feature flag.
    * Will be reverted to instantiation within the constructor once the feature flag is removed.
+   *
+   * Safe to call on every event that can make an account available: the first call builds the
+   * background, later calls return, and concurrent callers await the same construction.
    */
   async initOverlayAndTabsBackground() {
+    if (this.overlayBackground || this.tabsBackground) {
+      return;
+    }
+
     if (
-      this.overlayBackground ||
-      this.tabsBackground ||
       (await firstValueFrom(this.authService.activeAccountStatus$)) ===
-        AuthenticationStatus.LoggedOut
+      AuthenticationStatus.LoggedOut
     ) {
       return;
     }
 
+    if (this.overlayInitPromise == null) {
+      this.overlayInitPromise = this.buildOverlayAndTabsBackground().catch((error) => {
+        // A failed build must not poison later attempts.
+        this.overlayInitPromise = null;
+        throw error;
+      });
+    }
+
+    await this.overlayInitPromise;
+  }
+
+  private async buildOverlayAndTabsBackground() {
     this.credentialGeneratorService = await createCredentialGeneratorService(
       createSystemServiceProvider(
         new KeyServiceLegacyEncryptorProvider(
@@ -2483,11 +2525,6 @@ export default class MainBackground {
     await this.autofillBadgeUpdaterService.init();
     await this.clipboardNotificationBadgeUpdaterService.init();
     await this.atRiskCipherUpdaterService.init();
-    new ListViewsAnnouncerService(
-      this.accountService,
-      this.cipherService,
-      this.messagingService,
-    ).init();
   }
 
   generatePasswordToClipboard = () => {

@@ -22,6 +22,7 @@ import {
 } from "@localpass/common/tools/providers";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
@@ -91,6 +92,7 @@ export const ImporterProviders: SafeProvider[] = [
       ConfigService,
       SdkService,
       LogService,
+      LocalVaultWriter,
     ],
   }),
 ];

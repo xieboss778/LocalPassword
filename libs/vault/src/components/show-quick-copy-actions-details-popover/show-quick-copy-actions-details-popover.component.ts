@@ -16,8 +16,6 @@ export class ShowQuickCopyActionsDetailsPopoverComponent {
 
   openLearnMore(e: Event) {
     e.preventDefault();
-    this.platformUtilService.launchUri(
-      "https://github.com/xieboss778/LocalPass/tree/main/docs",
-    );
+    this.platformUtilService.launchUri("https://github.com/xieboss778/LocalPass/tree/main/docs");
   }
 }

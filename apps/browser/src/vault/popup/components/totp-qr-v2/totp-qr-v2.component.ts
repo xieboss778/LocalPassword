@@ -1,12 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
-import { ActivatedRoute, Params, RouterModule } from "@angular/router";
+import { ActivatedRoute, Params, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpGroupComponent,
   LpPageHeaderComponent,
+  LpPopupHeaderComponent,
   LpRowComponent,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -31,23 +32,33 @@ import { TotpQrComponent } from "@localpass/vault";
     JslibModule,
     LpGroupComponent,
     LpPageHeaderComponent,
+    LpPopupHeaderComponent,
     LpRowComponent,
     TotpQrComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
-      <lp-page-header
-        [title]="cipher()?.name ?? ''"
-        [sub]="i18n.t('totpQrSubtitle')"
-      ></lp-page-header>
+    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+      @if (compact()) {
+        <lp-popup-header
+          [title]="cipher()?.name ?? ''"
+          [sub]="i18n.t('totpQrSubtitle')"
+          [back]="true"
+          (backTriggered)="goBack()"
+        ></lp-popup-header>
+      } @else {
+        <lp-page-header
+          [title]="cipher()?.name ?? ''"
+          [sub]="i18n.t('totpQrSubtitle')"
+        ></lp-page-header>
+      }
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
         @if (loading()) {
-          <p class="tw-px-4 tw-py-6 tw-text-[12px] tw-text-[var(--lp-ink-3)]">
+          <p class="tw-px-4 tw-py-6 tw-text-xs tw-text-muted">
             {{ i18n.t("loading") }}
           </p>
         } @else if (totpUri()) {
-          <div class="tw-mx-3 tw-flex tw-justify-center tw-rounded-[14px] tw-bg-[#fff] tw-py-4">
+          <div class="tw-mx-3 tw-flex tw-justify-center tw-rounded-xl tw-bg-background-alt tw-py-4">
             <vault-totp-qr [value]="totpUri()" [size]="216" [ariaLabel]="cipher()?.name ?? ''" />
           </div>
 
@@ -60,11 +71,11 @@ import { TotpQrComponent } from "@localpass/vault";
             />
           </lp-group>
 
-          <p class="tw-px-4 tw-pt-3 tw-text-[10.5px] tw-leading-relaxed tw-text-[var(--lp-ink-3)]">
+          <p class="tw-px-4 tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
             {{ i18n.t("totpQrWarning") }}
           </p>
         } @else {
-          <p class="tw-px-4 tw-py-6 tw-text-[12px] tw-text-[var(--lp-ink-3)]">
+          <p class="tw-px-4 tw-py-6 tw-text-xs tw-text-muted">
             {{ i18n.t("totpNotSet") }}
           </p>
         }
@@ -77,7 +88,9 @@ export class TotpQrV2Component implements OnInit {
   private readonly cipherService = inject(CipherService);
   private readonly accountService = inject(AccountService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
+  protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
   protected readonly loading = signal(true);
   protected readonly cipher = signal<CipherView | null>(null);
   protected readonly totpUri = signal("");
@@ -99,5 +112,11 @@ export class TotpQrV2Component implements OnInit {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  protected goBack(): void {
+    void this.router.navigate(["/view-cipher-v2"], {
+      queryParams: { cipherId: this.cipher()?.id },
+    });
   }
 }

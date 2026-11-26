@@ -49,8 +49,9 @@ export const FIELDS: Readonly<Record<ItemKind, readonly FieldSpec[]>> = Object.f
   ],
   [ItemKind.Token]: [
     { id: "name", labelKey: "name", target: "name" },
-    { id: "service", labelKey: "username", target: "loginUsername" },
+    { id: "service", labelKey: "service", target: "loginUsername" },
     { id: "token", labelKey: "itemKindToken", target: "loginPassword", password: true },
+    { id: "totp", labelKey: "authenticatorKey", target: "loginTotp" },
     { id: "scope", labelKey: "itemKindTokenScope", target: { custom: "scope" } },
     { id: "env", labelKey: "itemKindTokenEnv", target: { custom: "env" } },
   ],
@@ -67,14 +68,14 @@ export const FIELDS: Readonly<Record<ItemKind, readonly FieldSpec[]>> = Object.f
   ],
   [ItemKind.License]: [
     { id: "name", labelKey: "name", target: "name" },
-    { id: "software", labelKey: "username", target: "loginUsername" },
+    { id: "software", labelKey: "itemKindLicenseSoftware", target: "loginUsername" },
     { id: "serial", labelKey: "itemKindLicense", target: "loginPassword", password: true },
     { id: "seats", labelKey: "itemKindLicenseSeats", target: { custom: "seats" } },
   ],
   [ItemKind.Card]: [
     { id: "name", labelKey: "name", target: "name" },
     { id: "cardholder", labelKey: "cardholderName", target: "cardholder" },
-    { id: "number", labelKey: "number", target: "cardNumber" },
+    { id: "number", labelKey: "number", target: "cardNumber", password: true },
     { id: "expMonth", labelKey: "expirationMonth", target: "cardExpMonth" },
     { id: "expYear", labelKey: "expirationYear", target: "cardExpYear" },
     { id: "code", labelKey: "securityCode", target: "cardCode", password: true },

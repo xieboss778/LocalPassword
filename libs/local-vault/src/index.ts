@@ -3,6 +3,8 @@ export * from "./account/local-access-token";
 export * from "./account/local-account.service";
 export * from "./account/local-vault-environment";
 export * from "./generator/random-password";
+export * from "./generator/random-passphrase";
+export * from "./generator/random-username";
 export * from "./items/item-fields";
 export * from "./items/item-kind";
 export * from "./network/gate-policy";

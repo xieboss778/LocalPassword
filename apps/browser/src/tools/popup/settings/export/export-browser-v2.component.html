@@ -6,6 +6,8 @@
   </popup-header>
 
   <tools-export
+    [defaultFormat]="'encrypted_json'"
+    [defaultFileEncrypted]="true"
     (formDisabled)="this.disabled = $event"
     (formLoading)="this.loading = $event"
     (onSuccessfulExport)="this.onSuccessfulExport($event)"

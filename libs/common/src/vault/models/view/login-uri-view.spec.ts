@@ -14,7 +14,7 @@ const testData = [
   {
     match: UriMatchStrategy.Host,
     uri: "local.invalid",
-    expected: "https://local.invalid",
+    expected: "http://local.invalid",
   },
   {
     match: UriMatchStrategy.Host,

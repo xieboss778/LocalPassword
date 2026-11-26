@@ -5,6 +5,7 @@ import {
   pickerAlwaysPromptsFormat,
   pickerDisplayNameFor,
   pickerFormatsFor,
+  pickerVendorFor,
 } from "./picker-vendor-data";
 
 describe("isPickerVendor", () => {
@@ -62,6 +63,24 @@ describe("pickerFormatsFor", () => {
     // "keeper" itself has no importer (ImportService.getImporter only handles "keepercsv" and
     // "keeperjson") — pickerFormatsFor("keeper") must resolve to those, not to "keeper" itself.
     expect(pickerFormatsFor("keeper")).toEqual(["keepercsv", "keeperjson"]);
+  });
+});
+
+describe("pickerVendorFor", () => {
+  it("returns a vendor id unchanged", () => {
+    expect(pickerVendorFor("localpass")).toBe("localpass");
+    expect(pickerVendorFor("chromecsv")).toBe("chromecsv");
+  });
+
+  it("maps a format id to the vendor card that handles it", () => {
+    expect(pickerVendorFor("localpassjson")).toBe("localpass");
+    expect(pickerVendorFor("localpasscsv")).toBe("localpass");
+    expect(pickerVendorFor("keepass2xml")).toBe("keepass");
+    expect(pickerVendorFor("1password1pif")).toBe("1password");
+  });
+
+  it("returns undefined for ids the picker cannot route", () => {
+    expect(pickerVendorFor("some-unknown-id")).toBeUndefined();
   });
 });
 

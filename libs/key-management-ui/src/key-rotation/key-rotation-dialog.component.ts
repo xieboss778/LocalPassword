@@ -161,9 +161,7 @@ export class KeyRotationDialogComponent {
     });
 
     if (learnMore) {
-      this.platformUtilsService.launchUri(
-        "https://github.com/xieboss778/LocalPass/tree/main/docs",
-      );
+      this.platformUtilsService.launchUri("https://github.com/xieboss778/LocalPass/tree/main/docs");
     }
   }
 

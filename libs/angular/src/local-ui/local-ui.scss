@@ -1,20 +1,20 @@
-// LocalPass 界面语言（方向 C「分组原生」）
-// 只定义令牌；组件模板统一用 Tailwind 工具类（仓库约定：libs/**/html 里不允许自定义类名）。
-// 需要自定义类名时写 tw- 前缀的任意值，例如 tw-bg-[var(--lp-bg)]。
+// LocalPass 界面语言：沿用 Bitwarden 的语义令牌。
+// 这里只保留旧页面仍在引用的兼容别名；新代码直接用 tw-bg-background、tw-text-main 等主题类。
 
 :root {
-  --lp-bg: #f2f3f6;
-  --lp-card: #ffffff;
-  --lp-ink: #11131a;
-  --lp-ink-2: #4b515b;
-  --lp-ink-3: #8b919c;
-  --lp-line: #e5e7eb;
-  --lp-line-soft: #0000000a;
-  --lp-brand: #2f6bff;
-  --lp-brand-soft: #eef2ff;
-  --lp-brand-ink: #3352c4;
-  --lp-green: #34c759;
-  --lp-red: #d2483c;
-  --lp-amber: #f0a020;
-  --lp-ring: 0 0 0 3px #2f6bff33;
+  --lp-bg: var(--color-bg-tertiary);
+  --lp-card: var(--color-bg-primary);
+  --lp-ink: var(--color-text-main);
+  --lp-ink-2: var(--color-text-main);
+  --lp-ink-3: var(--color-text-muted);
+  --lp-line: var(--color-border-light);
+  --lp-line-soft: var(--color-border-muted);
+  --lp-brand: var(--color-bg-brand);
+  --lp-brand-soft: var(--color-bg-brand-softer);
+  --lp-brand-ink: var(--color-fg-brand-strong);
+  --lp-green: var(--color-bg-success);
+  --lp-red: var(--color-fg-danger);
+  --lp-amber: var(--color-fg-warning);
+  --lp-danger: var(--color-fg-danger);
+  --lp-ring: 0 0 0 3px var(--color-bg-brand-softer);
 }

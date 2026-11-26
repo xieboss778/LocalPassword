@@ -78,7 +78,15 @@ export abstract class BrowserPlatformUtilsService implements PlatformUtilsServic
   }
 
   private static isChrome(globalContext: Window | ServiceWorkerGlobalScope): boolean {
-    return globalContext.chrome && navigator.userAgent.indexOf(" Chrome/") !== -1;
+    if (!globalContext.chrome) {
+      return false;
+    }
+    // `HeadlessChrome/` is what automation builds report. It is still Chromium and supports
+    // every `chrome.*` API the extension uses, so it must not fall through to the Safari branch.
+    return (
+      navigator.userAgent.indexOf(" Chrome/") !== -1 ||
+      navigator.userAgent.indexOf(" HeadlessChrome/") !== -1
+    );
   }
 
   isChrome(): boolean {

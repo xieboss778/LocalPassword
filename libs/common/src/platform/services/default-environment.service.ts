@@ -97,7 +97,7 @@ const OFFLINE_URLS: Urls = {
   webVault: OFFLINE_URL,
   notifications: OFFLINE_URL,
   events: OFFLINE_URL,
-  keyConnector: null,
+  keyConnector: undefined,
   send: OFFLINE_URL,
   scim: OFFLINE_URL,
 };

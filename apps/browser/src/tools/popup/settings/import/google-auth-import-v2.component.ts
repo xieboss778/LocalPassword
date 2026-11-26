@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import qrcodeParser from "qrcode-parser";
 import { firstValueFrom } from "rxjs";
 
@@ -8,6 +8,7 @@ import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpGroupComponent,
   LpPageHeaderComponent,
+  LpPopupHeaderComponent,
   LpRowComponent,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -18,7 +19,7 @@ import { CipherService } from "@localpass/common/vault/abstractions/cipher.servi
 import { CipherType } from "@localpass/common/vault/enums";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { LoginView } from "@localpass/common/vault/models/view/login.view";
-import { ButtonModule } from "@localpass/components";
+import { ButtonModule, IconModule } from "@localpass/components";
 import {
   base32Encode,
   MigrationOtp,
@@ -51,20 +52,31 @@ type Step = "input" | "preview" | "done";
     CommonModule,
     JslibModule,
     ButtonModule,
+    IconModule,
     LpGroupComponent,
     LpPageHeaderComponent,
+    LpPopupHeaderComponent,
     LpRowComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
-      <lp-page-header [title]="i18n.t('importGoogleAuth')" [sub]="subtitle()"></lp-page-header>
+    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+      @if (compact()) {
+        <lp-popup-header
+          [title]="i18n.t('importGoogleAuth')"
+          [sub]="subtitle()"
+          [back]="true"
+          (backTriggered)="goBack()"
+        ></lp-popup-header>
+      } @else {
+        <lp-page-header [title]="i18n.t('importGoogleAuth')" [sub]="subtitle()"></lp-page-header>
+      }
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
         @switch (step()) {
           @case ("input") {
             <div class="tw-mx-3 tw-mb-2">
               <textarea
-                class="tw-h-32 tw-w-full tw-resize-none tw-rounded-[11px] tw-border tw-border-[var(--lp-line)] tw-bg-[var(--lp-card)] tw-p-3 tw-text-[11.5px] tw-outline-none"
+                class="tw-h-32 tw-w-full tw-resize-none tw-rounded-xl tw-border tw-border-border-light tw-bg-background-alt tw-p-3 tw-text-sm tw-text-main tw-outline-none focus:tw-border-border-focus"
                 [attr.placeholder]="i18n.t('importPasteHint')"
                 [value]="rawInput()"
                 (input)="onInput($event)"
@@ -86,7 +98,7 @@ type Step = "input" | "preview" | "done";
               </label>
             </div>
             @if (errorMessage()) {
-              <p class="tw-px-4 tw-pt-3 tw-text-[11px] tw-text-[var(--lp-danger)]">
+              <p class="tw-px-4 tw-pt-3 tw-text-xs tw-text-fg-danger">
                 {{ errorMessage() }}
               </p>
             }
@@ -96,7 +108,7 @@ type Step = "input" | "preview" | "done";
             <lp-group [label]="i18n.t('importPreviewTitle')">
               @for (row of rows(); track row.secretB32) {
                 <lp-row
-                  [emoji]="row.included ? '☑️' : '⬜'"
+                  [icon]="row.included ? 'bwi-check-circle' : 'bwi-circle'"
                   [label]="row.issuer === '' ? row.name : row.issuer + ' · ' + row.name"
                   [sub]="row.duplicate ? i18n.t('importDuplicate') : row.totp"
                   [value]="row.duplicate ? i18n.t('importSkip') : ''"
@@ -107,8 +119,8 @@ type Step = "input" | "preview" | "done";
             </lp-group>
 
             @if (skippedHotp()) {
-              <p class="tw-px-4 tw-pt-2 tw-text-[10.5px] tw-text-[var(--lp-ink-3)]">
-                {{ i18n.t("importHotpSkipped").replace("$COUNT", skippedHotp().toString()) }}
+              <p class="tw-px-4 tw-pt-2 tw-text-xs tw-text-muted">
+                {{ i18n.t("importHotpSkipped").replace("{COUNT}", skippedHotp().toString()) }}
               </p>
             }
 
@@ -120,7 +132,7 @@ type Step = "input" | "preview" | "done";
                 [disabled]="busy() || selectedCount() === 0"
                 (click)="doImport()"
               >
-                {{ i18n.t("importSelected").replace("$COUNT", selectedCount().toString()) }}
+                {{ i18n.t("importSelected").replace("{COUNT}", selectedCount().toString()) }}
               </button>
               <button type="button" bitButton buttonType="secondary" (click)="back()">
                 {{ i18n.t("back") }}
@@ -129,11 +141,11 @@ type Step = "input" | "preview" | "done";
           }
 
           @case ("done") {
-            <div class="tw-grid tw-h-[240px] tw-place-items-center">
+            <div class="tw-grid tw-h-60 tw-place-items-center">
               <div class="tw-text-center">
-                <div class="tw-text-[26px]">✅</div>
-                <p class="tw-m-0 tw-mt-2 tw-text-[13px] tw-font-semibold">
-                  {{ i18n.t("importDone").replace("$COUNT", importedCount().toString()) }}
+                <bit-icon name="bwi-check-circle" class="tw-text-4xl tw-text-fg-success"></bit-icon>
+                <p class="tw-m-0 tw-mt-2 tw-text-base tw-font-semibold tw-text-main">
+                  {{ i18n.t("importDone").replace("{COUNT}", importedCount().toString()) }}
                 </p>
                 <button
                   type="button"
@@ -158,7 +170,9 @@ export class GoogleAuthImportV2Component {
   private readonly accountService = inject(AccountService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
+  protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
   protected readonly step = signal<Step>("input");
   protected readonly rawInput = signal("");
   protected readonly rows = signal<readonly PreviewRow[]>([]);
@@ -246,6 +260,18 @@ export class GoogleAuthImportV2Component {
     this.step.set("input");
   }
 
+  protected goBack(): void {
+    if (this.step() === "preview") {
+      this.back();
+      return;
+    }
+    if (this.step() === "done") {
+      this.finish();
+      return;
+    }
+    void this.router.navigateByUrl("/import-source-v2");
+  }
+
   protected async doImport(): Promise<void> {
     const chosen = this.rows().filter((row) => row.included && !row.duplicate);
     if (chosen.length === 0) {
@@ -326,7 +352,7 @@ export class GoogleAuthImportV2Component {
 
     this.rows.set([...merged.values()]);
     this.skippedHotp.set(hotp);
-    this.subtitle.set(this.i18n.t("importFound").replace("$COUNT", merged.size.toString()));
+    this.subtitle.set(this.i18n.t("importFound").replace("{COUNT}", merged.size.toString()));
   }
 }
 

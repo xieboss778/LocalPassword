@@ -1,7 +1,12 @@
+export { ITEM_KIND_ORDER, ITEM_KIND_UI, kindLabelKey } from "./item-kind-ui";
+export type { ItemKindUi } from "./item-kind-ui";
 export { LpEmptyComponent } from "./lp-empty.component";
 export { LpFieldComponent } from "./lp-field.component";
+export type { LpFieldOption } from "./lp-field.component";
 export { LpGroupComponent } from "./lp-group.component";
+export { LpKindTileComponent } from "./lp-kind-tile.component";
 export { LpPageHeaderComponent } from "./lp-page-header.component";
+export { LpPopupHeaderComponent } from "./lp-popup-header.component";
 export { LpRowComponent } from "./lp-row.component";
 export { LpToastComponent } from "./lp-toast.component";
 export { LpToastService } from "./lp-toast.service";

@@ -1,78 +1,75 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { Router } from "@angular/router";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { IconModule } from "@localpass/components";
 import { ItemKind } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
-import { LpPageHeaderComponent } from "../../local-ui";
-
-interface KindTile {
-  readonly kind: ItemKind;
-  readonly emoji: string;
-  readonly labelKey: string;
-  readonly blurbKey: string;
-}
-
-const TILES: readonly KindTile[] = [
-  { kind: ItemKind.Login, emoji: "🔐", labelKey: "itemKindLogin", blurbKey: "itemKindLoginBlurb" },
-  { kind: ItemKind.Token, emoji: "🔑", labelKey: "itemKindToken", blurbKey: "itemKindTokenBlurb" },
-  {
-    kind: ItemKind.SshKey,
-    emoji: "🗝️",
-    labelKey: "itemKindSshKey",
-    blurbKey: "itemKindSshKeyBlurb",
-  },
-  {
-    kind: ItemKind.License,
-    emoji: "📜",
-    labelKey: "itemKindLicense",
-    blurbKey: "itemKindLicenseBlurb",
-  },
-  { kind: ItemKind.Card, emoji: "💳", labelKey: "itemKindCard", blurbKey: "itemKindCardBlurb" },
-  {
-    kind: ItemKind.Identity,
-    emoji: "🪪",
-    labelKey: "itemKindIdentity",
-    blurbKey: "itemKindIdentityBlurb",
-  },
-  {
-    kind: ItemKind.Server,
-    emoji: "🖥️",
-    labelKey: "itemKindServer",
-    blurbKey: "itemKindServerBlurb",
-  },
-  { kind: ItemKind.Note, emoji: "📝", labelKey: "itemKindNote", blurbKey: "itemKindNoteBlurb" },
-];
+import {
+  ITEM_KIND_ORDER,
+  ITEM_KIND_UI,
+  LpKindTileComponent,
+  LpPageHeaderComponent,
+  LpPopupHeaderComponent,
+} from "../../local-ui";
 
 /** 新建条目的第一步：选类型。八格网格，点一下进对应表单。 */
 @Component({
   selector: "new-item-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, JslibModule, LpPageHeaderComponent],
+  host: { class: "tw-block tw-h-full" },
+  imports: [
+    CommonModule,
+    JslibModule,
+    IconModule,
+    LpKindTileComponent,
+    LpPageHeaderComponent,
+    LpPopupHeaderComponent,
+  ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
-      <lp-page-header
-        [title]="i18n.t('newItem')"
-        [sub]="i18n.t('newItemPickKind')"
-      ></lp-page-header>
-      <div class="tw-grid tw-grid-cols-2 tw-gap-2 tw-px-3 tw-pt-1">
-        @for (tile of tiles; track tile.kind) {
-          <button
-            type="button"
-            class="tw-flex tw-flex-col tw-items-start tw-gap-1 tw-rounded-[12px] tw-border tw-border-transparent tw-bg-[var(--lp-card)] tw-p-3 tw-text-left tw-shadow-[0_1px_2px_#10131812] hover:tw-border-[#c9d4ff]"
-            (click)="pick(tile.kind)"
-          >
-            <span class="tw-text-[20px]" aria-hidden="true">{{ tile.emoji }}</span>
-            <span class="tw-mt-1 tw-text-[12.5px] tw-font-semibold">{{
-              i18n.t(tile.labelKey)
-            }}</span>
-            <span class="tw-text-[10.5px] tw-leading-snug tw-text-[var(--lp-ink-3)]">
-              {{ i18n.t(tile.blurbKey) }}
-            </span>
-          </button>
-        }
+    <div
+      class="tw-flex tw-h-full tw-flex-col"
+      [class.tw-bg-background-alt]="!compact()"
+      [class.tw-bg-background]="compact()"
+    >
+      @if (compact()) {
+        <lp-popup-header
+          [title]="i18n.t('newItem')"
+          [sub]="i18n.t('newItemPickKind')"
+          [back]="true"
+          (backTriggered)="back()"
+        ></lp-popup-header>
+      } @else {
+        <lp-page-header
+          [title]="i18n.t('newItem')"
+          [sub]="i18n.t('newItemPickKind')"
+          [compact]="true"
+        ></lp-page-header>
+      }
+
+      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-4 tw-pb-6">
+        <div class="tw-grid tw-grid-cols-2 tw-gap-2">
+          @for (kind of kinds; track kind) {
+            <button
+              type="button"
+              class="tw-flex tw-flex-col tw-items-start tw-gap-2 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-start tw-transition-colors hover:tw-border-border-brand hover:tw-bg-bg-brand-softer"
+              (click)="pick(kind)"
+            >
+              <lp-kind-tile [kind]="kind" size="lg"></lp-kind-tile>
+              <span class="tw-text-sm tw-font-semibold tw-text-main">{{ label(kind) }}</span>
+              <span class="tw-text-xs tw-leading-relaxed tw-text-muted">{{ blurb(kind) }}</span>
+            </button>
+          }
+        </div>
+
+        <div
+          class="tw-mt-3 tw-flex tw-items-start tw-gap-2 tw-rounded-lg tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-p-3 tw-text-xs tw-leading-relaxed tw-text-main"
+        >
+          <bit-icon name="bwi-info-circle" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
+          <span>{{ i18n.t("newItemKindNotice") }}</span>
+        </div>
       </div>
     </div>
   `,
@@ -80,9 +77,29 @@ const TILES: readonly KindTile[] = [
 export class NewItemV2Component {
   protected readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
-  protected readonly tiles = TILES;
+  private readonly route = inject(ActivatedRoute);
+  protected readonly kinds = ITEM_KIND_ORDER;
+
+  /** 弹窗路由在 route.data 里标记 compact；桌面端保持无返回键的页头。 */
+  protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
+
+  protected back(): void {
+    void this.router.navigateByUrl("/tabs/vault");
+  }
+
+  protected label(kind: ItemKind): string {
+    return this.i18n.t(ITEM_KIND_UI[kind].labelKey);
+  }
+
+  protected blurb(kind: ItemKind): string {
+    return this.i18n.t(ITEM_KIND_UI[kind].blurbKey);
+  }
 
   protected pick(kind: ItemKind): void {
-    void this.router.navigate(["/edit-item-v2"], { queryParams: { kind } });
+    // 入口页可能带着「保存后回哪」；丢了它，桌面端保存完会落到扩展的列表路由。
+    const next = this.route.snapshot.queryParamMap.get("next");
+    void this.router.navigate(["/edit-item-v2"], {
+      queryParams: next ? { kind, next } : { kind },
+    });
   }
 }

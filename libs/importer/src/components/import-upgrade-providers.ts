@@ -11,6 +11,7 @@ import { LogService } from "@localpass/common/platform/abstractions/log.service"
 import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import { KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
@@ -47,6 +48,7 @@ export const ImportUpgradeProviders: SafeProvider[] = [
       ConfigService,
       SdkService,
       LogService,
+      LocalVaultWriter,
     ],
   }),
 ];

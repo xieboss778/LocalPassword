@@ -1,110 +1,21 @@
-import { Component, inject } from "@angular/core";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { combineLatest, map, Observable, of, startWith, switchMap } from "rxjs";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { RouterModule } from "@angular/router";
 
-import { NudgesService } from "@localpass/angular/vault";
-import {
-  VaultInactive,
-  VaultActive,
-  GeneratorInactive,
-  GeneratorActive,
-  SendInactive,
-  SendActive,
-  SettingsInactive,
-  SettingsActive,
-} from "@localpass/assets/svg";
-import { AccountService } from "@localpass/common/auth/abstractions/account.service";
-import { getUserId } from "@localpass/common/auth/services/account.service";
-import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
-import { BottomNavigationButton } from "@localpass/components";
-import {
-  ALL_ITEMS_SCOPE,
-  parseVaultScope,
-  VAULT_BASE_ROUTE,
-  vaultScopeCommands,
-} from "@localpass/vault";
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { IconModule } from "@localpass/components";
 
-import { HealthAccessService } from "../dirt/health/popup/services/health-access.service";
-import { VaultPopupListTableFiltersService } from "../vault/popup/services/vault-popup-list-table-filters.service";
-
-// FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+/**
+ * 弹窗底部导航：保险库 / 生成器 / 设置。
+ *
+ * LocalPass 没有 Send（需要服务器转发），也没有账号健康报告；这三格是实际存在的去处。
+ * 详情、表单、设置二级页都在 `tabs` 路由之外，所以打开它们时导航自然隐藏。
+ */
 @Component({
   selector: "app-tabs-v2",
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterModule, IconModule],
   templateUrl: "./tabs-v2.component.html",
-  standalone: false,
 })
 export class TabsV2Component {
-  constructor(
-    private nudgesService: NudgesService,
-    private accountService: AccountService,
-    private autofillSettingsService: AutofillSettingsServiceAbstraction,
-  ) {}
-
-  private healthAccessService = inject(HealthAccessService);
-  private readonly listFiltersService = inject(VaultPopupListTableFiltersService);
-  private readonly vaultBasePath = inject(VAULT_BASE_ROUTE);
-
-  private userId$ = this.accountService.activeAccount$.pipe(getUserId);
-  private hasActiveBadges$ = this.userId$.pipe(
-    switchMap((userId) => this.nudgesService.hasActiveBadges$(userId)),
-  );
-
-  private showSettingsBerry$ = combineLatest([
-    this.hasActiveBadges$,
-    this.autofillSettingsService.showClipboardSettingUpdateNotification$,
-  ]).pipe(map(([hasBadges, showClipboard]) => hasBadges || showClipboard));
-
-  private healthNavButton$ = this.userId$.pipe(
-    switchMap((userId) => this.healthAccessService.healthNavButton$(userId)),
-  );
-
-  // LocalPass: Send relays a secret through a server, so a local vault never offers it.
-  private sendEnabled$ = of(false);
-
-  protected navButtons$: Observable<BottomNavigationButton[]> = combineLatest([
-    this.showSettingsBerry$.pipe(startWith(false)),
-    this.sendEnabled$.pipe(startWith(true)),
-    this.healthNavButton$.pipe(startWith(undefined)),
-    toObservable(this.listFiltersService.cachedVaultScopeId).pipe(startWith(null)),
-    toObservable(this.listFiltersService.cachedVaultScopeCollection).pipe(startWith(null)),
-  ]).pipe(
-    map(([showBerry, sendEnabled, healthNavButton, scopeId, collectionSegment]) => {
-      const scope = parseVaultScope(scopeId, collectionSegment) ?? ALL_ITEMS_SCOPE;
-      const vaultPage = vaultScopeCommands(scope, this.vaultBasePath).join("/");
-      const buttons: BottomNavigationButton[] = [
-        {
-          label: "vault",
-          page: vaultPage,
-          icon: VaultInactive,
-          iconActive: VaultActive,
-        },
-        {
-          label: "generator",
-          page: "/tabs/generator",
-          icon: GeneratorInactive,
-          iconActive: GeneratorActive,
-        },
-        ...(sendEnabled
-          ? [
-              {
-                label: "send",
-                page: "/tabs/send",
-                icon: SendInactive,
-                iconActive: SendActive,
-              } as BottomNavigationButton,
-            ]
-          : []),
-        ...(healthNavButton ? [healthNavButton] : []),
-        {
-          label: "settings",
-          page: "/tabs/settings",
-          icon: SettingsInactive,
-          iconActive: SettingsActive,
-          showBerry,
-        },
-      ];
-      return buttons;
-    }),
-  );
+  protected readonly i18n = inject(I18nService);
 }

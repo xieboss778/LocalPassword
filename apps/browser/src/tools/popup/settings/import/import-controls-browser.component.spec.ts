@@ -5,9 +5,11 @@ import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
 import { UserId } from "@localpass/common/types/guid";
+import { DialogService } from "@localpass/components";
 import {
   DefaultImportStagingService,
   ImportResult,
@@ -16,6 +18,8 @@ import {
 } from "@localpass/importer-core";
 import { StateProvider } from "@localpass/state";
 import { I18nPipe } from "@localpass/ui-common";
+
+import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils";
 
 import { ImportConfirmationStateService } from "./import-confirmation-state.service";
 import { ImportControlsBrowserComponent } from "./import-controls-browser.component";
@@ -48,6 +52,8 @@ describe("ImportControlsBrowserComponent", () => {
           provide: StateProvider,
           useValue: new FakeStateProvider(mockAccountServiceWith("user-1" as UserId)),
         },
+        { provide: AccountService, useValue: mockAccountServiceWith("user-1" as UserId) },
+        { provide: DialogService, useValue: mock<DialogService>() },
         { provide: Router, useValue: router },
         { provide: ImportStagingServiceAbstraction, useValue: stagingService },
         { provide: I18nService, useValue: mock<I18nService>({ t: (key: string) => key }) },
@@ -118,6 +124,7 @@ describe("ImportControlsBrowserComponent", () => {
   });
 
   it("navigates to the confirmation page when continue is emitted after a finished import", async () => {
+    const inPopup = jest.spyOn(BrowserPopupUtils, "inPopup").mockReturnValue(false);
     await setup("keeper");
     await TestBed.inject(ImportConfirmationStateService).set(
       { summary: { total: 1, rows: [] } },
@@ -130,5 +137,6 @@ describe("ImportControlsBrowserComponent", () => {
 
     expect(router.navigate).toHaveBeenCalledWith(["/import-confirmation"]);
     expect(router.navigate).not.toHaveBeenCalledWith(["/tabs/vault"]);
+    inPopup.mockRestore();
   });
 });

@@ -997,6 +997,9 @@
   "masterPassword": {
     "message": "主密码"
   },
+  "masterPasswordLocalDesc": {
+    "message": "保护本机保险库 · 不离开这台设备"
+  },
   "masterPassImportant": {
     "message": "主密码忘记后，将无法恢复！"
   },
@@ -2873,6 +2876,27 @@
   },
   "clearGeneratorHistoryDescription": {
     "message": "若继续，所有条目将从生成器历史记录中永久删除。确定要继续吗？"
+  },
+  "generatorHistorySubtitle": {
+    "message": "只保留在本机，不会上传"
+  },
+  "generatorHistoryEmpty": {
+    "message": "暂无生成历史"
+  },
+  "generatorHistoryEmptyHint": {
+    "message": "生成并复制的值会出现在这里。"
+  },
+  "generatorHistoryLocalOnly": {
+    "message": "生成历史不会同步，也不会写进日志。"
+  },
+  "generatorHistoryCleared": {
+    "message": "生成历史已清空"
+  },
+  "generatorUsernameNotice": {
+    "message": "用户名由本地词表拼成，不会探测任何邮箱域名。"
+  },
+  "usernameUseHyphen": {
+    "message": "使用连字符"
   },
   "back": {
     "message": "返回"
@@ -7637,13 +7661,13 @@
     "message": "回收站中没有项目"
   },
   "noItemsInTrashDesc": {
-    "message": "您删除的项目将显示在这里，并将在 30 天后被永久删除"
+    "message": "您删除的项目将显示在这里，直到你恢复或永久删除"
   },
   "noItemsInTrashDescription": {
-    "message": "您删除的项目将显示在这里，并将在 30 天后被永久删除。"
+    "message": "您删除的项目将显示在这里，直到你恢复或永久删除。"
   },
   "trashWarning": {
-    "message": "回收站中超过 30 天的项目将被自动删除"
+    "message": "回收站中的项目会一直保留，直到你恢复或永久删除"
   },
   "restore": {
     "message": "恢复"
@@ -9674,6 +9698,9 @@
   "itemKindLicenseSeats": {
     "message": "席位 / 版本"
   },
+  "itemKindLicenseSoftware": {
+    "message": "软件"
+  },
   "itemKindServerProtocol": {
     "message": "协议"
   },
@@ -9837,7 +9864,7 @@
     "message": "至少要启用一组字符"
   },
   "generatorStrength": {
-    "message": "$LENGTH 位 × $CLASSES 组字符（强度分 $SCORE）"
+    "message": "{LENGTH} 位 × {CLASSES} 组字符（强度分 {SCORE}）"
   },
   "importPasteHint": {
     "message": "粘贴 otpauth-migration:// 链接，或在下面选导出二维码的截图"
@@ -9858,16 +9885,16 @@
     "message": "跳过"
   },
   "importHotpSkipped": {
-    "message": "$COUNT 条计数器型（HOTP）条目存不了，已跳过"
+    "message": "{COUNT} 条计数器型（HOTP）条目存不了，已跳过"
   },
   "importSelected": {
-    "message": "导入选中的 $COUNT 条"
+    "message": "导入选中的 {COUNT} 条"
   },
   "importDone": {
-    "message": "已导入 $COUNT 个账号"
+    "message": "已导入 {COUNT} 个账号"
   },
   "importFound": {
-    "message": "读到 $COUNT 个账号"
+    "message": "读到 {COUNT} 个账号"
   },
   "importNothingFound": {
     "message": "这份内容里没有识别到账号"
@@ -9906,7 +9933,7 @@
     "message": "搬运数据"
   },
   "trashHint": {
-    "message": "30 天"
+    "message": "只在本地"
   },
   "dataFileWarning": {
     "message": "两个文件并排放在应用数据目录里。删掉它们，保险库就没了——所以备份是手动的，也所以留了那个回滚副本。"
@@ -10000,5 +10027,250 @@
   },
   "networkGateNote": {
     "message": "闸门是个带单测的纯函数：请求出门之前先判允许或阻止，应用里没有第二套放行路径。"
+  },
+  "exposed": {
+    "message": "已暴露",
+    "description": "ex. A password that has been exposed in a data breach."
+  },
+  "passwordExposedInDataBreach": {
+    "message": "此密码已在数据泄露中出现。",
+    "description": "Tooltip for the exposed password risk badge on the view login page."
+  },
+  "passwordTooShortOrSimple": {
+    "message": "密码过短或过于简单。",
+    "description": "Tooltip for the weak password risk badge on the view login page."
+  },
+  "passwordReusedForSeveralLogins": {
+    "message": "多个登录处重复使用同一密码。",
+    "description": "Tooltip for the reused password risk badge on the view login page."
+  },
+  "passwordAtRisk": {
+    "message": "存在风险",
+    "description": "Label for the risk badge on the view login page when an organization has asked the user to change the password."
+  },
+  "passwordFlaggedByOrganization": {
+    "message": "你的组织要求你更改此密码。",
+    "description": "Tooltip for the at-risk badge on the view login page when an organization has asked the user to change the password."
+  },
+  "pamRequestAccessBannerMaxDurationInstantApproval": {
+    "message": "访问有效期最长 $DURATION$。满足条件即可立即获批。",
+    "placeholders": {
+      "duration": {
+        "content": "$1",
+        "example": "1 day"
+      }
+    }
+  },
+  "cancelAnytime": {
+    "message": "随时取消",
+    "description": "Reassurance under the Premium upgrade button"
+  },
+  "secureCheckoutViaStripe": {
+    "message": "通过 Stripe 安全结账",
+    "description": "Shown with the Premium price where checkout opens in the browser"
+  },
+  "notNow": {
+    "message": "暂不",
+    "description": "Dismisses the Premium upgrade prompt"
+  },
+  "month": {
+    "message": "个月"
+  },
+  "aboutOfflineNotice": {
+    "message": "LocalPass 完全在本机运行，不会连接服务器，也不会收集使用数据。"
+  },
+  "allFolders": {
+    "message": "所有文件夹"
+  },
+  "allTypes": {
+    "message": "所有类型"
+  },
+  "clearFilters": {
+    "message": "清除筛选"
+  },
+  "folderLocalOnlyNotice": {
+    "message": "文件夹保存在本地，并用保险库密钥加密。"
+  },
+  "generatorLocalOnlyNotice": {
+    "message": "密码在本机生成，绝不发送到任何地方。"
+  },
+  "hideValue": {
+    "message": "隐藏值"
+  },
+  "license": {
+    "message": "许可证"
+  },
+  "licenseGpl": {
+    "message": "GPL-3.0"
+  },
+  "lockVaultHint": {
+    "message": "立即锁定保险库；不会删除任何数据。"
+  },
+  "newItemKindNotice": {
+    "message": "先选类型，字段会跟着类型变；所有内容都在本地加密。"
+  },
+  "noFolder": {
+    "message": "无文件夹"
+  },
+  "openWebsite": {
+    "message": "打开网站"
+  },
+  "privacy": {
+    "message": "隐私"
+  },
+  "privacySummary": {
+    "message": "仅本地"
+  },
+  "primaryNavigation": {
+    "message": "主导航"
+  },
+  "session": {
+    "message": "会话"
+  },
+  "showValue": {
+    "message": "显示值"
+  },
+  "sourceCode": {
+    "message": "源代码"
+  },
+  "themeOnlyDisplayNotice": {
+    "message": "主题只改变 LocalPass 的外观，保险库数据保持不变。"
+  },
+  "encryptedLocally": {
+    "message": "本地加密"
+  },
+  "lockVault": {
+    "message": "锁定保险库"
+  },
+  "noResultsFor": {
+    "message": "没有与“$QUERY$”匹配的项目。",
+    "placeholders": {
+      "query": {
+        "content": "$1"
+      }
+    }
+  },
+  "emptyFilterHint": {
+    "message": "换一个搜索词，或清除当前筛选条件。"
+  },
+  "moreOptions": {
+    "message": "更多操作"
+  },
+  "itemSaved": {
+    "message": "项目已保存"
+  },
+  "itemCreated": {
+    "message": "项目已创建"
+  },
+  "lastModified": {
+    "message": "最后修改"
+  },
+  "favoriteAdded": {
+    "message": "已加入收藏"
+  },
+  "favoriteRemoved": {
+    "message": "已取消收藏"
+  },
+  "movedToTrash": {
+    "message": "已移到回收站"
+  },
+  "touchIdUnlock": {
+    "message": "Touch ID 解锁"
+  },
+  "touchIdMacOnly": {
+    "message": "在此 Mac 上使用 Touch ID"
+  },
+  "themeLightDesc": {
+    "message": "始终使用浅色主题"
+  },
+  "themeDarkDesc": {
+    "message": "适合黑暗和弱光环境"
+  },
+  "themeSystemDesc": {
+    "message": "跟随系统外观"
+  },
+  "cloneItemName": {
+    "message": "$NAME$ 的副本",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "itemCloned": {
+    "message": "项目已复制"
+  },
+  "copiedField": {
+    "message": "已复制$FIELD$",
+    "placeholders": {
+      "field": {
+        "content": "$1"
+      }
+    }
+  },
+  "removeFavorite": {
+    "message": "取消收藏"
+  },
+  "moveToTrash": {
+    "message": "移到回收站"
+  },
+  "securitySettingsDesc": {
+    "message": "主密码、自动锁定、PIN"
+  },
+  "foldersCount": {
+    "message": "{COUNT} 个文件夹"
+  },
+  "trashCount": {
+    "message": "{COUNT} 个项目"
+  },
+  "importSettingsDesc": {
+    "message": "从备份或其他管理器导入"
+  },
+  "exportSettingsDesc": {
+    "message": "加密 JSON"
+  },
+  "generatorSettingsDesc": {
+    "message": "密码、密码短语与用户名"
+  },
+  "backupSettingsDesc": {
+    "message": "手动同步到你自己的存储"
+  },
+  "networkSettingsDesc": {
+    "message": "拦截未经授权的出站请求"
+  },
+  "dataSettingsDesc": {
+    "message": "本地文件与清除保险库"
+  },
+  "appVersion": {
+    "message": "版本"
+  },
+  "settingsPrivacyNote": {
+    "message": "LocalPass 没有账号也没有服务器。移除扩展前请先导出或备份。"
+  },
+  "unlockOptionsDesc": {
+    "message": "PIN 及其他解锁方式"
+  },
+  "deletedOn": {
+    "message": "删除于 $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "localVault": {
+    "message": "本地保险库"
+  },
+  "noSearchResults": {
+    "message": "没有搜索结果"
+  },
+  "language": {
+    "message": "语言"
+  },
+  "simplifiedChinese": {
+    "message": "简体中文"
+  },
+  "appearanceSubtitle": {
+    "message": "主题与语言"
   }
 }

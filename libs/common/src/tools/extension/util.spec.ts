@@ -41,7 +41,7 @@ describe("toObjectKey", () => {
   it("creates a dynamic object key", () => {
     const result = toObjectKey(ExampleProfile, ExampleMetadata);
 
-    expect(result.key).toEqual("forwarder.localpass.example");
+    expect(result.key).toEqual("forwarder.bitwarden.example");
   });
 
   it("copies the profile storage metadata", () => {

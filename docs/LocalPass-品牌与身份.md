@@ -4,17 +4,17 @@
 
 ## 一、运行期身份（改了会直接影响数据与权限）
 
-| 项 | 取值 | 落点 |
-| --- | --- | --- |
-| Electron `app.name` / `productName` | `LocalPass` | `apps/desktop/build/package.json` |
-| bundle id / `appId` | `com.localpass.desktop` | `apps/desktop/electron-builder.json` |
-| userData | `~/Library/Application Support/LocalPass` | Electron 派生 |
-| 钥匙串服务名 | `LocalPass` / `LocalPass_biometric` / `LocalPass Safe Storage` | `app.getName()` 派生 |
-| URL scheme | `localpass://` | `electron-builder.json` → `protocols` |
-| 浏览器 ↔ 桌面 host | `com.localpass.desktop` | `apps/desktop/src/main/native-messaging.main.ts` |
-| 代码签名 | 关闭（`mac.identity = null`，无 entitlements、无 hardened runtime） | `apps/desktop/electron-builder.json` |
-| Linux polkit action | `com.localpass.LocalPass.unlock` | `biometric/src/linux.rs`、`os-biometrics-linux.service.ts` |
-| 默认服务域名 | **无**。区域表收敛为单一离线哨兵 `https://local.invalid`（保留域名，永不解析） | `libs/common/src/platform/services/default-environment.service.ts` |
+| 项                                  | 取值                                                                           | 落点                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Electron `app.name` / `productName` | `LocalPass`                                                                    | `apps/desktop/build/package.json`                                  |
+| bundle id / `appId`                 | `com.localpass.desktop`                                                        | `apps/desktop/electron-builder.json`                               |
+| userData                            | `~/Library/Application Support/LocalPass`                                      | Electron 派生                                                      |
+| 钥匙串服务名                        | `LocalPass` / `LocalPass_biometric` / `LocalPass Safe Storage`                 | `app.getName()` 派生                                               |
+| URL scheme                          | `localpass://`                                                                 | `electron-builder.json` → `protocols`                              |
+| 浏览器 ↔ 桌面 host                  | `com.localpass.desktop`                                                        | `apps/desktop/src/main/native-messaging.main.ts`                   |
+| 代码签名                            | 关闭（`mac.identity = null`，无 entitlements、无 hardened runtime）            | `apps/desktop/electron-builder.json`                               |
+| Linux polkit action                 | `com.localpass.LocalPass.unlock`                                               | `biometric/src/linux.rs`、`os-biometrics-linux.service.ts`         |
+| 默认服务域名                        | **无**。区域表收敛为单一离线哨兵 `https://local.invalid`（保留域名，永不解析） | `libs/common/src/platform/services/default-environment.service.ts` |
 
 `productName` 必须写在 **build/package.json**（被打进 asar 的那份）。只改 `electron-builder.json` 的 `productName`
 只会改 bundle 与 Info.plist，Electron 运行时仍会拿到旧名字，导致 keychain 项与 userData 继续与旧厂商共用。

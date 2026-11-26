@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -20,6 +21,7 @@ import {
   LpFieldComponent,
   LpGroupComponent,
   LpPageHeaderComponent,
+  LpPopupHeaderComponent,
   LpRowComponent,
 } from "../../local-ui";
 
@@ -37,6 +39,7 @@ interface BackupStatus {
 @Component({
   selector: "backup-settings-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "tw-block tw-h-full" },
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -45,18 +48,28 @@ interface BackupStatus {
     LpFieldComponent,
     LpGroupComponent,
     LpPageHeaderComponent,
+    LpPopupHeaderComponent,
     LpRowComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-[var(--lp-bg)]">
-      <lp-page-header
-        [title]="i18n.t('backupTitle')"
-        [sub]="i18n.t('backupSubtitle')"
-      ></lp-page-header>
+    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+      @if (compact()) {
+        <lp-popup-header
+          [title]="i18n.t('backupTitle')"
+          [sub]="i18n.t('backupSubtitle')"
+          [back]="true"
+          (backTriggered)="goBack()"
+        ></lp-popup-header>
+      } @else {
+        <lp-page-header
+          [title]="i18n.t('backupTitle')"
+          [sub]="i18n.t('backupSubtitle')"
+        ></lp-page-header>
+      }
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
         <div
-          class="tw-mx-3 tw-mb-2 tw-rounded-[11px] tw-border tw-border-[#f6e2b8] tw-bg-[#fdf6e6] tw-px-3 tw-py-2.5 tw-text-[11px] tw-leading-relaxed tw-text-[#8a5a00]"
+          class="tw-mx-3 tw-mb-2 tw-rounded-xl tw-border tw-border-border-warning-soft tw-bg-bg-warning-soft tw-px-3 tw-py-2.5 tw-text-xs tw-leading-relaxed tw-text-fg-warning-strong"
         >
           {{ i18n.t("backupManualNotice") }}
         </div>
@@ -110,7 +123,7 @@ interface BackupStatus {
 
         <lp-group [label]="i18n.t('backupActions')">
           <lp-row
-            emoji="🔌"
+            icon="bwi-wireless"
             [label]="i18n.t('backupTest')"
             [value]="busy() ? i18n.t('loading') : ''"
             [chevron]="true"
@@ -118,21 +131,21 @@ interface BackupStatus {
             (activated)="testConnection()"
           />
           <lp-row
-            emoji="💾"
+            icon="bwi-check"
             [label]="i18n.t('backupSaveConfig')"
             [chevron]="true"
             [clickable]="true"
             (activated)="save()"
           />
           <lp-row
-            emoji="☁️"
+            icon="bwi-upload"
             [label]="i18n.t('backupNow')"
             [chevron]="true"
             [clickable]="true"
             (activated)="backupNow()"
           />
           <lp-row
-            emoji="↺"
+            icon="bwi-refresh"
             [label]="i18n.t('syncNow')"
             [chevron]="true"
             [clickable]="true"
@@ -142,21 +155,44 @@ interface BackupStatus {
 
         <lp-group [label]="i18n.t('backupPassphrase')">
           <lp-row
-            emoji="🔑"
+            icon="bwi-key"
             [label]="i18n.t('backupPassphrase')"
             [value]="passwordVisible() ? (password() ?? '') : '••••••••'"
             [mono]="true"
             [chevron]="!passwordVisible()"
+            [copyValue]="passwordVisible() ? (password() ?? '') : ''"
+            [copyLabel]="i18n.t('backupPassphrase')"
             [clickable]="true"
             (activated)="revealPassword()"
           />
         </lp-group>
 
+        @if (passwordVisible()) {
+          <div class="tw-px-3 tw-pt-2">
+            <button type="button" bitButton buttonType="secondary" (click)="hidePassword()">
+              {{ i18n.t("hideValue") }}
+            </button>
+          </div>
+        }
+
+        @if (configured()) {
+          <lp-group [label]="i18n.t('backupStorage')">
+            <lp-row
+              icon="bwi-trash"
+              [label]="i18n.t('disconnectBackup')"
+              [sub]="i18n.t('backupManualNotice')"
+              [chevron]="true"
+              [clickable]="true"
+              (activated)="disconnect()"
+            />
+          </lp-group>
+        }
+
         @switch (phase()) {
           @case ("loading") {
             <lp-group [label]="i18n.t('syncPhaseTitle')">
               <lp-row
-                emoji="⏳"
+                icon="bwi-refresh"
                 [label]="i18n.t('syncLoading')"
                 [value]="i18n.t('loading')"
                 [clickable]="false"
@@ -186,7 +222,7 @@ interface BackupStatus {
           }
           @case ("error") {
             <div
-              class="tw-mx-3 tw-mt-2 tw-rounded-[11px] tw-border tw-border-[#f3c9c4] tw-bg-[#fdf0ee] tw-px-3 tw-py-2.5 tw-text-[11px] tw-text-[#8a2c22]"
+              class="tw-mx-3 tw-mt-2 tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-px-3 tw-py-2.5 tw-text-xs tw-text-fg-danger-strong"
             >
               {{ i18n.t("backupSyncFailed") }}
             </div>
@@ -199,7 +235,7 @@ interface BackupStatus {
         }
 
         @if (errorMessage()) {
-          <p class="tw-px-4 tw-pt-3 tw-text-[11px] tw-text-[var(--lp-danger)]">
+          <p class="tw-px-4 tw-pt-3 tw-text-xs tw-text-fg-danger">
             {{ errorMessage() }}
           </p>
         }
@@ -215,6 +251,11 @@ export class BackupSettingsV2Component implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
   private readonly dialogService = inject(DialogService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
+  protected readonly configured = signal(false);
 
   protected readonly form = this.formBuilder.group({
     endpoint: ["", [Validators.required]],
@@ -239,6 +280,7 @@ export class BackupSettingsV2Component implements OnInit {
     const config = await this.syncService.getConfig(userId);
     if (config) {
       this.form.patchValue(config);
+      this.configured.set(true);
     }
     await this.refreshStatus();
   }
@@ -277,6 +319,7 @@ export class BackupSettingsV2Component implements OnInit {
     });
 
     this.errorMessage.set(null);
+    this.configured.set(true);
     this.platformUtilsService.showToast("success", "", this.i18n.t("backupSaved"));
     await this.refreshStatus();
   }
@@ -299,9 +342,8 @@ export class BackupSettingsV2Component implements OnInit {
       });
       await client.listObjects("");
       this.platformUtilsService.showToast("success", "", this.i18n.t("backupTestOk"));
-    } catch (error) {
+    } catch {
       this.errorMessage.set(this.i18n.t("backupTestFailed"));
-      throw error;
     } finally {
       this.busy.set(false);
     }
@@ -310,6 +352,7 @@ export class BackupSettingsV2Component implements OnInit {
   /** 只有用户点这里才会上传；没有任何后台调度。 */
   protected async backupNow(): Promise<void> {
     this.busy.set(true);
+    this.errorMessage.set(null);
     try {
       const userId = await this.userId();
       const result = await this.backupService.backupNow(userId);
@@ -319,6 +362,10 @@ export class BackupSettingsV2Component implements OnInit {
         this.i18n.t(result.uploaded ? "backupUploaded" : "backupFailed"),
       );
       await this.refreshStatus();
+    } catch {
+      // 端点不可达或凭证无效都走同一条回执；不要抛到 Angular 事件循环里。
+      this.errorMessage.set(this.i18n.t("backupFailed"));
+      this.platformUtilsService.showToast("error", "", this.i18n.t("backupFailed"));
     } finally {
       this.busy.set(false);
     }
@@ -355,12 +402,19 @@ export class BackupSettingsV2Component implements OnInit {
 
   protected async revealPassword(): Promise<void> {
     if (this.passwordVisible()) {
-      this.passwordVisible.set(false);
       return;
     }
     const userId = await this.userId();
     this.password.set(await this.backupService.ensurePassword(userId));
     this.passwordVisible.set(true);
+  }
+
+  protected hidePassword(): void {
+    this.passwordVisible.set(false);
+  }
+
+  protected goBack(): void {
+    void this.router.navigateByUrl("/tabs/settings");
   }
 
   protected async disconnect(): Promise<void> {
@@ -377,6 +431,12 @@ export class BackupSettingsV2Component implements OnInit {
     await this.syncService.disconnect(userId);
     this.form.reset({ region: "auto", prefix: "localpass" });
     this.status.set({ lastSyncedAt: null, lastBackupAt: null });
+    this.password.set(null);
+    this.passwordVisible.set(false);
+    this.configured.set(false);
+    this.phase.set("idle");
+    this.conflicts.set([]);
+    this.errorMessage.set(null);
   }
 
   private async refreshStatus(): Promise<void> {

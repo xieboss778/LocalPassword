@@ -19,11 +19,16 @@ export class FolderApiService implements FolderApiServiceAbstraction {
   ) {}
 
   async save(folder: Folder, userId: UserId): Promise<FolderData> {
-    // A local vault stores the folder itself; there is no server to save it on.
-    const local = await this.localVaultWriter.saveFolder(folder, userId);
-    if (local != null) {
-      folder.id = local.id;
-      return local;
+    // A local vault stores the folder itself; there is no server to save it on. Drop the
+    // decrypted cache *before* writing so the state update that follows decrypts the new list
+    // instead of re-emitting the pre-write snapshot.
+    if (await this.localVaultWriter.isLocalAccount(userId)) {
+      await this.folderService.clearDecryptedFolderState(userId);
+      const local = await this.localVaultWriter.saveFolder(folder, userId);
+      if (local != null) {
+        folder.id = local.id;
+        return local;
+      }
     }
 
     const request = new FolderRequest(folder);
@@ -42,16 +47,22 @@ export class FolderApiService implements FolderApiServiceAbstraction {
   }
 
   async delete(id: string, userId: UserId): Promise<any> {
-    if (await this.localVaultWriter.deleteFolder([id], userId)) {
-      return;
+    if (await this.localVaultWriter.isLocalAccount(userId)) {
+      await this.folderService.clearDecryptedFolderState(userId);
+      if (await this.localVaultWriter.deleteFolder([id], userId)) {
+        return;
+      }
     }
     await this.deleteFolder(id);
     await this.folderService.delete(id, userId);
   }
 
   async deleteMany(ids: string[], userId: UserId): Promise<any> {
-    if (await this.localVaultWriter.deleteFolder(ids, userId)) {
-      return;
+    if (await this.localVaultWriter.isLocalAccount(userId)) {
+      await this.folderService.clearDecryptedFolderState(userId);
+      if (await this.localVaultWriter.deleteFolder(ids, userId)) {
+        return;
+      }
     }
     await this.apiService.send("DELETE", "/folders", new FolderBulkDeleteRequest(ids), true, false);
     await this.folderService.delete(ids, userId);

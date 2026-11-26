@@ -29,7 +29,7 @@ describe("ForegroundCipherService", () => {
       .mockResolvedValue({ result: listViews("first") });
 
     // Only the list-view stream is under test; the inherited dependencies stay mocks.
-    const cipherServiceDeps = Array.from({ length: 14 }, () =>
+    const cipherServiceDeps = Array.from({ length: 15 }, () =>
       mock<any>(),
     ) as ConstructorParameters<typeof CipherService>;
     service = new ForegroundCipherService(new MessageListener(messages$), ...cipherServiceDeps);
@@ -85,7 +85,7 @@ describe("ForegroundCipherService", () => {
     expect(emitted.at(-1)).toEqual(listViews("first"));
   });
 
-  it("drops its copy of the list views when the cache is cleared", async () => {
+  it("drops its copy and refreshes it when the cache is cleared", async () => {
     const emitted: (CipherListView[] | null)[] = [];
     service.cipherListViewsIncludingRestricted$(userId).subscribe((views) => emitted.push(views));
     await Promise.resolve();
@@ -95,7 +95,39 @@ describe("ForegroundCipherService", () => {
       undefined,
     );
     await service.clearCache(userId);
+    expect(emitted).toContain(null);
 
-    expect(emitted.at(-1)).toBeNull();
+    // An open screen stays subscribed through the clear, so the refresh must reach it without
+    // the user reopening the vault. This is what makes a restore or delete visible immediately.
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(emitted.at(-1)).toEqual(listViews("first"));
+    expect(sendMessageWithResponse).toHaveBeenCalledTimes(2);
+  });
+
+  it("asks the background again when a new subscriber opens the vault after a clear", async () => {
+    jest.spyOn(Object.getPrototypeOf(ForegroundCipherService.prototype), "clearCache");
+    Object.getPrototypeOf(ForegroundCipherService.prototype).clearCache.mockResolvedValue(
+      undefined,
+    );
+
+    const first = service.cipherListViewsIncludingRestricted$(userId).subscribe();
+    await Promise.resolve();
+    expect(sendMessageWithResponse).toHaveBeenCalledTimes(1);
+
+    first.unsubscribe();
+    await service.clearCache(userId);
+
+    // A missed announcement must not leave the next vault screen replaying the cleared buffer.
+    const emitted: (CipherListView[] | null)[] = [];
+    const second = service
+      .cipherListViewsIncludingRestricted$(userId)
+      .subscribe((views) => emitted.push(views));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(sendMessageWithResponse).toHaveBeenCalledTimes(2);
+    expect(emitted.at(-1)).toEqual(listViews("first"));
+    second.unsubscribe();
   });
 });

@@ -200,7 +200,7 @@ describe("DesktopAutofillService", () => {
   });
 
   describe("blocked RP IDs", () => {
-    it.each(["vault.local.invalid", "Vault.LocalPass.COM"])(
+    it.each(["vault.local.invalid", "VAULT.LOCAL.INVALID"])(
       "tells the user why, then rejects registration, assertion, and UI-less assertion for the active vault's RP ID (%s)",
       async (rpId) => {
         (global as any).ipc = {
@@ -281,7 +281,7 @@ describe("DesktopAutofillService", () => {
 
       it.each([
         ["https://vault.local.invalid", "vault.local.invalid"],
-        ["https://vault.local.invalid", "Vault.LocalPass.EU"],
+        ["https://vault.local.invalid", "VAULT.LOCAL.INVALID"],
         ["https://localpass.example.com", "localpass.example.com"],
         ["https://localpass.example.com/", "localpass.example.com"],
         ["https://LocalPass.Example.COM", "localpass.example.com"],

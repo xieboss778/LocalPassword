@@ -48,6 +48,7 @@ import { LoginView } from "../models/view/login.view";
 
 import { CipherService } from "./cipher.service";
 import { ENCRYPTED_CIPHERS, LOCAL_DATA_KEY } from "./key-state/ciphers.state";
+import { NoopLocalVaultWriter } from "./noop-local-vault-writer.service";
 
 const ENCRYPTED_TEXT = "This data has been encrypted";
 function encryptText(clearText: string | Uint8Array) {
@@ -151,6 +152,7 @@ describe("Cipher Service", () => {
       logService,
       cipherEncryptionService,
       cipherSdkService,
+      new NoopLocalVaultWriter(),
     );
 
     encryptionContext = { cipher: new Cipher(cipherData), encryptedFor: userId };

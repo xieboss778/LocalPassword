@@ -262,6 +262,14 @@ export class DefaultConfigService implements ConfigService {
     fallbackConfig: ServerConfig | null,
   ): Promise<void> {
     try {
+      // LocalPass has no server: the API URL points at a reserved `.invalid` host and the
+      // network gate rejects it before a request leaves the device. Don't attempt the fetch
+      // or log it as a failure on every unlock.
+      if (isOfflineByDesign(environment.getApiUrl())) {
+        this.failedFetchFallbackSubject.next(fallbackConfig);
+        return;
+      }
+
       // Feature flags often have a big impact on user experience, lets ensure we return some value
       // somewhat quickly even though it may not be accurate, we won't cancel the HTTP request
       // though so that hopefully it can have finished and hydrated a more accurate value.
@@ -332,5 +340,17 @@ export class DefaultConfigService implements ConfigService {
           }
         : { bootstrap: { type: "direct" } };
     this.serverCommunicationConfigSubject.next(communicationConfig);
+  }
+}
+
+/**
+ * `.invalid` is reserved by RFC 2606 and can never resolve. LocalPass uses it for the API URL
+ * precisely so no request is ever attempted; treat any such environment as offline.
+ */
+function isOfflineByDesign(apiUrl: string): boolean {
+  try {
+    return new URL(apiUrl).hostname.endsWith(".invalid");
+  } catch {
+    return false;
   }
 }

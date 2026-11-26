@@ -47,7 +47,7 @@
 | ---------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 关闭桌面自动更新       | ✅        | `apps/desktop/src/main.ts:449-451` 短路注释、`updaterMain.init()` 已不再调用；`electron-builder.json` 的 `publish` 段为 0 处                                                      |
 | 扩展改名 + 固定扩展 ID | ✅        | `manifest.v3.json` `short_name/author/homepage_url` 已改；`key` 在 232 行，**实算 SHA256→ID = `gmobddgobjdhbjhedhgaeekhgchkoncm`，与文档一致**                                    |
-| 桌面改名               | ✅        | `productName: LocalPass`、`appId: com.localpass.desktop`、`extraMetadata.name: localpass`                                                                             |
+| 桌面改名               | ✅        | `productName: LocalPass`、`appId: com.localpass.desktop`、`extraMetadata.name: localpass`                                                                                         |
 | 文案批量替换           | ⚠️ 部分   | 语言包已改；`apps/desktop/electron-builder.json:166` 仍是 `publisherDisplayName: "LocalPass Inc"`，`beta` 配置整份仍是 LocalPass                                                  |
 | 六个扩展侧一次性验证   | ❌ 无记录 | `docs/` 下没有验证结论；6 项里 2 项已实质完成（固定 ID、请求拦截策略雏形），4 项（SDK V1 密钥状态、PRF 状态不被清、RP ID=扩展 ID 的 WebAuthn、`chrome.storage.local` 容量）无证据 |
 | 四个桌面侧一次性验证   | ❌ 无记录 | 同上                                                                                                                                                                              |
@@ -61,7 +61,7 @@
 | 删无消费者库                                     | ✅      | 已删 `pam/billing/dirt-card`；`pricing/subscription/organization-invite-link` 有消费者，按文档保留                                |
 | 清理企业版构建脚本                               | ⚠️ 部分 | `dist:bit*` 已删；但 `apps/desktop/package.json:77,84` 仍有 `pack:*:beta`，`electron-builder.beta.json`、`beta-release.json` 仍在 |
 | 只留 Chrome MV3                                  | ❌ 未做 | `apps/browser/package.json` 仍有 `build:firefox/edge/opera/safari`、`dist:*`、`package:dev:chrome`；`project.json` 仍有 edge 目标 |
-| 瘦身护栏（每步全量 lint/types/test）             | ❌      | `.github/workflows/localpass.yml` 只有 3 个构建 job，**没有 lint / test:types / jest / lint:dep-ownership**                   |
+| 瘦身护栏（每步全量 lint/types/test）             | ❌      | `.github/workflows/localpass.yml` 只有 3 个构建 job，**没有 lint / test:types / jest / lint:dep-ownership**                       |
 | 删除清单文档                                     | ✅      | `docs/removed-from-upstream.md` 已建立并记录                                                                                      |
 
 ### 阶段 2（本地保险库核心）
@@ -135,12 +135,12 @@ CI 只在 push 时产出未签名 artifact（`localpass-chrome` / `localpass-win
 | -------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 0 基线/改名/阻断项   | 完成                                             | 扩展 ID 由 manifest `key` 实算为 `gmobddgobjdhbjhedhgaeekhgchkoncm`；`updaterMain.init()` 不调用；`publish` 段已删                                                                                            |
 | 1 瘦身               | 完成，另删 3 个依赖 `apps/web` 的 story 与其 mdx | `libs/auth/src/angular/input-password`、`libs/angular/.../registration-start`、`libs/vault/src/cipher-form`                                                                                                   |
-| 2 本地保险库核心     | 完成（缺 PRF 相关）                              | `CreateLocalAccountService`、`DefaultLocalVaultWriter`（`CipherService` 9 处分支、`FolderApiService` 4 处、`fullSync`、`ImportService`）、`LocalPassApiService`、两端起始页与向导、PIN/登出/Send 护栏     |
-| 3 桌面端接入         | 阻断项完成；调度待接                             | `com.localpass.desktop` 主机名、`ssoCookieMain.init` 关闭、`data.json.bak`                                                                                                                                |
+| 2 本地保险库核心     | 完成（缺 PRF 相关）                              | `CreateLocalAccountService`、`DefaultLocalVaultWriter`（`CipherService` 9 处分支、`FolderApiService` 4 处、`fullSync`、`ImportService`）、`LocalPassApiService`、两端起始页与向导、PIN/登出/Send 护栏         |
+| 3 桌面端接入         | 阻断项完成；调度待接                             | `com.localpass.desktop` 主机名、`ssoCookieMain.init` 关闭、`data.json.bak`                                                                                                                                    |
 | 4 R2 同步 + 定时备份 | 核心完成；设置页与两端接线待做                   | `s3-client.ts`（SigV4/条件写/分页）、`vault-backup-sync.service.ts`（清单 412 重试合并）、`vault-backup.service.ts`（导出上传/保留）、`vault-backup-scheduler.service.ts`（15s 防抖 / 30min 检查 / 日周节奏） |
 | 5 Passkey / PRF      | 未开始                                           | ——                                                                                                                                                                                                            |
 | 6 TOTP 二维码        | 未开始                                           | ——                                                                                                                                                                                                            |
-| 7 打包发布           | 部分（CI 出未签名产物）                          | `.github/workflows/localpass.yml`                                                                                                                                                                         |
+| 7 打包发布           | 部分（CI 出未签名产物）                          | `.github/workflows/localpass.yml`                                                                                                                                                                             |
 
 **CI 实测（首次推送）**：`verify-static` 报 19 个严格类型错误与 3 个 web 依赖残留，`Chrome 扩展` webpack 编译报 8 个同源错误；
 已在 `09af6bf` 全部修正（`creationDate: Date`、`EncString` 双重断言、WebCrypto `ArrayBuffer` 视图、状态反序列化断言、组件相对路径、故事文件删除、导入测试路径改写）。
@@ -154,7 +154,7 @@ CI 只在 push 时产出未签名 artifact（`localpass-chrome` / `localpass-win
 | 4    | S3 客户端、快照推送/拉取（清单 412 重试）、备份导出与保留、调度器、设置页、`account.json` 与云端恢复 | `libs/local-vault/src/s3`、`src/sync`、`libs/angular/src/tools/backup`、`src/auth/local-vault/restore-vault.component.ts`       |
 | 5    | PRF 登记服务 + 设置页；解锁路径 RP ID 回退到扩展主机名                                               | `libs/key-management-ui/src/lock/services/local-webauthn-prf-enrollment.service.ts`、`apps/browser/src/auth/popup/security-key` |
 | 6    | `otpauth-migration` 解码器（含单测）、导入页、TOTP 二维码组件与详情页弹窗                            | `libs/importer/src/importers/google-authenticator`、`libs/vault/src/components/totp-qr`、`.../totp-qr-dialog`                   |
-| 7    | 扩展 zip 产物、安装与恢复文档                                                                        | `.github/workflows/localpass.yml`、`docs/LocalPass-安装与恢复.md`                                                       |
+| 7    | 扩展 zip 产物、安装与恢复文档                                                                        | `.github/workflows/localpass.yml`、`docs/LocalPass-安装与恢复.md`                                                               |
 
 **CI 收敛记录**：类型检查 46 个项目多次全绿；eslint 从 19 项降到 0；prettier 基线通过一次性 `format.yml` + `chore/prettier` 分支合并建立；Chrome 扩展 webpack 构建成功。仍未跑完的是单元测试与桌面端打包（GitHub runner 排队 + 频繁推送触发 concurrency 取消）。
 

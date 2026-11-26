@@ -1,9 +1,10 @@
 <ng-container
   *ngIf="{
     selectedRegion: selectedRegion$ | async,
+    localOnly: localOnly$ | async,
   } as data"
 >
-  <div class="tw-mb-1">
+  <div class="tw-mb-1" *ngIf="!data.localOnly">
     <bit-menu #environmentOptions>
       <button
         *ngFor="let region of availableRegions$ | async; let i = index"

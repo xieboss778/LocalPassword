@@ -12,7 +12,7 @@ import { ConfigService } from "../../platform/abstractions/config/config.service
 import { Environment, EnvironmentService } from "../../platform/abstractions/environment.service";
 import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
-import { FormPurposeCategories } from "../constants";
+import { DEFAULT_FILL_ASSIST_RULES_URL, FormPurposeCategories } from "../constants";
 import { TargetingRulesByDomain, FormContent } from "../types";
 
 import { DefaultDomainSettingsService, DomainSettingsService } from "./domain-settings.service";
@@ -911,7 +911,7 @@ describe("DefaultDomainSettingsService", () => {
 
     it("emits undefined when the policy URL is the default sentinel and server config has no URL", async () => {
       fillAssistPolicyMock$.next([
-        makeFillAssistPolicy({ rulesUrl: "https://fillassist.local.invalid" }),
+        makeFillAssistPolicy({ rulesUrl: DEFAULT_FILL_ASSIST_RULES_URL }),
       ]);
       serverConfigMock$.next({ environment: {} });
 
@@ -949,7 +949,7 @@ describe("DefaultDomainSettingsService", () => {
       // the server config — otherwise self-hosted admins couldn't override.
       fillAssistPolicyMock$.next([
         makeFillAssistPolicy({
-          rulesUrl: "https://fillassist.local.invalid",
+          rulesUrl: DEFAULT_FILL_ASSIST_RULES_URL,
         }),
       ]);
       serverConfigMock$.next({
@@ -966,7 +966,7 @@ describe("DefaultDomainSettingsService", () => {
       // URL with a slash must not shadow server config.
       fillAssistPolicyMock$.next([
         makeFillAssistPolicy({
-          rulesUrl: "https://fillassist.local.invalid/",
+          rulesUrl: `${DEFAULT_FILL_ASSIST_RULES_URL}/`,
         }),
       ]);
       serverConfigMock$.next({

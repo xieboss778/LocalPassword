@@ -660,6 +660,7 @@ const safeProviders: SafeProvider[] = [
       SdkService,
       StateProvider,
       I18nServiceAbstraction,
+      LocalVaultWriter,
     ],
   }),
   safeProvider({
@@ -767,7 +768,7 @@ const safeProviders: SafeProvider[] = [
       legacyCompatKeyService: LegacyCompatKeyService,
       localAccountService: LocalAccountService,
       keyConnectorService: KeyConnectorServiceAbstraction,
-      encryptService: EncryptService,
+      stateProvider: StateProvider,
       logService: LogService,
     ) =>
       new CreateLocalAccountService(
@@ -784,7 +785,7 @@ const safeProviders: SafeProvider[] = [
         legacyCompatKeyService,
         localAccountService,
         keyConnectorService,
-        encryptService,
+        stateProvider,
         logService,
       ),
     deps: [
@@ -801,7 +802,7 @@ const safeProviders: SafeProvider[] = [
       LegacyCompatKeyService,
       LocalAccountService,
       KeyConnectorServiceAbstraction,
-      EncryptService,
+      StateProvider,
       LogService,
     ],
   }),
