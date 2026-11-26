@@ -82,7 +82,7 @@ const KIND_UI: Record<ItemKind, { labelKey: string; emoji: string }> = {
           <div class="tw-text-[12px] tw-font-semibold">{{ i18n.t("localVault") }}</div>
         </div>
 
-        @for (entry of railEntries; track entry.route) {
+        @for (entry of railEntries(); track entry.route) {
           <button
             type="button"
             class="tw-flex tw-items-center tw-gap-2 tw-rounded-[10px] tw-px-2.5 tw-py-2 tw-text-left tw-text-[12.5px]"
