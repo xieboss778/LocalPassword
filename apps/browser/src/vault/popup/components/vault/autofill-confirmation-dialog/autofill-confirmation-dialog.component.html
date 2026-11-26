@@ -1,8 +1,9 @@
 <bit-dialog [title]="dialogTitle()">
-  <div bitDialogContent>
-    <p bitTypography="body2">{{ dialogBody() }}</p>
+  <div bitDialogContent class="tw-flex tw-flex-col tw-gap-2">
+    <p class="tw-m-0 tw-text-[12px] tw-leading-relaxed tw-text-[var(--lp-ink-2)]">{{ dialogBody() }}</p>
+
     @if (formattedSavedUrls().length === 1) {
-      <p class="tw-text-muted tw-text-xs tw-uppercase tw-mt-4 tw-font-medium">
+      <p class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
         {{ "savedWebsite" | i18n }}
       </p>
       <bit-callout [title]="null" type="success" icon="bwi-globe" class="[&_div]:tw-min-w-0">
@@ -19,24 +20,25 @@
         </div>
       </bit-callout>
     }
+
     @if (formattedSavedUrls().length > 1) {
-      <div class="tw-flex tw-justify-between tw-items-center tw-mt-4 tw-mb-1 tw-pt-2">
-        <p class="tw-text-muted tw-text-xs tw-uppercase tw-font-medium tw-mb-0">
+      <div class="tw-mt-2 tw-flex tw-items-center tw-justify-between">
+        <p class="tw-m-0 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
           {{ "savedWebsites" | i18n: formattedSavedUrls().length.toString() }}
         </p>
         <button
           type="button"
           bitLink
-          class="tw-text-sm tw-font-medium tw-cursor-pointer"
+          class="tw-cursor-pointer tw-text-[12px] tw-font-medium"
           (click)="toggleSavedUrlExpandedState()"
           data-test-id="toggle-show-saved-urls-button"
         >
           {{ (savedUrlsExpanded() ? "showLess" : "showAll") | i18n }}
         </button>
       </div>
-      <div class="tw-pt-2" [ngClass]="savedUrlsListClass()">
+      <div [ngClass]="savedUrlsListClass()">
         @for (url of formattedSavedUrls(); track url; let i = $index) {
-          <div class="-tw-mt-2">
+          <div class="tw-mt-2">
             <bit-callout [title]="null" type="success" icon="bwi-globe" class="[&_div]:tw-min-w-0">
               <div
                 class="tw-font-mono tw-whitespace-nowrap tw-overflow-x-auto"
@@ -54,7 +56,8 @@
         }
       </div>
     }
-    <p class="tw-text-muted tw-text-xs tw-uppercase tw-mt-5 tw-font-medium">
+
+    <p class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
       {{ "currentWebsite" | i18n }}
     </p>
     <bit-callout
@@ -75,19 +78,21 @@
         {{ formattedCurrentUrl() }}
       </div>
     </bit-callout>
+
     @if (currentUrlMatchesNeverUri()) {
-      <p class="tw-text-muted tw-text-xs tw-uppercase tw-mt-5 tw-font-medium">
+      <p class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
         {{ "uriMatchRule" | i18n }}
       </p>
       <bit-badge variant="warning" [startIcon]="null">{{ "neverMatch" | i18n }}</bit-badge>
     }
-    <div class="tw-flex tw-justify-center tw-flex-col tw-gap-3 tw-mt-6">
+
+    <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-2">
       @if (!viewOnly()) {
-        <button type="button" bitButton buttonType="primary" (click)="autofillAndAddUrl()">
+        <button type="button" bitButton buttonType="primary" block (click)="autofillAndAddUrl()">
           {{ "autofillAndSaveThisSite" | i18n }}
         </button>
       }
-      <button type="button" bitButton buttonType="secondary" (click)="autofillOnly()">
+      <button type="button" bitButton buttonType="secondary" block (click)="autofillOnly()">
         {{ (viewOnly() ? "autofillVerb" : "autofillOnly") | i18n }}
       </button>
       <button
@@ -95,7 +100,7 @@
         bitLink
         linkType="secondary"
         (click)="close()"
-        class="tw-mt-2 tw-font-medium tw-text-sm [&>div]:tw-justify-center"
+        class="tw-mt-1 tw-text-[12px] tw-font-medium [&>div]:tw-justify-center"
       >
         {{ "cancel" | i18n }}
       </button>
