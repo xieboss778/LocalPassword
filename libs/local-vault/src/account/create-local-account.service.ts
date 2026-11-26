@@ -216,11 +216,19 @@ export class CreateLocalAccountService {
     decryptionOptions.hasMasterPassword = true;
     await this.userDecryptionOptionsService.setUserDecryptionOptionsById(userId, decryptionOptions);
 
+    // SDK 只接受 EncString 的序列化字符串；把对象传进去会报
+    // “Failed to deserialize JsValue ... expected a valid string”。先归一再检查，
+    // 不让一个空值话到 SDK 里变成难懂的错误。
+    const wrappedUserKey = encryptedStringOf(account.wrappedUserKey);
+    if (wrappedUserKey === "") {
+      throw new Error("Local vault: the wrapped user key is missing.");
+    }
+
     await this.masterPasswordService.setMasterPasswordUnlockData(
       new MasterPasswordUnlockData(
         account.salt,
         account.kdfConfig,
-        account.wrappedUserKey as unknown as MasterKeyWrappedUserKey,
+        wrappedUserKey as unknown as MasterKeyWrappedUserKey,
       ),
       userId,
     );
