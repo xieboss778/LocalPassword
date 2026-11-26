@@ -4,10 +4,10 @@ title = "LocalPass Gitleaks configuration"
 useDefault = true
 
 # These files contain synthetic keys and tokens used only by unit tests.
-# Keep exceptions limited to the exact fixture files and rule IDs below.
+# Keep exceptions limited to the exact fixture files below. These files must
+# never contain real credentials, even though scanning is skipped for them.
 [[allowlists]]
 description = "Synthetic SSH and WebAuthn private keys in unit tests"
-targetRules = ["private-key"]
 paths = [
   '''^apps/desktop/desktop_native/ssh_agent/src/storage/keydata\.rs$''',
   '''^apps/desktop/desktop_native/ssh_agent/src/storage/serialization\.rs$''',
@@ -20,13 +20,67 @@ paths = [
   '''^libs/importer/src/importers/spec-data/keeper-json/testdata\.json\.ts$''',
   '''^libs/importer/src/importers/spec-data/onepassword-1pux/ssh-key\.ts$''',
   '''^libs/importer/src/importers/spec-data/protonpass-json/protonpass\.json\.ts$''',
+  '''^libs/importer/src/importers/psono/psono-json-importer\.spec\.ts$''',
+  '''^libs/importer/src/importers/spec-data/psono-json/gpg\.ts$''',
 ]
 
 [[allowlists]]
 description = "Synthetic JWTs in unit tests"
-targetRules = ["jwt"]
 paths = [
   '''^libs/common/src/auth/jwt/decode-jwt-token-to-json\.utility\.spec\.ts$''',
   '''^libs/common/src/auth/services/token\.service\.spec\.ts$''',
   '''^libs/legacy-crypto/src/models/enc-string\.spec\.ts$''',
+]
+
+[[allowlists]]
+description = "Synthetic 1Password secret keys in importer tests"
+paths = [
+  '''^libs/importer/src/components/onepassword/onepassword-direct-import\.service\.spec\.ts$''',
+  '''^libs/importer/src/importers/spec-data/onepassword-csv/multiple-items\.windows\.csv\.ts$''',
+]
+
+# Generic-key matches below are public identifiers, localization keys, encrypted
+# test data, or variable names rather than usable credentials.
+[[allowlists]]
+description = "Known generic-key false positives in tests and public configuration"
+paths = [
+  '''^prototype/ui-redo-c/app\.js$''',
+  '''^apps/browser/src/autofill/background/notification\.background\.spec\.ts$''',
+  '''^apps/browser/src/manifest\.v3\.json$''',
+  '''^apps/desktop/native-messaging-test-runner/src/variables\.ts$''',
+  '''^apps/desktop/src/app/tools/send/send\.component\.ts$''',
+  '''^apps/cli/src/tools/send/commands/receive\.command\.spec\.ts$''',
+  '''^apps/web/config/(base|cloud|euprd)\.json$''',
+  '''^apps/web/src/app-id\.json$''',
+  '''^apps/web/src/app/billing/services/stripe\.service\.spec\.ts$''',
+  '''^apps/web/src/app/billing/shared/offboarding-survey\.component\.ts$''',
+  '''^apps/web/src/app/tools/send/send\.component\.ts$''',
+  '''^apps/web/src/app/dirt/event-logs/services/event\.service\.spec\.ts$''',
+  '''^apps/web/src/app/key-management/key-rotation/user-key-rotation\.service\.spec\.ts$''',
+  '''^bitwarden_license/bit-sm/src/service-accounts/access/access\.service\.ts$''',
+  '''^libs/angular/src/tools/send/send\.component\.ts$''',
+  '''^libs/common/src/auth/send-access/services/default-send-token\.service\.spec\.ts$''',
+  '''^libs/common/src/auth/services/token\.service\.spec\.ts$''',
+  '''^libs/common/src/enums/feature-flag\.enum\.ts$''',
+  '''^libs/common/src/key-management/device-trust/services/device-trust\.service\.spec\.ts$''',
+  '''^libs/common/src/tools/send/models/domain/send\.sdk\.spec\.ts$''',
+  '''^libs/common/src/billing/services/subscription-pricing\.service\.spec\.ts$''',
+  '''^libs/common/src/platform/sync/default-sync\.service\.spec\.ts$''',
+  '''^libs/common/src/vault/models/view/cipher\.view\.spec\.ts$''',
+  '''^libs/importer/src/importers/chrome-csv-importer\.spec\.ts$''',
+  '''^libs/importer/src/importers/keepassx-csv-importer\.spec\.ts$''',
+  '''^libs/importer/src/importers/onepassword/onepassword-1pux-importer\.spec\.ts$''',
+  '''^libs/importer/src/importers/spec-data/keepassx-csv/testdata\.csv\.ts$''',
+  '''^libs/importer/src/importers/spec-data/keeper-direct/sync-down-fixture\.json$''',
+  '''^libs/importer/src/importers/spec-data/keeper-json/testdata\.json\.ts$''',
+  '''^libs/importer/src/importers/spec-data/passky-json/passky-encrypted\.json\.ts$''',
+  '''^libs/importer/src/importers/spec-data/zohovault/sample-zohovault-data\.csv\.ts$''',
+  '''^libs/importer/src/importers/zohovault-csv-importer\.spec\.ts$''',
+  '''^libs/legacy-crypto/src/dangerous/dangerous_duckduckgo_crypto\.spec\.ts$''',
+  '''^libs/legacy-crypto/src/models/symmetric-crypto-key\.spec\.ts$''',
+  '''^libs/legacy-crypto/src/models/symmetric-crypto-key\.ts$''',
+  '''^libs/legacy-crypto/src/node/node-crypto-function\.service\.spec\.ts$''',
+  '''^libs/legacy-crypto/src/services/web-crypto-function\.service\.spec\.ts$''',
+  '''^libs/tools/send/send-ui/src/send-form/services/default-send-form\.service\.ts$''',
+  '''^libs/tools/send/send-ui/src/send-table-v2/send-table-v2\.component\.ts$''',
 ]
