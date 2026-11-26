@@ -89,7 +89,7 @@ describe("CreateLocalAccountService", () => {
     const urls = mocks.setEnvironment.mock.calls[0][1] as Record<string, string>;
     // 上游 setEnvironment 会执行 urls.base = formatUrl(urls.base)；freeze 过的对象在这里会抛错。
     expect(() => {
-      urls.base = urls.base;
+      urls.base = String(urls.base);
     }).not.toThrow();
     expect(urls).not.toBe(LOCAL_VAULT_URLS);
     expect(urls).toEqual(LOCAL_VAULT_URLS);
