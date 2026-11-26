@@ -28,3 +28,7 @@ libs/.github
 
 # Forked library files
 libs/common/src/types/deep-jsonify.ts
+
+# Vendored UI/UX catalogs use integrity hashes; preserve upstream bytes
+.claude/skills/ui-ux-pro-max/data/
+.opencode/skills/ui-ux-pro-max/data/

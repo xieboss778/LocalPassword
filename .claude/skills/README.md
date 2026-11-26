@@ -1,4 +1,6 @@
-# Matt Pocock skills (project-local copy)
+# Project-local skills
+
+## Matt Pocock skills
 
 The `engineering/*` and `productivity/*` skill directories in this folder are
 copied from [mattpocock/skills](https://github.com/mattpocock/skills) at commit
@@ -11,7 +13,30 @@ deliberately excluded.
 To update, replace these directories with files from a newer upstream checkout;
 they are editable local copies, not a managed plugin.
 
-## Upstream license
+## UI/UX Pro Max
+
+`ui-ux-pro-max/` is a project-local copy of the core
+[UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) skill,
+version `2.15.0`, sourced from `/Users/bossxie/dev/Temp/ui-ux-pro-max-skill-main`.
+Its catalogs, search scripts, and references are vendored so the skill works
+without the source checkout or network access. Upstream repository-development
+tests are omitted from the installed copy; the source suite passes independently.
+
+The LocalPass integration section in both copies records the Angular, Tailwind,
+component, and sensitive-data constraints. The six optional sibling skills are
+intentionally not installed; the core skill covers this repository's UI/UX work.
+
+OpenCode CLI uses the dedicated, higher-precedence copy at
+`.opencode/skills/ui-ux-pro-max/`. It intentionally shares the `ui-ux-pro-max` ID
+and overrides the `.claude/skills/` compatibility copy. The OpenCode `SKILL.md`
+uses commands relative to its own base directory; the Claude copy uses
+project-rooted commands.
+
+To update, replace both directories from the upstream core skill, preserve the
+LocalPass integration section, and restore each layout's script-path convention.
+The upstream MIT license is retained in both `LICENSE` files.
+
+## Matt Pocock upstream license
 
 MIT License
 
