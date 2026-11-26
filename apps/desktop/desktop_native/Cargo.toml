@@ -4,9 +4,9 @@ members = [
     "autofill_provider",
     "autotype",
     "biometric",
-    "localpass_chromium_import_helper",
     "chromium_importer",
     "core",
+    "localpass_chromium_import_helper",
     "napi",
     "process_isolation",
     "proxy",
@@ -30,9 +30,6 @@ arboard = { version = "=3.6.1", default-features = false }
 ashpd = "=0.13.11"
 async-trait = "=0.1.89"
 base64 = "=0.22.1"
-localpass-crypto = { package = "bitwarden-crypto", git = "https://github.com/bitwarden/sdk-internal", rev = "c5e53d3e82ab80fdc9fd79ebd74058399a6444b6" }
-localpass-random = { package = "bitwarden-random", git = "https://github.com/bitwarden/sdk-internal", rev = "c5e53d3e82ab80fdc9fd79ebd74058399a6444b6" }
-localpass-sensitive-value = { package = "bitwarden-sensitive-value", git = "https://github.com/bitwarden/sdk-internal", rev = "c5e53d3e82ab80fdc9fd79ebd74058399a6444b6" }
 byteorder = "=1.5.0"
 bytes = "=1.11.1"
 cbc = "=0.1.2"
@@ -48,6 +45,9 @@ interprocess = "=2.2.1"
 itertools = "=0.15.0"
 libc = "=0.2.191"
 linux-keyutils = "=0.2.4"
+localpass-crypto = { package = "bitwarden-crypto", git = "https://github.com/bitwarden/sdk-internal", rev = "c5e53d3e82ab80fdc9fd79ebd74058399a6444b6" }
+localpass-random = { package = "bitwarden-random", git = "https://github.com/bitwarden/sdk-internal", rev = "c5e53d3e82ab80fdc9fd79ebd74058399a6444b6" }
+localpass-sensitive-value = { package = "bitwarden-sensitive-value", git = "https://github.com/bitwarden/sdk-internal", rev = "c5e53d3e82ab80fdc9fd79ebd74058399a6444b6" }
 memsec = "=0.7.0"
 mockall = "=0.15.0"
 napi = "=3.8.5"
