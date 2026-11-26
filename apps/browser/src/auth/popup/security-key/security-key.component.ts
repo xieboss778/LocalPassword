@@ -3,6 +3,11 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@ang
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
+import {
+  LpGroupComponent,
+  LpPageHeaderComponent,
+  LpRowComponent,
+} from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
@@ -18,7 +23,16 @@ import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui"
   selector: "auth-security-key",
   templateUrl: "./security-key.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, JslibModule, AsyncActionsModule, ButtonModule, TypographyModule],
+  imports: [
+    CommonModule,
+    JslibModule,
+    AsyncActionsModule,
+    ButtonModule,
+    TypographyModule,
+    LpGroupComponent,
+    LpPageHeaderComponent,
+    LpRowComponent,
+  ],
 })
 export class SecurityKeyComponent implements OnInit {
   private readonly enrollmentService = inject(LocalWebAuthnPrfEnrollmentService);
