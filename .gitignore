@@ -38,6 +38,9 @@ target
 # Testing
 coverage
 junit.xml
+
+# Local browser automation snapshots and session data
+.playwright-cli/
 ## The "base" root level folder is expected for some local tests that do
 ## comparisons between the current branch and a base branch (usually main)
 base/
@@ -72,8 +75,5 @@ apps/**/config/local.json
 .keys/
 .localpass-ext-id
 
-# 本地 agent 工具目录（不随产品分发）
-.dsh/
-
 # 设计原型（只存在原型分支）
-prototype/
+/prototype/

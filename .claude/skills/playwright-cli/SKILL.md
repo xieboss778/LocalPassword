@@ -253,20 +253,22 @@ The global `--raw` option strips page status and generated code from the output.
 ```bash
 playwright-cli --raw eval "JSON.stringify(performance.timing)" | jq '.loadEventEnd - .navigationStart'
 playwright-cli --raw eval "JSON.stringify([...document.querySelectorAll('a')].map(a => a.href))" > links.json
-playwright-cli --raw snapshot > before.yml
+playwright-cli --raw snapshot > .playwright-cli/before.yml
 playwright-cli click e5
-playwright-cli --raw snapshot > after.yml
-diff before.yml after.yml
+playwright-cli --raw snapshot > .playwright-cli/after.yml
+diff .playwright-cli/before.yml .playwright-cli/after.yml
 TOKEN=$(playwright-cli --raw cookie-get session_id)
 playwright-cli --raw localstorage-get theme
 ```
 
 For structured output wrapping every reply as JSON, pass --json
+
 ```bash
 playwright-cli list --json
 ```
 
 ## Open parameters
+
 ```bash
 # Use specific browser when creating session
 playwright-cli open --browser=chrome
@@ -335,14 +337,14 @@ After each command, playwright-cli provides a snapshot of the current browser st
 [Snapshot](.playwright-cli/page-2026-02-14T19-22-42-679Z.yml)
 ```
 
-You can also take a snapshot on demand using `playwright-cli snapshot` command. All the options below can be combined as needed.
+You can also take a snapshot on demand using `playwright-cli snapshot` command. All the options below can be combined as needed. Always keep named snapshots under the gitignored `.playwright-cli/` directory, never at the repository root.
 
 ```bash
 # default - save to a file with timestamp-based name
 playwright-cli snapshot
 
-# save to file, use when snapshot is a part of the workflow result
-playwright-cli snapshot --filename=after-click.yaml
+# save to file inside the gitignored .playwright-cli directory
+playwright-cli snapshot --filename=.playwright-cli/after-click.yaml
 
 # snapshot an element instead of the whole page
 playwright-cli snapshot "#main"
@@ -485,13 +487,13 @@ See [references/pr-attachments.md](references/pr-attachments.md) for alt text, i
 
 ## Specific tasks
 
-* **Running and Debugging Playwright tests** [references/playwright-tests.md](references/playwright-tests.md)
-* **Request mocking** [references/request-mocking.md](references/request-mocking.md)
-* **Running Playwright code** [references/running-code.md](references/running-code.md)
-* **Browser session management, attaching to the browser of the user** [references/session-management.md](references/session-management.md)
-* **Storage state (cookies, localStorage)** [references/storage-state.md](references/storage-state.md)
-* **Test generation (plan / generate / heal)** [references/test-generation.md](references/test-generation.md)
-* **Tracing** [references/tracing.md](references/tracing.md)
-* **Video recording** [references/video-recording.md](references/video-recording.md)
-* **Attaching screenshots and videos to pull requests** [references/pr-attachments.md](references/pr-attachments.md)
-* **Inspecting element attributes** [references/element-attributes.md](references/element-attributes.md)
+- **Running and Debugging Playwright tests** [references/playwright-tests.md](references/playwright-tests.md)
+- **Request mocking** [references/request-mocking.md](references/request-mocking.md)
+- **Running Playwright code** [references/running-code.md](references/running-code.md)
+- **Browser session management, attaching to the browser of the user** [references/session-management.md](references/session-management.md)
+- **Storage state (cookies, localStorage)** [references/storage-state.md](references/storage-state.md)
+- **Test generation (plan / generate / heal)** [references/test-generation.md](references/test-generation.md)
+- **Tracing** [references/tracing.md](references/tracing.md)
+- **Video recording** [references/video-recording.md](references/video-recording.md)
+- **Attaching screenshots and videos to pull requests** [references/pr-attachments.md](references/pr-attachments.md)
+- **Inspecting element attributes** [references/element-attributes.md](references/element-attributes.md)
