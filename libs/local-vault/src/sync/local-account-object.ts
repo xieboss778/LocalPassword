@@ -5,6 +5,8 @@ import { AccountCryptographicStateService } from "@localpass/common/key-manageme
 import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import { UserId } from "@localpass/common/types/guid";
 
+import { encryptedStringOf } from "../account/encrypted-string";
+
 /**
  * The material another device needs to open this vault: the KDF settings, the master-key-wrapped
  * user key and the user-key-wrapped private key. It is written to `account.json` beside the
@@ -62,7 +64,7 @@ export class LocalAccountObjectReader {
       unlock: {
         salt: unlockData.salt,
         kdf: JSON.parse(JSON.stringify(unlockData.kdf)),
-        masterKeyWrappedUserKey: unlockData.masterKeyWrappedUserKey as unknown as string,
+        masterKeyWrappedUserKey: encryptedStringOf(unlockData.masterKeyWrappedUserKey),
       },
       wrappedPrivateKey,
     };

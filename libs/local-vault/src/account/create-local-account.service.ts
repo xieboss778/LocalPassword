@@ -31,6 +31,7 @@ import {
 import type { WrappedAccountCryptographicState } from "@localpass/sdk-internal";
 import { UnlockService } from "@localpass/unlock";
 
+import { encryptedStringOf } from "./encrypted-string";
 import { buildLocalAccessToken } from "./local-access-token";
 import { LocalAccountService } from "./local-account.service";
 import {
@@ -130,7 +131,7 @@ export class CreateLocalAccountService {
         email,
         salt,
         kdfConfig,
-        wrappedUserKey: masterKeyWrappedUserKey as unknown as string,
+        wrappedUserKey: encryptedStringOf(masterKeyWrappedUserKey),
         wrappedPrivateKey: encryptedStringOf(wrappedPrivateKey),
       },
       masterPassword,
@@ -257,13 +258,4 @@ export class CreateLocalAccountService {
     this.logService.info("Opened local vault", { userId });
     return userId;
   }
-}
-
-/** `EncString` and plain-string callers both end up as the stored `encryptedString`. */
-function encryptedStringOf(value: unknown): string {
-  if (typeof value === "string") {
-    return value;
-  }
-  const encrypted = (value as { encryptedString?: string } | null)?.encryptedString;
-  return encrypted ?? "";
 }

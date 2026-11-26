@@ -35,8 +35,14 @@ function createService() {
   const info = jest.fn();
 
   const makeMasterKey = jest.fn().mockResolvedValue("master-key");
-  const makeUserKey = jest.fn().mockResolvedValue(["user-key", fakeWrappedUserKey]);
-  const makeKeyPair = jest.fn().mockResolvedValue(["public-key", fakeWrappedPrivateKey]);
+  // 真实的 makeUserKey / makeKeyPair 返回 EncString 对象而不是纯字符串；
+  // fake 也必须这样，否则测试会把「把对象当字符串传给 SDK」这类 bug 盖住。
+  const makeUserKey = jest
+    .fn()
+    .mockResolvedValue(["user-key", { encryptedString: fakeWrappedUserKey }]);
+  const makeKeyPair = jest
+    .fn()
+    .mockResolvedValue(["public-key", { encryptedString: fakeWrappedPrivateKey }]);
 
   const service = new CreateLocalAccountService(
     { addAccount, switchAccount } as any,
@@ -122,6 +128,9 @@ describe("CreateLocalAccountService", () => {
     expect(unlockData.salt).toBe("owner@example.com");
     expect(unlockData.kdf).toEqual(DEFAULT_KDF_CONFIG);
     expect(unlockData.masterKeyWrappedUserKey).toBe(fakeWrappedUserKey);
+    // SDK 侧只接受字符串；把 EncString 对象传进去会报
+    // "Failed to deserialize JsValue ... expected a valid string"。
+    expect(typeof unlockData.masterKeyWrappedUserKey).toBe("string");
 
     expect(mocks.setTokens).toHaveBeenCalledWith(expect.any(String), VaultTimeoutAction.Lock, 30);
     expect(mocks.setKdfConfig).toHaveBeenCalledWith(userId, DEFAULT_KDF_CONFIG);
