@@ -30,6 +30,7 @@ import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
 import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
 import { GeneratorV2Component } from "@localpass/angular/tools/generator";
+import { ItemFormV2Component, NewItemV2Component } from "@localpass/angular/tools/item-entry";
 import {
   DevicesIcon,
   RegistrationUserAddIcon,
@@ -576,6 +577,17 @@ export const routes: Routes = [
             data: { vaultFilterScope: true } satisfies RouteDataProperties & VaultScopeRouteData,
           },
         ],
+      },
+      {
+        // LocalPassword：新建条目第一步（与扩展共用组件），保存后回桌面列表。
+        path: "new-item-v2",
+        component: NewItemV2Component,
+        data: { pageTitle: { key: "newItem" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "edit-item-v2",
+        component: ItemFormV2Component,
+        data: { pageTitle: { key: "editItem" } } satisfies RouteDataProperties,
       },
       {
         // LocalPassword：方向 C 的生成器（与扩展共用同一个组件）。

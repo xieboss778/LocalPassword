@@ -1,9 +1,13 @@
 <bit-dialog [title]="dialogTitle()">
   <div bitDialogContent class="tw-flex tw-flex-col tw-gap-2">
-    <p class="tw-m-0 tw-text-[12px] tw-leading-relaxed tw-text-[var(--lp-ink-2)]">{{ dialogBody() }}</p>
+    <p class="tw-m-0 tw-text-[12px] tw-leading-relaxed tw-text-[var(--lp-ink-2)]">
+      {{ dialogBody() }}
+    </p>
 
     @if (formattedSavedUrls().length === 1) {
-      <p class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
+      <p
+        class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+      >
         {{ "savedWebsite" | i18n }}
       </p>
       <bit-callout [title]="null" type="success" icon="bwi-globe" class="[&_div]:tw-min-w-0">
@@ -23,7 +27,9 @@
 
     @if (formattedSavedUrls().length > 1) {
       <div class="tw-mt-2 tw-flex tw-items-center tw-justify-between">
-        <p class="tw-m-0 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
+        <p
+          class="tw-m-0 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+        >
           {{ "savedWebsites" | i18n: formattedSavedUrls().length.toString() }}
         </p>
         <button
@@ -57,7 +63,9 @@
       </div>
     }
 
-    <p class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
+    <p
+      class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+    >
       {{ "currentWebsite" | i18n }}
     </p>
     <bit-callout
@@ -80,7 +88,9 @@
     </bit-callout>
 
     @if (currentUrlMatchesNeverUri()) {
-      <p class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]">
+      <p
+        class="tw-m-0 tw-mt-2 tw-text-[10.5px] tw-font-medium tw-uppercase tw-tracking-[0.07em] tw-text-[var(--lp-ink-3)]"
+      >
         {{ "uriMatchRule" | i18n }}
       </p>
       <bit-badge variant="warning" [startIcon]="null">{{ "neverMatch" | i18n }}</bit-badge>

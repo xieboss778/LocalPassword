@@ -32,6 +32,7 @@ import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
 import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
 import { GeneratorV2Component } from "@localpass/angular/tools/generator";
+import { ItemFormV2Component, NewItemV2Component } from "@localpass/angular/tools/item-entry";
 import {
   DevicesIcon,
   ExpiredIcon,
@@ -110,9 +111,7 @@ import { SecuritySettingsV2Component } from "../tools/popup/settings/localpass/s
 import { SettingsListV2Component } from "../tools/popup/settings/localpass/settings-list-v2.component";
 import { ShareItemComponent } from "../tools/popup/share/share-item.component";
 import { AtRiskPasswordsComponent } from "../vault/popup/components/at-risk-passwords/at-risk-passwords.component";
-import { ItemFormV2Component } from "../vault/popup/components/item-form-v2/item-form-v2.component";
 import { VaultItemViewV2Component } from "../vault/popup/components/item-view-v2/item-view-v2.component";
-import { NewItemV2Component } from "../vault/popup/components/new-item-v2/new-item-v2.component";
 import { TotpQrV2Component } from "../vault/popup/components/totp-qr-v2/totp-qr-v2.component";
 import { TrashV2Component } from "../vault/popup/components/trash-v2/trash-v2.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit/add-edit.component";
