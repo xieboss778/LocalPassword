@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockProxy, mock } from "jest-mock-extended";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, NEVER, of } from "rxjs";
 
 import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
@@ -15,6 +15,7 @@ import { ConfigService } from "@localpass/common/platform/abstractions/config/co
 import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 import { mockAccountInfoWith } from "@localpass/common/spec";
 import { UserId } from "@localpass/common/types/guid";
+import { LocalAccountService } from "@localpass/local-vault";
 
 import { EmptyComponent } from "../../platform/guard/feature-flag.guard.spec";
 
@@ -32,6 +33,8 @@ describe("AuthGuard", () => {
     const messagingService: MockProxy<MessagingService> = mock<MessagingService>();
     const keyConnectorService: MockProxy<KeyConnectorService> = mock<KeyConnectorService>();
     keyConnectorService.convertAccountRequired$ = of(keyConnectorServiceRequiresAccountConversion);
+    const localAccountService: MockProxy<LocalAccountService> = mock<LocalAccountService>();
+    localAccountService.isLocalAccount.mockResolvedValue(false);
     const configService: MockProxy<ConfigService> = mock<ConfigService>();
     const accountService: MockProxy<AccountService> = mock<AccountService>();
     const activeAccountSubject = new BehaviorSubject<Account | null>(null);
@@ -72,6 +75,7 @@ describe("AuthGuard", () => {
         { provide: AuthService, useValue: authService },
         { provide: MessagingService, useValue: messagingService },
         { provide: KeyConnectorService, useValue: keyConnectorService },
+        { provide: LocalAccountService, useValue: localAccountService },
         { provide: AccountService, useValue: accountService },
         { provide: MasterPasswordServiceAbstraction, useValue: masterPasswordService },
         { provide: ConfigService, useValue: configService },
@@ -80,6 +84,8 @@ describe("AuthGuard", () => {
 
     return {
       router: testBed.inject(Router),
+      keyConnectorService,
+      localAccountService,
     };
   };
 
@@ -114,6 +120,19 @@ describe("AuthGuard", () => {
 
     await router.navigate(["guarded-route"]);
     expect(router.url).toBe("/remove-password");
+  });
+
+  it("should allow a local vault to navigate even when usesKeyConnector was never synced", async () => {
+    const { router, keyConnectorService, localAccountService } = setup(
+      AuthenticationStatus.Unlocked,
+      ForceSetPasswordReason.None,
+    );
+    localAccountService.isLocalAccount.mockResolvedValue(true);
+    // 本地账号永远不会同步，真实环境里这个流不会发射；若守卫仍等待它，导航会挂起。
+    keyConnectorService.convertAccountRequired$ = NEVER;
+
+    await router.navigate(["guarded-route"]);
+    expect(router.url).toBe("/guarded-route");
   });
 
   describe("given user is Locked", () => {

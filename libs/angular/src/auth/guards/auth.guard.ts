@@ -17,6 +17,7 @@ import { ForceSetPasswordReason } from "@localpass/common/auth/models/domain/for
 import { KeyConnectorService } from "@localpass/common/key-management/key-connector/abstractions/key-connector.service";
 import { MasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
+import { LocalAccountService } from "@localpass/local-vault";
 
 export const authGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot,
@@ -28,6 +29,7 @@ export const authGuard: CanActivateFn = async (
   const keyConnectorService = inject(KeyConnectorService);
   const accountService = inject(AccountService);
   const masterPasswordService = inject(MasterPasswordServiceAbstraction);
+  const localAccountService = inject(LocalAccountService);
 
   const authStatus = await authService.getAuthStatus();
 
@@ -100,7 +102,13 @@ export const authGuard: CanActivateFn = async (
   }
 
   // Remove password when Key Connector is enabled
+  //
+  // 本地保险库没有服务器，也永远不会同步；Key Connector 转换对它不适用。
+  // `convertAccountRequired$` 会等待只有同步才会写入的 usesKeyConnector 状态，
+  // 本地账号若走这条等待就会永不返回（存量账号尤其如此），这里直接跳过。
+  const isLocalAccount = await localAccountService.isLocalAccount(userId);
   if (
+    !isLocalAccount &&
     forceSetPasswordReason == ForceSetPasswordReason.None &&
     !routerState.url.includes("remove-password") &&
     (await firstValueFrom(keyConnectorService.convertAccountRequired$))
