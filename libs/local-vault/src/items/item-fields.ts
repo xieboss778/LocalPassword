@@ -3,7 +3,7 @@ import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FieldView } from "@localpass/common/vault/models/view/field.view";
 import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
 
-import { ItemKind } from "./item-kind";
+import { ItemKind, KIND_FIELD, withoutKindField } from "./item-kind";
 
 /** 一个字段落在原生条目的哪个位置；`custom` 表示写进自定义字段。 */
 export type FieldTarget =
@@ -13,6 +13,7 @@ export type FieldTarget =
   | "loginPassword"
   | "loginTotp"
   | "loginUri"
+  | "loginUri2"
   | "sshPrivateKey"
   | "sshPublicKey"
   | "cardholder"
@@ -31,6 +32,53 @@ export interface FieldSpec {
   readonly target: FieldTarget;
   readonly password?: boolean;
   readonly multiline?: boolean;
+  /** 表单里的分组，见 {@link FIELD_SECTIONS}；缺省归到「项目」。 */
+  readonly section?: string;
+  /** 字段下方的说明文案。 */
+  readonly hintKey?: string;
+  /** 是否在字段尾部提供「生成」按钮。 */
+  readonly generate?: boolean;
+}
+
+/** 分组 id → 分组标题的 i18n key。 */
+export const FIELD_SECTIONS: Readonly<Record<string, string>> = Object.freeze({
+  item: "itemInformation",
+  login: "loginInformation",
+  uri: "autofillOptions",
+  options: "additionalOptions",
+  token: "itemKindToken",
+  ssh: "itemKindSshKey",
+  license: "itemKindLicense",
+  card: "itemKindCard",
+  identity: "itemKindIdentity",
+  server: "itemKindServer",
+  note: "itemKindNote",
+});
+
+export interface FieldGroup {
+  readonly key: string;
+  readonly labelKey: string;
+  readonly fields: readonly FieldSpec[];
+}
+
+/** 按 `section` 把字段切成表单分组，保持 FIELDS 里的声明顺序。 */
+export function fieldGroups(kind: ItemKind): readonly FieldGroup[] {
+  const grouped = new Map<string, FieldSpec[]>();
+  for (const field of FIELDS[kind]) {
+    const key = field.section ?? "item";
+    const fields = grouped.get(key);
+    if (fields) {
+      fields.push(field);
+    } else {
+      grouped.set(key, [field]);
+    }
+  }
+
+  return [...grouped].map(([key, fields]) => ({
+    key,
+    labelKey: FIELD_SECTIONS[key] ?? "itemInformation",
+    fields,
+  }));
 }
 
 /**
@@ -41,61 +89,178 @@ export interface FieldSpec {
  */
 export const FIELDS: Readonly<Record<ItemKind, readonly FieldSpec[]>> = Object.freeze({
   [ItemKind.Login]: [
-    { id: "name", labelKey: "name", target: "name" },
-    { id: "username", labelKey: "username", target: "loginUsername" },
-    { id: "password", labelKey: "password", target: "loginPassword", password: true },
-    { id: "totp", labelKey: "authenticatorKey", target: "loginTotp" },
-    { id: "uri", labelKey: "uri", target: "loginUri" },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
+    { id: "username", labelKey: "username", target: "loginUsername", section: "login" },
+    {
+      id: "password",
+      labelKey: "password",
+      target: "loginPassword",
+      password: true,
+      section: "login",
+      generate: true,
+    },
+    {
+      id: "totp",
+      labelKey: "authenticatorKey",
+      target: "loginTotp",
+      section: "login",
+      hintKey: "authenticatorKeyHint",
+    },
+    { id: "uri", labelKey: "uri", target: "loginUri", section: "uri" },
+    { id: "uri2", labelKey: "uri2", target: "loginUri2", section: "uri" },
+    {
+      id: "notes",
+      labelKey: "notes",
+      target: "notes",
+      multiline: true,
+      section: "options",
+    },
   ],
   [ItemKind.Token]: [
-    { id: "name", labelKey: "name", target: "name" },
-    { id: "service", labelKey: "service", target: "loginUsername" },
-    { id: "token", labelKey: "itemKindToken", target: "loginPassword", password: true },
-    { id: "totp", labelKey: "authenticatorKey", target: "loginTotp" },
-    { id: "scope", labelKey: "itemKindTokenScope", target: { custom: "scope" } },
-    { id: "env", labelKey: "itemKindTokenEnv", target: { custom: "env" } },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
+    {
+      id: "service",
+      labelKey: "service",
+      target: "loginUsername",
+      section: "token",
+    },
+    {
+      id: "token",
+      labelKey: "itemKindToken",
+      target: "loginPassword",
+      password: true,
+      section: "token",
+      generate: true,
+    },
+    {
+      id: "scope",
+      labelKey: "itemKindTokenScope",
+      target: { custom: "scope" },
+      section: "token",
+    },
+    {
+      id: "totp",
+      labelKey: "authenticatorKey",
+      target: "loginTotp",
+      section: "token",
+      hintKey: "authenticatorKeyHint",
+    },
+    { id: "expires", labelKey: "expires", target: { custom: "expires" }, section: "token" },
+    {
+      id: "env",
+      labelKey: "itemKindTokenEnv",
+      target: { custom: "env" },
+      section: "token",
+    },
   ],
   [ItemKind.SshKey]: [
-    { id: "name", labelKey: "name", target: "name" },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
     {
       id: "privateKey",
       labelKey: "itemKindSshKey",
       target: "sshPrivateKey",
       password: true,
       multiline: true,
+      section: "ssh",
     },
-    { id: "publicKey", labelKey: "itemKindSshKeyPublic", target: "sshPublicKey", multiline: true },
+    {
+      id: "publicKey",
+      labelKey: "itemKindSshKeyPublic",
+      target: "sshPublicKey",
+      multiline: true,
+      section: "ssh",
+    },
   ],
   [ItemKind.License]: [
-    { id: "name", labelKey: "name", target: "name" },
-    { id: "software", labelKey: "itemKindLicenseSoftware", target: "loginUsername" },
-    { id: "serial", labelKey: "itemKindLicense", target: "loginPassword", password: true },
-    { id: "seats", labelKey: "itemKindLicenseSeats", target: { custom: "seats" } },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
+    {
+      id: "software",
+      labelKey: "itemKindLicenseSoftware",
+      target: "loginUsername",
+      section: "license",
+    },
+    {
+      id: "serial",
+      labelKey: "itemKindLicense",
+      target: "loginPassword",
+      password: true,
+      section: "license",
+    },
+    {
+      id: "seats",
+      labelKey: "itemKindLicenseSeats",
+      target: { custom: "seats" },
+      section: "license",
+    },
+    {
+      id: "purchased",
+      labelKey: "purchaseDate",
+      target: { custom: "purchased" },
+      section: "license",
+    },
   ],
   [ItemKind.Card]: [
-    { id: "name", labelKey: "name", target: "name" },
-    { id: "cardholder", labelKey: "cardholderName", target: "cardholder" },
-    { id: "number", labelKey: "number", target: "cardNumber", password: true },
-    { id: "expMonth", labelKey: "expirationMonth", target: "cardExpMonth" },
-    { id: "expYear", labelKey: "expirationYear", target: "cardExpYear" },
-    { id: "code", labelKey: "securityCode", target: "cardCode", password: true },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
+    {
+      id: "cardholder",
+      labelKey: "cardholderName",
+      target: "cardholder",
+      section: "card",
+    },
+    {
+      id: "number",
+      labelKey: "number",
+      target: "cardNumber",
+      password: true,
+      section: "card",
+    },
+    { id: "expMonth", labelKey: "expirationMonth", target: "cardExpMonth", section: "card" },
+    { id: "expYear", labelKey: "expirationYear", target: "cardExpYear", section: "card" },
+    { id: "code", labelKey: "securityCode", target: "cardCode", password: true, section: "card" },
   ],
   [ItemKind.Identity]: [
-    { id: "name", labelKey: "name", target: "name" },
-    { id: "firstName", labelKey: "firstName", target: "identityFirst" },
-    { id: "lastName", labelKey: "lastName", target: "identityLast" },
-    { id: "idNumber", labelKey: "identityNumber", target: "identityIdNumber", password: true },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
+    { id: "firstName", labelKey: "firstName", target: "identityFirst", section: "identity" },
+    { id: "lastName", labelKey: "lastName", target: "identityLast", section: "identity" },
+    {
+      id: "idNumber",
+      labelKey: "identityNumber",
+      target: "identityIdNumber",
+      password: true,
+      section: "identity",
+    },
   ],
   [ItemKind.Server]: [
-    { id: "name", labelKey: "name", target: "name" },
-    { id: "host", labelKey: "itemKindServer", target: "loginUsername" },
-    { id: "password", labelKey: "password", target: "loginPassword", password: true },
-    { id: "protocol", labelKey: "itemKindServerProtocol", target: { custom: "protocol" } },
-    { id: "sudo", labelKey: "itemKindServerSudo", target: { custom: "sudo" } },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
+    {
+      id: "host",
+      labelKey: "itemKindServer",
+      target: "loginUsername",
+      section: "server",
+    },
+    {
+      id: "password",
+      labelKey: "password",
+      target: "loginPassword",
+      password: true,
+      section: "server",
+    },
+    {
+      id: "protocol",
+      labelKey: "itemKindServerProtocol",
+      target: { custom: "protocol" },
+      section: "server",
+    },
+    {
+      id: "sudo",
+      labelKey: "itemKindServerSudo",
+      target: { custom: "sudo" },
+      section: "server",
+    },
   ],
   [ItemKind.Note]: [
-    { id: "name", labelKey: "name", target: "name" },
-    { id: "notes", labelKey: "notes", target: "notes", multiline: true },
+    { id: "name", labelKey: "name", target: "name", section: "item" },
+    { id: "notes", labelKey: "notes", target: "notes", multiline: true, section: "note" },
   ],
 });
 
@@ -131,6 +296,8 @@ export function readField(view: CipherView, target: FieldTarget): string {
       return view.login.totp ?? "";
     case "loginUri":
       return view.login.uris[0]?.uri ?? "";
+    case "loginUri2":
+      return view.login.uris[1]?.uri ?? "";
     case "sshPrivateKey":
       return view.sshKey.privateKey ?? "";
     case "sshPublicKey":
@@ -174,9 +341,16 @@ export function writeField(view: CipherView, target: FieldTarget, value: string)
       view.login.totp = value;
       return;
     case "loginUri": {
-      const uri = new LoginUriView();
-      uri.uri = value;
-      view.login.uris = value ? [uri] : [];
+      view.login.uris = value ? [uriView(value)] : [];
+      return;
+    }
+    case "loginUri2": {
+      const first = view.login.uris[0];
+      view.login.uris = value
+        ? [first, uriView(value)].filter((uri): uri is LoginUriView => !!uri)
+        : first
+          ? [first]
+          : [];
       return;
     }
     case "sshPrivateKey":
@@ -212,6 +386,70 @@ export function writeField(view: CipherView, target: FieldTarget, value: string)
     default:
       writeCustomField(view, target.custom, value);
   }
+}
+
+function uriView(value: string): LoginUriView {
+  const uri = new LoginUriView();
+  uri.uri = value;
+  return uri;
+}
+
+/** 用户自己加的一个字段，不含类型自带的 `scope` / `env` 等槽位。 */
+export interface CustomFieldValue {
+  readonly name: string;
+  readonly value: string;
+  readonly hidden: boolean;
+}
+
+/** 读出可编辑的自定义字段：跳过类别标记、类型自带槽位与关联字段。 */
+export function readCustomFields(view: CipherView, kind: ItemKind): CustomFieldValue[] {
+  const reserved = specCustomNames(kind);
+  return withoutKindField(view.fields)
+    .filter((field) => field.type !== FieldType.Linked && !reserved.has(field.name ?? ""))
+    .map((field) => ({
+      name: field.name ?? "",
+      value: field.value ?? "",
+      hidden: field.type === FieldType.Hidden,
+    }));
+}
+
+/**
+ * 用表单里的自定义字段替换条目上的用户字段。
+ *
+ * 类别标记、类型自带槽位和关联字段原样保留；没有名字的行直接丢弃。
+ */
+export function applyCustomFields(
+  view: CipherView,
+  kind: ItemKind,
+  fields: readonly CustomFieldValue[],
+): void {
+  const reserved = specCustomNames(kind);
+  const preserved = (view.fields ?? []).filter(
+    (field) =>
+      field.name === KIND_FIELD ||
+      field.type === FieldType.Linked ||
+      reserved.has(field.name ?? ""),
+  );
+
+  const custom = fields
+    .filter((field) => field.name.trim() !== "" && !reserved.has(field.name))
+    .map((field) => {
+      const created = new FieldView();
+      created.name = field.name;
+      created.value = field.value;
+      created.type = field.hidden ? FieldType.Hidden : FieldType.Text;
+      return created;
+    });
+
+  view.fields = [...preserved, ...custom];
+}
+
+function specCustomNames(kind: ItemKind): ReadonlySet<string> {
+  return new Set(
+    FIELDS[kind]
+      .map((field) => (typeof field.target === "object" ? field.target.custom : ""))
+      .filter((name) => name !== ""),
+  );
 }
 
 function customField(view: CipherView, name: string): FieldView | undefined {

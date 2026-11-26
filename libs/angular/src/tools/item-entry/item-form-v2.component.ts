@@ -1,4 +1,4 @@
-import { CommonModule, Location } from "@angular/common";
+import { CommonModule, DatePipe, Location } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,33 +15,46 @@ import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
-import { ButtonModule, IconModule } from "@localpass/components";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
+import { ButtonModule, DialogService, IconModule } from "@localpass/components";
 import {
+  applyCustomFields,
   applyFieldValues,
-  FIELDS,
+  DEFAULT_PASSWORD_OPTIONS,
+  fieldGroups,
   FieldSpec,
   FieldValues,
+  generatePassword,
   isItemKind,
   ItemKind,
   kindOf,
+  readCustomFields,
   readFieldValues,
   setKind,
 } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
 import {
+  CustomFieldDraft,
   ITEM_KIND_UI,
+  LpCustomFieldsComponent,
   LpFieldComponent,
   LpGroupComponent,
   LpPageHeaderComponent,
   LpPopupHeaderComponent,
   LpRowComponent,
+  LpToastService,
+  newCustomFieldDraft,
 } from "../../local-ui";
 
 /**
- * 新建 / 编辑表单。字段清单与读写映射都在 `@localpass/local-vault` 的
+ * 新建 / 编辑表单。字段清单、分组与读写映射都在 `@localpass/local-vault` 的
  * `item-fields` 里，桌面端抽屉内联表单用的是同一份，不复制逻辑。
+ *
+ * 通行密钥不在表单里创建——它由网站的 WebAuthn 注册流程写入条目。表单只展示
+ * 登记时间；浏览器扩展允许在这里删除，桌面端按产品要求只读。
  */
 @Component({
   selector: "item-form-v2",
@@ -53,6 +66,7 @@ import {
     JslibModule,
     ButtonModule,
     IconModule,
+    LpCustomFieldsComponent,
     LpFieldComponent,
     LpGroupComponent,
     LpPageHeaderComponent,
@@ -76,32 +90,75 @@ import {
         <lp-page-header [title]="heading()" [sub]="kindLabel()" [compact]="true"></lp-page-header>
       }
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-4 tw-pb-6">
-        <lp-field
-          [label]="i18n.t('folder')"
-          [value]="folderId()"
-          [options]="folderOptions()"
-          (valueChange)="folderId.set($event)"
-        ></lp-field>
+      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-pb-6">
+        @for (group of groups(); track group.key) {
+          <lp-group [label]="i18n.t(group.labelKey)">
+            @for (field of group.fields; track field.id) {
+              <lp-field
+                [label]="i18n.t(field.labelKey)"
+                [password]="!!field.password"
+                [multiline]="!!field.multiline"
+                [mono]="isMono(field)"
+                [hint]="field.hintKey ? i18n.t(field.hintKey) : ''"
+                [actionIcon]="field.generate ? 'bwi-generate' : undefined"
+                [actionLabel]="i18n.t('generatePassword')"
+                [value]="values()[field.id] ?? ''"
+                (valueChange)="setValue(field.id, $event)"
+                (actionTriggered)="generate(field.id)"
+              />
+            }
 
-        <lp-group>
-          @for (field of fields(); track field.id) {
-            <lp-field
-              [label]="i18n.t(field.labelKey)"
-              [password]="!!field.password"
-              [multiline]="!!field.multiline"
-              [mono]="field.target === 'loginUsername'"
-              [value]="values()[field.id] ?? ''"
-              (valueChange)="setValue(field.id, $event)"
-            />
-          }
-          <lp-row
-            [label]="i18n.t('favorite')"
-            [toggle]="favorite()"
-            [clickable]="true"
-            (activated)="favorite.set(!favorite())"
-          ></lp-row>
-        </lp-group>
+            @if (group.key === "item") {
+              <lp-field
+                [label]="i18n.t('folder')"
+                [value]="folderId()"
+                [options]="folderOptions()"
+                (valueChange)="folderId.set($event)"
+              ></lp-field>
+              <lp-row
+                [label]="i18n.t('favorite')"
+                [toggle]="favorite()"
+                [clickable]="true"
+                (activated)="favorite.set(!favorite())"
+              ></lp-row>
+            }
+
+            @if (group.key === "login" && showPasskeys()) {
+              <div
+                class="tw-flex tw-min-h-12 tw-items-center tw-gap-2 tw-border-t tw-border-border-light tw-px-4 tw-py-3"
+              >
+                <span class="tw-w-28 tw-flex-none tw-text-sm tw-text-muted">{{
+                  i18n.t("typePasskey")
+                }}</span>
+                <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main">{{
+                  passkeySummary()
+                }}</span>
+                @if (passkeysEditable()) {
+                  <button
+                    type="button"
+                    class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-danger-soft hover:tw-text-fg-danger"
+                    [attr.aria-label]="i18n.t('removePasskey')"
+                    [attr.title]="i18n.t('removePasskey')"
+                    (click)="removePasskey()"
+                  >
+                    <bit-icon name="bwi-trash"></bit-icon>
+                  </button>
+                }
+              </div>
+            }
+
+            @if (group.key === "options" && kind() === loginKind) {
+              <lp-row
+                [label]="i18n.t('passwordReprompt')"
+                [toggle]="reprompt()"
+                [clickable]="true"
+                (activated)="reprompt.set(!reprompt())"
+              ></lp-row>
+            }
+          </lp-group>
+        }
+
+        <lp-custom-fields [(fields)]="customFields"></lp-custom-fields>
 
         @if (errorMessage()) {
           <p class="tw-px-1 tw-pt-3 tw-text-sm tw-text-fg-danger">{{ errorMessage() }}</p>
@@ -136,16 +193,23 @@ export class ItemFormV2Component implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
+  private readonly dialogService = inject(DialogService);
+  private readonly datePipe = inject(DatePipe);
+  private readonly toast = inject(LpToastService);
 
+  protected readonly loginKind = ItemKind.Login;
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly values = signal<FieldValues>({});
   protected readonly kind = signal<ItemKind>(ItemKind.Login);
   protected readonly folderId = signal("");
   protected readonly favorite = signal(false);
+  protected readonly reprompt = signal(false);
   protected readonly folders = signal<{ value: string; label: string }[]>([]);
+  protected readonly customFields = signal<readonly CustomFieldDraft[]>([]);
+  protected readonly passkeys = signal<readonly Fido2CredentialView[]>([]);
 
-  protected readonly fields = computed<readonly FieldSpec[]>(() => FIELDS[this.kind()]);
+  protected readonly groups = computed(() => fieldGroups(this.kind()));
   protected readonly heading = computed(() =>
     this.i18n.t(this.isEditing() ? "editItem" : "newItem"),
   );
@@ -154,12 +218,28 @@ export class ItemFormV2Component implements OnInit {
     { value: "", label: this.i18n.t("noFolder") },
     ...this.folders(),
   ]);
+  protected readonly showPasskeys = computed(
+    () => this.kind() === ItemKind.Login && this.passkeys().length > 0,
+  );
+  protected readonly passkeySummary = computed(() => {
+    const [credential] = this.passkeys();
+    if (!credential) {
+      return "";
+    }
+    const created = this.datePipe.transform(credential.creationDate, "short") ?? "";
+    const createdLabel = `${this.i18n.t("dateCreated")} ${created}`;
+    return credential.userName ? `${credential.userName} · ${createdLabel}` : createdLabel;
+  });
 
   private readonly isEditing = signal(false);
   private readonly original = signal<CipherView | null>(null);
 
   /** 弹窗路由在 route.data 里标记 compact；桌面端保持无返回键的页头。 */
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
+  /** 只有浏览器扩展允许删除通行密钥；桌面端按产品要求只读展示。 */
+  protected readonly passkeysEditable = signal(
+    this.route.snapshot.data["passkeysEditable"] === true,
+  );
 
   async ngOnInit(): Promise<void> {
     const params: Params = await firstValueFrom(this.route.queryParams);
@@ -190,8 +270,15 @@ export class ItemFormV2Component implements OnInit {
       this.kind.set(kindOf(view));
     }
     this.values.set(readFieldValues(view, this.kind()));
+    this.customFields.set(
+      readCustomFields(view, this.kind()).map((field) =>
+        newCustomFieldDraft(field.name, field.value, field.hidden),
+      ),
+    );
+    this.passkeys.set(view.login?.fido2Credentials ?? []);
     this.folderId.set(view.folderId ?? "");
     this.favorite.set(view.favorite);
+    this.reprompt.set(view.reprompt !== CipherRepromptType.None);
   }
 
   /** 保存后去哪：默认弹窗列表，桌面端通过 ?next=... 指定自己的列表。 */
@@ -202,6 +289,34 @@ export class ItemFormV2Component implements OnInit {
 
   protected setValue(id: string, value: string): void {
     this.values.update((current) => ({ ...current, [id]: value }));
+  }
+
+  protected generate(id: string): void {
+    this.setValue(id, generatePassword(DEFAULT_PASSWORD_OPTIONS));
+  }
+
+  protected isMono(field: FieldSpec): boolean {
+    return (
+      !!field.password ||
+      !!field.multiline ||
+      field.target === "loginUsername" ||
+      field.target === "loginUri" ||
+      field.target === "loginUri2"
+    );
+  }
+
+  protected async removePasskey(): Promise<void> {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deletePasskey" },
+      content: { key: "deletePasskeyConfirmation" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.passkeys.set([]);
+    this.toast.show(this.i18n.t("passkeyRemoved"));
   }
 
   protected cancel(): void {
@@ -215,9 +330,12 @@ export class ItemFormV2Component implements OnInit {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       const view = this.original() ?? new CipherView();
       applyFieldValues(view, this.kind(), this.values());
+      applyCustomFields(view, this.kind(), this.customFields());
       setKind(view, this.kind());
       view.folderId = this.folderId() || undefined;
       view.favorite = this.favorite();
+      view.reprompt = this.reprompt() ? CipherRepromptType.Password : CipherRepromptType.None;
+      view.login.fido2Credentials = [...this.passkeys()];
 
       if (this.original()) {
         await this.cipherService.updateWithServer(view, userId);

@@ -1,6 +1,8 @@
 export { ITEM_KIND_ORDER, ITEM_KIND_UI, kindLabelKey } from "./item-kind-ui";
 export type { ItemKindUi } from "./item-kind-ui";
 export { LpEmptyComponent } from "./lp-empty.component";
+export { LpCustomFieldsComponent, newCustomFieldDraft } from "./lp-custom-fields.component";
+export type { CustomFieldDraft } from "./lp-custom-fields.component";
 export { LpFieldComponent } from "./lp-field.component";
 export type { LpFieldOption } from "./lp-field.component";
 export { LpGroupComponent } from "./lp-group.component";

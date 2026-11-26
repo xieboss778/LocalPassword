@@ -28,6 +28,7 @@ import { FolderService } from "@localpass/common/vault/abstractions/folder/folde
 import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
 import { FieldType } from "@localpass/common/vault/enums";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
 import { FieldView } from "@localpass/common/vault/models/view/field.view";
 import { ButtonModule, DialogService, IconModule } from "@localpass/components";
 import {
@@ -277,6 +278,34 @@ const MASK = "••••••••••••";
             </section>
           }
 
+          @if (passkeys().length) {
+            <section class="tw-pb-2.5">
+              <h2
+                class="tw-m-0 tw-flex tw-items-center tw-gap-1.5 tw-px-0.5 tw-pt-2.5 tw-pb-1.5 tw-text-xs tw-font-semibold tw-text-muted"
+              >
+                {{ i18n.t("passkeys") }}
+              </h2>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                @for (passkey of passkeys(); track $index) {
+                  <div
+                    class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-p-3 last:tw-border-b-0"
+                  >
+                    <bit-icon
+                      name="bwi-passkey"
+                      class="tw-flex-none tw-text-base tw-text-muted"
+                    ></bit-icon>
+                    <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main"
+                      >{{ passkey.userName ? passkey.userName + " · " : ""
+                      }}{{ i18n.t("dateCreated") }} {{ passkey.creationDate | date: "short" }}</span
+                    >
+                  </div>
+                }
+              </div>
+            </section>
+          }
+
           @if (customFields().length) {
             <section class="tw-pb-2.5">
               <h2
@@ -493,6 +522,14 @@ export class VaultItemViewV2Component implements OnInit {
       sections.push({ key: "notes", label: this.i18n.t("notes"), rows: [notes] });
     }
     return sections;
+  });
+
+  protected readonly passkeys = computed<readonly Fido2CredentialView[]>(() => {
+    const item = this.cipher();
+    if (!item || this.kind() !== ItemKind.Login) {
+      return [];
+    }
+    return item.login?.fido2Credentials ?? [];
   });
 
   protected readonly customFields = computed<readonly CustomRow[]>(() => {

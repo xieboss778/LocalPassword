@@ -162,6 +162,9 @@ export interface RouteDataProperties extends RouteCacheOptions {
   /** Renders a shared desktop page in its 380px popup layout. */
   compact?: boolean;
 
+  /** Lets the shared item form remove passkeys; desktop keeps them read-only. */
+  passkeysEditable?: boolean;
+
   /** The page the local-vault creation flow opens when the user chose restore-from-file. */
   importRoute?: string;
 
@@ -274,7 +277,7 @@ const routes: Routes = [
     path: "edit-item-v2",
     component: ItemFormV2Component,
     canActivate: [authGuard],
-    data: { elevation: 2, compact: true } satisfies RouteDataProperties,
+    data: { elevation: 2, compact: true, passkeysEditable: true } satisfies RouteDataProperties,
   },
   {
     // LocalPassword：动态口令二维码（扫码进认证器）。

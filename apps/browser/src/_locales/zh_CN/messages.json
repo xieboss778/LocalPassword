@@ -1219,6 +1219,9 @@
   "uri": {
     "message": "URI"
   },
+  "uri2": {
+    "message": "网址 2"
+  },
   "uriPosition": {
     "message": "URI $POSITION$",
     "description": "A listing of URIs. Ex: URI 1, URI 2, URI 3, etc.",
@@ -7208,8 +7211,14 @@
   "loginCredentials": {
     "message": "登录凭据"
   },
+  "loginInformation": {
+    "message": "登录信息"
+  },
   "authenticatorKey": {
     "message": "验证器密钥"
+  },
+  "authenticatorKeyHint": {
+    "message": "用于生成动态口令，可留空"
   },
   "autofillOptions": {
     "message": "自动填充选项"
@@ -7372,6 +7381,18 @@
   },
   "fieldType": {
     "message": "字段类型"
+  },
+  "fieldName": {
+    "message": "字段名"
+  },
+  "fieldValue": {
+    "message": "值"
+  },
+  "typeText": {
+    "message": "文本"
+  },
+  "typeHidden": {
+    "message": "隐藏"
   },
   "fieldLabel": {
     "message": "字段标签"
@@ -9697,6 +9718,9 @@
   },
   "itemKindLicenseSeats": {
     "message": "席位 / 版本"
+  },
+  "purchaseDate": {
+    "message": "购买日期"
   },
   "itemKindLicenseSoftware": {
     "message": "软件"

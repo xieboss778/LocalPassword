@@ -5,11 +5,12 @@ import {
   inject,
   input,
   model,
+  output,
   signal,
 } from "@angular/core";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { IconComponent } from "@localpass/components";
+import { IconComponent, LocalPassIcon } from "@localpass/components";
 
 export interface LpFieldOption {
   readonly value: string;
@@ -56,23 +57,44 @@ export interface LpFieldOption {
             ></textarea>
           } @else {
             <input
-              class="tw-w-full tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-pe-10 tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted focus:tw-border-border-focus"
+              class="tw-w-full tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted focus:tw-border-border-focus"
               [class.tw-font-mono]="mono()"
+              [class.tw-pe-10]="actionIcon() || password()"
+              [class.tw-pe-16]="actionIcon() && password()"
               [type]="inputType()"
               [value]="value()"
               [attr.placeholder]="placeholder()"
               [attr.autocomplete]="autocomplete()"
               (input)="update($event)"
             />
-            @if (password()) {
-              <button
-                type="button"
-                class="tw-absolute tw-end-1 tw-top-1/2 tw-grid tw-size-8 -tw-translate-y-1/2 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
-                [attr.aria-label]="revealed() ? i18n.t('hideValue') : i18n.t('showValue')"
-                (click)="revealed.set(!revealed())"
+            @if (actionIcon() || password()) {
+              <span
+                class="tw-absolute tw-end-1 tw-top-1/2 tw-flex -tw-translate-y-1/2 tw-items-center"
               >
-                <bit-icon [name]="revealed() ? 'bwi-visibility-off' : 'bwi-visibility'"></bit-icon>
-              </button>
+                @if (actionIcon()) {
+                  <button
+                    type="button"
+                    class="tw-grid tw-size-8 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
+                    [attr.aria-label]="actionLabel()"
+                    [attr.title]="actionLabel()"
+                    (click)="actionTriggered.emit()"
+                  >
+                    <bit-icon [name]="actionIcon() ?? 'bwi-generate'"></bit-icon>
+                  </button>
+                }
+                @if (password()) {
+                  <button
+                    type="button"
+                    class="tw-grid tw-size-8 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
+                    [attr.aria-label]="revealed() ? i18n.t('hideValue') : i18n.t('showValue')"
+                    (click)="revealed.set(!revealed())"
+                  >
+                    <bit-icon
+                      [name]="revealed() ? 'bwi-visibility-off' : 'bwi-visibility'"
+                    ></bit-icon>
+                  </button>
+                }
+              </span>
             }
           }
         </span>
@@ -112,6 +134,11 @@ export class LpFieldComponent {
   readonly layout = input<"row" | "stacked">("stacked");
   readonly options = input<readonly LpFieldOption[]>([]);
   readonly value = model<string>("");
+  /** 输入框尾部的动作按钮，例如「生成密码」。 */
+  readonly actionIcon = input<LocalPassIcon | undefined>(undefined);
+  readonly actionLabel = input<string>("");
+
+  readonly actionTriggered = output<void>();
 
   protected readonly revealed = signal(false);
   protected readonly inputType = computed(() =>

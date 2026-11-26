@@ -1216,6 +1216,9 @@
   "uri": {
     "message": "URI"
   },
+  "uri2": {
+    "message": "Website 2"
+  },
   "uriPosition": {
     "message": "URI $POSITION$",
     "description": "A listing of URIs. Ex: URI 1, URI 2, URI 3, etc.",
@@ -7229,8 +7232,14 @@
   "loginCredentials": {
     "message": "Login credentials"
   },
+  "loginInformation": {
+    "message": "Login information"
+  },
   "authenticatorKey": {
     "message": "Authenticator key"
+  },
+  "authenticatorKeyHint": {
+    "message": "Used to generate codes. Leave blank if you don't need one."
   },
   "autofillOptions": {
     "message": "Autofill options"
@@ -7393,6 +7402,18 @@
   },
   "fieldType": {
     "message": "Field type"
+  },
+  "fieldName": {
+    "message": "Field name"
+  },
+  "fieldValue": {
+    "message": "Value"
+  },
+  "typeText": {
+    "message": "Text"
+  },
+  "typeHidden": {
+    "message": "Hidden"
   },
   "fieldLabel": {
     "message": "Field label"
@@ -9730,6 +9751,9 @@
   },
   "itemKindLicenseSeats": {
     "message": "Seats / version"
+  },
+  "purchaseDate": {
+    "message": "Purchase date"
   },
   "itemKindLicenseSoftware": {
     "message": "Software"

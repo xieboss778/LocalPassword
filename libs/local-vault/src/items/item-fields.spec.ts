@@ -1,6 +1,15 @@
+import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { FieldView } from "@localpass/common/vault/models/view/field.view";
 
-import { applyFieldValues, FIELDS, readFieldValues } from "./item-fields";
+import {
+  applyCustomFields,
+  applyFieldValues,
+  fieldGroups,
+  FIELDS,
+  readCustomFields,
+  readFieldValues,
+} from "./item-fields";
 import { ItemKind, setKind } from "./item-kind";
 
 function emptyView(): CipherView {
@@ -116,5 +125,92 @@ describe("item field mapping", () => {
 
     expect(view.notes).toBe("A1B2-C3D4");
     expect(readFieldValues(view, ItemKind.Note).notes).toBe("A1B2-C3D4");
+  });
+
+  it("keeps the login notes and second URI", () => {
+    const view = emptyView();
+    setKind(view, ItemKind.Login);
+    applyFieldValues(view, ItemKind.Login, {
+      name: "GitHub",
+      username: "bossxie",
+      uri: "https://github.com",
+      uri2: "https://gist.github.com",
+      notes: "恢复码在抽屉里",
+    });
+
+    expect(view.login.uris.map((uri) => uri.uri)).toEqual([
+      "https://github.com",
+      "https://gist.github.com",
+    ]);
+    expect(readFieldValues(view, ItemKind.Login)).toMatchObject({
+      uri: "https://github.com",
+      uri2: "https://gist.github.com",
+      notes: "恢复码在抽屉里",
+    });
+  });
+
+  it("collapses a blank first URI instead of keeping an empty matcher", () => {
+    const view = emptyView();
+    setKind(view, ItemKind.Login);
+    applyFieldValues(view, ItemKind.Login, {
+      name: "GitHub",
+      uri: "",
+      uri2: "https://gist.github.com",
+    });
+
+    expect(view.login.uris.map((uri) => uri.uri)).toEqual(["https://gist.github.com"]);
+  });
+
+  it("groups fields for the form, with the item section first", () => {
+    const groups = fieldGroups(ItemKind.Login);
+
+    expect(groups.map((group) => group.key)).toEqual(["item", "login", "uri", "options"]);
+    expect(groups[0].fields.map((field) => field.id)).toEqual(["name"]);
+    expect(groups[1].labelKey).toBe("loginInformation");
+    expect(groups[2].labelKey).toBe("autofillOptions");
+    expect(groups[3].labelKey).toBe("additionalOptions");
+  });
+
+  it("reads user-defined custom fields and skips reserved slots", () => {
+    const view = emptyView();
+    setKind(view, ItemKind.Token);
+    applyFieldValues(view, ItemKind.Token, {
+      name: "Cloudflare",
+      service: "生产",
+      token: "t0ken",
+      scope: "Zone.Read",
+    });
+    const linked = new FieldView();
+    linked.name = "关联字段";
+    linked.value = "x";
+    linked.type = FieldType.Linked;
+    const hidden = new FieldView();
+    hidden.name = "恢复码";
+    hidden.value = "A1B2";
+    hidden.type = FieldType.Hidden;
+    view.fields = [...view.fields, linked, hidden];
+
+    expect(readCustomFields(view, ItemKind.Token)).toEqual([
+      { name: "恢复码", value: "A1B2", hidden: true },
+    ]);
+  });
+
+  it("replaces user-defined custom fields while preserving reserved ones", () => {
+    const view = emptyView();
+    setKind(view, ItemKind.Token);
+    applyFieldValues(view, ItemKind.Token, {
+      name: "Cloudflare",
+      scope: "Zone.Read",
+      token: "t0ken",
+    });
+
+    applyCustomFields(view, ItemKind.Token, [
+      { name: "恢复码", value: "A1B2", hidden: true },
+      { name: "", value: "无名", hidden: false },
+    ]);
+
+    expect(view.fields.map((field) => field.name)).toEqual(["lp:kind", "scope", "恢复码"]);
+    expect(view.fields.find((field) => field.name === "恢复码")?.type).toBe(FieldType.Hidden);
+    expect(readFieldValues(view, ItemKind.Token).scope).toBe("Zone.Read");
   });
 });

@@ -16,8 +16,10 @@ import { firstValueFrom, of, switchMap } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
+  CustomFieldDraft,
   ITEM_KIND_ORDER,
   ITEM_KIND_UI,
+  LpCustomFieldsComponent,
   LpEmptyComponent,
   LpFieldComponent,
   LpGroupComponent,
@@ -25,6 +27,7 @@ import {
   LpPageHeaderComponent,
   LpRowComponent,
   LpToastService,
+  newCustomFieldDraft,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
@@ -43,12 +46,15 @@ import {
   IconTileComponent,
 } from "@localpass/components";
 import {
+  applyCustomFields,
   applyFieldValues,
+  fieldGroups,
   FIELDS,
   FieldSpec,
   FieldValues,
   ItemKind,
   kindOf,
+  readCustomFields,
   readFieldValues,
   setKind,
   withoutKindField,
@@ -72,12 +78,6 @@ interface DetailRowView {
   readonly launchUri: string;
 }
 
-interface FieldRow {
-  readonly spec: FieldSpec;
-  readonly label: string;
-  readonly value: string;
-}
-
 const MASK = "••••••••••••";
 
 /**
@@ -97,6 +97,7 @@ const MASK = "••••••••••••";
     IconButtonModule,
     IconModule,
     IconTileComponent,
+    LpCustomFieldsComponent,
     LpEmptyComponent,
     LpFieldComponent,
     LpGroupComponent,
@@ -458,6 +459,20 @@ const MASK = "••••••••••••";
                     </lp-group>
                   }
 
+                  @if (passkeys().length) {
+                    <lp-group [label]="i18n.t('passkeys')">
+                      @for (passkey of passkeys(); track $index) {
+                        <lp-row
+                          [label]="passkey.userName || i18n.t('typePasskey')"
+                          [value]="
+                            i18n.t('dateCreated') + ' ' + (passkey.creationDate | date: 'short')
+                          "
+                          [clickable]="false"
+                        ></lp-row>
+                      }
+                    </lp-group>
+                  }
+
                   @if (item.notes) {
                     <lp-group [label]="i18n.t('notes')">
                       <lp-row
@@ -503,30 +518,36 @@ const MASK = "••••••••••••";
               }
 
               @case ("edit") {
-                <lp-field
-                  [label]="i18n.t('folder')"
-                  [value]="editFolderId()"
-                  [options]="folderOptions()"
-                  (valueChange)="editFolderId.set($event)"
-                ></lp-field>
-                <lp-group>
-                  @for (field of editFieldRows(); track field.spec.id) {
-                    <lp-field
-                      [label]="field.label"
-                      [value]="field.value"
-                      [password]="!!field.spec.password"
-                      [multiline]="!!field.spec.multiline"
-                      [mono]="field.spec.target === 'loginUsername'"
-                      (valueChange)="setValue(field.spec.id, $event)"
-                    ></lp-field>
-                  }
-                  <lp-row
-                    [label]="i18n.t('favorite')"
-                    [toggle]="editFavorite()"
-                    [clickable]="true"
-                    (activated)="editFavorite.set(!editFavorite())"
-                  ></lp-row>
-                </lp-group>
+                @for (group of editGroups(); track group.key) {
+                  <lp-group [label]="i18n.t(group.labelKey)">
+                    @for (field of group.fields; track field.id) {
+                      <lp-field
+                        [label]="i18n.t(field.labelKey)"
+                        [value]="values()[field.id] ?? ''"
+                        [password]="!!field.password"
+                        [multiline]="!!field.multiline"
+                        [mono]="isMonoField(field)"
+                        [hint]="field.hintKey ? i18n.t(field.hintKey) : ''"
+                        (valueChange)="setValue(field.id, $event)"
+                      ></lp-field>
+                    }
+                    @if (group.key === "item") {
+                      <lp-field
+                        [label]="i18n.t('folder')"
+                        [value]="editFolderId()"
+                        [options]="folderOptions()"
+                        (valueChange)="editFolderId.set($event)"
+                      ></lp-field>
+                      <lp-row
+                        [label]="i18n.t('favorite')"
+                        [toggle]="editFavorite()"
+                        [clickable]="true"
+                        (activated)="editFavorite.set(!editFavorite())"
+                      ></lp-row>
+                    }
+                  </lp-group>
+                }
+                <lp-custom-fields [(fields)]="editCustomFields"></lp-custom-fields>
                 @if (errorMessage()) {
                   <p class="tw-pt-3 tw-text-sm tw-text-fg-danger">{{ errorMessage() }}</p>
                 }
@@ -561,30 +582,36 @@ const MASK = "••••••••••••";
               }
 
               @case ("new-form") {
-                <lp-field
-                  [label]="i18n.t('folder')"
-                  [value]="editFolderId()"
-                  [options]="folderOptions()"
-                  (valueChange)="editFolderId.set($event)"
-                ></lp-field>
-                <lp-group>
-                  @for (field of editFieldRows(); track field.spec.id) {
-                    <lp-field
-                      [label]="field.label"
-                      [value]="field.value"
-                      [password]="!!field.spec.password"
-                      [multiline]="!!field.spec.multiline"
-                      [mono]="field.spec.target === 'loginUsername'"
-                      (valueChange)="setValue(field.spec.id, $event)"
-                    ></lp-field>
-                  }
-                  <lp-row
-                    [label]="i18n.t('favorite')"
-                    [toggle]="editFavorite()"
-                    [clickable]="true"
-                    (activated)="editFavorite.set(!editFavorite())"
-                  ></lp-row>
-                </lp-group>
+                @for (group of editGroups(); track group.key) {
+                  <lp-group [label]="i18n.t(group.labelKey)">
+                    @for (field of group.fields; track field.id) {
+                      <lp-field
+                        [label]="i18n.t(field.labelKey)"
+                        [value]="values()[field.id] ?? ''"
+                        [password]="!!field.password"
+                        [multiline]="!!field.multiline"
+                        [mono]="isMonoField(field)"
+                        [hint]="field.hintKey ? i18n.t(field.hintKey) : ''"
+                        (valueChange)="setValue(field.id, $event)"
+                      ></lp-field>
+                    }
+                    @if (group.key === "item") {
+                      <lp-field
+                        [label]="i18n.t('folder')"
+                        [value]="editFolderId()"
+                        [options]="folderOptions()"
+                        (valueChange)="editFolderId.set($event)"
+                      ></lp-field>
+                      <lp-row
+                        [label]="i18n.t('favorite')"
+                        [toggle]="editFavorite()"
+                        [clickable]="true"
+                        (activated)="editFavorite.set(!editFavorite())"
+                      ></lp-row>
+                    }
+                  </lp-group>
+                }
+                <lp-custom-fields [(fields)]="editCustomFields"></lp-custom-fields>
                 @if (errorMessage()) {
                   <p class="tw-pt-3 tw-text-sm tw-text-fg-danger">{{ errorMessage() }}</p>
                 }
@@ -683,6 +710,7 @@ export class VaultDesktopV2Component implements OnInit {
   protected readonly values = signal<FieldValues>({});
   protected readonly editFolderId = signal("");
   protected readonly editFavorite = signal(false);
+  protected readonly editCustomFields = signal<readonly CustomFieldDraft[]>([]);
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -797,6 +825,14 @@ export class VaultDesktopV2Component implements OnInit {
     return code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
   });
 
+  protected readonly passkeys = computed(() => {
+    const item = this.selected();
+    if (!item || this.selectedKind() !== ItemKind.Login) {
+      return [];
+    }
+    return item.login?.fido2Credentials ?? [];
+  });
+
   protected readonly customFields = computed(() => {
     const item = this.selected();
     if (!item) {
@@ -845,14 +881,9 @@ export class VaultDesktopV2Component implements OnInit {
     return result;
   });
 
-  protected readonly editFieldRows = computed<FieldRow[]>(() => {
-    const kind = this.drawer() === "new-form" ? this.newKind() : this.selectedKind();
-    return FIELDS[kind].map((spec) => ({
-      spec,
-      label: this.i18n.t(spec.labelKey),
-      value: this.values()[spec.id] ?? "",
-    }));
-  });
+  protected readonly editGroups = computed(() =>
+    fieldGroups(this.drawer() === "new-form" ? this.newKind() : this.selectedKind()),
+  );
 
   protected readonly folderOptions = computed(() => [
     { value: "", label: this.i18n.t("noFolder") },
@@ -969,6 +1000,7 @@ export class VaultDesktopV2Component implements OnInit {
     this.newKind.set(ItemKind.Login);
     this.values.set({});
     this.editFavorite.set(false);
+    this.editCustomFields.set([]);
     this.editFolderId.set(
       this.folderFilter() !== "all" && this.folderFilter() !== "none" ? this.folderFilter() : "",
     );
@@ -980,6 +1012,7 @@ export class VaultDesktopV2Component implements OnInit {
     this.newKind.set(kind);
     this.values.set({});
     this.editFavorite.set(false);
+    this.editCustomFields.set([]);
     this.errorMessage.set(null);
     this.drawer.set("new-form");
   }
@@ -989,7 +1022,13 @@ export class VaultDesktopV2Component implements OnInit {
     if (!item) {
       return;
     }
-    this.values.set(readFieldValues(item, kindOf(item)));
+    const kind = kindOf(item);
+    this.values.set(readFieldValues(item, kind));
+    this.editCustomFields.set(
+      readCustomFields(item, kind).map((field) =>
+        newCustomFieldDraft(field.name, field.value, field.hidden),
+      ),
+    );
     this.editFolderId.set(item.folderId ?? "");
     this.editFavorite.set(item.favorite);
     this.errorMessage.set(null);
@@ -1005,6 +1044,16 @@ export class VaultDesktopV2Component implements OnInit {
     this.values.update((current) => ({ ...current, [id]: value }));
   }
 
+  protected isMonoField(field: FieldSpec): boolean {
+    return (
+      !!field.password ||
+      !!field.multiline ||
+      field.target === "loginUsername" ||
+      field.target === "loginUri" ||
+      field.target === "loginUri2"
+    );
+  }
+
   protected async save(): Promise<void> {
     this.saving.set(true);
     this.errorMessage.set(null);
@@ -1018,6 +1067,7 @@ export class VaultDesktopV2Component implements OnInit {
       }
 
       applyFieldValues(view, kind, this.values());
+      applyCustomFields(view, kind, this.editCustomFields());
       setKind(view, kind);
       view.folderId = this.editFolderId() || undefined;
       view.favorite = this.editFavorite();
