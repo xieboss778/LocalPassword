@@ -1,6 +1,7 @@
 import { switchMap, delay, filter, concatMap, map, first, of } from "rxjs";
 
 import { CommandDefinition, MessageListener } from "@localpass/common/platform/messaging";
+import { compareValues } from "@localpass/common/platform/misc/compare-values";
 import {
   ScheduledTaskNames,
   TaskSchedulerService,
@@ -110,13 +111,20 @@ export class PopupViewCacheBackgroundService {
       .messages$(SAVE_VIEW_CACHE_COMMAND)
       .pipe(
         concatMap(async ({ key, value, options }) =>
-          this.popupViewCacheState.update((state) => ({
-            ...state,
-            [key]: {
-              value,
-              options,
+          this.popupViewCacheState.update(
+            (state) => ({
+              ...state,
+              [key]: {
+                value,
+                options,
+              },
+            }),
+            {
+              // The popup re-sends its snapshot after UI-only changes; writing an identical
+              // value again costs an encrypt + disk write, so skip it.
+              shouldUpdate: (state) => !compareValues(state?.[key], { value, options }),
             },
-          })),
+          ),
         ),
       )
       .subscribe();
@@ -125,15 +133,25 @@ export class PopupViewCacheBackgroundService {
       .messages$(ClEAR_VIEW_CACHE_COMMAND)
       .pipe(
         concatMap(({ routeChange }) =>
-          this.popupViewCacheState.update((state) => {
-            if (routeChange && state) {
-              // Only remove keys that are not marked with `persistNavigation`
-              return Object.fromEntries(
-                Object.entries(state).filter(([, { options }]) => options?.persistNavigation),
-              );
-            }
-            return null;
-          }),
+          this.popupViewCacheState.update(
+            (state) => {
+              if (routeChange && state) {
+                // Only remove keys that are not marked with `persistNavigation`
+                return Object.fromEntries(
+                  Object.entries(state).filter(([, { options }]) => options?.persistNavigation),
+                );
+              }
+              return null;
+            },
+            {
+              // Only write when the clear actually removes something.
+              shouldUpdate: (state) =>
+                routeChange
+                  ? !!state &&
+                    Object.values(state).some(({ options }) => !options?.persistNavigation)
+                  : state != null,
+            },
+          ),
         ),
       )
       .subscribe();
@@ -173,15 +191,22 @@ export class PopupViewCacheBackgroundService {
         map((tab) => tab.url || tab.pendingUrl),
         filter((url) => !url?.startsWith(chrome.runtime.getURL(""))),
         switchMap(() =>
-          this.popupViewCacheState.update((state) => {
-            if (!state) {
-              return null;
-            }
-            // Only remove keys that are marked with `clearOnTabChange`
-            return Object.fromEntries(
-              Object.entries(state).filter(([, { options }]) => !options?.clearOnTabChange),
-            );
-          }),
+          this.popupViewCacheState.update(
+            (state) => {
+              if (!state) {
+                return null;
+              }
+              // Only remove keys that are marked with `clearOnTabChange`
+              return Object.fromEntries(
+                Object.entries(state).filter(([, { options }]) => !options?.clearOnTabChange),
+              );
+            },
+            {
+              // Only write when at least one tab-scoped entry needs dropping.
+              shouldUpdate: (state) =>
+                !!state && Object.values(state).some(({ options }) => !!options?.clearOnTabChange),
+            },
+          ),
         ),
       )
       .subscribe();

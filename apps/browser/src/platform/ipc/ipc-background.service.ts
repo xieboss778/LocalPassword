@@ -92,7 +92,14 @@ export class IpcBackgroundService extends IpcService {
         this.desktopTransport.init();
       }
     } catch (e) {
-      this.logService.error("[IPC] Initialization failed", e);
+      // A failed SDK load at startup usually means the extension's build directory was replaced
+      // while Chrome kept the previous service worker registered. That worker requests the old
+      // content-hashed .wasm file, which no longer exists. Chrome only adopts the new worker on
+      // an extension reload, so name the likely fix instead of leaving a bare "Failed to fetch".
+      this.logService.error(
+        "[IPC] Initialization failed. If the extension build was replaced, reload the extension from its management page.",
+        e,
+      );
     }
   }
 }

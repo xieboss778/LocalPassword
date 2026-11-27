@@ -88,11 +88,9 @@ export class MigrationBuilder<TCurrent extends number = 0> {
     direction: Direction,
   ): Promise<void> {
     const shouldMigrate = await migrator.shouldMigrate(helper, direction);
-    // The routine "nothing to migrate" result is the common case on every startup; keep it out
-    // of the production console and leave the info lines below for migrations that actually run.
-    helper.logService.debug(
-      `Migrator ${migrator.constructor.name} (to version ${migrator.toVersion}) should migrate: ${shouldMigrate} - ${direction}`,
-    );
+    // On a migrated profile every startup checks all migrators and finds nothing to do. The
+    // decision itself is therefore not worth a log line — only migrations that actually run are
+    // reported below.
     if (shouldMigrate) {
       // Version in the name keeps entries identifiable when class names are minified
       const measurement = helper.logService.startMeasurement(

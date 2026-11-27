@@ -30,24 +30,32 @@ export class PopupRouterCacheBackgroundService {
         map((tab) => tab.url || tab.pendingUrl),
         filter((url) => !url?.startsWith(chrome.runtime.getURL(""))),
         switchMap(() =>
-          this.popupRouteHistoryState.update((state) => {
-            if (!state || state.length === 0) {
+          this.popupRouteHistoryState.update(
+            (state) => {
+              if (!state || state.length === 0) {
+                return state;
+              }
+
+              const lastRoute = state.at(-1);
+              if (!lastRoute) {
+                return state;
+              }
+
+              // When the last route has resetRouterCacheOnTabChange set
+              // Reset the route history to empty to force the user to the default route
+              if (lastRoute.options?.resetRouterCacheOnTabChange) {
+                return [];
+              }
+
               return state;
-            }
-
-            const lastRoute = state.at(-1);
-            if (!lastRoute) {
-              return state;
-            }
-
-            // When the last route has resetRouterCacheOnTabChange set
-            // Reset the route history to empty to force the user to the default route
-            if (lastRoute.options?.resetRouterCacheOnTabChange) {
-              return [];
-            }
-
-            return state;
-          }),
+            },
+            {
+              // A tab change only matters when the last route asked to be reset. All other cases
+              // would rewrite the same history, costing an encrypt + disk write for nothing.
+              shouldUpdate: (state) =>
+                !!state?.length && !!state.at(-1)?.options?.resetRouterCacheOnTabChange,
+            },
+          ),
         ),
       )
       .subscribe();
