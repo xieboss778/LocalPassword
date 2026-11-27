@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component, NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { mock } from "jest-mock-extended";
+
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
 import { ImportShellDesktopComponent } from "./import-shell-desktop.component";
 
 @Component({
-  selector: "app-header",
+  selector: "lp-page-header",
   template: "",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -30,6 +33,7 @@ describe("ImportShellDesktopComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ImportShellDesktopComponent],
+      providers: [{ provide: I18nService, useValue: mock<I18nService>() }],
     })
       .overrideComponent(ImportShellDesktopComponent, {
         set: {
@@ -50,7 +54,7 @@ describe("ImportShellDesktopComponent", () => {
   it("renders the page header, the shared step progress, and a router outlet for its children", () => {
     const element: HTMLElement = fixture.nativeElement;
 
-    expect(element.querySelector("app-header")).toBeTruthy();
+    expect(element.querySelector("lp-page-header")).toBeTruthy();
     expect(element.querySelector("importer-shell-progress")).toBeTruthy();
     expect(element.querySelector("router-outlet")).toBeTruthy();
   });

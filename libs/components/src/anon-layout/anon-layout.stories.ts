@@ -74,6 +74,7 @@ export default {
           [showReadonlyHostname]="showReadonlyHostname"
           [maxWidth]="maxWidth"
           [hideCardWrapper]="hideCardWrapper"
+          [hideHeader]="hideHeader"
           [hideLogo]="hideLogo"
           [hideFooter]="hideFooter"
           [hideBackgroundIllustration]="hideBackgroundIllustration"
@@ -120,6 +121,7 @@ export default {
     },
 
     hideCardWrapper: { control: "boolean" },
+    hideHeader: { control: "boolean" },
     hideLogo: { control: "boolean" },
     hideFooter: { control: "boolean" },
     hideBackgroundIllustration: { control: "boolean" },
@@ -140,6 +142,7 @@ export default {
     showReadonlyHostname: false,
     maxWidth: "md",
     hideCardWrapper: false,
+    hideHeader: false,
     hideLogo: false,
     hideFooter: false,
     hideBackgroundIllustration: false,
@@ -212,6 +215,10 @@ export const NoWrapper: Story = {
 
 export const NoIcon: Story = {
   args: { icon: null },
+};
+
+export const NoHeader: Story = {
+  args: { hideHeader: true },
 };
 
 export const NoLogo: Story = {

@@ -40,7 +40,7 @@ export class ImportControlsDesktopComponent {
   protected readonly importType = importTypeFromRoute(this.route);
 
   protected onBack(): void {
-    void navigateCarryingImportParams(this.router, this.route, ["/import"], {
+    void navigateCarryingImportParams(this.router, this.route, ["/import/all"], {
       queryParams: { source: this.importType() },
     });
   }
@@ -49,7 +49,7 @@ export class ImportControlsDesktopComponent {
     // Staged items mean the user still has to pick where they go.
     if (this.stagingService.current() != null) {
       void navigateCarryingImportParams(this.router, this.route, [
-        "/import",
+        "/import/all",
         this.importType(),
         IMPORT_DESTINATION_SEGMENT,
       ]);

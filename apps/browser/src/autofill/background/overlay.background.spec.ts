@@ -461,9 +461,39 @@ describe("OverlayBackground", () => {
       expect(pageDetailsForTabSpy[tabId]).toBeUndefined();
       expect(portKeyForTabSpy[tabId]).toBeUndefined();
     });
+
+    it("keeps the focused field data when a different tab is closed", () => {
+      const focusedFieldData = createFocusedFieldDataMock({ tabId: 2 });
+      overlayBackground["focusedFieldData"] = focusedFieldData;
+
+      overlayBackground.removePageDetails(1);
+
+      expect(overlayBackground["focusedFieldData"]).toBe(focusedFieldData);
+    });
+
+    it("clears the focused field data when the focused tab is closed", () => {
+      overlayBackground["focusedFieldData"] = createFocusedFieldDataMock({ tabId: 1 });
+
+      overlayBackground.removePageDetails(1);
+
+      expect(overlayBackground["focusedFieldData"]).toBeNull();
+    });
   });
 
   describe("inline menu list port init message", () => {
+    it("loads the tab's ciphers when the list port opens while unlocked", async () => {
+      cipherService.getAllDecryptedForUrl.mockResolvedValue([]);
+
+      await initOverlayElementPorts({ initList: true, initButton: false });
+
+      expect(fillCipherPolicy.ciphersForUrl).toHaveBeenCalledWith(
+        expect.any(String),
+        mockUserId,
+        CipherUse.UserFill,
+        expect.anything(),
+      );
+    });
+
     it.each([true, false])(
       "includes useLitComponents as %s when LitInlineMenuComponents is %s",
       async (enabled) => {
@@ -1062,7 +1092,7 @@ describe("OverlayBackground", () => {
       localData: { lastUsedDate: 222 },
       name: "name-3",
       type: CipherType.Login,
-      login: { username: "username-3", uri: url },
+      login: { username: "username-3", password: "", uri: url },
     });
     const identityCipher = mock<CipherView>({
       id: "id-4",
@@ -1098,7 +1128,44 @@ describe("OverlayBackground", () => {
 
     beforeEach(async () => {
       activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
+      cipherService.getAllDecryptedForUrl.mockResolvedValue([]);
       await initOverlayElementPorts();
+      // Opening the list port while unlocked now loads the ciphers for the initial menu, so
+      // these tests start counting calls after that initial load.
+      cipherService.getAllDecryptedForUrl.mockClear();
+    });
+
+    it("closes open inline menus when the vault locks", async () => {
+      getTabSpy.mockResolvedValue(tab);
+
+      activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+      await flushPromises();
+
+      expect(tabsSendMessageSpy).toHaveBeenCalledWith(
+        tab,
+        { command: "closeAutofillInlineMenu" },
+        { frameId: 0 },
+      );
+    });
+
+    it("refreshes the overlay ciphers when the vault unlocks", async () => {
+      getTabFromCurrentWindowIdSpy.mockResolvedValue(tab);
+      cipherService.getAllDecryptedForUrl.mockResolvedValue([loginCipher1]);
+      cipherService.sortCiphersByLastUsedThenName.mockReturnValue(-1);
+
+      activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+      await flushPromises();
+      cipherService.getAllDecryptedForUrl.mockClear();
+
+      activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
+      await flushPromises();
+
+      expect(fillCipherPolicy.ciphersForUrl).toHaveBeenCalledWith(
+        url,
+        mockUserId,
+        CipherUse.UserFill,
+        { includeOtherTypes: [CipherType.Card, CipherType.Identity, CipherType.SshKey] },
+      );
     });
 
     it("skips updating the overlay ciphers if the user's auth status is not unlocked", async () => {
@@ -1223,6 +1290,8 @@ describe("OverlayBackground", () => {
         showInlineMenuAccountCreation: false,
         showPasskeysLabels: false,
         focusedFieldHasValue: false,
+        focusedFieldValue: "",
+        isTotpField: false,
         ciphers: [
           {
             accountCreationFieldType: undefined,
@@ -1236,6 +1305,7 @@ describe("OverlayBackground", () => {
             id: "inline-menu-cipher-0",
             login: {
               username: "username-1",
+              hasPassword: true,
               passkey: null,
               totpField: false,
             },
@@ -1317,6 +1387,8 @@ describe("OverlayBackground", () => {
         showInlineMenuAccountCreation: false,
         showPasskeysLabels: false,
         focusedFieldHasValue: false,
+        focusedFieldValue: "",
+        isTotpField: false,
         ciphers: [
           {
             accountCreationFieldType: undefined,
@@ -1355,6 +1427,8 @@ describe("OverlayBackground", () => {
           showInlineMenuAccountCreation: true,
           showPasskeysLabels: false,
           focusedFieldHasValue: false,
+          focusedFieldValue: "",
+          isTotpField: false,
           ciphers: [
             {
               accountCreationFieldType: "text",
@@ -1396,6 +1470,8 @@ describe("OverlayBackground", () => {
           showInlineMenuAccountCreation: true,
           showPasskeysLabels: false,
           focusedFieldHasValue: false,
+          focusedFieldValue: "",
+          isTotpField: false,
           ciphers: [
             {
               accountCreationFieldType: "text",
@@ -1427,6 +1503,7 @@ describe("OverlayBackground", () => {
               id: "inline-menu-cipher-1",
               login: {
                 username: loginCipher1.login.username,
+                hasPassword: true,
                 passkey: null,
                 totpField: false,
               },
@@ -1468,6 +1545,8 @@ describe("OverlayBackground", () => {
           showInlineMenuAccountCreation: true,
           showPasskeysLabels: false,
           focusedFieldHasValue: false,
+          focusedFieldValue: "",
+          isTotpField: false,
           ciphers: [
             {
               accountCreationFieldType: "email",
@@ -1508,6 +1587,8 @@ describe("OverlayBackground", () => {
           showInlineMenuAccountCreation: true,
           showPasskeysLabels: false,
           focusedFieldHasValue: false,
+          focusedFieldValue: "",
+          isTotpField: false,
           ciphers: [],
         });
       });
@@ -1549,6 +1630,7 @@ describe("OverlayBackground", () => {
             accountCreationFieldType: undefined,
             login: {
               username: passkeyCipher.login.username,
+              hasPassword: true,
               passkey: {
                 rpName: passkeyCipher.login.fido2Credentials[0].rpName,
                 userName: passkeyCipher.login.fido2Credentials[0].userName,
@@ -1571,6 +1653,7 @@ describe("OverlayBackground", () => {
             accountCreationFieldType: undefined,
             login: {
               username: passkeyCipher.login.username,
+              hasPassword: true,
               passkey: null,
               totpField: false,
             },
@@ -1590,6 +1673,7 @@ describe("OverlayBackground", () => {
             accountCreationFieldType: undefined,
             login: {
               username: loginCipher1.login.username,
+              hasPassword: true,
               passkey: null,
               totpField: false,
             },
@@ -1598,6 +1682,8 @@ describe("OverlayBackground", () => {
         showInlineMenuAccountCreation: false,
         showPasskeysLabels: true,
         focusedFieldHasValue: false,
+        focusedFieldValue: "",
+        isTotpField: false,
       });
     });
 
@@ -1638,6 +1724,7 @@ describe("OverlayBackground", () => {
             accountCreationFieldType: undefined,
             login: {
               username: passkeyCipher.login.username,
+              hasPassword: true,
               passkey: null,
               totpField: false,
             },
@@ -1657,6 +1744,7 @@ describe("OverlayBackground", () => {
             accountCreationFieldType: undefined,
             login: {
               username: loginCipher1.login.username,
+              hasPassword: true,
               passkey: null,
               totpField: false,
             },
@@ -1665,6 +1753,8 @@ describe("OverlayBackground", () => {
         showInlineMenuAccountCreation: false,
         showPasskeysLabels: false,
         focusedFieldHasValue: false,
+        focusedFieldValue: "",
+        isTotpField: false,
       });
     });
 
@@ -1705,6 +1795,7 @@ describe("OverlayBackground", () => {
             accountCreationFieldType: undefined,
             login: {
               username: passkeyCipher.login.username,
+              hasPassword: true,
               passkey: null,
               totpField: false,
             },
@@ -1724,6 +1815,7 @@ describe("OverlayBackground", () => {
             accountCreationFieldType: undefined,
             login: {
               username: loginCipher1.login.username,
+              hasPassword: true,
               passkey: null,
               totpField: false,
             },
@@ -1732,6 +1824,8 @@ describe("OverlayBackground", () => {
         showInlineMenuAccountCreation: false,
         showPasskeysLabels: false,
         focusedFieldHasValue: false,
+        focusedFieldValue: "",
+        isTotpField: false,
       });
     });
 
@@ -1770,6 +1864,7 @@ describe("OverlayBackground", () => {
               accountCreationFieldType: undefined,
               login: {
                 username: loginCipher1.login.username,
+                hasPassword: true,
                 passkey: null,
                 totpField: false,
               },
@@ -1789,6 +1884,7 @@ describe("OverlayBackground", () => {
               accountCreationFieldType: undefined,
               login: {
                 username: loginCipher2.login.username,
+                hasPassword: false,
                 passkey: null,
                 totpField: false,
               },
@@ -2403,6 +2499,31 @@ describe("OverlayBackground", () => {
         );
       });
 
+      it("refreshes the inline menu ciphers when the username filter value changes", async () => {
+        await initOverlayElementPorts();
+        activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
+        const tab = createChromeTabMock({ id: 2 });
+        const sender = mock<chrome.runtime.MessageSender>({ tab, frameId: 100 });
+        overlayBackground["isInlineMenuListVisible"] = true;
+        overlayBackground["focusedFieldData"] = createFocusedFieldDataMock({
+          tabId: tab.id,
+          frameId: sender.frameId,
+          focusedFieldValue: "",
+        });
+        const updateOverlayCiphersSpy = jest
+          .spyOn(overlayBackground, "updateOverlayCiphers")
+          .mockResolvedValue();
+        const focusedFieldData = createFocusedFieldDataMock({
+          tabId: tab.id,
+          focusedFieldValue: "username-1",
+        });
+
+        sendMockExtensionMessage({ command: "updateFocusedFieldData", focusedFieldData }, sender);
+        await flushPromises();
+
+        expect(updateOverlayCiphersSpy).toHaveBeenCalledWith(false);
+      });
+
       it("triggers an update of the identity ciphers present on a login field", async () => {
         await initOverlayElementPorts();
         activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
@@ -2424,6 +2545,8 @@ describe("OverlayBackground", () => {
           showInlineMenuAccountCreation: true,
           showPasskeysLabels: false,
           focusedFieldHasValue: false,
+          focusedFieldValue: "",
+          isTotpField: false,
         });
       });
 
@@ -3872,6 +3995,21 @@ describe("OverlayBackground", () => {
           command: "checkAutofillInlineMenuButtonFocused",
         });
       });
+
+      it("keeps the menu mounted when the list blurs during its own fill confirmation", async () => {
+        overlayBackground["inlineMenuFillConfirmationUntil"] = Date.now() + 1000;
+        jest.mocked(buttonPortSpy.postMessage).mockClear();
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "autofillInlineMenuBlurred",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(buttonPortSpy.postMessage).not.toHaveBeenCalledWith({
+          command: "checkAutofillInlineMenuButtonFocused",
+        });
+      });
     });
 
     describe("unlockVault message handler", () => {
@@ -3979,6 +4117,7 @@ describe("OverlayBackground", () => {
           focusedFieldForm: undefined,
           focusedFieldOpid: undefined,
           inlineMenuFillType: undefined,
+          retainInlineMenu: true,
         });
         expect(overlayBackground["inlineMenuCiphers"].entries()).toStrictEqual(
           new Map([
@@ -4305,6 +4444,83 @@ describe("OverlayBackground", () => {
             pageDetails: [expect.objectContaining({ details: pageDetails })],
           }),
         );
+      });
+    });
+
+    describe("copyInlineMenuTotp message handler", () => {
+      it("copies the current verification code for the requested cipher", async () => {
+        const cipher = mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          login: { totp: "totp-secret" },
+        });
+        overlayBackground["inlineMenuCiphers"] = new Map([["inline-menu-cipher-1", cipher]]);
+        totpService.getCode$.mockReturnValue(of({ code: "123456", period: 30 }));
+        const copyToClipboardSpy = jest
+          .spyOn(overlayBackground["platformUtilsService"], "copyToClipboard")
+          .mockImplementation();
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "copyInlineMenuTotp",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(totpService.getCode$).toHaveBeenCalledWith("totp-secret");
+        expect(copyToClipboardSpy).toHaveBeenCalledWith("123456");
+      });
+
+      it("ignores ciphers without a verification code", async () => {
+        overlayBackground["inlineMenuCiphers"] = new Map([
+          ["inline-menu-cipher-1", mock<CipherView>({ id: "inline-menu-cipher-1" })],
+        ]);
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "copyInlineMenuTotp",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(totpService.getCode$).not.toHaveBeenCalled();
+      });
+
+      it("logs without exposing the code when generation fails", async () => {
+        const cipher = mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          login: { totp: "totp-secret" },
+        });
+        overlayBackground["inlineMenuCiphers"] = new Map([["inline-menu-cipher-1", cipher]]);
+        totpService.getCode$.mockReturnValue(of(undefined));
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "copyInlineMenuTotp",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(overlayBackground["logService"].error).toHaveBeenCalledWith(
+          "Failed to get TOTP code for inline menu cipher",
+        );
+      });
+    });
+
+    describe("cancelInlineMenuPasskey message handler", () => {
+      it("aborts the active passkey request and refreshes the ciphers", async () => {
+        const removeActiveRequestSpy = jest.spyOn(fido2ActiveRequestManager, "removeActiveRequest");
+        const updateOverlayCiphersSpy = jest
+          .spyOn(overlayBackground, "updateOverlayCiphers")
+          .mockResolvedValue();
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "cancelInlineMenuPasskey",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(removeActiveRequestSpy).toHaveBeenCalledWith(sender.tab.id);
+        expect(updateOverlayCiphersSpy).toHaveBeenCalledWith(false);
       });
     });
 

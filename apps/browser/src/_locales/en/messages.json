@@ -668,8 +668,7 @@
     "message": "Minimum special"
   },
   "avoidAmbiguous": {
-    "message": "Avoid ambiguous characters",
-    "description": "Label for the avoid ambiguous characters checkbox."
+    "message": "Exclude ambiguous characters"
   },
   "generatorPolicyInEffect": {
     "message": "Enterprise policy requirements have been applied to your generator options.",
@@ -932,7 +931,7 @@
     "message": "Timeout"
   },
   "lockNow": {
-    "message": "Lock now"
+    "message": "Lock vault now"
   },
   "lockAll": {
     "message": "Lock all"
@@ -989,7 +988,7 @@
     "message": "Security"
   },
   "confirmMasterPassword": {
-    "message": "Confirm master password"
+    "message": "Type it again"
   },
   "masterPassword": {
     "message": "Master password"
@@ -2869,10 +2868,10 @@
     "message": "Password history"
   },
   "generatorHistory": {
-    "message": "Generator history"
+    "message": "Generation history"
   },
   "clearGeneratorHistoryTitle": {
-    "message": "Clear generator history"
+    "message": "Clear generation history"
   },
   "clearGeneratorHistoryDescription": {
     "message": "If you continue, all entries will be permanently deleted from generator's history. Are you sure you want to continue?"
@@ -2993,6 +2992,9 @@
         "example": "12"
       }
     }
+  },
+  "itemCountShort": {
+    "message": "items"
   },
   "all": {
     "message": "All"
@@ -4763,7 +4765,7 @@
     "message": "Over 30 days ago"
   },
   "masterPasswordChanged": {
-    "message": "Master password saved"
+    "message": "Last changed 3 days ago"
   },
   "exposedMasterPassword": {
     "message": "Exposed Master Password"
@@ -5261,6 +5263,202 @@
   "addNewLoginItemAria": {
     "message": "Add new vault login item, opens in a new window",
     "description": "Screen reader text (aria-label) for new login button within inline menu"
+  },
+  "inlineMenuAccountCount": {
+    "message": "{count} accounts",
+    "description": "Header badge showing the number of matching accounts in the inline menu"
+  },
+  "inlineMenuSameDomainRecent": {
+    "message": "Same site · most recent first",
+    "description": "Inline menu context line shown when no username filter is active"
+  },
+  "inlineMenuFilterMatch": {
+    "message": "Matches \"{query}\" · {matched} / {total}",
+    "description": "Inline menu context line shown while the username field filters accounts"
+  },
+  "inlineMenuShowAll": {
+    "message": "Show all",
+    "description": "Inline menu link that clears the username filter"
+  },
+  "inlineMenuPasskeysGroup": {
+    "message": "Passkeys",
+    "description": "Heading of the passkey group in the inline menu"
+  },
+  "inlineMenuPasswordsGroup": {
+    "message": "Passwords",
+    "description": "Heading of the password group in the inline menu"
+  },
+  "inlineMenuTotpGroup": {
+    "message": "Verification codes",
+    "description": "Heading of the verification code list in the inline menu"
+  },
+  "inlineMenuKeyboardHint": {
+    "message": "↑↓ select · Enter fill",
+    "description": "Keyboard hint in the inline menu footer"
+  },
+  "inlineMenuTotpKeyboardHint": {
+    "message": "↑↓ select · Enter fill",
+    "description": "Keyboard hint in the verification code menu footer"
+  },
+  "inlineMenuNewLogin": {
+    "message": "New login item",
+    "description": "Button in the inline menu footer that adds a new login item"
+  },
+  "inlineMenuTotpContext": {
+    "message": "Current account {username} first · Fills and copies on selection",
+    "description": "Context line above the verification code list"
+  },
+  "inlineMenuTotpRefreshNote": {
+    "message": "Codes update every 30 seconds",
+    "description": "Note in the verification code menu footer"
+  },
+  "inlineMenuEmptyTitle": {
+    "message": "No matching accounts",
+    "description": "Title shown when the username filter matches nothing"
+  },
+  "inlineMenuEmptyDescription": {
+    "message": "No account matches \"{query}\".",
+    "description": "Description shown when the username filter matches nothing"
+  },
+  "inlineMenuEmptyDescriptionNoQuery": {
+    "message": "No login items saved for this site yet.",
+    "description": "Description shown when no accounts are available"
+  },
+  "inlineMenuShowAllAccounts": {
+    "message": "Show all {count} accounts",
+    "description": "Button that clears the username filter in the empty state"
+  },
+  "inlineMenuCloseAria": {
+    "message": "Close LocalPass menu",
+    "description": "Aria label for the inline menu close button"
+  },
+  "inlineMenuMenuAriaLabel": {
+    "message": "LocalPass login suggestions",
+    "description": "Aria label for the inline login menu dialog"
+  },
+  "inlineMenuTotpMenuAriaLabel": {
+    "message": "LocalPass verification codes",
+    "description": "Aria label for the inline verification code menu dialog"
+  },
+  "inlineMenuPasskey": {
+    "message": "passkey",
+    "description": "Passkey method label in an inline menu account row"
+  },
+  "inlineMenuPassword": {
+    "message": "password",
+    "description": "Password method label in an inline menu account row"
+  },
+  "inlineMenuVerificationCode": {
+    "message": "verification code",
+    "description": "Verification code method label in an inline menu account row"
+  },
+  "inlineMenuLastUsed": {
+    "message": "Last used",
+    "description": "Badge on the most recently used account in the inline menu"
+  },
+  "inlineMenuCurrentAccount": {
+    "message": "Current account",
+    "description": "Badge on the account matching the value typed in the page field"
+  },
+  "inlineMenuFill": {
+    "message": "Fill",
+    "description": "Fill action label in the inline menu"
+  },
+  "inlineMenuTotpFill": {
+    "message": "Fill",
+    "description": "Fill action label on verification code rows in the inline menu"
+  },
+  "inlineMenuVerify": {
+    "message": "Verify",
+    "description": "Passkey verification action label in the inline menu"
+  },
+  "inlineMenuFillPasswordAria": {
+    "message": "Fill password for {username}",
+    "description": "Aria label for filling an account password in the inline menu"
+  },
+  "inlineMenuUsePasskeyAria": {
+    "message": "Use passkey for {username}",
+    "description": "Aria label for using an account passkey in the inline menu"
+  },
+  "inlineMenuTotpFillAria": {
+    "message": "Fill and copy the verification code for {username}",
+    "description": "Aria label for filling an account verification code in the inline menu"
+  },
+  "inlineMenuTotpFilledAria": {
+    "message": "Verification code filled",
+    "description": "Aria label for the verification code filled confirmation card"
+  },
+  "inlineMenuTotpFilledTitle": {
+    "message": "Filled code for {username}",
+    "description": "Title of the verification code filled confirmation card"
+  },
+  "inlineMenuTotpFilledBody": {
+    "message": "Autofilled · Copied to clipboard",
+    "description": "Body of the filled confirmation card when the code was copied"
+  },
+  "inlineMenuTotpFilledBodyNoCopy": {
+    "message": "Autofilled · Filled into the page",
+    "description": "Body of the filled confirmation card when copying is not available"
+  },
+  "inlineMenuTotpCopiedBody": {
+    "message": "Code copied to the clipboard again.",
+    "description": "Body of the filled confirmation card after copying again"
+  },
+  "inlineMenuCopied": {
+    "message": "Copied",
+    "description": "Feedback shown after copying the verification code"
+  },
+  "inlineMenuTotpCopyAria": {
+    "message": "Copy verification code",
+    "description": "Aria label for the copy button on the filled confirmation card"
+  },
+  "inlineMenuTotpRemaining": {
+    "message": "Expires in {seconds} s",
+    "description": "Remaining time of the current verification code"
+  },
+  "inlineMenuSwitchAccount": {
+    "message": "Switch account",
+    "description": "Action on the filled confirmation card that reopens the account list"
+  },
+  "inlineMenuCollapsedPasswordTitle": {
+    "message": "Filled {username}",
+    "description": "Title of the collapsed inline menu chip after filling a password"
+  },
+  "inlineMenuCollapsedPasswordDetail": {
+    "message": "Click to change accounts or view other suggestions",
+    "description": "Detail of the collapsed inline menu chip after filling a password"
+  },
+  "inlineMenuExpand": {
+    "message": "Expand",
+    "description": "Action text on the collapsed inline menu chip"
+  },
+  "inlineMenuExpandAria": {
+    "message": "Expand LocalPass suggestions",
+    "description": "Aria label for the collapsed inline menu chip"
+  },
+  "inlineMenuVerifying": {
+    "message": "Verifying",
+    "description": "Header badge while passkey verification is in progress"
+  },
+  "inlineMenuPasskeyVerifyingTitle": {
+    "message": "Verifying passkey for {username}",
+    "description": "Title of the passkey verification panel"
+  },
+  "inlineMenuPasskeyVerifyingBody": {
+    "message": "Confirm in the system passkey prompt. This menu stays until verification completes.",
+    "description": "Body of the passkey verification panel"
+  },
+  "inlineMenuPasskeyVerifyingMeta": {
+    "message": "{domain} · WebAuthn",
+    "description": "Domain and protocol shown in the passkey verification panel"
+  },
+  "inlineMenuCancel": {
+    "message": "Cancel",
+    "description": "Button that cancels passkey verification in the inline menu"
+  },
+  "inlineMenuPasskeyVerifyingAria": {
+    "message": "Passkey verification in progress",
+    "description": "Aria label for the passkey verification panel"
   },
   "newCard": {
     "message": "New card",
@@ -9528,7 +9726,7 @@
     "message": "This vault lives only on this device. There is no account and no server — nothing you save here ever leaves your computer."
   },
   "createLocalVault": {
-    "message": "Create local vault"
+    "message": "Create vault"
   },
   "createLocalVaultDescription": {
     "message": "Choose an email to identify this vault and a master password to protect it. Both stay on this device, and the password cannot be recovered."
@@ -9567,10 +9765,10 @@
     "message": "Access key ID"
   },
   "backupSecretKey": {
-    "message": "Secret access key"
+    "message": "Secret Key"
   },
   "backupPrefix": {
-    "message": "Key prefix"
+    "message": "Prefix"
   },
   "backupTest": {
     "message": "Test connection"
@@ -9645,10 +9843,10 @@
     "message": "Counter-based (HOTP) accounts skipped"
   },
   "securityKey": {
-    "message": "Security key unlock"
+    "message": "Security key"
   },
   "securityKeyDescription": {
-    "message": "Register a security key or passkey to unlock this vault without typing the master password. The key is bound to this extension: it will not work in another browser or on the desktop."
+    "message": "WebAuthn PRF · local verification only"
   },
   "securityKeyEnroll": {
     "message": "Register a security key"
@@ -9657,7 +9855,7 @@
     "message": "Remove all keys"
   },
   "securityKeyRegistered": {
-    "message": "Registered keys"
+    "message": "Registered"
   },
   "securityKeyEnrolled": {
     "message": "Security key registered"
@@ -9783,10 +9981,10 @@
     "message": "Document number"
   },
   "settingsSubtitle": {
-    "message": "Offline first · no account"
+    "message": "Local vault · fully offline"
   },
   "securitySubtitle": {
-    "message": "Local unlock, nothing phones home"
+    "message": "Unlock and auto-lock"
   },
   "autoLock": {
     "message": "Auto-lock"
@@ -9795,10 +9993,10 @@
     "message": "15 minutes"
   },
   "backupManual": {
-    "message": "Manual only"
+    "message": "Manual"
   },
   "backupTitle": {
-    "message": "Backup"
+    "message": "Cloud backup"
   },
   "exportData": {
     "message": "Export encrypted JSON"
@@ -9828,10 +10026,10 @@
     "message": "30 seconds"
   },
   "touchIdDesktopOnly": {
-    "message": "Touch ID unlock lives in the macOS desktop app: Settings → Security. The extension never asks for it."
+    "message": "The extension has no biometric API; fingerprints only appear in the macOS desktop app settings."
   },
   "backupSubtitle": {
-    "message": "Everything uploads only when you press a button"
+    "message": "Manual sync · encrypted data only"
   },
   "backupManualNotice": {
     "message": "There is no background job: local edits never upload on their own. Restoring, deleting and importing are all local until you press backup or sync."
@@ -9846,19 +10044,19 @@
     "message": "Last backup"
   },
   "backupMode": {
-    "message": "Mode"
+    "message": "Sync mode"
   },
   "backupStorage": {
-    "message": "Storage"
+    "message": "Storage settings"
   },
   "backupAccessKey": {
-    "message": "Access key ID"
+    "message": "Access Key"
   },
   "backupActions": {
     "message": "Actions"
   },
   "backupSaveConfig": {
-    "message": "Save configuration"
+    "message": "Save"
   },
   "backupPassphrase": {
     "message": "Backup passphrase"
@@ -9870,10 +10068,31 @@
     "message": "Restore from backup"
   },
   "restoreSubtitle": {
-    "message": "Account file + snapshot, nothing leaves your machine"
+    "message": "Nothing changes if the restore fails"
   },
   "restoreStart": {
     "message": "Start restore"
+  },
+  "restoreSnapshotsTitle": {
+    "message": "Choose a snapshot"
+  },
+  "restoreSnapshotsHint": {
+    "message": "Snapshots load after you enter your master password."
+  },
+  "restoreNoStorage": {
+    "message": "Connect cloud storage before restoring."
+  },
+  "restoreSelectSnapshot": {
+    "message": "Select a snapshot first."
+  },
+  "restoreSuccess": {
+    "message": "Restored $COUNT$ records",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
   },
   "restoreLoading": {
     "message": "Reading the encrypted snapshot…"
@@ -9897,7 +10116,7 @@
     "message": "Kept remote"
   },
   "generatorSubtitle": {
-    "message": "Pure local generation · click a result to copy"
+    "message": "Passwords are generated on this device"
   },
   "regenerate": {
     "message": "Regenerate"
@@ -9933,7 +10152,7 @@
     "message": "Pick images"
   },
   "importPreviewTitle": {
-    "message": "Accounts found"
+    "message": "Import preview"
   },
   "importDuplicate": {
     "message": "Already in your vault · skipped"
@@ -9972,7 +10191,7 @@
     "message": "Data and safety"
   },
   "dataAndSafetySubtitle": {
-    "message": "Everything lives on this machine"
+    "message": "Local storage"
   },
   "localData": {
     "message": "Local data"
@@ -9990,13 +10209,13 @@
     "message": "Move data"
   },
   "trashHint": {
-    "message": "local only"
+    "message": "Kept for 30 days"
   },
   "dataFileWarning": {
     "message": "Both files sit next to each other in the app data folder. Delete them and the vault is gone — that is why backups are manual and why the rollback copy exists."
   },
   "importSourceSubtitle": {
-    "message": "Pick where it comes from — nothing leaves the machine"
+    "message": "Import from a file into this device"
   },
   "importFeatured": {
     "message": "Recommended sources"
@@ -10026,22 +10245,22 @@
     "message": "Sync failed — the local vault is untouched"
   },
   "createLocalVaultTitle": {
-    "message": "Set a master password"
+    "message": "Create a local vault"
   },
   "createLocalVaultSubtitle": {
-    "message": "No account, no sign-up — this vault lives on this machine"
+    "message": "No account, no sign-up. The master password only decrypts data on this computer."
   },
   "vaultIdentity": {
     "message": "Identity"
   },
   "restoreFromBackup": {
-    "message": "Restore from a backup instead"
+    "message": "Restore from backup"
   },
   "createLocalVaultNote": {
-    "message": "The password you type here is the only key to this vault. Forget it and nothing can open the vault — enable manual backups once you are in."
+    "message": "Fingerprint unlock lives in the macOS desktop app under Settings → Security; the extension itself has no biometric support."
   },
   "unlockSubtitle": {
-    "message": "Your vault is locked — nothing left the machine"
+    "message": "Your data stays on this computer. Open it with one master password."
   },
   "emptyTrash": {
     "message": "Empty trash"
@@ -10050,10 +10269,25 @@
     "message": "This cannot be undone."
   },
   "networkGateSubtitle": {
-    "message": "Only three things may leave this machine"
+    "message": "Blocks all outbound requests by default"
   },
   "networkGateRules": {
     "message": "Rules"
+  },
+  "networkGateRecentBlocked": {
+    "message": "Recently blocked"
+  },
+  "networkGateErrorReporting": {
+    "message": "Error reporting"
+  },
+  "networkGateTelemetry": {
+    "message": "Telemetry"
+  },
+  "networkGateFonts": {
+    "message": "Fonts"
+  },
+  "blockedLabel": {
+    "message": "Blocked"
   },
   "networkGateStorage": {
     "message": "Storage endpoint"
@@ -10071,7 +10305,7 @@
     "message": "Only when you press it"
   },
   "networkGateEverythingElse": {
-    "message": "Everything else"
+    "message": "Default rule"
   },
   "networkGateBlocked": {
     "message": "Blocked"
@@ -10080,7 +10314,7 @@
     "message": "Local"
   },
   "networkGateSentinel": {
-    "message": "Placeholder host, never leaves"
+    "message": "Requests outside the allowlist are always blocked"
   },
   "networkGateNote": {
     "message": "The gate is a pure function with unit tests: it decides allow or block before any request leaves. Nothing else in the app gets to skip it."
@@ -10097,8 +10331,35 @@
   "clearFilters": {
     "message": "Clear filters"
   },
+  "folderCount": {
+    "message": "$COUNT$ folders",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "folderLocalOnlyNotice": {
-    "message": "Folders are stored locally and encrypted with your vault key."
+    "message": "Folders are only a local way to organize items. They are not encrypted or uploaded anywhere."
+  },
+  "openFolder": {
+    "message": "Open folder"
+  },
+  "backToGenerator": {
+    "message": "Back to generator"
+  },
+  "recentGenerated": {
+    "message": "Recently generated"
+  },
+  "historyCount": {
+    "message": "$COUNT$ entries",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   },
   "generatorLocalOnlyNotice": {
     "message": "Passwords are generated on this device and never sent anywhere."
@@ -10110,10 +10371,10 @@
     "message": "License"
   },
   "licenseGpl": {
-    "message": "GPL-3.0"
+    "message": "GPL v3.0"
   },
   "lockVaultHint": {
-    "message": "Lock the vault now; nothing is deleted."
+    "message": "Nothing is deleted"
   },
   "newItemKindNotice": {
     "message": "Choose the kind of item. Fields change to match; everything is encrypted locally."
@@ -10128,7 +10389,7 @@
     "message": "Privacy"
   },
   "privacySummary": {
-    "message": "Offline only"
+    "message": "Never uploads plaintext"
   },
   "primaryNavigation": {
     "message": "Primary navigation"
@@ -10140,13 +10401,13 @@
     "message": "Show value"
   },
   "sourceCode": {
-    "message": "Source code"
+    "message": "Open source"
   },
   "themeOnlyDisplayNotice": {
-    "message": "Theme only changes how LocalPass looks. Your vault data stays the same."
+    "message": "Theme only changes the interface; encryption and storage stay the same."
   },
   "encryptedLocally": {
-    "message": "Encrypted locally"
+    "message": "Encrypted on this device"
   },
   "lockVault": {
     "message": "Lock vault"
@@ -10190,13 +10451,13 @@
     "message": "Use Touch ID on this Mac"
   },
   "themeLightDesc": {
-    "message": "Always use the light theme"
+    "message": "Always use the light interface"
   },
   "themeDarkDesc": {
-    "message": "Best for dark and low-light rooms"
+    "message": "Best for night and low light"
   },
   "themeSystemDesc": {
-    "message": "Follow the system appearance"
+    "message": "Follows macOS appearance automatically"
   },
   "cloneItemName": {
     "message": "Copy of $NAME$",
@@ -10239,7 +10500,7 @@
     "message": "Encrypted JSON"
   },
   "generatorSettingsDesc": {
-    "message": "Passwords, passphrases, and usernames"
+    "message": "Passwords and passphrases"
   },
   "backupSettingsDesc": {
     "message": "Manual sync to storage you own"
@@ -10248,7 +10509,7 @@
     "message": "Blocks unauthorized outbound requests"
   },
   "dataSettingsDesc": {
-    "message": "Local files and wiping the vault"
+    "message": "Local location, clear vault"
   },
   "appVersion": {
     "message": "Version"
@@ -10281,5 +10542,469 @@
   },
   "appearanceSubtitle": {
     "message": "Theme and language"
+  },
+  "accountGroup": {
+    "message": "Account"
+  },
+  "backupPrivacyGroup": {
+    "message": "Backup & privacy"
+  },
+  "favoriteHint": {
+    "message": "Pinned to the top of the list"
+  },
+  "searchVaultPlaceholder": {
+    "message": "Search name, username, or folder"
+  },
+  "emailBackupHint": {
+    "message": "Never uploaded and never used to sign in."
+  },
+  "setupBackupConfirm": {
+    "message": "I understand a forgotten password cannot be recovered, and I will make encrypted backups"
+  },
+  "securityKeyHeroTitle": {
+    "message": "Insert a security key"
+  },
+  "securityKeyHeroText": {
+    "message": "Plug in a registered security key and press the button. The key only unlocks this local vault."
+  },
+  "securityKeyStart": {
+    "message": "Start verification"
+  },
+  "securityKeyFootnote": {
+    "message": "A security key and the master password are two independent unlock paths; either opens the same vault."
+  },
+  "registeredKeysCount": {
+    "message": "$COUNT$ registered",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "pinUnlockDesc": {
+    "message": "Unlock quickly with a 6-digit PIN"
+  },
+  "fingerprintUnlock": {
+    "message": "Fingerprint unlock"
+  },
+  "desktopOnlyMac": {
+    "message": "Only available in the macOS desktop app"
+  },
+  "encryptedBackup": {
+    "message": "Encrypted backups"
+  },
+  "encryptedBackupDesc": {
+    "message": "Manual, never uploaded automatically"
+  },
+  "dataLocation": {
+    "message": "Data location"
+  },
+  "encryptionMethod": {
+    "message": "Encryption"
+  },
+  "encryptionMethodValue": {
+    "message": "AES-256-GCM · local key"
+  },
+  "neverBackedUp": {
+    "message": "No backup yet"
+  },
+  "extensionStorage": {
+    "message": "Browser extension storage"
+  },
+  "exportEncryptedBackup": {
+    "message": "Export encrypted backup"
+  },
+  "exportBeforeClear": {
+    "message": "Export first, then clear"
+  },
+  "dangerZone": {
+    "message": "Danger zone"
+  },
+  "clearVaultDescription": {
+    "message": "Clearing the vault deletes every item on this device and cannot be undone. Old encrypted snapshots in cloud backup are not deleted."
+  },
+  "clearVault": {
+    "message": "Clear vault"
+  },
+  "vaultCleared": {
+    "message": "Vault cleared"
+  },
+  "clearVaultConfirmTitle": {
+    "message": "Clear vault"
+  },
+  "clearVaultConfirmBody": {
+    "message": "This permanently deletes every item in this local vault and cannot be undone. Continue?"
+  },
+  "networkGateCallout": {
+    "message": "Except for the allowlisted addresses below and actions you start yourself, the extension blocks outbound requests. You can verify this in the browser's network panel."
+  },
+  "whitelist": {
+    "message": "Allowlist"
+  },
+  "cloudflareR2": {
+    "message": "Cloudflare R2"
+  },
+  "manualSyncOnly": {
+    "message": "manual sync only"
+  },
+  "breachCheckSub": {
+    "message": "Off by default; turn it on manually"
+  },
+  "recentlyBlocked": {
+    "message": "Recently blocked"
+  },
+  "blocked": {
+    "message": "Blocked"
+  },
+  "blockedSentry": {
+    "message": "sentry.io · error reporting"
+  },
+  "blockedAnalytics": {
+    "message": "google-analytics.com · telemetry"
+  },
+  "blockedCdn": {
+    "message": "cdn.jsdelivr.net · fonts"
+  },
+  "importLocalPassBackup": {
+    "message": "LocalPass encrypted backup"
+  },
+  "importLocalPassBackupSub": {
+    "message": ".json · needs the master password"
+  },
+  "importBitwardenExport": {
+    "message": "Bitwarden encrypted export"
+  },
+  "importBitwardenExportSub": {
+    "message": "Compatible format · .json"
+  },
+  "googleAuthenticator": {
+    "message": "Google Authenticator"
+  },
+  "googleAuthSub": {
+    "message": "Scan a QR code or otpauth-migration"
+  },
+  "dropZoneTitle": {
+    "message": "Drop a file here"
+  },
+  "dropZoneSub": {
+    "message": "or click to choose a file"
+  },
+  "moreSources": {
+    "message": "More sources"
+  },
+  "importFootnote": {
+    "message": "You will preview before anything is written; existing items are never overwritten."
+  },
+  "importPreviewSubtitle": {
+    "message": "Review before writing"
+  },
+  "willImport": {
+    "message": "To import"
+  },
+  "duplicateSkipped": {
+    "message": "Duplicates skipped"
+  },
+  "unrecognized": {
+    "message": "Unrecognized"
+  },
+  "preview": {
+    "message": "Preview"
+  },
+  "importPreviewNote": {
+    "message": "Imported items are encrypted and written to the local vault. Importing makes no network requests."
+  },
+  "importNItems": {
+    "message": "Import $COUNT$ items",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSubtitle": {
+    "message": "Generate encrypted JSON"
+  },
+  "exportWarning": {
+    "message": "The export contains every item, still encrypted. Keep it somewhere safe and never send it through chat apps."
+  },
+  "exportPasswordHint": {
+    "message": "A forgotten password cannot be recovered; use a backup."
+  },
+  "exportFormatEncrypted": {
+    "message": "Encrypted JSON (LocalPass compatible)"
+  },
+  "exportFormatPlain": {
+    "message": "Plain JSON (not recommended)"
+  },
+  "exportFormatLabel": {
+    "message": "Format"
+  },
+  "exportPasswordPlaceholder": {
+    "message": "Confirm it's you"
+  },
+  "exportPlainWarning": {
+    "message": "A plain JSON file contains every item as readable text. Use it only when necessary and move it somewhere safe immediately."
+  },
+  "exportStatsItems": {
+    "message": "Items"
+  },
+  "exportStatsFolders": {
+    "message": "Folders"
+  },
+  "exportStatsTrash": {
+    "message": "Trash"
+  },
+  "exportTrashNote": {
+    "message": "Items in the trash are written to the encrypted export too."
+  },
+  "namePlaceholder": {
+    "message": "Give the item a name"
+  },
+  "totpPlaceholder": {
+    "message": "Base32 secret or otpauth:// link"
+  },
+  "notesPlaceholder": {
+    "message": "Notes only you can see"
+  },
+  "notePlaceholder": {
+    "message": "Recovery codes, config snippets…"
+  },
+  "tokenServicePlaceholder": {
+    "message": "Cloudflare"
+  },
+  "tokenScopePlaceholder": {
+    "message": "Zone:Read, DNS:Edit"
+  },
+  "tokenExpiresPlaceholder": {
+    "message": "2027-03-01"
+  },
+  "tokenEnvPlaceholder": {
+    "message": "Production"
+  },
+  "sshPrivateKeyPlaceholder": {
+    "message": "-----BEGIN OPENSSH PRIVATE KEY-----"
+  },
+  "sshPublicKeyPlaceholder": {
+    "message": "ssh-ed25519 AAAAC3..."
+  },
+  "expMonthPlaceholder": {
+    "message": "MM"
+  },
+  "expYearPlaceholder": {
+    "message": "YY"
+  },
+  "serverProtocolPlaceholder": {
+    "message": "SSH"
+  },
+  "totpQrTitle": {
+    "message": "Authenticator QR code"
+  },
+  "totpQrCardHint": {
+    "message": "Scan it into an authenticator outside LocalPass as a backup device."
+  },
+  "manualEntry": {
+    "message": "Manual entry"
+  },
+  "totpSecret": {
+    "message": "Secret"
+  },
+  "totpQrFootnote": {
+    "message": "Codes change every 30 seconds. LocalPass computes them locally and never goes online."
+  },
+  "unlockForgot": {
+    "message": "Forgot password? Restore from backup"
+  },
+  "unlockNoRecoveryNote": {
+    "message": "There is no password recovery. Without the master password the vault cannot be opened — make backups."
+  },
+  "unlockWaitTitle": {
+    "message": "Try again later"
+  },
+  "unlockWaitText": {
+    "message": "Five wrong attempts in a row, so the form is paused. Your data has not been deleted and you are not logged out."
+  },
+  "unlockWaitRemaining": {
+    "message": "Wait $COUNT$ seconds. You can retry when the countdown ends.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "unlockWaitPlaceholder": {
+    "message": "Waiting…"
+  },
+  "trashRetentionLocal": {
+    "message": "Kept 30 days · local only"
+  },
+  "deletedDaysAgo": {
+    "message": "$COUNT$ days ago",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "trashDaysLeft": {
+    "message": "$COUNT$ days left",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "environmentLabel": {
+    "message": "$ENV$ environment",
+    "placeholders": {
+      "env": {
+        "content": "$1"
+      }
+    }
+  },
+  "lineCount": {
+    "message": "$COUNT$ lines",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "aboutDescription": {
+    "message": "A completely offline password manager. Data lives only on your own computer; there is no account and no server."
+  },
+  "vaultIsEmpty": {
+    "message": "The vault is empty"
+  },
+  "emptyVaultSubtitle": {
+    "message": "No items yet"
+  },
+  "emptyVaultText": {
+    "message": "Create your first login, or import existing data. Everything stays on this computer."
+  },
+  "newItemCta": {
+    "message": "New item"
+  },
+  "unlockTitle": {
+    "message": "Unlock your vault"
+  },
+  "unlockWithSecurityKey": {
+    "message": "Unlock with security key"
+  },
+  "masterPassPlaceholder": {
+    "message": "Enter your master password"
+  },
+  "localVaultEmail": {
+    "message": "Email"
+  },
+  "localVaultEmailOptional": {
+    "message": "Email (optional, used only as a backup hint)"
+  },
+  "setupMasterPassPlaceholder": {
+    "message": "At least 12 characters"
+  },
+  "setupBackupConfirmRequired": {
+    "message": "Confirm that you understand a forgotten password cannot be recovered."
+  },
+  "securitySettings": {
+    "message": "Security settings"
+  },
+  "importLabel": {
+    "message": "Import"
+  },
+  "exportLabel": {
+    "message": "Export"
+  },
+  "removePin": {
+    "message": "Remove PIN"
+  },
+  "removePinConfirmation": {
+    "message": "Remove PIN unlock? The master password will be required next time."
+  },
+  "trashFootnote": {
+    "message": "Clearing the trash cannot be undone. Old encrypted snapshots may still exist in cloud backups."
+  },
+  "forgotPasswordRestore": {
+    "message": "Forgot password? Restore from backup",
+    "description": "Unlock screen: restore entry"
+  },
+  "entropyLabel": {
+    "message": "Strong · about $COUNT$ bits",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "104"
+      }
+    }
+  },
+  "generatorFootnote": {
+    "message": "Passwords never leave this device. The clipboard is cleared 30 seconds after copying — you can change this in Settings."
+  },
+  "passphraseShort": {
+    "message": "Passphrase"
+  },
+  "yesterday": {
+    "message": "Yesterday"
+  },
+  "restoreWarning": {
+    "message": "Restoring overwrites this device's vault with a snapshot. Export your current data first, or make sure the newest snapshot is the one you want."
+  },
+  "restoreFootnote": {
+    "message": "The snapshot and master password are verified before restoring. If any step fails, your current data is left untouched."
+  },
+  "unlockOfflineFootnote": {
+    "message": "Fully offline · no account · AES-256-GCM encrypted"
+  },
+  "pinUnlock": {
+    "message": "PIN unlock"
+  },
+  "backupConfigSubtitle": {
+    "message": "S3 compatible · you own it"
+  },
+  "backupConnect": {
+    "message": "Connection"
+  },
+  "backupExplanation": {
+    "message": "Good to know"
+  },
+  "backupCredentialNote": {
+    "message": "The upload is an encrypted snapshot; the storage provider cannot read it. Credentials stay on this device and are never synced."
+  },
+  "backupKeyNote": {
+    "message": "Use a dedicated key that can only read and write this bucket."
+  },
+  "backupSnapshots": {
+    "message": "Snapshots"
+  },
+  "backupLatestSize": {
+    "message": "Latest size"
+  },
+  "backupLatest": {
+    "message": "Latest"
+  },
+  "backupRecentSnapshots": {
+    "message": "Recent snapshots"
+  },
+  "backupNoSnapshots": {
+    "message": "No snapshots yet"
+  },
+  "backupConnectedR2": {
+    "message": "Connected · Cloudflare R2"
+  },
+  "backupNotConfigured": {
+    "message": "Cloud storage is not configured yet."
+  },
+  "backupConfigPrompt": {
+    "message": "Open settings above to add S3-compatible credentials."
+  },
+  "backupFootnote": {
+    "message": "It only goes online when you press Sync now. Tray and background runs never upload."
+  },
+  "backupLastSyncedAt": {
+    "message": "Last sync: $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
   }
 }

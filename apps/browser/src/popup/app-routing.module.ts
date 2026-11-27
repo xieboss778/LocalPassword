@@ -16,7 +16,6 @@ import {
 } from "@localpass/angular/auth/guards";
 import {
   CreateLocalVaultComponent,
-  LocalVaultStartComponent,
   RestoreVaultV2Component,
 } from "@localpass/angular/auth/local-vault";
 import { LoginViaWebAuthnComponent } from "@localpass/angular/auth/login-via-webauthn/login-via-webauthn.component";
@@ -71,6 +70,7 @@ import { AccountSwitcherComponent } from "../auth/popup/account-switching/accoun
 import { AuthExtensionRoute } from "../auth/popup/constants/auth-extension-route.constant";
 import { fido2AuthGuard } from "../auth/popup/guards/fido2-auth.guard";
 import { platformPopoutGuard } from "../auth/popup/guards/platform-popout.guard";
+import { restoreEntryGuard } from "../auth/popup/guards/restore-entry.guard";
 import { SecurityKeyComponent } from "../auth/popup/security-key/security-key.component";
 import { AccountSecurityComponent } from "../auth/popup/settings/account-security.component";
 import { ChangePasswordPageComponent } from "../auth/popup/settings/change-password-page.component";
@@ -107,6 +107,7 @@ import { ExportBrowserV2Component } from "../tools/popup/settings/export/export-
 import { GoogleAuthImportV2Component } from "../tools/popup/settings/import/google-auth-import-v2.component";
 import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { IMPORT_CONFIRMATION_ROUTE_PATH } from "../tools/popup/settings/import/import-confirmation-state.service";
+import { ImportPreviewV2Component } from "../tools/popup/settings/import/import-preview-v2.component";
 import { ImportShellBrowserComponent } from "../tools/popup/settings/import/import-shell-browser.component";
 import { ImportSourceV2Component } from "../tools/popup/settings/import/import-source-v2.component";
 import { AboutV2Component } from "../tools/popup/settings/localpass/about-v2.component";
@@ -161,6 +162,9 @@ export interface RouteDataProperties extends RouteCacheOptions {
 
   /** Renders a shared desktop page in its 380px popup layout. */
   compact?: boolean;
+
+  /** Which view of a shared settings page to render, e.g. the backup storage form. */
+  backupView?: "config";
 
   /** Lets the shared item form remove passkeys; desktop keeps them read-only. */
   passkeysEditable?: boolean;
@@ -378,6 +382,13 @@ const routes: Routes = [
     data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
+    // LocalPassword：解析后先预览，确认才写入本机保险库。
+    path: "import-preview-v2",
+    component: ImportPreviewV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
+  },
+  {
     path: "import-source-select",
     component: ImportShellBrowserComponent,
     canActivate: [authGuard, importUpgradeRequiredGuard],
@@ -450,6 +461,13 @@ const routes: Routes = [
     data: { elevation: 1 } satisfies RouteDataProperties,
   },
   {
+    // LocalPassword：生成历史是独立二级页，打开时不显示底部导航。
+    path: "generator-history-v2",
+    component: GeneratorHistoryV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 1, compact: true } satisfies RouteDataProperties,
+  },
+  {
     // LocalPassword：方向 C 的安全设置页（扩展里不出现 Touch ID）。
     path: "settings-security-v2",
     component: SecuritySettingsV2Component,
@@ -469,6 +487,13 @@ const routes: Routes = [
     component: BackupSettingsV2Component,
     canActivate: [authGuard],
     data: { elevation: 1, compact: true } satisfies RouteDataProperties,
+  },
+  {
+    // LocalPass: storage configuration for cloud backup, opened from the dashboard.
+    path: "backup-config",
+    component: BackupSettingsV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 1, compact: true, backupView: "config" } satisfies RouteDataProperties,
   },
   {
     path: "autofill",
@@ -639,29 +664,23 @@ const routes: Routes = [
         } satisfies RouteDataProperties,
       },
       {
-        // LocalPass: a vault is created on this device, so the login screen becomes the start
-        // screen. The route keeps its name so the existing guards and redirects keep working.
+        // LocalPass: a vault is created on this device, so the first-run screen is the creation
+        // form itself. The route keeps its name so the existing guards and redirects keep working.
         path: AuthRoute.Login,
         canActivate: [unauthGuardFn(unauthRouteOverrides)],
         data: {
-          pageTitle: {
-            key: "localVaultStartTitle",
-          },
           elevation: 1,
-          hidePageIcon: true,
-          contentVerticalPadding: "compact",
-          footerVerticalPadding: "compact",
-          heroTextAlignment: "left",
-        } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
-        children: [{ path: "", component: LocalVaultStartComponent }],
+        } satisfies RouteDataProperties,
+        children: [{ path: "", redirectTo: `/${AuthRoute.CreateLocalVault}`, pathMatch: "full" }],
       },
       {
         path: "restore-vault",
-        canActivate: [unauthGuardFn(unauthRouteOverrides)],
+        canActivate: [restoreEntryGuard],
         data: {
           pageTitle: {
             key: "restoreVaultFromCloud",
           },
+          hideLayout: true,
           elevation: 1,
           showBackButton: true,
           hidePageIcon: true,
@@ -675,11 +694,12 @@ const routes: Routes = [
           pageTitle: {
             key: "createLocalVault",
           },
+          // The page owns the whole surface: its hero already carries the brand and title.
+          hideLayout: true,
           // After a restore-from-file the popup shows LocalPass's own import picker; the shared
           // route would open the import wizard in a separate tab.
           importRoute: "/import-source-v2",
           elevation: 1,
-          showBackButton: true,
           hidePageIcon: true,
         } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
         children: [{ path: "", component: CreateLocalVaultComponent }],
@@ -806,14 +826,7 @@ const routes: Routes = [
         path: "lock",
         canActivate: [lockGuard()],
         data: {
-          pageIcon: LockIcon,
-          pageTitle: {
-            key: "yourVaultIsLockedV2",
-          },
-          showReadonlyHostname: true,
-          showAcctSwitcher: true,
-          contentVerticalPadding: "compact",
-          footerVerticalPadding: "compact",
+          hideLayout: true,
           elevation: 1,
           /**
            * This ensures that in a passkey flow the `/fido2?<queryParams>` URL does not get
@@ -986,12 +999,6 @@ const routes: Routes = [
       {
         path: "generator",
         component: GeneratorV2Component,
-        canActivate: [authGuard],
-        data: { elevation: 0, compact: true } satisfies RouteDataProperties,
-      },
-      {
-        path: "generator-history-v2",
-        component: GeneratorHistoryV2Component,
         canActivate: [authGuard],
         data: { elevation: 0, compact: true } satisfies RouteDataProperties,
       },

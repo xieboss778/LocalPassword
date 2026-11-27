@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -30,7 +29,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
   imports: [
-    CommonModule,
     JslibModule,
     ButtonModule,
     IconButtonModule,
@@ -71,11 +69,10 @@ import {
             type="button"
             bitButton
             buttonType="secondary"
-            startIcon="bwi-trash"
-            [disabled]="credentials().length === 0"
-            (click)="clear()"
+            startIcon="bwi-angle-left"
+            (click)="goBack()"
           >
-            {{ i18n.t("clearHistory") }}
+            {{ i18n.t("backToGenerator") }}
           </button>
         </lp-page-header>
       }
@@ -97,24 +94,56 @@ import {
           <div
             class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-shadow-sm"
           >
+            @if (!compact()) {
+              <div
+                class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-2.5"
+              >
+                <span class="tw-text-sm tw-font-semibold tw-text-main">{{
+                  i18n.t("recentGenerated")
+                }}</span>
+                <span class="tw-text-xs tw-text-muted">{{
+                  i18n.t("historyCount", credentials().length)
+                }}</span>
+                <span class="tw-flex-1"></span>
+                <button
+                  type="button"
+                  bitButton
+                  buttonType="primaryGhost"
+                  size="small"
+                  class="!tw-text-fg-brand"
+                  data-testid="generator_history_clear"
+                  (click)="clear()"
+                >
+                  {{ i18n.t("clearHistory") }}
+                </button>
+              </div>
+            }
             @for (credential of credentials(); track credential.credential) {
               <div
                 class="tw-flex tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
               >
-                <span
-                  class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-bg-brand-softer tw-text-fg-brand"
-                >
-                  <bit-icon name="bwi-clock" class="tw-text-base"></bit-icon>
-                </span>
+                @if (!compact()) {
+                  <span
+                    class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-bg-brand-softer tw-text-fg-brand"
+                  >
+                    <bit-icon name="bwi-clock" class="tw-text-base"></bit-icon>
+                  </span>
+                }
                 <span class="tw-min-w-0 tw-flex-1">
                   <span class="tw-block tw-break-all tw-font-mono tw-text-sm tw-text-main">{{
                     credential.credential
                   }}</span>
-                  <span class="tw-mt-0.5 tw-block tw-text-xs tw-leading-relaxed tw-text-muted">
-                    {{ credential.generationDate | date: "short" }} ·
-                    {{ labelOf(credential) }}
-                  </span>
+                  @if (!compact()) {
+                    <span class="tw-mt-0.5 tw-block tw-text-xs tw-leading-relaxed tw-text-muted">
+                      {{ displayTime(credential.generationDate) }}
+                    </span>
+                  }
                 </span>
+                @if (compact()) {
+                  <span class="tw-flex-none tw-text-xs tw-text-muted">{{
+                    displayTime(credential.generationDate)
+                  }}</span>
+                }
                 <button
                   type="button"
                   bitIconButton="bwi-copy"
@@ -124,9 +153,11 @@ import {
               </div>
             }
           </div>
-          <p class="tw-px-1 tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
-            {{ i18n.t("generatorHistoryLocalOnly") }}
-          </p>
+          @if (compact()) {
+            <p class="tw-px-1 tw-pt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+              {{ i18n.t("generatorHistoryLocalOnly") }}
+            </p>
+          }
         }
       </div>
     </div>
@@ -134,6 +165,7 @@ import {
 })
 export class GeneratorHistoryV2Component {
   protected readonly i18n = inject(I18nService);
+  private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en" });
   private readonly history = inject(GeneratorHistoryService);
   private readonly accountService = inject(AccountService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
@@ -162,6 +194,40 @@ export class GeneratorHistoryV2Component {
       return this.i18n.t("username");
     }
     return this.i18n.t("password");
+  }
+
+  /** 桌面端历史时间按原型用相对日期；弹窗复用同一格式。 */
+  protected displayTime(date: Date): string {
+    const now = new Date();
+    const time = date.toLocaleTimeString(this.locale().startsWith("zh") ? "zh-CN" : "en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const sameDay =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    if (sameDay) {
+      return `${this.i18n.t("recentlyActiveToday")} ${time}`;
+    }
+
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    if (
+      date.getFullYear() === yesterday.getFullYear() &&
+      date.getMonth() === yesterday.getMonth() &&
+      date.getDate() === yesterday.getDate()
+    ) {
+      return `${this.i18n.t("yesterday")} ${time}`;
+    }
+
+    if (this.locale().startsWith("zh")) {
+      return `${date.getMonth() + 1} 月 ${date.getDate()} 日`;
+    }
+
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   }
 
   protected copy(credential: GeneratedCredential): void {

@@ -1,61 +1,36 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
-import { LpPopupHeaderComponent } from "@localpass/angular/local-ui";
+import { LpPopupHeaderComponent, LpRowComponent } from "@localpass/angular/local-ui";
+import { formatBackupTimestamp } from "@localpass/angular/tools/backup";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { IconModule, LocalPassIcon } from "@localpass/components";
-
-interface FactRow {
-  readonly icon: LocalPassIcon;
-  readonly labelKey: string;
-  readonly value: string;
-}
-
-interface LinkRow {
-  readonly icon: LocalPassIcon;
-  readonly labelKey: string;
-  readonly subKey: string;
-  readonly route: string;
-}
-
-const FACTS: readonly FactRow[] = [
-  { icon: "bwi-file", labelKey: "dataFile", value: "data.json" },
-  { icon: "bwi-files", labelKey: "dataFileBackup", value: "data.json.bak" },
-  { icon: "bwi-lock", labelKey: "dataNetworkFree", value: "enabled" },
-];
-
-const LINKS: readonly LinkRow[] = [
-  {
-    icon: "bwi-download",
-    labelKey: "exportData",
-    subKey: "exportSettingsDesc",
-    route: "/export",
-  },
-  {
-    icon: "bwi-import",
-    labelKey: "importData",
-    subKey: "importSettingsDesc",
-    route: "/import-source-v2",
-  },
-  {
-    icon: "bwi-trash",
-    labelKey: "trash",
-    subKey: "trashHint",
-    route: "/trash",
-  },
-];
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { DialogService } from "@localpass/components";
+import { VaultBackupService } from "@localpass/local-vault";
 
 /**
  * 数据与安全（弹窗）。
  *
- * 这一页只说事实：数据文件在哪、备份文件是什么、导入导出走哪个页面。
- * 不做「一键清空」这种没有第二道确认就不该出现的入口。
+ * 数据位置、加密方式、最近备份都是真实值；最后一段才是危险操作：
+ * 「清空保险库」走 CipherService 逐条删除，并在之前弹二次确认。
  */
 @Component({
   selector: "data-safety-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [IconModule, LpPopupHeaderComponent],
+  imports: [LpPopupHeaderComponent, LpRowComponent],
   template: `
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
@@ -66,78 +41,94 @@ const LINKS: readonly LinkRow[] = [
       ></lp-popup-header>
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
-        <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-py-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("localData") }}
-          </h2>
+        <section class="tw-pb-2 tw-pt-1">
           <div
             class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
           >
-            @for (fact of facts; track fact.labelKey) {
-              <div
-                class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-px-3 tw-py-2.5 last:tw-border-b-0"
-              >
-                <span
-                  class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
-                >
-                  <bit-icon [name]="fact.icon" class="tw-text-base"></bit-icon>
-                </span>
-                <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main">{{
-                  i18n.t(fact.labelKey)
-                }}</span>
-                <span class="tw-max-w-40 tw-truncate tw-font-mono tw-text-xs tw-text-muted">{{
-                  fact.labelKey === "dataNetworkFree" ? i18n.t("enabled") : fact.value
-                }}</span>
-              </div>
-            }
+            <lp-row
+              icon="bwi-folder"
+              [label]="i18n.t('dataLocation')"
+              [sub]="i18n.t('extensionStorage')"
+              [clickable]="false"
+            />
+            <lp-row
+              icon="bwi-shield"
+              [label]="i18n.t('encryptionMethod')"
+              [sub]="i18n.t('encryptionMethodValue')"
+              [clickable]="false"
+            />
+            <lp-row
+              icon="bwi-download"
+              [label]="i18n.t('lastBackup')"
+              [sub]="lastBackupText()"
+              [clickable]="false"
+            />
           </div>
         </section>
 
         <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-py-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("dataMove") }}
-          </h2>
           <div
             class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
           >
-            @for (row of links; track row.labelKey) {
-              <button
-                type="button"
-                class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-px-3 tw-py-2.5 tw-text-start last:tw-border-b-0 hover:tw-bg-background-alt"
-                (click)="go(row.route)"
-              >
-                <span
-                  class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
-                >
-                  <bit-icon [name]="row.icon" class="tw-text-base"></bit-icon>
-                </span>
-                <span class="tw-min-w-0 tw-flex-1">
-                  <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                    i18n.t(row.labelKey)
-                  }}</span>
-                  <span class="tw-block tw-truncate tw-text-xs tw-leading-relaxed tw-text-muted">{{
-                    i18n.t(row.subKey)
-                  }}</span>
-                </span>
-                <bit-icon name="bwi-angle-right" class="tw-text-sm tw-text-muted"></bit-icon>
-              </button>
-            }
+            <lp-row
+              icon="bwi-download"
+              [label]="i18n.t('exportEncryptedBackup')"
+              [sub]="i18n.t('exportBeforeClear')"
+              [chevron]="true"
+              [clickable]="true"
+              (activated)="go('/export')"
+            />
           </div>
         </section>
 
-        <p class="tw-px-2.5 tw-pt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
-          {{ i18n.t("dataFileWarning") }}
-        </p>
+        <section class="tw-pt-2">
+          <div
+            class="tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-p-4"
+          >
+            <div class="tw-text-sm tw-font-semibold tw-text-fg-danger-strong">
+              {{ i18n.t("dangerZone") }}
+            </div>
+            <p class="tw-m-0 tw-pt-1 tw-text-xs tw-leading-relaxed tw-text-muted">
+              {{ i18n.t("clearVaultDescription") }}
+            </p>
+            <button
+              id="data-safety_button_clear-vault"
+              type="button"
+              class="tw-mt-3 tw-flex tw-h-9 tw-w-full tw-items-center tw-justify-center tw-rounded-lg tw-bg-background tw-text-sm tw-font-semibold tw-text-fg-danger-strong tw-transition-colors hover:tw-bg-bg-danger-soft focus-visible:tw-outline-none focus-visible:tw-ring-2 focus-visible:tw-ring-border-danger disabled:tw-opacity-60"
+              [disabled]="clearing()"
+              [attr.aria-busy]="clearing()"
+              (click)="clearVault()"
+            >
+              {{ i18n.t("clearVault") }}
+            </button>
+          </div>
+        </section>
       </div>
     </div>
   `,
 })
-export class DataSafetyV2Component {
+export class DataSafetyV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
+  private readonly accountService = inject(AccountService);
+  private readonly cipherService = inject(CipherService);
+  private readonly backupService = inject(VaultBackupService);
+  private readonly dialogService = inject(DialogService);
+  private readonly platformUtilsService = inject(PlatformUtilsService);
+  private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en-US" });
 
-  protected readonly facts = FACTS;
-  protected readonly links = LINKS;
+  protected readonly lastBackupAt = signal<string | null>(null);
+  protected readonly clearing = signal(false);
+
+  protected readonly lastBackupText = computed(() =>
+    formatBackupTimestamp(this.lastBackupAt(), this.locale(), this.i18n),
+  );
+
+  async ngOnInit(): Promise<void> {
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+    const settings = await this.backupService.getSettings(userId);
+    this.lastBackupAt.set(settings.lastBackupAt);
+  }
 
   protected back(): void {
     void this.router.navigateByUrl("/tabs/settings");
@@ -145,5 +136,35 @@ export class DataSafetyV2Component {
 
   protected go(route: string): void {
     void this.router.navigateByUrl(route);
+  }
+
+  protected async clearVault(): Promise<void> {
+    if (this.clearing()) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "clearVaultConfirmTitle" },
+      content: { key: "clearVaultConfirmBody" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.clearing.set(true);
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      const ciphers = await this.cipherService.getAll(userId);
+      const ids = ciphers.map((cipher) => cipher.id).filter((id): id is string => id != null);
+      if (ids.length > 0) {
+        await this.cipherService.deleteManyWithServer(ids, userId);
+      }
+      this.platformUtilsService.showToast("success", "", this.i18n.t("vaultCleared"));
+    } catch {
+      this.platformUtilsService.showToast("error", "", this.i18n.t("errorOccurred"));
+    } finally {
+      this.clearing.set(false);
+    }
   }
 }

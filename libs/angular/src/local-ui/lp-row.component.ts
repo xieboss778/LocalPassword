@@ -17,7 +17,14 @@ import { LpToastService } from "./lp-toast.service";
   imports: [IconComponent],
   host: {
     class:
-      "tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0 tw-transition-colors hover:tw-bg-bg-hover",
+      "tw-flex tw-items-center tw-gap-3 tw-transition-colors hover:tw-bg-bg-hover last:tw-border-b-0",
+    "[class.tw-min-h-12]": "!dense()",
+    "[class.tw-border-b]": "!dense() && divider()",
+    "[class.tw-border-border-light]": "!dense()",
+    "[class.tw-px-4]": "!dense()",
+    "[class.tw-py-3]": "!dense()",
+    "[class.tw-px-2.5]": "dense()",
+    "[class.tw-py-2]": "dense()",
     "[class.tw-cursor-pointer]": "copyValue() || clickable()",
     "[class.tw-cursor-default]": "!copyValue() && !clickable()",
     "[class.tw-bg-bg-success-soft]": "copied()",
@@ -31,7 +38,7 @@ import { LpToastService } from "./lp-toast.service";
   template: `
     @if (icon()) {
       <span
-        class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-bg-brand-softer tw-text-fg-brand"
+        class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
       >
         <bit-icon [name]="icon()" class="tw-text-base"></bit-icon>
       </span>
@@ -48,7 +55,7 @@ import { LpToastService } from "./lp-toast.service";
 
     @if (value()) {
       <span
-        class="tw-max-w-28 tw-truncate tw-text-end tw-text-sm tw-text-muted"
+        class="tw-max-w-56 tw-truncate tw-text-end tw-text-sm tw-text-muted"
         [class.tw-text-fg-brand]="brand()"
         [class.tw-font-mono]="mono()"
         [attr.title]="value()"
@@ -59,8 +66,8 @@ import { LpToastService } from "./lp-toast.service";
     @if (toggle() !== undefined) {
       <span
         class="tw-relative tw-h-5 tw-w-9 tw-flex-none tw-rounded-full tw-transition-colors"
-        [class.tw-bg-bg-success]="toggle()"
-        [class.tw-bg-bg-gray-strong]="!toggle()"
+        [class.tw-bg-bg-brand]="toggle()"
+        [class.tw-bg-bg-gray]="!toggle()"
         role="switch"
         [attr.aria-checked]="toggle()"
       >
@@ -98,6 +105,10 @@ export class LpRowComponent {
   readonly copyValue = input<string>("");
   readonly copyLabel = input<string>("");
   readonly clickable = input(false);
+  /** 紧凑布局：无分隔线、行高随内容，用于生成器选项这类连续开关。 */
+  readonly dense = input(false);
+  /** 连续开关组不画分隔线，但保留桌面端的常规行高。 */
+  readonly divider = input(true);
 
   readonly activated = output<void>();
   readonly copiedValue = output<string>();

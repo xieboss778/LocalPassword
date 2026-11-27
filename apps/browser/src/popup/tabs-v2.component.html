@@ -9,9 +9,10 @@
   >
     <a
       routerLink="/tabs/vault"
-      routerLinkActive="tw-text-fg-brand tw-font-semibold tw-bg-bg-brand-softer"
+      routerLinkActive="tw-text-fg-brand tw-font-semibold"
       #vaultLink="routerLinkActive"
-      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs tw-text-muted hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
+      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
+      [class.tw-text-muted]="!vaultLink.isActive"
       [attr.aria-current]="vaultLink.isActive ? 'page' : null"
     >
       <bit-icon name="bwi-vault" class="tw-text-lg"></bit-icon>
@@ -20,9 +21,10 @@
 
     <a
       routerLink="/tabs/generator"
-      routerLinkActive="tw-text-fg-brand tw-font-semibold tw-bg-bg-brand-softer"
+      routerLinkActive="tw-text-fg-brand tw-font-semibold"
       #generatorLink="routerLinkActive"
-      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs tw-text-muted hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
+      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
+      [class.tw-text-muted]="!generatorLink.isActive"
       [attr.aria-current]="generatorLink.isActive ? 'page' : null"
     >
       <bit-icon name="bwi-generate" class="tw-text-lg"></bit-icon>
@@ -31,9 +33,10 @@
 
     <a
       routerLink="/tabs/settings"
-      routerLinkActive="tw-text-fg-brand tw-font-semibold tw-bg-bg-brand-softer"
+      routerLinkActive="tw-text-fg-brand tw-font-semibold"
       #settingsLink="routerLinkActive"
-      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs tw-text-muted hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
+      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
+      [class.tw-text-muted]="!settingsLink.isActive"
       [attr.aria-current]="settingsLink.isActive ? 'page' : null"
     >
       <bit-icon name="bwi-settings" class="tw-text-lg"></bit-icon>

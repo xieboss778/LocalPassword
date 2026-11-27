@@ -96,6 +96,7 @@ import {
             @for (field of group.fields; track field.id) {
               <lp-field
                 [label]="i18n.t(field.labelKey)"
+                [placeholder]="placeholder(field)"
                 [password]="!!field.password"
                 [multiline]="!!field.multiline"
                 [mono]="isMono(field)"
@@ -117,6 +118,7 @@ import {
               ></lp-field>
               <lp-row
                 [label]="i18n.t('favorite')"
+                [sub]="i18n.t('favoriteHint')"
                 [toggle]="favorite()"
                 [clickable]="true"
                 (activated)="favorite.set(!favorite())"
@@ -178,7 +180,7 @@ import {
         >
           {{ i18n.t("save") }}
         </button>
-        <button type="button" bitButton buttonType="secondary" (click)="cancel()">
+        <button type="button" bitButton buttonType="secondary" class="tw-flex-1" (click)="cancel()">
           {{ i18n.t("cancel") }}
         </button>
       </div>
@@ -257,15 +259,18 @@ export class ItemFormV2Component implements OnInit {
     );
 
     const cipherId = params["cipherId"] as string | undefined;
-    if (!cipherId) {
+    const cloneFrom = params["cloneFrom"] as string | undefined;
+    const sourceId = cipherId ?? cloneFrom;
+    if (!sourceId) {
       this.values.set({});
       return;
     }
 
-    const cipher = await this.cipherService.get(cipherId, userId);
+    const cipher = await this.cipherService.get(sourceId, userId);
     const view = await this.cipherService.decrypt(cipher, userId);
-    this.original.set(view);
-    this.isEditing.set(true);
+    // 克隆以「新建」对待：读完源条目的字段后不保留 original，保存时 createWithServer。
+    this.original.set(cloneFrom ? null : view);
+    this.isEditing.set(!cloneFrom);
     if (!isItemKind(kind)) {
       this.kind.set(kindOf(view));
     }
@@ -275,7 +280,7 @@ export class ItemFormV2Component implements OnInit {
         newCustomFieldDraft(field.name, field.value, field.hidden),
       ),
     );
-    this.passkeys.set(view.login?.fido2Credentials ?? []);
+    this.passkeys.set(cloneFrom ? [] : (view.login?.fido2Credentials ?? []));
     this.folderId.set(view.folderId ?? "");
     this.favorite.set(view.favorite);
     this.reprompt.set(view.reprompt !== CipherRepromptType.None);
@@ -303,6 +308,12 @@ export class ItemFormV2Component implements OnInit {
       field.target === "loginUri" ||
       field.target === "loginUri2"
     );
+  }
+
+  /** 原型里的字段级 placeholder；字段定义在共享包里，界面文案留在这里。 */
+  protected placeholder(field: FieldSpec): string {
+    const key = placeholderKey(this.kind(), field.id);
+    return key ? this.i18n.t(key) : "";
   }
 
   protected async removePasskey(): Promise<void> {
@@ -350,4 +361,26 @@ export class ItemFormV2Component implements OnInit {
       this.saving.set(false);
     }
   }
+}
+
+/** 字段 id → 原型里的占位文案；没有占位的字段留空。 */
+const FIELD_PLACEHOLDERS: Readonly<Record<string, string>> = Object.freeze({
+  name: "namePlaceholder",
+  totp: "totpPlaceholder",
+  service: "tokenServicePlaceholder",
+  scope: "tokenScopePlaceholder",
+  expires: "tokenExpiresPlaceholder",
+  env: "tokenEnvPlaceholder",
+  privateKey: "sshPrivateKeyPlaceholder",
+  publicKey: "sshPublicKeyPlaceholder",
+  expMonth: "expMonthPlaceholder",
+  expYear: "expYearPlaceholder",
+  protocol: "serverProtocolPlaceholder",
+});
+
+function placeholderKey(kind: ItemKind, fieldId: string): string | undefined {
+  if (fieldId === "notes") {
+    return kind === ItemKind.Note ? "notePlaceholder" : "notesPlaceholder";
+  }
+  return FIELD_PLACEHOLDERS[fieldId];
 }

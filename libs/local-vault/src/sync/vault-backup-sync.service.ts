@@ -1,6 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
 import { UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
 import { FolderData } from "@localpass/common/vault/models/data/folder.data";
 import { ENCRYPTED_CIPHERS } from "@localpass/common/vault/services/key-state/ciphers.state";
@@ -97,13 +98,36 @@ export class VaultBackupSyncService {
   ) {}
 
   async getConfig(userId: UserId): Promise<VaultBackupConfig | null> {
-    const stored = await firstValueFrom(this.configState(userId).state$);
-    if (stored == null) {
+    const userKey = await firstValueFrom(this.keyService.userKey$(userId));
+    if (userKey == null) {
       return null;
     }
 
-    const userKey = await firstValueFrom(this.keyService.userKey$(userId));
-    if (userKey == null) {
+    return this.getConfigWithUserKey(userId, userKey);
+  }
+
+  /**
+   * Whether storage has been configured for this vault, without decrypting anything.
+   *
+   * Used by the restore screen while the vault is still locked: it can show the saved
+   * snapshot flow without the user key, then decrypt the storage secret only after the
+   * master password has been entered.
+   */
+  async hasConfig(userId: UserId): Promise<boolean> {
+    const stored = await firstValueFrom(this.configState(userId).state$);
+    return stored != null;
+  }
+
+  /**
+   * Decrypts the storage secret with a caller-supplied user key.
+   *
+   * The restore screen derives this key from the entered master password so a locked
+   * vault can still read its configured bucket. The key is only used to unwrap the
+   * storage secret; callers must not persist it.
+   */
+  async getConfigWithUserKey(userId: UserId, userKey: UserKey): Promise<VaultBackupConfig | null> {
+    const stored = await firstValueFrom(this.configState(userId).state$);
+    if (stored == null) {
       return null;
     }
 
@@ -166,7 +190,16 @@ export class VaultBackupSyncService {
   /** An S3 client for the configured storage, or null when sync is not configured yet. */
   async clientFor(userId: UserId): Promise<S3Client | null> {
     const config = await this.getConfig(userId);
-    return config == null ? null : this.clientFactory(config);
+    return config == null ? null : this.clientFactory(this.scopeToUser(config, userId));
+  }
+
+  /**
+   * Nests every object under the active user's id so two local vaults sharing one bucket
+   * cannot read or merge each other's snapshots.
+   */
+  private scopeToUser(config: VaultBackupConfig, userId: UserId): VaultBackupConfig {
+    const prefix = config.prefix?.replace(/^\/+|\/+$/g, "");
+    return { ...config, prefix: prefix ? `${prefix}/${userId}` : userId };
   }
 
   /** Pulls the remote snapshot, merges it in, then pushes the merged result back. */
@@ -179,7 +212,7 @@ export class VaultBackupSyncService {
       };
     }
 
-    const client = this.clientFactory(config);
+    const client = this.clientFactory(this.scopeToUser(config, userId));
     const pulled = await this.pull(userId, client);
     const pushResult = await this.push(userId, client);
 
@@ -359,7 +392,7 @@ export class VaultBackupSyncService {
     if (config == null) {
       throw new Error("Cloud sync is not configured for this vault.");
     }
-    return this.clientFactory(config);
+    return this.clientFactory(this.scopeToUser(config, userId));
   }
 
   private ciphersState(userId: UserId) {

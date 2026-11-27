@@ -6,6 +6,7 @@ export type { CustomFieldDraft } from "./lp-custom-fields.component";
 export { LpFieldComponent } from "./lp-field.component";
 export type { LpFieldOption } from "./lp-field.component";
 export { LpGroupComponent } from "./lp-group.component";
+export { LpHeroComponent } from "./lp-hero.component";
 export { LpKindTileComponent } from "./lp-kind-tile.component";
 export { LpPageHeaderComponent } from "./lp-page-header.component";
 export { LpPopupHeaderComponent } from "./lp-popup-header.component";

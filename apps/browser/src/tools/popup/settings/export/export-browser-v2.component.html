@@ -1,33 +1,90 @@
-<popup-page>
-  <popup-header slot="header" [pageTitle]="'exportNoun' | i18n" showBackButton>
-    <ng-container slot="end">
-      <app-pop-out></app-pop-out>
-    </ng-container>
-  </popup-header>
+<div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+  <lp-popup-header
+    [title]="i18n.t('exportLabel')"
+    [sub]="i18n.t('exportSubtitle')"
+    [back]="true"
+    (backTriggered)="back()"
+  ></lp-popup-header>
 
-  <tools-export
-    [defaultFormat]="'encrypted_json'"
-    [defaultFileEncrypted]="true"
-    (formDisabled)="this.disabled = $event"
-    (formLoading)="this.loading = $event"
-    (onSuccessfulExport)="this.onSuccessfulExport($event)"
-    (skippedAttachmentCountChange)="this.skippedAttachmentCount.set($event)"
-  ></tools-export>
+  <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-pb-6">
+    <div class="tw-px-3.5 tw-pt-3">
+      <div
+        class="tw-flex tw-items-start tw-gap-2 tw-rounded-xl tw-border tw-border-border-warning-soft tw-bg-bg-warning-soft tw-p-3 tw-text-xs tw-leading-relaxed tw-text-main"
+      >
+        <bit-icon name="bwi-exclamation-triangle" class="tw-mt-0.5 tw-text-fg-warning"></bit-icon>
+        <span>{{ warning() }}</span>
+      </div>
+    </div>
 
-  <popup-footer slot="footer">
-    <button
-      [disabled]="disabled"
-      [loading]="loading"
-      form="export_form_exportForm"
-      bitButton
-      type="submit"
-      bitFormButton
-      buttonType="primary"
-    >
-      {{ "exportVerb" | i18n }}
-    </button>
-    <button bitButton type="button" buttonType="secondary" [popupBackAction]>
-      {{ "cancel" | i18n }}
-    </button>
-  </popup-footer>
-</popup-page>
+    @if (encrypted()) {
+      <div class="tw-pt-1">
+        <lp-field
+          id="export_input_password"
+          [label]="i18n.t('masterPass')"
+          [placeholder]="i18n.t('exportPasswordPlaceholder')"
+          [hint]="i18n.t('exportPasswordHint')"
+          [password]="true"
+          [autocomplete]="'new-password'"
+          [(value)]="password"
+        ></lp-field>
+      </div>
+    }
+
+    <div class="tw-pt-1">
+      <lp-field
+        id="export_select_format"
+        [label]="i18n.t('exportFormatLabel')"
+        [options]="formatOptions"
+        [(value)]="formatValue"
+      ></lp-field>
+    </div>
+
+    <div class="tw-px-3.5 tw-pt-2">
+      <button
+        id="export-button_submit"
+        type="button"
+        bitButton
+        buttonType="primary"
+        block
+        [disabled]="busy()"
+        [loading]="busy()"
+        (click)="exportNow()"
+      >
+        {{ i18n.t("exportVerb") }}
+      </button>
+
+      @if (error()) {
+        <div
+          class="tw-mt-2 tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-p-3 tw-text-xs tw-leading-relaxed tw-text-fg-danger-strong"
+        >
+          {{ error() }}
+        </div>
+      }
+
+      <div class="tw-grid tw-grid-cols-3 tw-gap-2 tw-pt-3">
+        <div
+          class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2.5 tw-text-start"
+        >
+          <div class="tw-text-lg tw-font-semibold tw-text-main">{{ itemCount() }}</div>
+          <div class="tw-text-xs tw-text-muted">{{ i18n.t("exportStatsItems") }}</div>
+        </div>
+        <div
+          class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2.5 tw-text-start"
+        >
+          <div class="tw-text-lg tw-font-semibold tw-text-main">{{ folderCount() }}</div>
+          <div class="tw-text-xs tw-text-muted">{{ i18n.t("exportStatsFolders") }}</div>
+        </div>
+        <div
+          class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2.5 tw-text-start"
+        >
+          <div class="tw-text-lg tw-font-semibold tw-text-main">{{ trashCount() }}</div>
+          <div class="tw-text-xs tw-text-muted">{{ i18n.t("exportStatsTrash") }}</div>
+        </div>
+      </div>
+
+      <p class="tw-px-1 tw-pt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+        {{ i18n.t("exportTrashNote") }}
+      </p>
+    </div>
+  </div>
+</div>

@@ -357,6 +357,20 @@ describe("AutofillOverlayContentService", () => {
 
           expect(sendExtensionMessageSpy).toHaveBeenCalledWith("checkAutofillInlineMenuFocused");
         });
+
+        it("skips the focus check while its own fill is blurring the field", () => {
+          autofillOverlayContentService.beginInlineMenuFillConfirmation();
+          autofillFieldElement.dispatchEvent(new Event("blur"));
+          autofillOverlayContentService.endInlineMenuFillConfirmation();
+
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith(
+            "checkAutofillInlineMenuFocused",
+          );
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith(
+            "updateIsFieldCurrentlyFocused",
+            { isFieldCurrentlyFocused: false },
+          );
+        });
       });
 
       describe("form field keyup event listener", () => {
@@ -528,7 +542,7 @@ describe("AutofillOverlayContentService", () => {
           );
         });
 
-        it("Closes the inline menu list and does not re-open the inline menu if the field has a value", async () => {
+        it("keeps the inline menu open and sends the filter value while typing in a username field", async () => {
           (autofillFieldElement as HTMLInputElement).value = "test";
 
           await autofillOverlayContentService.setupOverlayListeners(
@@ -539,14 +553,20 @@ describe("AutofillOverlayContentService", () => {
           autofillFieldElement.dispatchEvent(new Event("input"));
           await flushPromises();
 
-          expect(sendExtensionMessageSpy).toHaveBeenCalledWith("closeAutofillInlineMenu", {
-            overlayElement: AutofillOverlayElement.List,
-            forceCloseInlineMenu: true,
-          });
+          expect(sendExtensionMessageSpy).toHaveBeenCalledWith(
+            "updateFocusedFieldData",
+            expect.objectContaining({
+              focusedFieldData: expect.objectContaining({ focusedFieldValue: "test" }),
+            }),
+          );
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith(
+            "closeAutofillInlineMenu",
+            expect.objectContaining({ overlayElement: AutofillOverlayElement.List }),
+          );
           expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith("openAutofillInlineMenu");
         });
 
-        it("opens the inline menu if the field does not have a value", async () => {
+        it("sends an empty filter value while typing in an empty username field", async () => {
           await autofillOverlayContentService.setupOverlayListeners(
             autofillFieldElement,
             autofillFieldData,
@@ -555,7 +575,82 @@ describe("AutofillOverlayContentService", () => {
           autofillFieldElement.dispatchEvent(new Event("input"));
           await flushPromises();
 
-          expect(sendExtensionMessageSpy).toHaveBeenCalledWith("openAutofillInlineMenu");
+          expect(sendExtensionMessageSpy).toHaveBeenCalledWith(
+            "updateFocusedFieldData",
+            expect.objectContaining({
+              focusedFieldData: expect.objectContaining({ focusedFieldValue: "" }),
+            }),
+          );
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith("closeAutofillInlineMenu", {
+            overlayElement: AutofillOverlayElement.List,
+            forceCloseInlineMenu: true,
+          });
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith("openAutofillInlineMenu");
+        });
+
+        it("closes the inline menu while typing in a password field", async () => {
+          const passwordFieldElement = document.getElementById(
+            "password-field",
+          ) as ElementWithOpId<FormFieldElement>;
+          (passwordFieldElement as HTMLInputElement).value = "a password";
+
+          await autofillOverlayContentService.setupOverlayListeners(
+            passwordFieldElement,
+            pageDetailsMock.fields[1],
+            pageDetailsMock,
+          );
+          passwordFieldElement.dispatchEvent(new Event("input"));
+          await flushPromises();
+
+          expect(sendExtensionMessageSpy).toHaveBeenCalledWith("closeAutofillInlineMenu", {
+            overlayElement: AutofillOverlayElement.List,
+            forceCloseInlineMenu: true,
+          });
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith("openAutofillInlineMenu");
+        });
+
+        it("keeps the inline menu mounted while its own fill is raising input events", async () => {
+          const passwordFieldElement = document.getElementById(
+            "password-field",
+          ) as ElementWithOpId<FormFieldElement>;
+          (passwordFieldElement as HTMLInputElement).value = "a filled password";
+
+          await autofillOverlayContentService.setupOverlayListeners(
+            passwordFieldElement,
+            pageDetailsMock.fields[1],
+            pageDetailsMock,
+          );
+          autofillOverlayContentService.beginInlineMenuFillConfirmation();
+          passwordFieldElement.dispatchEvent(new Event("input"));
+          await flushPromises();
+
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith("closeAutofillInlineMenu", {
+            overlayElement: AutofillOverlayElement.List,
+            forceCloseInlineMenu: true,
+          });
+          expect(sendExtensionMessageSpy).not.toHaveBeenCalledWith("openAutofillInlineMenu");
+        });
+
+        it("restores close-on-input behavior once the fill confirmation ends", async () => {
+          const passwordFieldElement = document.getElementById(
+            "password-field",
+          ) as ElementWithOpId<FormFieldElement>;
+          (passwordFieldElement as HTMLInputElement).value = "a typed password";
+
+          await autofillOverlayContentService.setupOverlayListeners(
+            passwordFieldElement,
+            pageDetailsMock.fields[1],
+            pageDetailsMock,
+          );
+          autofillOverlayContentService.beginInlineMenuFillConfirmation();
+          autofillOverlayContentService.endInlineMenuFillConfirmation();
+          passwordFieldElement.dispatchEvent(new Event("input"));
+          await flushPromises();
+
+          expect(sendExtensionMessageSpy).toHaveBeenCalledWith("closeAutofillInlineMenu", {
+            overlayElement: AutofillOverlayElement.List,
+            forceCloseInlineMenu: true,
+          });
         });
 
         describe("input changes on a field filled by a card cipher", () => {

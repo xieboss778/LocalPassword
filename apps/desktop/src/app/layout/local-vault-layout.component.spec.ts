@@ -32,12 +32,12 @@ describe("LocalVaultLayoutComponent", () => {
     }).compileComponents();
   });
 
-  it("renders the LocalPass wordmark instead of the upstream logo", () => {
+  it("renders the local vault wordmark instead of the upstream logo", () => {
     const fixture = TestBed.createComponent(LocalVaultLayoutComponent);
     fixture.detectChanges();
 
     const nav = fixture.nativeElement.querySelector("nav") as HTMLElement;
-    expect(nav.textContent).toContain("LocalPass");
+    expect(nav.textContent).toContain("localVault");
     expect(nav.querySelector("bit-svg[aria-label]")).not.toBeNull();
   });
 

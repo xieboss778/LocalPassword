@@ -5,6 +5,7 @@ import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
+import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { FakeStateProvider, mockAccountServiceWith } from "@localpass/common/spec";
 import { UserId } from "@localpass/common/types/guid";
 import {
@@ -48,6 +49,7 @@ describe("ImportDestinationBrowserComponent", () => {
           useValue: new FakeStateProvider(mockAccountServiceWith("user-1" as UserId)),
         },
         { provide: Router, useValue: router },
+        { provide: I18nService, useValue: mock<I18nService>() },
         { provide: ImportStagingServiceAbstraction, useValue: stagingService },
         {
           provide: ActivatedRoute,

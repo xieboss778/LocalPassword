@@ -113,6 +113,7 @@
     {
       matchPackageNames: [
         "@angular-eslint/schematics",
+        "@angular-eslint/template-parser",
         "@eslint/compat",
         "@typescript-eslint/rule-tester",
         "@typescript-eslint/utils",
@@ -289,7 +290,9 @@
     },
     {
       matchPackageNames: [
+        "@angular-devkit/architect",
         "@angular-devkit/build-angular",
+        "@angular-devkit/core",
         "@angular/animations",
         "@angular/cdk",
         "@angular/cli",
@@ -425,6 +428,7 @@
     {
       matchPackageNames: [
         "@angular-eslint/schematics",
+        "@angular-eslint/template-parser",
         "@eslint/compat",
         "@typescript-eslint/rule-tester",
         "@typescript-eslint/utils",

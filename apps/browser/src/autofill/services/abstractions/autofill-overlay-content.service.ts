@@ -55,6 +55,10 @@ export interface AutofillOverlayContentService extends AutofillMonitor {
     pageDetails: AutofillPageDetails,
   ): Promise<void>;
   blurMostRecentlyFocusedField(isClosingInlineMenu?: boolean): void;
+  /** Keeps the inline menu list mounted while a fill it started updates the page. */
+  beginInlineMenuFillConfirmation(): void;
+  /** Ends the post-fill window and restores the normal close-on-input behavior. */
+  endInlineMenuFillConfirmation(): void;
   isElementInlineMenu(element: Element): boolean;
   getUnownedTopLayerItems(includeCandidates?: boolean): Element[] | undefined;
   refreshMenuLayerPosition(): void;

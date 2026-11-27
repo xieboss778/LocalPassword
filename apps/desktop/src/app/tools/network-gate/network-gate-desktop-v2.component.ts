@@ -1,24 +1,30 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import {
-  LpGroupComponent,
-  LpPageHeaderComponent,
-  LpRowComponent,
-} from "@localpass/angular/local-ui";
+import { LpPageHeaderComponent, LpRowComponent } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { IconModule, LocalPassIcon } from "@localpass/components";
+import { IconModule } from "@localpass/components";
 import { VaultBackupSyncService } from "@localpass/local-vault";
 
-interface RuleRow {
-  readonly icon: LocalPassIcon;
-  readonly labelKey: string;
-  readonly sub: string;
-  readonly value: string;
-  readonly allowed: boolean;
+interface BlockedHost {
+  readonly host: string;
+  readonly categoryKey: string;
 }
+
+const RECENT_BLOCKED: readonly BlockedHost[] = [
+  { host: "sentry.io", categoryKey: "networkGateErrorReporting" },
+  { host: "google-analytics.com", categoryKey: "networkGateTelemetry" },
+  { host: "cdn.jsdelivr.net", categoryKey: "networkGateFonts" },
+];
 
 /**
  * 桌面端网络闸门（只读说明页）。
@@ -29,7 +35,7 @@ interface RuleRow {
   selector: "network-gate-desktop-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [IconModule, LpGroupComponent, LpPageHeaderComponent, LpRowComponent],
+  imports: [IconModule, LpPageHeaderComponent, LpRowComponent],
   template: `
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
       <lp-page-header
@@ -37,56 +43,56 @@ interface RuleRow {
         [sub]="i18n.t('networkGateSubtitle')"
       ></lp-page-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-pb-7">
-        <div class="tw-mx-4">
-          <div
-            class="tw-flex tw-items-start tw-gap-2 tw-rounded-xl tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-p-3 tw-text-xs tw-leading-relaxed tw-text-main"
-          >
-            <bit-icon name="bwi-shield" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
-            <span>{{ i18n.t("networkGateNote") }}</span>
-          </div>
+      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-7 tw-pb-7">
+        <div
+          class="tw-flex tw-items-start tw-gap-2.5 tw-rounded-xl tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-p-3.5 tw-text-sm tw-leading-relaxed tw-text-main"
+        >
+          <bit-icon name="bwi-shield" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
+          <span>{{ i18n.t("networkGateIntro") }}</span>
         </div>
 
-        <lp-group [label]="i18n.t('networkGateRules')">
-          @for (row of rules(); track row.labelKey) {
-            <div
-              class="tw-flex tw-items-start tw-gap-2.5 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
-            >
-              <span
-                class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-bg-brand-softer tw-text-fg-brand"
-              >
-                <bit-icon [name]="row.icon" class="tw-text-base"></bit-icon>
-              </span>
-              <span class="tw-min-w-0 tw-flex-1">
-                <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t(row.labelKey) }}</span>
-                @if (row.sub) {
-                  <span class="tw-mt-0.5 tw-block tw-text-xs tw-leading-relaxed tw-text-muted">{{
-                    row.sub
-                  }}</span>
-                }
-              </span>
-              <span
-                class="tw-inline-flex tw-flex-none tw-items-center tw-rounded-full tw-px-2 tw-py-0.5 tw-text-xs tw-font-medium"
-                [class.tw-bg-bg-success-soft]="row.allowed"
-                [class.tw-text-fg-success]="row.allowed"
-                [class.tw-bg-bg-danger-soft]="!row.allowed"
-                [class.tw-text-fg-danger]="!row.allowed"
-              >
-                {{ row.value }}
-              </span>
-            </div>
-          }
-        </lp-group>
-
-        <lp-group [label]="i18n.t('networkGateLocal')">
+        <div class="tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+          {{ i18n.t("networkGateAllowlist") }}
+        </div>
+        <div
+          class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+        >
           <lp-row
-            icon="bwi-lock"
-            [label]="i18n.t('networkGateSentinel')"
-            [value]="sentinel"
-            [mono]="true"
+            [label]="i18n.t('networkGateStorage')"
+            [sub]="storageSub()"
+            [toggle]="true"
             [clickable]="false"
           ></lp-row>
-        </lp-group>
+          <lp-row
+            [label]="i18n.t('networkGateBreach')"
+            [sub]="i18n.t('networkGateBreachDefaultOff')"
+            [toggle]="false"
+            [clickable]="false"
+          ></lp-row>
+        </div>
+
+        <div class="tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+          {{ i18n.t("networkGateRecentBlocked") }}
+        </div>
+        <div
+          class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+        >
+          @for (entry of blocked; track entry.host) {
+            <div
+              class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+            >
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="tw-block tw-truncate tw-text-sm tw-text-main">{{ entry.host }}</span>
+                <span class="tw-block tw-text-xs tw-text-muted"
+                  >{{ i18n.t(entry.categoryKey) }} · {{ i18n.t("blockedLabel") }}</span
+                >
+              </span>
+              <span class="tw-text-xs tw-text-muted">{{
+                i18n.t("networkGateBlockedTimes", 0)
+              }}</span>
+            </div>
+          }
+        </div>
       </div>
     </div>
   `,
@@ -96,36 +102,18 @@ export class NetworkGateDesktopV2Component implements OnInit {
   private readonly syncService = inject(VaultBackupSyncService);
   private readonly accountService = inject(AccountService);
 
-  protected readonly sentinel = "vault.local.invalid";
-  protected readonly rules = signal<readonly RuleRow[]>([]);
+  protected readonly blocked = RECENT_BLOCKED;
+  protected readonly storageHost = signal("");
+
+  protected readonly storageSub = computed(() => {
+    const host = this.storageHost() || this.i18n.t("networkGateNotConfigured");
+    return `${host} · ${this.i18n.t("networkGateOnlyManualSync")}`;
+  });
 
   async ngOnInit(): Promise<void> {
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
     const config = await this.syncService.getConfig(userId);
-    const host = hostOf(config?.endpoint ?? "");
-    this.rules.set([
-      {
-        icon: "bwi-download",
-        labelKey: "networkGateStorage",
-        sub: host || this.i18n.t("networkGateNotConfigured"),
-        value: this.i18n.t("networkGateAllowed"),
-        allowed: true,
-      },
-      {
-        icon: "bwi-search",
-        labelKey: "networkGateBreach",
-        sub: this.i18n.t("networkGateUserInitiated"),
-        value: this.i18n.t("networkGateUserInitiated"),
-        allowed: true,
-      },
-      {
-        icon: "bwi-globe",
-        labelKey: "networkGateEverythingElse",
-        sub: "",
-        value: this.i18n.t("networkGateBlocked"),
-        allowed: false,
-      },
-    ]);
+    this.storageHost.set(hostOf(config?.endpoint ?? ""));
   }
 }
 

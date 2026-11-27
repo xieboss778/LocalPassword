@@ -32,6 +32,12 @@ export interface AutoFillOptions {
   focusedFieldForm?: string;
   focusedFieldOpid?: string;
   inlineMenuFillType?: InlineMenuFillType;
+  /**
+   * Keep the inline menu list open after a fill that started from the list itself. The list
+   * renders its own post-fill confirmation (a TOTP card or a collapsed password chip) instead of
+   * being torn down with the field blur that a normal fill performs.
+   */
+  retainInlineMenu?: boolean;
 }
 
 interface FormDataBase {

@@ -68,7 +68,7 @@ describe("ImportSourceSelectDesktopComponent", () => {
       .query(By.css("importer-source-select"))
       .triggerEventHandler("continue", "keeper");
 
-    expect(router.navigate).toHaveBeenCalledWith(["/import", "keeper"]);
+    expect(router.navigate).toHaveBeenCalledWith(["/import/all", "keeper"]);
   });
 
   it("keeps the vault scope in the URL when the picker emits continue", async () => {
@@ -82,7 +82,7 @@ describe("ImportSourceSelectDesktopComponent", () => {
       .query(By.css("importer-source-select"))
       .triggerEventHandler("continue", "keeper");
 
-    expect(router.navigate).toHaveBeenCalledWith(["/import", "keeper"], {
+    expect(router.navigate).toHaveBeenCalledWith(["/import/all", "keeper"], {
       queryParams: scopeQuery,
     });
   });

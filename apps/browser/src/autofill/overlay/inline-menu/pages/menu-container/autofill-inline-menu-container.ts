@@ -18,6 +18,8 @@ const ALLOWED_BG_COMMANDS = new Set<string>([
   "autofillInlineMenuButtonClicked",
   "checkAutofillInlineMenuButtonFocused",
   "checkInlineMenuButtonFocused",
+  "copyInlineMenuTotp",
+  "cancelInlineMenuPasskey",
   "fillAutofillInlineMenuCipher",
   "fillGeneratedPassword",
   "redirectAutofillInlineMenuFocusOut",
@@ -155,8 +157,22 @@ export class AutofillInlineMenuContainer {
    */
   private setupPortMessageListener = (message: InitAutofillInlineMenuElementMessage) => {
     this.port = chrome.runtime.connect({ name: this.portName });
+    this.port.onMessage.addListener(this.handleBackgroundPortMessage);
     const initMessage = { ...message, token: this.token };
     this.postMessageToInlineMenuPageUnsafe(initMessage);
+  };
+
+  /**
+   * Forwards background UI commands to the iframe with the session token attached. Background
+   * messages sent directly through the iframe port are handled by the iframe service; commands
+   * addressed to the menu page itself must carry the container's token.
+   */
+  private handleBackgroundPortMessage = (message: AutofillInlineMenuContainerPortMessage) => {
+    if (!message?.command || message.command.startsWith("initAutofillInlineMenu")) {
+      return;
+    }
+
+    this.postMessageToInlineMenuPage(message);
   };
 
   /**

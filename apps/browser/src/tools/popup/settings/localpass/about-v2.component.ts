@@ -7,10 +7,11 @@ import {
   LpPopupHeaderComponent,
   LpRowComponent,
 } from "@localpass/angular/local-ui";
-import { LocalPassLogo } from "@localpass/assets/svg";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
-import { SvgModule } from "@localpass/components";
+import { DialogService } from "@localpass/components";
+
+import { BrowserApi } from "../../../../platform/browser/browser-api";
 
 /**
  * 关于：版本、隐私、许可证与源码地址。链接只在用户点击时才交给系统浏览器。
@@ -19,7 +20,7 @@ import { SvgModule } from "@localpass/components";
   selector: "about-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [JslibModule, SvgModule, LpGroupComponent, LpPopupHeaderComponent, LpRowComponent],
+  imports: [JslibModule, LpGroupComponent, LpPopupHeaderComponent, LpRowComponent],
   template: `
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
@@ -31,44 +32,44 @@ import { SvgModule } from "@localpass/components";
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
         <div
-          class="tw-flex tw-items-center tw-gap-4 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-4"
+          class="tw-flex tw-flex-col tw-items-center tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5 tw-text-center"
         >
-          <bit-svg
-            class="tw-size-12 tw-flex-none"
-            [content]="logo"
-            [ariaLabel]="i18n.t('appLogoLabel')"
-          ></bit-svg>
-          <div class="tw-min-w-0">
-            <div class="tw-text-lg tw-font-semibold tw-text-main">LocalPass</div>
-            <div class="tw-text-sm tw-text-muted">{{ i18n.t("appVersion") }} {{ version() }}</div>
+          <img [src]="logoUrl" alt="" class="tw-size-14 tw-rounded-xl" aria-hidden="true" />
+          <div class="tw-pt-3 tw-text-xl tw-font-semibold tw-text-main">LocalPass</div>
+          <div class="tw-pt-0.5 tw-text-xs tw-text-muted">
+            {{ i18n.t("appVersion") }} {{ version() }}
           </div>
+          <p class="tw-m-0 tw-pt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
+            {{ i18n.t("aboutDescription") }}
+          </p>
         </div>
 
-        <lp-group [label]="i18n.t('about')">
+        <lp-group class="tw-pt-3">
           <lp-row
             icon="bwi-shield"
             [label]="i18n.t('privacy')"
-            [value]="i18n.t('privacySummary')"
-            [clickable]="false"
+            [sub]="i18n.t('privacySummary')"
+            [chevron]="true"
+            [clickable]="true"
+            (activated)="showPrivacy()"
           ></lp-row>
           <lp-row
             icon="bwi-file-text"
             [label]="i18n.t('license')"
-            [value]="i18n.t('licenseGpl')"
-            [clickable]="false"
+            [sub]="i18n.t('licenseGpl')"
+            [chevron]="true"
+            [clickable]="true"
+            (activated)="showLicense()"
           ></lp-row>
           <lp-row
             icon="bwi-external-link"
             [label]="i18n.t('sourceCode')"
-            [value]="sourceUrl"
+            [sub]="sourceUrl"
+            [chevron]="true"
             [clickable]="true"
             (activated)="openSource()"
           ></lp-row>
         </lp-group>
-
-        <p class="tw-px-0.5 tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
-          {{ i18n.t("aboutOfflineNotice") }}
-        </p>
       </div>
     </div>
   `,
@@ -76,10 +77,11 @@ import { SvgModule } from "@localpass/components";
 export class AboutV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
+  private readonly dialogService = inject(DialogService);
   private readonly router = inject(Router);
 
-  protected readonly logo = LocalPassLogo;
   protected readonly sourceUrl = "github.com/xieboss778/LocalPass";
+  protected readonly logoUrl = BrowserApi.getRuntimeURL("images/icon128.png");
   protected readonly version = signal("");
 
   async ngOnInit(): Promise<void> {
@@ -88,6 +90,24 @@ export class AboutV2Component implements OnInit {
 
   protected openSource(): void {
     this.platformUtilsService.launchUri("https://github.com/xieboss778/LocalPass");
+  }
+
+  protected showPrivacy(): void {
+    void this.dialogService.openSimpleDialog({
+      title: { key: "privacy" },
+      content: this.i18n.t("aboutOfflineNotice"),
+      acceptButtonText: { key: "ok" },
+      type: "info",
+    });
+  }
+
+  protected showLicense(): void {
+    void this.dialogService.openSimpleDialog({
+      title: { key: "license" },
+      content: this.i18n.t("licenseGpl"),
+      acceptButtonText: { key: "ok" },
+      type: "info",
+    });
   }
 
   protected back(): void {

@@ -1,9 +1,12 @@
 import {
   BehaviorSubject,
+  catchError,
   concatMap,
   debounceTime,
+  EMPTY,
   filter,
   firstValueFrom,
+  from,
   map,
   merge,
   Observable,
@@ -180,6 +183,12 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private allFieldData: AutofillField[] = [];
   private isFieldCurrentlyFocused: boolean = false;
   private isFieldCurrentlyFilling: boolean = false;
+  /**
+   * Deadline until which focus leaving the list iframe must not close the menu. A fill started
+   * from the list moves focus back to the page to write the field; without this window the
+   * iframe blur would tear the menu down before its post-fill confirmation renders.
+   */
+  private inlineMenuFillConfirmationUntil = 0;
   private isInlineMenuButtonVisible: boolean = false;
   private isInlineMenuListVisible: boolean = false;
   private showPasskeysLabelsWithinInlineMenu: boolean = false;
@@ -252,6 +261,8 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     autofillInlineMenuBlurred: ({ port }) => this.checkInlineMenuButtonFocused(port.sender),
     unlockVault: ({ port }) => this.unlockVault(port),
     fillAutofillInlineMenuCipher: ({ message, port }) => this.fillInlineMenuCipher(message, port),
+    copyInlineMenuTotp: ({ message, port }) => this.copyInlineMenuTotp(message, port),
+    cancelInlineMenuPasskey: ({ port }) => this.cancelInlineMenuPasskey(port),
     addNewVaultItem: ({ message, port }) => this.getNewVaultItemDetails(message, port),
     viewSelectedCipher: ({ message, port }) => this.viewSelectedCipher(message, port),
     redirectAutofillInlineMenuFocusOut: ({ message, port }) =>
@@ -344,7 +355,14 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       .pipe(
         throttleTime(100, undefined, { leading: true, trailing: true }),
         switchMap((updateOverlayCiphersParams) =>
-          this.handleOverlayCiphersUpdate(updateOverlayCiphersParams),
+          // One failed update must not unsubscribe this stream; the menu would then stop
+          // refreshing for the rest of the service worker's life.
+          from(this.handleOverlayCiphersUpdate(updateOverlayCiphersParams)).pipe(
+            catchError((error: unknown) => {
+              this.logService.error(error);
+              return EMPTY;
+            }),
+          ),
         ),
       )
       .subscribe();
@@ -408,6 +426,51 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         this.clearCachedTargetedPageDetails();
         void this.broadcastTargetingRulesCacheInvalidation();
       });
+
+    // The vault can be unlocked or locked from a context other than this one, most often the
+    // popup. An inline menu that was already on the page keeps the ciphers it was built with,
+    // so refresh it on an unlock and tear it down on a lock instead of leaving stale data
+    // behind.
+    this.authService.activeAccountStatus$.pipe(pairwise()).subscribe(([previous, current]) => {
+      if (previous === current) {
+        return;
+      }
+
+      if (current === AuthenticationStatus.Unlocked) {
+        this.updateOverlayCiphers(true).catch((error) => this.logService.error(error));
+        return;
+      }
+
+      if (previous === AuthenticationStatus.Unlocked) {
+        this.closeInlineMenusForLockedVault().catch((error) => this.logService.error(error));
+      }
+    });
+  }
+
+  /**
+   * Drops every decrypted cipher the inline menu holds and removes the menu from any page it is
+   * open on. The removed iframes disconnect their ports, so the next menu open is built from the
+   * vault's current, locked state.
+   */
+  private async closeInlineMenusForLockedVault(): Promise<void> {
+    this.inlineMenuCiphers = new Map();
+    this.cardAndIdentityCiphers = null;
+    this.inlineMenuFido2Credentials.clear();
+
+    const tabIds = Object.keys(this.portKeyForTab).map((tabId) => Number(tabId));
+    await Promise.all(
+      tabIds.map(async (tabId) => {
+        const tab = await BrowserApi.getTab(tabId);
+        if (!tab) {
+          return;
+        }
+        await BrowserApi.tabSendMessage(
+          tab,
+          { command: "closeAutofillInlineMenu" },
+          { frameId: 0 },
+        ).catch((error) => this.logService.error(error));
+      }),
+    );
   }
 
   /**
@@ -427,7 +490,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     this.clearGeneratedPassword$.next();
-    this.focusedFieldData = null;
+    // The focused field belongs to one tab. Closing any other tab must not wipe it, or the next
+    // cipher refresh for the tab the user is actually on produces an empty inline menu.
+    if (this.focusedFieldData?.tabId === tabId) {
+      this.focusedFieldData = null;
+    }
   }
 
   /**
@@ -529,9 +596,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     const ciphersViews = await this.getCipherViews(currentTab, updateAllCipherTypes);
-    for (let cipherIndex = 0; cipherIndex < ciphersViews.length; cipherIndex++) {
-      this.inlineMenuCiphers.set(`inline-menu-cipher-${cipherIndex}`, ciphersViews[cipherIndex]);
-    }
+    this.cacheInlineMenuCiphers(ciphersViews);
 
     await this.updateInlineMenuListCiphers(currentTab);
 
@@ -541,18 +606,43 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   }
 
   /**
+   * Loads the decrypted ciphers for the tab into the inline menu cache. Used when the menu is
+   * built before a cipher update has run, e.g. a menu opened on a page that was already up when
+   * the vault was unlocked.
+   *
+   * @param tab - The tab the menu is shown in
+   */
+  private async loadInlineMenuCipherCache(tab: chrome.tabs.Tab): Promise<void> {
+    this.cacheInlineMenuCiphers(await this.getCipherViews(tab, true));
+  }
+
+  /**
+   * Replaces the inline menu cache with the passed decrypted ciphers, keyed by their list index.
+   */
+  private cacheInlineMenuCiphers(cipherViews: CipherView[]) {
+    this.inlineMenuCiphers = new Map(
+      cipherViews.map((cipherView, index): [string, CipherView] => [
+        `inline-menu-cipher-${index}`,
+        cipherView,
+      ]),
+    );
+  }
+
+  /**
    * Updates the inline menu list's ciphers and sends the updated list to the inline menu list iframe.
    *
    * @param tab - The current tab
    */
   private async updateInlineMenuListCiphers(tab: chrome.tabs.Tab) {
     const ciphers = await this.getInlineMenuCipherData();
-    this.postMessageToPort(this.inlineMenuListPort, {
+    this.postMessageToInlineMenuListPage({
       command: "updateAutofillInlineMenuListCiphers",
       ciphers,
       showInlineMenuAccountCreation: this.shouldShowInlineMenuAccountCreation(),
       showPasskeysLabels: this.showPasskeysLabelsWithinInlineMenu,
       focusedFieldHasValue: await this.checkFocusedFieldHasValue(tab),
+      focusedFieldValue: this.focusedFieldData?.focusedFieldValue ?? "",
+      isTotpField: this.isTotpFieldForCurrentField(),
     });
   }
 
@@ -909,6 +999,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         totp: totpResponse?.code,
         totpField: this.isTotpFieldForCurrentField(),
         totpCodeTimeInterval: totpResponse?.period,
+        // Whether a password exists is derived from the decrypted login; the value itself never
+        // leaves the background script. Passkey and password entries share it so an account
+        // offering both methods appears in both groups.
+        hasPassword: !!cipher.login.password,
         passkey:
           hasPasskey && rpName !== undefined && userName !== undefined
             ? { rpName, userName }
@@ -1502,6 +1596,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       );
     }
 
+    // The fill moves focus back to the page to write the fields. Keep the list mounted through
+    // that blur so it can render its own post-fill confirmation.
+    this.inlineMenuFillConfirmationUntil = Date.now() + 1500;
+
     const result = await this.autofillOrchestrator.fillCipher({
       tab,
       cipher,
@@ -1511,16 +1609,33 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       focusedFieldForm: this.focusedFieldData?.focusedFieldForm,
       focusedFieldOpid: this.focusedFieldData?.focusedFieldOpid,
       inlineMenuFillType: this.focusedFieldData?.inlineMenuFillType,
+      // The fill was chosen from the list: let it stay mounted to show the TOTP card or
+      // collapsed password chip instead of being closed with the field blur.
+      retainInlineMenu: true,
     });
 
     // A denial terminates the request.
     if (!didFillOccur(result)) {
+      this.postMessageToInlineMenuListPage({
+        command: "inlineMenuCipherFilled",
+        inlineMenuCipherId,
+        didFill: false,
+      });
       return;
     }
 
-    if (shouldAutoCopyTotp(result)) {
+    const canAutoCopyTotp = shouldAutoCopyTotp(result);
+    if (canAutoCopyTotp) {
       this.platformUtilsService.copyToClipboard(result.totp);
     }
+
+    this.postMessageToInlineMenuListPage({
+      command: "inlineMenuCipherFilled",
+      inlineMenuCipherId,
+      didFill: result.outcome === AutofillOutcome.Filled,
+      filledTotp: result.totp,
+      canAutoCopyTotp,
+    });
 
     // Last-used records a credential the user actually placed, so an attempt that filled nothing
     // leaves the ordering alone.
@@ -1529,6 +1644,44 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     this.updateLastUsedInlineMenuCipher(inlineMenuCipherId, cipher);
+  }
+
+  /**
+   * Copies the current TOTP code for an inline menu cipher. The code never travels through the
+   * iframe; only the inline menu cipher id is sent.
+   */
+  private async copyInlineMenuTotp(
+    { inlineMenuCipherId }: OverlayPortMessage,
+    { sender }: chrome.runtime.Port,
+  ) {
+    if (!inlineMenuCipherId || !sender || !this.senderHasValidTab(sender)) {
+      return;
+    }
+
+    const cipher = this.inlineMenuCiphers.get(inlineMenuCipherId);
+    if (!cipher?.login?.totp) {
+      return;
+    }
+
+    const totpResponse = await firstValueFrom(this.totpService.getCode$(cipher.login.totp));
+    if (totpResponse?.code) {
+      this.platformUtilsService.copyToClipboard(totpResponse.code);
+      return;
+    }
+
+    this.logService.error("Failed to get TOTP code for inline menu cipher");
+  }
+
+  /**
+   * Cancels a passkey authentication started from the inline menu, returning the list to its
+   * suggestions state.
+   */
+  private async cancelInlineMenuPasskey({ sender }: chrome.runtime.Port) {
+    if (!sender || !this.senderHasValidTab(sender)) {
+      return;
+    }
+
+    await this.abortFido2ActiveRequest(sender.tab.id);
   }
 
   /**
@@ -1627,6 +1780,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * if it is open, otherwise it will check the inline menu button.
    */
   private checkInlineMenuFocused(sender: chrome.runtime.MessageSender) {
+    if (Date.now() < this.inlineMenuFillConfirmationUntil) {
+      return;
+    }
+
     if (!this.senderTabHasFocusedField(sender)) {
       return;
     }
@@ -1646,6 +1803,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param sender - The sender of the port message
    */
   private checkInlineMenuButtonFocused(sender: chrome.runtime.MessageSender) {
+    if (Date.now() < this.inlineMenuFillConfirmationUntil) {
+      return;
+    }
+
     if (!this.inlineMenuButtonPort) {
       this.closeInlineMenu(sender, { forceCloseInlineMenu: true });
       return;
@@ -1660,7 +1821,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * Posts a message to the inline menu list iframe to check if it is focused.
    */
   private checkInlineMenuListFocused() {
-    this.postMessageToPort(this.inlineMenuListPort, {
+    this.postMessageToInlineMenuListPage({
       command: "checkAutofillInlineMenuListFocused",
     });
   }
@@ -2123,6 +2284,15 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
+    if (
+      this.isInlineMenuListVisible &&
+      focusedFieldData.inlineMenuFillType === CipherType.Login &&
+      previousFocusedFieldData?.focusedFieldValue !== focusedFieldData.focusedFieldValue
+    ) {
+      this.updateOverlayCiphers(false).catch((error) => this.logService.error(error));
+      return;
+    }
+
     if (this.shouldUpdateAccountCreationMenuOnFieldFocus(previousFocusedFieldData)) {
       this.updateInlineMenuAccountCreationDataOnFocus(previousFocusedFieldData, sender).catch(
         (error) => this.logService.error(error),
@@ -2239,7 +2409,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * is shown after a field is filled with a generated password.
    */
   private showSaveLoginInlineMenuList() {
-    this.postMessageToPort(this.inlineMenuListPort, { command: "showSaveLoginInlineMenuList" });
+    this.postMessageToInlineMenuListPage({ command: "showSaveLoginInlineMenuList" });
   }
 
   /**
@@ -2261,7 +2431,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         type: Type.password,
       });
       const generatedPassword = await this.waitForNextCredential();
-      this.postMessageToPort(this.inlineMenuListPort, {
+      this.postMessageToInlineMenuListPage({
         command: "updateAutofillInlineMenuGeneratedPassword",
         generatedPassword,
         refreshPassword,
@@ -2269,7 +2439,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
-    this.postMessageToPort(this.inlineMenuListPort, {
+    this.postMessageToInlineMenuListPage({
       command: "updateAutofillInlineMenuGeneratedPassword",
       generatedPassword: this.credential$.value,
       refreshPassword,
@@ -2652,7 +2822,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * Facilitates redirecting focus to the inline menu list.
    */
   private focusInlineMenuList() {
-    this.postMessageToPort(this.inlineMenuListPort, { command: "focusAutofillInlineMenuList" });
+    this.postMessageToInlineMenuListPage({ command: "focusAutofillInlineMenuList" });
   }
 
   /**
@@ -2697,6 +2867,55 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "fillVerificationCode",
         "fillVerificationCodeAria",
         "generatedPassword",
+        "inlineMenuAccountCount",
+        "inlineMenuCancel",
+        "inlineMenuCloseAria",
+        "inlineMenuCollapsedPasswordDetail",
+        "inlineMenuCollapsedPasswordTitle",
+        "inlineMenuCopied",
+        "inlineMenuCurrentAccount",
+        "inlineMenuEmptyDescription",
+        "inlineMenuEmptyDescriptionNoQuery",
+        "inlineMenuEmptyTitle",
+        "inlineMenuExpand",
+        "inlineMenuExpandAria",
+        "inlineMenuFill",
+        "inlineMenuFillPasswordAria",
+        "inlineMenuFilterMatch",
+        "inlineMenuKeyboardHint",
+        "inlineMenuLastUsed",
+        "inlineMenuMenuAriaLabel",
+        "inlineMenuNewLogin",
+        "inlineMenuPasskey",
+        "inlineMenuPasskeyVerifyingAria",
+        "inlineMenuPasskeyVerifyingBody",
+        "inlineMenuPasskeyVerifyingMeta",
+        "inlineMenuPasskeyVerifyingTitle",
+        "inlineMenuPasskeysGroup",
+        "inlineMenuPassword",
+        "inlineMenuPasswordsGroup",
+        "inlineMenuSameDomainRecent",
+        "inlineMenuShowAll",
+        "inlineMenuShowAllAccounts",
+        "inlineMenuSwitchAccount",
+        "inlineMenuTotpContext",
+        "inlineMenuTotpCopiedBody",
+        "inlineMenuTotpCopyAria",
+        "inlineMenuTotpFilledAria",
+        "inlineMenuTotpFilledBody",
+        "inlineMenuTotpFilledBodyNoCopy",
+        "inlineMenuTotpFilledTitle",
+        "inlineMenuTotpFill",
+        "inlineMenuTotpFillAria",
+        "inlineMenuTotpGroup",
+        "inlineMenuTotpKeyboardHint",
+        "inlineMenuTotpMenuAriaLabel",
+        "inlineMenuTotpRefreshNote",
+        "inlineMenuTotpRemaining",
+        "inlineMenuUsePasskeyAria",
+        "inlineMenuVerificationCode",
+        "inlineMenuVerify",
+        "inlineMenuVerifying",
         "lowercaseAriaLabel",
         "logInWithPasskeyAriaLabel",
         "newCard",
@@ -3545,6 +3764,15 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     port.onDisconnect.addListener(this.handlePortOnDisconnect);
 
     const authStatus = await this.getAuthStatus();
+    // A menu opened for the first time on an already-unlocked page has no ciphers cached yet;
+    // load them before the iframe initializes instead of showing an empty account list.
+    if (
+      isInlineMenuListPort &&
+      authStatus === AuthenticationStatus.Unlocked &&
+      this.inlineMenuCiphers.size === 0
+    ) {
+      await this.loadInlineMenuCipherCache(port.sender.tab);
+    }
     const showInlineMenuAccountCreation = this.shouldShowInlineMenuAccountCreation();
     const showInlineMenuPasswordGenerator = await this.shouldInitInlineMenuPasswordGenerator(
       authStatus,
@@ -3589,6 +3817,13 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       useLitComponents: isInlineMenuListPort
         ? await firstValueFrom(this.useLitInlineMenuComponents$)
         : undefined,
+      domain: isInlineMenuListPort
+        ? Utils.getHostname(port.sender.tab.url ?? "") || port.sender.tab.url || ""
+        : undefined,
+      focusedFieldValue: isInlineMenuListPort
+        ? (this.focusedFieldData?.focusedFieldValue ?? "")
+        : undefined,
+      isTotpField: isInlineMenuListPort ? this.isTotpFieldForCurrentField() : undefined,
     });
     if (port.sender) {
       this.updateInlineMenuPosition(
@@ -3616,6 +3851,18 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       this.logService.error(error);
     }
   };
+
+  /**
+   * Posts a UI message to the inline menu list page.
+   *
+   * The direct iframe port is kept for capabilities handled by the iframe service. The
+   * ListMessageConnector port additionally delivers the message through the menu container, which
+   * attaches the session token the list page requires before accepting UI commands.
+   */
+  private postMessageToInlineMenuListPage(message: Record<string, any>) {
+    this.postMessageToPort(this.inlineMenuListPort, message);
+    this.postMessageToPort(this.inlineMenuListMessageConnectorPort, message);
+  }
 
   /**
    * Stores the connected overlay port and sets up any existing ports to be disconnected.

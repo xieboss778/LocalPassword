@@ -1,5 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
 import { ActivatedRoute, Params, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -15,7 +22,9 @@ import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
-import { TotpQrComponent } from "@localpass/vault";
+import { PasswordRepromptService, TotpQrComponent } from "@localpass/vault";
+
+import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils";
 
 /**
  * 动态口令二维码（方向 C）。
@@ -40,15 +49,15 @@ import { TotpQrComponent } from "@localpass/vault";
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       @if (compact()) {
         <lp-popup-header
-          [title]="cipher()?.name ?? ''"
-          [sub]="i18n.t('totpQrSubtitle')"
+          [title]="i18n.t('totpQrTitle')"
+          [sub]="cipher()?.name ?? ''"
           [back]="true"
           (backTriggered)="goBack()"
         ></lp-popup-header>
       } @else {
         <lp-page-header
-          [title]="cipher()?.name ?? ''"
-          [sub]="i18n.t('totpQrSubtitle')"
+          [title]="i18n.t('totpQrTitle')"
+          [sub]="cipher()?.name ?? ''"
         ></lp-page-header>
       }
 
@@ -58,21 +67,34 @@ import { TotpQrComponent } from "@localpass/vault";
             {{ i18n.t("loading") }}
           </p>
         } @else if (totpUri()) {
-          <div class="tw-mx-3 tw-flex tw-justify-center tw-rounded-xl tw-bg-background-alt tw-py-4">
-            <vault-totp-qr [value]="totpUri()" [size]="216" [ariaLabel]="cipher()?.name ?? ''" />
+          <div
+            class="tw-mx-auto tw-mt-3 tw-w-fit tw-rounded-2xl tw-border tw-border-border-light tw-bg-background tw-p-3.5 tw-shadow-sm"
+          >
+            <vault-totp-qr
+              class="tw-block tw-w-fit"
+              [value]="totpUri()"
+              [size]="164"
+              [ariaLabel]="cipher()?.name ?? ''"
+            />
+            <p
+              class="tw-mx-auto tw-mt-2.5 tw-max-w-60 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted"
+            >
+              {{ i18n.t("totpQrCardHint") }}
+            </p>
           </div>
 
-          <lp-group [label]="i18n.t('totpQrUri')">
+          <lp-group [label]="i18n.t('manualEntry')">
             <lp-row
-              [label]="totpUri()"
+              [label]="i18n.t('totpSecret')"
+              [value]="totpSecret()"
               [mono]="true"
-              [copyValue]="totpUri()"
-              [copyLabel]="i18n.t('totpQrUri')"
+              [copyValue]="totpSecret()"
+              [copyLabel]="i18n.t('totpSecret')"
             />
           </lp-group>
 
-          <p class="tw-px-4 tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
-            {{ i18n.t("totpQrWarning") }}
+          <p class="tw-px-4 tw-pt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+            {{ i18n.t("totpQrFootnote") }}
           </p>
         } @else {
           <p class="tw-px-4 tw-py-6 tw-text-xs tw-text-muted">
@@ -87,6 +109,7 @@ export class TotpQrV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly cipherService = inject(CipherService);
   private readonly accountService = inject(AccountService);
+  private readonly passwordRepromptService = inject(PasswordRepromptService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -94,6 +117,8 @@ export class TotpQrV2Component implements OnInit {
   protected readonly loading = signal(true);
   protected readonly cipher = signal<CipherView | null>(null);
   protected readonly totpUri = signal("");
+  /** 手动输入只需要密钥本体；otpauth 链接里取出 secret，裸密钥原样展示。 */
+  protected readonly totpSecret = computed(() => totpSecretOf(this.totpUri()));
 
   async ngOnInit(): Promise<void> {
     const params: Params = await firstValueFrom(this.route.queryParams);
@@ -107,6 +132,12 @@ export class TotpQrV2Component implements OnInit {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       const cipher = await this.cipherService.get(cipherId, userId);
       const view = await this.cipherService.decrypt(cipher, userId);
+      // The QR encodes the TOTP secret, so a protected item must be re-authorized even when
+      // this route is opened directly instead of from the item page.
+      if (!(await this.passwordRepromptService.passwordRepromptCheck(view))) {
+        this.dismiss();
+        return;
+      }
       this.cipher.set(view);
       this.totpUri.set(view.login?.totp ?? "");
     } finally {
@@ -118,5 +149,25 @@ export class TotpQrV2Component implements OnInit {
     void this.router.navigate(["/view-cipher-v2"], {
       queryParams: { cipherId: this.cipher()?.id },
     });
+  }
+
+  /** Leaving the page after a cancelled reprompt. In a popout that means closing the window. */
+  private dismiss(): void {
+    if (BrowserPopupUtils.inPopout(window)) {
+      void BrowserPopupUtils.closeCurrentPopupOrPopout(window);
+      return;
+    }
+    void this.router.navigateByUrl(this.compact() ? "/tabs/vault" : "/vault");
+  }
+}
+
+function totpSecretOf(value: string): string {
+  if (!value.toLowerCase().startsWith("otpauth://")) {
+    return value;
+  }
+  try {
+    return new URL(value).searchParams.get("secret") ?? "";
+  } catch {
+    return "";
   }
 }

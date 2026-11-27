@@ -46,6 +46,8 @@ export type FocusedFieldData = {
   showPasskeys?: boolean;
   focusedFieldForm?: string;
   focusedFieldOpid?: string;
+  /** Current value of a username field, used only to filter the inline menu account list. */
+  focusedFieldValue?: string;
 };
 
 export type InlineMenuElementPosition = {
@@ -200,6 +202,8 @@ export type InlineMenuCipherData = {
     totpField?: boolean;
     totpCodeTimeInterval?: number;
     username?: string;
+    /** Whether the decrypted login has a password; every entry of a cipher carries it. */
+    hasPassword?: boolean;
     passkey: {
       rpName: string;
       userName: string;
@@ -307,6 +311,8 @@ export type InlineMenuListPortMessageHandlers = {
   refreshGeneratedPassword: () => Promise<void>;
   fillGeneratedPassword: ({ port }: PortConnectionParam) => Promise<void>;
   refreshOverlayCiphers: () => Promise<void>;
+  copyInlineMenuTotp: ({ message, port }: PortOnMessageHandlerParams) => void;
+  cancelInlineMenuPasskey: ({ port }: PortConnectionParam) => void;
 };
 
 export interface OverlayBackground {

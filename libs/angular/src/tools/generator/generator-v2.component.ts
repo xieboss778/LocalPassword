@@ -67,60 +67,51 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
     LpRowComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
+    <div
+      class="tw-flex tw-h-full tw-flex-col"
+      [class.tw-bg-background]="compact()"
+      [class.tw-bg-background-alt]="!compact()"
+    >
       @if (compact()) {
         <lp-popup-header [title]="i18n.t('generator')" [sub]="i18n.t('generatorSubtitle')">
           <div slot="actions" class="tw-flex tw-items-center tw-gap-0.5">
             <a
-              [routerLink]="historyRoute()"
+              [routerLink]="historyRoute"
               class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
               [attr.aria-label]="i18n.t('generatorHistory')"
               [attr.title]="i18n.t('generatorHistory')"
             >
               <bit-icon name="bwi-clock" class="tw-text-base"></bit-icon>
             </a>
-            <button
-              type="button"
-              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-              [attr.aria-label]="i18n.t('regenerate')"
-              [attr.title]="i18n.t('regenerate')"
-              (click)="regenerate()"
-            >
-              <bit-icon name="bwi-generate" class="tw-text-base"></bit-icon>
-            </button>
           </div>
         </lp-popup-header>
       } @else {
         <lp-page-header [title]="i18n.t('generator')" [sub]="i18n.t('generatorSubtitle')">
-          <a bitButton buttonType="secondary" startIcon="bwi-clock" [routerLink]="historyRoute()">
+          <a bitButton buttonType="secondary" startIcon="bwi-clock" [routerLink]="historyRoute">
             {{ i18n.t("generatorHistory") }}
           </a>
-          <button
-            type="button"
-            bitButton
-            buttonType="secondary"
-            startIcon="bwi-generate"
-            (click)="regenerate()"
-          >
-            {{ i18n.t("regenerate") }}
-          </button>
         </lp-page-header>
       }
 
       <div
-        class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-pb-7"
+        class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto"
+        [class.tw-pb-7]="!compact()"
+        [class.tw-pb-0]="compact()"
         [class.tw-px-7]="!compact()"
         [class.tw-px-4]="compact()"
       >
-        <div class="tw-grid tw-gap-4 xl:tw-grid-cols-5">
-          <div class="tw-space-y-4 xl:tw-col-span-3">
+        <div class="tw-grid tw-gap-4 lg:tw-grid-cols-5">
+          <div class="tw-space-y-4 lg:tw-col-span-3">
             <div
-              class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-shadow-sm"
+              class="tw-rounded-xl tw-bg-background"
+              [class.tw-border]="!compact()"
+              [class.tw-border-border-light]="!compact()"
+              [class.tw-shadow-sm]="!compact()"
               [class.tw-p-5]="!compact()"
-              [class.tw-p-4]="compact()"
+              [class.tw-pt-2]="compact()"
             >
               <div
-                class="tw-mb-4 tw-grid tw-grid-cols-3 tw-gap-1 tw-rounded-lg tw-bg-background-alt tw-p-1"
+                class="tw-mb-3 tw-grid tw-grid-cols-3 tw-gap-1 tw-rounded-lg tw-bg-background-alt tw-p-1"
                 role="tablist"
                 [attr.aria-label]="i18n.t('generator')"
               >
@@ -128,7 +119,10 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   <button
                     type="button"
                     role="tab"
-                    class="tw-rounded-md tw-px-3 tw-py-1.5 tw-text-sm tw-font-medium"
+                    class="tw-rounded-md tw-px-3 tw-py-1.5"
+                    [class.tw-text-sm]="!compact()"
+                    [class.tw-text-xs]="compact()"
+                    [class.tw-font-semibold]="mode() === tab.key"
                     [class.tw-bg-background]="mode() === tab.key"
                     [class.tw-text-main]="mode() === tab.key"
                     [class.tw-shadow-sm]="mode() === tab.key"
@@ -142,26 +136,34 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
               </div>
 
               <div
-                class="tw-flex tw-items-center tw-gap-2 tw-rounded-lg tw-border tw-border-border-light tw-bg-background-alt tw-px-4 tw-py-3"
+                class="tw-flex tw-items-center tw-gap-2 tw-rounded-xl tw-bg-bg-brand-softer"
+                [class.tw-border]="!compact()"
+                [class.tw-border-border-light]="!compact()"
+                [class.tw-p-4]="!compact()"
+                [class.tw-px-3.5]="compact()"
+                [class.tw-py-2]="compact()"
               >
                 <code
-                  class="tw-min-w-0 tw-flex-1 tw-break-all tw-font-mono tw-text-lg tw-font-medium tw-text-main"
+                  class="tw-min-w-0 tw-flex-1 tw-break-all tw-text-center tw-font-mono tw-font-medium tw-text-main"
+                  [class.tw-text-lg]="compact()"
+                  [class.tw-text-xl]="!compact()"
                   >{{ primary() }}</code
                 >
                 <button
                   type="button"
-                  bitIconButton="bwi-copy"
-                  [label]="i18n.t('copy')"
-                  (click)="copy(primary())"
+                  bitIconButton="bwi-refresh"
+                  [label]="i18n.t('regenerate')"
+                  (click)="regenerate()"
                 ></button>
               </div>
 
-              <div class="tw-mt-4 tw-flex tw-gap-2">
+              <div class="tw-mt-2.5 tw-flex tw-gap-2">
                 <button
                   type="button"
                   bitButton
                   buttonType="primary"
                   startIcon="bwi-copy"
+                  [class.tw-flex-1]="compact()"
                   (click)="copy(primary())"
                 >
                   {{ i18n.t("copy") }}
@@ -171,6 +173,7 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   bitButton
                   buttonType="secondary"
                   startIcon="bwi-generate"
+                  [class.tw-flex-1]="compact()"
                   (click)="regenerate()"
                 >
                   {{ i18n.t("regenerate") }}
@@ -178,9 +181,11 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
               </div>
 
               @if (mode() === "password") {
-                <div class="tw-mt-5">
+                <div [class.tw-mt-3]="compact()" [class.tw-mt-5]="!compact()">
                   <div class="tw-flex tw-items-center tw-justify-between">
-                    <span class="tw-text-sm tw-text-main">{{ i18n.t("length") }}</span>
+                    <span class="tw-text-sm tw-text-main">{{
+                      i18n.t(compact() ? "length" : "passwordLength")
+                    }}</span>
                     <span class="tw-text-sm tw-font-semibold tw-text-main">{{ length() }}</span>
                   </div>
                   <input
@@ -194,24 +199,32 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   />
                 </div>
 
-                <div class="tw-mt-3">
+                <div class="tw-mt-2">
                   @for (toggle of toggles(); track toggle.key) {
                     <lp-row
                       [label]="i18n.t(toggle.labelKey)"
                       [toggle]="options()[toggle.key]"
                       [clickable]="true"
+                      [dense]="compact()"
+                      [divider]="false"
                       (activated)="flip(toggle.key)"
                     ></lp-row>
                   }
                 </div>
 
-                @if (strengthLabel()) {
-                  <p class="tw-mt-4 tw-text-xs tw-leading-relaxed tw-text-muted">
-                    {{ strengthLabel() }}
-                  </p>
-                }
+                <div class="tw-mt-2.5 tw-flex tw-items-center tw-gap-3">
+                  <span
+                    class="tw-block tw-h-1 tw-flex-1 tw-overflow-hidden tw-rounded-full tw-bg-secondary-100"
+                  >
+                    <span
+                      class="tw-block tw-h-full tw-rounded-full tw-bg-success-600"
+                      [style.width.%]="strengthPercent()"
+                    ></span>
+                  </span>
+                  <span class="tw-flex-none tw-text-xs tw-text-muted">{{ strengthText() }}</span>
+                </div>
               } @else if (mode() === "passphrase") {
-                <div class="tw-mt-5">
+                <div [class.tw-mt-3]="compact()" [class.tw-mt-5]="!compact()">
                   <div class="tw-flex tw-items-center tw-justify-between">
                     <span class="tw-text-sm tw-text-main">{{ i18n.t("numWords") }}</span>
                     <span class="tw-text-sm tw-font-semibold tw-text-main">{{ wordCount() }}</span>
@@ -243,32 +256,44 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   />
                 </div>
 
-                <div class="tw-mt-3">
+                <div class="tw-mt-2">
                   <lp-row
                     [label]="i18n.t('capitalize')"
                     [toggle]="passphraseOptions().capitalize"
                     [clickable]="true"
+                    [dense]="compact()"
+                    [divider]="false"
                     (activated)="flipPassphrase('capitalize')"
                   ></lp-row>
                   <lp-row
                     [label]="i18n.t('includeNumber')"
                     [toggle]="passphraseOptions().includeNumber"
                     [clickable]="true"
+                    [dense]="compact()"
+                    [divider]="false"
                     (activated)="flipPassphrase('includeNumber')"
                   ></lp-row>
                 </div>
               } @else {
-                <div class="tw-mt-5 tw-flex tw-flex-col tw-gap-2">
+                <div
+                  class="tw-flex tw-flex-col tw-gap-2"
+                  [class.tw-mt-2]="compact()"
+                  [class.tw-mt-5]="!compact()"
+                >
                   <lp-row
                     [label]="i18n.t('includeNumber')"
                     [toggle]="usernameSettings().includeNumber"
                     [clickable]="true"
+                    [dense]="compact()"
+                    [divider]="false"
                     (activated)="flipUsername('includeNumber')"
                   ></lp-row>
                   <lp-row
                     [label]="i18n.t('usernameUseHyphen')"
                     [toggle]="usernameSettings().useHyphen"
                     [clickable]="true"
+                    [dense]="compact()"
+                    [divider]="false"
                     (activated)="flipUsername('useHyphen')"
                   ></lp-row>
                 </div>
@@ -277,65 +302,31 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                 </p>
               }
             </div>
-
-            @if (!compact()) {
-              <lp-group [label]="i18n.t('candidates')">
-                @for (candidate of candidates(); track candidate; let index = $index) {
-                  @if (index > 0) {
-                    <lp-row
-                      [label]="candidate"
-                      [mono]="true"
-                      [copyValue]="candidate"
-                      [copyLabel]="i18n.t(mode())"
-                      (copiedValue)="record($event)"
-                    />
-                  }
-                }
-              </lp-group>
-            }
           </div>
 
           @if (!compact()) {
             <aside
-              class="tw-self-start tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5 xl:tw-col-span-2"
+              class="tw-self-start tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5 lg:tw-col-span-2"
             >
               <h2 class="tw-m-0 tw-text-sm tw-font-semibold tw-text-main">
-                {{ i18n.t("options") }}
+                {{ i18n.t("rulesTitle") }}
               </h2>
-              <dl class="tw-mt-3 tw-space-y-3">
+              <dl class="tw-mt-4 tw-space-y-3">
                 @if (mode() === "password") {
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("length") }}</dt>
                     <dd class="tw-m-0 tw-text-sm tw-font-medium tw-text-main">{{ length() }}</dd>
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-                    <dt class="tw-text-sm tw-text-muted">{{ i18n.t("uppercase") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
-                      {{ options().upper ? i18n.t("enabled") : i18n.t("disabled") }}
-                    </dd>
-                  </div>
-                  <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-                    <dt class="tw-text-sm tw-text-muted">{{ i18n.t("lowercase") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
-                      {{ options().lower ? i18n.t("enabled") : i18n.t("disabled") }}
-                    </dd>
-                  </div>
-                  <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-                    <dt class="tw-text-sm tw-text-muted">{{ i18n.t("numbers") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
-                      {{ options().digits ? i18n.t("enabled") : i18n.t("disabled") }}
-                    </dd>
-                  </div>
-                  <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-                    <dt class="tw-text-sm tw-text-muted">{{ i18n.t("symbols") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
-                      {{ options().symbols ? i18n.t("enabled") : i18n.t("disabled") }}
+                    <dt class="tw-text-sm tw-text-muted">{{ i18n.t("charset") }}</dt>
+                    <dd class="tw-m-0 tw-font-mono tw-text-sm tw-text-main">
+                      {{ charsetSummary() }}
                     </dd>
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("avoidAmbiguous") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
-                      {{ options().avoidAmbiguous ? i18n.t("enabled") : i18n.t("disabled") }}
+                    <dd class="tw-m-0 tw-font-mono tw-text-sm tw-text-main">
+                      {{ options().avoidAmbiguous ? "0 O l 1" : "—" }}
                     </dd>
                   </div>
                 } @else if (mode() === "passphrase") {
@@ -381,12 +372,20 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                 }
               </dl>
               <p class="tw-mt-4 tw-text-xs tw-leading-relaxed tw-text-muted">
-                {{ i18n.t("generatorLocalOnlyNotice") }}
+                {{ i18n.t("generatorRulesNote") }}
               </p>
             </aside>
           }
         </div>
       </div>
+
+      @if (compact() && mode() === "password") {
+        <p
+          class="tw-flex-none tw-px-3 tw-pt-1 tw-pb-0.5 tw-text-xs tw-leading-relaxed tw-tracking-tighter tw-text-muted"
+        >
+          {{ i18n.t("generatorFootnote") }}
+        </p>
+      }
     </div>
   `,
 })
@@ -402,15 +401,15 @@ export class GeneratorV2Component {
   /** 弹窗路由在 route.data 里标记 compact；桌面端保持完整两栏。 */
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
 
-  /** 弹窗里历史页挂在 `tabs` 下，桌面端是顶层路由。 */
-  protected readonly historyRoute = computed(() =>
-    this.compact() ? "/tabs/generator-history-v2" : "/generator-history-v2",
-  );
+  /**
+   * 历史页是独立二级页：不挂在 `tabs` 下，弹窗与桌面都用同一个顶层路由，打开时不显示底部导航。
+   */
+  protected readonly historyRoute = "/generator-history-v2";
 
   protected readonly mode = signal<GeneratorMode>("password");
   protected readonly modes: readonly { key: GeneratorMode; labelKey: string }[] = [
     { key: "password", labelKey: "password" },
-    { key: "passphrase", labelKey: "passphrase" },
+    { key: "passphrase", labelKey: "passphraseShort" },
     { key: "username", labelKey: "username" },
   ];
 
@@ -441,30 +440,58 @@ export class GeneratorV2Component {
 
   protected readonly length = computed(() => this.options().length);
   protected readonly wordCount = computed(() => this.passphraseOptions().words);
-  protected readonly toggles = computed(() => [
-    { key: "upper" as const, labelKey: "uppercase" },
-    { key: "lower" as const, labelKey: "lowercase" },
-    { key: "digits" as const, labelKey: "numbers" },
-    { key: "symbols" as const, labelKey: "symbols" },
-    { key: "avoidAmbiguous" as const, labelKey: "avoidAmbiguous" },
-  ]);
-
-  /** 粗粒度的强度提示：长度 × 字符集数，够用且不假装精确。 */
-  protected readonly strengthLabel = computed(() => {
-    const current = this.options();
-    const classes = [current.upper, current.lower, current.digits, current.symbols].filter(
-      Boolean,
-    ).length;
-    if (classes === 0) {
-      return this.i18n.t("generatorNoCharset");
-    }
-    const score = current.length * classes;
-    return this.i18n
-      .t("generatorStrength")
-      .replace("{LENGTH}", `${current.length}`)
-      .replace("{CLASSES}", `${classes}`)
-      .replace("{SCORE}", `${score}`);
+  protected readonly toggles = computed(() => {
+    const all = [
+      { key: "upper" as const, labelKey: "uppercase" },
+      { key: "lower" as const, labelKey: "lowercase" },
+      { key: "digits" as const, labelKey: "numbers" },
+      { key: "symbols" as const, labelKey: "symbols" },
+      { key: "avoidAmbiguous" as const, labelKey: "avoidAmbiguous" },
+    ];
+    // The desktop prototype only exposes the charset switches; the ambiguity rule stays
+    // visible in the rules panel without a dedicated toggle.
+    return this.compact() ? all : all.filter((toggle) => toggle.key !== "avoidAmbiguous");
   });
+
+  protected readonly charsetSummary = computed(() => {
+    const current = this.options();
+    const parts: string[] = [];
+    if (current.upper) {
+      parts.push("A-Z");
+    }
+    if (current.lower) {
+      parts.push("a-z");
+    }
+    if (current.digits) {
+      parts.push("0-9");
+    }
+    if (current.symbols) {
+      parts.push("!@#$%");
+    }
+    return parts.join(" ") || this.i18n.t("generatorNoCharset");
+  });
+
+  /** 粗略熵值：长度 × log2(可用字符数)；只用于展示强度条，不参与生成。 */
+  protected readonly entropy = computed(() => {
+    const current = this.options();
+    const poolSize =
+      (current.upper ? 26 : 0) +
+      (current.lower ? 26 : 0) +
+      (current.digits ? 10 : 0) +
+      (current.symbols ? 8 : 0);
+    if (poolSize === 0 || current.length === 0) {
+      return 0;
+    }
+    return Math.round(current.length * Math.log2(poolSize));
+  });
+
+  protected readonly strengthPercent = computed(() => Math.min(100, (this.entropy() / 128) * 100));
+
+  protected readonly strengthText = computed(() =>
+    this.entropy() > 0
+      ? this.i18n.t("entropyLabel", this.entropy())
+      : this.i18n.t("generatorNoCharset"),
+  );
 
   protected setMode(mode: GeneratorMode): void {
     this.mode.set(mode);

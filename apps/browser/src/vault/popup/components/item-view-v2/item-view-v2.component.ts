@@ -21,6 +21,11 @@ import {
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
+import {
+  AUTOFILL_ID,
+  COPY_PASSWORD_ID,
+  COPY_VERIFICATION_CODE_ID,
+} from "@localpass/common/autofill/constants";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
@@ -30,7 +35,7 @@ import { FieldType } from "@localpass/common/vault/enums";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
 import { FieldView } from "@localpass/common/vault/models/view/field.view";
-import { ButtonModule, DialogService, IconModule } from "@localpass/components";
+import { DialogService, IconModule } from "@localpass/components";
 import {
   FIELDS,
   FieldSpec,
@@ -39,6 +44,10 @@ import {
   readField,
   withoutKindField,
 } from "@localpass/local-vault";
+import { PasswordRepromptService } from "@localpass/vault";
+
+import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils";
+import { VaultPopupAutofillService } from "../../services/vault-popup-autofill.service";
 
 interface DetailRow {
   readonly id: string;
@@ -79,14 +88,7 @@ const MASK = "••••••••••••";
   selector: "vault-item-view-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [
-    CommonModule,
-    JslibModule,
-    ButtonModule,
-    IconModule,
-    LpKindTileComponent,
-    LpPopupHeaderComponent,
-  ],
+  imports: [CommonModule, JslibModule, IconModule, LpKindTileComponent, LpPopupHeaderComponent],
   template: `
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
@@ -219,7 +221,18 @@ const MASK = "••••••••••••";
                         >{{ row.display }}</span
                       >
                     }
-                    <span class="tw-flex tw-flex-none tw-items-center tw-gap-0.5 tw-text-muted">
+                    <span class="tw-flex tw-flex-none tw-items-center tw-gap-1.5 tw-text-muted">
+                      @if (row.totp && totpPeriod()) {
+                        <span
+                          class="tw-h-1 tw-w-10 tw-overflow-hidden tw-rounded-full tw-bg-background-alt"
+                          aria-hidden="true"
+                        >
+                          <span
+                            class="tw-block tw-h-full tw-rounded-full tw-bg-primary-600 tw-transition-all"
+                            [style.width.%]="totpRemainingPercent()"
+                          ></span>
+                        </span>
+                      }
                       @if (row.totp && hasTotpKey()) {
                         <button
                           type="button"
@@ -377,17 +390,6 @@ const MASK = "••••••••••••";
               </div>
             </div>
           </section>
-
-          <button
-            type="button"
-            bitButton
-            buttonType="secondary"
-            class="tw-mt-1 tw-w-full"
-            startIcon="bwi-pencil-square"
-            (click)="edit()"
-          >
-            {{ i18n.t("editItem") }}
-          </button>
         }
       </div>
     </div>
@@ -412,7 +414,15 @@ const MASK = "••••••••••••";
           (click)="edit()"
         >
           <bit-icon name="bwi-pencil-square" class="tw-w-5 tw-text-muted"></bit-icon>
-          {{ i18n.t("editItem") }}
+          {{ i18n.t("edit") }}
+        </button>
+        <button
+          type="button"
+          class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-rounded-lg tw-px-2 tw-py-2.5 tw-text-start tw-text-sm tw-text-main hover:tw-bg-background-alt"
+          (click)="clone()"
+        >
+          <bit-icon name="bwi-clone" class="tw-w-5 tw-text-muted"></bit-icon>
+          {{ i18n.t("clone") }}
         </button>
         <button
           type="button"
@@ -449,12 +459,16 @@ export class VaultItemViewV2Component implements OnInit {
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly passwordRepromptService = inject(PasswordRepromptService);
+  private readonly vaultPopupAutofillService = inject(VaultPopupAutofillService);
 
   protected readonly loginKind = ItemKind.Login;
   protected readonly loading = signal(true);
   protected readonly cipher = signal<CipherView | null>(null);
   protected readonly folderName = signal("");
   protected readonly totpCode = signal("");
+  protected readonly totpPeriod = signal(0);
+  protected readonly totpRemaining = signal(0);
   protected readonly revealed = signal<Record<string, boolean>>({});
   protected readonly customRevealed = signal<Record<string, boolean>>({});
   protected readonly sheetOpen = signal(false);
@@ -476,6 +490,10 @@ export class VaultItemViewV2Component implements OnInit {
   protected readonly formattedTotp = computed(() => {
     const code = this.totpCode();
     return code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
+  });
+  protected readonly totpRemainingPercent = computed(() => {
+    const period = this.totpPeriod();
+    return period ? Math.max(0, Math.min(100, (this.totpRemaining() / period) * 100)) : 0;
   });
 
   protected readonly sections = computed<readonly DetailSection[]>(() => {
@@ -505,6 +523,10 @@ export class VaultItemViewV2Component implements OnInit {
       }
       if (uris.length) {
         sections.push({ key: "uris", label: this.i18n.t("autofillOptions"), rows: uris });
+      }
+      const notes = this.notesRow(item);
+      if (notes) {
+        sections.push({ key: "notes", label: this.i18n.t("notes"), rows: [notes] });
       }
       return sections;
     }
@@ -550,6 +572,7 @@ export class VaultItemViewV2Component implements OnInit {
   async ngOnInit(): Promise<void> {
     const params: Params = await firstValueFrom(this.route.queryParams);
     const cipherId = params["cipherId"] as string | undefined;
+    const action = params["action"] as string | undefined;
     if (!cipherId) {
       this.loading.set(false);
       return;
@@ -559,6 +582,15 @@ export class VaultItemViewV2Component implements OnInit {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       const cipher = await this.cipherService.get(cipherId, userId);
       const view = await this.cipherService.decrypt(cipher, userId);
+
+      // The view reveals TOTP codes and lets secrets be copied, so a reprompted item stays
+      // closed until the master password is confirmed — from the list and from an
+      // inline-menu single-action popout alike.
+      if (!(await this.passwordRepromptService.passwordRepromptCheck(view))) {
+        await this.dismiss();
+        return;
+      }
+
       this.cipher.set(view);
 
       const folders = await firstValueFrom(this.folderService.folderViews$(userId));
@@ -567,12 +599,57 @@ export class VaultItemViewV2Component implements OnInit {
       );
 
       this.watchTotp(view);
+      await this.runPopoutAction(view, action);
     } finally {
       this.loading.set(false);
     }
   }
 
+  /**
+   * A single-action popout opened by the inline menu or a context menu passes the action that
+   * needed the master password. Run it once the prompt has passed, then leave.
+   */
+  private async runPopoutAction(view: CipherView, action: string | undefined): Promise<void> {
+    switch (action) {
+      case AUTOFILL_ID:
+        await this.vaultPopupAutofillService.doAutofill(view, true, true);
+        return;
+      case COPY_PASSWORD_ID:
+        if (view.login.password) {
+          this.copyValue(view.login.password, this.i18n.t("password"));
+          this.closePopoutAfterToast();
+        }
+        return;
+      case COPY_VERIFICATION_CODE_ID:
+        if (view.login.totp) {
+          const totp = await firstValueFrom(this.totpService.getCode$(view.login.totp));
+          this.copyValue(totp.code, this.i18n.t("verificationCode"));
+          this.closePopoutAfterToast();
+        }
+        return;
+    }
+  }
+
+  private async dismiss(): Promise<void> {
+    if (BrowserPopupUtils.inPopout(window)) {
+      await BrowserPopupUtils.closeCurrentPopupOrPopout(window);
+      return;
+    }
+    this.back();
+  }
+
+  /** Leaves the copy toast visible for a moment before closing the single-action window. */
+  private closePopoutAfterToast(): void {
+    if (BrowserPopupUtils.inPopout(window)) {
+      setTimeout(() => void BrowserPopupUtils.closeCurrentPopupOrPopout(window), 800);
+    }
+  }
+
   protected back(): void {
+    if (BrowserPopupUtils.inPopout(window)) {
+      void BrowserPopupUtils.closeCurrentPopupOrPopout(window);
+      return;
+    }
     void this.router.navigateByUrl("/tabs/vault");
   }
 
@@ -587,6 +664,21 @@ export class VaultItemViewV2Component implements OnInit {
         cipherId: item.id,
         kind: kindOf(item),
         next: `/view-cipher-v2?cipherId=${item.id}`,
+      },
+    });
+  }
+
+  protected clone(): void {
+    const item = this.cipher();
+    if (!item?.id) {
+      return;
+    }
+    this.sheetOpen.set(false);
+    void this.router.navigate(["/edit-item-v2"], {
+      queryParams: {
+        cloneFrom: item.id,
+        kind: kindOf(item),
+        next: "/tabs/vault",
       },
     });
   }
@@ -698,7 +790,13 @@ export class VaultItemViewV2Component implements OnInit {
     this.totpService
       .getCode$(key)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((response) => this.totpCode.set(response.code ?? ""));
+      .subscribe((response) => {
+        this.totpCode.set(response.code ?? "");
+        const period = response.period || 30;
+        const epoch = Math.floor(Date.now() / 1000);
+        this.totpPeriod.set(period);
+        this.totpRemaining.set(period - (epoch % period));
+      });
   }
 
   private toDetailRow(item: CipherView, field: FieldSpec): DetailRow {

@@ -1,5 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject, firstValueFrom } from "rxjs";
+import { BehaviorSubject, filter, firstValueFrom } from "rxjs";
 
 // This import has been flagged as unallowed for this class. It may be involved in a circular dependency loop.
 // eslint-disable-next-line no-restricted-imports
@@ -102,6 +102,26 @@ describe("Folder Service", () => {
 
       expect(result.length).toBe(3);
       expect(result).toContainPartialObjects([
+        { id: "1", name: "DEC" },
+        { id: "2", name: "DEC" },
+        { name: "No Folder" },
+      ]);
+    });
+
+    it("re-decrypts when the encrypted folders change without a cache clear", async () => {
+      const decrypted = firstValueFrom(
+        folderService.folderViews$(mockUserId).pipe(filter((folders) => folders.length === 3)),
+      );
+
+      const folder1 = folderData("1");
+      const folder2 = folderData("2");
+      await stateProvider.setUserState(
+        FOLDER_ENCRYPTED_FOLDERS,
+        Object.fromEntries([folder1, folder2].map((f) => [f.id, f])),
+        mockUserId,
+      );
+
+      await expect(decrypted).resolves.toContainPartialObjects([
         { id: "1", name: "DEC" },
         { id: "2", name: "DEC" },
         { name: "No Folder" },

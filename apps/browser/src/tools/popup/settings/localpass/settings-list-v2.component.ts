@@ -13,6 +13,7 @@ import { ThemeStateService } from "@localpass/common/platform/theming/theme-stat
 import { UserId } from "@localpass/common/types/guid";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { IconModule, LocalPassIcon } from "@localpass/components";
+import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui";
 import { LockService, LockSource } from "@localpass/unlock";
 
 import { VaultPopupItemsService } from "../../../../vault/popup/services/vault-popup-items.service";
@@ -23,6 +24,8 @@ interface SettingsRow {
   readonly descKey: string;
   readonly route: string;
   readonly countKey?: "folders" | "trash";
+  /** 设置页里的计数来自服务，而不是固定文案。 */
+  readonly dynamicCount?: "securityKey";
   readonly version?: boolean;
   readonly tone?: "danger";
 }
@@ -36,18 +39,19 @@ interface SettingsGroup {
 const GROUPS: readonly SettingsGroup[] = [
   {
     key: "account",
-    labelKey: "security",
+    labelKey: "accountGroup",
     rows: [
       {
         icon: "bwi-shield",
-        labelKey: "security",
+        labelKey: "securitySettings",
         descKey: "securitySettingsDesc",
         route: "/settings-security-v2",
       },
       {
         icon: "bwi-key",
         labelKey: "securityKey",
-        descKey: "securityKeyRegistered",
+        descKey: "securityKeyDescription",
+        dynamicCount: "securityKey",
         route: "/security-key",
       },
     ],
@@ -72,13 +76,13 @@ const GROUPS: readonly SettingsGroup[] = [
       },
       {
         icon: "bwi-import",
-        labelKey: "importData",
+        labelKey: "importLabel",
         descKey: "importSettingsDesc",
         route: "/import-source-v2",
       },
       {
         icon: "bwi-download",
-        labelKey: "exportData",
+        labelKey: "exportLabel",
         descKey: "exportSettingsDesc",
         route: "/export",
       },
@@ -104,7 +108,7 @@ const GROUPS: readonly SettingsGroup[] = [
   },
   {
     key: "backup",
-    labelKey: "backupTitle",
+    labelKey: "backupPrivacyGroup",
     rows: [
       {
         icon: "bwi-download",
@@ -216,9 +220,11 @@ export class SettingsListV2Component implements OnInit {
   private readonly themeStateService = inject(ThemeStateService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
   private readonly lockService = inject(LockService);
+  private readonly enrollmentService = inject(LocalWebAuthnPrfEnrollmentService);
 
   protected readonly groups = GROUPS;
   protected readonly version = signal("");
+  protected readonly securityKeyCount = signal(0);
   protected readonly theme = toSignal(this.themeStateService.selectedTheme$, {
     initialValue: ThemeTypes.System as Theme,
   });
@@ -244,14 +250,21 @@ export class SettingsListV2Component implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.version.set(await this.platformUtilsService.getApplicationVersion());
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+    this.securityKeyCount.set(await this.enrollmentService.count(userId));
   }
 
   protected description(row: SettingsRow): string {
     if (row.countKey === "folders") {
-      return this.i18n.t("foldersCount").replace("{COUNT}", String(this.folderCount()));
+      return this.i18n.t("folderCount", this.folderCount());
     }
     if (row.countKey === "trash") {
       return this.i18n.t("trashCount").replace("{COUNT}", String(this.trashCount()));
+    }
+    if (row.dynamicCount === "securityKey") {
+      return this.securityKeyCount() > 0
+        ? this.i18n.t("registeredKeysCount", this.securityKeyCount().toString())
+        : this.i18n.t(row.descKey);
     }
     if (row.version) {
       return `${this.i18n.t("appVersion")} ${this.version()}`;

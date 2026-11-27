@@ -20,5 +20,5 @@ export const EXTENSION_ANON_LAYOUT_DEFAULTS: Required<
   showAcctSwitcher: false,
   showBackButton: false,
   showLogo: true,
-  hideFooter: false,
+  hideLayout: false,
 };

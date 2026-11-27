@@ -198,24 +198,37 @@ class AutofillInit implements AutofillInitInterface {
    *
    * @param {AutofillExtensionMessage} message
    */
-  private async fillForm({ fillScript, pageDetailsUrl, showAnimations }: AutofillExtensionMessage) {
+  private async fillForm({
+    fillScript,
+    pageDetailsUrl,
+    showAnimations,
+    retainInlineMenu,
+  }: AutofillExtensionMessage) {
     if ((document.defaultView || window).location.href !== pageDetailsUrl || !fillScript) {
       return;
     }
 
-    this.blurFocusedFieldAndCloseInlineMenu();
+    if (retainInlineMenu) {
+      // The fill started from the inline menu list: keep the list mounted so it can render its
+      // post-fill confirmation (TOTP card or collapsed password chip). The normal fill path
+      // blurs the field and tears the menu down.
+      this.autofillOverlayContentService?.beginInlineMenuFillConfirmation();
+    } else {
+      this.blurFocusedFieldAndCloseInlineMenu();
+    }
     await this.sendExtensionMessage("updateIsFieldCurrentlyFilling", {
       isFieldCurrentlyFilling: true,
     });
     await this.insertAutofillContentService.fillForm(fillScript, showAnimations ?? true);
 
-    setTimeout(
-      () =>
-        this.sendExtensionMessage("updateIsFieldCurrentlyFilling", {
-          isFieldCurrentlyFilling: false,
-        }),
-      250,
-    );
+    setTimeout(() => {
+      if (retainInlineMenu) {
+        this.autofillOverlayContentService?.endInlineMenuFillConfirmation();
+      }
+      void this.sendExtensionMessage("updateIsFieldCurrentlyFilling", {
+        isFieldCurrentlyFilling: false,
+      });
+    }, 250);
   }
 
   /**

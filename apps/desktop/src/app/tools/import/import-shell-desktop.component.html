@@ -1,10 +1,7 @@
-<div class="tw-m-4 tw-p-4">
-  <!-- Header stays full width, matching other desktop pages (e.g. send.component.html) — only the
-       picker's own content is capped, so it doesn't inherit the header's full-width treatment. -->
-  <app-header />
-  <div class="tw-max-w-6xl">
+<div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
+  <lp-page-header [title]="i18n.t('importNoun')" [sub]="i18n.t('importSubtitle')" />
+  <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-7 tw-pb-7">
     <importer-shell-progress />
-
     <router-outlet></router-outlet>
   </div>
 </div>

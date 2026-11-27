@@ -13,7 +13,7 @@ export interface PasswordOptions {
 }
 
 export const DEFAULT_PASSWORD_OPTIONS: PasswordOptions = Object.freeze({
-  length: 20,
+  length: 16,
   upper: true,
   lower: true,
   digits: true,

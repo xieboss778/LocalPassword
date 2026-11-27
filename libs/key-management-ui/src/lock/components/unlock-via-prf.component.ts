@@ -8,7 +8,13 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { UserId } from "@localpass/common/types/guid";
 import { UserKey } from "@localpass/common/types/key";
-import { AsyncActionsModule, ButtonModule, DialogService } from "@localpass/components";
+import {
+  AsyncActionsModule,
+  ButtonModule,
+  DialogService,
+  IconModule,
+  LinkModule,
+} from "@localpass/components";
 
 import { WebAuthnPrfUnlockService } from "../services/webauthn-prf-unlock.service";
 
@@ -16,38 +22,51 @@ import { WebAuthnPrfUnlockService } from "../services/webauthn-prf-unlock.servic
 @Component({
   selector: "bit-unlock-via-prf",
   standalone: true,
-  imports: [CommonModule, JslibModule, ButtonModule, AsyncActionsModule],
+  imports: [CommonModule, JslibModule, ButtonModule, AsyncActionsModule, IconModule, LinkModule],
   template: `
     @if (isAvailable) {
-      @if (formButton()) {
+      @if (link()) {
+        <button
+          type="button"
+          bitLink
+          class="tw-inline-flex tw-items-center tw-gap-2 tw-px-0 tw-text-sm tw-font-medium"
+          (click)="unlockViaPrf()"
+          [disabled]="unlocking"
+          data-testid="unlock-with-passkey-button"
+        >
+          @if (linkIcon()) {
+            <bit-icon name="bwi-key" aria-hidden="true"></bit-icon>
+          }
+          {{ "unlockWithSecurityKey" | i18n }}
+        </button>
+      } @else if (formButton()) {
         <button
           type="button"
           bitButton
           bitFormButton
           buttonType="secondary"
           block
+          startIcon="bwi-key"
           (click)="unlockViaPrf()"
           [disabled]="unlocking"
           [loading]="unlocking"
           data-testid="unlock-with-passkey-button"
         >
-          <i class="bwi bwi-passkey tw-mr-1" aria-hidden="true"></i>
-          {{ "unlockWithPasskey" | i18n }}
+          {{ "unlockWithSecurityKey" | i18n }}
         </button>
-      }
-      @if (!formButton()) {
+      } @else {
         <button
           type="button"
           bitButton
           buttonType="secondary"
           block
+          startIcon="bwi-key"
           (click)="unlockViaPrf()"
           [disabled]="unlocking"
           [loading]="unlocking"
           data-testid="unlock-with-passkey-button"
         >
-          <i class="bwi bwi-passkey tw-mr-1" aria-hidden="true"></i>
-          {{ "unlockWithPasskey" | i18n }}
+          {{ "unlockWithSecurityKey" | i18n }}
         </button>
       }
     }
@@ -55,6 +74,9 @@ import { WebAuthnPrfUnlockService } from "../services/webauthn-prf-unlock.servic
 })
 export class UnlockViaPrfComponent implements OnInit {
   readonly formButton = input<boolean>(false);
+  /** Renders the quieter text-link form used on the LocalPass lock screens. */
+  readonly link = input<boolean>(false);
+  readonly linkIcon = input<boolean>(false);
   readonly unlockSuccess = output<UserKey>();
 
   unlocking = false;

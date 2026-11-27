@@ -1,24 +1,36 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map, switchMap } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
-import {
-  LpGroupComponent,
-  LpPageHeaderComponent,
-  LpRowComponent,
-} from "@localpass/angular/local-ui";
+import { LpPageHeaderComponent, LpRowComponent } from "@localpass/angular/local-ui";
+import { formatBackupTimestamp } from "@localpass/angular/tools/backup";
 import { LocalPassIcon as LocalPassLogo } from "@localpass/assets/svg";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { DeviceType } from "@localpass/common/enums";
 import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import {
+  VaultTimeout,
+  VaultTimeoutNumberType,
+  VaultTimeoutSettingsService,
+} from "@localpass/common/key-management/vault-timeout";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
 import { Theme, ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import {
   ButtonModule,
   DialogService,
@@ -28,10 +40,11 @@ import {
 } from "@localpass/components";
 import { BiometricStateService, BiometricsStatus, KeyService } from "@localpass/key-management";
 import { SessionTimeoutSettingsComponent } from "@localpass/key-management-ui";
-import { VaultBackupService, VaultBackupSyncService } from "@localpass/local-vault";
+import { VaultBackupSyncService } from "@localpass/local-vault";
 import { LockService, LockSource, AutoUnlockService } from "@localpass/unlock";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
+import { ChangePasswordDialogComponent } from "../../auth/password-management/change-password-dialog.component";
 import { DesktopBiometricsService } from "../../key-management/biometrics/desktop.biometrics.service";
 
 type SettingsTab = "security" | "vault" | "appearance" | "backup" | "about";
@@ -46,7 +59,7 @@ const TABS: readonly SettingsTabSpec[] = [
   { id: "security", labelKey: "security", icon: "bwi-shield" },
   { id: "vault", labelKey: "vault", icon: "bwi-vault" },
   { id: "appearance", labelKey: "appearance", icon: "bwi-palette" },
-  { id: "backup", labelKey: "backupTitle", icon: "bwi-download" },
+  { id: "backup", labelKey: "backupTab", icon: "bwi-download" },
   { id: "about", labelKey: "about", icon: "bwi-info-circle" },
 ];
 
@@ -54,18 +67,12 @@ interface ThemeOption {
   readonly value: Theme;
   readonly labelKey: string;
   readonly descKey: string;
-  readonly icon: LocalPassIcon;
 }
 
 const THEMES: readonly ThemeOption[] = [
-  { value: ThemeTypes.Light, labelKey: "light", descKey: "themeLightDesc", icon: "bwi-brush" },
-  { value: ThemeTypes.Dark, labelKey: "dark", descKey: "themeDarkDesc", icon: "bwi-palette" },
-  {
-    value: ThemeTypes.System,
-    labelKey: "default",
-    descKey: "themeSystemDesc",
-    icon: "bwi-desktop",
-  },
+  { value: ThemeTypes.Light, labelKey: "light", descKey: "themeLightDesc" },
+  { value: ThemeTypes.Dark, labelKey: "dark", descKey: "themeDarkDesc" },
+  { value: ThemeTypes.System, labelKey: "followSystem", descKey: "themeSystemDesc" },
 ];
 
 /**
@@ -85,7 +92,6 @@ const THEMES: readonly ThemeOption[] = [
     IconModule,
     SvgModule,
     SessionTimeoutSettingsComponent,
-    LpGroupComponent,
     LpPageHeaderComponent,
     LpRowComponent,
   ],
@@ -98,7 +104,8 @@ const THEMES: readonly ThemeOption[] = [
 
       <div class="tw-flex tw-min-h-0 tw-flex-1 tw-gap-6 tw-px-7 tw-pb-7">
         <nav
-          class="tw-flex tw-w-48 tw-flex-none tw-flex-col tw-gap-0.5"
+          class="tw-flex tw-flex-none tw-flex-col tw-gap-0.5"
+          [style.width.px]="200"
           [attr.aria-label]="i18n.t('settings')"
         >
           @for (tab of tabs; track tab.id) {
@@ -110,34 +117,89 @@ const THEMES: readonly ThemeOption[] = [
               [class.tw-text-main]="activeTab() === tab.id"
               [class.tw-shadow-sm]="activeTab() === tab.id"
               [attr.aria-current]="activeTab() === tab.id ? 'page' : null"
+              data-testid="settings_tab"
               (click)="activeTab.set(tab.id)"
             >
-              <bit-icon [name]="tab.icon" fixedWidth class="tw-w-5 tw-text-center"></bit-icon>
+              <bit-icon
+                [name]="tab.icon"
+                fixedWidth
+                class="tw-w-5 tw-text-center"
+                [class.tw-text-fg-brand]="activeTab() === tab.id"
+              ></bit-icon>
               <span>{{ i18n.t(tab.labelKey) }}</span>
             </button>
           }
         </nav>
 
-        <div class="tw-min-h-0 tw-max-w-3xl tw-flex-1 tw-overflow-y-auto">
+        <div class="tw-min-h-0 tw-w-full tw-max-w-3xl tw-flex-1 tw-overflow-y-auto">
           @switch (activeTab()) {
             @case ("security") {
-              <lp-group [label]="i18n.t('unlockAndAccess')">
+              <div class="tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("unlockAndAccess") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3"
+                  data-testid="settings_password_row"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("masterPassword")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("masterPasswordLocalDesc")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    data-testid="settings_password_change"
+                    (click)="changeMasterPassword()"
+                  >
+                    {{ i18n.t("change") }}
+                  </button>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3"
+                  data-testid="settings_autolock_row"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("autoLock") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{ timeoutSummary() }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    data-testid="settings_autolock_change"
+                    (click)="timeoutEditing.set(!timeoutEditing())"
+                  >
+                    {{ i18n.t(timeoutEditing() ? "done" : "change") }}
+                  </button>
+                </div>
+                @if (timeoutEditing()) {
+                  <div
+                    class="tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                  >
+                    <bit-session-timeout-settings></bit-session-timeout-settings>
+                  </div>
+                }
                 <lp-row
-                  icon="bwi-lock"
-                  [label]="i18n.t('masterPassword')"
-                  [sub]="i18n.t('masterPasswordLocalDesc')"
-                  [clickable]="false"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-pin"
                   [label]="i18n.t('unlockWithPin')"
+                  [sub]="i18n.t('pinUnlockDesc')"
                   [toggle]="pinEnabled()"
                   [clickable]="true"
                   (activated)="togglePin()"
                 ></lp-row>
                 @if (supportsTouchId()) {
                   <lp-row
-                    icon="bwi-unlock"
                     [label]="i18n.t('touchIdUnlock')"
                     [sub]="i18n.t('touchIdMacOnly')"
                     [toggle]="touchIdEnabled()"
@@ -145,215 +207,467 @@ const THEMES: readonly ThemeOption[] = [
                     (activated)="toggleTouchId()"
                   ></lp-row>
                 }
-              </lp-group>
+              </div>
 
-              <lp-group [label]="i18n.t('autoLock')">
-                <div class="tw-px-4 tw-py-3">
-                  <bit-session-timeout-settings></bit-session-timeout-settings>
-                </div>
-              </lp-group>
+              <div class="tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("securityKeysGroup") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <lp-row
+                  [label]="i18n.t('securityKey')"
+                  [sub]="i18n.t('securityKeySettingsDesc')"
+                  [clickable]="false"
+                ></lp-row>
+              </div>
 
-              <lp-group [label]="i18n.t('session')">
-                <div class="tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3">
+              <div class="tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("session") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-px-4 tw-py-3"
+                  data-testid="settings_lock_row"
+                >
                   <span class="tw-min-w-0 tw-flex-1">
-                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("lockVault") }}</span>
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("lockVaultNow")
+                    }}</span>
                     <span class="tw-block tw-text-xs tw-text-muted">{{
-                      i18n.t("lockVaultHint")
+                      i18n.t("lockVaultNoDataLoss")
                     }}</span>
                   </span>
                   <button type="button" bitButton buttonType="secondary" (click)="lock()">
-                    {{ i18n.t("lockVault") }}
+                    {{ i18n.t("lock") }}
                   </button>
                 </div>
-              </lp-group>
+              </div>
+              <p class="tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
+                {{ i18n.t("touchIdNote") }}
+              </p>
             }
 
             @case ("vault") {
-              <lp-group [label]="i18n.t('vault')">
-                <lp-row
-                  icon="bwi-folder"
-                  [label]="i18n.t('myFolders')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/folders-desktop-v2')"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-trash"
-                  [label]="i18n.t('trash')"
-                  [value]="i18n.t('trashHint')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/trash-desktop-v2')"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-import"
-                  [label]="i18n.t('importData')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/import')"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-download"
-                  [label]="i18n.t('exportData')"
-                  [value]="i18n.t('exportSettingsDesc')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/export')"
-                ></lp-row>
-              </lp-group>
+              <div class="tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("vault") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("myFolders") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("folderCount", folderCount())
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    data-testid="settings_folders"
+                    (click)="go('/folders-desktop-v2')"
+                  >
+                    {{ i18n.t("manage") }}
+                  </button>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("trash") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("trashSettingsSummary", trashCount())
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    (click)="go('/trash-desktop-v2')"
+                  >
+                    {{ i18n.t("openAction") }}
+                  </button>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("importNoun") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("importSettingsDesc")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    data-testid="settings_import"
+                    (click)="go('/import')"
+                  >
+                    {{ i18n.t("importVerb") }}
+                  </button>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("exportNoun") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("exportRowDesc")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    (click)="go('/export')"
+                  >
+                    {{ i18n.t("exportVerb") }}
+                  </button>
+                </div>
+              </div>
 
-              <lp-group [label]="i18n.t('advanced')">
-                <lp-row
-                  icon="bwi-globe"
-                  [label]="i18n.t('networkGate')"
-                  [sub]="i18n.t('networkGateSubtitle')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/network-gate')"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-lock"
-                  [label]="i18n.t('dataAndSafety')"
-                  [sub]="i18n.t('dataAndSafetySubtitle')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/data-safety')"
-                ></lp-row>
-              </lp-group>
+              <div class="tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("advanced") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("networkGate")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("networkGateSubtitle")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    (click)="go('/network-gate')"
+                  >
+                    {{ i18n.t("viewAction") }}
+                  </button>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("dataAndSafety")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("dataSafetySettingsDesc")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    (click)="go('/data-safety')"
+                  >
+                    {{ i18n.t("viewAction") }}
+                  </button>
+                </div>
+              </div>
             }
 
             @case ("appearance") {
-              <div
-                class="tw-px-1 tw-pt-1 tw-pb-3 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-text-muted"
-              >
+              <div class="tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
                 {{ i18n.t("theme") }}
               </div>
-              <div class="tw-grid tw-gap-2">
+              <div class="tw-grid tw-grid-cols-3 tw-gap-4" role="radiogroup">
                 @for (theme of themes; track theme.value) {
                   <button
                     type="button"
-                    class="tw-flex tw-items-center tw-gap-3 tw-rounded-xl tw-border tw-bg-background tw-p-4 tw-text-start"
+                    role="radio"
+                    class="tw-flex tw-min-w-0 tw-flex-col tw-gap-2 tw-rounded-xl tw-border tw-bg-background tw-p-2.5 tw-text-start"
                     [class.tw-border-border-brand]="selectedTheme() === theme.value"
-                    [class.tw-bg-bg-brand-softer]="selectedTheme() === theme.value"
                     [class.tw-border-border-light]="selectedTheme() !== theme.value"
-                    [attr.aria-pressed]="selectedTheme() === theme.value"
+                    [attr.aria-checked]="selectedTheme() === theme.value"
                     (click)="setTheme(theme.value)"
                   >
                     <span
-                      class="tw-grid tw-size-9 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-bg-brand-softer tw-text-fg-brand"
+                      class="tw-relative tw-block tw-h-14 tw-overflow-hidden tw-rounded-lg tw-border tw-border-border-light"
                     >
-                      <bit-icon [name]="theme.icon"></bit-icon>
+                      @if (theme.value === themeTypes.Light) {
+                        <span
+                          class="tw-flex tw-h-full tw-flex-col tw-gap-1 tw-bg-bg-primary tw-p-2"
+                        >
+                          <span
+                            class="tw-block tw-h-1.5 tw-w-2/3 tw-rounded tw-bg-secondary-300"
+                          ></span>
+                          <span
+                            class="tw-block tw-h-1.5 tw-w-full tw-rounded tw-bg-secondary-100"
+                          ></span>
+                          <span
+                            class="tw-block tw-h-1.5 tw-w-1/2 tw-rounded tw-bg-secondary-100"
+                          ></span>
+                        </span>
+                      } @else if (theme.value === themeTypes.Dark) {
+                        <span class="tw-flex tw-h-full tw-flex-col tw-gap-1 tw-bg-bg-dark tw-p-2">
+                          <span
+                            class="tw-block tw-h-1.5 tw-w-2/3 tw-rounded tw-bg-secondary-600"
+                          ></span>
+                          <span
+                            class="tw-block tw-h-1.5 tw-w-full tw-rounded tw-bg-secondary-700"
+                          ></span>
+                          <span
+                            class="tw-block tw-h-1.5 tw-w-1/2 tw-rounded tw-bg-secondary-700"
+                          ></span>
+                        </span>
+                      } @else {
+                        <span class="tw-flex tw-h-full">
+                          <span
+                            class="tw-flex tw-w-1/2 tw-flex-col tw-gap-1 tw-bg-bg-primary tw-p-2"
+                          >
+                            <span
+                              class="tw-block tw-h-1.5 tw-w-full tw-rounded tw-bg-secondary-300"
+                            ></span>
+                            <span
+                              class="tw-block tw-h-1.5 tw-w-1/2 tw-rounded tw-bg-secondary-100"
+                            ></span>
+                          </span>
+                          <span class="tw-flex tw-w-1/2 tw-flex-col tw-gap-1 tw-bg-bg-dark tw-p-2">
+                            <span
+                              class="tw-block tw-h-1.5 tw-w-full tw-rounded tw-bg-secondary-600"
+                            ></span>
+                            <span
+                              class="tw-block tw-h-1.5 tw-w-1/2 tw-rounded tw-bg-secondary-700"
+                            ></span>
+                          </span>
+                        </span>
+                      }
+                      @if (selectedTheme() === theme.value) {
+                        <span
+                          class="tw-absolute tw-end-1.5 tw-top-1.5 tw-grid tw-size-4 tw-place-items-center tw-rounded-full tw-bg-bg-brand tw-text-fg-contrast"
+                        >
+                          <bit-icon name="bwi-check" class="tw-text-xs"></bit-icon>
+                        </span>
+                      }
                     </span>
-                    <span class="tw-min-w-0 tw-flex-1">
-                      <span class="tw-block tw-text-sm tw-font-semibold tw-text-main">{{
-                        i18n.t(theme.labelKey)
-                      }}</span>
-                      <span class="tw-block tw-text-xs tw-leading-relaxed tw-text-muted">{{
-                        i18n.t(theme.descKey)
-                      }}</span>
-                    </span>
-                    @if (selectedTheme() === theme.value) {
-                      <bit-icon name="bwi-check" class="tw-text-fg-brand"></bit-icon>
-                    }
+                    <span class="tw-block tw-text-sm tw-font-semibold tw-text-main">{{
+                      i18n.t(theme.labelKey)
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-leading-relaxed tw-text-muted">{{
+                      i18n.t(theme.descKey)
+                    }}</span>
                   </button>
                 }
               </div>
-              <lp-group [label]="i18n.t('language')">
-                <lp-row
-                  icon="bwi-globe"
-                  [label]="i18n.t('language')"
-                  [value]="i18n.t('simplifiedChinese')"
-                  [clickable]="false"
-                ></lp-row>
-              </lp-group>
+
+              <div class="tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("language") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-px-4 tw-py-3">
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("interfaceLanguage")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("simplifiedChinese")
+                    }}</span>
+                  </span>
+                </div>
+              </div>
               <p class="tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
                 {{ i18n.t("themeOnlyDisplayNotice") }}
               </p>
             }
 
             @case ("backup") {
-              <lp-group [label]="i18n.t('backupTitle')">
-                <lp-row
-                  icon="bwi-download"
-                  [label]="i18n.t('lastSynced')"
-                  [value]="lastSyncedAt() ?? i18n.t('never')"
-                  [clickable]="false"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-download"
-                  [label]="i18n.t('lastBackup')"
-                  [value]="lastBackupAt() ?? i18n.t('never')"
-                  [clickable]="false"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-download"
-                  [label]="i18n.t('backupMode')"
-                  [value]="i18n.t('backupManual')"
-                  [clickable]="false"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-download"
-                  [label]="i18n.t('exportData')"
-                  [value]="i18n.t('exportSettingsDesc')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/export')"
-                ></lp-row>
-              </lp-group>
-              <lp-group [label]="i18n.t('backupActions')">
-                <lp-row
-                  icon="bwi-settings"
-                  [label]="i18n.t('cloudBackup')"
-                  [chevron]="true"
-                  [clickable]="true"
-                  (activated)="go('/backup-settings')"
-                ></lp-row>
-              </lp-group>
+              <div class="tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("cloudBackupManualGroup") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("lastSynced") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{ lastSyncedLabel() }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    (click)="go('/backup-settings')"
+                  >
+                    {{ i18n.t("syncNow") }}
+                  </button>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("backupStorage")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("backupSubtitle")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    data-testid="settings_backup_config"
+                    (click)="go('/backup-config')"
+                  >
+                    {{ i18n.t("configure") }}
+                  </button>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("restoreFromBackup")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("restoreSettingsDesc")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    data-testid="settings_restore"
+                    (click)="go('/restore')"
+                  >
+                    {{ i18n.t("restoreAction") }}
+                  </button>
+                </div>
+              </div>
+
+              <div class="tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-text-muted">
+                {{ i18n.t("localBackup") }}
+              </div>
+              <div
+                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-px-4 tw-py-3">
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("exportLocalRowTitle")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("exportLocalRowDesc")
+                    }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    (click)="go('/export')"
+                  >
+                    {{ i18n.t("exportVerb") }}
+                  </button>
+                </div>
+              </div>
               <p class="tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
-                {{ i18n.t("backupManualNotice") }}
+                {{ i18n.t("settingsNoteBackup") }}
               </p>
             }
 
             @case ("about") {
               <div
-                class="tw-flex tw-items-center tw-gap-4 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5"
+                class="tw-flex tw-flex-col tw-items-start tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5"
               >
                 <bit-svg
                   class="tw-size-12 tw-flex-none"
                   [content]="logo"
                   [ariaLabel]="i18n.t('appLogoLabel')"
                 ></bit-svg>
-                <div>
+                <div class="tw-mt-3 tw-min-w-0">
                   <div class="tw-text-lg tw-font-semibold tw-text-main">LocalPass</div>
                   <div class="tw-text-sm tw-text-muted">
                     {{ i18n.t("version", version()) }}
                   </div>
+                  <p class="tw-mb-0 tw-mt-2 tw-text-sm tw-leading-relaxed tw-text-muted">
+                    {{ i18n.t("aboutDescription") }}
+                  </p>
                 </div>
               </div>
-              <lp-group [label]="i18n.t('about')">
-                <lp-row
-                  icon="bwi-shield"
-                  [label]="i18n.t('privacy')"
-                  [value]="i18n.t('privacySummary')"
-                  [clickable]="false"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-file-text"
-                  [label]="i18n.t('license')"
-                  [value]="i18n.t('licenseGpl')"
-                  [clickable]="false"
-                ></lp-row>
-                <lp-row
-                  icon="bwi-external-link"
-                  [label]="i18n.t('sourceCode')"
-                  [value]="sourceUrl"
-                  [clickable]="true"
-                  (activated)="openSource()"
-                ></lp-row>
-              </lp-group>
-              <p class="tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
-                {{ i18n.t("aboutOfflineNotice") }}
-              </p>
+              <div
+                class="tw-mt-4 tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+              >
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("privacy") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("privacyRowDesc")
+                    }}</span>
+                  </span>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{ i18n.t("license") }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      i18n.t("licenseGpl")
+                    }}</span>
+                  </span>
+                </div>
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                >
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-text-main">{{
+                      i18n.t("sourceAddress")
+                    }}</span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{ sourceUrl }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="primaryGhost"
+                    size="small"
+                    class="!tw-text-fg-brand"
+                    (click)="openSource()"
+                  >
+                    {{ i18n.t("openAction") }}
+                  </button>
+                </div>
+              </div>
             }
           }
 
@@ -377,30 +691,48 @@ export class SettingsDesktopV2Component implements OnInit {
   private readonly logService = inject(LogService);
   private readonly dialogService = inject(DialogService);
   private readonly pinService = inject(PinServiceAbstraction);
+  private readonly vaultTimeoutSettingsService = inject(VaultTimeoutSettingsService);
   private readonly router = inject(Router);
   private readonly themeStateService = inject(ThemeStateService);
   private readonly syncService = inject(VaultBackupSyncService);
-  private readonly backupService = inject(VaultBackupService);
   private readonly lockService = inject(LockService);
+  private readonly cipherService = inject(CipherService);
+  private readonly folderService = inject(FolderService);
 
   protected readonly tabs = TABS;
   protected readonly themes = THEMES;
+  protected readonly themeTypes = ThemeTypes;
   protected readonly logo = LocalPassLogo;
   protected readonly sourceUrl = "github.com/xieboss778/LocalPass";
   protected readonly activeTab = signal<SettingsTab>("security");
   protected readonly supportsTouchId = signal(false);
   protected readonly touchIdEnabled = signal(false);
   protected readonly pinEnabled = signal(false);
+  protected readonly timeoutEditing = signal(false);
+  protected readonly timeoutSummary = toSignal(
+    this.accountService.activeAccount$.pipe(
+      getUserId,
+      switchMap((userId) => this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId)),
+      map((timeout) => this.describeTimeout(timeout)),
+    ),
+    { initialValue: "" },
+  );
   protected readonly selectedTheme = signal<Theme>(ThemeTypes.System);
   protected readonly version = signal("");
   protected readonly lastSyncedAt = signal<string | null>(null);
-  protected readonly lastBackupAt = signal<string | null>(null);
+  private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en" });
+  protected readonly lastSyncedLabel = computed(() =>
+    formatBackupTimestamp(this.lastSyncedAt(), this.locale(), this.i18n),
+  );
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly folderCount = signal(0);
+  protected readonly trashCount = signal(0);
 
   async ngOnInit(): Promise<void> {
     this.version.set(await this.platformUtilsService.getApplicationVersion());
     this.selectedTheme.set(await firstValueFrom(this.themeStateService.selectedTheme$));
     await this.refreshBackupStatus();
+    await this.refreshVaultCounts();
 
     const userId = await this.userId();
     this.pinEnabled.set(await this.pinService.isPinSet(userId));
@@ -520,6 +852,10 @@ export class SettingsDesktopV2Component implements OnInit {
     await this.lockService.lock(userId, LockSource.Manual);
   }
 
+  protected changeMasterPassword(): void {
+    this.dialogService.open(ChangePasswordDialogComponent);
+  }
+
   protected openSource(): void {
     this.platformUtilsService.launchUri("https://github.com/xieboss778/LocalPass");
   }
@@ -528,14 +864,34 @@ export class SettingsDesktopV2Component implements OnInit {
     void this.router.navigateByUrl(route);
   }
 
+  /** 自动锁定行只显示当前超时；具体修改在展开的内联表单里完成。 */
+  private describeTimeout(timeout: VaultTimeout): string {
+    if (typeof timeout === "string") {
+      return this.i18n.t(timeout);
+    }
+
+    if (timeout === VaultTimeoutNumberType.Immediately) {
+      return this.i18n.t("immediately");
+    }
+
+    const minutes = `${timeout} ${this.i18n.t("minutes")}`;
+    return this.i18n.t("autoLockSummary", minutes);
+  }
+
   private async refreshBackupStatus(): Promise<void> {
     const userId = await this.userId();
-    const [state, settings] = await Promise.all([
-      this.syncService.getSyncState(userId),
-      this.backupService.getSettings(userId),
-    ]);
+    const state = await this.syncService.getSyncState(userId);
     this.lastSyncedAt.set(state.lastSyncedAt);
-    this.lastBackupAt.set(settings.lastBackupAt ?? null);
+  }
+
+  private async refreshVaultCounts(): Promise<void> {
+    const userId = await this.userId();
+    const [ciphers, folders] = await Promise.all([
+      firstValueFrom(this.cipherService.cipherViews$(userId)),
+      firstValueFrom(this.folderService.folderViews$(userId)),
+    ]);
+    this.trashCount.set(ciphers.filter((cipher) => cipher.isDeleted).length);
+    this.folderCount.set(folders.filter((folder) => folder.id !== "").length);
   }
 
   private async userId() {

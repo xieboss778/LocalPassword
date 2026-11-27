@@ -54,18 +54,20 @@ import {
           @for (kind of kinds; track kind) {
             <button
               type="button"
-              class="tw-flex tw-flex-col tw-items-start tw-gap-2 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-start tw-transition-colors hover:tw-border-border-brand hover:tw-bg-bg-brand-softer"
+              class="tw-flex tw-flex-col tw-items-start tw-gap-1.5 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-start tw-transition-colors hover:tw-border-border-brand hover:tw-bg-bg-brand-softer"
               (click)="pick(kind)"
             >
-              <lp-kind-tile [kind]="kind" size="lg"></lp-kind-tile>
-              <span class="tw-text-sm tw-font-semibold tw-text-main">{{ label(kind) }}</span>
-              <span class="tw-text-xs tw-leading-relaxed tw-text-muted">{{ blurb(kind) }}</span>
+              <lp-kind-tile [kind]="kind" size="base"></lp-kind-tile>
+              <span class="tw-text-sm tw-leading-tight tw-font-semibold tw-text-main">{{
+                label(kind)
+              }}</span>
+              <span class="tw-text-xs tw-leading-snug tw-text-muted">{{ blurb(kind) }}</span>
             </button>
           }
         </div>
 
         <div
-          class="tw-mt-3 tw-flex tw-items-start tw-gap-2 tw-rounded-lg tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-p-3 tw-text-xs tw-leading-relaxed tw-text-main"
+          class="tw-mt-3 tw-flex tw-items-start tw-gap-2.5 tw-rounded-lg tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-px-3.5 tw-py-3 tw-text-xs tw-leading-relaxed tw-text-muted"
         >
           <bit-icon name="bwi-info-circle" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
           <span>{{ i18n.t("newItemKindNotice") }}</span>

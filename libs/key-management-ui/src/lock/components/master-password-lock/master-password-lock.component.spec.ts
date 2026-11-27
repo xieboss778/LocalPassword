@@ -124,6 +124,9 @@ describe("MasterPasswordLockComponent", () => {
       ],
     }).compileComponents();
 
+    // Construct as a non-local client so the account-model controls (log out) render; the
+    // LocalPass browser/desktop lock screens intentionally omit them.
+    platformUtilsService.getClientType.mockReturnValue(ClientType.Web);
     fixture = TestBed.createComponent(MasterPasswordLockComponent);
     component = fixture.componentInstance;
   });
@@ -553,6 +556,32 @@ describe("MasterPasswordLockComponent", () => {
         "[MasterPasswordLockComponent] Failed to unlock via master password",
         customError,
       );
+    });
+
+    it("pauses the form after five wrong passwords instead of logging out", async () => {
+      setupComponent();
+      unlockService.unlockWithMasterPassword.mockRejectedValue(new Error("Wrong password"));
+      accountService.activeAccount$ = of(activeAccount);
+
+      for (let attempt = 0; attempt < 5; attempt++) {
+        component.formGroup.controls.masterPassword.setValue("wrong-password");
+        await component.submit();
+      }
+      fixture.detectChanges();
+
+      const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'))
+        .nativeElement as HTMLButtonElement;
+      expect(component.formGroup.controls.masterPassword.disabled).toBe(true);
+      expect(submitButton.getAttribute("aria-disabled")).toBe("true");
+      expect(fixture.nativeElement.textContent).toContain("unlockWaitTitle");
+      expect(fixture.nativeElement.textContent).toContain("unlockWaitRemaining");
+
+      const attemptsBeforeWait = unlockService.unlockWithMasterPassword.mock.calls.length;
+      await component.submit();
+      expect(unlockService.unlockWithMasterPassword).toHaveBeenCalledTimes(attemptsBeforeWait);
+
+      // Stop the countdown so the test process does not keep a timer alive.
+      fixture.destroy();
     });
 
     it("emits userKey when unlock is successful", async () => {

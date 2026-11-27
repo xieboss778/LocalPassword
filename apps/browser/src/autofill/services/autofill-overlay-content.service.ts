@@ -86,6 +86,11 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
   private focusedFieldData: FocusedFieldData | null = null;
   private closeInlineMenuOnRedirectTimeout: number | NodeJS.Timeout | null = null;
   private focusInlineMenuListTimeout: number | NodeJS.Timeout | null = null;
+  /**
+   * True from the moment a fill started by the inline menu begins until its confirmation has
+   * rendered. Input events raised by that fill must not tear the menu down.
+   */
+  private inlineMenuFillConfirmation = false;
   private eventHandlersMemo: { [key: string]: EventListener } = {};
   private readonly extensionMessageHandlers: AutofillOverlayContentExtensionMessageHandlers = {
     addNewVaultItemFromOverlay: ({ message }) => this.addNewVaultItem(message),
@@ -286,6 +291,22 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     if (isClosingInlineMenu) {
       await this.sendExtensionMessage("closeAutofillInlineMenu", { forceCloseInlineMenu: true });
     }
+  }
+
+  /**
+   * Keeps the inline menu list mounted while a fill started from the list updates the page. The
+   * list renders its own post-fill confirmation, so the input events produced by filling must not
+   * close it.
+   */
+  beginInlineMenuFillConfirmation() {
+    this.inlineMenuFillConfirmation = true;
+  }
+
+  /**
+   * Ends the post-fill window and restores the normal close-on-input behavior.
+   */
+  endInlineMenuFillConfirmation() {
+    this.inlineMenuFillConfirmation = false;
   }
 
   refreshMenuLayerPosition = () => this.inlineMenuContentService?.refreshTopLayerPosition();
@@ -775,6 +796,12 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    * is currently focused.
    */
   private handleFormFieldBlurEvent = () => {
+    if (this.inlineMenuFillConfirmation) {
+      // The fill's own focus action blurs the field before refocusing it. The list must stay
+      // mounted to show its post-fill confirmation, so skip the focus check.
+      return;
+    }
+
     void this.updateIsFieldCurrentlyFocused(false);
     void this.sendExtensionMessage("checkAutofillInlineMenuFocused");
   };
@@ -872,6 +899,18 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
 
     this.storeModifiedFormElement(formFieldElement);
     if (elementIsSelectElement(formFieldElement)) {
+      return;
+    }
+
+    if (this.inlineMenuFillConfirmation) {
+      // The inline menu list stays mounted to show its post-fill confirmation.
+      return;
+    }
+
+    const autofillFieldData = this.formFieldElements.get(formFieldElement);
+    if (this.isInlineMenuUsernameFilterField(autofillFieldData)) {
+      // Keep the account list open while the user types and refresh its filter value.
+      await this.updateMostRecentlyFocusedField(formFieldElement);
       return;
     }
 
@@ -1065,6 +1104,34 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
   };
 
   /**
+   * Captures the current value of a login username field so the inline menu can filter accounts as
+   * the user types. Passwords, hidden inputs and TOTP fields intentionally never contribute a value.
+   */
+  private getInlineMenuUsernameFilterValue(
+    formFieldElement: FillableFormFieldElement,
+    autofillFieldData: AutofillField | undefined,
+  ): string | undefined {
+    if (!this.isInlineMenuUsernameFilterField(autofillFieldData)) {
+      return undefined;
+    }
+
+    return formFieldElement.value ?? "";
+  }
+
+  /**
+   * Identifies a login username field whose value may filter the inline menu account list.
+   */
+  private isInlineMenuUsernameFilterField(autofillFieldData: AutofillField | undefined): boolean {
+    return !!(
+      autofillFieldData &&
+      autofillFieldData.inlineMenuFillType === CipherType.Login &&
+      autofillFieldData.type !== "password" &&
+      autofillFieldData.type !== "hidden" &&
+      autofillFieldData.accountCreationFieldType !== InlineMenuAccountCreationFieldType.Totp
+    );
+  }
+
+  /**
    * Updates the data used to position the inline menu elements in relation
    * to the most recently focused form field.
    *
@@ -1095,6 +1162,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
       accountCreationFieldType: autofillFieldData?.accountCreationFieldType,
       focusedFieldForm: autofillFieldData?.form ?? undefined,
       focusedFieldOpid: autofillFieldData?.opid,
+      focusedFieldValue: this.getInlineMenuUsernameFilterValue(formFieldElement, autofillFieldData),
     };
 
     const allFields = this.formFieldElements;

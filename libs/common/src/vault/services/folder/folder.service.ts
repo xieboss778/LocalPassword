@@ -48,6 +48,13 @@ export class FolderService implements InternalFolderServiceAbstraction {
    */
   private forceFolderViews: Record<UserId, Subject<FolderView[]>> = {};
 
+  /**
+   * Identifies the encrypted folders a cached decrypted list was built from, so the cache is not
+   * reused after the encrypted state changes without an explicit clear (for example, an import
+   * that writes folders one by one).
+   */
+  private folderCacheSignatures = new Map<UserId, string>();
+
   constructor(
     private keyService: KeyService,
     private encryptService: EncryptService,
@@ -180,6 +187,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
       throw new Error("User ID is required.");
     }
 
+    this.folderCacheSignatures.delete(userId);
     await this.setDecryptedFolders([], userId);
   }
 
@@ -260,11 +268,12 @@ export class FolderService implements InternalFolderServiceAbstraction {
     userId: UserId,
     folderData: Record<string, FolderData>,
   ): Promise<FolderView[]> {
-    // Check if the decrypted folders are already cached
+    // Check if the decrypted folders are already cached for this exact encrypted set
     const decrypted = await firstValueFrom(
       this.stateProvider.getUser(userId, FOLDER_DECRYPTED_FOLDERS).state$,
     );
-    if (decrypted?.length) {
+    const signature = folderSignature(folderData);
+    if (decrypted?.length && this.folderCacheSignatures.get(userId) === signature) {
       return decrypted;
     }
 
@@ -301,6 +310,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
 
     // Cache the decrypted folders
     await this.setDecryptedFolders(decryptedFolders, userId);
+    this.folderCacheSignatures.set(userId, signature);
     return decryptedFolders;
   }
 
@@ -319,4 +329,12 @@ export class FolderService implements InternalFolderServiceAbstraction {
   private async setDecryptedFolders(folders: FolderView[], userId: UserId): Promise<void> {
     await this.stateProvider.setUserState(FOLDER_DECRYPTED_FOLDERS, folders, userId);
   }
+}
+
+/** Stable fingerprint of the encrypted folder set, used to validate the decrypted cache. */
+function folderSignature(folderData: Record<string, FolderData> | null): string {
+  return Object.entries(folderData ?? {})
+    .map(([id, folder]) => `${id}:${folder.name ?? ""}`)
+    .sort()
+    .join("|");
 }

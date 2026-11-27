@@ -17,3 +17,16 @@
 @import "migration.scss";
 @import "../../../../libs/angular/src/scss/icons.scss";
 @import "../../../../libs/components/src/multi-select/scss/bw.theme";
+
+// Tailwind preflight is disabled for the monorepo (libs/components/tailwind.config.base.js),
+// but the desktop shell has no equivalent base reset. Without this, `tw-border` only sets a
+// width while `border-style` stays `none`, so every card border and divider in the desktop UI
+// silently disappears. Match the popup's reset for borders only; leave box-sizing and legacy
+// component styles untouched.
+*,
+::before,
+::after {
+  border-width: 0;
+  border-style: solid;
+  border-color: currentcolor;
+}

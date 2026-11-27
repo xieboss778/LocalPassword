@@ -10,9 +10,12 @@ describe("AutofillInlineMenuContainer", () => {
   const iframeUrl = `${extensionOrigin}/overlay/menu-list.html`;
   const pageTitle = "Example";
   let autofillInlineMenuContainer: AutofillInlineMenuContainer;
+  let connectorPort: chrome.runtime.Port;
 
   beforeEach(() => {
     jest.spyOn(chrome.runtime, "getURL").mockReturnValue(`${extensionOrigin}/`);
+    connectorPort = createPortSpyMock(AutofillOverlayPort.ListMessageConnector);
+    jest.spyOn(chrome.runtime, "connect").mockReturnValue(connectorPort);
     autofillInlineMenuContainer = new AutofillInlineMenuContainer();
   });
 
@@ -59,6 +62,56 @@ describe("AutofillInlineMenuContainer", () => {
       expect(
         autofillInlineMenuContainer["inlineMenuPageIframe"].contentWindow.postMessage,
       ).toHaveBeenCalledWith(expectedMessage, "*");
+    });
+
+    it("forwards background UI commands to the inline menu page with the session token", () => {
+      const message = {
+        command: "initAutofillInlineMenuList",
+        iframeUrl,
+        pageTitle,
+        portKey,
+        portName: AutofillOverlayPort.List,
+      };
+      postWindowMessage(message, extensionOrigin);
+      const iframe = autofillInlineMenuContainer["inlineMenuPageIframe"];
+      jest.spyOn(iframe.contentWindow, "postMessage");
+      iframe.dispatchEvent(new Event("load"));
+      jest.mocked(iframe.contentWindow.postMessage).mockClear();
+      const backgroundMessage = {
+        command: "updateAutofillInlineMenuListCiphers",
+        ciphers: [] as unknown[],
+        focusedFieldValue: "test",
+        isTotpField: false,
+      };
+
+      (connectorPort.onMessage.addListener as jest.Mock).mock.calls[0][0](backgroundMessage);
+
+      expect(iframe.contentWindow.postMessage).toHaveBeenCalledWith(
+        {
+          ...backgroundMessage,
+          token: autofillInlineMenuContainer["token"],
+        },
+        "*",
+      );
+    });
+
+    it("does not forward background init messages back to the inline menu page", () => {
+      const message = {
+        command: "initAutofillInlineMenuList",
+        iframeUrl,
+        pageTitle,
+        portKey,
+        portName: AutofillOverlayPort.List,
+      };
+      postWindowMessage(message, extensionOrigin);
+      const iframe = autofillInlineMenuContainer["inlineMenuPageIframe"];
+      jest.spyOn(iframe.contentWindow, "postMessage");
+      iframe.dispatchEvent(new Event("load"));
+      jest.mocked(iframe.contentWindow.postMessage).mockClear();
+
+      (connectorPort.onMessage.addListener as jest.Mock).mock.calls[0][0](message);
+
+      expect(iframe.contentWindow.postMessage).not.toHaveBeenCalled();
     });
 
     it("ignores initialization when URLs are not from extension origin", () => {

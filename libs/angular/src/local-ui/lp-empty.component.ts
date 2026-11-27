@@ -1,18 +1,22 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
-import { IconTileComponent, LocalPassIcon } from "@localpass/components";
+import { IconComponent, LocalPassIcon } from "@localpass/components";
 
-/** 空状态：彩色图标块 + 一句目的说明 + 动作槽。 */
+/** 空状态：圆形品牌图标块 + 一句目的说明 + 动作槽。 */
 @Component({
   selector: "lp-empty",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconTileComponent],
+  imports: [IconComponent],
   template: `
-    <div class="tw-px-6 tw-py-10 tw-text-center">
-      <bit-icon-tile class="tw-mb-4" [icon]="icon()" variant="brand" size="xl"></bit-icon-tile>
-      <h2 class="tw-m-0 tw-text-lg tw-font-semibold tw-text-main">{{ title() }}</h2>
+    <div class="tw-px-7 tw-py-12 tw-text-center">
+      <span
+        class="tw-mx-auto tw-mb-4 tw-grid tw-size-16 tw-place-items-center tw-rounded-full tw-bg-bg-brand-softer tw-text-fg-brand"
+      >
+        <bit-icon [name]="icon()" class="tw-text-3xl"></bit-icon>
+      </span>
+      <h2 class="tw-m-0 tw-text-base tw-font-semibold tw-text-main">{{ title() }}</h2>
       @if (text()) {
-        <p class="tw-mx-auto tw-mt-2 tw-max-w-sm tw-text-sm tw-leading-relaxed tw-text-muted">
+        <p class="tw-mx-auto tw-mt-2 tw-max-w-xs tw-text-sm tw-leading-relaxed tw-text-muted">
           {{ text() }}
         </p>
       }

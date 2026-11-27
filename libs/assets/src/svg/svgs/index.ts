@@ -8,6 +8,7 @@ export * from "./biometric-fingerprint";
 export * from "./localpass-icon";
 export * from "./localpass-logo.icon";
 export * from "./localpass-logo-beta.icon";
+export * from "./localpass-mark";
 export * from "./browser-extension";
 export { default as BusinessUnitPortalLogo } from "./business-unit-portal";
 export * from "./business-welcome.icon";

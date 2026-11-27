@@ -10,7 +10,7 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { firstValueFrom, filter, map, startWith, distinctUntilChanged, of, switchMap } from "rxjs";
 
-import { LocalPassIcon } from "@localpass/assets/svg";
+import { LocalPassMark } from "@localpass/assets/svg";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
@@ -75,7 +75,7 @@ const NAV_SECTIONS: readonly NavSection[] = [
         labelKey: "generator",
         icon: "bwi-generate",
         route: "/generator",
-        matches: ["/generator"],
+        matches: ["/generator", "/generator-history-v2"],
         badge: null,
       },
       {
@@ -96,7 +96,7 @@ const NAV_SECTIONS: readonly NavSection[] = [
         labelKey: "cloudBackup",
         icon: "bwi-download",
         route: "/backup-settings",
-        matches: ["/backup-settings"],
+        matches: ["/backup-settings", "/backup-config", "/restore"],
         badge: null,
       },
     ],
@@ -143,21 +143,19 @@ const NAV_SECTIONS: readonly NavSection[] = [
   template: `
     <div class="tw-flex tw-h-full tw-bg-background-alt">
       <nav
-        class="tw-flex tw-w-60 tw-flex-none tw-flex-col tw-bg-bg-nav tw-p-3"
+        class="tw-flex tw-flex-none tw-flex-col tw-bg-bg-nav tw-p-3"
+        [style.width.px]="244"
         [attr.aria-label]="i18n.t('primaryNavigation')"
       >
         <div class="tw-flex tw-items-center tw-gap-2 tw-px-2 tw-pb-4">
           <bit-svg
-            class="tw-size-7 tw-flex-none"
+            class="tw-size-7 tw-flex-none tw-text-fg-nav"
             [content]="logo"
             [ariaLabel]="i18n.t('appLogoLabel')"
           ></bit-svg>
-          <span class="tw-min-w-0">
-            <span class="tw-block tw-text-base tw-font-semibold tw-text-fg-nav">LocalPass</span>
-            <span class="tw-block tw-text-xs tw-text-fg-nav-heading">{{
-              i18n.t("localVault")
-            }}</span>
-          </span>
+          <span class="tw-min-w-0 tw-text-xs tw-text-fg-nav-heading">{{
+            i18n.t("localVault")
+          }}</span>
         </div>
 
         @for (section of sections; track section.labelKey) {
@@ -171,10 +169,11 @@ const NAV_SECTIONS: readonly NavSection[] = [
               <button
                 type="button"
                 class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-rounded-lg tw-border-0 tw-bg-transparent tw-px-2.5 tw-py-2 tw-text-start tw-text-sm tw-text-fg-nav-heading tw-transition-colors hover:tw-bg-bg-nav-hover hover:tw-text-fg-nav"
-                [class.tw-bg-bg-nav-hover]="isActive(entry)"
+                [style.background-color]="isActive(entry) ? 'var(--color-nav-bg-brand-soft)' : null"
                 [class.tw-font-semibold]="isActive(entry)"
                 [class.tw-text-fg-nav]="isActive(entry)"
                 [attr.aria-current]="isActive(entry) ? 'page' : null"
+                data-testid="nav_entry"
                 (click)="go(entry.route)"
               >
                 <bit-icon [name]="entry.icon" fixedWidth class="tw-w-5 tw-text-center"></bit-icon>
@@ -196,13 +195,15 @@ const NAV_SECTIONS: readonly NavSection[] = [
           <span
             class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-full tw-bg-bg-nav-hover tw-text-xs tw-font-semibold tw-text-fg-nav"
             aria-hidden="true"
-            >LP</span
+            >{{ accountInitial() }}</span
           >
           <span class="tw-min-w-0 tw-flex-1">
             <span class="tw-block tw-text-sm tw-font-semibold tw-text-fg-nav">{{
               i18n.t("localVault")
             }}</span>
-            <span class="tw-block tw-text-xs tw-text-fg-nav-heading">{{ i18n.t("unlocked") }}</span>
+            <span class="tw-block tw-text-xs tw-text-fg-nav-heading">{{
+              i18n.t("unlockedEncrypted")
+            }}</span>
           </span>
           <button
             type="button"
@@ -230,7 +231,7 @@ export class LocalVaultLayoutComponent implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly lockService = inject(LockService);
 
-  protected readonly logo = LocalPassIcon;
+  protected readonly logo = LocalPassMark;
   protected readonly sections = NAV_SECTIONS;
   protected readonly folderCount = signal(0);
   protected readonly trashCount = signal(0);
@@ -245,6 +246,16 @@ export class LocalVaultLayoutComponent implements OnInit {
   );
 
   private readonly activeUrl = computed(() => this.currentUrl());
+
+  private readonly activeAccount = toSignal(this.accountService.activeAccount$, {
+    initialValue: null,
+  });
+
+  protected readonly accountInitial = computed(() => {
+    const account = this.activeAccount();
+    const label = account?.name || account?.email || "";
+    return label.slice(0, 1).toUpperCase() || "LP";
+  });
 
   constructor() {
     this.router.events

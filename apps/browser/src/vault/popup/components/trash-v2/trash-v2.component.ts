@@ -46,8 +46,9 @@ import { PopupCipherViewLike } from "../../views/popup-cipher.view";
         <div slot="actions">
           @if (items().length) {
             <button
+              id="trash_button_empty"
               type="button"
-              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
+              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-fg-danger hover:tw-bg-bg-danger-soft"
               [attr.aria-label]="i18n.t('emptyTrash')"
               [attr.title]="i18n.t('emptyTrash')"
               (click)="emptyTrash()"
@@ -85,6 +86,7 @@ import { PopupCipherViewLike } from "../../views/popup-cipher.view";
                   }}</span>
                 </span>
                 <button
+                  [attr.id]="'trash_button_restore-' + item.id"
                   type="button"
                   class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
                   [attr.aria-label]="i18n.t('restore')"
@@ -94,6 +96,7 @@ import { PopupCipherViewLike } from "../../views/popup-cipher.view";
                   <bit-icon name="bwi-undo" class="tw-text-base"></bit-icon>
                 </button>
                 <button
+                  [attr.id]="'trash_button_purge-' + item.id"
                   type="button"
                   class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-danger-soft hover:tw-text-fg-danger"
                   [attr.aria-label]="i18n.t('deleteForever')"
@@ -105,8 +108,8 @@ import { PopupCipherViewLike } from "../../views/popup-cipher.view";
               </div>
             }
           </div>
-          <p class="tw-px-2.5 tw-pt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
-            {{ i18n.t("trashWarning") }}
+          <p class="tw-px-2.5 tw-pt-2 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+            {{ i18n.t("trashFootnote") }}
           </p>
         }
       </div>
@@ -123,9 +126,7 @@ export class TrashV2Component {
 
   protected readonly items = toSignal(this.itemsService.deletedCiphers$, { initialValue: [] });
 
-  protected readonly subtitle = computed(
-    () => `${this.items().length} ${this.i18n.t("items")} · ${this.i18n.t("trashHint")}`,
-  );
+  protected readonly subtitle = computed(() => this.i18n.t("trashRetentionLocal"));
 
   protected back(): void {
     void this.router.navigateByUrl("/tabs/settings");
@@ -166,7 +167,12 @@ export class TrashV2Component {
     if (Number.isNaN(date.getTime())) {
       return "";
     }
-    return this.i18n.t("deletedOn", date.toLocaleDateString());
+    const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000));
+    const daysLeft = Math.max(0, 30 - days);
+    return `${this.i18n.t("deletedDaysAgo", String(days))} · ${this.i18n.t(
+      "trashDaysLeft",
+      String(daysLeft),
+    )}`;
   }
 
   protected async restore(rawId: unknown): Promise<void> {

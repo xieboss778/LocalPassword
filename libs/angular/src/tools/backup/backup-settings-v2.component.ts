@@ -1,5 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
@@ -8,33 +16,44 @@ import { AccountService } from "@localpass/common/auth/abstractions/account.serv
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
-import { ButtonModule, DialogService } from "@localpass/components";
+import { ButtonModule, CalloutModule, DialogService, IconModule } from "@localpass/components";
 import {
   MergeConflict,
   S3Client,
+  SNAPSHOT_PREFIX,
   VaultBackupService,
   VaultBackupSyncService,
 } from "@localpass/local-vault";
 
-import { JslibModule } from "../../jslib.module";
-import {
-  LpFieldComponent,
-  LpGroupComponent,
-  LpPageHeaderComponent,
-  LpPopupHeaderComponent,
-  LpRowComponent,
-} from "../../local-ui";
+import { LpPageHeaderComponent, LpPopupHeaderComponent } from "../../local-ui";
+
+import { formatBackupTimestamp, formatSnapshotId } from "./backup-time";
 
 interface BackupStatus {
   readonly lastSyncedAt: string | null;
   readonly lastBackupAt: string | null;
 }
 
+interface SnapshotRow {
+  readonly id: string;
+  readonly size: number;
+  readonly latest: boolean;
+}
+
+type ConfigKey = "endpoint" | "bucket" | "accessKeyId" | "secretAccessKey" | "prefix";
+
+interface ConfigField {
+  readonly key: ConfigKey;
+  readonly labelKey: string;
+  readonly mono: boolean;
+  readonly password: boolean;
+}
+
 /**
  * 备份与恢复（方向 C）。
  *
- * 硬约束：**这里没有定时器**。上传只由「立即备份 / 立即同步」两个按钮触发，
- * 任何本地写入都不会自动上传。看一下页面顶部的黄条说得很清楚，用户不用猜。
+ * 硬约束：**这里没有定时器**。上传只由「立即同步 / 立即备份」两个按钮触发，
+ * 任何本地写入都不会自动上传。快照列表只读对象元数据，不解密、不写日志。
  */
 @Component({
   selector: "backup-settings-v2",
@@ -43,203 +62,331 @@ interface BackupStatus {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    JslibModule,
     ButtonModule,
-    LpFieldComponent,
-    LpGroupComponent,
+    CalloutModule,
+    IconModule,
     LpPageHeaderComponent,
     LpPopupHeaderComponent,
-    LpRowComponent,
   ],
   template: `
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       @if (compact()) {
         <lp-popup-header
-          [title]="i18n.t('backupTitle')"
-          [sub]="i18n.t('backupSubtitle')"
+          [title]="configView() ? i18n.t('backupStorage') : i18n.t('backupTitle')"
+          [sub]="configView() ? i18n.t('backupConfigSubtitle') : i18n.t('backupSubtitle')"
           [back]="true"
-          (backTriggered)="goBack()"
-        ></lp-popup-header>
+          (backTriggered)="back()"
+        >
+          @if (!configView()) {
+            <div slot="actions">
+              <button
+                type="button"
+                class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
+                [attr.aria-label]="i18n.t('backupStorage')"
+                [attr.title]="i18n.t('backupStorage')"
+                data-testid="backup_go_config"
+                (click)="goConfig()"
+              >
+                <bit-icon name="bwi-settings" class="tw-text-base"></bit-icon>
+              </button>
+            </div>
+          }
+        </lp-popup-header>
+      } @else if (configView()) {
+        <lp-page-header [title]="i18n.t('backupStorage')" [sub]="i18n.t('backupConfigSubtitle')">
+          <button
+            type="button"
+            bitButton
+            buttonType="secondary"
+            [disabled]="busy()"
+            data-testid="backup_test_connection"
+            (click)="testConnection()"
+          >
+            {{ i18n.t("backupTest") }}
+          </button>
+          <button
+            type="button"
+            bitButton
+            buttonType="primary"
+            [disabled]="busy()"
+            data-testid="backup_save_config"
+            (click)="save()"
+          >
+            {{ i18n.t("backupSaveConfig") }}
+          </button>
+        </lp-page-header>
       } @else {
-        <lp-page-header
-          [title]="i18n.t('backupTitle')"
-          [sub]="i18n.t('backupSubtitle')"
-        ></lp-page-header>
+        <lp-page-header [title]="i18n.t('backupTitle')" [sub]="i18n.t('backupSubtitle')">
+        </lp-page-header>
       }
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
-        <div
-          class="tw-mx-3 tw-mb-2 tw-rounded-xl tw-border tw-border-border-warning-soft tw-bg-bg-warning-soft tw-px-3 tw-py-2.5 tw-text-xs tw-leading-relaxed tw-text-fg-warning-strong"
-        >
-          {{ i18n.t("backupManualNotice") }}
-        </div>
+      @if (configView()) {
+        <ng-template #configForm>
+          <div class="tw-flex tw-flex-col tw-gap-3">
+            @for (field of configFields; track field.key) {
+              <label class="tw-block" [attr.for]="'backup-form_input_' + field.key">
+                <span class="tw-mb-1.5 tw-block tw-text-xs tw-font-medium tw-text-muted">{{
+                  i18n.t(field.labelKey)
+                }}</span>
+                <input
+                  [id]="'backup-form_input_' + field.key"
+                  class="tw-w-full tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-text-sm tw-text-main tw-outline-none focus:tw-border-border-focus"
+                  [class.tw-font-mono]="field.mono"
+                  [type]="field.password ? 'password' : 'text'"
+                  autocomplete="off"
+                  [value]="valueOf(field.key)"
+                  (input)="onConfigInput(field.key, $event)"
+                />
+              </label>
+            }
+          </div>
+        </ng-template>
 
-        <lp-group [label]="i18n.t('backupStatus')">
-          <lp-row
-            [label]="i18n.t('lastSynced')"
-            [value]="status().lastSyncedAt ?? i18n.t('never')"
-            [clickable]="false"
-          />
-          <lp-row
-            [label]="i18n.t('lastBackup')"
-            [value]="status().lastBackupAt ?? i18n.t('never')"
-            [clickable]="false"
-          />
-          <lp-row
-            [label]="i18n.t('backupMode')"
-            [value]="i18n.t('backupManual')"
-            [clickable]="false"
-          />
-        </lp-group>
-
-        <lp-group [label]="i18n.t('backupStorage')">
-          <lp-field
-            [label]="i18n.t('backupEndpoint')"
-            [value]="valueOf('endpoint')"
-            (valueChange)="set('endpoint', $event)"
-          />
-          <lp-field
-            [label]="i18n.t('backupBucket')"
-            [value]="valueOf('bucket')"
-            (valueChange)="set('bucket', $event)"
-          />
-          <lp-field
-            [label]="i18n.t('backupPrefix')"
-            [value]="valueOf('prefix')"
-            (valueChange)="set('prefix', $event)"
-          />
-          <lp-field
-            [label]="i18n.t('backupAccessKey')"
-            [value]="valueOf('accessKeyId')"
-            (valueChange)="set('accessKeyId', $event)"
-          />
-          <lp-field
-            [label]="i18n.t('backupSecretKey')"
-            [password]="true"
-            [value]="valueOf('secretAccessKey')"
-            (valueChange)="set('secretAccessKey', $event)"
-          />
-        </lp-group>
-
-        <lp-group [label]="i18n.t('backupActions')">
-          <lp-row
-            icon="bwi-wireless"
-            [label]="i18n.t('backupTest')"
-            [value]="busy() ? i18n.t('loading') : ''"
-            [chevron]="true"
-            [clickable]="true"
-            (activated)="testConnection()"
-          />
-          <lp-row
-            icon="bwi-check"
-            [label]="i18n.t('backupSaveConfig')"
-            [chevron]="true"
-            [clickable]="true"
-            (activated)="save()"
-          />
-          <lp-row
-            icon="bwi-upload"
-            [label]="i18n.t('backupNow')"
-            [chevron]="true"
-            [clickable]="true"
-            (activated)="backupNow()"
-          />
-          <lp-row
-            icon="bwi-refresh"
-            [label]="i18n.t('syncNow')"
-            [chevron]="true"
-            [clickable]="true"
-            (activated)="syncNow()"
-          />
-        </lp-group>
-
-        <lp-group [label]="i18n.t('backupPassphrase')">
-          <lp-row
-            icon="bwi-key"
-            [label]="i18n.t('backupPassphrase')"
-            [value]="passwordVisible() ? (password() ?? '') : '••••••••'"
-            [mono]="true"
-            [chevron]="!passwordVisible()"
-            [copyValue]="passwordVisible() ? (password() ?? '') : ''"
-            [copyLabel]="i18n.t('backupPassphrase')"
-            [clickable]="true"
-            (activated)="revealPassword()"
-          />
-        </lp-group>
-
-        @if (passwordVisible()) {
-          <div class="tw-px-3 tw-pt-2">
-            <button type="button" bitButton buttonType="secondary" (click)="hidePassword()">
-              {{ i18n.t("hideValue") }}
+        @if (compact()) {
+          <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-4 tw-pt-1">
+            <div class="tw-flex tw-flex-col tw-gap-3 tw-px-0.5 tw-pt-0.5">
+              <ng-container [ngTemplateOutlet]="configForm"></ng-container>
+              <bit-callout type="info" [title]="null">{{
+                i18n.t("backupCredentialNote")
+              }}</bit-callout>
+              @if (configured()) {
+                <button type="button" bitButton buttonType="dangerGhost" (click)="disconnect()">
+                  {{ i18n.t("disconnectBackup") }}
+                </button>
+              }
+              @if (errorMessage()) {
+                <p class="tw-m-0 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
+              }
+            </div>
+          </div>
+          <div
+            class="tw-flex tw-flex-none tw-gap-2 tw-border-t tw-border-border-light tw-bg-background tw-px-3.5 tw-py-2.5"
+          >
+            <button
+              type="button"
+              bitButton
+              buttonType="primary"
+              class="tw-h-10 tw-flex-1"
+              [disabled]="busy()"
+              data-testid="backup_save_config"
+              (click)="save()"
+            >
+              {{ i18n.t("backupSaveConfig") }}
+            </button>
+            <button
+              type="button"
+              bitButton
+              buttonType="secondary"
+              class="tw-h-10 tw-flex-1"
+              [disabled]="busy()"
+              data-testid="backup_test_connection"
+              (click)="testConnection()"
+            >
+              {{ i18n.t("backupTest") }}
             </button>
           </div>
-        }
-
-        @if (configured()) {
-          <lp-group [label]="i18n.t('backupStorage')">
-            <lp-row
-              icon="bwi-trash"
-              [label]="i18n.t('disconnectBackup')"
-              [sub]="i18n.t('backupManualNotice')"
-              [chevron]="true"
-              [clickable]="true"
-              (activated)="disconnect()"
-            />
-          </lp-group>
-        }
-
-        @switch (phase()) {
-          @case ("loading") {
-            <lp-group [label]="i18n.t('syncPhaseTitle')">
-              <lp-row
-                icon="bwi-refresh"
-                [label]="i18n.t('syncLoading')"
-                [value]="i18n.t('loading')"
-                [clickable]="false"
-              />
-            </lp-group>
-          }
-          @case ("conflict") {
-            <lp-group [label]="i18n.t('syncConflictTitle')">
-              @for (conflict of conflicts(); track conflict.id) {
-                <lp-row
-                  [label]="conflict.id"
-                  [sub]="conflict.localRevision + ' → ' + conflict.remoteRevision"
-                  [value]="
-                    conflict.winner === 'local'
-                      ? i18n.t('restoreWinnerLocal')
-                      : i18n.t('restoreWinnerRemote')
-                  "
-                  [clickable]="false"
-                />
-              }
-            </lp-group>
-            <div class="tw-px-3 tw-pt-2">
-              <button type="button" bitButton buttonType="secondary" (click)="dismissConflict()">
-                {{ i18n.t("syncConflictAccept") }}
-              </button>
-            </div>
-          }
-          @case ("error") {
+        } @else {
+          <div class="tw-flex tw-items-start tw-gap-4 tw-px-7 tw-pt-1">
             <div
-              class="tw-mx-3 tw-mt-2 tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-px-3 tw-py-2.5 tw-text-xs tw-text-fg-danger-strong"
+              class="tw-min-w-0 tw-flex-1 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5 tw-shadow-sm"
             >
-              {{ i18n.t("backupSyncFailed") }}
+              <h2 class="tw-m-0 tw-text-sm tw-font-semibold tw-text-main">
+                {{ i18n.t("backupConnect") }}
+              </h2>
+              <div class="tw-pt-3">
+                <ng-container [ngTemplateOutlet]="configForm"></ng-container>
+              </div>
+              @if (configured()) {
+                <button
+                  type="button"
+                  bitButton
+                  buttonType="dangerGhost"
+                  class="tw-mt-4"
+                  (click)="disconnect()"
+                >
+                  {{ i18n.t("disconnectBackup") }}
+                </button>
+              }
+              @if (errorMessage()) {
+                <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
+              }
             </div>
-            <div class="tw-px-3 tw-pt-2">
-              <button type="button" bitButton buttonType="secondary" (click)="syncNow()">
-                {{ i18n.t("retry") }}
-              </button>
-            </div>
-          }
-        }
 
-        @if (errorMessage()) {
-          <p class="tw-px-4 tw-pt-3 tw-text-xs tw-text-fg-danger">
-            {{ errorMessage() }}
-          </p>
+            <aside
+              class="tw-w-96 tw-flex-none tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5 tw-shadow-sm"
+            >
+              <h2 class="tw-m-0 tw-text-sm tw-font-semibold tw-text-main">
+                {{ i18n.t("backupExplanation") }}
+              </h2>
+              <div class="tw-mt-3">
+                <bit-callout type="info" [title]="null">{{
+                  i18n.t("backupCredentialNote")
+                }}</bit-callout>
+              </div>
+              <p class="tw-mb-0 tw-mt-4 tw-text-xs tw-leading-relaxed tw-text-muted">
+                {{ i18n.t("backupKeyNote") }}
+              </p>
+            </aside>
+          </div>
         }
-      </div>
+      } @else {
+        <div
+          class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-pt-1 tw-pb-5"
+          [class.tw-px-3.5]="compact()"
+          [class.tw-px-7]="!compact()"
+        >
+          <div
+            class="tw-flex tw-items-center tw-gap-2.5 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3"
+          >
+            <span
+              class="tw-grid tw-size-4 tw-flex-none tw-place-items-center tw-rounded-full"
+              [class.tw-bg-bg-success-soft]="configured()"
+              [class.tw-bg-bg-warning-soft]="!configured()"
+              aria-hidden="true"
+            >
+              <span
+                class="tw-size-2 tw-rounded-full"
+                [class.tw-bg-bg-success]="configured()"
+                [class.tw-bg-bg-warning]="!configured()"
+              ></span>
+            </span>
+            <span class="tw-min-w-0">
+              <span class="tw-block tw-text-sm tw-font-semibold tw-text-main">{{
+                configured() ? i18n.t("backupConnectedR2") : i18n.t("backupNotConfigured")
+              }}</span>
+              <span class="tw-block tw-text-xs tw-text-muted">{{
+                configured() ? lastSyncLabel() : i18n.t("backupConfigPrompt")
+              }}</span>
+            </span>
+          </div>
+
+          <div class="tw-flex tw-gap-2 tw-pt-3 tw-pb-1">
+            <div
+              class="tw-min-w-0 tw-flex-1 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2.5"
+            >
+              <span class="tw-block tw-text-lg tw-font-semibold tw-text-main">{{
+                snapshots().length
+              }}</span>
+              <span class="tw-mt-px tw-block tw-text-xs tw-text-muted">{{
+                i18n.t("backupSnapshots")
+              }}</span>
+            </div>
+            <div
+              class="tw-min-w-0 tw-flex-1 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2.5"
+            >
+              <span class="tw-block tw-text-lg tw-font-semibold tw-text-main">{{
+                latestSize()
+              }}</span>
+              <span class="tw-mt-px tw-block tw-text-xs tw-text-muted">{{
+                i18n.t("backupLatestSize")
+              }}</span>
+            </div>
+            <div
+              class="tw-min-w-0 tw-flex-1 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2.5"
+            >
+              <span class="tw-block tw-text-lg tw-font-semibold tw-text-main">{{
+                i18n.t("backupManual")
+              }}</span>
+              <span class="tw-mt-px tw-block tw-text-xs tw-text-muted">{{
+                i18n.t("backupMode")
+              }}</span>
+            </div>
+          </div>
+
+          <div class="tw-flex tw-gap-2 tw-pt-1">
+            <button
+              type="button"
+              bitButton
+              buttonType="primary"
+              class="tw-flex-1"
+              [disabled]="busy() || !configured()"
+              data-testid="backup_sync_now"
+              (click)="syncNow()"
+            >
+              {{ i18n.t("syncNow") }}
+            </button>
+            <button
+              type="button"
+              bitButton
+              buttonType="secondary"
+              class="tw-flex-1"
+              [disabled]="busy() || !configured()"
+              data-testid="backup_backup_now"
+              (click)="backupNow()"
+            >
+              {{ i18n.t("backupNow") }}
+            </button>
+          </div>
+
+          @if (phase() === "conflict") {
+            <div
+              class="tw-mt-2 tw-rounded-xl tw-border tw-border-border-warning-soft tw-bg-bg-warning-soft tw-px-3 tw-py-2.5 tw-text-xs tw-leading-relaxed tw-text-fg-warning-strong"
+            >
+              {{ i18n.t("syncConflictTitle") }} · {{ conflicts().length }}
+            </div>
+            <button
+              type="button"
+              bitButton
+              buttonType="secondary"
+              class="tw-mt-2"
+              (click)="dismissConflict()"
+            >
+              {{ i18n.t("syncConflictAccept") }}
+            </button>
+          }
+
+          @if (errorMessage()) {
+            <p class="tw-mx-0.5 tw-mb-0 tw-mt-2 tw-text-xs tw-text-fg-danger">
+              {{ errorMessage() }}
+            </p>
+          }
+
+          <div class="tw-px-0.5 tw-pb-1.5 tw-pt-3 tw-text-xs tw-font-semibold tw-text-muted">
+            {{ i18n.t("backupRecentSnapshots") }}
+          </div>
+          <div
+            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+          >
+            @if (snapshots().length === 0) {
+              <div class="tw-px-3 tw-py-4 tw-text-sm tw-text-muted">
+                {{ i18n.t("backupNoSnapshots") }}
+              </div>
+            } @else {
+              @for (snapshot of snapshots(); track snapshot.id) {
+                <div
+                  class="tw-flex tw-min-h-12 tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-px-3 tw-py-2.5 last:tw-border-b-0"
+                >
+                  <span
+                    class="tw-grid tw-size-7 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
+                  >
+                    <bit-icon name="bwi-download" class="tw-text-sm"></bit-icon>
+                  </span>
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-flex tw-items-center tw-gap-1.5">
+                      <span class="tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
+                        snapshotLabel(snapshot.id)
+                      }}</span>
+                      @if (snapshot.latest) {
+                        <span
+                          class="tw-rounded-full tw-bg-bg-success-soft tw-px-2 tw-py-0.5 tw-text-xs tw-font-medium tw-text-fg-success"
+                          >{{ i18n.t("backupLatest") }}</span
+                        >
+                      }
+                    </span>
+                    <span class="tw-block tw-text-xs tw-text-muted">{{
+                      formatSize(snapshot.size)
+                    }}</span>
+                  </span>
+                </div>
+              }
+            }
+          </div>
+
+          <p class="tw-m-0 tw-pt-2.5 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+            {{ i18n.t("backupFootnote") }}
+          </p>
+        </div>
+      }
     </div>
   `,
 })
@@ -253,9 +400,22 @@ export class BackupSettingsV2Component implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en" });
 
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
+  /** 桌面端把同一个组件拆成「状态」与「存储配置」两页；弹窗用独立路由打开配置页。 */
+  protected readonly configView = computed(
+    () => this.route.snapshot.data["backupView"] === "config",
+  );
   protected readonly configured = signal(false);
+
+  protected readonly configFields: readonly ConfigField[] = [
+    { key: "endpoint", labelKey: "backupEndpoint", mono: true, password: false },
+    { key: "bucket", labelKey: "backupBucket", mono: true, password: false },
+    { key: "accessKeyId", labelKey: "backupAccessKey", mono: true, password: false },
+    { key: "secretAccessKey", labelKey: "backupSecretKey", mono: false, password: true },
+    { key: "prefix", labelKey: "backupPrefix", mono: true, password: false },
+  ];
 
   protected readonly form = this.formBuilder.group({
     endpoint: ["", [Validators.required]],
@@ -267,13 +427,12 @@ export class BackupSettingsV2Component implements OnInit {
   });
 
   protected readonly status = signal<BackupStatus>({ lastSyncedAt: null, lastBackupAt: null });
+  protected readonly snapshots = signal<readonly SnapshotRow[]>([]);
   /** 同步的三态：idle / loading / conflict / error——由真实调用驱动，不是摆出来的。 */
   protected readonly phase = signal<"idle" | "loading" | "conflict" | "error">("idle");
   protected readonly conflicts = signal<readonly MergeConflict[]>([]);
   protected readonly busy = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
-  protected readonly password = signal<string | null>(null);
-  protected readonly passwordVisible = signal(false);
 
   async ngOnInit(): Promise<void> {
     const userId = await this.userId();
@@ -282,20 +441,44 @@ export class BackupSettingsV2Component implements OnInit {
       this.form.patchValue(config);
       this.configured.set(true);
     }
-    await this.refreshStatus();
+    await this.reload();
   }
 
-  protected valueOf(
-    key: "endpoint" | "bucket" | "prefix" | "accessKeyId" | "secretAccessKey",
-  ): string {
+  protected valueOf(key: ConfigKey): string {
     return this.form.get(key)?.value ?? "";
   }
 
-  protected set(
-    key: "endpoint" | "bucket" | "prefix" | "accessKeyId" | "secretAccessKey",
-    value: string,
-  ): void {
+  protected set(key: ConfigKey, value: string): void {
     this.form.get(key)?.setValue(value);
+  }
+
+  protected onConfigInput(key: ConfigKey, event: Event): void {
+    this.set(key, (event.target as HTMLInputElement).value);
+  }
+
+  protected lastSyncLabel(): string {
+    const time = formatBackupTimestamp(this.status().lastSyncedAt, this.locale(), this.i18n);
+    return this.i18n.t("backupLastSyncedAt", time);
+  }
+
+  protected latestSize(): string {
+    const latest = this.snapshots()[0];
+    return latest ? this.formatSize(latest.size) : "—";
+  }
+
+  protected snapshotLabel(id: string): string {
+    return formatSnapshotId(id, this.locale());
+  }
+
+  protected formatSize(bytes: number): string {
+    if (bytes <= 0) {
+      return "—";
+    }
+    const kb = bytes / 1024;
+    if (kb < 1024) {
+      return `${kb.toFixed(1)} KB`;
+    }
+    return `${(kb / 1024).toFixed(1)} MB`;
   }
 
   protected async save(): Promise<void> {
@@ -321,7 +504,7 @@ export class BackupSettingsV2Component implements OnInit {
     this.errorMessage.set(null);
     this.configured.set(true);
     this.platformUtilsService.showToast("success", "", this.i18n.t("backupSaved"));
-    await this.refreshStatus();
+    await this.reload();
   }
 
   protected async testConnection(): Promise<void> {
@@ -361,7 +544,7 @@ export class BackupSettingsV2Component implements OnInit {
         "",
         this.i18n.t(result.uploaded ? "backupUploaded" : "backupFailed"),
       );
-      await this.refreshStatus();
+      await this.reload();
     } catch {
       // 端点不可达或凭证无效都走同一条回执；不要抛到 Angular 事件循环里。
       this.errorMessage.set(this.i18n.t("backupFailed"));
@@ -378,7 +561,7 @@ export class BackupSettingsV2Component implements OnInit {
     try {
       const userId = await this.userId();
       const result = await this.syncService.sync(userId);
-      await this.refreshStatus();
+      await this.reload();
 
       // 冲突条目由拉取时的合并给出：冷启动不再用「不知道发生了什么」的提示。
       if (result.pulled.conflicts.length > 0) {
@@ -400,21 +583,12 @@ export class BackupSettingsV2Component implements OnInit {
     this.conflicts.set([]);
   }
 
-  protected async revealPassword(): Promise<void> {
-    if (this.passwordVisible()) {
-      return;
-    }
-    const userId = await this.userId();
-    this.password.set(await this.backupService.ensurePassword(userId));
-    this.passwordVisible.set(true);
+  protected back(): void {
+    void this.router.navigateByUrl(this.configView() ? "/backup-settings" : "/tabs/settings");
   }
 
-  protected hidePassword(): void {
-    this.passwordVisible.set(false);
-  }
-
-  protected goBack(): void {
-    void this.router.navigateByUrl("/tabs/settings");
+  protected goConfig(): void {
+    void this.router.navigateByUrl("/backup-config");
   }
 
   protected async disconnect(): Promise<void> {
@@ -431,12 +605,16 @@ export class BackupSettingsV2Component implements OnInit {
     await this.syncService.disconnect(userId);
     this.form.reset({ region: "auto", prefix: "localpass" });
     this.status.set({ lastSyncedAt: null, lastBackupAt: null });
-    this.password.set(null);
-    this.passwordVisible.set(false);
+    this.snapshots.set([]);
     this.configured.set(false);
     this.phase.set("idle");
     this.conflicts.set([]);
     this.errorMessage.set(null);
+  }
+
+  private async reload(): Promise<void> {
+    await this.refreshStatus();
+    await this.refreshSnapshots();
   }
 
   private async refreshStatus(): Promise<void> {
@@ -447,6 +625,35 @@ export class BackupSettingsV2Component implements OnInit {
       lastSyncedAt: state.lastSyncedAt,
       lastBackupAt: settings.lastBackupAt ?? null,
     });
+  }
+
+  private async refreshSnapshots(): Promise<void> {
+    const userId = await this.userId();
+    const client = await this.syncService.clientFor(userId);
+    if (!client) {
+      this.snapshots.set([]);
+      return;
+    }
+
+    try {
+      const objects = await client.listObjects(SNAPSHOT_PREFIX);
+      const rows = objects
+        .filter((object) => object.key.endsWith(".json"))
+        .map((object) => ({
+          id:
+            object.key
+              .split("/")
+              .pop()
+              ?.replace(/\.json$/, "") ?? object.key,
+          size: object.size ?? 0,
+        }))
+        .sort((a, b) => b.id.localeCompare(a.id))
+        .map((row, index) => ({ ...row, latest: index === 0 }));
+      this.snapshots.set(rows);
+    } catch {
+      // 列不出来通常只是配置/权限问题，页面仍可用，错误不带到全局。
+      this.snapshots.set([]);
+    }
   }
 
   private async userId() {

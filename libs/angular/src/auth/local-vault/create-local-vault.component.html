@@ -1,65 +1,157 @@
-<div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
-  <lp-page-header
-    [title]="'createLocalVaultTitle' | i18n"
-    [sub]="'createLocalVaultSubtitle' | i18n"
-  ></lp-page-header>
+@if (isDesktop) {
+  <div
+    class="tw-flex tw-size-full tw-flex-col tw-items-center tw-justify-center tw-overflow-y-auto tw-bg-gradient-to-b tw-from-bg-brand-softer tw-to-background-alt tw-p-6"
+  >
+    <div
+      class="tw-w-full tw-max-w-md tw-rounded-2xl tw-border tw-border-border-light tw-bg-background tw-p-7 tw-shadow-sm"
+    >
+      <span
+        class="tw-mb-4 tw-grid tw-size-16 tw-place-items-center tw-rounded-xl tw-bg-bg-brand-softer tw-text-fg-brand"
+      >
+        <bit-icon name="bwi-localpass-shield" class="tw-text-4xl"></bit-icon>
+      </span>
+      <h1 class="tw-m-0 tw-text-2xl tw-font-semibold tw-text-main">
+        {{ "createLocalVaultTitle" | i18n }}
+      </h1>
+      <p class="tw-mb-5 tw-mt-1 tw-text-sm tw-leading-relaxed tw-text-muted">
+        {{ "createLocalVaultSubtitle" | i18n }}
+      </p>
+      <div class="-tw-mx-4">
+        <lp-field
+          id="create-local-vault_input_email"
+          [label]="'localVaultEmailOptional' | i18n"
+          [autocomplete]="'email'"
+          [value]="email.value ?? ''"
+          (valueChange)="setField('email', $event)"
+        />
+        <lp-field
+          id="create-local-vault_input_master-password"
+          [label]="'masterPassword' | i18n"
+          [placeholder]="'setupMasterPassPlaceholder' | i18n"
+          [password]="true"
+          [autocomplete]="'new-password'"
+          [value]="masterPassword.value ?? ''"
+          (valueChange)="setField('masterPassword', $event)"
+        />
+        <lp-field
+          id="create-local-vault_input_confirm-password"
+          [label]="'confirmMasterPasswordAgain' | i18n"
+          [password]="true"
+          [autocomplete]="'new-password'"
+          [value]="confirmMasterPassword.value ?? ''"
+          (valueChange)="setField('confirmMasterPassword', $event)"
+        />
+      </div>
 
-  <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
-    <lp-group [label]="'vaultIdentity' | i18n">
-      <lp-field
-        [label]="'emailAddress' | i18n"
-        [value]="email.value ?? ''"
-        (valueChange)="setField('email', $event)"
-      />
-      <lp-field
-        [label]="'name' | i18n"
-        [value]="name.value ?? ''"
-        (valueChange)="setField('name', $event)"
-      />
-    </lp-group>
+      @if (errorMessage() != null) {
+        <p class="tw-mt-2 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
+      }
 
-    <lp-group [label]="'masterPassword' | i18n">
-      <lp-field
-        [label]="'masterPassword' | i18n"
-        [password]="true"
-        [autocomplete]="'new-password'"
-        [value]="masterPassword.value ?? ''"
-        (valueChange)="setField('masterPassword', $event)"
-      />
-      <lp-field
-        [label]="'confirmMasterPassword' | i18n"
-        [password]="true"
-        [autocomplete]="'new-password'"
-        [value]="confirmMasterPassword.value ?? ''"
-        (valueChange)="setField('confirmMasterPassword', $event)"
-      />
-    </lp-group>
-
-    @if (errorMessage() != null) {
-      <p class="tw-px-4 tw-pt-3 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
-    }
-
-    <div class="tw-px-3 tw-pt-3">
       <button
+        id="create-local-vault_button_create"
         type="button"
         bitButton
         buttonType="primary"
+        class="tw-mt-1"
         [block]="true"
         [disabled]="submitting()"
         (click)="submit()"
       >
         {{ "createLocalVault" | i18n }}
       </button>
-    </div>
-
-    <div class="tw-px-3 tw-pt-2 tw-text-center">
-      <button type="button" bitLink linkType="secondary" (click)="restoreFromBackup()">
+      <button
+        id="create-local-vault_button_restore"
+        type="button"
+        bitLink
+        class="tw-mt-3 tw-self-start tw-text-sm"
+        (click)="restoreFromBackup()"
+      >
         {{ "restoreFromBackup" | i18n }}
       </button>
     </div>
-
-    <p class="tw-px-4 tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
+    <p class="tw-mb-0 tw-mt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
       {{ "createLocalVaultNote" | i18n }}
     </p>
   </div>
-</div>
+} @else {
+  <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <lp-hero
+      icon="bwi-localpass-shield"
+      [title]="'createLocalVaultTitle' | i18n"
+      [text]="'createLocalVaultSubtitle' | i18n"
+    ></lp-hero>
+
+    <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
+      <lp-field
+        id="create-local-vault_input_email"
+        [label]="'localVaultEmailOptional' | i18n"
+        [hint]="'emailBackupHint' | i18n"
+        [autocomplete]="'email'"
+        [value]="email.value ?? ''"
+        (valueChange)="setField('email', $event)"
+      />
+      <lp-field
+        id="create-local-vault_input_master-password"
+        [label]="'masterPassword' | i18n"
+        [placeholder]="'setupMasterPassPlaceholder' | i18n"
+        [password]="true"
+        [autocomplete]="'new-password'"
+        [value]="masterPassword.value ?? ''"
+        (valueChange)="setField('masterPassword', $event)"
+      />
+      <lp-field
+        id="create-local-vault_input_confirm-password"
+        [label]="'confirmMasterPassword' | i18n"
+        [password]="true"
+        [autocomplete]="'new-password'"
+        [value]="confirmMasterPassword.value ?? ''"
+        (valueChange)="setField('confirmMasterPassword', $event)"
+      />
+
+      <label
+        class="tw-flex tw-items-start tw-gap-2.5 tw-px-4 tw-py-3 tw-text-xs tw-leading-relaxed tw-text-main"
+      >
+        <input
+          id="create-local-vault_checkbox_backup-ack"
+          type="checkbox"
+          class="tw-mt-0.5 tw-size-4 tw-flex-none tw-rounded tw-border-border-base"
+          [checked]="backupAcknowledged()"
+          (change)="onBackupAcknowledged($event)"
+        />
+        <span>{{ "setupBackupConfirm" | i18n }}</span>
+      </label>
+
+      @if (errorMessage() != null) {
+        <p class="tw-px-4 tw-pt-1 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
+      }
+
+      <div class="tw-flex tw-flex-col tw-gap-2 tw-px-4 tw-pt-2">
+        <button
+          id="create-local-vault_button_create"
+          type="button"
+          bitButton
+          buttonType="primary"
+          [block]="true"
+          [disabled]="submitting()"
+          (click)="submit()"
+        >
+          {{ "createLocalVault" | i18n }}
+        </button>
+        <button
+          id="create-local-vault_button_restore"
+          type="button"
+          bitButton
+          buttonType="secondary"
+          [block]="true"
+          (click)="restoreFromBackup()"
+        >
+          {{ "restoreFromBackup" | i18n }}
+        </button>
+      </div>
+
+      <p class="tw-px-4 tw-pt-4 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+        {{ "createLocalVaultNote" | i18n }}
+      </p>
+    </div>
+  </div>
+}

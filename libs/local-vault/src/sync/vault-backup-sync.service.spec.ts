@@ -54,8 +54,12 @@ class FakeS3 {
   }
 }
 
-function setup(initial: Record<string, unknown> = {}) {
+function setup(
+  initial: Record<string, unknown> = {},
+  clientFactory?: (config: unknown) => unknown,
+) {
   const state = new Map<string, BehaviorSubject<unknown>>();
+  let userKey: unknown = {};
   const bucket = (key: string, fallback: unknown) => {
     if (!state.has(key)) {
       state.set(key, new BehaviorSubject<unknown>(fallback));
@@ -80,18 +84,25 @@ function setup(initial: Record<string, unknown> = {}) {
   const service = new VaultBackupSyncService(
     { isLocalAccount: async () => true } as unknown as LocalAccountService,
     stateProvider,
-    { userKey$: () => of({} as any) } as any,
+    { userKey$: () => of(userKey) } as any,
     {
       encryptString: async (value: string) => ({ encryptedString: `wrapped:${value}` }),
       decryptString: async (value: { encryptedString: string }) =>
         value.encryptedString.replace("wrapped:", ""),
     } as any,
     { info: jest.fn(), error: jest.fn() } as any,
-    () => fakeS3 as any,
+    (clientFactory ?? (() => fakeS3)) as any,
     () => new Date("2026-11-24T10:00:00Z"),
   );
 
-  return { service, state, fakeS3 };
+  return {
+    service,
+    state,
+    fakeS3,
+    lock: (): void => {
+      userKey = null;
+    },
+  };
 }
 
 function keyDefault(name: string, initial: Record<string, unknown>): unknown {
@@ -132,6 +143,37 @@ describe("VaultBackupSyncService", () => {
     await expect(service.getConfig(userId)).resolves.toMatchObject({
       secretAccessKey: "top-secret",
     });
+  });
+
+  it("shows a stored config to a locked vault without decrypting the secret", async () => {
+    const { service, lock } = setup();
+    await service.configure(userId, {
+      provider: "r2",
+      endpoint: "https://acct.r2.cloudflarestorage.com",
+      region: "auto",
+      bucket: "vault",
+      accessKeyId: "AKIA",
+      secretAccessKey: "top-secret",
+      prefix: "localpass",
+      forcePathStyle: false,
+    });
+
+    lock();
+
+    await expect(service.hasConfig(userId)).resolves.toBe(true);
+    await expect(service.getConfig(userId)).resolves.toBeNull();
+    // The restore screen passes the key derived from the master password it has just verified.
+    await expect(service.getConfigWithUserKey(userId, {} as any)).resolves.toMatchObject({
+      secretAccessKey: "top-secret",
+      bucket: "vault",
+    });
+  });
+
+  it("reports no stored config for a fresh vault", async () => {
+    const { service } = setup();
+
+    await expect(service.hasConfig(userId)).resolves.toBe(false);
+    await expect(service.getConfigWithUserKey(userId, {} as any)).resolves.toBeNull();
   });
 
   it("pushes a snapshot and points the manifest at it", async () => {
@@ -202,5 +244,28 @@ describe("VaultBackupSyncService", () => {
     expect(result.uploaded).toBe(true);
     const manifest = JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body);
     expect(manifest.snapshot).not.toBe("other");
+  });
+
+  it("scopes every storage call to the active user", async () => {
+    const fakeS3 = new FakeS3();
+    const factory = jest.fn(() => fakeS3);
+    const { service } = setup({}, factory);
+
+    await service.configure(userId, {
+      provider: "r2",
+      endpoint: "https://acct.r2.cloudflarestorage.com",
+      region: "auto",
+      bucket: "vault",
+      accessKeyId: "AKIA",
+      secretAccessKey: "s",
+      prefix: "lp/",
+      forcePathStyle: false,
+    });
+
+    await service.clientFor(userId);
+    await service.sync(userId);
+
+    const scopedPrefix = `lp/${userId}`;
+    expect(factory).toHaveBeenCalledWith(expect.objectContaining({ prefix: scopedPrefix }));
   });
 });

@@ -11,14 +11,14 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
-import { ButtonModule, LinkModule } from "@localpass/components";
+import { ButtonModule, IconComponent, LinkModule } from "@localpass/components";
 import { CreateLocalAccountService } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
-import { LpFieldComponent, LpGroupComponent, LpPageHeaderComponent } from "../../local-ui";
+import { LpFieldComponent, LpHeroComponent } from "../../local-ui";
 
 /** Minimum length a local master password must have; deliberately longer than the server's floor. */
-const MIN_MASTER_PASSWORD_LENGTH = 8;
+const MIN_MASTER_PASSWORD_LENGTH = 12;
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const password = control.get("masterPassword")?.value;
@@ -37,15 +37,16 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   selector: "auth-create-local-vault",
   templateUrl: "./create-local-vault.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "tw-block tw-h-full" },
   imports: [
     CommonModule,
     ReactiveFormsModule,
     JslibModule,
     ButtonModule,
+    IconComponent,
     LinkModule,
     LpFieldComponent,
-    LpGroupComponent,
-    LpPageHeaderComponent,
+    LpHeroComponent,
   ],
 })
 export class CreateLocalVaultComponent {
@@ -59,7 +60,6 @@ export class CreateLocalVaultComponent {
   protected readonly formGroup = this.formBuilder.group(
     {
       email: ["", [Validators.required, Validators.email]],
-      name: [""],
       masterPassword: ["", [Validators.required, Validators.minLength(MIN_MASTER_PASSWORD_LENGTH)]],
       confirmMasterPassword: ["", [Validators.required]],
     },
@@ -68,12 +68,22 @@ export class CreateLocalVaultComponent {
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  /** 桌面端原型不显示备份确认勾选，默认视为已知晓；弹窗形态保留勾选（默认勾上）。 */
+  protected readonly backupAcknowledged = signal(true);
+  /** Desktop mounts this screen in the centered auth card; the popup keeps its stacked hero. */
+  protected readonly isDesktop =
+    this.route.snapshot.data["localVaultLayout"] === "desktop" ||
+    this.route.parent?.snapshot.data["localVaultLayout"] === "desktop";
 
   protected setField(
-    field: "email" | "name" | "masterPassword" | "confirmMasterPassword",
+    field: "email" | "masterPassword" | "confirmMasterPassword",
     value: string,
   ): void {
     this.formGroup.get(field)?.setValue(value);
+  }
+
+  protected onBackupAcknowledged(event: Event): void {
+    this.backupAcknowledged.set((event.target as HTMLInputElement).checked);
   }
 
   protected restoreFromBackup(): void {
@@ -82,10 +92,6 @@ export class CreateLocalVaultComponent {
 
   get email() {
     return this.formGroup.controls.email;
-  }
-
-  get name() {
-    return this.formGroup.controls.name;
   }
 
   get masterPassword() {
@@ -111,11 +117,15 @@ export class CreateLocalVaultComponent {
       return;
     }
 
+    if (!this.backupAcknowledged()) {
+      this.errorMessage.set(this.i18nService.t("setupBackupConfirmRequired"));
+      return;
+    }
+
     this.submitting.set(true);
     try {
       await this.createLocalAccountService.createAccount({
         email: this.email.value ?? "",
-        name: this.name.value || undefined,
         masterPassword: this.masterPassword.value ?? "",
       });
 

@@ -25,6 +25,7 @@ describe("VaultDesktopV2Component", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     i18nService.t.mockImplementation((key: string) => key);
+    i18nService.locale$ = of("en");
     cipherService.getAllDecrypted.mockResolvedValue([]);
     folderService.folderViews$.mockReturnValue(of([]));
     accountService.activeAccount$ = of({ id: "user-id" } as any);

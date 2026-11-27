@@ -29,7 +29,7 @@ import { CipherService } from "@localpass/common/vault/abstractions/cipher.servi
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
-import { IconModule, LocalPassIcon } from "@localpass/components";
+import { ButtonModule, IconModule, LocalPassIcon } from "@localpass/components";
 import { isItemKind, ItemKind, kindFromFields } from "@localpass/local-vault";
 import { CipherListView } from "@localpass/sdk-internal";
 import { LockService, LockSource } from "@localpass/unlock";
@@ -70,6 +70,7 @@ type FolderFilter = "all" | string;
   imports: [
     CommonModule,
     JslibModule,
+    ButtonModule,
     IconModule,
     LpEmptyComponent,
     LpKindTileComponent,
@@ -79,15 +80,17 @@ type FolderFilter = "all" | string;
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header [title]="i18n.t('vault')" [sub]="subtitle()">
         <div slot="actions" class="tw-flex tw-items-center tw-gap-0.5">
-          <button
-            type="button"
-            class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-            [attr.aria-label]="i18n.t('lockVault')"
-            [attr.title]="i18n.t('lockVault')"
-            (click)="lock()"
-          >
-            <bit-icon name="bwi-lock" class="tw-text-base"></bit-icon>
-          </button>
+          @if (ciphers().length) {
+            <button
+              type="button"
+              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
+              [attr.aria-label]="i18n.t('lockVault')"
+              [attr.title]="i18n.t('lockVault')"
+              (click)="lock()"
+            >
+              <bit-icon name="bwi-lock" class="tw-text-base"></bit-icon>
+            </button>
+          }
           <button
             type="button"
             class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-fg-brand hover:tw-bg-bg-brand-softer"
@@ -100,83 +103,87 @@ type FolderFilter = "all" | string;
         </div>
       </lp-popup-header>
 
-      <div class="tw-flex tw-flex-none tw-flex-col tw-gap-2 tw-px-3.5 tw-pb-2">
-        <div
-          class="tw-flex tw-items-center tw-gap-2 tw-rounded-lg tw-border tw-border-border-light tw-bg-background-alt tw-px-2.5 tw-py-2 focus-within:tw-border-border-focus"
-        >
-          <bit-icon name="bwi-search" class="tw-text-sm tw-text-muted"></bit-icon>
-          <input
-            type="search"
-            class="tw-min-w-0 tw-flex-1 tw-border-0 tw-bg-transparent tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted"
-            [attr.aria-label]="i18n.t('searchVault')"
-            [attr.placeholder]="i18n.t('searchVault')"
-            [value]="query()"
-            (input)="onSearch($event)"
-          />
-        </div>
-
-        <div class="tw-flex tw-items-center tw-gap-1.5 tw-overflow-x-auto tw-pb-0.5">
-          <label
-            class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-border-light tw-bg-background tw-py-1 tw-ps-2.5 tw-pe-1.5 tw-text-xs hover:tw-border-border-base"
+      @if (ciphers().length) {
+        <div class="tw-flex tw-flex-none tw-flex-col tw-gap-2 tw-px-3.5 tw-pb-2">
+          <div
+            class="tw-flex tw-items-center tw-gap-2 tw-rounded-lg tw-border tw-border-border-light tw-bg-background-alt tw-px-2.5 tw-py-2 focus-within:tw-border-border-focus"
           >
-            <bit-icon name="bwi-list" class="tw-text-xs tw-text-muted"></bit-icon>
-            <select
-              class="tw-appearance-none tw-border-0 tw-bg-transparent tw-py-0 tw-ps-0.5 tw-pe-0 tw-text-xs tw-font-medium tw-text-main tw-outline-none"
-              [attr.aria-label]="i18n.t('type')"
-              [value]="typeFilter()"
-              (change)="onTypeFilter($event)"
-            >
-              <option value="all">{{ i18n.t("allTypes") }}</option>
-              @for (kind of kinds; track kind) {
-                <option [value]="kind">{{ kindLabel(kind) }}</option>
-              }
-            </select>
-            <bit-icon name="bwi-angle-down" class="tw-text-[10px] tw-text-muted"></bit-icon>
-          </label>
+            <bit-icon name="bwi-search" class="tw-text-sm tw-text-muted"></bit-icon>
+            <input
+              type="search"
+              class="tw-min-w-0 tw-flex-1 tw-border-0 tw-bg-transparent tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted"
+              [attr.aria-label]="i18n.t('searchVault')"
+              [attr.placeholder]="i18n.t('searchVaultPlaceholder')"
+              [value]="query()"
+              (input)="onSearch($event)"
+            />
+          </div>
 
-          <label
-            class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-border-light tw-bg-background tw-py-1 tw-ps-2.5 tw-pe-1.5 tw-text-xs hover:tw-border-border-base"
-          >
-            <bit-icon name="bwi-folder" class="tw-text-xs tw-text-muted"></bit-icon>
-            <select
-              class="tw-appearance-none tw-border-0 tw-bg-transparent tw-py-0 tw-ps-0.5 tw-pe-0 tw-text-xs tw-font-medium tw-text-main tw-outline-none"
-              [attr.aria-label]="i18n.t('folder')"
-              [value]="folderFilter()"
-              (change)="onFolderFilter($event)"
+          <div class="tw-flex tw-items-center tw-gap-1.5 tw-overflow-x-auto tw-pb-0.5">
+            <label
+              class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-border-light tw-bg-background tw-py-1 tw-ps-2.5 tw-pe-1.5 tw-text-xs hover:tw-border-border-base"
             >
-              <option value="all" [selected]="folderFilter() === 'all'">
-                {{ i18n.t("allFolders") }}
-              </option>
-              <option value="" [selected]="folderFilter() === ''">{{ i18n.t("noFolder") }}</option>
-              @for (folder of folders(); track folder.id) {
-                <option [value]="folder.id" [selected]="folderFilter() === folder.id">
-                  {{ folder.name }}
+              <bit-icon name="bwi-list" class="tw-text-xs tw-text-muted"></bit-icon>
+              <select
+                class="tw-appearance-none tw-border-0 tw-bg-transparent tw-py-0 tw-ps-0.5 tw-pe-0 tw-text-xs tw-font-medium tw-text-main tw-outline-none"
+                [attr.aria-label]="i18n.t('type')"
+                [value]="typeFilter()"
+                (change)="onTypeFilter($event)"
+              >
+                <option value="all">{{ i18n.t("type") }}</option>
+                @for (kind of kinds; track kind) {
+                  <option [value]="kind">{{ kindLabel(kind) }}</option>
+                }
+              </select>
+              <bit-icon name="bwi-angle-down" class="tw-text-xs tw-text-muted"></bit-icon>
+            </label>
+
+            <label
+              class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-border-light tw-bg-background tw-py-1 tw-ps-2.5 tw-pe-1.5 tw-text-xs hover:tw-border-border-base"
+            >
+              <bit-icon name="bwi-folder" class="tw-text-xs tw-text-muted"></bit-icon>
+              <select
+                class="tw-appearance-none tw-border-0 tw-bg-transparent tw-py-0 tw-ps-0.5 tw-pe-0 tw-text-xs tw-font-medium tw-text-main tw-outline-none"
+                [attr.aria-label]="i18n.t('folder')"
+                [value]="folderFilter()"
+                (change)="onFolderFilter($event)"
+              >
+                <option value="all" [selected]="folderFilter() === 'all'">
+                  {{ i18n.t("folder") }}
                 </option>
-              }
-            </select>
-            <bit-icon name="bwi-angle-down" class="tw-text-[10px] tw-text-muted"></bit-icon>
-          </label>
+                <option value="" [selected]="folderFilter() === ''">
+                  {{ i18n.t("noFolder") }}
+                </option>
+                @for (folder of folders(); track folder.id) {
+                  <option [value]="folder.id" [selected]="folderFilter() === folder.id">
+                    {{ folder.name }}
+                  </option>
+                }
+              </select>
+              <bit-icon name="bwi-angle-down" class="tw-text-xs tw-text-muted"></bit-icon>
+            </label>
 
-          <button
-            type="button"
-            class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-py-1 tw-ps-2.5 tw-pe-3 tw-text-xs tw-font-medium"
-            [class.tw-border-border-brand]="favoritesOnly()"
-            [class.tw-bg-bg-brand-softer]="favoritesOnly()"
-            [class.tw-text-fg-brand]="favoritesOnly()"
-            [class.tw-border-border-light]="!favoritesOnly()"
-            [class.tw-bg-background]="!favoritesOnly()"
-            [class.tw-text-main]="!favoritesOnly()"
-            [attr.aria-pressed]="favoritesOnly()"
-            (click)="favoritesOnly.set(!favoritesOnly())"
-          >
-            <bit-icon
-              [name]="favoritesOnly() ? 'bwi-star-filled' : 'bwi-star'"
-              class="tw-text-xs"
-            ></bit-icon>
-            {{ i18n.t("favorites") }}
-          </button>
+            <button
+              type="button"
+              class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-py-1 tw-ps-2.5 tw-pe-3 tw-text-xs tw-font-medium"
+              [class.tw-border-border-brand]="favoritesOnly()"
+              [class.tw-bg-bg-brand-softer]="favoritesOnly()"
+              [class.tw-text-fg-brand]="favoritesOnly()"
+              [class.tw-border-border-light]="!favoritesOnly()"
+              [class.tw-bg-background]="!favoritesOnly()"
+              [class.tw-text-main]="!favoritesOnly()"
+              [attr.aria-pressed]="favoritesOnly()"
+              (click)="favoritesOnly.set(!favoritesOnly())"
+            >
+              <bit-icon
+                [name]="favoritesOnly() ? 'bwi-star-filled' : 'bwi-star'"
+                class="tw-text-xs"
+              ></bit-icon>
+              {{ i18n.t("favorites") }}
+            </button>
+          </div>
         </div>
-      </div>
+      }
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-5">
         @if (loading()) {
@@ -185,27 +192,29 @@ type FolderFilter = "all" | string;
           <div class="tw-grid tw-min-h-72 tw-place-items-center">
             <lp-empty
               icon="bwi-vault"
-              [title]="i18n.t('noItemsInVault')"
-              [text]="i18n.t('emptyVaultHint')"
+              [title]="i18n.t('vaultIsEmpty')"
+              [text]="i18n.t('emptyVaultText')"
             >
-              <button
-                type="button"
-                bitButton
-                buttonType="primary"
-                startIcon="bwi-plus"
-                (click)="createItem()"
-              >
-                {{ i18n.t("newItem") }}
-              </button>
-              <button
-                type="button"
-                bitButton
-                buttonType="secondary"
-                startIcon="bwi-import"
-                (click)="importItems()"
-              >
-                {{ i18n.t("importData") }}
-              </button>
+              <div class="tw-flex tw-flex-row tw-gap-2">
+                <button
+                  type="button"
+                  bitButton
+                  buttonType="primary"
+                  startIcon="bwi-plus"
+                  (click)="createItem()"
+                >
+                  {{ i18n.t("newItemCta") }}
+                </button>
+                <button
+                  type="button"
+                  bitButton
+                  buttonType="secondary"
+                  startIcon="bwi-import"
+                  (click)="importItems()"
+                >
+                  {{ i18n.t("importData") }}
+                </button>
+              </div>
             </lp-empty>
           </div>
         } @else if (visible().length === 0) {
@@ -228,7 +237,9 @@ type FolderFilter = "all" | string;
                   <bit-icon [name]="group.icon" class="tw-text-[11px]"></bit-icon>
                 }
                 <span>{{ group.label }}</span>
-                <span class="tw-font-normal tw-text-muted">{{ group.rows.length }}</span>
+                @if (group.key !== "favorites") {
+                  <span class="tw-font-normal tw-text-muted">{{ group.rows.length }}</span>
+                }
               </h2>
 
               @for (row of group.rows; track row.id) {
@@ -302,8 +313,10 @@ export class VaultListV2Component implements OnInit {
   protected readonly folderFilter = signal<FolderFilter>("all");
   protected readonly favoritesOnly = signal(false);
 
-  protected readonly subtitle = computed(
-    () => `${this.ciphers().length} ${this.i18n.t("items")} · ${this.i18n.t("encryptedLocally")}`,
+  protected readonly subtitle = computed(() =>
+    this.ciphers().length === 0
+      ? this.i18n.t("emptyVaultSubtitle")
+      : `${this.ciphers().length} ${this.i18n.t("itemCountShort")} · ${this.i18n.t("encryptedLocally")}`,
   );
 
   protected readonly visible = computed(() => {
@@ -312,29 +325,31 @@ export class VaultListV2Component implements OnInit {
     const folder = this.folderFilter();
     const favoritesOnly = this.favoritesOnly();
 
-    return this.ciphers().filter((cipher) => {
-      if (type !== "all" && this.kindOf(cipher) !== type) {
-        return false;
-      }
-      if (folder !== "all" && String(cipher.folderId ?? "") !== folder) {
-        return false;
-      }
-      if (favoritesOnly && !cipher.favorite) {
-        return false;
-      }
-      if (!query) {
-        return true;
-      }
-      const haystack = [
-        cipher.name,
-        cipher.subtitle ?? "",
-        this.folderName(cipher.folderId),
-        this.usernameOf(cipher),
-      ]
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(query);
-    });
+    return this.ciphers()
+      .filter((cipher) => {
+        if (type !== "all" && this.kindOf(cipher) !== type) {
+          return false;
+        }
+        if (folder !== "all" && String(cipher.folderId ?? "") !== folder) {
+          return false;
+        }
+        if (favoritesOnly && !cipher.favorite) {
+          return false;
+        }
+        if (!query) {
+          return true;
+        }
+        const haystack = [
+          cipher.name,
+          cipher.subtitle ?? "",
+          this.folderName(cipher.folderId),
+          this.usernameOf(cipher),
+        ]
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(query);
+      })
+      .sort((a, b) => this.revisionTime(b) - this.revisionTime(a) || a.name.localeCompare(b.name));
   });
 
   /** 仅按文件夹筛选时，标题直接写文件夹名；有搜索词时仍显示「搜索结果」。 */
@@ -524,15 +539,85 @@ export class VaultListV2Component implements OnInit {
   }
 
   private toRow(view: CipherListView): VaultRow {
-    const folder = this.folderName(view.folderId);
-    const sub = [view.subtitle, folder].filter(Boolean).join(" · ");
+    const kind = this.kindOf(view);
+    const sub = [this.subtitleOf(view, kind), this.folderName(view.folderId)]
+      .filter(Boolean)
+      .join(" · ");
     return {
       id: String(view.id ?? ""),
-      kind: this.kindOf(view),
+      kind,
       name: view.name,
       sub,
       favorite: view.favorite,
-      username: this.usernameOf(view),
+      // Only logins have a username to copy; for tokens/servers that slot holds a service
+      // or host, which should not grow a username copy affordance.
+      username: kind === ItemKind.Login ? this.usernameOf(view) : "",
     };
   }
+
+  /** Kind-aware subtitle: kind + the fields this kind actually carries, never a raw username. */
+  private subtitleOf(view: CipherListView, kind: ItemKind): string {
+    const label = this.kindLabel(kind);
+    switch (kind) {
+      case ItemKind.Login:
+        return this.usernameOf(view) || label;
+      case ItemKind.Token:
+        return joinParts([label, this.envOf(view)]);
+      case ItemKind.Server:
+        return joinParts([
+          this.serverAddressOf(view),
+          this.fieldValue(view, "protocol").toUpperCase() || label,
+        ]);
+      case ItemKind.License:
+        return joinParts([label, this.fieldValue(view, "seats")]);
+      case ItemKind.Card:
+        return this.cardSubtitle(view.subtitle) || label;
+      case ItemKind.Note: {
+        const notes = view.notes?.trim();
+        return notes
+          ? `${label} · ${this.i18n.t("lineCount", String(notes.split(/\r?\n/).length))}`
+          : label;
+      }
+      case ItemKind.SshKey:
+      case ItemKind.Identity:
+        // The list view carries no SSH fingerprint or identity document type; the closest
+        // honest value is the kind label.
+        return label;
+    }
+  }
+
+  private fieldValue(view: CipherListView, name: string): string {
+    return view.fields?.find((field) => field.name === name)?.value?.trim() ?? "";
+  }
+
+  private envOf(view: CipherListView): string {
+    const env = this.fieldValue(view, "env");
+    if (!env || /环境$|environment$/i.test(env)) {
+      return env;
+    }
+    return this.i18n.t("environmentLabel", env);
+  }
+
+  private serverAddressOf(view: CipherListView): string {
+    const host = this.usernameOf(view);
+    if (!host) {
+      return "";
+    }
+    const protocol = this.fieldValue(view, "protocol");
+    return !host.includes(":") && /^ssh$/i.test(protocol) ? `${host}:22` : host;
+  }
+
+  private cardSubtitle(subtitle: string | undefined): string {
+    const last4 = /(\d{4})\s*$/.exec(subtitle ?? "")?.[1];
+    return last4 ? `•••• ${last4}` : (subtitle ?? "").trim();
+  }
+
+  private revisionTime(view: CipherListView): number {
+    const time = new Date(view.revisionDate).getTime();
+    return Number.isNaN(time) ? 0 : time;
+  }
+}
+
+function joinParts(parts: readonly (string | undefined)[]): string {
+  return parts.filter((part): part is string => !!part).join(" · ");
 }

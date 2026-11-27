@@ -20,9 +20,12 @@ import { LogService } from "@localpass/common/platform/abstractions/log.service"
 import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import { Utils } from "@localpass/common/platform/misc/utils";
 import { CollectionId, OrganizationId, UserId } from "@localpass/common/types/guid";
+import { UserKey } from "@localpass/common/types/key";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { CipherType } from "@localpass/common/vault/enums";
+import { FolderData } from "@localpass/common/vault/models/data/folder.data";
 import { Folder } from "@localpass/common/vault/models/domain/folder";
 import { FolderWithOptionalIdRequest } from "@localpass/common/vault/models/request/folder-with-optional-id.request";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
@@ -63,6 +66,7 @@ describe("ImportService", () => {
   let configService: MockProxy<ConfigService>;
   let sdkService: MockProxy<SdkService>;
   let logService: MockProxy<LogService>;
+  let localVaultWriter: MockProxy<LocalVaultWriter>;
 
   beforeEach(() => {
     cipherService = mock<CipherService>();
@@ -78,6 +82,7 @@ describe("ImportService", () => {
     configService = mock<ConfigService>();
     sdkService = mock<SdkService>();
     logService = mock<LogService>();
+    localVaultWriter = mock<LocalVaultWriter>();
 
     importService = new ImportService(
       cipherService,
@@ -93,6 +98,7 @@ describe("ImportService", () => {
       configService,
       sdkService,
       logService,
+      localVaultWriter,
     );
 
     // Feature flags are only used by certain specific importers, not the base
@@ -465,6 +471,44 @@ describe("ImportService", () => {
       expect(request.folders[0]).toBeInstanceOf(FolderWithOptionalIdRequest);
       expect(request.folders[0].name).toBe("2.encryptedName");
       expect(request.folders[0].id).toBe("folder-id-123");
+    });
+
+    it("clears the decrypted folder cache before writing imported folders to a local vault", async () => {
+      const importResult = new ImportResult();
+      const folderView = new FolderView();
+      folderView.name = "Test Folder";
+      importResult.folders.push(folderView);
+
+      const cipherView = new CipherView();
+      cipherView.name = "Test Cipher";
+      importResult.ciphers.push(cipherView);
+      importResult.folderRelationships.push([0, 0]);
+
+      const encryptedFolder = new Folder();
+      encryptedFolder.name = new EncString("2.encryptedName");
+      folderService.encrypt.mockResolvedValue(encryptedFolder);
+
+      localVaultWriter.isLocalAccount.mockResolvedValue(true);
+      localVaultWriter.saveFolder.mockResolvedValue(
+        new FolderData({ id: "folder-id-123", name: "2.encryptedName" }),
+      );
+      keyService.userKey$.mockReturnValue(of({} as UserKey));
+      cipherService.createWithServer.mockResolvedValue(cipherView);
+
+      const userId = "test-user-id" as UserId;
+      await importService["handleIndividualImport"](importResult, userId);
+
+      expect(folderService.clearDecryptedFolderState).toHaveBeenCalledWith(userId);
+      expect(folderService.clearDecryptedFolderState.mock.invocationCallOrder[0]).toBeLessThan(
+        localVaultWriter.saveFolder.mock.invocationCallOrder[0],
+      );
+      expect(
+        folderService.clearDecryptedFolderState.mock.invocationCallOrder.at(-1),
+      ).toBeGreaterThan(localVaultWriter.saveFolder.mock.invocationCallOrder.at(-1));
+      expect(localVaultWriter.saveFolder).toHaveBeenCalledWith(encryptedFolder, userId);
+      expect(cipherView.folderId).toBe("folder-id-123");
+      expect(cipherService.createWithServer).toHaveBeenCalledWith(cipherView, userId);
+      expect(importApiService.postImportCiphers).not.toHaveBeenCalled();
     });
   });
 

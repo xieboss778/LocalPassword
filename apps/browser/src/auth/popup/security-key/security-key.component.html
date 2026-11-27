@@ -14,6 +14,23 @@
   }
 
   <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
+    <lp-hero
+      icon="bwi-key"
+      [title]="'securityKeyHeroTitle' | i18n"
+      [text]="'securityKeyHeroText' | i18n"
+    >
+      <button
+        id="security-key_button_enroll"
+        type="button"
+        bitButton
+        buttonType="primary"
+        [disabled]="!supported() || busy()"
+        (click)="enroll()"
+      >
+        {{ "securityKeyEnroll" | i18n }}
+      </button>
+    </lp-hero>
+
     @if (!supported()) {
       <div
         class="tw-mx-3 tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-px-3 tw-py-2.5 tw-text-xs tw-text-fg-danger-strong"
@@ -21,31 +38,34 @@
         {{ "securityKeyUnsupported" | i18n }}
       </div>
     } @else {
-      <lp-group [label]="'securityKey' | i18n">
-        <lp-row
-          icon="bwi-key"
-          [label]="'securityKeyRegistered' | i18n"
-          [value]="registeredCount().toString()"
-          [clickable]="false"
-        />
-      </lp-group>
+      @if (registeredCount() > 0) {
+        <lp-group [label]="'securityKeyRegistered' | i18n">
+          <lp-row
+            icon="bwi-key"
+            [label]="'securityKey' | i18n"
+            [value]="registeredText()"
+            [clickable]="false"
+          />
+        </lp-group>
 
-      <div class="tw-flex tw-flex-col tw-gap-2 tw-px-3 tw-pt-3">
-        <button type="button" bitButton buttonType="primary" [disabled]="busy()" (click)="enroll()">
-          {{ "securityKeyEnroll" | i18n }}
-        </button>
-        @if (registeredCount() > 0) {
+        <div class="tw-px-4 tw-pt-3">
           <button
+            id="security-key_button_remove-all"
             type="button"
             bitButton
             buttonType="danger"
+            [block]="true"
             [disabled]="busy()"
             (click)="removeAll()"
           >
             {{ "securityKeyRemove" | i18n }}
           </button>
-        }
-      </div>
+        </div>
+      }
+
+      <p class="tw-px-4 tw-pt-4 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+        {{ "securityKeyFootnote" | i18n }}
+      </p>
     }
   </div>
 </div>

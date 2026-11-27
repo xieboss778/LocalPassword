@@ -15,11 +15,20 @@ import { Lock, Plus } from "../../../../content/components/icons";
 import {
   InlineMenuCipherList,
   InlineMenuCipherListNewItem,
+  InlineMenuCollapsedChip,
   InlineMenuContainer,
-  InlineMenuPrompt,
+  InlineMenuLoginMenu,
+  InlineMenuLoginMenuI18n,
+  InlineMenuPasskeyVerifying,
   InlineMenuPasswordGenerator,
+  InlineMenuPrompt,
+  InlineMenuTotpFilledCard,
 } from "../../../../content/components/inline-menu";
-import { InlineMenuFillType } from "../../../../enums/autofill-overlay.enum";
+import { accountMatchesQuery } from "../../../../content/components/inline-menu/login-menu-data";
+import {
+  InlineMenuFillType,
+  RedirectFocusDirection,
+} from "../../../../enums/autofill-overlay.enum";
 import { buildSvgDomElement, specialCharacterToKeyMap, throttle } from "../../../../utils";
 import { EventSecurity } from "../../../../utils/event-security";
 import { resolveTheme } from "../../../../utils/resolve-theme";
@@ -42,6 +51,31 @@ import {
   UpdateAutofillInlineMenuListCiphersParams,
 } from "../../abstractions/autofill-inline-menu-list";
 import { AutofillInlineMenuPageElement } from "../shared/autofill-inline-menu-page-element";
+
+export interface AutofillInlineMenuCipherFilledMessage {
+  command: string;
+  inlineMenuCipherId?: string;
+  didFill?: boolean;
+  filledTotp?: string;
+  canAutoCopyTotp?: boolean;
+}
+
+type InlineMenuLitView =
+  | { type: "list" }
+  | { type: "collapsed"; cipher: InlineMenuCipherData }
+  | {
+      type: "totpFilled";
+      cipher: InlineMenuCipherData;
+      code: string;
+      period: number;
+      canAutoCopy: boolean;
+    }
+  | { type: "passkeyVerifying"; cipher: InlineMenuCipherData };
+
+type PendingFill = {
+  cipher: InlineMenuCipherData;
+  method: "password" | "totp" | "passkey";
+};
 
 export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
   /** Non-null asserted. Set in initAutofillInlineMenuList before any read. */
@@ -79,6 +113,17 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
   private litHost?: HTMLDivElement;
   private litCipherListScrollElement?: HTMLElement;
   private readonly showCiphersPerPage = 6;
+  private inlineMenuDomain = "";
+  private focusedFieldValue = "";
+  private isTotpField = false;
+  private inlineMenuView: InlineMenuLitView = { type: "list" };
+  private activeRowKey?: string;
+  private selectedTotpAccountId: string | null = null;
+  private pendingFill: PendingFill | null = null;
+  private passkeyVerifyTimeout?: ReturnType<typeof globalThis.setTimeout>;
+  private copiedFeedbackTimeout?: ReturnType<typeof globalThis.setTimeout>;
+  private totpRefreshRequested = false;
+  private totpRefreshTimeout?: ReturnType<typeof globalThis.setTimeout>;
   private readonly headingBorderClass = "inline-menu-list-heading--bordered";
   private readonly inlineMenuListWindowMessageHandlers: AutofillInlineMenuListWindowMessageHandlers =
     {
@@ -89,6 +134,8 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
         this.handleUpdateAutofillInlineMenuGeneratedPassword(message),
       showSaveLoginInlineMenuList: () => this.handleShowSaveLoginInlineMenuList(),
       focusAutofillInlineMenuList: () => this.focusInlineMenuList(),
+      inlineMenuCipherFilled: ({ message }: { message: AutofillInlineMenuCipherFilledMessage }) =>
+        this.handleInlineMenuCipherFilled(message),
     };
 
   constructor() {
@@ -119,6 +166,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       showSaveLoginMenu,
       showAnimations = true,
       useLitComponents = false,
+      domain = "",
+      focusedFieldValue = "",
+      isTotpField = false,
     } = message;
     const linkElement = await this.initAutofillInlineMenuPage(
       "list",
@@ -131,6 +181,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     this.inlineMenuFillType = inlineMenuFillType;
     this.showPasskeysLabels = showPasskeysLabels;
     this.useLitComponents = useLitComponents;
+    this.inlineMenuDomain = domain;
+    this.focusedFieldValue = focusedFieldValue;
+    this.isTotpField = isTotpField;
     if (useLitComponents) {
       this.theme = resolveTheme(theme);
     }
@@ -166,6 +219,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     this.updateListItems({
       ciphers,
       showInlineMenuAccountCreation,
+      focusedFieldValue,
+      isTotpField,
+      showPasskeysLabels,
     });
   }
 
@@ -263,6 +319,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
   private renderLit(template: TemplateResult) {
     if (!this.litHost) {
       this.litHost = globalThis.document.createElement("div");
+      this.litHost.addEventListener("mouseover", this.handleLitRowHover);
+      this.litHost.addEventListener("focusin", this.handleLitRowFocus);
+      this.litHost.addEventListener(EVENTS.KEYUP, this.handleLitMenuKeyUp);
     }
     if (!this.inlineMenuListContainer.contains(this.litHost)) {
       this.inlineMenuListContainer.appendChild(this.litHost);
@@ -656,17 +715,34 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
   private updateListItems({
     ciphers = [],
     showInlineMenuAccountCreation = false,
+    showPasskeysLabels,
+    focusedFieldValue,
+    isTotpField,
   }: UpdateAutofillInlineMenuListCiphersParams) {
     if (this.isPasskeyAuthInProgress) {
       return;
     }
 
     this.ciphers = this.getFilteredCiphersForTotpField(ciphers);
-    this.currentCipherIndex = 0;
     this.showInlineMenuAccountCreation = showInlineMenuAccountCreation;
+    if (showPasskeysLabels !== undefined) {
+      this.showPasskeysLabels = showPasskeysLabels;
+    }
+    if (focusedFieldValue !== undefined) {
+      this.focusedFieldValue = focusedFieldValue;
+    }
+    if (isTotpField !== undefined) {
+      this.isTotpField = isTotpField;
+    }
+
+    if (this.inlineMenuView.type !== "list") {
+      return;
+    }
+
+    this.currentCipherIndex = 0;
     this.resetInlineMenuContainer();
 
-    if (!this.ciphers?.length) {
+    if (!this.ciphers?.length && !this.shouldUseAccountMenu()) {
       this.buildNoResultsInlineMenuList();
       return;
     }
@@ -697,50 +773,442 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     this.newItemButtonElement!.addEventListener(EVENTS.KEYUP, this.handleNewItemButtonKeyUpEvent);
   }
 
+  /**
+   * Whether the Lit account-first menu should render. Only login suggestions use it; cards,
+   * identities and SSH keys continue through the legacy list component.
+   */
+  private shouldUseAccountMenu(): boolean {
+    if (!this.useLitComponents || this.inlineMenuFillType !== CipherType.Login) {
+      return false;
+    }
+
+    return this.ciphers.every((cipher) => cipher.type === CipherType.Login);
+  }
+
   private renderLitCipherList() {
-    this.renderLit(
-      InlineMenuCipherList({
-        ciphers: this.ciphers.slice(0, this.currentCipherIndex),
-        theme: this.theme,
-        showPasskeysLabels: this.showPasskeysLabels,
-        viewButtonText: this.getTranslation("view"),
-        opensInANewWindowText: this.getTranslation("opensInANewWindow"),
-        fillCredentialsForText: this.getTranslation("fillCredentialsFor"),
-        logInWithPasskeyAriaLabel: this.getTranslation("logInWithPasskeyAriaLabel"),
-        usernameText: this.getTranslation("username"),
-        cardNumberEndsWithText: this.getTranslation("cardNumberEndsWith"),
-        fillVerificationCodeText: this.getTranslation("fillVerificationCode"),
-        totpCodeAria: this.getTranslation("totpCodeAria"),
-        passkeysText: this.getTranslation("passkeys"),
-        passwordsText: this.getTranslation("passwords"),
-        handleFillCipher: (cipher) =>
-          this.triggerFillCipherClickEvent(cipher, !!cipher.login?.passkey),
-        handleViewCipher: (cipher) =>
-          this.postMessageToParent({
-            command: "viewSelectedCipher",
-            inlineMenuCipherId: cipher.id,
-          }),
-        onTotpPeriodElapsed: () => this.postMessageToParent({ command: "refreshOverlayCiphers" }),
-        onListEdgeReached: this.showInlineMenuAccountCreation
-          ? () => this.newItemButtonElement?.focus()
-          : undefined,
-        newItem: this.showInlineMenuAccountCreation
-          ? this.buildNewItemActionProps(true)
-          : undefined,
-      }),
-    );
+    if (this.shouldUseAccountMenu()) {
+      this.renderAccountMenu();
+    } else {
+      this.renderLit(
+        InlineMenuCipherList({
+          ciphers: this.ciphers.slice(0, this.currentCipherIndex),
+          theme: this.theme,
+          showPasskeysLabels: this.showPasskeysLabels,
+          viewButtonText: this.getTranslation("view"),
+          opensInANewWindowText: this.getTranslation("opensInANewWindow"),
+          fillCredentialsForText: this.getTranslation("fillCredentialsFor"),
+          logInWithPasskeyAriaLabel: this.getTranslation("logInWithPasskeyAriaLabel"),
+          usernameText: this.getTranslation("username"),
+          cardNumberEndsWithText: this.getTranslation("cardNumberEndsWith"),
+          fillVerificationCodeText: this.getTranslation("fillVerificationCode"),
+          totpCodeAria: this.getTranslation("totpCodeAria"),
+          passkeysText: this.getTranslation("passkeys"),
+          passwordsText: this.getTranslation("passwords"),
+          handleFillCipher: (cipher) =>
+            this.triggerFillCipherClickEvent(cipher, !!cipher.login?.passkey),
+          handleViewCipher: (cipher) =>
+            this.postMessageToParent({
+              command: "viewSelectedCipher",
+              inlineMenuCipherId: cipher.id,
+            }),
+          onTotpPeriodElapsed: () => this.handleTotpPeriodElapsed(),
+          onListEdgeReached: this.showInlineMenuAccountCreation
+            ? () => this.newItemButtonElement?.focus()
+            : undefined,
+          newItem: this.showInlineMenuAccountCreation
+            ? this.buildNewItemActionProps(true)
+            : undefined,
+        }),
+      );
+    }
+
     this.setupLitCipherListScrollListeners();
     this.newItemButtonElement = this.showInlineMenuAccountCreation
       ? (this.litHost?.querySelector<HTMLButtonElement>(
           "[data-testid='inline-menu-new-item-button']",
         ) ?? undefined)
       : undefined;
+    this.syncActiveRowKeyFromDom();
+  }
+
+  private renderAccountMenu() {
+    const filteredCiphers = this.getFilteredAccountCiphers();
+    this.renderLit(
+      InlineMenuLoginMenu({
+        theme: this.theme,
+        domain: this.inlineMenuDomain,
+        // Pass every cipher: the menu applies the filter itself and uses the full set to report
+        // matched/total counts and to offer "show all accounts" from the empty state. Paging
+        // still advances through the filtered slice.
+        ciphers: this.ciphers,
+        visibleCiphers: filteredCiphers.slice(0, this.currentCipherIndex),
+        query: this.isTotpField ? "" : this.focusedFieldValue,
+        isTotp: this.isTotpField,
+        selectedTotpAccountId: this.selectedTotpAccountId,
+        activeRowKey: this.activeRowKey,
+        i18n: this.buildLoginMenuI18n(),
+        onFill: (cipher, method, event) => this.handleLoginMenuFill(cipher, method, event),
+        onFillTotp: (cipher, event) => this.handleTotpMenuFill(cipher, event),
+        onNewItem: (event) => this.handleNewLoginVaultItemAction(event as MouseEvent),
+        onClearFilter: () => this.handleClearFilter(),
+        onClose: () => this.renderCloseMenu(),
+        onTotpPeriodElapsed: () => this.handleTotpPeriodElapsed(),
+      }),
+    );
+  }
+
+  private renderCurrentLitView() {
+    switch (this.inlineMenuView.type) {
+      case "collapsed": {
+        const cipher = this.inlineMenuView.cipher;
+        this.renderLit(
+          InlineMenuCollapsedChip({
+            theme: this.theme,
+            title: this.getTranslation("inlineMenuCollapsedPasswordTitle").replace(
+              "{username}",
+              this.getAccountUsername(cipher),
+            ),
+            detail: this.getTranslation("inlineMenuCollapsedPasswordDetail"),
+            expandText: this.getTranslation("inlineMenuExpand"),
+            ariaLabel: this.getTranslation("inlineMenuExpandAria"),
+            onOpen: () => {
+              this.inlineMenuView = { type: "list" };
+              this.currentCipherIndex = 0;
+              this.loadLitPageOfCiphers();
+              this.renderCurrentLitView();
+              globalThis.setTimeout(() => this.focusInlineMenuList(), 0);
+            },
+          }),
+        );
+        break;
+      }
+      case "totpFilled": {
+        const { cipher, code, period, canAutoCopy } = this.inlineMenuView;
+        this.renderLit(
+          InlineMenuTotpFilledCard({
+            theme: this.theme,
+            username: this.getAccountUsername(cipher),
+            code,
+            period,
+            masked: !!cipher.reprompt,
+            canAutoCopy,
+            copied: this.copiedFeedbackTimeout !== undefined,
+            i18n: {
+              ariaLabel: this.getTranslation("inlineMenuTotpFilledAria"),
+              title: this.getTranslation("inlineMenuTotpFilledTitle"),
+              body: this.getTranslation(
+                canAutoCopy ? "inlineMenuTotpFilledBody" : "inlineMenuTotpFilledBodyNoCopy",
+              ),
+              copiedBody: this.getTranslation("inlineMenuTotpCopiedBody"),
+              copied: this.getTranslation("inlineMenuCopied"),
+              copyAria: this.getTranslation("inlineMenuTotpCopyAria"),
+              remaining: this.getTranslation("inlineMenuTotpRemaining"),
+              switchAccount: this.getTranslation("inlineMenuSwitchAccount"),
+            },
+            onCopy: () => this.handleCopyTotp(cipher),
+            onSwitchAccount: () => {
+              this.inlineMenuView = { type: "list" };
+              this.currentCipherIndex = 0;
+              this.loadLitPageOfCiphers();
+              this.renderCurrentLitView();
+              globalThis.setTimeout(() => this.focusInlineMenuList(), 0);
+            },
+          }),
+        );
+        break;
+      }
+      case "passkeyVerifying": {
+        const cipher = this.inlineMenuView.cipher;
+        this.renderLit(
+          InlineMenuPasskeyVerifying({
+            theme: this.theme,
+            domain: this.inlineMenuDomain,
+            username: this.getAccountUsername(cipher),
+            i18n: {
+              headerCount: this.getTranslation("inlineMenuVerifying"),
+              title: this.getTranslation("inlineMenuPasskeyVerifyingTitle"),
+              body: this.getTranslation("inlineMenuPasskeyVerifyingBody"),
+              meta: this.getTranslation("inlineMenuPasskeyVerifyingMeta"),
+              cancel: this.getTranslation("inlineMenuCancel"),
+              ariaLabel: this.getTranslation("inlineMenuPasskeyVerifyingAria"),
+              closeAria: this.getTranslation("inlineMenuCloseAria"),
+              showAll: this.getTranslation("inlineMenuShowAll"),
+            },
+            onCancel: () => this.handleCancelPasskeyAuthentication(),
+          }),
+        );
+        break;
+      }
+      default:
+        this.renderLitCipherList();
+    }
+
+    this.syncActiveRowKeyFromDom();
+  }
+
+  private getFilteredAccountCiphers(): InlineMenuCipherData[] {
+    if (this.isTotpField || !this.focusedFieldValue.trim()) {
+      return this.ciphers;
+    }
+
+    return this.ciphers.filter((cipher) => accountMatchesQuery(cipher, this.focusedFieldValue));
+  }
+
+  private buildLoginMenuI18n(): InlineMenuLoginMenuI18n {
+    return {
+      accountCount: this.getTranslation("inlineMenuAccountCount"),
+      sameDomainRecent: this.getTranslation("inlineMenuSameDomainRecent"),
+      filterMatch: this.getTranslation("inlineMenuFilterMatch"),
+      showAll: this.getTranslation("inlineMenuShowAll"),
+      passkeysGroup: this.getTranslation("inlineMenuPasskeysGroup"),
+      passwordsGroup: this.getTranslation("inlineMenuPasswordsGroup"),
+      totpGroup: this.getTranslation("inlineMenuTotpGroup"),
+      keyboardHint: this.getTranslation("inlineMenuKeyboardHint"),
+      totpKeyboardHint: this.getTranslation("inlineMenuTotpKeyboardHint"),
+      newLogin: this.getTranslation("inlineMenuNewLogin"),
+      newLoginAria: this.getTranslation("addNewLoginItemAria"),
+      totpContext: this.getTranslation("inlineMenuTotpContext"),
+      totpRefreshNote: this.getTranslation("inlineMenuTotpRefreshNote"),
+      totpFill: this.getTranslation("inlineMenuTotpFill"),
+      emptyTitle: this.getTranslation("inlineMenuEmptyTitle"),
+      emptyDescription: this.getTranslation("inlineMenuEmptyDescription"),
+      emptyDescriptionNoQuery: this.getTranslation("inlineMenuEmptyDescriptionNoQuery"),
+      showAllAccounts: this.getTranslation("inlineMenuShowAllAccounts"),
+      closeAria: this.getTranslation("inlineMenuCloseAria"),
+      menuAriaLabel: this.getTranslation("inlineMenuMenuAriaLabel"),
+      totpMenuAriaLabel: this.getTranslation("inlineMenuTotpMenuAriaLabel"),
+      passkey: this.getTranslation("inlineMenuPasskey"),
+      password: this.getTranslation("inlineMenuPassword"),
+      verificationCode: this.getTranslation("inlineMenuVerificationCode"),
+      lastUsed: this.getTranslation("inlineMenuLastUsed"),
+      currentAccount: this.getTranslation("inlineMenuCurrentAccount"),
+      fill: this.getTranslation("inlineMenuFill"),
+      verify: this.getTranslation("inlineMenuVerify"),
+      fillPasswordAria: this.getTranslation("inlineMenuFillPasswordAria"),
+      usePasskeyAria: this.getTranslation("inlineMenuUsePasskeyAria"),
+      fillAria: this.getTranslation("inlineMenuTotpFillAria"),
+      codeAria: this.getTranslation("totpCodeAria"),
+    };
+  }
+
+  private getAccountUsername(cipher: InlineMenuCipherData): string {
+    return cipher.login?.username || cipher.login?.passkey?.userName || cipher.name;
+  }
+
+  private handleLitRowHover = (event: Event) => {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+
+    const row = event.target.closest<HTMLElement>("[data-inline-row-key]");
+    if (row) {
+      this.setActiveRow(row);
+    }
+  };
+
+  private handleLitRowFocus = (event: FocusEvent) => {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+
+    const row = event.target.closest<HTMLElement>("[data-inline-row-key]");
+    this.setActiveRow(row);
+  };
+
+  private handleLitMenuKeyUp = (event: KeyboardEvent) => {
+    if (
+      !this.useLitComponents ||
+      !EventSecurity.isEventTrusted(event) ||
+      (event.code !== "ArrowDown" && event.code !== "ArrowUp") ||
+      !(event.target instanceof Element)
+    ) {
+      return;
+    }
+
+    const current = event.target.closest<HTMLElement>("[data-inline-menu-focusable]");
+    if (!current || !this.litHost?.contains(current)) {
+      return;
+    }
+
+    const focusable = Array.from(
+      this.litHost.querySelectorAll<HTMLElement>("[data-inline-menu-focusable]"),
+    );
+    if (focusable.length < 2) {
+      return;
+    }
+
+    const currentIndex = focusable.indexOf(current);
+    if (currentIndex === -1) {
+      return;
+    }
+
+    event.preventDefault();
+    const nextIndex =
+      event.code === "ArrowDown"
+        ? (currentIndex + 1) % focusable.length
+        : (currentIndex - 1 + focusable.length) % focusable.length;
+    const next = focusable[nextIndex];
+    next.focus();
+    this.setActiveRow(next.hasAttribute("data-inline-row-key") ? next : null);
+  };
+
+  private setActiveRow(row: HTMLElement | null) {
+    this.litHost?.querySelectorAll<HTMLElement>("[data-inline-row-key]").forEach((element) => {
+      element.classList.toggle("is-active", element === row);
+    });
+    this.activeRowKey = row?.getAttribute("data-inline-row-key") ?? undefined;
+  }
+
+  private syncActiveRowKeyFromDom() {
+    const active = this.litHost?.querySelector<HTMLElement>("[data-inline-row-key].is-active");
+    this.activeRowKey = active?.getAttribute("data-inline-row-key") ?? undefined;
+  }
+
+  private handleLoginMenuFill(
+    cipher: InlineMenuCipherData,
+    method: "passkey" | "password",
+    _event: Event,
+  ) {
+    this.pendingFill = { cipher, method };
+    this.triggerFillCipherClickEvent(cipher, method === "passkey");
+  }
+
+  private handleTotpMenuFill(cipher: InlineMenuCipherData, _event: Event) {
+    this.pendingFill = { cipher, method: "totp" };
+    this.triggerFillCipherClickEvent(cipher, false);
+  }
+
+  private handleInlineMenuCipherFilled(message: AutofillInlineMenuCipherFilledMessage) {
+    const pending = this.pendingFill;
+    if (
+      !pending ||
+      !message.inlineMenuCipherId ||
+      pending.cipher.id !== message.inlineMenuCipherId
+    ) {
+      return;
+    }
+
+    this.pendingFill = null;
+
+    if (!message.didFill) {
+      this.inlineMenuView = { type: "list" };
+      this.renderCurrentLitView();
+      return;
+    }
+
+    if (pending.method === "password") {
+      this.inlineMenuView = { type: "collapsed", cipher: pending.cipher };
+    } else if (pending.method === "totp") {
+      this.selectedTotpAccountId = pending.cipher.id;
+      this.inlineMenuView = {
+        type: "totpFilled",
+        cipher: pending.cipher,
+        code: message.filledTotp || pending.cipher.login?.totp || "",
+        period: pending.cipher.login?.totpCodeTimeInterval ?? 30,
+        canAutoCopy: !!message.canAutoCopyTotp,
+      };
+    } else {
+      return;
+    }
+
+    this.renderCurrentLitView();
+  }
+
+  private handleCopyTotp(cipher: InlineMenuCipherData) {
+    this.postMessageToParent({
+      command: "copyInlineMenuTotp",
+      inlineMenuCipherId: cipher.id,
+    });
+
+    if (this.copiedFeedbackTimeout) {
+      globalThis.clearTimeout(this.copiedFeedbackTimeout);
+    }
+    this.copiedFeedbackTimeout = globalThis.setTimeout(() => {
+      this.copiedFeedbackTimeout = undefined;
+      if (this.inlineMenuView.type === "totpFilled") {
+        this.renderCurrentLitView();
+      }
+    }, 1500);
+    this.renderCurrentLitView();
+  }
+
+  private handleClearFilter() {
+    this.focusedFieldValue = "";
+    this.activeRowKey = undefined;
+    this.currentCipherIndex = 0;
+    this.loadLitPageOfCiphers();
+    this.renderCurrentLitView();
+    globalThis.setTimeout(() => this.focusInlineMenuList(), 0);
+  }
+
+  private renderCloseMenu() {
+    this.postMessageToParent({
+      command: "redirectAutofillInlineMenuFocusOut",
+      direction: RedirectFocusDirection.Current,
+    });
+  }
+
+  private handleTotpPeriodElapsed() {
+    if (!this.isTotpField || this.totpRefreshRequested) {
+      return;
+    }
+
+    this.totpRefreshRequested = true;
+    this.postMessageToParent({ command: "refreshOverlayCiphers" });
+    if (this.totpRefreshTimeout) {
+      globalThis.clearTimeout(this.totpRefreshTimeout);
+    }
+    this.totpRefreshTimeout = globalThis.setTimeout(() => {
+      this.totpRefreshRequested = false;
+      this.totpRefreshTimeout = undefined;
+    }, 2000);
+  }
+
+  private showPasskeyVerifying(cipher: InlineMenuCipherData) {
+    this.isPasskeyAuthInProgress = true;
+    this.inlineMenuView = { type: "passkeyVerifying", cipher };
+    this.renderCurrentLitView();
+
+    if (this.passkeyVerifyTimeout) {
+      globalThis.clearTimeout(this.passkeyVerifyTimeout);
+    }
+    this.passkeyVerifyTimeout = globalThis.setTimeout(() => {
+      this.passkeyVerifyTimeout = undefined;
+      this.isPasskeyAuthInProgress = false;
+      if (
+        this.inlineMenuView.type === "passkeyVerifying" &&
+        this.inlineMenuView.cipher.id === cipher.id
+      ) {
+        this.inlineMenuView = { type: "list" };
+        this.currentCipherIndex = 0;
+        this.loadLitPageOfCiphers();
+        this.renderCurrentLitView();
+      }
+      this.postMessageToParent({ command: "checkAutofillInlineMenuButtonFocused" });
+    }, 4000);
+  }
+
+  private handleCancelPasskeyAuthentication() {
+    if (this.passkeyVerifyTimeout) {
+      globalThis.clearTimeout(this.passkeyVerifyTimeout);
+      this.passkeyVerifyTimeout = undefined;
+    }
+    this.isPasskeyAuthInProgress = false;
+    this.pendingFill = null;
+    this.postMessageToParent({ command: "cancelInlineMenuPasskey" });
+    this.inlineMenuView = { type: "list" };
+    this.activeRowKey = undefined;
+    this.currentCipherIndex = 0;
+    this.loadLitPageOfCiphers();
+    this.renderCurrentLitView();
+    globalThis.setTimeout(() => this.focusInlineMenuList(), 0);
   }
 
   private loadLitPageOfCiphers() {
+    const ciphers = this.shouldUseAccountMenu() ? this.getFilteredAccountCiphers() : this.ciphers;
     this.currentCipherIndex = Math.min(
       this.currentCipherIndex + this.showCiphersPerPage,
-      this.ciphers.length,
+      ciphers.length,
     );
   }
 
@@ -986,7 +1454,8 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
    * Validates whether the list of ciphers has been fully loaded.
    */
   private allCiphersLoaded() {
-    return this.currentCipherIndex >= this.ciphers.length;
+    const ciphers = this.shouldUseAccountMenu() ? this.getFilteredAccountCiphers() : this.ciphers;
+    return this.currentCipherIndex >= ciphers.length;
   }
 
   /**
@@ -1320,7 +1789,14 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
    */
   private triggerFillCipherClickEvent = (cipher: InlineMenuCipherData, usePasskey: boolean) => {
     if (usePasskey) {
-      this.createPasskeyAuthenticatingLoader();
+      this.pendingFill = this.pendingFill ?? { cipher, method: "passkey" };
+      if (this.useLitComponents) {
+        this.showPasskeyVerifying(cipher);
+      } else {
+        this.createPasskeyAuthenticatingLoader();
+      }
+    } else if (!this.pendingFill) {
+      this.pendingFill = { cipher, method: this.isTotpField ? "totp" : "password" };
     }
 
     this.postMessageToParent({
@@ -1896,8 +2372,18 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       return;
     }
 
+    // Lit rows render inside `litHost`, which a plain `querySelector` on the container cannot
+    // reach. Focus the first Lit row first so arrow-key navigation starts on an account.
+    const firstLitElement = this.litHost?.querySelector<HTMLElement>(
+      "[data-inline-menu-focusable]",
+    );
+    if (firstLitElement) {
+      firstLitElement.focus();
+      return;
+    }
+
     const firstListElement = this.inlineMenuListContainer.querySelector(
-      ".inline-menu-list-action, [data-testid='inline-menu-save-login-button'], [data-testid='inline-menu-new-item-button'], [data-fill-cipher], [data-fill-generated-password]",
+      ".inline-menu-list-action, [data-testid='inline-menu-save-login-button'], [data-testid='inline-menu-new-item-button'], [data-fill-cipher], [data-fill-generated-password], [data-inline-chip], [data-inline-passkey-cancel], [data-inline-totp-copy]",
     ) as HTMLElement;
     firstListElement?.focus();
   }

@@ -193,6 +193,7 @@ export function createAutofillOverlayCipherDataMock(
     name: `website login ${index}`,
     login: {
       username: `username${index}`,
+      hasPassword: true,
       passkey: null,
     },
     type: CipherType.Login,

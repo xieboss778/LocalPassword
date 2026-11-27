@@ -16,6 +16,8 @@ export type AutofillExtensionMessage = {
   subFrameId?: string;
   pageDetailsUrl?: string;
   showAnimations?: boolean;
+  /** Set when the fill started from the inline menu list; the list shows its own confirmation. */
+  retainInlineMenu?: boolean;
   ciphers?: any;
   isInlineMenuHidden?: boolean;
   overlayElement?: AutofillOverlayElementType;

@@ -106,8 +106,9 @@ export enum FeatureFlag {
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
 
-// Helper to ensure the value is treated as a boolean.
+// Helpers to ensure the value is treated as a boolean.
 const FALSE = false as boolean;
+const TRUE = true as boolean;
 
 /**
  * Default value for feature flags.
@@ -128,7 +129,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.FillAssistTargetingRules]: FALSE,
   [FeatureFlag.FillAssistRuleFallback]: FALSE,
   [FeatureFlag.DefaultPasswordManagerPrompt]: FALSE,
-  [FeatureFlag.LitInlineMenuComponents]: FALSE,
+  [FeatureFlag.LitInlineMenuComponents]: TRUE,
   [FeatureFlag.EnableBasicAuthResponse]: FALSE,
 
   /* Desktop Native */

@@ -14,7 +14,6 @@ import {
 } from "@localpass/angular/auth/guards";
 import {
   CreateLocalVaultComponent,
-  LocalVaultStartComponent,
   RestoreVaultV2Component,
 } from "@localpass/angular/auth/local-vault";
 import { ChangePasswordComponent } from "@localpass/angular/auth/password-management/change-password";
@@ -90,9 +89,13 @@ import { VaultComponent } from "../vault/app/vault-v3/vault.component";
 
 import { DesktopLayoutComponent } from "./layout/desktop-layout.component";
 import { LocalVaultLayoutComponent } from "./layout/local-vault-layout.component";
+import { UnlockOfflineFootnoteComponent } from "./layout/unlock-offline-footnote.component";
 import { SettingsDesktopV2Component } from "./settings-desktop-v2/settings-desktop-v2.component";
+import { BackupStatusDesktopV2Component } from "./tools/backup/backup-status-desktop-v2.component";
 import { DataSafetyDesktopV2Component } from "./tools/data-safety/data-safety-desktop-v2.component";
 import { ExportDesktopV2Component } from "./tools/export/export-desktop-v2.component";
+import { ImportLandingDesktopV2Component } from "./tools/import/import-landing-desktop-v2.component";
+import { ImportPreviewDesktopComponent } from "./tools/import/import-preview-desktop.component";
 import { ImportShellDesktopComponent } from "./tools/import/import-shell-desktop.component";
 import { NetworkGateDesktopV2Component } from "./tools/network-gate/network-gate-desktop-v2.component";
 import { unsavedSendEditsGuard } from "./tools/send/guards/unsaved-send-edits.guard";
@@ -178,6 +181,15 @@ export const routes: Routes = [
     component: Fido2RpIdNotAllowedComponent,
   },
   {
+    // 桌面端建库页是整窗卡片，不套用匿名落地页的页头与背景插画。
+    path: AuthRoute.CreateLocalVault,
+    canActivate: [maxAccountsGuardFn()],
+    component: CreateLocalVaultComponent,
+    data: {
+      localVaultLayout: "desktop",
+    } satisfies RouteDataProperties & { localVaultLayout: "desktop" },
+  },
+  {
     path: "",
     component: AnonLayoutWrapperComponent,
     children: [
@@ -229,18 +241,15 @@ export const routes: Routes = [
         ],
       },
       {
-        // LocalPass: a vault is created on this device, so the login screen becomes the start
-        // screen. The route keeps its name so the existing guards and redirects keep working.
+        // LocalPass: a vault is created on this device, so the first-run screen is the creation
+        // form itself. The route keeps its name so the existing guards and redirects keep working.
         path: AuthRoute.Login,
         canActivate: [maxAccountsGuardFn()],
         data: {
-          pageTitle: {
-            key: "localVaultStartTitle",
-          },
           pageIcon: VaultIcon,
         },
         children: [
-          { path: "", component: LocalVaultStartComponent },
+          { path: "", redirectTo: `/${AuthRoute.CreateLocalVault}`, pathMatch: "full" },
           {
             path: "",
             component: AccountSwitcherV2Component,
@@ -258,17 +267,6 @@ export const routes: Routes = [
           pageIcon: VaultIcon,
         },
         children: [{ path: "", component: RestoreVaultV2Component }],
-      },
-      {
-        path: AuthRoute.CreateLocalVault,
-        canActivate: [maxAccountsGuardFn()],
-        data: {
-          pageTitle: {
-            key: "createLocalVault",
-          },
-          pageIcon: VaultIcon,
-        },
-        children: [{ path: "", component: CreateLocalVaultComponent }],
       },
       {
         path: AuthRoute.LoginInitiated,
@@ -385,10 +383,13 @@ export const routes: Routes = [
         path: "lock",
         canActivate: [lockGuard(), reactiveUnlockVaultGuard],
         data: {
-          pageIcon: LockIcon,
-          pageTitle: {
-            key: "yourVaultIsLockedV2",
-          },
+          // LocalPass 的解锁页是卡片自带标题与图标的整窗布局，不再叠加匿名布局的页头。
+          pageTitle: null,
+          hidePageIcon: true,
+          hideHeader: true,
+          hideLogo: true,
+          hideFooter: true,
+          hideBackgroundIllustration: true,
           showReadonlyHostname: true,
         } satisfies AnonLayoutWrapperData,
         children: [
@@ -398,8 +399,8 @@ export const routes: Routes = [
           },
           {
             path: "",
-            component: AccountSwitcherV2Component,
-            outlet: "header-actions",
+            component: UnlockOfflineFootnoteComponent,
+            outlet: "secondary",
           },
         ],
       },
@@ -567,8 +568,24 @@ export const routes: Routes = [
       },
       {
         path: "backup-settings",
-        component: BackupSettingsV2Component,
+        component: BackupStatusDesktopV2Component,
         data: { pageTitle: { key: "cloudBackup" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "backup-config",
+        component: BackupSettingsV2Component,
+        data: {
+          pageTitle: { key: "backupStorage" },
+          backupView: "config",
+        } satisfies RouteDataProperties,
+      },
+      {
+        path: "restore",
+        component: RestoreVaultV2Component,
+        data: {
+          pageTitle: { key: "restoreTitle" },
+          restoreVariant: "desktop",
+        } satisfies RouteDataProperties,
       },
       {
         path: "network-gate",
@@ -582,6 +599,17 @@ export const routes: Routes = [
       },
       {
         path: "import",
+        pathMatch: "full",
+        component: ImportLandingDesktopV2Component,
+        data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "import-preview",
+        component: ImportPreviewDesktopComponent,
+        data: { pageTitle: { key: "importPreviewTitle" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "import/all",
         component: ImportShellDesktopComponent,
         data: { pageTitle: { key: "importNoun" } } satisfies RouteDataProperties,
         children: [
@@ -597,7 +625,7 @@ export const routes: Routes = [
           },
           {
             path: ":importType",
-            canActivate: [canActivateImportType("/import")],
+            canActivate: [canActivateImportType("/import/all")],
             loadComponent: () =>
               import("./tools/import/import-controls-desktop.component").then(
                 (mod) => mod.ImportControlsDesktopComponent,
@@ -606,7 +634,7 @@ export const routes: Routes = [
           },
           {
             path: IMPORT_DESTINATION_ROUTE_PATH,
-            canActivate: [canActivateImportType("/import")],
+            canActivate: [canActivateImportType("/import/all")],
             loadComponent: () =>
               import("./tools/import/import-destination-desktop.component").then(
                 (mod) => mod.ImportDestinationDesktopComponent,

@@ -16,7 +16,8 @@ import {
 } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
-import { LpPageHeaderComponent } from "@localpass/angular/local-ui";
+import { LpHeroComponent } from "@localpass/angular/local-ui";
+import { LocalPassMark } from "@localpass/assets/svg";
 import { InternalPolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
 import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -45,6 +46,8 @@ import {
   DialogService,
   FormFieldModule,
   IconButtonModule,
+  IconTileComponent,
+  SvgModule,
   ToastService,
 } from "@localpass/components";
 import {
@@ -102,13 +105,15 @@ const BIOMETRIC_UNLOCK_TEMPORARY_UNAVAILABLE_STATUSES = [
   host: { "data-testid": "lock-screen" },
   imports: [
     CommonModule,
-    LpPageHeaderComponent,
+    LpHeroComponent,
     JslibModule,
     ReactiveFormsModule,
     ButtonModule,
     FormFieldModule,
     AsyncActionsModule,
     IconButtonModule,
+    IconTileComponent,
+    SvgModule,
     UnlockViaPrfComponent,
     MasterPasswordLockComponent,
     TooltipDirective,
@@ -118,6 +123,7 @@ export class LockComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private activeAccountChange$ = new Subject<void>();
   protected loading = true;
+  protected readonly logo = LocalPassMark;
 
   activeAccount: Account | null = null;
 
@@ -341,6 +347,10 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private setEmailAsPageSubtitle(email: string) {
+    // LocalPass 的解锁卡片自带标题，不再把邮箱放进匿名布局的副标题。
+    if (this.clientType === ClientType.Desktop) {
+      return;
+    }
     this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
       pageSubtitle: email,
     });
@@ -422,6 +432,11 @@ export class LockComponent implements OnInit, OnDestroy {
     if (unlockOption === UnlockOption.Biometrics) {
       await this.unlockViaBiometrics();
     }
+  }
+
+  /** 忘记安全密码的唯一出路：从用户自己的备份恢复一个本机账户。 */
+  restoreFromBackup(): void {
+    void this.router.navigateByUrl("/restore-vault");
   }
 
   async logOut() {
@@ -816,6 +831,14 @@ export class LockComponent implements OnInit, OnDestroy {
 
   get biometricsAvailable(): boolean {
     return this.unlockOptions?.biometrics.enabled ?? false;
+  }
+
+  get isBrowser(): boolean {
+    return this.clientType === ClientType.Browser;
+  }
+
+  get isDesktop(): boolean {
+    return this.clientType === ClientType.Desktop;
   }
 
   get showBiometrics(): boolean {

@@ -33,7 +33,8 @@ export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
   showAcctSwitcher?: boolean;
   showBackButton?: boolean;
   showLogo?: boolean;
-  hideFooter?: boolean;
+  /** Pages that own their whole surface (e.g. unlock) skip the shared anon layout entirely. */
+  hideLayout?: boolean;
 }
 
 interface ExtensionAnonLayoutWrapperState {
@@ -46,6 +47,7 @@ interface ExtensionAnonLayoutWrapperState {
   showReadonlyHostname: boolean | null;
   maxWidth: LandingContentMaxWidthType | null;
   hideFooter: boolean | null;
+  hideLayout: boolean | null;
   hideCardWrapper: boolean | null;
   hidePageIcon?: boolean;
   contentVerticalPadding?: ContentVerticalPaddingType;
@@ -64,6 +66,7 @@ const RESET_STATE: ExtensionAnonLayoutWrapperState = {
   showReadonlyHostname: null,
   maxWidth: null,
   hideFooter: null,
+  hideLayout: null,
   hideCardWrapper: null,
 };
 
@@ -170,8 +173,9 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit {
     next.showBackButton =
       firstChildRouteData["showBackButton"] ?? EXTENSION_ANON_LAYOUT_DEFAULTS.showBackButton;
     next.showLogo = firstChildRouteData["showLogo"] ?? EXTENSION_ANON_LAYOUT_DEFAULTS.showLogo;
-    next.hideFooter =
-      firstChildRouteData["hideFooter"] ?? EXTENSION_ANON_LAYOUT_DEFAULTS.hideFooter;
+    next.hideFooter = firstChildRouteData["hideFooter"] ?? ANON_LAYOUT_DEFAULTS.hideFooter;
+    next.hideLayout =
+      firstChildRouteData["hideLayout"] ?? EXTENSION_ANON_LAYOUT_DEFAULTS.hideLayout;
     next.secondaryContentLocation =
       firstChildRouteData["secondaryContentLocation"] ??
       ANON_LAYOUT_DEFAULTS.secondaryContentLocation;

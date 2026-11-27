@@ -46,10 +46,10 @@ describe("desktop vault routes", () => {
 });
 
 describe("desktop import route", () => {
-  // The LocalPass shell offers import unconditionally; the old flag-gated
-  // subtree was retired with the redesigned import flow.
+  // The LocalPass shell offers import unconditionally; the vendor/destination pages live under
+  // the redesigned import shell.
   function importRoute(): Route {
-    const importRoutes = findRoute(routes, "import");
+    const importRoutes = findRoute(routes, "import/all");
     expect(importRoutes).toHaveLength(1);
     return importRoutes[0];
   }

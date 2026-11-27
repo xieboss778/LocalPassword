@@ -1,58 +1,50 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { LpPopupHeaderComponent } from "@localpass/angular/local-ui";
+import { LpPopupHeaderComponent, LpRowComponent } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
+import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
+import {
+  VaultTimeout,
+  VaultTimeoutNumberType,
+  VaultTimeoutSettingsService,
+  VaultTimeoutStringType,
+} from "@localpass/common/key-management/vault-timeout";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { IconModule, LocalPassIcon } from "@localpass/components";
-import { SessionTimeoutSettingsComponent } from "@localpass/key-management-ui";
+import { DialogService, IconModule } from "@localpass/components";
+import {
+  LocalWebAuthnPrfEnrollmentService,
+  SessionTimeoutSettingsComponent,
+} from "@localpass/key-management-ui";
 import { LockService, LockSource } from "@localpass/unlock";
-
-interface SecurityRow {
-  readonly icon: LocalPassIcon;
-  readonly labelKey: string;
-  readonly descKey: string;
-  readonly route?: string;
-  readonly action?: "lock";
-}
-
-const UNLOCK_ROWS: readonly SecurityRow[] = [
-  {
-    icon: "bwi-shield",
-    labelKey: "masterPassword",
-    descKey: "masterPasswordLocalDesc",
-  },
-  {
-    icon: "bwi-key",
-    labelKey: "securityKey",
-    descKey: "securityKeyRegistered",
-    route: "/security-key",
-  },
-  {
-    icon: "bwi-unlock",
-    labelKey: "accountSecurity",
-    descKey: "unlockOptionsDesc",
-    route: "/account-security",
-  },
-];
 
 /**
  * 安全设置（扩展弹窗）。
  *
  * 自动锁定直接用 `bit-session-timeout-settings`：它不是只读展示，改完立即生效。
- * Touch ID 是 macOS 桌面端的能力，扩展里不出现这个开关——只在页尾说一句它在哪里。
+ * PIN 开关读真实的 PIN 状态：开启去账户安全页设置，关闭前确认再解除。
+ * Touch ID 是 macOS 桌面端的能力，扩展里只保留一个禁用开关和页尾说明。
  */
 @Component({
   selector: "security-settings-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [IconModule, LpPopupHeaderComponent, SessionTimeoutSettingsComponent],
+  imports: [IconModule, LpPopupHeaderComponent, LpRowComponent, SessionTimeoutSettingsComponent],
   template: `
     <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
-        [title]="i18n.t('security')"
+        [title]="i18n.t('securitySettings')"
         [sub]="i18n.t('securitySubtitle')"
         [back]="true"
         (backTriggered)="back()"
@@ -60,137 +52,208 @@ const UNLOCK_ROWS: readonly SecurityRow[] = [
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
         <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-py-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("unlockAndAccess") }}
-          </h2>
           <div
             class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
           >
-            @for (row of unlockRows; track row.labelKey) {
-              <button
-                type="button"
-                [disabled]="!row.route"
-                class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-px-3 tw-py-2.5 tw-text-start last:tw-border-b-0 enabled:hover:tw-bg-background-alt disabled:tw-cursor-default"
-                (click)="go(row.route)"
-              >
-                <span
-                  class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
-                >
-                  <bit-icon [name]="row.icon" class="tw-text-base"></bit-icon>
-                </span>
-                <span class="tw-min-w-0 tw-flex-1">
-                  <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                    i18n.t(row.labelKey)
-                  }}</span>
-                  <span class="tw-block tw-truncate tw-text-xs tw-leading-relaxed tw-text-muted">{{
-                    i18n.t(row.descKey)
-                  }}</span>
-                </span>
-                @if (row.route) {
-                  <bit-icon name="bwi-angle-right" class="tw-text-sm tw-text-muted"></bit-icon>
-                }
-              </button>
+            <lp-row
+              icon="bwi-shield"
+              [label]="i18n.t('masterPassword')"
+              [sub]="i18n.t('masterPasswordLocalDesc')"
+            />
+            <lp-row
+              icon="bwi-clock"
+              [label]="i18n.t('autoLock')"
+              [sub]="autoLockLabel()"
+              [chevron]="true"
+              [clickable]="true"
+              (activated)="autoLockExpanded.set(!autoLockExpanded())"
+            />
+            @if (autoLockExpanded()) {
+              <div class="tw-border-t tw-border-border-light tw-px-1 tw-py-2">
+                <bit-session-timeout-settings></bit-session-timeout-settings>
+              </div>
             }
-          </div>
-        </section>
-
-        <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-py-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("autoLock") }}
-          </h2>
-          <div class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3">
-            <bit-session-timeout-settings></bit-session-timeout-settings>
-          </div>
-        </section>
-
-        <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-py-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("session") }}
-          </h2>
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-          >
-            <button
-              type="button"
-              class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-px-3 tw-py-2.5 tw-text-start hover:tw-bg-background-alt"
-              (click)="lock()"
+            <lp-row
+              icon="bwi-pin"
+              [label]="i18n.t('pinUnlock')"
+              [sub]="i18n.t('pinUnlockDesc')"
+              [toggle]="pinSet()"
+              [clickable]="true"
+              (activated)="togglePin()"
+            />
+            <div
+              class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-opacity-60"
+              aria-disabled="true"
             >
               <span
-                class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
+                class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-bg-brand-softer tw-text-fg-brand"
               >
                 <bit-icon name="bwi-lock" class="tw-text-base"></bit-icon>
               </span>
               <span class="tw-min-w-0 tw-flex-1">
-                <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                  i18n.t("lockNow")
+                <span class="tw-block tw-text-sm tw-text-main">{{
+                  i18n.t("fingerprintUnlock")
                 }}</span>
-                <span class="tw-block tw-truncate tw-text-xs tw-leading-relaxed tw-text-muted">{{
-                  i18n.t("lockVaultHint")
+                <span class="tw-mt-0.5 tw-block tw-text-xs tw-leading-relaxed tw-text-muted">{{
+                  i18n.t("desktopOnlyMac")
                 }}</span>
               </span>
-              <bit-icon name="bwi-angle-right" class="tw-text-sm tw-text-muted"></bit-icon>
-            </button>
+              <span
+                role="switch"
+                aria-checked="false"
+                aria-disabled="true"
+                tabindex="-1"
+                class="tw-relative tw-h-5 tw-w-9 tw-flex-none tw-rounded-full tw-bg-bg-gray-strong"
+              >
+                <span
+                  class="tw-absolute tw-start-0.5 tw-top-0.5 tw-size-4 tw-rounded-full tw-bg-bg-primary tw-shadow-sm"
+                ></span>
+              </span>
+            </div>
           </div>
         </section>
 
         <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-py-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("advanced") }}
-          </h2>
           <div
             class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
           >
-            <button
-              type="button"
-              class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-px-3 tw-py-2.5 tw-text-start hover:tw-bg-background-alt"
-              (click)="go('/settings-network-v2')"
-            >
-              <span
-                class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
-              >
-                <bit-icon name="bwi-globe" class="tw-text-base"></bit-icon>
-              </span>
-              <span class="tw-min-w-0 tw-flex-1">
-                <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                  i18n.t("networkGate")
-                }}</span>
-                <span class="tw-block tw-truncate tw-text-xs tw-leading-relaxed tw-text-muted">{{
-                  i18n.t("networkGateOn")
-                }}</span>
-              </span>
-              <bit-icon name="bwi-angle-right" class="tw-text-sm tw-text-muted"></bit-icon>
-            </button>
+            <lp-row
+              icon="bwi-key"
+              [label]="i18n.t('securityKey')"
+              [sub]="securityKeyText()"
+              [chevron]="true"
+              [clickable]="true"
+              (activated)="go('/security-key')"
+            />
+            <lp-row
+              icon="bwi-download"
+              [label]="i18n.t('encryptedBackup')"
+              [sub]="i18n.t('encryptedBackupDesc')"
+              [chevron]="true"
+              [clickable]="true"
+              (activated)="go('/backup-settings')"
+            />
           </div>
         </section>
 
-        <p class="tw-px-2.5 tw-pt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
+        <section class="tw-pb-2">
+          <div
+            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
+          >
+            <lp-row
+              icon="bwi-lock"
+              [label]="i18n.t('lockNow')"
+              [sub]="i18n.t('lockVaultHint')"
+              [chevron]="true"
+              [clickable]="true"
+              (activated)="lock()"
+            />
+          </div>
+        </section>
+
+        <p class="tw-px-2.5 tw-pt-2 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
           {{ i18n.t("touchIdDesktopOnly") }}
         </p>
       </div>
     </div>
   `,
 })
-export class SecuritySettingsV2Component {
+export class SecuritySettingsV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
   private readonly accountService = inject(AccountService);
   private readonly lockService = inject(LockService);
+  private readonly pinService = inject(PinServiceAbstraction);
+  private readonly enrollmentService = inject(LocalWebAuthnPrfEnrollmentService);
+  private readonly dialogService = inject(DialogService);
+  private readonly vaultTimeoutService = inject(VaultTimeoutSettingsService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly unlockRows = UNLOCK_ROWS;
+  protected readonly pinSet = signal(false);
+  protected readonly securityKeyCount = signal(0);
+  protected readonly autoLockExpanded = signal(false);
+  protected readonly autoLockLabel = signal("");
+  protected readonly securityKeyText = computed(() =>
+    this.securityKeyCount() > 0
+      ? this.i18n.t("registeredKeysCount", this.securityKeyCount().toString())
+      : this.i18n.t("securityKeyDescription"),
+  );
+
+  async ngOnInit(): Promise<void> {
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+    this.pinSet.set(await this.pinService.isPinSet(userId));
+    this.securityKeyCount.set(await this.enrollmentService.count(userId));
+    this.vaultTimeoutService
+      .getVaultTimeoutByUserId$(userId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((timeout) => this.autoLockLabel.set(this.timeoutLabel(timeout)));
+  }
 
   protected back(): void {
     void this.router.navigateByUrl("/tabs/settings");
   }
 
-  protected go(route: string | undefined): void {
-    if (route) {
-      void this.router.navigateByUrl(route);
+  protected go(route: string): void {
+    void this.router.navigateByUrl(route);
+  }
+
+  protected async togglePin(): Promise<void> {
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+
+    if (!this.pinSet()) {
+      await this.router.navigateByUrl("/account-security");
+      return;
     }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "removePin" },
+      content: { key: "removePinConfirmation" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    await this.pinService.unsetPin(userId);
+    this.pinSet.set(false);
   }
 
   protected async lock(): Promise<void> {
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
     await this.lockService.lock(userId, LockSource.Manual);
     await this.router.navigateByUrl("/");
+  }
+
+  private timeoutLabel(timeout: VaultTimeout): string {
+    switch (timeout) {
+      case VaultTimeoutNumberType.Immediately:
+        return this.i18n.t("immediately");
+      case VaultTimeoutNumberType.OnMinute:
+        return this.i18n.t("oneMinute");
+      case 5:
+        return this.i18n.t("fiveMinutes");
+      case 15:
+        return this.i18n.t("fifteenMinutes");
+      case 30:
+        return this.i18n.t("thirtyMinutes");
+      case 60:
+        return this.i18n.t("oneHour");
+      case 240:
+        return this.i18n.t("fourHours");
+      case VaultTimeoutStringType.OnRestart:
+        return this.i18n.t("sessionTimeoutOnRestart");
+      case VaultTimeoutStringType.OnLocked:
+        return this.i18n.t("onLocked");
+      case VaultTimeoutStringType.OnSleep:
+        return this.i18n.t("onSleep");
+      case VaultTimeoutStringType.OnIdle:
+        return this.i18n.t("onIdle");
+      case VaultTimeoutStringType.Never:
+        return this.i18n.t("never");
+      case VaultTimeoutStringType.Custom:
+        return this.i18n.t("custom");
+      default:
+        return `${timeout} ${this.i18n.t("minutes")}`;
+    }
   }
 }

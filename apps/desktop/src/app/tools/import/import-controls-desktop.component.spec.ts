@@ -78,7 +78,7 @@ describe("ImportControlsDesktopComponent", () => {
 
     fixture.debugElement.query(By.css("importer-controls")).triggerEventHandler("back", undefined);
 
-    expect(router.navigate).toHaveBeenCalledWith(["/import"], {
+    expect(router.navigate).toHaveBeenCalledWith(["/import/all"], {
       queryParams: { source: "keeper" },
     });
   });
@@ -101,7 +101,7 @@ describe("ImportControlsDesktopComponent", () => {
       .query(By.css("importer-controls"))
       .triggerEventHandler("continue", undefined);
 
-    expect(router.navigate).toHaveBeenCalledWith(["/import", "keeper", "destination"]);
+    expect(router.navigate).toHaveBeenCalledWith(["/import/all", "keeper", "destination"]);
     expect(router.navigate).not.toHaveBeenCalledWith(["/vault"]);
   });
 
@@ -118,7 +118,7 @@ describe("ImportControlsDesktopComponent", () => {
         .query(By.css("importer-controls"))
         .triggerEventHandler("back", undefined);
 
-      expect(router.navigate).toHaveBeenCalledWith(["/import"], {
+      expect(router.navigate).toHaveBeenCalledWith(["/import/all"], {
         queryParams: { ...scopeQuery, source: "keeper" },
       });
     });
@@ -146,7 +146,7 @@ describe("ImportControlsDesktopComponent", () => {
         .query(By.css("importer-controls"))
         .triggerEventHandler("continue", undefined);
 
-      expect(router.navigate).toHaveBeenCalledWith(["/import", "keeper", "destination"], {
+      expect(router.navigate).toHaveBeenCalledWith(["/import/all", "keeper", "destination"], {
         queryParams: scopeQuery,
       });
     });

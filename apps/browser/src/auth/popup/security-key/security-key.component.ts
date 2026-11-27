@@ -1,11 +1,19 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpGroupComponent,
+  LpHeroComponent,
   LpPageHeaderComponent,
   LpPopupHeaderComponent,
   LpRowComponent,
@@ -32,6 +40,7 @@ import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui"
     ButtonModule,
     TypographyModule,
     LpGroupComponent,
+    LpHeroComponent,
     LpPageHeaderComponent,
     LpPopupHeaderComponent,
     LpRowComponent,
@@ -50,6 +59,9 @@ export class SecurityKeyComponent implements OnInit {
   protected readonly supported = signal(false);
   protected readonly registeredCount = signal(0);
   protected readonly busy = signal(false);
+  protected readonly registeredText = computed(() =>
+    this.i18nService.t("registeredKeysCount", this.registeredCount().toString()),
+  );
 
   protected goBack(): void {
     void this.router.navigateByUrl("/settings-security-v2");

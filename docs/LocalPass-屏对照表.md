@@ -1,59 +1,85 @@
-# LocalPass 屏对照表（原型 ↔ 实现）
+# LocalPass 屏对照表（ui-redo-d ↔ 实现）
 
-原型：`prototype/ui-redo-c`（方向 C 分组原生，50 屏：弹窗 33 + 桌面 17）。
-本表逐屏对到实现，状态分三种：**✅ 方向 C**（这一版按原型做的）、**◐ 外壳方向 C**（容器/标题是我们的，内部控件沿用上游）、**▷ 上游保留**（功能在位，视觉未换，附原因）。
+原型：`prototype/ui-redo-d`（Bitwarden 原生布局，58 个界面函数：弹窗 27 + 桌面端 27 + 网页内联 4）。
+本表是这一轮 UI 对齐的唯一清单：每个原型屏都要能在产品里走到，布局、文案、交互与原型一致，
+功能仍走真实的本地保险库服务。状态：**✅ 对齐** / **◐ 已存在、待对齐** / **⬜ 未做**。
 
-## 弹窗（33 屏）
+> 并行分工（2026-11-27）
+>
+> - 扩展弹窗 + 共享表单：`apps/browser/src/vault/popup`、`apps/browser/src/tools/popup`、
+>   `libs/angular/src/local-ui`、`libs/angular/src/tools/item-entry`
+> - 网页内联：`apps/browser/src/autofill/**`
+> - 桌面端 + 共享工具页：`apps/desktop/**`、`libs/angular/src/tools/{generator,folders,backup}`、
+>   `libs/angular/src/auth/local-vault/restore-vault-v2.component.ts`
+>
+> 收尾：全量 lint / test:types / jest / `build:chrome` / 桌面构建，然后用
+> `playwright-cli --persistent` 在真实扩展与桌面端逐屏走查，发现不一致就修到一致。
 
-| 原型屏                                                                  | 实现                                                               | 状态                                      |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------- |
-| setup                                                                   | `CreateLocalVaultComponent`（`libs/angular/src/auth/local-vault`） | ✅                                        |
-| unlock                                                                  | `LockComponent`（`libs/key-management-ui`）                        | ◐ 外壳方向 C，四条解锁路径逻辑未改        |
-| unlock-wait                                                             | `LockComponent` 的 spinner 状态                                    | ◐ 同上                                    |
-| vault                                                                   | `VaultListV2Component`                                             | ✅                                        |
-| vault-empty                                                             | 同上空态（`lp-empty` + 新建/导入）                                 | ✅                                        |
-| autofill                                                                | `AutofillConfirmationDialogComponent`                              | ✅（保留 callout 结构与 testid）          |
-| item                                                                    | `VaultItemViewV2Component`                                         | ✅ 点行复制 + TOTP 实时码                 |
-| new-type                                                                | `NewItemV2Component`（共享库）                                     | ✅                                        |
-| form-login / token / sshkey / license / card / identity / server / note | `ItemFormV2Component` + `FIELDS`（共享库）                         | ✅ 8 类字段映射有单测                     |
-| item-passkey                                                            | 详情页 Passkey 组（弹窗与桌面一致）                                | ✅ 有凭据时才出现，显示数量               |
-| qr                                                                      | `TotpQrV2Component`                                                | ✅                                        |
-| generator                                                               | `GeneratorV2Component`（共享库）                                   | ✅                                        |
-| import-ga / import-preview                                              | `GoogleAuthImportV2Component` 三步流                               | ✅                                        |
-| security-key                                                            | `SecurityKeyComponent`（方向 C 外壳）                              | ✅ 页头/分组/主次按钮换语言，注册逻辑未改 |
-| backup / backup-config                                                  | `BackupSettingsV2Component`（共享库）                              | ✅ 含同步三态                             |
-| restore-cloud                                                           | `RestoreVaultV2Component`                                          | ✅ 四态                                   |
-| item-delete                                                             | 详情页 `DialogService` 确认框                                      | ◐ 弹窗确认，非独立屏                      |
-| trash                                                                   | `TrashV2Component`                                                 | ✅                                        |
-| state-loading / conflict / error                                        | 备份页内联三态                                                     | ✅ 由真实 sync 调用驱动                   |
-| settings                                                                | `SettingsListV2Component`                                          | ✅                                        |
-| offline（网络闸门）                                                     | `NetworkGateV2Component`（`/settings-network-v2`）                 | ✅ 三条规则 + 当前存储端点                |
-| data                                                                    | `DataSafetyV2Component`                                            | ✅                                        |
+> 2026-11-27 收尾结论：弹窗、内联、桌面端主要屏幕已实机截图对照并修到一致；
+> 剩余为明确的功能缺口与有意保留差异，见 `.playwright-cli/qa/checklist.md` 的 F 节。
+> 桌面 `d-import-preview` 已补齐（`apps/desktop/src/app/tools/import/import-preview-desktop.component.ts`），
+> 选文件后先解析、展示前 5 条与检查项，取消不写入，确认后才导入。
 
-## 桌面端（17 屏）
+## 扩展弹窗（27 屏 / 41 个索引项）
 
-| 原型屏                              | 实现                                             | 状态                                 |
-| ----------------------------------- | ------------------------------------------------ | ------------------------------------ |
-| setup                               | 共享 `CreateLocalVaultComponent`                 | ✅                                   |
-| unlock                              | 共享 `LockComponent`                             | ◐                                    |
-| vault-desktop                       | `VaultDesktopV2Component`（rail + 列表 + 右栏）  | ✅                                   |
-| d-pick-type                         | `/new-item-v2`（共享 `NewItemV2Component`）      | ✅                                   |
-| d-form-*（8 份）                    | 右栏**内联表单**（同一份 `FIELDS` 映射）         | ✅ 不是 8 个独立页面，而是同一栏切换 |
-| d-item-delete                       | 右栏删除走确认框                                 | ◐                                    |
-| d-trash                             | `TrashDesktopV2Component`（`/trash-desktop-v2`） | ✅ 恢复 / 永久删除 / 清空            |
-| gen-desktop                         | `/generator`（共享组件）                         | ✅                                   |
-| security-desktop / settings-desktop | `SettingsDesktopV2Component`                     | ✅ 含 Touch ID（仅 macOS）           |
+| 原型屏                                               | 实现落点                                               | 现状 |
+| ---------------------------------------------------- | ------------------------------------------------------ | ---- |
+| p-unlock / p-unlock-wait                             | `LockComponent`（共享）                                | ✅   |
+| p-setup                                              | `CreateLocalVaultComponent`                            | ✅   |
+| p-security-key                                       | `SecurityKeyComponent`                                 | ✅   |
+| p-vault / p-vault-empty                              | `VaultListV2Component`                                 | ✅   |
+| p-item（登录/卡片/令牌/SSH/服务器/许可证/身份/笔记） | `VaultItemViewV2Component`                             | ✅   |
+| p-item-more                                          | 详情页底部操作单                                       | ✅   |
+| p-totp-qr                                            | `TotpQrV2Component`                                    | ✅   |
+| p-new-type                                           | `NewItemV2Component`（共享）                           | ✅   |
+| p-form（8 类）                                       | `ItemFormV2Component`（共享）                          | ✅   |
+| p-generator / p-generator-history                    | `GeneratorV2Component` / `GeneratorHistoryV2Component` | ✅   |
+| p-settings                                           | `SettingsListV2Component`                              | ✅   |
+| p-settings-security                                  | `SecuritySettingsV2Component`                          | ✅   |
+| p-appearance                                         | `AppearanceV2Component`                                | ✅   |
+| p-folders                                            | `FoldersV2Component`（共享）                           | ✅   |
+| p-trash                                              | `TrashV2Component`                                     | ✅   |
+| p-about                                              | `AboutV2Component`                                     | ✅   |
+| p-backup / p-backup-config                           | `BackupSettingsV2Component`（共享，拆状态页与配置页）  | ✅   |
+| p-restore                                            | `RestoreVaultV2Component`（共享）                      | ✅   |
+| p-import / p-import-preview                          | 导入来源页 + 导入预览（真实导入服务）                  | ✅   |
+| p-export                                             | `ExportBrowserV2Component`                             | ✅   |
+| p-network                                            | `NetworkGateV2Component`                               | ✅   |
+| p-data                                               | `DataSafetyV2Component`                                | ✅   |
 
-## 三条硬约束的落点
+## 网页内联（4 屏）
 
-| 约束                     | 证据                                                                                                                              |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| 无注册登录               | `setup` 屏无账号语义；`create-local-vault.component.html` 只收邮箱/名字/安全密码                                                  |
-| Touch ID 仅 macOS 设置页 | `settings-desktop-v2.component.ts`：`getDevice() === MacOsDesktop` 且 `canEnableBiometricUnlock()` 才渲染；扩展端只留一句指向说明 |
-| 备份纯手动               | `vault-backup-sync.manual-only.spec.ts` 读源码断言无 `setInterval/setTimeout/scheduler`；上传只由按钮触发                         |
+| 原型屏               | 实现落点                                                          | 现状 |
+| -------------------- | ----------------------------------------------------------------- | ---- |
+| w-inline-login       | `autofill/overlay/inline-menu` 列表 iframe + `content/components` | ✅   |
+| w-inline-passkey     | 同上（通行密钥分组 / 验证中）                                     | ✅   |
+| w-inline-totp        | 同上（验证码行、倒计时环）                                        | ✅   |
+| w-inline-totp-filled | 同上 + 填充确认卡（剩余秒数 / 切换账户 / 复制）                   | ✅   |
 
-## 明说没做的
+内联数据流仍走 `overlay.background.ts` 的 `InlineMenuCipherData`；账户优先展示由
+`login.username` + 条目名 + 可用方式派生，不新增持久化状态、不上网。
 
-1. 集合级下钻 / vault switcher 未移植（`shared-folders` 仍用各自组件）——功能性收窄，不属于 50 屏原型范围内。
+## 桌面端（27 屏）
 
-50 屏已全部落地：✅（方向 C 实现）与 ◐（外壳是方向 C、内部控件沿用上游）合计覆盖 50 屏，没有 ▷（上游保留）的屏。
+| 原型屏                                                    | 实现落点                                          | 现状 |
+| --------------------------------------------------------- | ------------------------------------------------- | ---- |
+| d-unlock / d-security-key / d-setup                       | 共享解锁 / 安全密钥 / 建库                        | ✅   |
+| d-vault / d-vault-empty（深蓝 rail + 文件夹卡 + 表格）    | `VaultDesktopV2Component`                         | ✅   |
+| d-item / d-form（右侧抽屉）                               | `VaultDesktopV2Component` 抽屉                    | ✅   |
+| d-new / d-new-form                                        | 抽屉内选类型 + 表单                               | ✅   |
+| d-item-delete                                             | 删除确认模态                                      | ✅   |
+| d-trash                                                   | `TrashDesktopV2Component`                         | ✅   |
+| d-folders                                                 | `FoldersV2Component`（桌面布局）                  | ✅   |
+| d-generator / d-generator-history（两栏）                 | `GeneratorV2Component`（桌面布局）                | ✅   |
+| d-import / d-import-preview                               | 桌面导入页（真实导入服务）                        | ✅   |
+| d-export                                                  | `ExportDesktopV2Component`                        | ✅   |
+| d-backup / d-backup-config / d-restore                    | 共享备份 / 存储配置 / 恢复（桌面布局）            | ✅   |
+| d-settings-security / vault / appearance / backup / about | `SettingsDesktopV2Component`（子导航 + 单页切换） | ◐    |
+| d-network / d-data                                        | 桌面网络闸门 / 数据与安全                         | ✅   |
+
+## 完成标准
+
+1. 每个原型屏都能在产品中走到，且首屏、分组、标题/副标题、按钮层级与原型一致；文案按原型。
+2. 真实功能可用：建库、解锁、CRUD、复制、生成器、TOTP、Passkey 展示、导入/导出、备份/恢复、设置。
+3. `npm run lint`、`npm run test:types`、相关 Jest、`build:chrome`、桌面构建全绿。
+4. 用 `playwright-cli`（headed + persistent 配置）实机走查弹窗 / 内联 / 桌面端，逐项修到一致。

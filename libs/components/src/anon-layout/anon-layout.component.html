@@ -1,7 +1,9 @@
 <bit-landing-layout [hideBackgroundIllustration]="hideBackgroundIllustration()">
-  <bit-landing-header [hideLogo]="hideLogo()">
-    <ng-content select="[slot=header-actions]"></ng-content>
-  </bit-landing-header>
+  @if (!hideHeader()) {
+    <bit-landing-header [hideLogo]="hideLogo()">
+      <ng-content select="[slot=header-actions]"></ng-content>
+    </bit-landing-header>
+  }
 
   <bit-landing-content
     [maxWidth]="resolvedMaxWidth()"

@@ -42,6 +42,12 @@ export class AnonLayoutComponent {
   readonly subtitle = input<string>();
   readonly icon = model.required<BitSvg | null>();
   readonly showReadonlyHostname = input<boolean>(ANON_LAYOUT_DEFAULTS.showReadonlyHostname);
+  /**
+   * Hides the whole landing header, including the logo and the header actions slot.
+   *
+   * Use for pages that own their full surface, such as the desktop unlock screen.
+   */
+  readonly hideHeader = input<boolean>(false);
   readonly hideLogo = input<boolean>(false);
   readonly hideFooter = input<boolean>(false);
   readonly hideCardWrapper = input<boolean>(ANON_LAYOUT_DEFAULTS.hideCardWrapper);

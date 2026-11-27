@@ -1,3 +1,31 @@
 @if (hasStagedItems) {
+  <div class="tw-px-4 tw-pt-2">
+    <div class="tw-grid tw-grid-cols-3 tw-gap-2">
+      <div
+        class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-center"
+      >
+        <div class="tw-text-lg tw-font-semibold tw-text-main">{{ importCount ?? "—" }}</div>
+        <div class="tw-text-xs tw-text-muted">{{ i18n.t("willImport") }}</div>
+      </div>
+      <div
+        class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-center"
+      >
+        <div class="tw-text-lg tw-font-semibold tw-text-main">—</div>
+        <div class="tw-text-xs tw-text-muted">{{ i18n.t("duplicateSkipped") }}</div>
+      </div>
+      <div
+        class="tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-center"
+      >
+        <div class="tw-text-lg tw-font-semibold tw-text-main">{{ unrecognizedCount }}</div>
+        <div class="tw-text-xs tw-text-muted">{{ i18n.t("unrecognized") }}</div>
+      </div>
+    </div>
+    <div
+      class="tw-mt-2 tw-flex tw-items-start tw-gap-2 tw-rounded-xl tw-border tw-border-border-light tw-bg-background-alt tw-p-3 tw-text-xs tw-leading-relaxed tw-text-muted"
+    >
+      <bit-icon name="bwi-info-circle" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
+      <span>{{ i18n.t("importPreviewNote") }}</span>
+    </div>
+  </div>
   <importer-destination (back)="onBack()" (continue)="onContinue()" />
 }

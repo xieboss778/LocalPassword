@@ -78,6 +78,20 @@ export interface AnonLayoutWrapperData {
    */
   hideBackgroundIllustration?: boolean;
   /**
+   * Hides the whole landing header (logo and header actions). Defaults to false.
+   *
+   * Use for pages that own their full surface, such as the desktop unlock screen.
+   */
+  hideHeader?: boolean;
+  /**
+   * Hides the logo in the landing header. Defaults to false.
+   */
+  hideLogo?: boolean;
+  /**
+   * Hides the landing footer (year, version, hostname). Defaults to false.
+   */
+  hideFooter?: boolean;
+  /**
    * Where to render content from the route's `outlet: "secondary"` router outlet. Defaults to "main".
    *
    * "main" places the secondary content beneath the main card.
@@ -94,6 +108,9 @@ interface AnonLayoutWrapperState {
   maxWidth?: LandingContentMaxWidthType | null;
   hideCardWrapper?: boolean | null;
   hideBackgroundIllustration?: boolean | null;
+  hideHeader?: boolean | null;
+  hideLogo?: boolean | null;
+  hideFooter?: boolean | null;
   hidePageIcon?: boolean;
   contentVerticalPadding?: ContentVerticalPaddingType;
   footerVerticalPadding?: FooterVerticalPaddingType;
@@ -148,11 +165,17 @@ export class AnonLayoutWrapperComponent implements OnInit {
     const next: AnonLayoutWrapperState = { ...this.state() };
 
     if (firstChildRouteData["pageTitle"] !== undefined) {
-      next.pageTitle = this.handleStringOrTranslation(firstChildRouteData["pageTitle"]);
+      next.pageTitle =
+        firstChildRouteData["pageTitle"] !== null
+          ? this.handleStringOrTranslation(firstChildRouteData["pageTitle"])
+          : null;
     }
 
     if (firstChildRouteData["pageSubtitle"] !== undefined) {
-      next.pageSubtitle = this.handleStringOrTranslation(firstChildRouteData["pageSubtitle"]);
+      next.pageSubtitle =
+        firstChildRouteData["pageSubtitle"] !== null
+          ? this.handleStringOrTranslation(firstChildRouteData["pageSubtitle"])
+          : null;
     }
 
     if (firstChildRouteData["pageIcon"] !== undefined) {
@@ -169,6 +192,9 @@ export class AnonLayoutWrapperComponent implements OnInit {
     next.hideBackgroundIllustration =
       firstChildRouteData["hideBackgroundIllustration"] ??
       ANON_LAYOUT_DEFAULTS.hideBackgroundIllustration;
+    next.hideLogo = firstChildRouteData["hideLogo"] ?? ANON_LAYOUT_DEFAULTS.hideLogo;
+    next.hideHeader = firstChildRouteData["hideHeader"] ?? ANON_LAYOUT_DEFAULTS.hideHeader;
+    next.hideFooter = firstChildRouteData["hideFooter"] ?? ANON_LAYOUT_DEFAULTS.hideFooter;
     next.hidePageIcon = firstChildRouteData["hidePageIcon"] ?? ANON_LAYOUT_DEFAULTS.hidePageIcon;
     next.contentVerticalPadding =
       firstChildRouteData["contentVerticalPadding"] ?? ANON_LAYOUT_DEFAULTS.contentVerticalPadding;
@@ -230,6 +256,15 @@ export class AnonLayoutWrapperComponent implements OnInit {
 
     if (data.hideBackgroundIllustration !== undefined) {
       next.hideBackgroundIllustration = data.hideBackgroundIllustration;
+    }
+    if (data.hideLogo !== undefined) {
+      next.hideLogo = data.hideLogo;
+    }
+    if (data.hideHeader !== undefined) {
+      next.hideHeader = data.hideHeader;
+    }
+    if (data.hideFooter !== undefined) {
+      next.hideFooter = data.hideFooter;
     }
     if (data.maxWidth !== undefined) {
       next.maxWidth = data.maxWidth;

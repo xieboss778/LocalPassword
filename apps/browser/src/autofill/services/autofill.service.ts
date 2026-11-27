@@ -561,6 +561,9 @@ export default class AutofillService implements AutofillServiceInterface {
             url: tab.url,
             pageDetailsUrl: pd.details.url,
             showAnimations,
+            // Only set for fills started from the inline menu list, so the content script can
+            // keep that list alive to render its own post-fill confirmation.
+            ...(options.retainInlineMenu ? { retainInlineMenu: true } : {}),
           },
           { frameId: pd.frameId },
         );

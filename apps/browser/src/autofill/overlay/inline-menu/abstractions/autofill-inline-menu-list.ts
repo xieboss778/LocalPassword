@@ -8,6 +8,10 @@ type AutofillInlineMenuListMessage = { command: string };
 export type UpdateAutofillInlineMenuListCiphersParams = {
   ciphers: InlineMenuCipherData[];
   showInlineMenuAccountCreation?: boolean;
+  showPasskeysLabels?: boolean;
+  focusedFieldValue?: string;
+  isTotpField?: boolean;
+  focusedFieldHasValue?: boolean;
 };
 
 export type UpdateAutofillInlineMenuListCiphersMessage = AutofillInlineMenuListMessage &
@@ -32,6 +36,9 @@ export type InitAutofillInlineMenuListMessage = AutofillInlineMenuListMessage & 
   showSaveLoginMenu?: boolean;
   showAnimations?: boolean;
   useLitComponents?: boolean;
+  domain?: string;
+  focusedFieldValue?: string;
+  isTotpField?: boolean;
 };
 
 export type AutofillInlineMenuListWindowMessageHandlers = {

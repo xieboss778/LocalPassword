@@ -31,13 +31,13 @@ export class ImportDestinationDesktopComponent {
 
   constructor() {
     if (!this.hasStagedItems) {
-      void navigateCarryingImportParams(this.router, this.route, ["/import"]);
+      void navigateCarryingImportParams(this.router, this.route, ["/import/all"]);
     }
   }
 
   // The start of credential parsing, not a page within it.
   protected onBack(): void {
-    void navigateCarryingImportParams(this.router, this.route, ["/import", this.importType()]);
+    void navigateCarryingImportParams(this.router, this.route, ["/import/all", this.importType()]);
   }
 
   protected onContinue(): void {

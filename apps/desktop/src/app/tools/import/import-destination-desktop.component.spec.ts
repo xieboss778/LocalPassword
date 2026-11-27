@@ -71,7 +71,7 @@ describe("ImportDestinationDesktopComponent", () => {
   it("sends the user back to Select source, and shows nothing, when nothing is staged", async () => {
     await setup({ staged: false });
 
-    expect(router.navigate).toHaveBeenCalledWith(["/import"]);
+    expect(router.navigate).toHaveBeenCalledWith(["/import/all"]);
     expect(fixture.debugElement.query(By.css("importer-destination"))).toBeNull();
   });
 
@@ -89,7 +89,7 @@ describe("ImportDestinationDesktopComponent", () => {
       .query(By.css("importer-destination"))
       .triggerEventHandler("back", undefined);
 
-    expect(router.navigate).toHaveBeenCalledWith(["/import", "keeper"]);
+    expect(router.navigate).toHaveBeenCalledWith(["/import/all", "keeper"]);
   });
 
   it("navigates to the vault once the import succeeds", async () => {
@@ -149,7 +149,7 @@ describe("ImportDestinationDesktopComponent", () => {
         .query(By.css("importer-destination"))
         .triggerEventHandler("back", undefined);
 
-      expect(router.navigate).toHaveBeenCalledWith(["/import", "keeper"], {
+      expect(router.navigate).toHaveBeenCalledWith(["/import/all", "keeper"], {
         queryParams: scopeQuery,
       });
     });
@@ -157,7 +157,7 @@ describe("ImportDestinationDesktopComponent", () => {
     it("keeps the scope in the URL when sent back because nothing is staged", async () => {
       await setup({ staged: false, query: scopeQuery });
 
-      expect(router.navigate).toHaveBeenCalledWith(["/import"], { queryParams: scopeQuery });
+      expect(router.navigate).toHaveBeenCalledWith(["/import/all"], { queryParams: scopeQuery });
     });
   });
 });

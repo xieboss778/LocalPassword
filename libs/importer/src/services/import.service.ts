@@ -627,12 +627,19 @@ export class ImportService implements ImportServiceAbstraction {
 
     const userKey = await firstValueFrom(this.keyService.userKey$(userId));
 
+    // The writer below only persists encrypted folders. Clear the decrypted cache first, or the
+    // next reader re-emits the pre-import list (often just "No folder") and hides the import.
+    await this.folderService.clearDecryptedFolderState(userId);
+
     const folderIds: string[] = [];
     for (const folderView of importResult.folders ?? []) {
       const encryptedFolder = await this.folderService.encrypt(folderView, userKey);
       const saved = await this.localVaultWriter.saveFolder(encryptedFolder, userId);
       folderIds.push(saved?.id ?? null);
     }
+    // Each save above can repopulate the decrypted cache with the folders written so far, so
+    // clear it again once the whole set is in place. The next reader then decrypts all of them.
+    await this.folderService.clearDecryptedFolderState(userId);
 
     for (const [cipherIndex, folderIndex] of importResult.folderRelationships ?? []) {
       const cipher = importResult.ciphers[cipherIndex];

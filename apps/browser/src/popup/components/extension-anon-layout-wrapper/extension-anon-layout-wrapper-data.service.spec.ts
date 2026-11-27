@@ -79,7 +79,7 @@ describe("ExtensionAnonLayoutWrapperDataService", () => {
       expect(emissions[0].showAcctSwitcher).toBe(EXTENSION_ANON_LAYOUT_DEFAULTS.showAcctSwitcher);
       expect(emissions[0].showBackButton).toBe(EXTENSION_ANON_LAYOUT_DEFAULTS.showBackButton);
       expect(emissions[0].showLogo).toBe(EXTENSION_ANON_LAYOUT_DEFAULTS.showLogo);
-      expect(emissions[0].hideFooter).toBe(EXTENSION_ANON_LAYOUT_DEFAULTS.hideFooter);
+      expect(emissions[0].hideFooter).toBe(ANON_LAYOUT_DEFAULTS.hideFooter);
     });
 
     it("emits a complete payload containing every key from both default consts", () => {

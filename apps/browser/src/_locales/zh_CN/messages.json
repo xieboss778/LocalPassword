@@ -72,7 +72,7 @@
     "message": "电子邮箱地址"
   },
   "masterPass": {
-    "message": "主密码"
+    "message": "安全密码"
   },
   "masterPassDesc": {
     "message": "主密码是用于访问您的密码库的密码。不要忘记您的主密码，这一点非常重要。一旦忘记，无任何办法恢复此密码。"
@@ -127,7 +127,7 @@
     "message": "标签页"
   },
   "vault": {
-    "message": "密码库"
+    "message": "保险库"
   },
   "vaults": {
     "message": "密码库"
@@ -671,15 +671,14 @@
     "message": "特殊字符最少个数"
   },
   "avoidAmbiguous": {
-    "message": "避免易混淆的字符",
-    "description": "Label for the avoid ambiguous characters checkbox."
+    "message": "排除易混淆字符"
   },
   "generatorPolicyInEffect": {
     "message": "企业策略要求已应用到您的生成器选项中。",
     "description": "Indicates that a policy limits the credential generator screen."
   },
   "searchVault": {
-    "message": "搜索密码库"
+    "message": "搜索保险库"
   },
   "resetSearch": {
     "message": "重置搜索"
@@ -935,7 +934,7 @@
     "message": "超时时间"
   },
   "lockNow": {
-    "message": "立即锁定"
+    "message": "立即锁定保险库"
   },
   "lockAll": {
     "message": "全部锁定"
@@ -992,10 +991,10 @@
     "message": "安全"
   },
   "confirmMasterPassword": {
-    "message": "确认主密码"
+    "message": "再输一次"
   },
   "masterPassword": {
-    "message": "主密码"
+    "message": "安全密码"
   },
   "masterPasswordLocalDesc": {
     "message": "保护本机保险库 · 不离开这台设备"
@@ -2872,10 +2871,10 @@
     "message": "密码历史记录"
   },
   "generatorHistory": {
-    "message": "生成器历史记录"
+    "message": "生成历史"
   },
   "clearGeneratorHistoryTitle": {
-    "message": "清除生成器历史记录"
+    "message": "清空生成历史"
   },
   "clearGeneratorHistoryDescription": {
     "message": "若继续，所有条目将从生成器历史记录中永久删除。确定要继续吗？"
@@ -2926,7 +2925,7 @@
     }
   },
   "favorites": {
-    "message": "收藏夹"
+    "message": "收藏"
   },
   "popOutNewWindow": {
     "message": "弹出到新窗口"
@@ -2996,6 +2995,9 @@
         "example": "12"
       }
     }
+  },
+  "itemCountShort": {
+    "message": "个条目"
   },
   "all": {
     "message": "全部"
@@ -3172,7 +3174,7 @@
     "message": "类型"
   },
   "allItems": {
-    "message": "所有项目"
+    "message": "所有条目"
   },
   "noPasswordsInList": {
     "message": "没有可列出的密码。"
@@ -4742,7 +4744,7 @@
     "message": "30 天以前"
   },
   "masterPasswordChanged": {
-    "message": "主密码已保存"
+    "message": "上次修改 3 天前"
   },
   "exposedMasterPassword": {
     "message": "已暴露的主密码"
@@ -5240,6 +5242,202 @@
   "addNewLoginItemAria": {
     "message": "添加新的密码库登录项目（在新窗口中打开）",
     "description": "Screen reader text (aria-label) for new login button within inline menu"
+  },
+  "inlineMenuAccountCount": {
+    "message": "{count} 个账户",
+    "description": "Header badge showing the number of matching accounts in the inline menu"
+  },
+  "inlineMenuSameDomainRecent": {
+    "message": "同一域名 · 按最近使用排序",
+    "description": "Inline menu context line shown when no username filter is active"
+  },
+  "inlineMenuFilterMatch": {
+    "message": "匹配 “{query}” · {matched} / {total}",
+    "description": "Inline menu context line shown while the username field filters accounts"
+  },
+  "inlineMenuShowAll": {
+    "message": "显示全部",
+    "description": "Inline menu link that clears the username filter"
+  },
+  "inlineMenuPasskeysGroup": {
+    "message": "通行密钥",
+    "description": "Heading of the passkey group in the inline menu"
+  },
+  "inlineMenuPasswordsGroup": {
+    "message": "密码",
+    "description": "Heading of the password group in the inline menu"
+  },
+  "inlineMenuTotpGroup": {
+    "message": "验证码",
+    "description": "Heading of the verification code list in the inline menu"
+  },
+  "inlineMenuKeyboardHint": {
+    "message": "↑↓ 选择 · Enter 填充",
+    "description": "Keyboard hint in the inline menu footer"
+  },
+  "inlineMenuTotpKeyboardHint": {
+    "message": "↑↓ 选择 · Enter 填入",
+    "description": "Keyboard hint in the verification code menu footer"
+  },
+  "inlineMenuNewLogin": {
+    "message": "新建登录条目",
+    "description": "Button in the inline menu footer that adds a new login item"
+  },
+  "inlineMenuTotpContext": {
+    "message": "当前账户 {username} 优先 · 选中后自动填入并复制",
+    "description": "Context line above the verification code list"
+  },
+  "inlineMenuTotpRefreshNote": {
+    "message": "验证码每 30 秒更新",
+    "description": "Note in the verification code menu footer"
+  },
+  "inlineMenuEmptyTitle": {
+    "message": "没有匹配的账户",
+    "description": "Title shown when the username filter matches nothing"
+  },
+  "inlineMenuEmptyDescription": {
+    "message": "没有账户匹配 “{query}”。",
+    "description": "Description shown when the username filter matches nothing"
+  },
+  "inlineMenuEmptyDescriptionNoQuery": {
+    "message": "这个站点还没有保存登录项目。",
+    "description": "Description shown when no accounts are available"
+  },
+  "inlineMenuShowAllAccounts": {
+    "message": "显示全部 {count} 个账户",
+    "description": "Button that clears the username filter in the empty state"
+  },
+  "inlineMenuCloseAria": {
+    "message": "关闭 LocalPass 菜单",
+    "description": "Aria label for the inline menu close button"
+  },
+  "inlineMenuMenuAriaLabel": {
+    "message": "LocalPass 登录建议",
+    "description": "Aria label for the inline login menu dialog"
+  },
+  "inlineMenuTotpMenuAriaLabel": {
+    "message": "LocalPass 验证码",
+    "description": "Aria label for the inline verification code menu dialog"
+  },
+  "inlineMenuPasskey": {
+    "message": "通行密钥",
+    "description": "Passkey method label in an inline menu account row"
+  },
+  "inlineMenuPassword": {
+    "message": "密码",
+    "description": "Password method label in an inline menu account row"
+  },
+  "inlineMenuVerificationCode": {
+    "message": "验证码",
+    "description": "Verification code method label in an inline menu account row"
+  },
+  "inlineMenuLastUsed": {
+    "message": "上次使用",
+    "description": "Badge on the most recently used account in the inline menu"
+  },
+  "inlineMenuCurrentAccount": {
+    "message": "当前账户",
+    "description": "Badge on the account matching the value typed in the page field"
+  },
+  "inlineMenuFill": {
+    "message": "填充",
+    "description": "Fill action label in the inline menu"
+  },
+  "inlineMenuTotpFill": {
+    "message": "填入",
+    "description": "Fill action label on verification code rows in the inline menu"
+  },
+  "inlineMenuVerify": {
+    "message": "验证",
+    "description": "Passkey verification action label in the inline menu"
+  },
+  "inlineMenuFillPasswordAria": {
+    "message": "填充 {username} 的密码",
+    "description": "Aria label for filling an account password in the inline menu"
+  },
+  "inlineMenuUsePasskeyAria": {
+    "message": "使用 {username} 的通行密钥",
+    "description": "Aria label for using an account passkey in the inline menu"
+  },
+  "inlineMenuTotpFillAria": {
+    "message": "填入并复制 {username} 的验证码",
+    "description": "Aria label for filling an account verification code in the inline menu"
+  },
+  "inlineMenuTotpFilledAria": {
+    "message": "验证码已填入",
+    "description": "Aria label for the verification code filled confirmation card"
+  },
+  "inlineMenuTotpFilledTitle": {
+    "message": "已填入 {username} 的验证码",
+    "description": "Title of the verification code filled confirmation card"
+  },
+  "inlineMenuTotpFilledBody": {
+    "message": "自动填充 · 已复制到剪贴板",
+    "description": "Body of the filled confirmation card when the code was copied"
+  },
+  "inlineMenuTotpFilledBodyNoCopy": {
+    "message": "自动填充 · 已填入页面",
+    "description": "Body of the filled confirmation card when copying is not available"
+  },
+  "inlineMenuTotpCopiedBody": {
+    "message": "验证码已再次复制到剪贴板。",
+    "description": "Body of the filled confirmation card after copying again"
+  },
+  "inlineMenuCopied": {
+    "message": "已复制",
+    "description": "Feedback shown after copying the verification code"
+  },
+  "inlineMenuTotpCopyAria": {
+    "message": "复制验证码",
+    "description": "Aria label for the copy button on the filled confirmation card"
+  },
+  "inlineMenuTotpRemaining": {
+    "message": "剩余 {seconds} 秒",
+    "description": "Remaining time of the current verification code"
+  },
+  "inlineMenuSwitchAccount": {
+    "message": "切换账户",
+    "description": "Action on the filled confirmation card that reopens the account list"
+  },
+  "inlineMenuCollapsedPasswordTitle": {
+    "message": "已填充 {username}",
+    "description": "Title of the collapsed inline menu chip after filling a password"
+  },
+  "inlineMenuCollapsedPasswordDetail": {
+    "message": "点击更换账户或查看其他建议",
+    "description": "Detail of the collapsed inline menu chip after filling a password"
+  },
+  "inlineMenuExpand": {
+    "message": "展开",
+    "description": "Action text on the collapsed inline menu chip"
+  },
+  "inlineMenuExpandAria": {
+    "message": "展开 LocalPass 建议",
+    "description": "Aria label for the collapsed inline menu chip"
+  },
+  "inlineMenuVerifying": {
+    "message": "验证中",
+    "description": "Header badge while passkey verification is in progress"
+  },
+  "inlineMenuPasskeyVerifyingTitle": {
+    "message": "正在验证 {username} 的通行密钥",
+    "description": "Title of the passkey verification panel"
+  },
+  "inlineMenuPasskeyVerifyingBody": {
+    "message": "请在系统通行密钥提示中确认。验证完成前此菜单会保留。",
+    "description": "Body of the passkey verification panel"
+  },
+  "inlineMenuPasskeyVerifyingMeta": {
+    "message": "{domain} · WebAuthn",
+    "description": "Domain and protocol shown in the passkey verification panel"
+  },
+  "inlineMenuCancel": {
+    "message": "取消",
+    "description": "Button that cancels passkey verification in the inline menu"
+  },
+  "inlineMenuPasskeyVerifyingAria": {
+    "message": "通行密钥验证进行中",
+    "description": "Aria label for the passkey verification panel"
   },
   "newCard": {
     "message": "新增支付卡",
@@ -8389,7 +8587,7 @@
     "message": "拒绝并退出"
   },
   "items": {
-    "message": "项目"
+    "message": "条目"
   },
   "searchResults": {
     "message": "搜索结果"
@@ -9495,7 +9693,7 @@
     "message": "这个保险库只存在于本机。没有账户，也没有服务器——你保存的一切都不会离开这台电脑。"
   },
   "createLocalVault": {
-    "message": "创建本地保险库"
+    "message": "创建保险库"
   },
   "createLocalVaultDescription": {
     "message": "用一个邮箱标识这个保险库，再设置一个主密码来保护它。两者都只留在这台设备上，主密码无法找回。"
@@ -9522,22 +9720,22 @@
     "message": "把这份保险库的加密副本存到 S3 兼容存储（Cloudflare R2、MinIO、Backblaze B2…）。先在控制台创建一个只授权单桶读写的 API 令牌，再把这些值填进来。"
   },
   "backupEndpoint": {
-    "message": "端点"
+    "message": "Endpoint"
   },
   "backupRegion": {
     "message": "区域"
   },
   "backupBucket": {
-    "message": "桶名"
+    "message": "Bucket"
   },
   "backupAccessKeyId": {
     "message": "Access Key ID"
   },
   "backupSecretKey": {
-    "message": "Secret Access Key"
+    "message": "Secret Key"
   },
   "backupPrefix": {
-    "message": "键前缀"
+    "message": "前缀"
   },
   "backupTest": {
     "message": "测试连接"
@@ -9612,10 +9810,10 @@
     "message": "跳过基于计数器（HOTP）的账号"
   },
   "securityKey": {
-    "message": "安全密钥解锁"
+    "message": "安全密钥"
   },
   "securityKeyDescription": {
-    "message": "登记一把安全密钥或 Passkey，之后不用输主密码就能解锁。密钥绑定在这个扩展上：换浏览器或到桌面端都不能用。"
+    "message": "WebAuthn PRF · 仅本机验证"
   },
   "securityKeyEnroll": {
     "message": "登记安全密钥"
@@ -9624,7 +9822,7 @@
     "message": "移除全部密钥"
   },
   "securityKeyRegistered": {
-    "message": "已登记密钥"
+    "message": "已登记"
   },
   "securityKeyEnrolled": {
     "message": "安全密钥已登记"
@@ -9750,10 +9948,10 @@
     "message": "证件号"
   },
   "settingsSubtitle": {
-    "message": "离线优先 · 无账号"
+    "message": "本机保险库 · 完全离线"
   },
   "securitySubtitle": {
-    "message": "本地解锁，不发一个请求"
+    "message": "解锁与自动锁定"
   },
   "autoLock": {
     "message": "自动锁定"
@@ -9762,10 +9960,10 @@
     "message": "15 分钟"
   },
   "backupManual": {
-    "message": "仅手动"
+    "message": "手动"
   },
   "backupTitle": {
-    "message": "备份"
+    "message": "云备份"
   },
   "exportData": {
     "message": "导出加密 JSON"
@@ -9795,10 +9993,10 @@
     "message": "30 秒"
   },
   "touchIdDesktopOnly": {
-    "message": "Touch ID 解锁在 macOS 桌面端「设置 → 安全」里，扩展里不提供这个开关。"
+    "message": "扩展端没有生物识别接口；指纹只在 macOS 桌面端的设置里出现。"
   },
   "backupSubtitle": {
-    "message": "只有你点按钮时才会上传"
+    "message": "手动同步 · 只上传密文"
   },
   "backupManualNotice": {
     "message": "没有后台任务：本地改动不会自动上传。恢复、删除、导入都只发生在本地，直到你点「立即备份」或「立即同步」。"
@@ -9810,22 +10008,22 @@
     "message": "上次同步"
   },
   "lastBackup": {
-    "message": "上次备份"
+    "message": "最近备份"
   },
   "backupMode": {
-    "message": "模式"
+    "message": "同步方式"
   },
   "backupStorage": {
-    "message": "存储"
+    "message": "存储配置"
   },
   "backupAccessKey": {
-    "message": "Access Key ID"
+    "message": "Access Key"
   },
   "backupActions": {
     "message": "操作"
   },
   "backupSaveConfig": {
-    "message": "保存配置"
+    "message": "保存"
   },
   "backupPassphrase": {
     "message": "备份口令"
@@ -9837,10 +10035,31 @@
     "message": "从备份恢复"
   },
   "restoreSubtitle": {
-    "message": "账号文件 + 快照，全程不离开本机"
+    "message": "失败不会改动现有数据"
   },
   "restoreStart": {
     "message": "开始恢复"
+  },
+  "restoreSnapshotsTitle": {
+    "message": "选择快照"
+  },
+  "restoreSnapshotsHint": {
+    "message": "输入安全密码后会自动读取快照。"
+  },
+  "restoreNoStorage": {
+    "message": "请先在存储配置里连接云存储。"
+  },
+  "restoreSelectSnapshot": {
+    "message": "先选择一个快照。"
+  },
+  "restoreSuccess": {
+    "message": "已恢复 $COUNT$ 条记录",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
   },
   "restoreLoading": {
     "message": "正在读取加密快照…"
@@ -9864,7 +10083,7 @@
     "message": "保留云端"
   },
   "generatorSubtitle": {
-    "message": "纯本地生成 · 点结果那一行复制"
+    "message": "密码只在本机生成"
   },
   "regenerate": {
     "message": "重新生成"
@@ -9900,7 +10119,7 @@
     "message": "选择图片"
   },
   "importPreviewTitle": {
-    "message": "读到的账号"
+    "message": "导入预览"
   },
   "importDuplicate": {
     "message": "保险库里已有 · 跳过"
@@ -9939,7 +10158,7 @@
     "message": "数据与安全"
   },
   "dataAndSafetySubtitle": {
-    "message": "所有东西都在这台机器上"
+    "message": "本机存储"
   },
   "localData": {
     "message": "本地数据"
@@ -9957,13 +10176,13 @@
     "message": "搬运数据"
   },
   "trashHint": {
-    "message": "只在本地"
+    "message": "保留 30 天"
   },
   "dataFileWarning": {
     "message": "两个文件并排放在应用数据目录里。删掉它们，保险库就没了——所以备份是手动的，也所以留了那个回滚副本。"
   },
   "importSourceSubtitle": {
-    "message": "选来源——文件只在本机解析"
+    "message": "从文件导入到本机"
   },
   "importFeatured": {
     "message": "常用来源"
@@ -9993,22 +10212,22 @@
     "message": "同步失败——本地保险库没有被改动"
   },
   "createLocalVaultTitle": {
-    "message": "设置安全密码"
+    "message": "创建本机保险库"
   },
   "createLocalVaultSubtitle": {
-    "message": "没有账号，没有注册 —— 保险库只在这台机器上"
+    "message": "没有账号，没有注册。安全密码只用来在这台电脑上解密数据。"
   },
   "vaultIdentity": {
     "message": "身份"
   },
   "restoreFromBackup": {
-    "message": "改用备份恢复"
+    "message": "从备份恢复"
   },
   "createLocalVaultNote": {
-    "message": "你在这里输入的密码是这把保险库唯一的钥匙。忘了它，就没人能打开——进去以后记得开手动备份。"
+    "message": "指纹解锁只在 macOS 桌面端的「设置 → 安全」里开启，扩展本身没有这个能力。"
   },
   "unlockSubtitle": {
-    "message": "保险库已锁定 —— 数据一直在这台机器上"
+    "message": "数据只在这台电脑上，用一个安全密码打开。"
   },
   "emptyTrash": {
     "message": "清空回收站"
@@ -10017,10 +10236,25 @@
     "message": "清空后无法恢复。"
   },
   "networkGateSubtitle": {
-    "message": "只有三件事能出这台机器"
+    "message": "默认拦截所有出站请求"
   },
   "networkGateRules": {
     "message": "规则"
+  },
+  "networkGateRecentBlocked": {
+    "message": "最近拦截"
+  },
+  "networkGateErrorReporting": {
+    "message": "错误上报"
+  },
+  "networkGateTelemetry": {
+    "message": "遥测"
+  },
+  "networkGateFonts": {
+    "message": "字体"
+  },
+  "blockedLabel": {
+    "message": "已阻止"
   },
   "networkGateStorage": {
     "message": "存储端点"
@@ -10032,13 +10266,13 @@
     "message": "还没配置"
   },
   "networkGateBreach": {
-    "message": "泄露检查"
+    "message": "泄露查询"
   },
   "networkGateUserInitiated": {
     "message": "仅在你点它时"
   },
   "networkGateEverythingElse": {
-    "message": "其它所有请求"
+    "message": "默认规则"
   },
   "networkGateBlocked": {
     "message": "阻止"
@@ -10047,7 +10281,7 @@
     "message": "本地"
   },
   "networkGateSentinel": {
-    "message": "占位域名，永不外发"
+    "message": "白名单之外的请求一律阻止"
   },
   "networkGateNote": {
     "message": "闸门是个带单测的纯函数：请求出门之前先判允许或阻止，应用里没有第二套放行路径。"
@@ -10112,8 +10346,35 @@
   "clearFilters": {
     "message": "清除筛选"
   },
+  "folderCount": {
+    "message": "$COUNT$ 个",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "folderLocalOnlyNotice": {
-    "message": "文件夹保存在本地，并用保险库密钥加密。"
+    "message": "文件夹只是本地的组织方式，不参与加密，也不会上传到任何地方。"
+  },
+  "openFolder": {
+    "message": "打开文件夹"
+  },
+  "backToGenerator": {
+    "message": "返回生成器"
+  },
+  "recentGenerated": {
+    "message": "最近生成"
+  },
+  "historyCount": {
+    "message": "$COUNT$ 条",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   },
   "generatorLocalOnlyNotice": {
     "message": "密码在本机生成，绝不发送到任何地方。"
@@ -10125,10 +10386,10 @@
     "message": "许可证"
   },
   "licenseGpl": {
-    "message": "GPL-3.0"
+    "message": "GPL v3.0"
   },
   "lockVaultHint": {
-    "message": "立即锁定保险库；不会删除任何数据。"
+    "message": "不会删除任何数据"
   },
   "newItemKindNotice": {
     "message": "先选类型，字段会跟着类型变；所有内容都在本地加密。"
@@ -10143,7 +10404,7 @@
     "message": "隐私"
   },
   "privacySummary": {
-    "message": "仅本地"
+    "message": "不上传任何明文"
   },
   "primaryNavigation": {
     "message": "主导航"
@@ -10155,13 +10416,13 @@
     "message": "显示值"
   },
   "sourceCode": {
-    "message": "源代码"
+    "message": "开源地址"
   },
   "themeOnlyDisplayNotice": {
-    "message": "主题只改变 LocalPass 的外观，保险库数据保持不变。"
+    "message": "主题只影响界面显示，不改变加密或存储方式。"
   },
   "encryptedLocally": {
-    "message": "本地加密"
+    "message": "本机加密"
   },
   "lockVault": {
     "message": "锁定保险库"
@@ -10205,13 +10466,13 @@
     "message": "在此 Mac 上使用 Touch ID"
   },
   "themeLightDesc": {
-    "message": "始终使用浅色主题"
+    "message": "始终使用浅色界面"
   },
   "themeDarkDesc": {
-    "message": "适合黑暗和弱光环境"
+    "message": "适合夜间与低光环境"
   },
   "themeSystemDesc": {
-    "message": "跟随系统外观"
+    "message": "随 macOS 外观自动切换"
   },
   "cloneItemName": {
     "message": "$NAME$ 的副本",
@@ -10239,37 +10500,37 @@
     "message": "移到回收站"
   },
   "securitySettingsDesc": {
-    "message": "主密码、自动锁定、PIN"
+    "message": "安全密码、自动锁定、PIN"
   },
   "foldersCount": {
     "message": "{COUNT} 个文件夹"
   },
   "trashCount": {
-    "message": "{COUNT} 个项目"
+    "message": "{COUNT} 个条目"
   },
   "importSettingsDesc": {
-    "message": "从备份或其他管理器导入"
+    "message": "从备份或其它管理器导入"
   },
   "exportSettingsDesc": {
     "message": "加密 JSON"
   },
   "generatorSettingsDesc": {
-    "message": "密码、密码短语与用户名"
+    "message": "密码与短语"
   },
   "backupSettingsDesc": {
-    "message": "手动同步到你自己的存储"
+    "message": "手动同步到你自己拥有的存储"
   },
   "networkSettingsDesc": {
     "message": "拦截未经授权的出站请求"
   },
   "dataSettingsDesc": {
-    "message": "本地文件与清除保险库"
+    "message": "本机位置、清空保险库"
   },
   "appVersion": {
     "message": "版本"
   },
   "settingsPrivacyNote": {
-    "message": "LocalPass 没有账号也没有服务器。移除扩展前请先导出或备份。"
+    "message": "LocalPass 没有账号、没有服务器。删除扩展前请先导出或备份。"
   },
   "unlockOptionsDesc": {
     "message": "PIN 及其他解锁方式"
@@ -10296,5 +10557,469 @@
   },
   "appearanceSubtitle": {
     "message": "主题与语言"
+  },
+  "accountGroup": {
+    "message": "账户"
+  },
+  "backupPrivacyGroup": {
+    "message": "备份与隐私"
+  },
+  "favoriteHint": {
+    "message": "在列表里置顶显示"
+  },
+  "searchVaultPlaceholder": {
+    "message": "搜索名称、账号或文件夹"
+  },
+  "emailBackupHint": {
+    "message": "不会上传，也不会用于登录。"
+  },
+  "setupBackupConfirm": {
+    "message": "我知道忘记密码无法找回，会定期做加密备份"
+  },
+  "securityKeyHeroTitle": {
+    "message": "插入安全密钥"
+  },
+  "securityKeyHeroText": {
+    "message": "把已登记的安全密钥插进电脑，按一下按钮完成验证。密钥只用于解开本机保险库。"
+  },
+  "securityKeyStart": {
+    "message": "开始验证"
+  },
+  "securityKeyFootnote": {
+    "message": "安全密钥与安全密码是两条独立的解锁路径，任一条都能打开同一个保险库。"
+  },
+  "registeredKeysCount": {
+    "message": "$COUNT$ 个已登记",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "pinUnlockDesc": {
+    "message": "用 6 位 PIN 快速解锁"
+  },
+  "fingerprintUnlock": {
+    "message": "指纹解锁"
+  },
+  "desktopOnlyMac": {
+    "message": "仅 macOS 桌面端可用"
+  },
+  "encryptedBackup": {
+    "message": "加密备份"
+  },
+  "encryptedBackupDesc": {
+    "message": "手动，永不自动上传"
+  },
+  "dataLocation": {
+    "message": "数据位置"
+  },
+  "encryptionMethod": {
+    "message": "加密方式"
+  },
+  "encryptionMethodValue": {
+    "message": "AES-256-GCM · 本机密钥"
+  },
+  "neverBackedUp": {
+    "message": "尚未备份"
+  },
+  "extensionStorage": {
+    "message": "浏览器扩展本地存储"
+  },
+  "exportEncryptedBackup": {
+    "message": "导出加密备份"
+  },
+  "exportBeforeClear": {
+    "message": "先导出，再清空"
+  },
+  "dangerZone": {
+    "message": "危险操作"
+  },
+  "clearVaultDescription": {
+    "message": "清空保险库会删除本机全部条目，无法撤销。云备份里的旧快照不会被删除。"
+  },
+  "clearVault": {
+    "message": "清空保险库"
+  },
+  "vaultCleared": {
+    "message": "保险库已清空"
+  },
+  "clearVaultConfirmTitle": {
+    "message": "清空保险库"
+  },
+  "clearVaultConfirmBody": {
+    "message": "这会永久删除本机保险库里的全部条目，且无法撤销。确定继续？"
+  },
+  "networkGateCallout": {
+    "message": "除了下面白名单里的地址和你主动发起的操作，扩展会拦截其余出站请求。可以用开发者工具的网络面板验证。"
+  },
+  "whitelist": {
+    "message": "白名单"
+  },
+  "cloudflareR2": {
+    "message": "Cloudflare R2"
+  },
+  "manualSyncOnly": {
+    "message": "仅手动同步"
+  },
+  "breachCheckSub": {
+    "message": "默认关闭，需要手动开启"
+  },
+  "recentlyBlocked": {
+    "message": "最近拦截"
+  },
+  "blocked": {
+    "message": "已阻止"
+  },
+  "blockedSentry": {
+    "message": "sentry.io · 错误上报"
+  },
+  "blockedAnalytics": {
+    "message": "google-analytics.com · 遥测"
+  },
+  "blockedCdn": {
+    "message": "cdn.jsdelivr.net · 字体"
+  },
+  "importLocalPassBackup": {
+    "message": "LocalPass 加密备份"
+  },
+  "importLocalPassBackupSub": {
+    "message": ".json · 需要安全密码"
+  },
+  "importBitwardenExport": {
+    "message": "Bitwarden 加密导出"
+  },
+  "importBitwardenExportSub": {
+    "message": "兼容格式 · .json"
+  },
+  "googleAuthenticator": {
+    "message": "Google 认证器"
+  },
+  "googleAuthSub": {
+    "message": "扫描二维码或 otpauth-migration"
+  },
+  "dropZoneTitle": {
+    "message": "把文件拖到这里"
+  },
+  "dropZoneSub": {
+    "message": "或点击选择文件"
+  },
+  "moreSources": {
+    "message": "更多来源"
+  },
+  "importFootnote": {
+    "message": "导入前会先预览，确认后才写入；不会覆盖现有条目。"
+  },
+  "importPreviewSubtitle": {
+    "message": "确认后再写入"
+  },
+  "willImport": {
+    "message": "将导入"
+  },
+  "duplicateSkipped": {
+    "message": "重复跳过"
+  },
+  "unrecognized": {
+    "message": "无法识别"
+  },
+  "preview": {
+    "message": "预览"
+  },
+  "importPreviewNote": {
+    "message": "导入的内容会加密后写入本机保险库。导入不会触发任何网络请求。"
+  },
+  "importNItems": {
+    "message": "导入 $COUNT$ 个条目",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "exportSubtitle": {
+    "message": "生成加密 JSON"
+  },
+  "exportWarning": {
+    "message": "导出文件包含全部条目，但仍然是加密的。请把它放在安全的位置，不要通过聊天工具传输。"
+  },
+  "exportPasswordHint": {
+    "message": "忘记密码的用户无法恢复数据；请用备份挽救。"
+  },
+  "exportFormatEncrypted": {
+    "message": "加密 JSON（LocalPass 兼容）"
+  },
+  "exportFormatPlain": {
+    "message": "明文 JSON（不推荐）"
+  },
+  "exportFormatLabel": {
+    "message": "格式"
+  },
+  "exportPasswordPlaceholder": {
+    "message": "确认是你本人"
+  },
+  "exportPlainWarning": {
+    "message": "明文 JSON 中每个条目都是可读文本。仅在必要时使用，并立即保存到安全位置。"
+  },
+  "exportStatsItems": {
+    "message": "条目"
+  },
+  "exportStatsFolders": {
+    "message": "文件夹"
+  },
+  "exportStatsTrash": {
+    "message": "回收站"
+  },
+  "exportTrashNote": {
+    "message": "回收站中的条目也会一并写入加密导出。"
+  },
+  "namePlaceholder": {
+    "message": "给条目起个名字"
+  },
+  "totpPlaceholder": {
+    "message": "Base32 密钥或 otpauth:// 链接"
+  },
+  "notesPlaceholder": {
+    "message": "只对自己可见的说明"
+  },
+  "notePlaceholder": {
+    "message": "恢复码、配置片段……"
+  },
+  "tokenServicePlaceholder": {
+    "message": "Cloudflare"
+  },
+  "tokenScopePlaceholder": {
+    "message": "Zone:Read, DNS:Edit"
+  },
+  "tokenExpiresPlaceholder": {
+    "message": "2027-03-01"
+  },
+  "tokenEnvPlaceholder": {
+    "message": "生产"
+  },
+  "sshPrivateKeyPlaceholder": {
+    "message": "-----BEGIN OPENSSH PRIVATE KEY-----"
+  },
+  "sshPublicKeyPlaceholder": {
+    "message": "ssh-ed25519 AAAAC3..."
+  },
+  "expMonthPlaceholder": {
+    "message": "MM"
+  },
+  "expYearPlaceholder": {
+    "message": "YY"
+  },
+  "serverProtocolPlaceholder": {
+    "message": "SSH"
+  },
+  "totpQrTitle": {
+    "message": "动态口令二维码"
+  },
+  "totpQrCardHint": {
+    "message": "用认证器扫描，添加到 LocalPass 之外的备份设备。"
+  },
+  "manualEntry": {
+    "message": "手动输入"
+  },
+  "totpSecret": {
+    "message": "密钥"
+  },
+  "totpQrFootnote": {
+    "message": "验证码每 30 秒变化。LocalPass 只在本机计算，不需要联网。"
+  },
+  "unlockForgot": {
+    "message": "忘记密码？从备份恢复"
+  },
+  "unlockNoRecoveryNote": {
+    "message": "没有「找回密码」。忘了安全密码就打不开保险库 —— 请务必做备份。"
+  },
+  "unlockWaitTitle": {
+    "message": "请稍后再试"
+  },
+  "unlockWaitText": {
+    "message": "连续输错 5 次，已进入等待。你的数据没有被删除，也不会登出。"
+  },
+  "unlockWaitRemaining": {
+    "message": "还需要等待 $COUNT$ 秒。等待结束后可以直接重试。",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "unlockWaitPlaceholder": {
+    "message": "等待中…"
+  },
+  "trashRetentionLocal": {
+    "message": "保留 30 天 · 只在本地"
+  },
+  "deletedDaysAgo": {
+    "message": "$COUNT$ 天前",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "trashDaysLeft": {
+    "message": "还剩 $COUNT$ 天",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "environmentLabel": {
+    "message": "$ENV$环境",
+    "placeholders": {
+      "env": {
+        "content": "$1"
+      }
+    }
+  },
+  "lineCount": {
+    "message": "$COUNT$ 行",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "aboutDescription": {
+    "message": "完全离线的密码管理器。数据只存在你自己的电脑上，没有账号，也没有服务器。"
+  },
+  "vaultIsEmpty": {
+    "message": "保险库是空的"
+  },
+  "emptyVaultSubtitle": {
+    "message": "还没有条目"
+  },
+  "emptyVaultText": {
+    "message": "先创建一条登录信息，或者导入已有的数据。全部内容只保存在这台电脑上。"
+  },
+  "newItemCta": {
+    "message": "新建条目"
+  },
+  "unlockTitle": {
+    "message": "解锁保险库"
+  },
+  "unlockWithSecurityKey": {
+    "message": "用安全密钥解锁"
+  },
+  "masterPassPlaceholder": {
+    "message": "输入安全密码"
+  },
+  "localVaultEmail": {
+    "message": "邮箱"
+  },
+  "localVaultEmailOptional": {
+    "message": "邮箱（可选，仅用于备份提示）"
+  },
+  "setupMasterPassPlaceholder": {
+    "message": "至少 12 个字符"
+  },
+  "setupBackupConfirmRequired": {
+    "message": "请先确认你已了解：忘记密码无法找回。"
+  },
+  "securitySettings": {
+    "message": "安全设置"
+  },
+  "importLabel": {
+    "message": "导入"
+  },
+  "exportLabel": {
+    "message": "导出"
+  },
+  "removePin": {
+    "message": "移除 PIN"
+  },
+  "removePinConfirmation": {
+    "message": "移除 PIN 解锁？下次需要输入安全密码。"
+  },
+  "trashFootnote": {
+    "message": "清空回收站后无法恢复；云备份里可能仍有旧的加密快照。"
+  },
+  "forgotPasswordRestore": {
+    "message": "忘记密码？从备份恢复",
+    "description": "解锁页：从备份恢复入口"
+  },
+  "entropyLabel": {
+    "message": "很强 · 约 $COUNT$ 位熵",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "104"
+      }
+    }
+  },
+  "generatorFootnote": {
+    "message": "密码从未离开本机。复制后 30 秒自动清空剪贴板，可在设置里修改。"
+  },
+  "passphraseShort": {
+    "message": "短语"
+  },
+  "yesterday": {
+    "message": "昨天"
+  },
+  "restoreWarning": {
+    "message": "恢复会用快照覆盖本机保险库。先把当前数据导出，或确认最新快照就是你要的版本。"
+  },
+  "restoreFootnote": {
+    "message": "恢复前会校验快照与安全密码；任何一步失败都不会改动现有数据。"
+  },
+  "unlockOfflineFootnote": {
+    "message": "完全离线 · 没有账号 · AES-256-GCM 加密"
+  },
+  "pinUnlock": {
+    "message": "PIN 解锁"
+  },
+  "backupConfigSubtitle": {
+    "message": "S3 兼容 · 你自己拥有"
+  },
+  "backupConnect": {
+    "message": "连接"
+  },
+  "backupExplanation": {
+    "message": "说明"
+  },
+  "backupCredentialNote": {
+    "message": "上传内容是加密后的快照，存储服务商无法解读。凭据只保存在本机，不会同步。"
+  },
+  "backupKeyNote": {
+    "message": "推荐使用只允许读写该桶的独立密钥。"
+  },
+  "backupSnapshots": {
+    "message": "快照"
+  },
+  "backupLatestSize": {
+    "message": "最新大小"
+  },
+  "backupLatest": {
+    "message": "最新"
+  },
+  "backupRecentSnapshots": {
+    "message": "最近快照"
+  },
+  "backupNoSnapshots": {
+    "message": "还没有快照"
+  },
+  "backupConnectedR2": {
+    "message": "已连接 · Cloudflare R2"
+  },
+  "backupNotConfigured": {
+    "message": "还没有连接云存储。"
+  },
+  "backupConfigPrompt": {
+    "message": "点右上角的设置，填写 S3 兼容存储的凭据"
+  },
+  "backupFootnote": {
+    "message": "只有点「立即同步」时才会联网。收进托盘、后台运行都不会自动上传。"
+  },
+  "backupLastSyncedAt": {
+    "message": "上次同步：$TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
   }
 }

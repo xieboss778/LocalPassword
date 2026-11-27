@@ -68,7 +68,8 @@ const NODE_FORBIDDEN_PACKAGES = [
 export default tseslint.config(
   {
     // prototype/ 是设计原型（纯静态 HTML/JS），不属于客户端代码，不参与 lint。
-    ignores: ["prototype/**", ".dsh/**"],
+    // .playwright-cli/ 是本地实机测试的浏览器/桌面 profile 与临时脚本（已在 .gitignore 中忽略）。
+    ignores: ["prototype/**", ".dsh/**", ".playwright-cli/**"],
   },
   ...storybook.configs["flat/recommended"],
   {

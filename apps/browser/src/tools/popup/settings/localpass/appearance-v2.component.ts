@@ -7,23 +7,34 @@ import { LpPopupHeaderComponent } from "@localpass/angular/local-ui";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { Theme, ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
-import { IconModule, LocalPassIcon } from "@localpass/components";
+import { IconModule } from "@localpass/components";
 
 interface ThemeOption {
   readonly value: Theme;
   readonly labelKey: string;
   readonly descKey: string;
-  readonly icon: LocalPassIcon;
+  /** 小预览条：用主题自己的底色，直观区分浅色 / 深色 / 跟随系统。 */
+  readonly swatch: string;
 }
 
 const THEMES: readonly ThemeOption[] = [
-  { value: ThemeTypes.Light, labelKey: "light", descKey: "themeLightDesc", icon: "bwi-brush" },
-  { value: ThemeTypes.Dark, labelKey: "dark", descKey: "themeDarkDesc", icon: "bwi-palette" },
+  {
+    value: ThemeTypes.Light,
+    labelKey: "light",
+    descKey: "themeLightDesc",
+    swatch: "linear-gradient(180deg, var(--color-white) 0 62%, var(--color-gray-050) 62%)",
+  },
+  {
+    value: ThemeTypes.Dark,
+    labelKey: "dark",
+    descKey: "themeDarkDesc",
+    swatch: "linear-gradient(180deg, var(--color-brand-950) 0 62%, var(--color-gray-950) 62%)",
+  },
   {
     value: ThemeTypes.System,
-    labelKey: "default",
+    labelKey: "systemDefault",
     descKey: "themeSystemDesc",
-    icon: "bwi-desktop",
+    swatch: "linear-gradient(90deg, var(--color-white) 0 50%, var(--color-brand-950) 50%)",
   },
 ];
 
@@ -45,46 +56,42 @@ const THEMES: readonly ThemeOption[] = [
       ></lp-popup-header>
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
-        <h2 class="tw-m-0 tw-px-0.5 tw-pt-2 tw-pb-1.5 tw-text-xs tw-font-semibold tw-text-muted">
-          {{ i18n.t("theme") }}
-        </h2>
-        <div class="tw-grid tw-gap-2">
+        <div class="tw-grid tw-grid-cols-3 tw-gap-2 tw-pt-3">
           @for (theme of themes; track theme.value) {
             <button
               type="button"
-              class="tw-flex tw-items-center tw-gap-3 tw-rounded-xl tw-border tw-p-3 tw-text-start"
+              class="tw-relative tw-flex tw-flex-col tw-gap-1 tw-rounded-xl tw-border tw-p-1.5 tw-text-start"
               [class.tw-border-border-brand]="selectedTheme() === theme.value"
-              [class.tw-bg-bg-brand-softer]="selectedTheme() === theme.value"
               [class.tw-border-border-light]="selectedTheme() !== theme.value"
+              [class.tw-bg-brand-softer]="selectedTheme() === theme.value"
               [class.tw-bg-background]="selectedTheme() !== theme.value"
               [attr.aria-pressed]="selectedTheme() === theme.value"
               (click)="setTheme(theme.value)"
             >
               <span
-                class="tw-grid tw-size-9 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
-              >
-                <bit-icon [name]="theme.icon" class="tw-text-base"></bit-icon>
-              </span>
-              <span class="tw-min-w-0 tw-flex-1">
-                <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                  i18n.t(theme.labelKey)
-                }}</span>
-                <span class="tw-block tw-text-xs tw-leading-relaxed tw-text-muted">{{
-                  i18n.t(theme.descKey)
-                }}</span>
-              </span>
+                class="tw-block tw-h-12 tw-w-full tw-rounded-md tw-border tw-border-border-light"
+                [style.background]="theme.swatch"
+                aria-hidden="true"
+              ></span>
+              <span class="tw-block tw-text-xs tw-font-semibold tw-text-main">{{
+                i18n.t(theme.labelKey)
+              }}</span>
+              <span class="tw-block tw-text-xs tw-leading-snug tw-text-muted">{{
+                i18n.t(theme.descKey)
+              }}</span>
               @if (selectedTheme() === theme.value) {
-                <bit-icon name="bwi-check" class="tw-text-base tw-text-fg-brand"></bit-icon>
+                <span
+                  class="tw-absolute tw-end-1.5 tw-top-1.5 tw-grid tw-size-5 tw-place-items-center tw-rounded-full tw-bg-bg-brand tw-text-fg-contrast"
+                >
+                  <bit-icon name="bwi-check" class="tw-text-xs"></bit-icon>
+                </span>
               }
             </button>
           }
         </div>
 
-        <h2 class="tw-m-0 tw-px-0.5 tw-pt-3 tw-pb-1.5 tw-text-xs tw-font-semibold tw-text-muted">
-          {{ i18n.t("language") }}
-        </h2>
         <div
-          class="tw-flex tw-items-center tw-gap-2.5 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3"
+          class="tw-mt-2.5 tw-flex tw-items-center tw-gap-2.5 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3"
         >
           <span
             class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
@@ -101,7 +108,7 @@ const THEMES: readonly ThemeOption[] = [
           </span>
         </div>
 
-        <p class="tw-px-0.5 tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
+        <p class="tw-px-0.5 tw-pt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
           {{ i18n.t("themeOnlyDisplayNotice") }}
         </p>
       </div>

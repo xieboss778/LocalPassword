@@ -1,6 +1,7 @@
 import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FieldView } from "@localpass/common/vault/models/view/field.view";
+import { LoginUriView } from "@localpass/common/vault/models/view/login-uri.view";
 
 import {
   applyCustomFields,
@@ -159,6 +160,32 @@ describe("item field mapping", () => {
     });
 
     expect(view.login.uris.map((uri) => uri.uri)).toEqual(["https://gist.github.com"]);
+  });
+
+  it("keeps imported URIs that the two-slot form does not show", () => {
+    const view = emptyView();
+    setKind(view, ItemKind.Login);
+    applyFieldValues(view, ItemKind.Login, {
+      name: "GitHub",
+      uri: "https://github.com",
+      uri2: "https://gist.github.com",
+    });
+    const extra = new LoginUriView();
+    extra.uri = "http://localhost:4180";
+    view.login.uris.push(extra);
+
+    applyFieldValues(view, ItemKind.Login, {
+      name: "GitHub",
+      username: "bossxie",
+      uri: "https://github.com",
+      uri2: "https://gist.github.com",
+    });
+
+    expect(view.login.uris.map((uri) => uri.uri)).toEqual([
+      "https://github.com",
+      "https://gist.github.com",
+      "http://localhost:4180",
+    ]);
   });
 
   it("groups fields for the form, with the item section first", () => {

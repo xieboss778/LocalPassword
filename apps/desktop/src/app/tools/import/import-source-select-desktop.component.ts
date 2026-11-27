@@ -20,6 +20,6 @@ export class ImportSourceSelectDesktopComponent {
   protected readonly initialSource = importSourceFromQuery(this.route);
 
   protected onContinue(importType: UpgradeImportType): void {
-    void navigateCarryingImportParams(this.router, this.route, ["/import", importType]);
+    void navigateCarryingImportParams(this.router, this.route, ["/import/all", importType]);
   }
 }

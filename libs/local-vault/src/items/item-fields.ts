@@ -277,9 +277,30 @@ export function readFieldValues(view: CipherView, kind: ItemKind): FieldValues {
 
 /** 把表单值写回条目（不改类型；调用方负责 setKind）。 */
 export function applyFieldValues(view: CipherView, kind: ItemKind, values: FieldValues): void {
+  if (kind === ItemKind.Login) {
+    applyLoginUris(view, values);
+  }
+
   for (const field of FIELDS[kind]) {
+    // The two URI slots are written together above so URIs the form does not show survive.
+    if (kind === ItemKind.Login && (field.target === "loginUri" || field.target === "loginUri2")) {
+      continue;
+    }
     writeField(view, field.target, values[field.id] ?? "");
   }
+}
+
+/**
+ * Rewrites the two URI slots the form edits and keeps any additional URIs an import brought in.
+ * Dropping them would silently widen or narrow where the login autofills.
+ */
+function applyLoginUris(view: CipherView, values: FieldValues): void {
+  const extras = view.login.uris.slice(2);
+  view.login.uris = [
+    values.uri ? uriView(values.uri) : undefined,
+    values.uri2 ? uriView(values.uri2) : undefined,
+    ...extras,
+  ].filter((uri): uri is LoginUriView => !!uri);
 }
 
 export function readField(view: CipherView, target: FieldTarget): string {
