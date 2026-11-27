@@ -19,10 +19,13 @@
       <div class="-tw-mx-4">
         <lp-field
           id="create-local-vault_input_email"
-          [label]="'localVaultEmailOptional' | i18n"
+          [label]="'localVaultEmail' | i18n"
+          [hint]="'emailBackupHint' | i18n"
           [autocomplete]="'email'"
           [value]="email.value ?? ''"
+          [error]="fieldErrors().email"
           (valueChange)="setField('email', $event)"
+          (blurred)="onFieldBlur('email')"
         />
         <lp-field
           id="create-local-vault_input_master-password"
@@ -31,7 +34,9 @@
           [password]="true"
           [autocomplete]="'new-password'"
           [value]="masterPassword.value ?? ''"
+          [error]="fieldErrors().masterPassword"
           (valueChange)="setField('masterPassword', $event)"
+          (blurred)="onFieldBlur('masterPassword')"
         />
         <lp-field
           id="create-local-vault_input_confirm-password"
@@ -39,7 +44,9 @@
           [password]="true"
           [autocomplete]="'new-password'"
           [value]="confirmMasterPassword.value ?? ''"
+          [error]="fieldErrors().confirmMasterPassword"
           (valueChange)="setField('confirmMasterPassword', $event)"
+          (blurred)="onFieldBlur('confirmMasterPassword')"
         />
       </div>
 
@@ -55,6 +62,7 @@
         class="tw-mt-1"
         [block]="true"
         [disabled]="submitting()"
+        [loading]="submitting()"
         (click)="submit()"
       >
         {{ "createLocalVault" | i18n }}
@@ -84,11 +92,13 @@
     <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
       <lp-field
         id="create-local-vault_input_email"
-        [label]="'localVaultEmailOptional' | i18n"
+        [label]="'localVaultEmail' | i18n"
         [hint]="'emailBackupHint' | i18n"
         [autocomplete]="'email'"
         [value]="email.value ?? ''"
+        [error]="fieldErrors().email"
         (valueChange)="setField('email', $event)"
+        (blurred)="onFieldBlur('email')"
       />
       <lp-field
         id="create-local-vault_input_master-password"
@@ -97,7 +107,9 @@
         [password]="true"
         [autocomplete]="'new-password'"
         [value]="masterPassword.value ?? ''"
+        [error]="fieldErrors().masterPassword"
         (valueChange)="setField('masterPassword', $event)"
+        (blurred)="onFieldBlur('masterPassword')"
       />
       <lp-field
         id="create-local-vault_input_confirm-password"
@@ -105,7 +117,9 @@
         [password]="true"
         [autocomplete]="'new-password'"
         [value]="confirmMasterPassword.value ?? ''"
+        [error]="fieldErrors().confirmMasterPassword"
         (valueChange)="setField('confirmMasterPassword', $event)"
+        (blurred)="onFieldBlur('confirmMasterPassword')"
       />
 
       <label
@@ -133,6 +147,7 @@
           buttonType="primary"
           [block]="true"
           [disabled]="submitting()"
+          [loading]="submitting()"
           (click)="submit()"
         >
           {{ "createLocalVault" | i18n }}

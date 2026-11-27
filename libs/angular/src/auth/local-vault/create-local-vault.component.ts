@@ -1,12 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
@@ -17,17 +11,13 @@ import { CreateLocalAccountService } from "@localpass/local-vault";
 import { JslibModule } from "../../jslib.module";
 import { LpFieldComponent, LpHeroComponent } from "../../local-ui";
 
-/** Minimum length a local master password must have; deliberately longer than the server's floor. */
-const MIN_MASTER_PASSWORD_LENGTH = 12;
-
-function passwordsMatch(control: AbstractControl): ValidationErrors | null {
-  const password = control.get("masterPassword")?.value;
-  const confirmation = control.get("confirmMasterPassword")?.value;
-  if (password != null && password !== confirmation) {
-    return { passwordsDoNotMatch: true };
-  }
-  return null;
-}
+import {
+  createLocalVaultForm,
+  LocalVaultField,
+  LocalVaultFieldErrors,
+  localVaultFieldError,
+  localVaultFormErrors,
+} from "./create-local-vault.validation";
 
 /**
  * Creates the vault that lives on this device. Nothing is sent anywhere: the whole key chain is
@@ -57,17 +47,16 @@ export class CreateLocalVaultComponent {
   private readonly i18nService = inject(I18nService);
   private readonly validationService = inject(ValidationService);
 
-  protected readonly formGroup = this.formBuilder.group(
-    {
-      email: ["", [Validators.required, Validators.email]],
-      masterPassword: ["", [Validators.required, Validators.minLength(MIN_MASTER_PASSWORD_LENGTH)]],
-      confirmMasterPassword: ["", [Validators.required]],
-    },
-    { validators: [passwordsMatch] },
-  );
+  protected readonly formGroup = createLocalVaultForm(this.formBuilder);
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  /** Messages shown under each field; empty until the field is left or the form is submitted. */
+  protected readonly fieldErrors = signal<LocalVaultFieldErrors>({
+    email: null,
+    masterPassword: null,
+    confirmMasterPassword: null,
+  });
   /** 桌面端原型不显示备份确认勾选，默认视为已知晓；弹窗形态保留勾选（默认勾上）。 */
   protected readonly backupAcknowledged = signal(true);
   /** Desktop mounts this screen in the centered auth card; the popup keeps its stacked hero. */
@@ -75,11 +64,28 @@ export class CreateLocalVaultComponent {
     this.route.snapshot.data["localVaultLayout"] === "desktop" ||
     this.route.parent?.snapshot.data["localVaultLayout"] === "desktop";
 
-  protected setField(
-    field: "email" | "masterPassword" | "confirmMasterPassword",
-    value: string,
-  ): void {
-    this.formGroup.get(field)?.setValue(value);
+  protected setField(field: LocalVaultField, value: string): void {
+    this.formGroup.controls[field].setValue(value);
+
+    // Keep an already-visible message honest while the user fixes the value. A change to the
+    // password also affects the confirmation's match message.
+    if (this.fieldErrors()[field] != null) {
+      this.refreshFieldError(field);
+    }
+    if (field === "masterPassword" && this.fieldErrors().confirmMasterPassword != null) {
+      this.refreshFieldError("confirmMasterPassword");
+    }
+  }
+
+  protected onFieldBlur(field: LocalVaultField): void {
+    this.refreshFieldError(field);
+  }
+
+  private refreshFieldError(field: LocalVaultField): void {
+    this.fieldErrors.update((errors) => ({
+      ...errors,
+      [field]: localVaultFieldError(this.formGroup, field, this.i18nService),
+    }));
   }
 
   protected onBackupAcknowledged(event: Event): void {
@@ -109,11 +115,9 @@ export class CreateLocalVaultComponent {
 
     this.formGroup.markAllAsTouched();
     this.errorMessage.set(null);
+    this.fieldErrors.set(localVaultFormErrors(this.formGroup, this.i18nService));
 
     if (this.formGroup.invalid) {
-      if (this.formGroup.hasError("passwordsDoNotMatch")) {
-        this.errorMessage.set(this.i18nService.t("passwordsDoNotMatch"));
-      }
       return;
     }
 

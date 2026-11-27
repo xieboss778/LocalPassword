@@ -10896,9 +10896,6 @@
   "localVaultEmail": {
     "message": "Email"
   },
-  "localVaultEmailOptional": {
-    "message": "Email (optional, used only as a backup hint)"
-  },
   "setupMasterPassPlaceholder": {
     "message": "At least 12 characters"
   },

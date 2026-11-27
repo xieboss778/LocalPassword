@@ -9428,10 +9428,6 @@
     "message": "修改时间",
     "description": "保险库表格的修改时间列"
   },
-  "localVaultEmailOptional": {
-    "message": "邮箱（可选，仅用于备份提示）",
-    "description": "初始化页面的邮箱标签"
-  },
   "localVaultEmail": {
     "message": "邮箱",
     "description": "初始化页面的紧凑邮箱标签"
@@ -9447,6 +9443,10 @@
   "setupBackupConfirm": {
     "message": "我知道忘记密码无法找回，会定期做加密备份",
     "description": "初始化页面的备份确认"
+  },
+  "setupBackupConfirmRequired": {
+    "message": "请先确认你已了解：忘记密码无法找回。",
+    "description": "初始化页面的备份确认提示"
   },
   "itemsCount": {
     "message": "条目数",

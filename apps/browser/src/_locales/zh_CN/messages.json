@@ -10911,9 +10911,6 @@
   "localVaultEmail": {
     "message": "邮箱"
   },
-  "localVaultEmailOptional": {
-    "message": "邮箱（可选，仅用于备份提示）"
-  },
   "setupMasterPassPlaceholder": {
     "message": "至少 12 个字符"
   },

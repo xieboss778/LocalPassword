@@ -9416,10 +9416,6 @@
     "message": "Modified",
     "description": "Vault table column header for the last modified time"
   },
-  "localVaultEmailOptional": {
-    "message": "Email (optional, used only as a backup hint)",
-    "description": "Setup email field label"
-  },
   "localVaultEmail": {
     "message": "Email",
     "description": "Setup email field label for compact layouts"
@@ -9435,6 +9431,10 @@
   "setupBackupConfirm": {
     "message": "I understand a forgotten password cannot be recovered, and I will make encrypted backups",
     "description": "Backup acknowledgement in setup"
+  },
+  "setupBackupConfirmRequired": {
+    "message": "Confirm that you understand a forgotten password cannot be recovered.",
+    "description": "Backup acknowledgement required in setup"
   },
   "itemsCount": {
     "message": "Items",

@@ -36,7 +36,10 @@ export interface LpFieldOption {
             <select
               [id]="id()"
               class="tw-w-full tw-appearance-none tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-pe-9 tw-text-sm tw-text-main tw-outline-none focus:tw-border-border-focus"
+              [class.tw-border-border-danger]="error()"
               [value]="value()"
+              [attr.aria-invalid]="error() ? 'true' : null"
+              [attr.aria-describedby]="error() ? errorId() : null"
               (blur)="blurred.emit()"
               (change)="update($event)"
             >
@@ -52,10 +55,13 @@ export interface LpFieldOption {
             <textarea
               [id]="id()"
               class="tw-w-full tw-resize-y tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted focus:tw-border-border-focus"
+              [class.tw-border-border-danger]="error()"
               rows="3"
               [value]="value()"
               [attr.placeholder]="placeholder()"
               [attr.autocomplete]="autocomplete()"
+              [attr.aria-invalid]="error() ? 'true' : null"
+              [attr.aria-describedby]="error() ? errorId() : null"
               (blur)="blurred.emit()"
               (input)="update($event)"
             ></textarea>
@@ -66,10 +72,13 @@ export interface LpFieldOption {
               [class.tw-font-mono]="mono()"
               [class.tw-pe-10]="actionIcon() || password()"
               [class.tw-pe-16]="actionIcon() && password()"
+              [class.tw-border-border-danger]="error()"
               [type]="inputType()"
               [value]="value()"
               [attr.placeholder]="placeholder()"
               [attr.autocomplete]="autocomplete()"
+              [attr.aria-invalid]="error() ? 'true' : null"
+              [attr.aria-describedby]="error() ? errorId() : null"
               (blur)="blurred.emit()"
               (input)="update($event)"
             />
@@ -109,6 +118,14 @@ export interface LpFieldOption {
             hint()
           }}</span>
         }
+        @if (error()) {
+          <span
+            [id]="errorId()"
+            role="alert"
+            class="tw-mt-1 tw-block tw-text-xs tw-leading-relaxed tw-text-fg-danger"
+            >{{ error() }}</span
+          >
+        }
       </label>
     } @else {
       <label
@@ -137,6 +154,8 @@ export class LpFieldComponent {
   readonly id = input<string>("");
   readonly placeholder = input<string>("");
   readonly hint = input<string>("");
+  /** Inline validation message; also announces the field as invalid to assistive technology. */
+  readonly error = input<string | null>(null);
   readonly password = input(false);
   readonly mono = input(false);
   readonly multiline = input(false);
@@ -156,6 +175,7 @@ export class LpFieldComponent {
   protected readonly inputType = computed(() =>
     this.password() && !this.revealed() ? "password" : "text",
   );
+  protected readonly errorId = computed(() => (this.id() ? `${this.id()}-error` : null));
 
   protected update(event: Event): void {
     this.value.set(
