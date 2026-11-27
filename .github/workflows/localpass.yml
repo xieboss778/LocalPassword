@@ -122,11 +122,13 @@ jobs:
         with:
           name: localpass-chrome
           path: apps/browser/build
+          retention-days: 14
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: localpass-chrome-zip
           path: apps/browser/dist-chrome.zip
+          retention-days: 14
           if-no-files-found: error
 
   desktop-windows:
@@ -160,9 +162,10 @@ jobs:
 
   desktop-macos:
     name: 桌面端 macOS
-    # GitHub 的 macOS runner 经常长时间排队；这条只做验证，不阻塞整体流水线。
-    continue-on-error: true
+    # GitHub 的 macOS runner 可能长时间排队，但 .dmg 是交付物：构建失败必须让流水线变红，
+    # 不能再用 continue-on-error 静默放过。
     runs-on: macos-15
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -186,4 +189,5 @@ jobs:
         with:
           name: localpass-macos
           path: apps/desktop/dist/*.dmg
+          retention-days: 14
           if-no-files-found: error
