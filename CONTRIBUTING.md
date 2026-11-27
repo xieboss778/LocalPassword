@@ -44,7 +44,7 @@ npm run build:chrome
 - 文档在 `docs/`，索引是 [docs/README.md](docs/README.md)。改代码行为、路径、命令或状态时，在同一个 PR 里更新对应文档。
 - 不保留重复或过期文档：一份事实一个来源；被取代的文档直接删除，需要历史时从 git 取。
 - 未实施的方案必须在文档头部标注「待评审 / 未实施」，不能写得像现状。
-- 界面以 `design-system/legacy/prototypes/ui-redo-d/` 与 [屏对照表](docs/LocalPass-%E5%B1%8F%E5%AF%B9%E7%85%A7%E8%A1%A8.md) 为准；同步以 `libs/local-vault` 与 `docs/adr/` 为准。
+- 界面以 [design-system/agy/](design-system/agy/) 与 [屏对照表](docs/LocalPass-%E5%B1%8F%E5%AF%B9%E7%85%A7%E8%A1%A8.md) 为目标规范（各屏当前实现程度见对照表「现状」列）；同步以 `libs/local-vault` 与 [离线优先与 R2 同步设计](docs/LocalPass-%E7%A6%BB%E7%BA%BF%E4%BC%98%E5%85%88%E4%B8%8ER2%E5%90%8C%E6%AD%A5%E8%AE%BE%E8%AE%A1.md) 为准。
 - 术语按 [GLOSSARY.md](GLOSSARY.md)：区分「同步」「导出」「恢复」，不要把「备份」当机制名。
 
 ## 数据库 / 状态变更

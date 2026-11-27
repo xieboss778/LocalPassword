@@ -2,6 +2,7 @@
 
 > 初版：2026-11-24　｜　修订 v2：2026-11-24（加入桌面端、代码瘦身、桌面端阻断项）
 > 修订 v3：2026-11-27（执行状态、同步策略、界面基准与验证基线对齐当前代码）
+> 修订 v4：2026-11-28（UI 目标规范切换为 `design-system/agy/` 73 屏原型，待按屏对照表逐屏升级；归并 `docs/adr` 与 `docs/agents`）
 >
 > **命名说明**：本文初版写于改名之前，文中「localpass/clients」「LocalPass 官方」是
 > 本仓库历史基线的旧称，实际指 Bitwarden clients 上游。当前产品名为 LocalPass，
@@ -43,8 +44,10 @@
   导入页、条目详情二维码弹窗。
 - **阶段 7（打包）**：Windows NSIS、macOS dmg、Chrome zip 均纳入 CI；
   macOS job 已改为必过，不再 `continue-on-error`。
-- **界面**：以 `design-system/legacy/prototypes/ui-redo-d/` 为视觉基准，
-  逐屏落点见 `LocalPass-屏对照表.md`，规范见 `LocalPass-界面规范.md`。
+- **界面**：初版曾按旧基线 `ui-redo-d`（58 屏）完成主体落点；现已明确以
+  [design-system/agy/](../design-system/agy/)（AGY Compact v4 · **73 屏**：联动 1 + Mac 29 + 扩展 29 + 网页内联 14）作为新视觉与交互目标规范，
+  具体完成度与待改造差异见 [LocalPass-屏对照表.md](./LocalPass-屏对照表.md)，视觉与交互红线见 [LocalPass-界面规范.md](./LocalPass-界面规范.md)
+  （AGY 新增屏及 8 类可增删动态表单 / 列表去 2FA 验证码 / 取消系统全局热键等改进当前处于**待逐屏落地**阶段）。
 
 ### 验证基线（2026-11-27 最近一次完整验证）
 

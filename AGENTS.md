@@ -3,20 +3,6 @@
 These instructions apply to every agent working in this repository. More specific
 `AGENTS.md` files and direct user instructions take precedence.
 
-## Agent skills
-
-### Issue tracker
-
-Issues and specs live as GitHub issues. See `docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-Five canonical triage roles map to labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context: `GLOSSARY.md` and `docs/adr/` at repo root. See `docs/agents/domain.md`.
-
 ## Project Identity
 
 - Product name: **LocalPass**; repository: `LocalPassword`.

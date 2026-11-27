@@ -21,10 +21,10 @@
 - 手动「导出备份」：带独立备份口令的标准加密 JSON，按保留数量清理。
 - 桌面端接入：原生消息 host `com.localpass.desktop`、禁 SSO cookie、
   `data.json.bak` 滚动备份、从桶根 `account.json` 恢复。
-- 界面按 `ui-redo-d` 原型对齐弹窗、桌面端与网页内联菜单；8 类条目经 `lp:kind`
-  映射到原生存储类型。
-- 文档体系：`docs/README.md` 索引、`GLOSSARY.md`、`docs/adr/`、`docs/agents/`；
-  删除已过期的实现计划、进度核查、开发规则与上游参考文档。
+- 界面初版曾按 `ui-redo-d`（58 屏）对齐弹窗、桌面端与网页内联菜单；8 类条目经 `lp:kind`
+  映射到原生存储类型；新增全端紧凑联动原型 `design-system/agy/`（73 屏）作为后续演进规范。
+- 文档体系：`docs/README.md` 索引、`GLOSSARY.md`；
+  删除已过期的实现计划、进度核查、开发规则、上游参考、`docs/adr/`、`docs/agents/` 与重复原型。
 - 项目开源化：统一 `GPL-3.0` 许可证文件（`LICENSE`）、上游归属声明（`NOTICE`）、
   贡献指南、行为准则、issue / PR 模板、依赖更新配置；上游的 GitHub Actions 工作流
   移入 `.github/upstream-workflows/` 归档。

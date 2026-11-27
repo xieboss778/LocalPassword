@@ -4,6 +4,8 @@
 > 对比对象：LocalPass（仓库 `main`，Chrome/Edge 扩展 + 桌面端）｜1Password for Mac 8.12.46 + 1Password in the browser 8.12.46.29（本机已安装）
 > 关注面：效率提升、用户体验、产品细节、用户反馈打磨
 > 约束：只读分析，未修改任何产品代码，未登录或读取本机 1Password 保险库内容
+>
+> **后续进展（2026-11-28）**：本文第 18 行对比的 58 屏为 `ui-redo-d` 初版基线；后续已基于本报告输出新全端紧凑联动原型 [design-system/agy/](../design-system/agy/)（73 屏），覆盖 Quick Search (`⌘K`)、版本历史、归档、离线体检、8 类可增删字段表单与网页 14 态内联联动，实际落地状态见 [LocalPass-屏对照表.md](./LocalPass-屏对照表.md)。
 
 ---
 
