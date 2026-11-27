@@ -115,7 +115,10 @@ export async function sendExtensionMessage(
     typeof browser.runtime !== "undefined" &&
     typeof browser.runtime.sendMessage !== "undefined"
   ) {
-    return browser.runtime.sendMessage({ command, ...options });
+    // Chrome now exposes the promise-based `browser` namespace too. Its sendMessage rejects
+    // when the background has not started or no extension view is open, so settle to the same
+    // `null` the callback path returns instead of leaving an unhandled rejection.
+    return browser.runtime.sendMessage({ command, ...options }).catch((): null => null);
   }
 
   return new Promise((resolve) =>

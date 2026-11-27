@@ -61,6 +61,22 @@ describe("sendExtensionMessage", () => {
     const response = await extensionMessagePromise;
     expect(response).toEqual("sendMessageResponse");
   });
+
+  it("resolves null when the browser namespace rejects the message", async () => {
+    const sendMessage = jest
+      .fn()
+      .mockRejectedValue(
+        new Error("Could not establish connection. Receiving end does not exist."),
+      );
+    (global as any).browser = { runtime: { sendMessage } };
+
+    try {
+      await expect(sendExtensionMessage("some-extension-message")).resolves.toBeNull();
+      expect(sendMessage).toHaveBeenCalledWith({ command: "some-extension-message" });
+    } finally {
+      delete (global as any).browser;
+    }
+  });
 });
 
 describe("setElementStyles", () => {
