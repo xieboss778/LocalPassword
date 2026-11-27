@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-density="compact">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LocalPass · AGY 紧凑全端联动原型 (v4)</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="mark">LP</div>
+          <div>
+            <b>LocalPass</b>
+            <span>AGY 紧凑联动设计 · 待评审</span>
+          </div>
+        </div>
+        <div class="surfaces" role="tablist" aria-label="原型视图切换">
+          <button role="tab" data-surface="linkage" aria-selected="true">
+            <span class="pill-dot"></span>三端实时联动
+          </button>
+          <button role="tab" data-surface="mac" aria-selected="false">Mac 桌面端 (29)</button>
+          <button role="tab" data-surface="ext" aria-selected="false">浏览器扩展 (29)</button>
+          <button role="tab" data-surface="web" aria-selected="false">网页内联联动 (14)</button>
+        </div>
+        <div class="tools">
+          <button
+            class="tbtn"
+            id="densityBtn"
+            aria-pressed="false"
+            title="切换紧凑 36px / 极紧 30px"
+          >
+            极紧
+          </button>
+          <button class="tbtn" id="gridBtn" aria-pressed="false">4px 网格</button>
+          <button class="tbtn" id="themeBtn" aria-pressed="false">暗色</button>
+          <button class="tbtn" id="specBtn" aria-pressed="true">规格说明</button>
+        </div>
+      </header>
+
+      <div class="body">
+        <aside class="index" id="index" aria-label="屏幕列表"></aside>
+        <main class="stage" id="stage">
+          <div class="grid-overlay" id="grid"></div>
+          <div class="scaler" id="scaler"></div>
+        </main>
+        <aside class="notes" id="notes" aria-label="设计与尺寸说明"></aside>
+      </div>
+    </div>
+
+    <script src="./icons.js"></script>
+    <script src="./data.js"></script>
+    <script src="./render-mac.js"></script>
+    <script src="./render-ext.js"></script>
+    <script src="./render-web.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
