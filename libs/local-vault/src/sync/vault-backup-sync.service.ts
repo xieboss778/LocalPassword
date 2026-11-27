@@ -15,22 +15,19 @@ import { StateProvider } from "@localpass/state";
 import { LocalAccountService } from "../account/local-account.service";
 import { S3Client, S3PreconditionFailedError } from "../s3/s3-client";
 
-import { LocalAccountObject } from "./local-account-object";
+import { ACCOUNT_OBJECT, EXPORT_PREFIX, MANIFEST_OBJECT, SNAPSHOT_PREFIX } from "./backup-layout";
+import { LocalAccountObject, isLocalAccountObject } from "./local-account-object";
 import { MergeConflict, mergeSnapshots, Snapshot, VaultRecord } from "./snapshot-merge";
 import {
+  DEFAULT_BACKUP_SETTINGS,
   StoredVaultBackupConfig,
   VAULT_BACKUP_BASE_SNAPSHOT,
   VAULT_BACKUP_CONFIG,
+  VAULT_BACKUP_SETTINGS,
   VAULT_BACKUP_SYNC_STATE,
   VaultBackupConfig,
   VaultBackupSyncState,
 } from "./vault-backup-config";
-
-/** The object layout under `<bucket>/<prefix>/<userId>/`. */
-export const ACCOUNT_OBJECT = "account.json";
-export const MANIFEST_OBJECT = "manifest.json";
-export const SNAPSHOT_PREFIX = "snapshots/";
-export const BACKUP_PREFIX = "backups/";
 
 /** The state a vault starts with before its first sync. */
 const EMPTY_SYNC_STATE: VaultBackupSyncState = {
@@ -41,6 +38,14 @@ const EMPTY_SYNC_STATE: VaultBackupSyncState = {
 
 /** How many times a conditional manifest update is retried after losing a race. */
 const MAX_MANIFEST_RETRIES = 3;
+
+/** Raised when the bucket already holds a different vault and writing would clobber it. */
+export class RemoteVaultMismatchError extends Error {
+  constructor() {
+    super("This bucket already belongs to another vault.");
+    this.name = "RemoteVaultMismatchError";
+  }
+}
 
 export interface PushResult {
   readonly uploaded: boolean;
@@ -83,7 +88,6 @@ export class VaultBackupSyncService {
         endpoint: config.endpoint,
         region: config.region,
         bucket: config.bucket,
-        prefix: config.prefix,
         forcePathStyle: config.forcePathStyle,
         credentials: {
           accessKeyId: config.accessKeyId,
@@ -154,12 +158,10 @@ export class VaultBackupSyncService {
       userKey,
     );
     const stored: StoredVaultBackupConfig = {
-      provider: config.provider,
       endpoint: config.endpoint,
       region: config.region,
       bucket: config.bucket,
       accessKeyId: config.accessKeyId,
-      prefix: config.prefix,
       forcePathStyle: config.forcePathStyle,
       wrappedSecretAccessKey: wrappedSecretAccessKey.encryptedString ?? "",
     };
@@ -190,16 +192,7 @@ export class VaultBackupSyncService {
   /** An S3 client for the configured storage, or null when sync is not configured yet. */
   async clientFor(userId: UserId): Promise<S3Client | null> {
     const config = await this.getConfig(userId);
-    return config == null ? null : this.clientFactory(this.scopeToUser(config, userId));
-  }
-
-  /**
-   * Nests every object under the active user's id so two local vaults sharing one bucket
-   * cannot read or merge each other's snapshots.
-   */
-  private scopeToUser(config: VaultBackupConfig, userId: UserId): VaultBackupConfig {
-    const prefix = config.prefix?.replace(/^\/+|\/+$/g, "");
-    return { ...config, prefix: prefix ? `${prefix}/${userId}` : userId };
+    return config == null ? null : this.clientFactory(config);
   }
 
   /** Pulls the remote snapshot, merges it in, then pushes the merged result back. */
@@ -212,7 +205,10 @@ export class VaultBackupSyncService {
       };
     }
 
-    const client = this.clientFactory(this.scopeToUser(config, userId));
+    const client = this.clientFactory(config);
+    // The ownership check comes before the pull: a foreign bucket must never merge its
+    // snapshot into this vault, even though nothing would be written yet.
+    await this.ensureAccountObject(userId, client);
     const pulled = await this.pull(userId, client);
     const pushResult = await this.push(userId, client);
 
@@ -260,6 +256,10 @@ export class VaultBackupSyncService {
   /** Uploads a new snapshot and points the manifest at it. */
   async push(userId: UserId, client?: S3Client): Promise<PushResult> {
     const syncClient = client ?? (await this.requireClient(userId));
+    // `sync` has already run the ownership check before pulling; a direct push must run it here.
+    if (client == null) {
+      await this.ensureAccountObject(userId, syncClient);
+    }
 
     let snapshot = await this.buildSnapshot(userId);
     let manifestEtag = (await this.getSyncState(userId)).manifestEtag;
@@ -317,8 +317,7 @@ export class VaultBackupSyncService {
         pending: false,
       }));
 
-      // account.json is what a new device restores from; a failure here must not fail the push.
-      await this.uploadAccountObject(userId, syncClient);
+      await this.prune(userId, syncClient);
 
       return { uploaded: true, snapshotId };
     }
@@ -327,17 +326,96 @@ export class VaultBackupSyncService {
     return { uploaded: false, snapshotId: null };
   }
 
-  private async uploadAccountObject(userId: UserId, client: S3Client): Promise<void> {
+  /**
+   * Writes the object another device restores from. Runs before anything else is written, so a
+   * bucket that cannot hold an account file never receives a snapshot or an export.
+   */
+  async ensureAccountObject(userId: UserId, client?: S3Client): Promise<void> {
+    const syncClient = client ?? (await this.requireClient(userId));
+
+    const account = await this.readLocalAccountObject(userId);
+    if (account == null) {
+      throw new Error("Cannot write account.json: the vault is not unlocked.");
+    }
+
+    const existing = await syncClient.getText(ACCOUNT_OBJECT);
+    if (existing != null) {
+      if (this.userIdOf(existing.text) !== userId) {
+        throw new RemoteVaultMismatchError();
+      }
+    } else if ((await syncClient.getText(MANIFEST_OBJECT)) != null) {
+      // Objects without an account file are an inconsistent or foreign bucket; never adopt it.
+      throw new RemoteVaultMismatchError();
+    }
+
+    await syncClient.putObject(ACCOUNT_OBJECT, JSON.stringify(account), {
+      contentType: "application/json",
+    });
+  }
+
+  private userIdOf(accountObject: string): UserId | null {
     try {
-      const account = await this.readLocalAccountObject(userId);
-      if (account == null) {
+      const parsed: unknown = JSON.parse(accountObject);
+      return isLocalAccountObject(parsed) ? parsed.userId : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Deletes the oldest snapshots and exports beyond the retention count. Best-effort: a failed
+   * cleanup must never turn a successful upload into a failed one, and the snapshot the manifest
+   * points at is never deleted.
+   */
+  async prune(userId: UserId, client?: S3Client): Promise<void> {
+    try {
+      const syncClient = client ?? (await this.requireClient(userId));
+      const retention = await this.retention(userId);
+      const manifest = await syncClient.getText(MANIFEST_OBJECT);
+      const keep = manifest == null ? null : this.snapshotKeyOf(manifest.text);
+      await this.prunePrefix(syncClient, SNAPSHOT_PREFIX, retention, keep);
+      await this.prunePrefix(syncClient, EXPORT_PREFIX, retention, null);
+    } catch (error) {
+      this.logService.error("Failed to prune remote vault history", error);
+    }
+  }
+
+  private async retention(userId: UserId): Promise<number> {
+    const settings = await firstValueFrom(this.settingsState(userId).state$);
+    return settings?.backupRetention ?? DEFAULT_BACKUP_SETTINGS.backupRetention;
+  }
+
+  private snapshotKeyOf(manifest: string): string | null {
+    try {
+      const parsed = JSON.parse(manifest) as Manifest;
+      return parsed.snapshot ? `${SNAPSHOT_PREFIX}${parsed.snapshot}.json` : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private async prunePrefix(
+    client: S3Client,
+    prefix: string,
+    retention: number,
+    keep: string | null,
+  ): Promise<void> {
+    const keys = (await client.listObjects(prefix)).map((object) => object.key).sort();
+    const excess = keys.length - retention;
+    if (excess <= 0) {
+      return;
+    }
+
+    let deleted = 0;
+    for (const key of keys) {
+      if (deleted >= excess) {
         return;
       }
-      await client.putObject(ACCOUNT_OBJECT, JSON.stringify(account), {
-        contentType: "application/json",
-      });
-    } catch (error) {
-      this.logService.error("Failed to upload account.json", error);
+      if (key === keep) {
+        continue;
+      }
+      await client.deleteObject(key);
+      deleted++;
     }
   }
 
@@ -392,7 +470,7 @@ export class VaultBackupSyncService {
     if (config == null) {
       throw new Error("Cloud sync is not configured for this vault.");
     }
-    return this.clientFactory(this.scopeToUser(config, userId));
+    return this.clientFactory(config);
   }
 
   private ciphersState(userId: UserId) {
@@ -413,6 +491,10 @@ export class VaultBackupSyncService {
 
   private baseSnapshotState(userId: UserId) {
     return this.stateProvider.getUser(userId, VAULT_BACKUP_BASE_SNAPSHOT);
+  }
+
+  private settingsState(userId: UserId) {
+    return this.stateProvider.getUser(userId, VAULT_BACKUP_SETTINGS);
   }
 }
 

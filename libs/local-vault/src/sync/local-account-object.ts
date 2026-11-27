@@ -13,7 +13,12 @@ import { encryptedStringOf } from "../account/encrypted-string";
  * snapshots and is as sensitive as the vault itself — the whole file is encrypted material.
  */
 export interface LocalAccountObject {
-  readonly version: 1;
+  readonly version: 2;
+  /**
+   * The account id both devices share. The bucket is the vault boundary, so this field is the
+   * only identity a restoring device can adopt.
+   */
+  readonly userId: UserId;
   readonly email: string;
   readonly updatedAt: string;
   readonly unlock: {
@@ -24,6 +29,49 @@ export interface LocalAccountObject {
   };
   /** V1 account: the RSA private key, wrapped with the user key. */
   readonly wrappedPrivateKey: string;
+}
+
+/**
+ * Recognizes the restore anchor. A bucket's `account.json` is adopted only when it carries every
+ * field a new device needs, so a truncated or foreign file fails loudly instead of restoring half
+ * an identity.
+ */
+export function isLocalAccountObject(value: unknown): value is LocalAccountObject {
+  if (typeof value !== "object" || value == null) {
+    return false;
+  }
+  if (!("version" in value) || value.version !== 2) {
+    return false;
+  }
+  if (!("userId" in value) || !isNonEmptyString(value.userId)) {
+    return false;
+  }
+  if (!("email" in value) || !isNonEmptyString(value.email)) {
+    return false;
+  }
+  if (!("wrappedPrivateKey" in value) || !isNonEmptyString(value.wrappedPrivateKey)) {
+    return false;
+  }
+  if (!("unlock" in value) || typeof value.unlock !== "object" || value.unlock == null) {
+    return false;
+  }
+
+  const unlock = value.unlock;
+  return (
+    "salt" in unlock &&
+    isNonEmptyString(unlock.salt) &&
+    "masterKeyWrappedUserKey" in unlock &&
+    isNonEmptyString(unlock.masterKeyWrappedUserKey) &&
+    "kdf" in unlock &&
+    typeof unlock.kdf === "object" &&
+    unlock.kdf != null &&
+    "kdfType" in unlock.kdf &&
+    typeof unlock.kdf.kdfType === "number"
+  );
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0;
 }
 
 /** Builds `account.json` from the state a logged-in local account already holds. */
@@ -58,7 +106,8 @@ export class LocalAccountObjectReader {
     }
 
     return {
-      version: 1,
+      version: 2,
+      userId,
       email,
       updatedAt: this.clock().toISOString(),
       unlock: {

@@ -1,110 +1,42 @@
-import { mock } from "jest-mock-extended";
-import { of } from "rxjs";
+import { mock, MockProxy } from "jest-mock-extended";
+import { firstValueFrom, of } from "rxjs";
 
-import { devFlagEnabled, flagEnabled } from "@localpass/common/platform/misc/flags";
 import { GlobalState, StateProvider } from "@localpass/common/platform/state";
-
-import { BrowserApi } from "../browser/browser-api";
-import { ExtensionInstallType } from "../browser/extension-install-type";
 
 import BrowserInitialInstallService from "./browser-initial-install.service";
 
-jest.mock("@localpass/common/platform/misc/flags", () => ({
-  ...jest.requireActual("@localpass/common/platform/misc/flags"),
-  devFlagEnabled: jest.fn(),
-  flagEnabled: jest.fn(),
-}));
+function createService(stored: boolean | null): {
+  service: BrowserInitialInstallService;
+  globalState: MockProxy<GlobalState<boolean>>;
+} {
+  const stateProvider = mock<StateProvider>();
+  const globalState = mock<GlobalState<boolean>>();
+  Object.defineProperty(globalState, "state$", { value: of(stored) });
+  stateProvider.getGlobal.mockReturnValue(globalState);
+
+  return { service: new BrowserInitialInstallService(stateProvider), globalState };
+}
 
 describe("BrowserInitialInstallService", () => {
-  let service: BrowserInitialInstallService;
-  let getInstallTypeSpy: jest.SpyInstance;
-  let createNewTabSpy: jest.SpyInstance;
-  const devFlagEnabledMock = devFlagEnabled as jest.Mock;
-  const flagEnabledMock = flagEnabled as jest.Mock;
+  it("reports false while no install has been recorded", async () => {
+    const { service } = createService(null);
 
-  beforeEach(() => {
-    const stateProvider = mock<StateProvider>();
-    const globalState = mock<GlobalState<boolean>>();
-    Object.defineProperty(globalState, "state$", { value: of(false) });
-    stateProvider.getGlobal.mockReturnValue(globalState);
-
-    getInstallTypeSpy = jest.spyOn(BrowserApi, "getInstallType");
-    createNewTabSpy = jest.spyOn(BrowserApi, "createNewTab").mockResolvedValue({} as any);
-    devFlagEnabledMock.mockReturnValue(false);
-    flagEnabledMock.mockReturnValue(false);
-
-    service = new BrowserInitialInstallService(stateProvider);
+    await expect(firstValueFrom(service.extensionInstalled$)).resolves.toBe(false);
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+  it("reports a recorded install", async () => {
+    const { service } = createService(true);
+
+    await expect(firstValueFrom(service.extensionInstalled$)).resolves.toBe(true);
   });
 
-  describe("displayWelcomePage", () => {
-    it.each([
-      ["Normal", ExtensionInstallType.Normal],
-      ["Development", ExtensionInstallType.Development],
-      ["Unknown", ExtensionInstallType.Unknown],
-    ])("opens the welcome page for %s installs", async (_, installType) => {
-      getInstallTypeSpy.mockResolvedValue(installType);
+  it("records a completed install", async () => {
+    const { service, globalState } = createService(null);
 
-      await service.displayWelcomePage();
+    await service.setExtensionInstalled(true);
 
-      expect(createNewTabSpy).toHaveBeenCalledTimes(1);
-      expect(createNewTabSpy).toHaveBeenCalledWith("https://local.invalid/browser-start/");
-    });
-
-    it.each([
-      ["Admin", ExtensionInstallType.Admin],
-      ["Sideload", ExtensionInstallType.Sideload],
-      ["Other", ExtensionInstallType.Other],
-    ])("does not open the welcome page for %s installs", async (_, installType) => {
-      getInstallTypeSpy.mockResolvedValue(installType);
-
-      await service.displayWelcomePage();
-
-      expect(createNewTabSpy).not.toHaveBeenCalled();
-    });
-
-    it.each([
-      ["Normal", ExtensionInstallType.Normal],
-      ["Development", ExtensionInstallType.Development],
-      ["Unknown", ExtensionInstallType.Unknown],
-    ])(
-      "does not open the welcome page for %s installs when the skipWelcomeOnInstall dev flag is on",
-      async (_, installType) => {
-        getInstallTypeSpy.mockResolvedValue(installType);
-        devFlagEnabledMock.mockImplementation((flag) => flag === "skipWelcomeOnInstall");
-
-        await service.displayWelcomePage();
-
-        expect(createNewTabSpy).not.toHaveBeenCalled();
-      },
-    );
-
-    it("checks the skipWelcomeOnInstall dev flag", async () => {
-      getInstallTypeSpy.mockResolvedValue(ExtensionInstallType.Normal);
-
-      await service.displayWelcomePage();
-
-      expect(devFlagEnabledMock).toHaveBeenCalledWith("skipWelcomeOnInstall");
-    });
-
-    it.each([
-      ["Normal", ExtensionInstallType.Normal],
-      ["Development", ExtensionInstallType.Development],
-      ["Unknown", ExtensionInstallType.Unknown],
-    ])(
-      "does not open the welcome page for %s installs when the prereleaseBuild flag is on",
-      async (_, installType) => {
-        getInstallTypeSpy.mockResolvedValue(installType);
-        flagEnabledMock.mockImplementation((flag) => flag === "prereleaseBuild");
-
-        await service.displayWelcomePage();
-
-        expect(createNewTabSpy).not.toHaveBeenCalled();
-      },
-    );
+    expect(globalState.update).toHaveBeenCalledTimes(1);
+    const updater = globalState.update.mock.calls[0][0];
+    expect(updater(false)).toBe(true);
   });
 });

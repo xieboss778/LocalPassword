@@ -2043,7 +2043,7 @@
     "message": "Follow us"
   },
   "syncNow": {
-    "message": "Sync now"
+    "message": "Sync"
   },
   "changeMasterPassword": {
     "message": "Change master password"
@@ -8038,14 +8038,17 @@
   "backupSecretKey": {
     "message": "Secret Key"
   },
-  "backupPrefix": {
-    "message": "Prefix"
-  },
-  "backupTest": {
+    "backupTest": {
     "message": "Test connection"
   },
   "backupNow": {
-    "message": "Back up now"
+    "message": "Export backup"
+  },
+  "backupActionHint": {
+    "message": "Sync exchanges snapshots with this bucket. Export backup writes a portable, password-protected JSON."
+  },
+  "backupBucketInUse": {
+    "message": "This bucket already belongs to another vault. Use a different bucket."
   },
   "disconnectBackup": {
     "message": "Disconnect"
@@ -8067,6 +8070,9 @@
   },
   "backupSaved": {
     "message": "Storage settings saved"
+  },
+  "backupUnsavedChanges": {
+    "message": "Unsaved changes. Save to make this configuration active."
   },
   "backupTestOk": {
     "message": "Connected successfully"
@@ -8141,13 +8147,13 @@
     "message": "Show QR code"
   },
   "restoreVaultFromCloud": {
-    "message": "Restore from cloud backup"
+    "message": "Restore from cloud storage"
   },
   "restoreVaultDescription": {
     "message": "Enter the storage settings and the master password of the vault you want to bring back. The account file in storage proves the password and unwraps the key; the snapshot then fills the vault."
   },
   "restoreNoAccountFile": {
-    "message": "There is no account.json in that bucket. Check the settings and the key prefix."
+    "message": "There is no readable account.json in that bucket. Check the endpoint, bucket and keys."
   },
   "restoreFinished": {
     "message": "Vault restored"

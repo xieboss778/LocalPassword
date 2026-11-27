@@ -27,8 +27,10 @@ const UNLOCK_SHARING_DISABLED = new UserKeyDefinition<boolean>(
   },
 );
 
-// Default off because of native messaging permission
-const DEFAULT_ALLOW_SHARING_UNLOCK_STATE_WITH_DESKTOP = false;
+// LocalPass ships the extension and the desktop app together, so sharing unlock state with the
+// desktop is the point of the feature. The nativeMessaging permission still gates the actual IPC
+// connection: without it the setting stays inert until the user grants the permission.
+const DEFAULT_ALLOW_SHARING_UNLOCK_STATE_WITH_DESKTOP = true;
 const DEFAULT_UNLOCK_SHARING_DISABLED = false;
 
 export class DefaultSharedUnlockSettingsService extends SharedUnlockSettingsService {

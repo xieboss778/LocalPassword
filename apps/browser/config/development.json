@@ -1,5 +1,3 @@
 {
-  "devFlags": {
-    "skipWelcomeOnInstall": true
-  }
+  "devFlags": {}
 }

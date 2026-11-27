@@ -109,6 +109,18 @@ import {
               />
             }
 
+            @if (group.key === "uri" && !showUri2()) {
+              <button
+                type="button"
+                id="item-form_button_add_website"
+                class="tw-flex tw-w-full tw-items-center tw-gap-2 tw-px-4 tw-py-3 tw-text-start tw-text-sm tw-font-medium tw-text-fg-brand hover:tw-bg-bg-brand-softer"
+                (click)="uri2Visible.set(true)"
+              >
+                <bit-icon name="bwi-plus" class="tw-text-base"></bit-icon>
+                {{ i18n.t("addWebsite") }}
+              </button>
+            }
+
             @if (group.key === "item") {
               <lp-field
                 [label]="i18n.t('folder')"
@@ -204,6 +216,11 @@ export class ItemFormV2Component implements OnInit {
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly values = signal<FieldValues>({});
   protected readonly kind = signal<ItemKind>(ItemKind.Login);
+  /** 默认只编辑一个网址；点「添加网站」或条目本来就有第二个网址时才展开第二行。 */
+  protected readonly uri2Visible = signal(false);
+  protected readonly showUri2 = computed(
+    () => this.uri2Visible() || (this.values()["uri2"] ?? "") !== "",
+  );
   protected readonly folderId = signal("");
   protected readonly favorite = signal(false);
   protected readonly reprompt = signal(false);
@@ -211,7 +228,17 @@ export class ItemFormV2Component implements OnInit {
   protected readonly customFields = signal<readonly CustomFieldDraft[]>([]);
   protected readonly passkeys = signal<readonly Fido2CredentialView[]>([]);
 
-  protected readonly groups = computed(() => fieldGroups(this.kind()));
+  protected readonly groups = computed(() => {
+    const groups = fieldGroups(this.kind());
+    if (this.showUri2()) {
+      return groups;
+    }
+    return groups.map((group) =>
+      group.key === "uri"
+        ? { ...group, fields: group.fields.filter((field) => field.id !== "uri2") }
+        : group,
+    );
+  });
   protected readonly heading = computed(() =>
     this.i18n.t(this.isEditing() ? "editItem" : "newItem"),
   );
@@ -293,6 +320,10 @@ export class ItemFormV2Component implements OnInit {
   }
 
   protected setValue(id: string, value: string): void {
+    if (id === "uri2") {
+      // 清空时也保持这一行可见，否则光标会在输入过程中随字段一起消失。
+      this.uri2Visible.set(true);
+    }
     this.values.update((current) => ({ ...current, [id]: value }));
   }
 

@@ -19,8 +19,10 @@ import { PlatformUtilsService } from "@localpass/common/platform/abstractions/pl
 import { ButtonModule, CalloutModule, DialogService, IconModule } from "@localpass/components";
 import {
   MergeConflict,
+  RemoteVaultMismatchError,
   S3Client,
   SNAPSHOT_PREFIX,
+  VaultBackupConfig,
   VaultBackupService,
   VaultBackupSyncService,
 } from "@localpass/local-vault";
@@ -40,7 +42,7 @@ interface SnapshotRow {
   readonly latest: boolean;
 }
 
-type ConfigKey = "endpoint" | "bucket" | "accessKeyId" | "secretAccessKey" | "prefix";
+type ConfigKey = "endpoint" | "bucket" | "accessKeyId" | "secretAccessKey";
 
 interface ConfigField {
   readonly key: ConfigKey;
@@ -149,10 +151,14 @@ interface ConfigField {
               <bit-callout type="info" [title]="null">{{
                 i18n.t("backupCredentialNote")
               }}</bit-callout>
-              @if (configured()) {
+              @if (configured() && !dirty()) {
                 <button type="button" bitButton buttonType="dangerGhost" (click)="disconnect()">
                   {{ i18n.t("disconnectBackup") }}
                 </button>
+              } @else if (dirty()) {
+                <p class="tw-m-0 tw-text-xs tw-text-muted">
+                  {{ i18n.t("backupUnsavedChanges") }}
+                </p>
               }
               @if (errorMessage()) {
                 <p class="tw-m-0 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
@@ -196,7 +202,7 @@ interface ConfigField {
               <div class="tw-pt-3">
                 <ng-container [ngTemplateOutlet]="configForm"></ng-container>
               </div>
-              @if (configured()) {
+              @if (configured() && !dirty()) {
                 <button
                   type="button"
                   bitButton
@@ -206,6 +212,10 @@ interface ConfigField {
                 >
                   {{ i18n.t("disconnectBackup") }}
                 </button>
+              } @else if (dirty()) {
+                <p class="tw-mb-0 tw-mt-4 tw-text-xs tw-text-muted">
+                  {{ i18n.t("backupUnsavedChanges") }}
+                </p>
               }
               @if (errorMessage()) {
                 <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
@@ -317,6 +327,9 @@ interface ConfigField {
               {{ i18n.t("backupNow") }}
             </button>
           </div>
+          <p class="tw-m-0 tw-pt-1 tw-text-xs tw-text-muted">
+            {{ i18n.t("backupActionHint") }}
+          </p>
 
           @if (phase() === "conflict") {
             <div
@@ -414,7 +427,6 @@ export class BackupSettingsV2Component implements OnInit {
     { key: "bucket", labelKey: "backupBucket", mono: true, password: false },
     { key: "accessKeyId", labelKey: "backupAccessKey", mono: true, password: false },
     { key: "secretAccessKey", labelKey: "backupSecretKey", mono: false, password: true },
-    { key: "prefix", labelKey: "backupPrefix", mono: true, password: false },
   ];
 
   protected readonly form = this.formBuilder.group({
@@ -423,7 +435,30 @@ export class BackupSettingsV2Component implements OnInit {
     bucket: ["", [Validators.required]],
     accessKeyId: ["", [Validators.required]],
     secretAccessKey: ["", [Validators.required]],
-    prefix: ["localpass"],
+  });
+
+  /** The config as it is stored; the form in front of the user can differ until it is saved. */
+  private readonly savedConfig = signal<VaultBackupConfig | null>(null);
+  private readonly formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
+  /**
+   * 测试连接只证明表单里的草稿可用，不会保存；未保存前生效的仍是已存储的配置。
+   * 此时不显示「断开连接」，而是提示保存，避免「连接成功」和「断开连接」同时出现。
+   */
+  protected readonly dirty = computed(() => {
+    const saved = this.savedConfig();
+    if (saved == null) {
+      return false;
+    }
+    const value = this.formValue();
+    return (
+      (value.endpoint ?? "") !== saved.endpoint ||
+      (value.region ?? "auto") !== saved.region ||
+      (value.bucket ?? "") !== saved.bucket ||
+      (value.accessKeyId ?? "") !== saved.accessKeyId ||
+      (value.secretAccessKey ?? "") !== saved.secretAccessKey
+    );
   });
 
   protected readonly status = signal<BackupStatus>({ lastSyncedAt: null, lastBackupAt: null });
@@ -439,6 +474,7 @@ export class BackupSettingsV2Component implements OnInit {
     const config = await this.syncService.getConfig(userId);
     if (config) {
       this.form.patchValue(config);
+      this.savedConfig.set(config);
       this.configured.set(true);
     }
     await this.reload();
@@ -490,18 +526,18 @@ export class BackupSettingsV2Component implements OnInit {
 
     const userId = await this.userId();
     const value = this.form.getRawValue();
-    await this.syncService.configure(userId, {
-      provider: "r2",
+    const config: VaultBackupConfig = {
       endpoint: value.endpoint ?? "",
       region: value.region ?? "auto",
       bucket: value.bucket ?? "",
       accessKeyId: value.accessKeyId ?? "",
       secretAccessKey: value.secretAccessKey ?? "",
-      prefix: value.prefix ?? "",
       forcePathStyle: false,
-    });
+    };
+    await this.syncService.configure(userId, config);
 
     this.errorMessage.set(null);
+    this.savedConfig.set(config);
     this.configured.set(true);
     this.platformUtilsService.showToast("success", "", this.i18n.t("backupSaved"));
     await this.reload();
@@ -516,7 +552,6 @@ export class BackupSettingsV2Component implements OnInit {
         endpoint: value.endpoint ?? "",
         region: value.region ?? "auto",
         bucket: value.bucket ?? "",
-        prefix: value.prefix ?? "",
         forcePathStyle: false,
         credentials: {
           accessKeyId: value.accessKeyId ?? "",
@@ -545,10 +580,14 @@ export class BackupSettingsV2Component implements OnInit {
         this.i18n.t(result.uploaded ? "backupUploaded" : "backupFailed"),
       );
       await this.reload();
-    } catch {
-      // 端点不可达或凭证无效都走同一条回执；不要抛到 Angular 事件循环里。
-      this.errorMessage.set(this.i18n.t("backupFailed"));
-      this.platformUtilsService.showToast("error", "", this.i18n.t("backupFailed"));
+    } catch (error) {
+      // 端点不可达、凭证无效、桶属于另一座库都走同一条回执；不要抛到 Angular 事件循环里。
+      const message =
+        error instanceof RemoteVaultMismatchError
+          ? this.i18n.t("backupBucketInUse")
+          : this.i18n.t("backupFailed");
+      this.errorMessage.set(message);
+      this.platformUtilsService.showToast("error", "", message);
     } finally {
       this.busy.set(false);
     }
@@ -570,8 +609,12 @@ export class BackupSettingsV2Component implements OnInit {
       } else {
         this.phase.set("idle");
       }
-    } catch {
-      this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+    } catch (error) {
+      this.errorMessage.set(
+        error instanceof RemoteVaultMismatchError
+          ? this.i18n.t("backupBucketInUse")
+          : this.i18n.t("backupSyncFailed"),
+      );
       this.phase.set("error");
     } finally {
       this.busy.set(false);
@@ -603,7 +646,8 @@ export class BackupSettingsV2Component implements OnInit {
 
     const userId = await this.userId();
     await this.syncService.disconnect(userId);
-    this.form.reset({ region: "auto", prefix: "localpass" });
+    this.form.reset({ region: "auto" });
+    this.savedConfig.set(null);
     this.status.set({ lastSyncedAt: null, lastBackupAt: null });
     this.snapshots.set([]);
     this.configured.set(false);

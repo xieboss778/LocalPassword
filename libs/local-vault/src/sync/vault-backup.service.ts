@@ -7,12 +7,13 @@ import { EncString, EncryptService } from "@localpass/legacy-crypto";
 import { LogService } from "@localpass/logging";
 import { StateProvider } from "@localpass/state";
 
+import { exportKey } from "./backup-layout";
 import {
   DEFAULT_BACKUP_SETTINGS,
   VAULT_BACKUP_SETTINGS,
   VaultBackupSettings,
 } from "./vault-backup-config";
-import { BACKUP_PREFIX, VaultBackupSyncService } from "./vault-backup-sync.service";
+import { VaultBackupSyncService } from "./vault-backup-sync.service";
 
 export interface BackupResult {
   readonly uploaded: boolean;
@@ -22,7 +23,7 @@ export interface BackupResult {
 const BACKUP_PASSWORD_BYTES = 24;
 
 /**
- * Writes a standard, password-protected LocalPass export into storage on a schedule.
+ * Writes a standard, password-protected LocalPass export into storage on demand.
  *
  * The export is the same JSON every LocalPass client can import, which is what makes it a usable
  * disaster recovery path even if this project disappears.
@@ -85,73 +86,32 @@ export class VaultBackupService {
     return password;
   }
 
-  /** Exports the vault and uploads it under `backups/<year-month>/<timestamp>.json`. */
+  /** Exports the vault and uploads it under `exports/<year-month-day>/<timestamp>.json`. */
   async backupNow(userId: UserId): Promise<BackupResult> {
     const client = await this.syncService.clientFor(userId);
     if (client == null) {
       return { uploaded: false, key: null };
     }
 
+    // The account object is what a new device restores from, so it must exist before the
+    // export does — otherwise the bucket is unreachable even though the upload "succeeded".
+    await this.syncService.ensureAccountObject(userId, client);
+
     const password = await this.ensurePassword(userId);
     const exported = await this.exportVault(userId, password);
-    const key = this.backupKey();
+    const key = exportKey(this.clock());
 
     await client.putObject(key, exported, { contentType: "application/json" });
+    await this.syncService.prune(userId, client);
     await this.setSettings(userId, { lastBackupAt: this.clock().toISOString() });
     this.logService.info("Uploaded vault backup", { key });
 
     return { uploaded: true, key };
   }
 
-  /** Keys of the backups in storage, oldest first. */
-  async listBackups(userId: UserId): Promise<string[]> {
-    const client = await this.syncService.clientFor(userId);
-    if (client == null) {
-      return [];
-    }
-
-    const objects = await client.listObjects(BACKUP_PREFIX);
-    return objects.map((object) => object.key).sort();
-  }
-
-  /** Deletes everything beyond the retention count; returns how many objects were removed. */
-  async pruneBackups(userId: UserId): Promise<number> {
-    const client = await this.syncService.clientFor(userId);
-    if (client == null) {
-      return 0;
-    }
-
-    const { backupRetention } = await this.getSettings(userId);
-    const keys = await this.listBackups(userId);
-    const excess = keys.slice(0, Math.max(0, keys.length - backupRetention));
-
-    for (const key of excess) {
-      // `listObjects` returns fully qualified keys; strip the shared prefix to address the object.
-      await client.deleteObject(key.replace(new RegExp(`^${escapeRegExp(prefixOf(client))}/`), ""));
-    }
-
-    return excess.length;
-  }
-
-  private backupKey(): string {
-    const now = this.clock();
-    const month = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
-    const stamp = now.toISOString().replace(/[:.]/g, "-");
-    return `${BACKUP_PREFIX}${month}/${stamp}.json`;
-  }
-
   private settingsState(userId: UserId) {
     return this.stateProvider.getUser(userId, VAULT_BACKUP_SETTINGS);
   }
-}
-
-function prefixOf(client: { keyFor(path: string): string }): string {
-  const probe = client.keyFor("probe");
-  return probe.replace(/\/?probe$/, "");
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /** A URL-safe random password a user can retype on another device. */

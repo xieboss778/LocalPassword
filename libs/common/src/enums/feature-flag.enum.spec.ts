@@ -13,6 +13,10 @@ describe("getFeatureFlagValue", () => {
     expect(result).toBe(testFlagDefaultValue);
   });
 
+  it("enables shared unlock by default for LocalPass", () => {
+    expect(getFeatureFlagValue(null, FeatureFlag.SharedUnlockPart2)).toBe(true);
+  });
+
   it("returns default flag value when serverConfig.featureStates is undefined", () => {
     const serverConfig = {} as ServerConfig;
     const result = getFeatureFlagValue(serverConfig, testFlag);

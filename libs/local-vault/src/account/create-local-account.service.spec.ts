@@ -3,6 +3,7 @@ import { of } from "rxjs";
 import { UserDecryptionOptions } from "@localpass/auth/common";
 import { VaultTimeoutAction } from "@localpass/common/key-management/vault-timeout";
 import { Utils } from "@localpass/common/platform/misc/utils";
+import { UserId } from "@localpass/common/types/guid";
 // eslint-disable-next-line no-restricted-imports
 import { DEFAULT_KDF_CONFIG } from "@localpass/legacy-crypto";
 
@@ -271,6 +272,26 @@ describe("CreateLocalAccountService", () => {
 
       await expect(service.restoreAccount(restoreRequest)).rejects.toThrow("wrong password");
       expect(mocks.addAccount).not.toHaveBeenCalled();
+    });
+
+    it("reuses the user id from the backup so both devices share one identity", async () => {
+      const { service, mocks } = createService();
+      const userId = "5b0f6c1e-2d3a-4f5b-8c7d-9e0a1b2c3d4e" as UserId;
+
+      await expect(service.restoreAccount({ ...restoreRequest, userId })).resolves.toBe(userId);
+      expect(mocks.addAccount).toHaveBeenCalledWith(
+        userId,
+        expect.objectContaining({ email: "owner@example.com" }),
+      );
+    });
+
+    it("generates a user id for a backup written before ids were recorded", async () => {
+      const { service, mocks } = createService();
+
+      const userId = await service.restoreAccount(restoreRequest);
+
+      expect(userId).toEqual(expect.any(String));
+      expect(mocks.addAccount).toHaveBeenCalledWith(userId, expect.anything());
     });
   });
 });

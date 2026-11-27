@@ -44,7 +44,7 @@ export function newCustomFieldDraft(name = "", value = "", hidden = false): Cust
               (input)="rename(field.id, $event)"
             />
             <select
-              class="tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-p-2 tw-text-sm tw-text-main tw-outline-none focus:tw-border-border-focus"
+              class="tw-w-32 tw-flex-none tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-p-2 tw-text-sm tw-text-main tw-outline-none focus:tw-border-border-focus"
               [id]="'custom-field_select_type_' + field.id"
               [value]="field.hidden ? 'hidden' : 'text'"
               [attr.aria-label]="i18n.t('fieldType')"

@@ -11,6 +11,7 @@ export * from "./network/gate-policy";
 export * from "./network/local-password-api.service";
 export * from "./s3/s3-client";
 export * from "./s3/sigv4";
+export * from "./sync/backup-layout";
 export * from "./sync/local-account-object";
 export * from "./sync/snapshot-merge";
 export * from "./sync/vault-backup-config";

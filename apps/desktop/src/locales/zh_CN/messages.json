@@ -2043,7 +2043,7 @@
     "message": "关注我们"
   },
   "syncNow": {
-    "message": "立即同步"
+    "message": "同步"
   },
   "changeMasterPass": {
     "message": "更改主密码"
@@ -8011,14 +8011,17 @@
   "backupSecretKey": {
     "message": "Secret Key"
   },
-  "backupPrefix": {
-    "message": "前缀"
-  },
-  "backupTest": {
+    "backupTest": {
     "message": "测试连接"
   },
   "backupNow": {
-    "message": "立即备份"
+    "message": "导出备份"
+  },
+  "backupActionHint": {
+    "message": "同步与桶交换快照；导出备份写一份带独立口令、可导入的标准 JSON。"
+  },
+  "backupBucketInUse": {
+    "message": "这个桶已经属于另一座保险库，请换一个桶。"
   },
   "disconnectBackup": {
     "message": "断开连接"
@@ -8040,6 +8043,9 @@
   },
   "backupSaved": {
     "message": "存储配置已保存"
+  },
+  "backupUnsavedChanges": {
+    "message": "有未保存的修改，保存后生效。"
   },
   "backupTestOk": {
     "message": "连接成功"
@@ -8114,13 +8120,13 @@
     "message": "显示二维码"
   },
   "restoreVaultFromCloud": {
-    "message": "从云备份恢复"
+    "message": "从云存储恢复"
   },
   "restoreVaultDescription": {
     "message": "填入存储配置和那份保险库的主密码。存储里的 account.json 用来验证口令并还原密钥，随后快照会把内容填回来。"
   },
   "restoreNoAccountFile": {
-    "message": "这个桶里没有 account.json，请检查配置和键前缀。"
+    "message": "这个桶里没有可读取的 account.json，请检查端点、桶和密钥。"
   },
   "restoreFinished": {
     "message": "保险库已恢复"

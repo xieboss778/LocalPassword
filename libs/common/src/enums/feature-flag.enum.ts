@@ -187,7 +187,8 @@ export const DefaultFeatureFlagValue = {
 
   /* Key Management */
   [FeatureFlag.PrivateKeyRegeneration]: FALSE,
-  [FeatureFlag.SharedUnlockPart2]: FALSE,
+  // LocalPass 没有服务器下发开关：扩展 ↔ 桌面的共享解锁默认开启。
+  [FeatureFlag.SharedUnlockPart2]: true,
   [FeatureFlag.ForceUpgradeV2Encryption]: FALSE,
   [FeatureFlag.EnableAccountEncryptionV2KeyConnectorRegistration]: FALSE,
   [FeatureFlag.BiometricsSDKIPC]: FALSE,

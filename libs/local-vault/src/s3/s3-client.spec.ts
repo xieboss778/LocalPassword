@@ -5,7 +5,6 @@ const config = {
   region: "auto",
   bucket: "vault",
   credentials: { accessKeyId: "AKIA", secretAccessKey: "secret" },
-  prefix: "localpass",
 };
 
 function clientWith(response: Response | ((request: Request) => Response)) {
@@ -28,7 +27,7 @@ describe("S3Client", () => {
     await client.putObject("user-a/manifest.json", "{}");
 
     expect(requests[0].url).toBe(
-      "https://vault.acct123.r2.cloudflarestorage.com/localpass/user-a/manifest.json",
+      "https://vault.acct123.r2.cloudflarestorage.com/user-a/manifest.json",
     );
     expect(requests[0].method).toBe("PUT");
   });
@@ -36,13 +35,10 @@ describe("S3Client", () => {
   it("uses path-style addressing when asked to", async () => {
     const { client, requests } = (() => {
       const requests: Request[] = [];
-      const pathStyleClient = new S3Client(
-        { ...config, prefix: undefined, forcePathStyle: true },
-        async (request) => {
-          requests.push(request);
-          return new Response("", { status: 200 });
-        },
-      );
+      const pathStyleClient = new S3Client({ ...config, forcePathStyle: true }, async (request) => {
+        requests.push(request);
+        return new Response("", { status: 200 });
+      });
       return { client: pathStyleClient, requests };
     })();
 
@@ -97,10 +93,10 @@ describe("S3Client", () => {
   it("walks every page of list-objects-v2", async () => {
     const pages = [
       "<ListBucketResult><IsTruncated>true</IsTruncated><Contents>" +
-        '<Key>localpass/user-a/a.json</Key><ETag>"e1"</ETag><Size>3</Size>' +
+        '<Key>user-a/a.json</Key><ETag>"e1"</ETag><Size>3</Size>' +
         "</Contents><NextContinuationToken>next</NextContinuationToken></ListBucketResult>",
       "<ListBucketResult><IsTruncated>false</IsTruncated><Contents>" +
-        '<Key>localpass/user-a/b.json</Key><ETag>"e2"</ETag><Size>4</Size>' +
+        '<Key>user-a/b.json</Key><ETag>"e2"</ETag><Size>4</Size>' +
         "</Contents></ListBucketResult>",
     ];
     let page = 0;
@@ -108,10 +104,7 @@ describe("S3Client", () => {
 
     const objects = await client.listObjects("user-a/");
 
-    expect(objects.map((o) => o.key)).toEqual([
-      "localpass/user-a/a.json",
-      "localpass/user-a/b.json",
-    ]);
+    expect(objects.map((o) => o.key)).toEqual(["user-a/a.json", "user-a/b.json"]);
     expect(objects[0].etag).toBe("e1");
     expect(requests[1].url).toContain("continuation-token=next");
   });

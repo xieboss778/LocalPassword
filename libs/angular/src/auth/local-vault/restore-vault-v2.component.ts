@@ -24,14 +24,14 @@ import { ButtonModule, CalloutModule } from "@localpass/components";
 // eslint-disable-next-line no-restricted-imports
 import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
 import {
-  MergeConflict,
   ACCOUNT_OBJECT,
+  MergeConflict,
   CreateLocalAccountService,
-  LocalAccountObject,
   S3Client,
   SNAPSHOT_PREFIX,
   Snapshot,
   VaultBackupSyncService,
+  isLocalAccountObject,
 } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
@@ -244,11 +244,6 @@ interface SnapshotRow {
                     (valueChange)="set('bucket', $event)"
                   />
                   <lp-field
-                    [label]="i18n.t('backupPrefix')"
-                    [value]="valueOf('prefix')"
-                    (valueChange)="set('prefix', $event)"
-                  />
-                  <lp-field
                     [label]="i18n.t('backupAccessKey')"
                     [value]="valueOf('accessKeyId')"
                     (valueChange)="set('accessKeyId', $event)"
@@ -445,7 +440,6 @@ export class RestoreVaultV2Component implements OnInit {
     bucket: ["", [Validators.required]],
     accessKeyId: ["", [Validators.required]],
     secretAccessKey: ["", [Validators.required]],
-    prefix: ["localpass"],
     masterPassword: ["", [Validators.required]],
   });
 
@@ -482,13 +476,13 @@ export class RestoreVaultV2Component implements OnInit {
   }
 
   protected valueOf(
-    key: "endpoint" | "bucket" | "prefix" | "accessKeyId" | "secretAccessKey" | "masterPassword",
+    key: "endpoint" | "bucket" | "accessKeyId" | "secretAccessKey" | "masterPassword",
   ): string {
     return this.form.get(key)?.value ?? "";
   }
 
   protected set(
-    key: "endpoint" | "bucket" | "prefix" | "accessKeyId" | "secretAccessKey" | "masterPassword",
+    key: "endpoint" | "bucket" | "accessKeyId" | "secretAccessKey" | "masterPassword",
     value: string,
   ): void {
     this.form.get(key)?.setValue(value);
@@ -602,7 +596,6 @@ export class RestoreVaultV2Component implements OnInit {
       endpoint: config.endpoint,
       region: config.region,
       bucket: config.bucket,
-      prefix: config.prefix,
       forcePathStyle: config.forcePathStyle,
       credentials: {
         accessKeyId: config.accessKeyId,
@@ -683,11 +676,12 @@ export class RestoreVaultV2Component implements OnInit {
 
     try {
       const value = this.form.getRawValue();
+      // The bucket is the vault boundary: the account object sits at its root, so reading it
+      // needs no prefix, no directory scan, and no guess at the account id.
       const client = new S3Client({
         endpoint: value.endpoint ?? "",
         region: "auto",
         bucket: value.bucket ?? "",
-        prefix: value.prefix ?? "",
         forcePathStyle: false,
         credentials: {
           accessKeyId: value.accessKeyId ?? "",
@@ -700,8 +694,19 @@ export class RestoreVaultV2Component implements OnInit {
         throw new Error(this.i18n.t("restoreNoAccountFile"));
       }
 
-      const account = JSON.parse(stored.text) as LocalAccountObject;
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(stored.text);
+      } catch {
+        throw new Error(this.i18n.t("restoreNoAccountFile"));
+      }
+      if (!isLocalAccountObject(parsed)) {
+        throw new Error(this.i18n.t("restoreNoAccountFile"));
+      }
+
+      const account = parsed;
       const userId = await this.createLocalAccountService.restoreAccount({
+        userId: account.userId,
         email: account.email,
         masterPassword: value.masterPassword ?? "",
         unlock: {
@@ -713,13 +718,11 @@ export class RestoreVaultV2Component implements OnInit {
       });
 
       await this.syncService.configure(userId, {
-        provider: "generic",
         endpoint: value.endpoint ?? "",
         region: "auto",
         bucket: value.bucket ?? "",
         accessKeyId: value.accessKeyId ?? "",
         secretAccessKey: value.secretAccessKey ?? "",
-        prefix: value.prefix ?? "",
         forcePathStyle: false,
       });
 

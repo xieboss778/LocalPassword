@@ -8,11 +8,6 @@ export interface S3ClientConfig {
   readonly region: string;
   readonly bucket: string;
   readonly credentials: AwsCredentials;
-  /**
-   * Key prefix inside the bucket. The vault always writes under `<prefix>/<userId>/` so several
-   * people can share one bucket.
-   */
-  readonly prefix?: string;
   /** MinIO and most self-hosted gateways only speak path-style addressing. */
   readonly forcePathStyle?: boolean;
 }
@@ -63,11 +58,9 @@ export class S3Client {
     private readonly now: () => Date = () => new Date(),
   ) {}
 
-  /** Fully qualified key, including the shared prefix when one is configured. */
+  /** Fully qualified key; leading slashes are dropped so callers can paste paths. */
   keyFor(path: string): string {
-    const prefix = this.config.prefix?.replace(/^\/+|\/+$/g, "");
-    const suffix = path.replace(/^\/+/, "");
-    return prefix ? `${prefix}/${suffix}` : suffix;
+    return path.replace(/^\/+/, "");
   }
 
   /**

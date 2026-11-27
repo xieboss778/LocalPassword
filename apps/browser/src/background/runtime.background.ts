@@ -638,8 +638,6 @@ export default class RuntimeBackground {
           }
 
           if (!(await firstValueFrom(this.browserInitialInstallService.extensionInstalled$))) {
-            await this.browserInitialInstallService.displayWelcomePage();
-
             await this.autofillSettingsService.setInlineMenuVisibility(
               AutofillOverlayVisibility.OnFieldFocus,
             );

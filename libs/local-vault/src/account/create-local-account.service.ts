@@ -52,6 +52,12 @@ export type CreateLocalAccountRequest = {
 
 /** Material read back from `account.json` in cloud storage. */
 export type RestoreLocalAccountRequest = {
+  /**
+   * The id stored in `account.json` or encoded in its path. Reusing it makes this device adopt
+   * the same identity as the device that wrote the backup, so shared unlock and sync line up.
+   * Defaults to a fresh id for account files written before ids were recorded.
+   */
+  readonly userId?: UserId;
   readonly email: string;
   readonly name?: string;
   readonly masterPassword: string;
@@ -140,7 +146,8 @@ export class CreateLocalAccountService {
   /**
    * Re-creates a local account from the material stored in `account.json`, so a second device can
    * open the same vault. The user key is unwrapped here purely to prove the master password is the
-   * right one; the state then holds the same wrapped values the first device pushed.
+   * right one; the state then holds the same wrapped values the first device pushed. The id from
+   * the backup is reused when present, so the two devices are one account rather than two.
    *
    * @throws If the password does not open the wrapped user key.
    */
@@ -168,7 +175,7 @@ export class CreateLocalAccountService {
     const name = request.name?.trim() || email.split("@")[0] || DEFAULT_LOCAL_ACCOUNT_NAME;
 
     return await this.writeAccount(
-      newGuid() as UserId,
+      request.userId ?? (newGuid() as UserId),
       {
         name,
         email,

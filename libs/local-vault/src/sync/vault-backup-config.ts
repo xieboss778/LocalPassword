@@ -7,13 +7,10 @@ import {
 import { Snapshot } from "./snapshot-merge";
 
 /**
- * Where the vault backups are stored. R2 has its own endpoint shape, every other S3-compatible
- * service uses the generic fields.
+ * Where the vault backups are stored. The bucket is the whole vault boundary: one bucket holds
+ * exactly one vault, and every object sits at its root.
  */
-export type VaultBackupProvider = "r2" | "generic";
-
 export interface VaultBackupConfig {
-  readonly provider: VaultBackupProvider;
   /** `https://<account>.r2.cloudflarestorage.com` for R2, the service URL otherwise. */
   readonly endpoint: string;
   readonly region: string;
@@ -21,7 +18,6 @@ export interface VaultBackupConfig {
   readonly accessKeyId: string;
   /** Only ever held in memory, decrypted; on disk it is wrapped with the user key. */
   readonly secretAccessKey: string;
-  readonly prefix: string;
   readonly forcePathStyle: boolean;
 }
 
