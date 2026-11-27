@@ -14,11 +14,13 @@
       <bit-hint>{{ "selfHostedBaseUrlHint" | i18n }}</bit-hint>
     </bit-form-field>
 
-    <button bitLink linkType="primary" type="button" (click)="showCustomEnv = !showCustomEnv">
-      <bit-icon
-        [name]="showCustomEnv ? 'bwi-angle-down' : 'bwi-angle-right'"
-        class="bwi-fw bwi-sm"
-      ></bit-icon>
+    <button
+      bitLink
+      linkType="primary"
+      type="button"
+      [startIcon]="showCustomEnv ? 'bwi-angle-down' : 'bwi-angle-right'"
+      (click)="showCustomEnv = !showCustomEnv"
+    >
       {{ "customEnvironment" | i18n }}
     </button>
 

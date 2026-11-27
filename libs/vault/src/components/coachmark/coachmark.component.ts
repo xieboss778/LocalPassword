@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, input, viewChild } from "@a
 
 import {
   ButtonModule,
+  IconComponent,
   LinkModule,
   PopoverComponent,
   PopoverModule,
@@ -28,7 +29,15 @@ import { CoachmarkService } from "./coachmark.service";
 @Component({
   selector: "vault-coachmark",
   standalone: true,
-  imports: [CommonModule, ButtonModule, I18nPipe, LinkModule, PopoverModule, TypographyModule],
+  imports: [
+    IconComponent,
+    CommonModule,
+    ButtonModule,
+    I18nPipe,
+    LinkModule,
+    PopoverModule,
+    TypographyModule,
+  ],
   templateUrl: "coachmark.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: "coachmark",

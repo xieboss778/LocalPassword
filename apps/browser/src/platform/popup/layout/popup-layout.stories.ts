@@ -48,6 +48,7 @@ import {
   FilterMenuModule,
   I18nMockService,
   IconButtonModule,
+  IconComponent,
   ItemModule,
   StatusLockupComponent,
   SearchModule,
@@ -100,7 +101,7 @@ class ExtensionPoppedContainerComponent {}
       <bit-item-group>
         <bit-item *ngFor="let item of data; index as i">
           <button type="button" bit-item-content>
-            <i slot="start" class="bwi bwi-globe tw-text-3xl tw-text-muted" aria-hidden="true"></i>
+            <bit-icon name="bwi-globe" class="tw-text-3xl tw-text-muted" slot="start" />
             {{ i }} of {{ data.length - 1 }}
             <span slot="secondary">Bar</span>
           </button>
@@ -120,7 +121,14 @@ class ExtensionPoppedContainerComponent {}
       </bit-item-group>
     </bit-section>
   `,
-  imports: [CommonModule, ItemModule, ChipActionComponent, IconButtonModule, SectionComponent],
+  imports: [
+    CommonModule,
+    ItemModule,
+    ChipActionComponent,
+    IconButtonModule,
+    SectionComponent,
+    IconComponent,
+  ],
 })
 class VaultComponent {
   protected data = Array.from(Array(20).keys());
@@ -130,8 +138,7 @@ class VaultComponent {
   selector: "mock-add-button",
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <button bitButton size="small" buttonType="primary" type="button">
-      <i class="bwi bwi-plus" aria-hidden="true"></i>
+    <button bitButton size="small" buttonType="primary" type="button" startIcon="bwi-plus">
       Add
     </button>
   `,
@@ -605,6 +612,7 @@ type TableVaultFilters = {
     ButtonModule,
     IconButtonModule,
     ChipActionComponent,
+    IconComponent,
   ],
   template: `
     <popup-page hideOverflow>
@@ -680,11 +688,7 @@ type TableVaultFilters = {
           <bit-column sortable defaultSort="asc">
             <bit-header-cell>Name</bit-header-cell>
             <bit-cell *bitCellDef="table.columns.name; let row">
-              <i
-                slot="start"
-                class="bwi bwi-globe tw-text-3xl tw-text-muted"
-                aria-hidden="true"
-              ></i>
+              <bit-icon name="bwi-globe" class="tw-text-3xl tw-text-muted" slot="start" />
               {{ row.name }}
               <span slot="secondary">{{ vaultName(row.vault) }}</span>
             </bit-cell>

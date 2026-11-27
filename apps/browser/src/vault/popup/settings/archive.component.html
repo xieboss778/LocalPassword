@@ -8,7 +8,7 @@
   @if (showSubscriptionEndedMessaging$ | async) {
     <bit-card class="tw-mb-4">
       <div class="tw-flex tw-gap-2 tw-items-baseline">
-        <i class="bwi bwi-info-circle" aria-hidden="true"></i>
+        <bit-icon name="bwi-info-circle" />
         <h3 class="tw-font-[500]" bitTypography="h5">{{ "premiumSubscriptionEnded" | i18n }}</h3>
       </div>
       <p bitTypography="body2" class="tw-mb-3">
@@ -52,11 +52,13 @@
                     ></i>
                   }
                   @if (CipherViewLikeUtils.hasAttachments(cipher)) {
-                    <i
+                    <bit-icon
+                      name="bwi-paperclip"
+                      class="bwi-sm"
                       slot="default-trailing"
-                      class="bwi bwi-paperclip bwi-sm"
-                      [appA11yTitle]="'attachments' | i18n"
-                    ></i>
+                      [title]="'attachments' | i18n"
+                      [ariaLabel]="'attachments' | i18n"
+                    />
                   }
                 </div>
                 <span slot="secondary">{{ CipherViewLikeUtils.subtitle(cipher) }}</span>

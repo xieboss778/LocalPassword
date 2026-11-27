@@ -10,11 +10,13 @@
               <bit-truncated-filename data-testid="file-name" [filename]="attachment.fileName" />
               <span slot="secondary" data-testid="file-size">{{ attachment.sizeName }}</span>
               @if (attachment.key == null) {
-                <i
+                <bit-icon
+                  name="bwi-exclamation-triangle"
+                  class="bwi-sm tw-text-muted"
                   slot="default-trailing"
-                  class="bwi bwi-exclamation-triangle bwi-sm tw-text-muted"
-                  [appA11yTitle]="'fixEncryptionTooltip' | i18n"
-                ></i>
+                  [title]="'fixEncryptionTooltip' | i18n"
+                  [ariaLabel]="'fixEncryptionTooltip' | i18n"
+                />
               }
             </bit-item-content>
 

@@ -30,6 +30,7 @@ import {
   getAvatarDefaultColor,
   IconButtonModule,
   IconTileOptions,
+  LocalPassIcon,
   SectionHeaderComponent,
   SelectItemView,
   SelectModule,
@@ -212,7 +213,7 @@ export class ItemDetailsSectionComponent implements OnInit {
     { initialValue: personalIconTile("brand") },
   );
 
-  get favoriteIcon() {
+  get favoriteIcon(): LocalPassIcon {
     return this.itemDetailsForm.controls.favorite.value ? "bwi-star-f" : "bwi-star";
   }
 

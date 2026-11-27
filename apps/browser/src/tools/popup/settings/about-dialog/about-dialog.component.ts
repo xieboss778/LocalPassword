@@ -9,9 +9,10 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import {
-  DialogRef,
   ButtonModule,
   DialogModule,
+  DialogRef,
+  IconComponent,
   ToastService,
   TypographyModule,
 } from "@localpass/components";
@@ -20,7 +21,7 @@ import {
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "about-dialog.component.html",
-  imports: [CommonModule, JslibModule, DialogModule, ButtonModule, TypographyModule],
+  imports: [IconComponent, CommonModule, JslibModule, DialogModule, ButtonModule, TypographyModule],
 })
 export class AboutDialogComponent {
   // FIXME(https://localpass.atlassian.net/browse/CL-903): Migrate to Signals

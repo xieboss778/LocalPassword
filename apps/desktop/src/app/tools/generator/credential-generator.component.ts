@@ -1,6 +1,12 @@
 import { Component } from "@angular/core";
 
-import { ButtonModule, DialogModule, DialogService, ItemModule } from "@localpass/components";
+import {
+  ButtonModule,
+  DialogModule,
+  DialogService,
+  IconComponent,
+  ItemModule,
+} from "@localpass/components";
 import {
   CredentialGeneratorHistoryDialogComponent,
   GeneratorModule,
@@ -12,7 +18,7 @@ import { I18nPipe } from "@localpass/ui-common";
 @Component({
   selector: "credential-generator",
   templateUrl: "credential-generator.component.html",
-  imports: [DialogModule, ButtonModule, I18nPipe, GeneratorModule, ItemModule],
+  imports: [IconComponent, DialogModule, ButtonModule, I18nPipe, GeneratorModule, ItemModule],
 })
 export class CredentialGeneratorComponent {
   constructor(private dialogService: DialogService) {}

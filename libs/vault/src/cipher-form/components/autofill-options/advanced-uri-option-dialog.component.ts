@@ -5,10 +5,11 @@ import { PlatformUtilsService } from "@localpass/common/platform/abstractions/pl
 import {
   ButtonModule,
   CenterPositionStrategy,
+  DIALOG_DATA,
   DialogModule,
   DialogRef,
   DialogService,
-  DIALOG_DATA,
+  IconComponent,
   LinkComponent,
 } from "@localpass/components";
 
@@ -22,7 +23,7 @@ export type AdvancedUriOptionDialogParams = {
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   templateUrl: "advanced-uri-option-dialog.component.html",
-  imports: [LinkComponent, ButtonModule, DialogModule, JslibModule],
+  imports: [IconComponent, LinkComponent, ButtonModule, DialogModule, JslibModule],
 })
 export class AdvancedUriOptionDialogComponent {
   constructor(private dialogRef: DialogRef<boolean>) {}

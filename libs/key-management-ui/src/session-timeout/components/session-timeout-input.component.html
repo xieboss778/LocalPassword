@@ -34,7 +34,7 @@
   }
   @if (form.hasError("maxTimeoutError")) {
     <div class="tw-mt-1 tw-text-danger tw-text-xs" id="session-timeout-maximum-error">
-      <i class="bwi bwi-error" aria-hidden="true"></i>
+      <bit-icon name="bwi-error" />
       {{
         "sessionTimeoutSettingsPolicyMaximumError"
           | i18n: maxSessionTimeoutPolicyHours : maxSessionTimeoutPolicyMinutes

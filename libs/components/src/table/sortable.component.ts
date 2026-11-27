@@ -3,6 +3,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } f
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { of, switchMap } from "rxjs";
 
+import { IconComponent } from "../icon";
+import type { LocalPassIcon } from "../shared/icon";
+
 import type { SortDirection, SortFn } from "./table-data-source";
 import { TableComponent } from "./table.component";
 
@@ -17,12 +20,13 @@ import { TableComponent } from "./table.component";
       (click)="setActive()"
     >
       <ng-content></ng-content>
-      <i class="bwi tw-ms-2" [class]="icon()"></i>
+      <bit-icon [name]="icon()" class="tw-ms-2" />
     </button>
   `,
   host: {
     "[attr.aria-sort]": "ariaSort()",
   },
+  imports: [IconComponent],
 })
 export class SortableComponent implements OnInit {
   /**
@@ -70,7 +74,7 @@ export class SortableComponent implements OnInit {
     return this.sort()?.direction === "asc" ? "ascending" : "descending";
   });
 
-  protected readonly icon = computed(() => {
+  protected readonly icon = computed<LocalPassIcon>(() => {
     if (!this.isActive()) {
       return "bwi-up-down-btn";
     }

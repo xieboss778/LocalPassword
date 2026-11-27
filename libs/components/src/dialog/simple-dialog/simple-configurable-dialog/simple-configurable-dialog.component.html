@@ -4,7 +4,7 @@
   bit-simple-dialog
   [hideIcon]="simpleDialogOpts.hideIcon ?? false"
 >
-  <i bitDialogIcon class="bwi tw-text-3xl" [class]="iconClasses" aria-hidden="true"></i>
+  <bit-icon bitDialogIcon [name]="icon" [class]="iconColor" class="tw-text-3xl" />
 
   <span bitDialogTitle>{{ title }}</span>
 

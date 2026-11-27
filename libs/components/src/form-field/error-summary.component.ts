@@ -5,17 +5,19 @@ import { EMPTY, switchMap } from "rxjs";
 
 import { I18nPipe } from "@localpass/ui-common";
 
+import { IconComponent } from "../icon";
+
 @Component({
   selector: "bit-error-summary",
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: ` @if (errorCount() > 0) {
-    <i class="bwi bwi-error"></i> {{ "fieldsNeedAttention" | i18n: errorCount().toString() }}
+    <bit-icon name="bwi-error" /> {{ "fieldsNeedAttention" | i18n: errorCount().toString() }}
   }`,
   host: {
     class: "tw-block tw-text-danger tw-mt-2",
     "aria-live": "assertive",
   },
-  imports: [I18nPipe],
+  imports: [I18nPipe, IconComponent],
 })
 export class BitErrorSummaryComponent {
   readonly formGroup = input<UntypedFormGroup>();

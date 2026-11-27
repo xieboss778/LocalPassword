@@ -18,6 +18,7 @@ import {
   DialogService,
   FormFieldModule,
   IconButtonModule,
+  IconComponent,
   LinkModule,
   PopoverModule,
   SectionHeaderComponent,
@@ -41,6 +42,7 @@ import {
   selector: "vault-login-details-section",
   templateUrl: "./login-details-section.component.html",
   imports: [
+    IconComponent,
     ReactiveFormsModule,
     SectionHeaderComponent,
     TypographyModule,

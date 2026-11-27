@@ -4,14 +4,15 @@ import { Component, Inject } from "@angular/core";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { UnionOfValues } from "@localpass/common/vault/types/union-of-values";
 import {
-  DIALOG_DATA,
+  A11yTitleDirective,
   ButtonModule,
+  DIALOG_DATA,
   DialogModule,
+  DialogRef,
   DialogService,
+  IconComponent,
   ItemModule,
   LinkModule,
-  DialogRef,
-  A11yTitleDirective,
 } from "@localpass/components";
 import {
   CredentialGeneratorHistoryDialogComponent,
@@ -46,6 +47,7 @@ type CredentialGeneratorDialogAction = UnionOfValues<typeof CredentialGeneratorD
   selector: "credential-generator-dialog",
   templateUrl: "credential-generator-dialog.component.html",
   imports: [
+    IconComponent,
     A11yTitleDirective,
     CipherFormGeneratorComponent,
     CommonModule,

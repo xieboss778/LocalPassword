@@ -38,11 +38,7 @@
             [attr.aria-label]="'myVault' | i18n"
             data-testid="item-details-list"
           >
-            <i
-              class="bwi bwi-user bwi-lg"
-              aria-hidden="true"
-              [title]="'owner' | vfo1I18n: 'vault'"
-            ></i>
+            <bit-icon name="bwi-user" class="bwi-lg" [title]="'owner' | vfo1I18n: 'vault'" />
             <span aria-hidden="true" class="tw-pl-1.5">{{ "myVault" | i18n }}</span>
           </span>
         }
@@ -62,12 +58,7 @@
                 [title]="'owner' | vfo1I18n: 'vault'"
               ></i>
             } @else {
-              <i
-                class="bwi bwi-lg"
-                [ngClass]="getIconClass(item)"
-                aria-hidden="true"
-                [title]="getItemTitle(item)"
-              ></i>
+              <bit-icon [name]="getIconName(item)" class="bwi-lg" [title]="getItemTitle(item)" />
             }
             <span aria-hidden="true" class="tw-pl-1.5">
               {{ getItemName(item) }}
@@ -80,7 +71,7 @@
             bitTypography="body2"
             [attr.aria-label]="'noneFolder' | i18n"
           >
-            <i class="bwi bwi-folder bwi-lg" aria-hidden="true" [title]="'folder' | i18n"></i>
+            <bit-icon name="bwi-folder" class="bwi-lg" [title]="'folder' | i18n" />
             <span aria-hidden="true" class="tw-pl-1.5">
               {{ "noneFolder" | i18n }}
             </span>

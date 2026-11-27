@@ -39,16 +39,17 @@ import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/pass
 import { UserId } from "@localpass/common/types/guid";
 import { UserKey } from "@localpass/common/types/key";
 import {
-  TooltipDirective,
-  AsyncActionsModule,
   AnonLayoutWrapperDataService,
+  AsyncActionsModule,
   ButtonModule,
   DialogService,
   FormFieldModule,
   IconButtonModule,
+  IconComponent,
   IconTileComponent,
   SvgModule,
   ToastService,
+  TooltipDirective,
 } from "@localpass/components";
 import {
   KeyService,
@@ -104,6 +105,7 @@ const BIOMETRIC_UNLOCK_TEMPORARY_UNAVAILABLE_STATUSES = [
   templateUrl: "lock.component.html",
   host: { "data-testid": "lock-screen" },
   imports: [
+    IconComponent,
     CommonModule,
     LpHeroComponent,
     JslibModule,

@@ -138,7 +138,6 @@ export const SmallStorage: Story = {
 };
 
 export const ActionsDisabled: Story = {
-  name: "Actions Disabled",
   args: {
     storage: {
       available: 5,
@@ -151,7 +150,6 @@ export const ActionsDisabled: Story = {
 };
 
 export const AddStorageDisabled: Story = {
-  name: "Add Storage Disabled",
   args: {
     storage: {
       available: 5,
@@ -164,7 +162,6 @@ export const AddStorageDisabled: Story = {
 };
 
 export const RemoveStorageDisabled: Story = {
-  name: "Remove Storage Disabled",
   args: {
     storage: {
       available: 5,

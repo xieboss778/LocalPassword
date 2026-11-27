@@ -56,13 +56,13 @@ import {
           <a
             class="tw-text-sm tw-text-center"
             bitLink
+            endIcon="bwi-external-link"
             href="https://github.com/xieboss778/LocalPass/tree/main/docs"
             target="_blank"
           >
             <strong class="tw-pr-1">
               {{ "autoConfirmSetupHint" | i18n }}
             </strong>
-            <i class="bwi bwi-external-link bwi-fw"></i>
           </a>
         </div>
       </ng-container>

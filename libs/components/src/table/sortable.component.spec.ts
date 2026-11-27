@@ -36,7 +36,7 @@ describe("SortableComponent", () => {
 
   const headers = (): HTMLTableCellElement[] =>
     Array.from(fixture.nativeElement.querySelectorAll("th"));
-  const icon = (th: HTMLElement) => th.querySelector("i")!.classList;
+  const icon = (th: HTMLElement) => th.querySelector("bit-icon")!.classList;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({ imports: [TestHostComponent] }).compileComponents();

@@ -6,7 +6,7 @@ import { NudgesService, NudgeType } from "@localpass/angular/vault";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { UserId } from "@localpass/common/types/guid";
-import { TypographyModule, CalloutModule } from "@localpass/components";
+import { CalloutModule, IconComponent, TypographyModule } from "@localpass/components";
 import { I18nPipe } from "@localpass/ui-common";
 
 // FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
@@ -14,7 +14,7 @@ import { I18nPipe } from "@localpass/ui-common";
 @Component({
   selector: "nudge-generator-spotlight",
   templateUrl: "nudge-generator-spotlight.component.html",
-  imports: [I18nPipe, CalloutModule, AsyncPipe, CommonModule, TypographyModule],
+  imports: [IconComponent, I18nPipe, CalloutModule, AsyncPipe, CommonModule, TypographyModule],
 })
 export class NudgeGeneratorSpotlightComponent {
   protected readonly NudgeType = NudgeType;

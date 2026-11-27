@@ -44,7 +44,7 @@ import {
   VaultTimeoutStringType,
 } from "@localpass/common/key-management/vault-timeout";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { FormFieldModule, SelectModule } from "@localpass/components";
+import { FormFieldModule, IconComponent, SelectModule } from "@localpass/components";
 import { LogService } from "@localpass/logging";
 
 type SessionTimeoutForm = FormGroup<{
@@ -60,7 +60,14 @@ type SessionTimeoutFormValue = SessionTimeoutForm["value"];
 @Component({
   selector: "bit-session-timeout-input",
   templateUrl: "session-timeout-input.component.html",
-  imports: [CommonModule, JslibModule, ReactiveFormsModule, FormFieldModule, SelectModule],
+  imports: [
+    IconComponent,
+    CommonModule,
+    JslibModule,
+    ReactiveFormsModule,
+    FormFieldModule,
+    SelectModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

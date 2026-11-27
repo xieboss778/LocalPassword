@@ -1,3 +1,5 @@
+import type { LocalPassIcon } from "../../shared/icon";
+
 export interface Translation {
   key: string;
   placeholders?: Array<string | number>;
@@ -27,7 +29,7 @@ export type SimpleDialogOptions = {
    *
    * If not provided, a standard icon will be inferred from type.
    * Note: icon color is enforced based on dialog type.  */
-  icon?: string;
+  icon?: LocalPassIcon;
 
   /** Dialog custom accept button text.
    *

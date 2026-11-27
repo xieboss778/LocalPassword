@@ -212,12 +212,12 @@
           <bit-hint slot="secondary" class="tw-text-sm tw-whitespace-normal">
             {{ autofillKeyboardHelperText }}
           </bit-hint>
-          <i
-            appA11yTitle="{{ 'opensInANewWindow' | i18n }}"
-            aria-hidden="true"
-            class="bwi bwi-fw bwi-external-link bwi-lg tw-text-fg-body-subtle"
+          <bit-icon
+            name="bwi-external-link"
+            class="bwi-lg tw-text-fg-body-subtle"
             slot="end"
-          ></i>
+            [title]="'opensInANewWindow' | i18n"
+          />
         </button>
       </bit-item>
     </bit-section>
@@ -407,7 +407,7 @@
     <bit-section disableMargin>
       <bit-item>
         <a bit-item-content routerLink="/blocked-domains">{{ "blockedDomains" | i18n }}</a>
-        <i slot="end" class="bwi bwi-angle-right bwi-lg" aria-hidden="true"></i>
+        <bit-icon name="bwi-angle-right" class="bwi-lg" slot="end" />
       </bit-item>
     </bit-section>
   </div>

@@ -4,6 +4,8 @@
   @if (showLoadingStyle()) {
     <bit-spinner [size]="spinnerSize()" />
   } @else {
-    <i class="bwi" [class]="iconClass()" aria-hidden="true"></i>
+    @if (iconName(); as name) {
+      <bit-icon [name]="name" class="!tw-m-0" />
+    }
   }
 </span>

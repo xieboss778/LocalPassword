@@ -9,7 +9,7 @@
     <bit-item>
       <a bit-item-content routerLink="/folders">
         {{ "folders" | vfo1I18n: "myFolders" }}
-        <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
+        <bit-icon name="bwi-angle-right" slot="end" />
       </a>
     </bit-item>
     <bit-item>
@@ -23,21 +23,21 @@
         </div>
         <ng-container slot="end">
           <span class="tw-sr-only">{{ "popOutNewWindow" | i18n }}</span>
-          <i class="bwi bwi-popout tw-text-muted" aria-hidden="true"></i>
+          <bit-icon name="bwi-popout" class="tw-text-muted" />
         </ng-container>
       </button>
     </bit-item>
     <bit-item>
       <a bit-item-content routerLink="/export">
         {{ "exportNoun" | i18n }}
-        <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
+        <bit-icon name="bwi-angle-right" slot="end" />
       </a>
     </bit-item>
     @if (userCanArchive()) {
       <bit-item>
         <a data-test-id="archive-link" bit-item-content routerLink="/archive">
           {{ "archiveNoun" | i18n }}
-          <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
+          <bit-icon name="bwi-angle-right" slot="end" />
         </a>
       </bit-item>
     } @else {
@@ -52,14 +52,14 @@
             {{ "archiveNoun" | i18n }}
             <app-premium-badge></app-premium-badge>
           </span>
-          <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
+          <bit-icon name="bwi-angle-right" slot="end" />
         </a>
       </bit-item>
     }
     <bit-item>
       <a bit-item-content routerLink="/trash">
         {{ "trash" | i18n }}
-        <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
+        <bit-icon name="bwi-angle-right" slot="end" />
       </a>
     </bit-item>
     <bit-item>
@@ -70,7 +70,7 @@
           @if (syncLoading) {
             <bit-spinner size="sm"></bit-spinner>
           } @else {
-            <i class="bwi bwi-refresh" aria-hidden="true"></i>
+            <bit-icon name="bwi-refresh" />
           }
         </span>
       </button>

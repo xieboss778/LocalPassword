@@ -12,9 +12,11 @@ import {
 
 import { AriaDisableDirective } from "../a11y";
 import { setA11yTitleAndAriaLabel } from "../a11y/set-a11y-title-and-aria-label";
+import { IconComponent } from "../icon";
 import { BaseButtonDirective } from "../shared/base-button.directive";
 import { ButtonLikeAbstraction, ButtonType } from "../shared/button-like.abstraction";
 import { FocusableElement } from "../shared/focusable-element";
+import { LocalPassIcon } from "../shared/icon";
 import { SpinnerComponent, SpinnerSize } from "../spinner";
 import { TooltipDirective } from "../tooltip";
 import { ariaDisableElement } from "../utils";
@@ -36,7 +38,7 @@ type IconButtonSize = "default" | "xsmall" | "small" | "large";
     { provide: ButtonLikeAbstraction, useExisting: BitIconButtonComponent },
     { provide: FocusableElement, useExisting: BitIconButtonComponent },
   ],
-  imports: [SpinnerComponent],
+  imports: [SpinnerComponent, IconComponent],
   host: {
     /**
      * When the `bitIconButton` input is dynamic from a consumer, Angular doesn't put the
@@ -61,7 +63,11 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction, FocusableE
   private readonly elementRef = inject(ElementRef);
   private readonly tooltip = inject(TooltipDirective, { host: true, optional: true });
 
-  readonly icon = model.required<string>({ alias: "bitIconButton" });
+  /**
+   * The icon to render. Host directives such as `bitPasswordInputToggle` set it after
+   * construction, so a bare `bitIconButton` attribute supplies an empty string for a moment.
+   */
+  readonly icon = model.required<LocalPassIcon | "">({ alias: "bitIconButton" });
 
   /**
    * label input will be used to set the `aria-label` attributes on the button.
@@ -79,9 +85,12 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction, FocusableE
   readonly loading = this.baseButton.loading;
   readonly disabled = this.baseButton.disabled;
 
-  readonly iconClass = computed(() => [this.icon(), "!tw-m-0"]);
-
   protected readonly showLoadingStyle = this.baseButton.showLoadingStyle;
+
+  protected readonly iconName = computed(() => {
+    const icon = this.icon();
+    return icon === "" ? undefined : icon;
+  });
 
   protected readonly classList = computed(() => {
     const classes: string[] = [];

@@ -2,18 +2,21 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from "@an
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 
+import { IconComponent } from "../icon";
+
 // Increments for each instance of this component
 let nextId = 0;
 
 @Component({
   selector: "bit-error",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<i class="bwi bwi-error"></i> {{ displayError() }}`,
+  template: `<bit-icon name="bwi-error" /> {{ displayError() }}`,
   host: {
     class: "tw-block tw-mt-1 tw-text-danger tw-text-xs",
     "aria-live": "assertive",
     "[id]": "id",
   },
+  imports: [IconComponent],
 })
 export class BitErrorComponent {
   private readonly i18nService = inject(I18nService);

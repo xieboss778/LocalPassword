@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
-import { ItemModule } from "@localpass/components";
+import { IconComponent, ItemModule } from "@localpass/components";
 import { GeneratorModule } from "@localpass/generator-components";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
@@ -16,6 +16,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
   selector: "credential-generator",
   templateUrl: "credential-generator.component.html",
   imports: [
+    IconComponent,
     GeneratorModule,
     CurrentAccountComponent,
     JslibModule,

@@ -19,8 +19,9 @@ import { PremiumUpgradePromptService } from "@localpass/common/vault/abstraction
 import { SyncService } from "@localpass/common/vault/abstractions/sync/sync.service.abstraction";
 import {
   BerryComponent,
-  SpinnerComponent,
+  IconComponent,
   ItemModule,
+  SpinnerComponent,
   ToastOptions,
   ToastService,
 } from "@localpass/components";
@@ -37,6 +38,7 @@ import { ImportUpgradeNavigationService } from "../../../tools/popup/settings/im
 @Component({
   templateUrl: "vault-settings.component.html",
   imports: [
+    IconComponent,
     CommonModule,
     JslibModule,
     RouterModule,

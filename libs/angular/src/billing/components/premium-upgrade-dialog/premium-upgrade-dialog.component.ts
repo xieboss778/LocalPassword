@@ -26,6 +26,7 @@ import {
   DialogRef,
   DialogService,
   IconButtonModule,
+  IconComponent,
   ToastService,
   TypographyModule,
 } from "@localpass/components";
@@ -39,6 +40,7 @@ import { SubscriptionPricingCardDetails } from "../../types/subscription-pricing
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    IconComponent,
     CommonModule,
     DialogModule,
     ButtonModule,

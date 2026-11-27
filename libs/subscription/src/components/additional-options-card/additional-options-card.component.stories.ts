@@ -42,7 +42,6 @@ export const Default: Story = {
 };
 
 export const ActionsDisabled: Story = {
-  name: "Actions Disabled",
   args: {
     downloadLicenseDisabled: true,
     cancelSubscriptionDisabled: true,
@@ -50,7 +49,6 @@ export const ActionsDisabled: Story = {
 };
 
 export const DownloadLicenseDisabled: Story = {
-  name: "Download License Disabled",
   args: {
     downloadLicenseDisabled: true,
     cancelSubscriptionDisabled: false,
@@ -58,7 +56,6 @@ export const DownloadLicenseDisabled: Story = {
 };
 
 export const CancelSubscriptionDisabled: Story = {
-  name: "Cancel Subscription Disabled",
   args: {
     downloadLicenseDisabled: false,
     cancelSubscriptionDisabled: true,

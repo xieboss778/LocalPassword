@@ -23,18 +23,18 @@
         {{ cipher().name }}
       </button>
       @if (hasAttachments()) {
-        <i
-          class="bwi bwi-paperclip tw-ml-2 tw-leading-normal"
-          title="{{ 'attachments' | i18n }}"
-          aria-hidden="true"
-        ></i>
+        <bit-icon
+          name="bwi-paperclip"
+          class="tw-ml-2 tw-leading-normal"
+          [title]="'attachments' | i18n"
+        />
         <span class="tw-sr-only">{{ "attachments" | i18n }}</span>
         @if (showFixOldAttachments()) {
-          <i
-            class="bwi bwi-exclamation-triangle tw-ml-2 tw-leading-normal tw-text-warning"
-            title="{{ 'attachmentsNeedFix' | i18n }}"
-            aria-hidden="true"
-          ></i>
+          <bit-icon
+            name="bwi-exclamation-triangle"
+            class="tw-ml-2 tw-leading-normal tw-text-warning"
+            [title]="'attachmentsNeedFix' | i18n"
+          />
           <span class="tw-sr-only">{{ "attachmentsNeedFix" | i18n }}</span>
         }
       }
@@ -102,25 +102,25 @@
     <bit-menu #cipherOptions>
       @if (showFavorite()) {
         <button bitMenuItem type="button" (click)="toggleFavorite()">
-          <i class="bwi bwi-fw bwi-star" aria-hidden="true"></i>
+          <bit-icon name="bwi-star" fixedWidth />
           {{ (cipher().favorite ? "unfavorite" : "favorite") | i18n }}
         </button>
       }
       @if (canEditCipher()) {
         <button bitMenuItem type="button" (click)="editCipher()">
-          <i class="bwi bwi-fw bwi-pencil-square" aria-hidden="true"></i>
+          <bit-icon name="bwi-pencil-square" fixedWidth />
           {{ "edit" | i18n }}
         </button>
       }
       @if (showAttachments()) {
         <button bitMenuItem type="button" (click)="attachments()">
-          <i class="bwi bwi-fw bwi-paperclip" aria-hidden="true"></i>
+          <bit-icon name="bwi-paperclip" fixedWidth />
           {{ "attachments" | i18n }}
         </button>
       }
       @if (showClone()) {
         <button bitMenuItem type="button" (click)="clone()">
-          <i class="bwi bwi-fw bwi-files" aria-hidden="true"></i>
+          <bit-icon name="bwi-files" fixedWidth />
           {{ "clone" | i18n }}
         </button>
       }
@@ -142,13 +142,13 @@
       @if (showArchiveButton()) {
         @if (userCanArchive()) {
           <button bitMenuItem (click)="archive()" type="button">
-            <i class="bwi bwi-fw bwi-archive" aria-hidden="true"></i>
+            <bit-icon name="bwi-archive" fixedWidth />
             {{ "archiveVerb" | i18n }}
           </button>
         }
         @if (!userCanArchive()) {
           <button bitMenuItem (click)="badge.promptForPremium($event)" type="button">
-            <i class="bwi bwi-fw bwi-archive" aria-hidden="true"></i>
+            <bit-icon name="bwi-archive" fixedWidth />
             {{ "archiveVerb" | i18n }}
             <!-- Hide app-premium badge from accessibility tools as it results in a button within a button -->
             <div slot="end" class="-tw-mt-0.5" aria-hidden>
@@ -160,14 +160,14 @@
 
       @if (showUnArchiveButton()) {
         <button bitMenuItem (click)="unarchive()" type="button">
-          <i class="bwi bwi-fw bwi-unarchive" aria-hidden="true"></i>
+          <bit-icon name="bwi-unarchive" fixedWidth />
           {{ "unArchive" | i18n }}
         </button>
       }
 
       @if (isDeleted() && canRestoreCipher()) {
         <button bitMenuItem (click)="restore()" type="button">
-          <i class="bwi bwi-fw bwi-undo" aria-hidden="true"></i>
+          <bit-icon name="bwi-undo" fixedWidth />
           {{ "restore" | i18n }}
         </button>
       }

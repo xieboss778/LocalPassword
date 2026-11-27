@@ -8,13 +8,14 @@ import { JslibModule } from "@localpass/angular/jslib.module";
 import { UserNotificationSettingsServiceAbstraction } from "@localpass/common/autofill/services/user-notification-settings.service";
 import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
 import {
-  ItemModule,
   CardComponent,
+  CheckboxModule,
+  FormFieldModule,
+  IconComponent,
+  ItemModule,
   SectionComponent,
   SectionHeaderComponent,
-  CheckboxModule,
   TypographyModule,
-  FormFieldModule,
 } from "@localpass/components";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
@@ -26,6 +27,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
 @Component({
   templateUrl: "notifications.component.html",
   imports: [
+    IconComponent,
     CommonModule,
     JslibModule,
     RouterModule,

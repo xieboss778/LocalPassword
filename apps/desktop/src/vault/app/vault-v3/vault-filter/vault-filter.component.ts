@@ -13,7 +13,12 @@ import { getUserId } from "@localpass/common/auth/services/account.service";
 import { UserId } from "@localpass/common/types/guid";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
-import { NavigationModule, DialogService, A11yTitleDirective } from "@localpass/components";
+import {
+  A11yTitleDirective,
+  DialogService,
+  IconComponent,
+  NavigationModule,
+} from "@localpass/components";
 import { I18nPipe } from "@localpass/ui-common";
 import {
   FolderFilter,
@@ -39,6 +44,7 @@ import { TypeFilterComponent } from "./filters/type-filter.component";
   selector: "app-vault-filter",
   templateUrl: "vault-filter.component.html",
   imports: [
+    IconComponent,
     I18nPipe,
     NavigationModule,
     CommonModule,

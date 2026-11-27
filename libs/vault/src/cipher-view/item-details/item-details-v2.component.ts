@@ -18,7 +18,9 @@ import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import {
   CardComponent,
   FormFieldModule,
+  IconComponent,
   LinkComponent,
+  type LocalPassIcon,
   TypographyModule,
 } from "@localpass/components";
 
@@ -39,6 +41,7 @@ import { sharedFolderDisplayName } from "../../utils/shared-folder-name";
     CardComponent,
     TypographyModule,
     OrgIconDirective,
+    IconComponent,
     FormFieldModule,
     LinkComponent,
     Vfo1I18nPipe,
@@ -130,15 +133,13 @@ export class ItemDetailsV2Component {
       : item.name;
   }
 
-  getIconClass(item: Organization | CollectionView | FolderView): string {
+  getIconName(item: Organization | CollectionView | FolderView): LocalPassIcon {
     if (item instanceof CollectionView) {
       return this.vfo1TerminologyService.iconClass(
         item.type === CollectionTypes.DefaultUserCollection ? "bwi-user" : "bwi-collection-shared",
       );
-    } else if (item instanceof FolderView) {
-      return "bwi-folder";
     }
-    return "";
+    return "bwi-folder";
   }
 
   getItemTitle(item: Organization | CollectionView | FolderView): string {

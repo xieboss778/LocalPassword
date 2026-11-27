@@ -10,6 +10,7 @@ import {
   ButtonType,
   IconButtonModule,
   IconModule,
+  LocalPassIcon,
   MenuModule,
   ToastService,
 } from "@localpass/components";
@@ -54,7 +55,7 @@ export class CollectionOptionsMenuComponent {
 
   readonly organization = input<Organization | undefined>(undefined);
 
-  readonly triggerIcon = input.required<string>();
+  readonly triggerIcon = input.required<LocalPassIcon>();
 
   readonly triggerSize = input<"default" | "xsmall" | "small" | "large">("small");
 

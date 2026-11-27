@@ -13,7 +13,13 @@ import { CollectionId, OrganizationId } from "@localpass/common/types/guid";
 import { CipherType } from "@localpass/common/vault/enums";
 import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import { CipherMenuItem, CIPHER_MENU_ITEMS } from "@localpass/common/vault/types/cipher-menu-items";
-import { ButtonModule, DialogService, MenuModule, TooltipDirective } from "@localpass/components";
+import {
+  ButtonModule,
+  DialogService,
+  IconComponent,
+  MenuModule,
+  TooltipDirective,
+} from "@localpass/components";
 import { AddEditFolderDialogComponent } from "@localpass/vault";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
@@ -31,7 +37,15 @@ export interface NewItemInitialValues {
 @Component({
   selector: "app-new-item-dropdown",
   templateUrl: "new-item-dropdown.component.html",
-  imports: [JslibModule, CommonModule, ButtonModule, RouterLink, MenuModule, TooltipDirective],
+  imports: [
+    IconComponent,
+    JslibModule,
+    CommonModule,
+    ButtonModule,
+    RouterLink,
+    MenuModule,
+    TooltipDirective,
+  ],
 })
 export class NewItemDropdownComponent implements OnInit {
   cipherType = CipherType;

@@ -9,7 +9,7 @@ import { AccountService } from "@localpass/common/auth/abstractions/account.serv
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { EnvironmentService } from "@localpass/common/platform/abstractions/environment.service";
 import { GovModeService } from "@localpass/common/platform/abstractions/gov-mode.service";
-import { DialogService, ItemModule } from "@localpass/components";
+import { DialogService, IconComponent, ItemModule } from "@localpass/components";
 
 import { FamiliesPolicyService } from "../../../billing/services/families-policy.service";
 import { BrowserApi } from "../../../platform/browser/browser-api";
@@ -22,6 +22,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
 @Component({
   templateUrl: "more-from-localpass-page.component.html",
   imports: [
+    IconComponent,
     CommonModule,
     JslibModule,
     RouterModule,

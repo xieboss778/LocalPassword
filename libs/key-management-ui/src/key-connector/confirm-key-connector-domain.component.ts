@@ -20,6 +20,7 @@ import {
   BitActionDirective,
   ButtonModule,
   IconButtonModule,
+  IconComponent,
   ToastService,
 } from "@localpass/components";
 import { I18nPipe } from "@localpass/ui-common";
@@ -30,7 +31,14 @@ import { I18nPipe } from "@localpass/ui-common";
   selector: "confirm-key-connector-domain",
   templateUrl: "confirm-key-connector-domain.component.html",
   standalone: true,
-  imports: [CommonModule, ButtonModule, I18nPipe, BitActionDirective, IconButtonModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    I18nPipe,
+    BitActionDirective,
+    IconButtonModule,
+    IconComponent,
+  ],
 })
 export class ConfirmKeyConnectorDomainComponent implements OnInit {
   loading = true;

@@ -8,13 +8,15 @@ import { SimpleDialogOptions, SimpleDialogType, Translation } from "../..";
 import { BitSubmitDirective } from "../../../async-actions/bit-submit.directive";
 import { BitFormButtonDirective } from "../../../async-actions/form-button.directive";
 import { ButtonComponent } from "../../../button/button.component";
+import { IconComponent } from "../../../icon";
+import { LocalPassIcon } from "../../../shared/icon";
 import {
   SimpleDialogComponent,
   IconDirective,
   DialogFooterDirective,
 } from "../simple-dialog.component";
 
-const DEFAULT_ICON: Record<SimpleDialogType, string> = {
+const DEFAULT_ICON: Record<SimpleDialogType, LocalPassIcon> = {
   primary: "bwi-business",
   success: "bwi-star",
   info: "bwi-info-circle",
@@ -41,6 +43,7 @@ const DEFAULT_COLOR: Record<SimpleDialogType, string> = {
     DialogFooterDirective,
     ButtonComponent,
     BitFormButtonDirective,
+    IconComponent,
   ],
 })
 export class SimpleConfigurableDialogComponent {
@@ -48,10 +51,9 @@ export class SimpleConfigurableDialogComponent {
   private readonly i18nService = inject(I18nService);
   readonly simpleDialogOpts = inject<SimpleDialogOptions>(DIALOG_DATA);
 
-  protected readonly iconClasses = [
-    this.simpleDialogOpts.icon ?? DEFAULT_ICON[this.simpleDialogOpts.type],
-    DEFAULT_COLOR[this.simpleDialogOpts.type],
-  ];
+  protected readonly icon: LocalPassIcon =
+    this.simpleDialogOpts.icon ?? DEFAULT_ICON[this.simpleDialogOpts.type];
+  protected readonly iconColor = DEFAULT_COLOR[this.simpleDialogOpts.type];
 
   protected readonly formGroup = new FormGroup({});
 

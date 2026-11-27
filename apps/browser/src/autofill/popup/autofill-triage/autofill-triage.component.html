@@ -1,6 +1,6 @@
 @if (loading()) {
   <div class="tw-flex tw-justify-center tw-p-8">
-    <i class="bwi bwi-spinner bwi-spin bwi-3x" aria-hidden="true"></i>
+    <bit-icon name="bwi-spinner" class="bwi-spin bwi-3x" />
   </div>
 } @else if (!triageResult()) {
   <bit-callout type="info" [title]="'No Triage Results'">
@@ -15,21 +15,21 @@
     <bit-item-group>
       <bit-item>
         <bit-item-content>
-          <i class="bwi bwi-fw bwi-globe tw-text-muted" slot="start" aria-hidden="true"></i>
+          <bit-icon name="bwi-globe" fixedWidth class="tw-text-muted" slot="start" />
           {{ result.pageUrl }}
           <span slot="secondary">URL</span>
         </bit-item-content>
       </bit-item>
       <bit-item>
         <bit-item-content>
-          <i class="bwi bwi-fw bwi-clock tw-text-muted" slot="start" aria-hidden="true"></i>
+          <bit-icon name="bwi-clock" fixedWidth class="tw-text-muted" slot="start" />
           {{ result.analyzedAt | date: "medium" }}
           <span slot="secondary">Analyzed</span>
         </bit-item-content>
       </bit-item>
       <bit-item>
         <bit-item-content>
-          <i class="bwi bwi-fw bwi-check-circle tw-text-muted" slot="start" aria-hidden="true"></i>
+          <bit-icon name="bwi-check-circle" fixedWidth class="tw-text-muted" slot="start" />
           {{ eligibleCount() }} of {{ result.fields.length }} fields
           <span slot="secondary">Eligible</span>
         </bit-item-content>
@@ -37,7 +37,7 @@
       @if (result.targetElementRef) {
         <bit-item>
           <bit-item-content>
-            <i class="bwi bwi-fw bwi-filter tw-text-muted" slot="start" aria-hidden="true"></i>
+            <bit-icon name="bwi-filter" fixedWidth class="tw-text-muted" slot="start" />
             {{ result.targetElementRef }}
             <span slot="secondary">Target Element</span>
           </bit-item-content>
@@ -54,21 +54,21 @@
       <bit-item-group>
         <bit-item>
           <bit-item-content>
-            <i class="bwi bwi-fw bwi-file-text tw-text-muted" slot="start" aria-hidden="true"></i>
+            <bit-icon name="bwi-file-text" fixedWidth class="tw-text-muted" slot="start" />
             {{ result.pageContext.title }}
             <span slot="secondary">{{ "title" | i18n }}</span>
           </bit-item-content>
         </bit-item>
         <bit-item>
           <bit-item-content>
-            <i class="bwi bwi-fw bwi-list-alt tw-text-muted" slot="start" aria-hidden="true"></i>
+            <bit-icon name="bwi-list-alt" fixedWidth class="tw-text-muted" slot="start" />
             {{ result.pageContext.totalForms }}
             <span slot="secondary">Total Forms</span>
           </bit-item-content>
         </bit-item>
         <bit-item>
           <bit-item-content>
-            <i class="bwi bwi-fw bwi-list tw-text-muted" slot="start" aria-hidden="true"></i>
+            <bit-icon name="bwi-list" fixedWidth class="tw-text-muted" slot="start" />
             {{ result.pageContext.totalFields }}
             <span slot="secondary">Total Fields</span>
           </bit-item-content>
@@ -84,14 +84,14 @@
     <bit-item-group>
       <bit-item>
         <bit-item-content>
-          <i class="bwi bwi-fw bwi-puzzle tw-text-muted" slot="start" aria-hidden="true"></i>
+          <bit-icon name="bwi-puzzle" fixedWidth class="tw-text-muted" slot="start" />
           {{ result.extensionVersion }}
           <span slot="secondary">Extension Version</span>
         </bit-item-content>
       </bit-item>
       <bit-item>
         <bit-item-content>
-          <i class="bwi bwi-fw bwi-browser tw-text-muted" slot="start" aria-hidden="true"></i>
+          <bit-icon name="bwi-browser" fixedWidth class="tw-text-muted" slot="start" />
           {{ result.browserInfo.name }} {{ result.browserInfo.version }}
           <span slot="secondary">Browser</span>
         </bit-item-content>

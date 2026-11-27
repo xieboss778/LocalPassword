@@ -61,8 +61,8 @@
           [bitTooltip]="ssoRequired ? ('yourOrganizationRequiresSingleSignOn' | i18n) : ''"
           [addTooltipToDescribedby]="ssoRequired"
           [disabled]="ssoRequired"
+          startIcon="bwi-passkey"
         >
-          <bit-icon name="bwi-passkey" class="tw-mr-1"></bit-icon>
           {{ "logInWithPasskey" | i18n }}
         </button>
       </ng-container>
@@ -75,8 +75,8 @@
         [buttonType]="ssoRequired ? 'primary' : 'secondary'"
         data-testid="login-sso-button"
         (click)="handleSsoClick()"
+        startIcon="bwi-provider"
       >
-        <bit-icon name="bwi-provider" class="tw-mr-1"></bit-icon>
         {{ "useSingleSignOn" | i18n }}
       </button>
     </div>
@@ -127,8 +127,8 @@
           buttonType="secondary"
           data-testid="login-with-device-button"
           (click)="startAuthRequestLogin()"
+          startIcon="bwi-mobile"
         >
-          <bit-icon name="bwi-mobile"></bit-icon>
           {{ "loginWithDevice" | i18n }}
         </button>
       </ng-container>

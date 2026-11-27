@@ -19,6 +19,7 @@ import {
   ButtonModule,
   BitActionDirective,
   IconButtonModule,
+  IconComponent,
 } from "@localpass/components";
 import { I18nPipe } from "@localpass/ui-common";
 
@@ -28,7 +29,14 @@ import { I18nPipe } from "@localpass/ui-common";
   selector: "km-ui-remove-password",
   templateUrl: "remove-password.component.html",
   standalone: true,
-  imports: [CommonModule, ButtonModule, I18nPipe, BitActionDirective, IconButtonModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    I18nPipe,
+    BitActionDirective,
+    IconButtonModule,
+    IconComponent,
+  ],
 })
 export class RemovePasswordComponent implements OnInit {
   continuing = false;

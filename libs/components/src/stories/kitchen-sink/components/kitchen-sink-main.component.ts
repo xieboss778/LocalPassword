@@ -141,9 +141,8 @@ export class KitchenSinkDialogWithAutofocusComponent {
             #triggerRef="popoverTrigger"
             type="button"
             aria-label="Popover trigger link"
-          >
-            <bit-icon name="bwi-question-circle" />
-          </button>
+            startIcon="bwi-question-circle"
+          ></button>
         } @else {
           <button
             bitLink
@@ -152,9 +151,8 @@ export class KitchenSinkDialogWithAutofocusComponent {
             type="button"
             aria-label="Popover trigger link"
             slot="secondary"
-          >
-            <bit-icon name="bwi-question-circle" />
-          </button>
+            startIcon="bwi-question-circle"
+          ></button>
         }
         <bit-search
           [bitPopoverAnchorFor]="tourStep1"

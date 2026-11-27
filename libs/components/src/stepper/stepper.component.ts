@@ -11,6 +11,7 @@ import {
   QueryList,
 } from "@angular/core";
 
+import { IconComponent } from "../icon";
 import { ResizeObserverDirective } from "../resize-observer";
 import { TypographyModule } from "../typography";
 
@@ -25,7 +26,7 @@ import { StepComponent } from "./step.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "stepper.component.html",
   providers: [{ provide: CdkStepper, useExisting: StepperComponent }],
-  imports: [CommonModule, ResizeObserverDirective, TypographyModule],
+  imports: [IconComponent, CommonModule, ResizeObserverDirective, TypographyModule],
 })
 export class StepperComponent extends CdkStepper {
   // Need to reimplement the constructor to fix an invalidFactoryDep error in Storybook

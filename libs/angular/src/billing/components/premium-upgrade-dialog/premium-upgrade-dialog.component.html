@@ -79,10 +79,10 @@
             <ul class="tw-list-none tw-p-0 tw-m-0">
               @for (feature of cardDetails.features; track feature) {
                 <li class="tw-flex tw-items-start tw-gap-2 tw-mb-2 last:tw-mb-0">
-                  <i
-                    class="bwi bwi-check tw-text-primary-600 tw-mt-0.5 tw-flex-shrink-0"
-                    aria-hidden="true"
-                  ></i>
+                  <bit-icon
+                    name="bwi-check"
+                    class="tw-text-primary-600 tw-mt-0.5 tw-flex-shrink-0"
+                  />
                   <span bitTypography="helper" class="tw-text-muted tw-leading-relaxed">{{
                     feature
                   }}</span>
@@ -95,10 +95,6 @@
     </div>
   </section>
 } @else {
-  <i
-    class="bwi bwi-spinner bwi-spin tw-text-muted"
-    title="{{ 'loading' | i18n }}"
-    aria-hidden="true"
-  ></i>
+  <bit-icon name="bwi-spinner" class="bwi-spin tw-text-muted" [title]="'loading' | i18n" />
   <span class="tw-sr-only">{{ "loading" | i18n }}</span>
 }

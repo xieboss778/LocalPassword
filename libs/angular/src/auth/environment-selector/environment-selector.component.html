@@ -38,11 +38,15 @@
     </bit-menu>
     <div bitTypography="body2">
       {{ "accessing" | i18n }}:
-      <button [bitMenuTriggerFor]="environmentOptions" bitLink type="button">
+      <button
+        [bitMenuTriggerFor]="environmentOptions"
+        bitLink
+        type="button"
+        endIcon="bwi-angle-down"
+      >
         <b class="tw-text-primary-600 tw-font-medium">{{
           data.selectedRegion?.domain || ("selfHostedServer" | i18n)
         }}</b>
-        <bit-icon name="bwi-angle-down" class="bwi-fw bwi-sm"></bit-icon>
       </button>
     </div>
   </div>

@@ -56,6 +56,7 @@ import {
   DialogService,
   FormFieldModule,
   IconButtonModule,
+  IconComponent,
   ItemModule,
   LinkModule,
   SectionComponent,
@@ -79,6 +80,7 @@ import { FillAssistPopoverComponent } from "./fill-assist-popover/fill-assist-po
 @Component({
   templateUrl: "autofill.component.html",
   imports: [
+    IconComponent,
     ButtonModule,
     CalloutModule,
     CardComponent,

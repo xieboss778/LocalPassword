@@ -20,7 +20,7 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
 import { CipherId } from "@localpass/common/types/guid";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
-import { ItemModule, ToastService, TypographyModule } from "@localpass/components";
+import { IconComponent, ItemModule, ToastService, TypographyModule } from "@localpass/components";
 import { CipherFormContainer } from "@localpass/vault";
 
 // FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
@@ -28,7 +28,14 @@ import { CipherFormContainer } from "@localpass/vault";
 @Component({
   selector: "app-open-attachments",
   templateUrl: "./open-attachments.component.html",
-  imports: [CommonModule, ItemModule, JslibModule, TypographyModule, PremiumBadgeComponent],
+  imports: [
+    IconComponent,
+    CommonModule,
+    ItemModule,
+    JslibModule,
+    TypographyModule,
+    PremiumBadgeComponent,
+  ],
 })
 export class OpenAttachmentsComponent implements OnInit {
   /** Cipher `id` */

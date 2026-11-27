@@ -25,9 +25,14 @@
       {{ "goBack" | i18n }}
     </button>
 
-    <a bitLink href="#" (click)="openLearnMore($event)" class="tw-self-center tw-text-sm">
+    <a
+      bitLink
+      href="#"
+      endIcon="bwi-external-link"
+      (click)="openLearnMore($event)"
+      class="tw-self-center tw-text-sm"
+    >
       {{ "howToManageMyVault" | i18n }}
-      <bit-icon name="bwi-external-link" class="tw-ml-1"></bit-icon>
     </a>
   </ng-container>
 </bit-simple-dialog>

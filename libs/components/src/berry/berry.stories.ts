@@ -75,7 +75,7 @@ export const Primary: Story = {
   }),
 };
 
-export const statusType: Story = {
+export const StatusType: Story = {
   render: (args) => ({
     props: args,
     template: `
@@ -94,7 +94,7 @@ export const statusType: Story = {
   }),
 };
 
-export const countType: Story = {
+export const CountType: Story = {
   render: (args) => ({
     props: args,
     template: `
