@@ -119,6 +119,36 @@ describe("BrowserApi", () => {
     });
   });
 
+  describe("sendMessage", () => {
+    const originalSendMessage = chrome.runtime.sendMessage;
+
+    afterEach(() => {
+      (chrome.runtime as any).sendMessage = originalSendMessage;
+    });
+
+    it("returns the runtime response", async () => {
+      (chrome.runtime as any).sendMessage = jest.fn().mockResolvedValue({ ok: true });
+
+      await expect(BrowserApi.sendMessage("updateBadge")).resolves.toEqual({ ok: true });
+    });
+
+    it("resolves when the receiving extension view has closed", async () => {
+      (chrome.runtime as any).sendMessage = jest
+        .fn()
+        .mockRejectedValue(
+          new Error("Could not establish connection. Receiving end does not exist."),
+        );
+
+      await expect(BrowserApi.sendMessage("updateBadge")).resolves.toBeUndefined();
+    });
+
+    it("rethrows unexpected runtime errors", async () => {
+      (chrome.runtime as any).sendMessage = jest.fn().mockRejectedValue(new Error("boom"));
+
+      await expect(BrowserApi.sendMessage("updateBadge")).rejects.toThrow("boom");
+    });
+  });
+
   describe("getManagedStorage", () => {
     afterEach(() => {
       delete (global.chrome as any).storage.managed;

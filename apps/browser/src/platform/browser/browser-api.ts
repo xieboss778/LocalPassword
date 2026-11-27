@@ -804,7 +804,24 @@ export class BrowserApi {
 
   static sendMessage(subscriber: string, arg: any = {}) {
     const message = Object.assign({}, { command: subscriber }, arg);
-    return chrome.runtime.sendMessage(message);
+    return chrome.runtime.sendMessage(message).catch((error: unknown): undefined => {
+      if (BrowserApi.isExpectedMessageError(error)) {
+        // Background broadcasts can race with the last popup/popout closing. Chrome reports that
+        // as a rejected promise rather than through `lastError`, so treat it like the callback
+        // sender does instead of surfacing an uncaught error.
+        return undefined;
+      }
+
+      throw error;
+    });
+  }
+
+  private static isExpectedMessageError(error: unknown): boolean {
+    const message = error instanceof Error ? error.message : String(error);
+    return (
+      message === "Could not establish connection. Receiving end does not exist." ||
+      message === "The message port closed before a response was received."
+    );
   }
 
   static sendMessageWithResponse<TResponse>(subscriber: string, arg: any = {}) {
