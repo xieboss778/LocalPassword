@@ -88,7 +88,9 @@ export class MigrationBuilder<TCurrent extends number = 0> {
     direction: Direction,
   ): Promise<void> {
     const shouldMigrate = await migrator.shouldMigrate(helper, direction);
-    helper.info(
+    // The routine "nothing to migrate" result is the common case on every startup; keep it out
+    // of the production console and leave the info lines below for migrations that actually run.
+    helper.logService.debug(
       `Migrator ${migrator.constructor.name} (to version ${migrator.toVersion}) should migrate: ${shouldMigrate} - ${direction}`,
     );
     if (shouldMigrate) {

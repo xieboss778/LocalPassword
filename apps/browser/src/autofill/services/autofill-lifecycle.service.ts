@@ -350,7 +350,9 @@ export class DefaultAutofillLifecycleService implements AutofillLifecycleService
       (await firstValueFrom(this.authService.activeAccountStatus$)) !==
       AuthenticationStatus.LoggedOut;
     if (!accountIsLoggedIn) {
-      this.logService.warning("Autofill monitoring disabled; the active account is logged out.");
+      // Logged out is a normal state, and this runs once per injected frame; a warning here
+      // would flood the console on every extension start.
+      this.logService.debug("Autofill monitoring disabled; the active account is logged out.");
       return;
     }
     // Fire-and-forget: the bootstrap is already injected at this point, and
