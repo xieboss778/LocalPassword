@@ -6,6 +6,7 @@ import { Theme } from "@localpass/common/platform/enums";
 import { InlineMenuCipherData } from "../../../background/abstractions/overlay.background";
 import { EventSecurity } from "../../../utils/event-security";
 
+import { getAvatarTone } from "./avatar";
 import { inlineMenuColors, inlineMenuFocusRing } from "./menu-styles";
 import { InlineMenuTotpRing } from "./totp-ring";
 
@@ -50,10 +51,13 @@ export function InlineMenuTotpRow({
   const formattedCode = formatTotpCode(code, masked);
   const secondaryText = `${username}${isCurrent ? ` · ${i18n.currentAccount}` : label ? ` · ${label}` : ""}`;
   const ariaLabel = i18n.fillAria.replace("{username}", username || label);
+  const initial = (username || label || "?").charAt(0).toUpperCase();
+  const tone = getAvatarTone(username || label || cipher.id);
 
   const handleClick = (event: Event) => {
     if (EventSecurity.isEventTrusted(event)) {
       onFill(cipher, event);
+      showTotpFillFeedback(event.currentTarget as HTMLElement, theme);
     }
   };
 
@@ -69,7 +73,10 @@ export function InlineMenuTotpRow({
       class=${`${totpRowStyles(theme)}${active ? " is-active" : ""}`}
       @click=${handleClick}
     >
-      ${InlineMenuTotpRing({ theme, period, onPeriodElapsed })}
+      <span class=${totpAvatarWrapStyles(theme)} aria-hidden="true">
+        <span class=${totpAvatarStyles(theme, tone)}>${initial}</span>
+        ${InlineMenuTotpRing({ theme, period, onPeriodElapsed })}
+      </span>
       <span class=${totpMainStyles(theme)}>
         <span
           class=${totpCodeStyles(theme)}
@@ -185,3 +192,60 @@ const totpActionStyles = (theme: Theme) => {
     }
   `;
 };
+
+const totpAvatarWrapStyles = (_theme: Theme) => css`
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 34px;
+
+  /* Ring overlays the avatar */
+  [data-inline-totp-ring] {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Let the avatar colour show through the ring's transparent centre */
+  [data-inline-totp-ring] > span {
+    background: transparent;
+  }
+`;
+
+const totpAvatarStyles = (theme: Theme, tone: "a" | "b" | "c") => {
+  const colors = inlineMenuColors(theme);
+  const tones = {
+    a: { background: colors.brandSoft, color: colors.brandStrong },
+    b: { background: colors.tealSoft, color: colors.tealStrong },
+    c: { background: colors.orangeSoft, color: colors.orangeStrong },
+  };
+  const toneColors = tones[tone];
+
+  return css`
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: ${toneColors.background};
+    color: ${toneColors.color};
+    font-size: 12.5px;
+    font-weight: 700;
+  `;
+};
+
+function totpFillFeedbackStyles(theme: Theme): string {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    background: ${colors.successSoft} !important;
+  `;
+}
+
+function showTotpFillFeedback(element: HTMLElement, theme: Theme): void {
+  const className = totpFillFeedbackStyles(theme);
+  element.classList.add(className);
+
+  globalThis.setTimeout(() => {
+    element.classList.remove(className);
+  }, 600);
+}

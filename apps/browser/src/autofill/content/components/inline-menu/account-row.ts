@@ -7,6 +7,7 @@ import { InlineMenuCipherData } from "../../../background/abstractions/overlay.b
 import { EventSecurity } from "../../../utils/event-security";
 import { Passkey } from "../icons";
 
+import { getAvatarTone } from "./avatar";
 import { InlineMenuAccountMethod } from "./login-menu-data";
 import { inlineMenuColors, inlineMenuFocusRing } from "./menu-styles";
 
@@ -64,10 +65,10 @@ export function InlineMenuAccountRow({
   );
   const initial = (username || label || "?").charAt(0).toUpperCase();
   const tone = getAvatarTone(username || label || cipher.id);
-
   const handleClick = (event: Event) => {
     if (EventSecurity.isEventTrusted(event)) {
       onFill(cipher, method, event);
+      showFillFeedback(event.currentTarget as HTMLElement, theme);
     }
   };
 
@@ -110,16 +111,6 @@ export function InlineMenuAccountRow({
       <span class=${rowActionStyles(theme)}>${actionText}</span>
     </button>
   `;
-}
-
-function getAvatarTone(seed: string): "a" | "b" | "c" {
-  const tones = ["a", "b", "c"] as const;
-  let hash = 0;
-  for (let index = 0; index < seed.length; index++) {
-    hash = (hash * 31 + seed.charCodeAt(index)) >>> 0;
-  }
-
-  return tones[hash % tones.length];
 }
 
 const accountRowStyles = (theme: Theme) => {
@@ -191,16 +182,16 @@ const avatarBadgeStyles = (theme: Theme) => {
     bottom: -3px;
     display: grid;
     place-items: center;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border: 1px solid ${colors.border};
     border-radius: 50%;
     background: ${colors.surface};
     color: ${colors.brand};
 
     svg {
-      width: 9px;
-      height: 9px;
+      width: 10px;
+      height: 10px;
     }
   `;
 };
@@ -283,3 +274,20 @@ const rowActionStyles = (theme: Theme) => {
     }
   `;
 };
+
+function fillFeedbackStyles(theme: Theme): string {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    background: ${colors.successSoft} !important;
+  `;
+}
+
+function showFillFeedback(element: HTMLElement, theme: Theme): void {
+  const className = fillFeedbackStyles(theme);
+  element.classList.add(className);
+
+  globalThis.setTimeout(() => {
+    element.classList.remove(className);
+  }, 600);
+}

@@ -295,6 +295,10 @@ const scrollStyles = (theme: Theme) => css`
 `;
 
 const groupStyles = (theme: Theme) => css`
+  & + & {
+    margin-top: 2px;
+  }
+
   & + & > div:first-child {
     border-top: 1px solid ${inlineMenuColors(theme).borderLight};
   }
@@ -307,11 +311,12 @@ const groupHeadingStyles = (theme: Theme) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 7px 14px 4px;
+    padding: 8px 14px 4px;
+    background: ${colors.surfaceAlt};
     color: ${colors.textSubtle};
-    font-size: 9.5px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.04em;
-    line-height: 13px;
+    letter-spacing: 0.03em;
+    line-height: 14px;
   `;
 };
