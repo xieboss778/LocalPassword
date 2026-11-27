@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LocalPass macOS 原型 v2 - 重新设计</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+        background: linear-gradient(135deg, #f5f5f7 0%, #ebebf0 100%);
+        overflow: hidden;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f7f7fb;
+        --bg-tertiary: #efefef;
+        --bg-glass: rgba(255, 255, 255, 0.7);
+        --text-primary: #1d1d1d;
+        --text-secondary: #666666;
+        --text-tertiary: #999999;
+        --accent: #10b981;
+        --accent-hover: #059669;
+        --border-light: rgba(0, 0, 0, 0.08);
+        --focus-color: #0a84ff;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .window-chrome {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-light);
+        border-radius: 10px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+        margin: 20px;
+      }
+
+      /* 窗口头部 */
+      .window-header {
+        height: 28px;
+        background: linear-gradient(to bottom, #fafafa, #f5f5f5);
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        user-select: none;
+        position: relative;
+      }
+
+      .traffic-lights {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        gap: 8px;
+      }
+
+      .traffic-light {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .traffic-light.red {
+        background: #ed6158;
+      }
+      .traffic-light.yellow {
+        background: #fcc02e;
+      }
+      .traffic-light.green {
+        background: #5fc038;
+      }
+
+      .traffic-light:hover {
+        transform: scale(1.15);
+        filter: brightness(0.9);
+      }
+
+      /* 主布局 */
+      .main-layout {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+        gap: 1px;
+        background: var(--border-light);
+      }
+
+      /* 侧边栏 */
+      .sidebar {
+        width: 200px;
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        animation: slideInLeft 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .search-box {
+        padding: 12px;
+        border-bottom: 1px solid var(--border-light);
+        flex-shrink: 0;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--border-light);
+        background: rgba(255, 255, 255, 0.5);
+        color: var(--text-primary);
+        font-size: 12px;
+        border-radius: 6px;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .search-input:hover {
+        border-color: rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: var(--focus-color);
+        background: white;
+        box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.1);
+      }
+
+      .categories {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 0;
+      }
+
+      .category-item {
+        padding: 8px 10px;
+        margin: 2px 6px;
+        color: var(--text-secondary);
+        font-size: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .category-item:hover {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--text-primary);
+      }
+
+      .category-item.active {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      /* 条目列表 */
+      .entries-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-primary);
+        border-right: 1px solid var(--border-light);
+        animation: fadeIn 400ms cubic-bezier(0.16, 1, 0.3, 1) 50ms backwards;
+      }
+
+      .entries-header {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border-light);
+        flex-shrink: 0;
+        font-size: 11px;
+        color: var(--text-tertiary);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .entries-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 4px 0;
+      }
+
+      .entry-item {
+        padding: 10px 12px;
+        margin: 2px 6px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        animation: slideInLeft 300ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      }
+
+      .entry-item:nth-child(1) {
+        animation-delay: 0ms;
+      }
+      .entry-item:nth-child(2) {
+        animation-delay: 50ms;
+      }
+      .entry-item:nth-child(3) {
+        animation-delay: 100ms;
+      }
+      .entry-item:nth-child(4) {
+        animation-delay: 150ms;
+      }
+
+      .entry-item:hover {
+        background: rgba(16, 185, 129, 0.08);
+      }
+
+      .entry-item.selected {
+        background: rgba(16, 185, 129, 0.15);
+      }
+
+      .entry-icon {
+        width: 28px;
+        height: 28px;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+        flex-shrink: 0;
+        font-size: 14px;
+      }
+
+      .entry-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .entry-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .entry-username {
+        font-size: 10px;
+        color: var(--text-tertiary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+
+      /* 详情面板 */
+      .details-panel {
+        width: 260px;
+        background: var(--bg-secondary);
+        border-left: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        animation: slideInRight 400ms cubic-bezier(0.16, 1, 0.3, 1) 100ms backwards;
+      }
+
+      .details-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border-light);
+        flex-shrink: 0;
+      }
+
+      .details-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+      }
+
+      .details-label {
+        font-size: 10px;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+      }
+
+      .details-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 14px 16px;
+      }
+
+      .detail-field {
+        margin-bottom: 14px;
+        animation: slideInRight 300ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      }
+
+      .detail-field:nth-child(1) {
+        animation-delay: 150ms;
+      }
+      .detail-field:nth-child(2) {
+        animation-delay: 200ms;
+      }
+      .detail-field:nth-child(3) {
+        animation-delay: 250ms;
+      }
+
+      .field-label {
+        font-size: 10px;
+        color: var(--text-tertiary);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+      }
+
+      .field-value {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .field-text {
+        flex: 1;
+        padding: 7px 9px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--border-light);
+        border-radius: 5px;
+        font-size: 11px;
+        color: var(--text-primary);
+        font-family: "SF Mono", Monaco, monospace;
+        word-break: break-all;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .field-text:hover {
+        border-color: rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      .copy-btn {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid transparent;
+        color: var(--accent);
+        cursor: pointer;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+        flex-shrink: 0;
+      }
+
+      .copy-btn:hover {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.3);
+        transform: scale(1.08);
+      }
+
+      .copy-btn:active {
+        background: rgba(16, 185, 129, 0.25);
+        transform: scale(0.95);
+      }
+
+      /* 详情按钮 */
+      .details-actions {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border-light);
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 7px 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        transform: translateY(-1px);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
+      }
+
+      .btn-secondary {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--text-primary);
+        border: 1px solid var(--border-light);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(0, 0, 0, 0.08);
+        border-color: rgba(0, 0, 0, 0.12);
+      }
+
+      /* Sheet 模态 */
+      .sheet-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(8px);
+        display: none;
+        animation: fadeIn 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 999;
+      }
+
+      .sheet {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--bg-primary);
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 400px;
+        display: none;
+        animation: slideInDown 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1000;
+      }
+
+      /* Toast 通知 */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        z-index: 1001;
+        pointer-events: none;
+        animation: slideInDown 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: none;
+      }
+
+      .toast.show {
+        display: block;
+      }
+
+      /* 滚动条 */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        transition: background 150ms ease;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      /* 焦点管理 */
+      *:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: 2px;
+      }
+
+      button:focus-visible {
+        outline-offset: -4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="window-chrome">
+      <!-- 窗口头部 -->
+      <div class="window-header">
+        <div class="traffic-lights">
+          <div class="traffic-light red" title="关闭"></div>
+          <div class="traffic-light yellow" title="最小化"></div>
+          <div class="traffic-light green" title="最大化"></div>
+        </div>
+        <span>LocalPass</span>
+      </div>
+
+      <!-- 主布局 -->
+      <div class="main-layout">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+          <div class="search-box">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="搜索..."
+              aria-label="搜索保险库条目"
+            />
+          </div>
+          <div class="categories">
+            <div class="category-item active" role="button" tabindex="0">📋 所有项目</div>
+            <div class="category-item" role="button" tabindex="0">🔐 密码</div>
+            <div class="category-item" role="button" tabindex="0">📝 笔记</div>
+            <div class="category-item" role="button" tabindex="0">💳 支付卡</div>
+            <div class="category-item" role="button" tabindex="0">👤 身份信息</div>
+          </div>
+        </div>
+
+        <!-- 条目列表 -->
+        <div class="entries-panel">
+          <div class="entries-header">条目</div>
+          <div class="entries-list">
+            <div class="entry-item selected" role="button" tabindex="0" aria-selected="true">
+              <div class="entry-icon">🔐</div>
+              <div class="entry-info">
+                <div class="entry-name">Gmail</div>
+                <div class="entry-username">user@gmail.com</div>
+              </div>
+            </div>
+            <div class="entry-item" role="button" tabindex="0" aria-selected="false">
+              <div class="entry-icon">🔐</div>
+              <div class="entry-info">
+                <div class="entry-name">GitHub</div>
+                <div class="entry-username">developer</div>
+              </div>
+            </div>
+            <div class="entry-item" role="button" tabindex="0" aria-selected="false">
+              <div class="entry-icon">🌐</div>
+              <div class="entry-info">
+                <div class="entry-name">AWS Console</div>
+                <div class="entry-username">admin</div>
+              </div>
+            </div>
+            <div class="entry-item" role="button" tabindex="0" aria-selected="false">
+              <div class="entry-icon">💳</div>
+              <div class="entry-info">
+                <div class="entry-name">MasterCard</div>
+                <div class="entry-username">****1234</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 详情面板 -->
+        <div class="details-panel">
+          <div class="details-header">
+            <div class="details-title">Gmail</div>
+            <div class="details-label">登录凭证</div>
+          </div>
+          <div class="details-content">
+            <div class="detail-field">
+              <div class="field-label">用户名</div>
+              <div class="field-value">
+                <div class="field-text">user@gmail.com</div>
+                <button class="copy-btn" title="复制">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                    ></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="detail-field">
+              <div class="field-label">密码</div>
+              <div class="field-value">
+                <div class="field-text">••••••••••••</div>
+                <button class="copy-btn" title="复制">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                    ></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="detail-field">
+              <div class="field-label">恢复代码</div>
+              <div class="field-value">
+                <div class="field-text">1234-5678-9012</div>
+                <button class="copy-btn" title="复制">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                    ></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="details-actions">
+            <button class="btn btn-primary">编辑</button>
+            <button class="btn btn-secondary">更多</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">已复制到剪贴板</div>
+
+    <script>
+      // 条目选择
+      document.querySelectorAll(".entry-item").forEach((item, index) => {
+        item.addEventListener("click", () => {
+          document.querySelectorAll(".entry-item").forEach((el) => {
+            el.classList.remove("selected");
+            el.setAttribute("aria-selected", "false");
+          });
+          item.classList.add("selected");
+          item.setAttribute("aria-selected", "true");
+        });
+
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+
+      // 分类选择
+      document.querySelectorAll(".category-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          document
+            .querySelectorAll(".category-item")
+            .forEach((el) => el.classList.remove("active"));
+          item.classList.add("active");
+        });
+
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+
+      // 复制按钮
+      document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const toast = document.getElementById("toast");
+          toast.classList.add("show");
+          setTimeout(() => toast.classList.remove("show"), 2000);
+        });
+      });
+
+      // 交通灯交互
+      document.querySelectorAll(".traffic-light").forEach((light) => {
+        light.addEventListener("click", (e) => {
+          e.preventDefault();
+        });
+      });
+    </script>
+  </body>
+</html>

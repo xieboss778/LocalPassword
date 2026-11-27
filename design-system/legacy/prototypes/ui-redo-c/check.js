@@ -1,6 +1,6 @@
 /**
  * 原型自检：所有界面能渲染、HTML 结构平衡、导航目标存在。
- * 用法：node prototype/ui-redo-c/check.js
+ * 用法：node design-system/legacy/prototypes/ui-redo-c/check.js
  */
 const fs = require("fs");
 const path = require("path");
@@ -25,12 +25,23 @@ const api = new Function(
 )(global.document, global.location, global.history, URL, URLSearchParams, console);
 
 let problems = 0;
-const fail = (msg) => { console.log("✗", msg); problems++; };
+const fail = (msg) => {
+  console.log("✗", msg);
+  problems++;
+};
 
-for (const [dev, set] of [["popup", api.POPUP], ["desktop", api.DESK]]) {
+for (const [dev, set] of [
+  ["popup", api.POPUP],
+  ["desktop", api.DESK],
+]) {
   for (const [name, fn] of Object.entries(set)) {
     let html = "";
-    try { html = fn(); } catch (e) { fail(dev + ":" + name + " 抛错 " + e.message); continue; }
+    try {
+      html = fn();
+    } catch (e) {
+      fail(dev + ":" + name + " 抛错 " + e.message);
+      continue;
+    }
     if (!html || html.length < 60) fail(dev + ":" + name + " 输出过短");
     const open = (html.match(/<div\b/g) || []).length;
     const close = (html.match(/<\/div>/g) || []).length;

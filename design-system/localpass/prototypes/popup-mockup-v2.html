@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="zh-CN" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>LocalPass 浏览器扩展弹窗 v2 - 重新设计</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-primary: #0f1419;
+        --bg-secondary: #1a1f2e;
+        --bg-tertiary: #272e3f;
+        --bg-glass: rgba(255, 255, 255, 0.1);
+        --text-primary: #f5f7fa;
+        --text-secondary: #a0aec0;
+        --text-tertiary: #7a8fa3;
+        --accent: #10b981;
+        --accent-hover: #059669;
+        --accent-active: #047857;
+        --border-color: #334155;
+        --focus-color: #3b82f6;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.5;
+      }
+
+      .device-frame {
+        width: 360px;
+        height: 600px;
+        border: 8px solid #1a1a1a;
+        border-radius: 32px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-primary);
+        margin: 40px auto;
+      }
+
+      .popup-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        overflow: hidden;
+      }
+
+      /* 头部 */
+      .popup-header {
+        position: sticky;
+        top: 0;
+        flex-shrink: 0;
+        height: 56px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
+        border-bottom: 1px solid var(--border-color);
+        z-index: 10;
+        animation: slideInDown 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .header-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .header-btn {
+        width: 32px;
+        height: 32px;
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .header-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+      }
+
+      .header-btn:active {
+        background: rgba(255, 255, 255, 0.15);
+        transform: scale(0.95);
+      }
+
+      /* 搜索和标签页 */
+      .search-container {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        animation: slideInDown 300ms cubic-bezier(0.16, 1, 0.3, 1) 50ms backwards;
+      }
+
+      .search-hint {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        margin-top: 8px;
+        padding: 0 4px;
+      }
+
+      .search-field {
+        width: 100%;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        padding: 0 12px;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .search-field:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.11);
+      }
+
+      .search-field:focus-within {
+        border-color: var(--focus-color);
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--text-primary);
+        font-size: 13px;
+        outline: none;
+      }
+
+      .search-input::placeholder {
+        color: var(--text-tertiary);
+      }
+
+      /* 内容区域 */
+      .popup-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        animation: slideInUp 400ms cubic-bezier(0.16, 1, 0.3, 1) 100ms backwards;
+      }
+
+      .content-empty {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-tertiary);
+        gap: 8px;
+      }
+
+      /* 保险库列表 */
+      .vault-item {
+        padding: 12px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        animation: slideInUp 300ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      }
+
+      .vault-item:nth-child(1) {
+        animation-delay: 150ms;
+      }
+      .vault-item:nth-child(2) {
+        animation-delay: 200ms;
+      }
+      .vault-item:nth-child(3) {
+        animation-delay: 250ms;
+      }
+
+      .vault-item:hover {
+        background: var(--bg-tertiary);
+        border-color: var(--accent);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+      }
+
+      .vault-item:active {
+        transform: translateY(0);
+      }
+
+      .vault-icon {
+        width: 36px;
+        height: 36px;
+        background: rgba(16, 185, 129, 0.15);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .vault-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .vault-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .vault-username {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+
+      .vault-last-used {
+        font-size: 10px;
+        color: var(--text-tertiary);
+        margin-top: 2px;
+      }
+
+      .vault-match-context {
+        font-size: 10px;
+        color: #f59e0b;
+        margin-top: 2px;
+        font-style: italic;
+      }
+
+      /* 底部操作栏 */
+      .popup-footer {
+        flex-shrink: 0;
+        padding: 12px 16px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        gap: 8px;
+        background: var(--bg-secondary);
+        animation: slideInUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .btn {
+        flex: 1;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .btn-primary:active {
+        background: var(--accent-active);
+        transform: scale(0.98);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      /* 菜单 */
+      .menu {
+        position: absolute;
+        top: 56px;
+        right: 16px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        box-shadow: 0 10px 32px rgba(0, 0, 0, 0.3);
+        min-width: 200px;
+        display: none;
+        z-index: 1000;
+        animation: scaleIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+      }
+
+      .menu.show {
+        display: block;
+      }
+
+      .menu-item {
+        padding: 12px 14px;
+        color: var(--text-primary);
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 100ms ease;
+        border-left: 2px solid transparent;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .menu-item:hover {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--accent);
+        border-left-color: var(--accent);
+      }
+
+      .menu-divider {
+        height: 1px;
+        background: var(--border-color);
+        margin: 4px 0;
+      }
+
+      /* Toast 通知 */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(16, 185, 129, 0.95);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        z-index: 1001;
+        pointer-events: none;
+        animation: slideInUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 32px rgba(16, 185, 129, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: none;
+      }
+
+      .toast.show {
+        display: block;
+      }
+
+      /* 剪贴板计时 */
+      .clipboard-timer {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        z-index: 1001;
+        pointer-events: none;
+        animation: slideInUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: none;
+      }
+
+      .clipboard-timer.show {
+        display: block;
+      }
+
+      /* 滚动条美化 */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        transition: background 150ms ease;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* 焦点管理 */
+      *:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: 2px;
+      }
+
+      button:focus-visible {
+        outline-offset: -4px;
+      }
+
+      /* Toast 倒计时 */
+      .toast-timer {
+        font-size: 11px;
+        margin-top: 4px;
+        opacity: 0.9;
+      }
+
+      /* 复制后状态 */
+      .copy-status {
+        font-size: 10px;
+        color: var(--accent);
+        margin-top: 2px;
+      }
+
+      /* 密码字段 */
+      .password-field {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        position: relative;
+      }
+
+      .password-text {
+        flex: 1;
+        font-family: monospace;
+      }
+
+      .reveal-btn {
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border: none;
+        color: var(--accent);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+      }
+
+      .hide-timer {
+        font-size: 9px;
+        color: var(--text-tertiary);
+        margin-top: 2px;
+      }
+
+      /* 删除撤销 */
+      .undo-btn {
+        margin-left: 8px;
+        padding: 2px 8px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      /* 空态 */
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .empty-state-ctas {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .empty-cta-btn {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid var(--border-color);
+        background: transparent;
+        color: var(--text-primary);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        transition: all 150ms ease;
+      }
+
+      .empty-cta-btn:hover {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--accent);
+      }
+
+      /* 快捷键卡片 */
+      .shortcuts-panel {
+        display: none;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 8px;
+        font-size: 11px;
+        line-height: 1.6;
+        animation: slideInUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .shortcuts-panel.show {
+        display: block;
+      }
+
+      .shortcut-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        color: var(--text-secondary);
+      }
+
+      .shortcut-key {
+        font-family: monospace;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* 设置页面 */
+      .settings-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 0;
+      }
+
+      /* 页面容器 */
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="device-frame">
+      <div class="popup-container">
+        <!-- 头部 -->
+        <div class="popup-header">
+          <div class="header-title">LocalPass</div>
+          <div class="header-actions">
+            <button class="header-btn" title="刷新" aria-label="刷新保险库">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+              </svg>
+            </button>
+            <button class="header-btn" id="menuBtn" title="更多" aria-label="打开菜单">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="12" cy="19" r="2"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 菜单（隐藏） -->
+        <div class="menu" id="menu" role="menu">
+          <div class="menu-item" role="menuitem" tabindex="0">⚙️ 设置</div>
+          <div class="menu-item" role="menuitem" tabindex="0">🔄 同步</div>
+          <div class="menu-item" role="menuitem" tabindex="0">🚪 锁定</div>
+          <div class="menu-divider"></div>
+          <div class="menu-item" role="menuitem" tabindex="0">❓ 帮助</div>
+        </div>
+
+        <!-- 保存通知条 -->
+        <div
+          id="saveNotif"
+          style="
+            display: none;
+            padding: 10px 14px;
+            background: rgba(59, 130, 246, 0.15);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            font-size: 12px;
+            color: #93c5fd;
+          "
+        >
+          <div style="margin-bottom: 6px">
+            💾 保存到 LocalPass？<span
+              style="font-size: 10px; color: var(--text-tertiary); margin-left: 6px"
+              >已存在 Gmail (user@gmail.com)</span
+            >
+          </div>
+          <div style="display: flex; gap: 6px">
+            <button
+              style="
+                flex: 1;
+                padding: 5px;
+                background: var(--focus-color);
+                color: white;
+                border: none;
+                border-radius: 5px;
+                font-size: 11px;
+                cursor: pointer;
+              "
+            >
+              保存
+            </button>
+            <button
+              style="
+                flex: 1;
+                padding: 5px;
+                background: rgba(255, 255, 255, 0.1);
+                color: var(--text-primary);
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+                font-size: 11px;
+                cursor: pointer;
+              "
+            >
+              更新已有
+            </button>
+            <button
+              id="closeNotif"
+              style="
+                flex: 1;
+                padding: 5px;
+                background: transparent;
+                color: var(--text-tertiary);
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+                font-size: 11px;
+                cursor: pointer;
+              "
+            >
+              忽略
+            </button>
+          </div>
+        </div>
+
+        <!-- 搜索框 -->
+        <div class="search-container">
+          <div class="search-field">
+            <span>🔍</span>
+            <input
+              type="text"
+              class="search-input"
+              id="searchInput"
+              placeholder="搜索..."
+              aria-label="搜索保险库条目（Ctrl+Shift+Space 全局唤起）"
+            />
+          </div>
+          <div class="search-hint">🔍 名称 • 用户名 • URL • 备注 • 自定义字段</div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="popup-content" id="vaultList">
+          <div class="vault-item" role="button" tabindex="0" aria-label="Gmail 账户">
+            <div class="vault-icon">🔐</div>
+            <div class="vault-info">
+              <div class="vault-name">Gmail</div>
+              <div class="vault-username">user@gmail.com</div>
+              <div class="vault-last-used">上次使用 2 小时前</div>
+            </div>
+          </div>
+
+          <div class="vault-item" role="button" tabindex="0" aria-label="GitHub 账户">
+            <div class="vault-icon">🔐</div>
+            <div class="vault-info">
+              <div class="vault-name">GitHub</div>
+              <div class="vault-username">developer</div>
+              <div class="vault-last-used">上次使用 1 天前</div>
+            </div>
+          </div>
+
+          <div class="vault-item" role="button" tabindex="0" aria-label="AWS 凭证">
+            <div class="vault-icon">🌐</div>
+            <div class="vault-info">
+              <div class="vault-name">AWS Console</div>
+              <div class="vault-username">admin@company.com</div>
+              <div class="vault-last-used">上次使用 3 天前</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 空态示例（隐藏） -->
+        <div class="popup-content empty-state" id="emptyState" style="display: none">
+          <div style="font-size: 48px; opacity: 0.3">🔐</div>
+          <div style="color: var(--text-tertiary); font-size: 13px; margin-bottom: 16px">
+            保险库为空
+          </div>
+          <div class="empty-state-ctas">
+            <button class="empty-cta-btn">🔄 导入数据</button>
+            <button class="empty-cta-btn">➕ 新建</button>
+            <button class="empty-cta-btn" id="showShortcutsEmpty">⌨️ 快捷键</button>
+          </div>
+        </div>
+
+        <!-- 底部操作栏 -->
+        <div class="popup-footer">
+          <button class="btn btn-primary" aria-label="新建条目">
+            <span>➕</span>
+            <span>新建</span>
+          </button>
+          <button class="btn btn-secondary" aria-label="打开保险库">打开</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast 通知 -->
+    <div class="toast" id="toast" role="status" aria-live="polite">已复制到剪贴板</div>
+
+    <!-- 剪贴板计时 -->
+    <div class="clipboard-timer" id="timer" role="status" aria-live="polite">
+      剪贴板将在 30 秒后清空
+    </div>
+
+    <script>
+      // 菜单交互
+      const menuBtn = document.getElementById("menuBtn");
+      const menu = document.getElementById("menu");
+
+      menuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("show");
+      });
+
+      document.addEventListener("click", () => {
+        menu.classList.remove("show");
+      });
+
+      // 条目交互
+      document.querySelectorAll(".vault-item").forEach((item, index) => {
+        item.addEventListener("click", () => {
+          const toast = document.getElementById("toast");
+          toast.classList.add("show");
+
+          const timer = document.getElementById("timer");
+          timer.classList.add("show");
+          let countdown = 30;
+
+          const interval = setInterval(() => {
+            countdown--;
+            timer.textContent = `剪贴板将在 ${countdown} 秒后清空`;
+
+            if (countdown <= 0) {
+              clearInterval(interval);
+              timer.classList.remove("show");
+            }
+          }, 1000);
+
+          setTimeout(() => {
+            toast.classList.remove("show");
+          }, 2000);
+        });
+
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+
+      // 菜单项交互
+      document.querySelectorAll(".menu-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          menu.classList.remove("show");
+        });
+
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+
+      // 刷新按钮
+      document.querySelector('[aria-label="刷新保险库"]').addEventListener("click", () => {
+        const btn = event.target.closest("button");
+        btn.style.animation = "none";
+        setTimeout(() => {
+          btn.style.animation = "";
+        }, 10);
+      });
+    </script>
+  </body>
+</html>

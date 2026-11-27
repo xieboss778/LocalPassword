@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="zh-CN" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>LocalPass 浏览器扩展 - 弹窗原型</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-primary: #192134;
+        --bg-secondary: #0f172a;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --text-tertiary: #64748b;
+        --border-color: #334155;
+        --accent: #059669;
+        --accent-hover: #04945b;
+        --accent-active: #03804a;
+        --focus-color: #3b82f6;
+        --focus-offset: 2px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      body {
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.5;
+      }
+
+      .device-frame {
+        width: 360px;
+        height: 600px;
+        border: 8px solid #1a1a1a;
+        border-radius: 32px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-primary);
+        margin: 40px auto;
+      }
+
+      .popup-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        overflow: hidden;
+      }
+
+      /* Header */
+      .popup-header {
+        position: sticky;
+        top: 0;
+        flex-shrink: 0;
+        height: 56px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--bg-primary);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+
+      .popup-header-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .popup-header-icon {
+        width: 24px;
+        height: 24px;
+        background: linear-gradient(135deg, var(--accent), #0d7e5f);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: white;
+      }
+
+      .popup-header-actions {
+        display: flex;
+        gap: 4px;
+      }
+
+      .header-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 150ms ease;
+      }
+
+      .header-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-primary);
+      }
+
+      .header-btn:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: var(--focus-offset);
+      }
+
+      /* Search */
+      .popup-search {
+        flex-shrink: 0;
+        height: 40px;
+        margin: 8px 12px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        transition: all 150ms ease;
+      }
+
+      .popup-search:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
+      }
+
+      .popup-search-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+      }
+
+      .popup-search input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--text-primary);
+        font-size: 14px;
+        outline: none;
+      }
+
+      .popup-search input::placeholder {
+        color: var(--text-tertiary);
+      }
+
+      .popup-search input:focus {
+        outline: none;
+      }
+
+      /* List Container */
+      .popup-list {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: 468px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-color) transparent;
+      }
+
+      .popup-list::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .popup-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .popup-list::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 3px;
+      }
+
+      /* Vault Items */
+      .vault-item {
+        min-height: 60px;
+        padding: 12px 12px;
+        margin: 2px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 150ms ease;
+        border-radius: 4px;
+      }
+
+      .vault-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .vault-item:active {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .vault-item:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: var(--focus-offset);
+      }
+
+      .vault-item-icon {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 6px;
+        background: #1e3a5f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--accent);
+      }
+
+      .vault-item-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .vault-item-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .vault-item-subtitle {
+        font-size: 12px;
+        color: var(--text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .vault-item-actions {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 150ms ease;
+      }
+
+      .vault-item:hover .vault-item-actions {
+        opacity: 1;
+      }
+
+      .vault-item-action {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 150ms ease;
+      }
+
+      .vault-item-action:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+      }
+
+      .vault-item-action:active {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .vault-item-action:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: var(--focus-offset);
+      }
+
+      /* Empty State */
+      .empty-state {
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        color: var(--text-tertiary);
+      }
+
+      .empty-state-icon {
+        width: 48px;
+        height: 48px;
+        opacity: 0.5;
+        font-size: 48px;
+      }
+
+      .empty-state-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+
+      .empty-state-hint {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        text-align: center;
+        max-width: 280px;
+      }
+
+      /* Footer */
+      .popup-footer {
+        flex-shrink: 0;
+        height: 56px;
+        padding: 8px 12px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        background: var(--bg-primary);
+        box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .quick-action-btn {
+        flex: 1;
+        height: 36px;
+        border: none;
+        border-radius: 4px;
+        background: transparent;
+        color: var(--text-primary);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 150ms ease;
+      }
+
+      .quick-action-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .quick-action-btn:active {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .quick-action-btn:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: var(--focus-offset);
+      }
+
+      .quick-action-btn.primary {
+        background: var(--accent);
+        color: #000000;
+      }
+
+      .quick-action-btn.primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .quick-action-btn.primary:active {
+        background: var(--accent-active);
+      }
+
+      .quick-action-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        top: 8px;
+        right: 8px;
+        max-width: 320px;
+        min-height: 40px;
+        padding: 8px 12px;
+        border-radius: 4px;
+        background: #1e3a5f;
+        color: var(--text-primary);
+        font-size: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        animation: slideIn 200ms ease;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-left: 3px solid;
+      }
+
+      .toast.success {
+        border-left-color: var(--accent);
+      }
+
+      .toast.error {
+        border-left-color: #ef4444;
+      }
+
+      .toast.info {
+        border-left-color: #3b82f6;
+      }
+
+      .toast-countdown {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-left: auto;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Autofill Dialog */
+      .autofill-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .autofill-overlay.active {
+        display: flex;
+      }
+
+      .autofill-dialog {
+        width: 320px;
+        max-height: 400px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .autofill-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .autofill-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .autofill-item {
+        min-height: 48px;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background 150ms ease;
+      }
+
+      .autofill-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .autofill-item:active {
+        background: rgba(5, 150, 105, 0.2);
+      }
+
+      .autofill-item:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: var(--focus-offset);
+      }
+
+      .autofill-item-icon {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 6px;
+        background: #1e3a5f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--accent);
+      }
+
+      .autofill-item-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .autofill-item-title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .autofill-item-username {
+        font-size: 12px;
+        color: var(--text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .autofill-confirm {
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+      }
+
+      .autofill-confirm button {
+        flex: 1;
+        height: 36px;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 150ms ease;
+      }
+
+      .autofill-confirm .btn-confirm {
+        background: var(--accent);
+        color: #000000;
+      }
+
+      .autofill-confirm .btn-confirm:hover {
+        background: var(--accent-hover);
+      }
+
+      .autofill-confirm .btn-cancel {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+      }
+
+      .autofill-confirm .btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .autofill-confirm button:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: var(--focus-offset);
+      }
+
+      /* Keyboard Shortcut Help */
+      .keyboard-help {
+        position: fixed;
+        bottom: 8px;
+        left: 8px;
+        font-size: 10px;
+        color: var(--text-tertiary);
+        z-index: 1;
+        max-width: 180px;
+        line-height: 1.3;
+      }
+
+      .keyboard-help div {
+        margin-bottom: 2px;
+      }
+
+      /* Utility */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      /* Demo Controls */
+      .demo-controls {
+        margin: 20px auto;
+        max-width: 360px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .demo-btn {
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 150ms ease;
+      }
+
+      .demo-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="device-frame">
+      <div class="popup-container">
+        <!-- Header -->
+        <header class="popup-header" role="banner">
+          <div class="popup-header-title">
+            <div class="popup-header-icon" aria-label="LocalPass 图标">🔐</div>
+            <span>LocalPass</span>
+          </div>
+          <div class="popup-header-actions">
+            <button class="header-btn" aria-label="刷新" title="刷新 (Ctrl+Shift+R)">🔄</button>
+            <button class="header-btn" aria-label="设置" title="设置">⚙️</button>
+          </div>
+        </header>
+
+        <!-- Search -->
+        <div class="popup-search" role="search">
+          <svg
+            class="popup-search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="搜索保险库..."
+            aria-label="搜索保险库条目"
+          />
+        </div>
+
+        <!-- List -->
+        <div class="popup-list" id="vaultList" role="listbox" aria-label="保险库条目列表">
+          <!-- Items will be generated here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none">
+          <div class="empty-state-icon">📭</div>
+          <div class="empty-state-title">没有找到条目</div>
+          <div class="empty-state-hint">创建一个新的条目或调整您的搜索</div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="popup-footer" role="contentinfo">
+          <button class="quick-action-btn" id="newBtn" aria-label="新建条目">
+            <span class="quick-action-icon">➕</span>
+            <span>新建</span>
+          </button>
+          <button class="quick-action-btn" id="lockBtn" aria-label="锁定保险库">
+            <span class="quick-action-icon">🔒</span>
+            <span>锁定</span>
+          </button>
+          <button class="quick-action-btn primary" id="genBtn" aria-label="生成密码">
+            <span class="quick-action-icon">⚡</span>
+            <span>生成</span>
+          </button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Autofill Dialog -->
+    <div
+      class="autofill-overlay"
+      id="autofillOverlay"
+      role="dialog"
+      aria-labelledby="autofillTitle"
+    >
+      <div class="autofill-dialog">
+        <div class="autofill-title" id="autofillTitle">选择要自动填充的条目</div>
+        <div class="autofill-list" id="autofillList" role="listbox"></div>
+        <div class="autofill-confirm">
+          <button class="btn-confirm" id="confirmAutofill" aria-label="确认自动填充">确认</button>
+          <button class="btn-cancel" id="cancelAutofill" aria-label="取消自动填充">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Help -->
+    <div class="keyboard-help">
+      <div><strong>快捷键:</strong></div>
+      <div>Ctrl+Shift+L: 锁定</div>
+      <div>Ctrl+Shift+P: 切换弹窗</div>
+      <div>ESC: 关闭</div>
+    </div>
+
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+      <button class="demo-btn" onclick="showToast('已复制到剪贴板', 'success')">显示 Toast</button>
+      <button class="demo-btn" onclick="showClipboardToast()">剪贴板倒计时</button>
+      <button class="demo-btn" onclick="showAutofillDialog()">自动填充对话框</button>
+    </div>
+
+    <script>
+      // Sample vault data
+      const vaultItems = [
+        { id: 1, type: "login", title: "GitHub", subtitle: "john@example.com", icon: "🐙" },
+        { id: 2, type: "login", title: "Google", subtitle: "john.doe@gmail.com", icon: "🔍" },
+        { id: 3, type: "login", title: "Twitter", subtitle: "@johndoe", icon: "𝕏" },
+        { id: 4, type: "note", title: "API Keys", subtitle: "3 个密钥", icon: "🔑" },
+        { id: 5, type: "login", title: "Notion", subtitle: "john@example.com", icon: "📄" },
+      ];
+
+      let selectedAutofillItem = null;
+      let clipboardCountdown = null;
+
+      // Initialize
+      function init() {
+        renderVaultItems();
+        attachEventListeners();
+        setupKeyboardShortcuts();
+      }
+
+      // Render vault items
+      function renderVaultItems(filter = "") {
+        const list = document.getElementById("vaultList");
+        const emptyState = document.getElementById("emptyState");
+        const filtered = vaultItems.filter(
+          (item) =>
+            item.title.toLowerCase().includes(filter.toLowerCase()) ||
+            item.subtitle.toLowerCase().includes(filter.toLowerCase()),
+        );
+
+        if (filtered.length === 0) {
+          list.innerHTML = "";
+          emptyState.style.display = "flex";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        list.innerHTML = filtered
+          .map(
+            (item) => `
+        <div class="vault-item" role="option" tabindex="0" data-id="${item.id}">
+          <div class="vault-item-icon" aria-label="${item.type === "login" ? "登录" : "备注"}">${item.icon}</div>
+          <div class="vault-item-info">
+            <div class="vault-item-title">${item.title}</div>
+            <div class="vault-item-subtitle">${item.subtitle}</div>
+          </div>
+          <div class="vault-item-actions">
+            <button class="vault-item-action" aria-label="复制密码到剪贴板" title="复制">📋</button>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+
+        // Attach item event listeners
+        document.querySelectorAll(".vault-item").forEach((el) => {
+          el.addEventListener("click", () => selectVaultItem(el.dataset.id));
+          el.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              selectVaultItem(el.dataset.id);
+            }
+          });
+
+          const copyBtn = el.querySelector(".vault-item-action");
+          copyBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            showToast("已复制到剪贴板", "success");
+            showClipboardToast();
+          });
+        });
+      }
+
+      // Select vault item
+      function selectVaultItem(id) {
+        const item = vaultItems.find((v) => v.id == id);
+        if (item) {
+          showToast(`打开: ${item.title}`, "info");
+        }
+      }
+
+      // Show toast notification
+      function showToast(message, type = "info", duration = 3000) {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        toast.setAttribute("role", "alert");
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), duration);
+      }
+
+      // Show clipboard countdown toast
+      function showClipboardToast() {
+        clearTimeout(clipboardCountdown);
+        let seconds = 30;
+
+        const toast = document.createElement("div");
+        toast.className = "toast success";
+        toast.setAttribute("role", "status");
+        toast.setAttribute("aria-live", "polite");
+        toast.innerHTML = `已复制到剪贴板 <span class="toast-countdown">${seconds}s</span>`;
+        document.body.appendChild(toast);
+
+        const updateCountdown = () => {
+          seconds--;
+          const countdownEl = toast.querySelector(".toast-countdown");
+          if (countdownEl) {
+            countdownEl.textContent = `${seconds}s`;
+          }
+
+          if (seconds > 0) {
+            clipboardCountdown = setTimeout(updateCountdown, 1000);
+          } else {
+            toast.remove();
+          }
+        };
+
+        clipboardCountdown = setTimeout(updateCountdown, 1000);
+      }
+
+      // Show autofill dialog
+      function showAutofillDialog() {
+        const overlay = document.getElementById("autofillOverlay");
+        const list = document.getElementById("autofillList");
+
+        list.innerHTML = vaultItems
+          .filter((item) => item.type === "login")
+          .map(
+            (item) => `
+          <div class="autofill-item" role="option" tabindex="0" data-id="${item.id}">
+            <div class="autofill-item-icon">${item.icon}</div>
+            <div class="autofill-item-info">
+              <div class="autofill-item-title">${item.title}</div>
+              <div class="autofill-item-username">${item.subtitle}</div>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+
+        overlay.classList.add("active");
+
+        // Focus first item
+        const firstItem = list.querySelector(".autofill-item");
+        if (firstItem) {
+          firstItem.focus();
+        }
+
+        // Handle item selection
+        document.querySelectorAll(".autofill-item").forEach((el) => {
+          el.addEventListener("click", () => {
+            selectedAutofillItem = el.dataset.id;
+            el.focus();
+          });
+          el.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              selectedAutofillItem = el.dataset.id;
+            }
+          });
+        });
+      }
+
+      // Hide autofill dialog
+      function hideAutofillDialog() {
+        document.getElementById("autofillOverlay").classList.remove("active");
+        selectedAutofillItem = null;
+      }
+
+      // Event listeners
+      function attachEventListeners() {
+        // Search
+        document.getElementById("searchInput").addEventListener("input", (e) => {
+          renderVaultItems(e.target.value);
+        });
+
+        // Footer buttons
+        document.getElementById("newBtn").addEventListener("click", () => {
+          showToast("打开新建条目表单...", "info");
+        });
+
+        document.getElementById("lockBtn").addEventListener("click", () => {
+          showToast("保险库已锁定", "success");
+        });
+
+        document.getElementById("genBtn").addEventListener("click", () => {
+          showAutofillDialog();
+        });
+
+        // Autofill dialog
+        document.getElementById("confirmAutofill").addEventListener("click", () => {
+          if (selectedAutofillItem) {
+            const item = vaultItems.find((v) => v.id == selectedAutofillItem);
+            showToast(`已填充: ${item.title}`, "success");
+          }
+          hideAutofillDialog();
+        });
+
+        document.getElementById("cancelAutofill").addEventListener("click", hideAutofillDialog);
+
+        // Overlay click outside
+        document.getElementById("autofillOverlay").addEventListener("click", (e) => {
+          if (e.target === e.currentTarget) {
+            hideAutofillDialog();
+          }
+        });
+      }
+
+      // Keyboard shortcuts
+      function setupKeyboardShortcuts() {
+        document.addEventListener("keydown", (e) => {
+          // ESC to close dialog
+          if (e.key === "Escape") {
+            hideAutofillDialog();
+          }
+
+          // Ctrl+Shift+L / Cmd+Shift+L to lock
+          if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "L") {
+            e.preventDefault();
+            document.getElementById("lockBtn").click();
+          }
+
+          // Ctrl+Shift+P / Cmd+Shift+P to toggle popup
+          if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "P") {
+            e.preventDefault();
+            showToast("弹窗切换", "info");
+          }
+
+          // Tab focus management within popup
+          if (e.key === "Tab") {
+            const overlay = document.getElementById("autofillOverlay");
+            if (overlay.classList.contains("active")) {
+              const focusableElements = overlay.querySelectorAll(
+                'button, [tabindex]:not([tabindex="-1"])',
+              );
+              const firstElement = focusableElements[0];
+              const lastElement = focusableElements[focusableElements.length - 1];
+
+              if (e.shiftKey && document.activeElement === firstElement) {
+                e.preventDefault();
+                lastElement.focus();
+              } else if (!e.shiftKey && document.activeElement === lastElement) {
+                e.preventDefault();
+                firstElement.focus();
+              }
+            }
+          }
+        });
+      }
+
+      // Initialize on load
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

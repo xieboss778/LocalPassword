@@ -7,7 +7,7 @@ import { FieldView } from "@localpass/common/vault/models/view/field.view";
  * 界面上的 8 类条目。存储层只有 4 类原生类型可用（登录 / 卡片 / 身份 / 笔记），
  * 其余类别用一个自定义字段（{@link KIND_FIELD}）标记；SSH 私钥有原生类型，直接用。
  *
- * 这一层是「原型 8 类」与「存储类型」之间唯一的翻译，见 docs/LocalPass-实现计划.md §2。
+ * 这一层是「原型 8 类」与「存储类型」之间唯一的翻译，见 docs/LocalPass-界面规范.md §4。
  */
 export const ItemKind = Object.freeze({
   Login: "login",

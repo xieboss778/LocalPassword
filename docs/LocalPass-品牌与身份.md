@@ -6,6 +6,8 @@
 
 | 项                                  | 取值                                                                           | 落点                                                               |
 | ----------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| 浏览器扩展 ID                       | `gmobddgobjdhbjhedhgaeekhgchkoncm`（由 `manifest.v3.json` 的 `key` 决定）      | `apps/browser/src/manifest.v3.json`                                |
+| 扩展签名私钥                        | `.keys/extension.pem`（不入库，丢失即丢失扩展身份）                            | 本机 `.keys/`，已在 `.gitignore`                                   |
 | Electron `app.name` / `productName` | `LocalPass`                                                                    | `apps/desktop/build/package.json`                                  |
 | bundle id / `appId`                 | `com.localpass.desktop`                                                        | `apps/desktop/electron-builder.json`                               |
 | userData                            | `~/Library/Application Support/LocalPass`                                      | Electron 派生                                                      |
@@ -25,6 +27,8 @@
 ## 二、代码与包标识
 
 - npm 作用域：`@localpass/*`（54 个 workspace 包 + 根包 `@xieboss778/LocalPassword`）。
+- 远程仓库只使用 `origin`（`https://github.com/xieboss778/LocalPass.git`）；
+  不添加上游 remote，不拉取、合并或拣选上游代码。
 - 路径别名：`tsconfig.base.json` 的 `paths`、`nx.json` 插件、webpack/jest/storybook 全部跟随作用域。
 - 资源文件：`com.localpass.desktop.{desktop,policy,devel.yaml}`、`localpass.nuspec`、`localpass-*.icon.ts`。
 - 图标：`apps/browser/src/images/icon*.png`、`apps/desktop/resources/{icon,dmg}*.icns`、`libs/assets` 的 logo/icon SVG。

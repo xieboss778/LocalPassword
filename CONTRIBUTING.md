@@ -4,7 +4,7 @@
 
 ## 开始之前
 
-- 先看 [README](README.md) 了解项目定位，以及 [docs/LocalPass-实施计划.md](docs/LocalPass-实施计划.md) 了解架构决策。
+- 先看 [README](README.md) 了解项目定位，再看 [文档索引](docs/README.md) 与 [docs/LocalPass-实施计划.md](docs/LocalPass-实施计划.md) 了解架构决策和当前状态。
 - 较大的改动（新增依赖、修改保险库写入路径、改动加密相关代码）请**先开 issue 讨论**，避免白做工。
 - 参与本项目即表示你同意遵守 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
 
@@ -23,7 +23,7 @@ npm run build:chrome
 
 ## 分支与提交
 
-- 从 `main` 切出功能分支：`feat/xxx`、`fix/xxx`、`docs/xxx`。
+- 从 `main` 切出功能分支：`feat/xxx`、`fix/xxx`、`docs/xxx`；合并后删除该分支，长期只保留 `main`。
 - 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/)：
   - `feat: 支持从 Google Authenticator 导入`
   - `fix(popup): 弹出页关闭后同步中断`
@@ -35,9 +35,17 @@ npm run build:chrome
 
 1. **不要引入网络请求。** 除备份存储和用户主动触发的泄露查询外，任何新的出站请求都需要在 PR 里说明理由，并经过维护者确认。
 2. **不要绕过加密。** 条目必须先经 SDK 加密再落盘，明文不得写入 `chrome.storage`、日志或错误上报。
-3. **对上游改动保持最小。** 优先新建文件承载逻辑；必须改上游文件时，把改动控制在尽量少的行数，并在 PR 描述里列出改动位置，方便后续合并上游。
+3. **改动保持局部化。** 优先新建文件承载逻辑；必须改共享文件时，把改动控制在尽量少的行数，并在 PR 描述里列出位置，便于审计与后续维护。本仓库独立维护，**不合并上游代码**，不要为了“方便以后同步”而设计改动。
 4. **不要碰 `localpass_license/` 目录。** 该目录在上游适用另一套许可，本项目不包含、也不修改其中的代码。
 5. **补充测试。** 涉及加密、同步合并、本地写入的改动必须有单元测试覆盖。
+
+## 文档
+
+- 文档在 `docs/`，索引是 [docs/README.md](docs/README.md)。改代码行为、路径、命令或状态时，在同一个 PR 里更新对应文档。
+- 不保留重复或过期文档：一份事实一个来源；被取代的文档直接删除，需要历史时从 git 取。
+- 未实施的方案必须在文档头部标注「待评审 / 未实施」，不能写得像现状。
+- 界面以 `design-system/legacy/prototypes/ui-redo-d/` 与 [屏对照表](docs/LocalPass-%E5%B1%8F%E5%AF%B9%E7%85%A7%E8%A1%A8.md) 为准；同步以 `libs/local-vault` 与 `docs/adr/` 为准。
+- 术语按 [GLOSSARY.md](GLOSSARY.md)：区分「同步」「导出」「恢复」，不要把「备份」当机制名。
 
 ## 数据库 / 状态变更
 

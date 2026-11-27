@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LocalPass · Windows 原型</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        color-scheme: light;
+
+        /* brand — 四端统一 */
+        --accent: #059669;
+        --accent-strong: #047857;
+        --accent-press: #036b4e;
+        --accent-wash: rgba(5, 150, 105, 0.1);
+        --accent-wash-2: rgba(5, 150, 105, 0.17);
+        --ring: rgba(5, 150, 105, 0.28);
+
+        --t1: #191a1d;
+        --t2: #55575e;
+        --t3: #8b8d95;
+
+        --line: rgba(16, 18, 22, 0.075);
+        --line-2: rgba(16, 18, 22, 0.14);
+
+        --glass: rgba(255, 255, 255, 0.56);
+        --glass-hi: rgba(255, 255, 255, 0.72);
+        --paper: rgba(252, 252, 253, 0.8);
+
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --fast: 120ms;
+        --base: 190ms;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family:
+          "Segoe UI Variable Text",
+          "Segoe UI",
+          -apple-system,
+          BlinkMacSystemFont,
+          system-ui,
+          sans-serif;
+        font-size: 13px;
+        color: var(--t1);
+        background: radial-gradient(
+          1100px 700px at 50% -12%,
+          #eff1f6 0%,
+          #dde0e7 58%,
+          #d2d5dc 100%
+        );
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      ::selection {
+        background: var(--accent-wash-2);
+      }
+
+      .i {
+        width: 1em;
+        height: 1em;
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ============ 窗口 ============ */
+      .window {
+        position: relative;
+        width: min(1160px, 100%);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        overflow: hidden;
+        /* Mica：有色底纹，让玻璃面板真的"透"出东西 */
+        background:
+          radial-gradient(760px 460px at 6% -6%, #d5eee5 0%, rgba(213, 238, 229, 0) 62%),
+          radial-gradient(600px 420px at 98% 10%, #dfe5f8 0%, rgba(223, 229, 248, 0) 64%),
+          radial-gradient(820px 520px at 58% 114%, #f2e4f0 0%, rgba(242, 228, 240, 0) 66%), #f3f4f6;
+        border: 1px solid rgba(16, 18, 22, 0.12);
+        box-shadow:
+          0 30px 76px -18px rgba(18, 22, 31, 0.38),
+          0 2px 6px rgba(18, 22, 31, 0.07);
+        isolation: isolate;
+      }
+
+      /* ---- 标题栏 ---- */
+      .titlebar {
+        flex: 0 0 auto;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-left: 14px;
+        background: var(--glass);
+        backdrop-filter: blur(26px) saturate(180%);
+        -webkit-backdrop-filter: blur(26px) saturate(180%);
+        border-bottom: 1px solid var(--line);
+        position: relative;
+        z-index: 3;
+        user-select: none;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: -0.004em;
+      }
+      .brand .i {
+        width: 15px;
+        height: 15px;
+        color: var(--accent-strong);
+        stroke-width: 1.7;
+      }
+      .brand em {
+        font-style: normal;
+        font-weight: 400;
+        color: var(--t3);
+        font-size: 11.5px;
+      }
+      .titlebar .spring {
+        flex: 1;
+      }
+      .caption {
+        display: flex;
+        height: 100%;
+      }
+      .caption button {
+        width: 46px;
+        height: 100%;
+        border: 0;
+        background: transparent;
+        color: #4b4d55;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition:
+          background var(--fast) linear,
+          color var(--fast) linear;
+      }
+      .caption button .i {
+        width: 10px;
+        height: 10px;
+        stroke-width: 1.4;
+      }
+      .caption button:hover {
+        background: rgba(16, 18, 22, 0.06);
+      }
+      .caption button:active {
+        background: rgba(16, 18, 22, 0.1);
+      }
+      .caption .close:hover {
+        background: #c42b1c;
+        color: #fff;
+      }
+      .caption .close:active {
+        background: #a52618;
+        color: #fff;
+      }
+
+      /* ---- 三栏 ---- */
+      .workspace {
+        flex: 1;
+        display: flex;
+        min-height: 0;
+      }
+
+      /* 侧边栏 */
+      .sidebar {
+        width: 212px;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        padding: 12px 10px 10px;
+        background: var(--glass);
+        backdrop-filter: blur(34px) saturate(170%);
+        -webkit-backdrop-filter: blur(34px) saturate(170%);
+        border-right: 1px solid var(--line);
+        overflow: hidden;
+        animation: fade var(--base) var(--ease) both;
+      }
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 30px;
+        padding: 0 9px;
+        border-radius: 5px;
+        background: var(--glass-hi);
+        border: 1px solid var(--line);
+        color: var(--t3);
+        transition:
+          border-color var(--fast),
+          box-shadow var(--fast),
+          background var(--fast);
+      }
+      .search:hover {
+        border-color: var(--line-2);
+        background: rgba(255, 255, 255, 0.86);
+      }
+      .search:focus-within {
+        background: #fff;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px var(--ring);
+        color: var(--accent-strong);
+      }
+      .search .i {
+        width: 13px;
+        height: 13px;
+      }
+      .search input {
+        flex: 1;
+        min-width: 0;
+        border: 0;
+        background: none;
+        outline: none;
+        font: inherit;
+        font-size: 12px;
+        color: var(--t1);
+      }
+      .search input::placeholder {
+        color: var(--t3);
+      }
+
+      .nav {
+        flex: 1;
+        overflow-y: auto;
+        margin-top: 4px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--t3);
+        padding: 13px 8px 5px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        width: 100%;
+        height: 31px;
+        padding: 0 8px;
+        border: 0;
+        border-radius: 5px;
+        background: transparent;
+        color: var(--t2);
+        font: inherit;
+        font-size: 12.5px;
+        letter-spacing: -0.002em;
+        text-align: left;
+        cursor: pointer;
+        transition:
+          background var(--fast) var(--ease),
+          color var(--fast) var(--ease);
+      }
+      .nav-item .i {
+        width: 15px;
+        height: 15px;
+        opacity: 0.72;
+        transition:
+          opacity var(--fast),
+          color var(--fast);
+      }
+      .nav-item:hover {
+        background: rgba(16, 18, 22, 0.05);
+        color: var(--t1);
+      }
+      .nav-item:hover .i {
+        opacity: 0.95;
+      }
+      .nav-item[aria-current="true"] {
+        background: var(--accent-wash);
+        color: var(--accent-strong);
+        font-weight: 600;
+      }
+      .nav-item[aria-current="true"] .i {
+        opacity: 1;
+        color: var(--accent);
+        stroke-width: 1.8;
+      }
+      .nav-item .count {
+        margin-left: auto;
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--t3);
+        font-variant-numeric: tabular-nums;
+      }
+      .nav-item[aria-current="true"] .count {
+        color: var(--accent-strong);
+        opacity: 0.7;
+      }
+
+      .sidebar-foot {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 8px 2px;
+        border-top: 1px solid var(--line);
+        font-size: 11px;
+        color: var(--t3);
+      }
+      .sidebar-foot .i {
+        width: 12px;
+        height: 12px;
+      }
+      .sidebar-foot b {
+        font-weight: 500;
+        color: var(--t2);
+      }
+
+      /* 列表 */
+      .list {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        background: var(--paper);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+      }
+      .list-head {
+        flex: 0 0 auto;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--line);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--t2);
+        letter-spacing: -0.003em;
+      }
+      .list-head .n {
+        font-weight: 400;
+        font-size: 11px;
+        color: var(--t3);
+        font-variant-numeric: tabular-nums;
+      }
+      .list-head .spring {
+        flex: 1;
+      }
+      .list-head .mini {
+        height: 24px;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.7);
+        font: inherit;
+        font-size: 11px;
+        color: var(--t2);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition:
+          background var(--fast),
+          border-color var(--fast),
+          color var(--fast);
+      }
+      .list-head .mini .i {
+        width: 11px;
+        height: 11px;
+      }
+      .list-head .mini:hover {
+        background: #fff;
+        border-color: var(--line-2);
+        color: var(--t1);
+      }
+
+      .rows {
+        flex: 1;
+        overflow-y: auto;
+        padding: 6px;
+      }
+      .row {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 7px 9px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        font: inherit;
+        text-align: left;
+        color: inherit;
+        cursor: pointer;
+        transition: background var(--fast) var(--ease);
+        animation: rowIn 380ms var(--ease) both;
+      }
+      /* 选中条：用伪元素，避免 border 造成 2px 抖动 */
+      .row::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 3px;
+        height: 0;
+        border-radius: 0 3px 3px 0;
+        background: var(--accent);
+        transform: translateY(-50%);
+        transition: height 180ms var(--ease);
+      }
+      .row:hover {
+        background: rgba(16, 18, 22, 0.045);
+      }
+      .row:active {
+        background: rgba(16, 18, 22, 0.07);
+      }
+      .row[aria-selected="true"] {
+        background: var(--accent-wash);
+      }
+      .row[aria-selected="true"]::before {
+        height: 17px;
+      }
+      .row:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+      }
+
+      .row-ico {
+        width: 27px;
+        height: 27px;
+        flex: none;
+        border-radius: 6px;
+        display: grid;
+        place-items: center;
+        background: rgba(16, 18, 22, 0.055);
+        color: var(--t2);
+        transition:
+          background var(--fast),
+          color var(--fast);
+      }
+      .row-ico .i {
+        width: 14px;
+        height: 14px;
+      }
+      .row[aria-selected="true"] .row-ico {
+        background: rgba(5, 150, 105, 0.15);
+        color: var(--accent-strong);
+      }
+      .row-txt {
+        flex: 1;
+        min-width: 0;
+      }
+      .row-name {
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: -0.004em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .row-sub {
+        font-size: 11px;
+        color: var(--t3);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .row-when {
+        flex: none;
+        font-size: 10.5px;
+        color: var(--t3);
+        font-variant-numeric: tabular-nums;
+        opacity: 0;
+        transform: translateX(3px);
+        transition:
+          opacity var(--fast) var(--ease),
+          transform var(--fast) var(--ease);
+      }
+      .row:hover .row-when,
+      .row[aria-selected="true"] .row-when {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* 详情 */
+      .details {
+        width: 288px;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--glass);
+        backdrop-filter: blur(34px) saturate(170%);
+        -webkit-backdrop-filter: blur(34px) saturate(170%);
+        border-left: 1px solid var(--line);
+        animation: fade var(--base) var(--ease) 0.06s both;
+      }
+      .detail-head {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 13px 14px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      .hero-ico {
+        width: 38px;
+        height: 38px;
+        flex: none;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(160deg, rgba(5, 150, 105, 0.18), rgba(5, 150, 105, 0.07));
+        color: var(--accent-strong);
+        box-shadow: inset 0 0 0 1px rgba(5, 150, 105, 0.16);
+      }
+      .hero-ico .i {
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.7;
+      }
+      .hero-txt {
+        flex: 1;
+        min-width: 0;
+        padding-top: 1px;
+      }
+      .hero-txt h2 {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.012em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .hero-txt p {
+        margin-top: 2px;
+        font-size: 11px;
+        color: var(--t3);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 18px;
+        padding: 0 6px;
+        margin-top: 6px;
+        border-radius: 4px;
+        background: rgba(16, 18, 22, 0.055);
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--t2);
+        letter-spacing: 0.01em;
+      }
+      .badge .i {
+        width: 10px;
+        height: 10px;
+      }
+
+      .detail-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px 14px 14px;
+      }
+      .field {
+        margin-bottom: 12px;
+        animation: fadeUp 360ms var(--ease) both;
+      }
+      .field:nth-child(1) {
+        animation-delay: 60ms;
+      }
+      .field:nth-child(2) {
+        animation-delay: 110ms;
+      }
+      .field:nth-child(3) {
+        animation-delay: 160ms;
+      }
+      .field:nth-child(4) {
+        animation-delay: 210ms;
+      }
+      .field-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--t3);
+        margin-bottom: 4px;
+      }
+      .field-row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .field-val {
+        flex: 1;
+        min-width: 0;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.68);
+        border: 1px solid var(--line);
+        font-size: 11.5px;
+        color: var(--t1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition:
+          background var(--fast),
+          border-color var(--fast);
+      }
+      .field-val:hover {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: var(--line-2);
+      }
+      .field-val.mono {
+        font-family: "Cascadia Mono", Consolas, "SF Mono", ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: -0.01em;
+      }
+      .masked {
+        letter-spacing: 0.12em;
+        color: var(--t2);
+      }
+
+      .tool {
+        width: 28px;
+        height: 28px;
+        flex: none;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        background: var(--accent-wash);
+        color: var(--accent-strong);
+        cursor: pointer;
+        transition:
+          background var(--fast) var(--ease),
+          transform var(--fast) var(--ease),
+          border-color var(--fast);
+      }
+      .tool .i {
+        width: 13px;
+        height: 13px;
+      }
+      .tool:hover {
+        background: rgba(5, 150, 105, 0.16);
+        border-color: rgba(5, 150, 105, 0.28);
+        transform: scale(1.06);
+      }
+      .tool:active {
+        transform: scale(0.94);
+        background: rgba(5, 150, 105, 0.24);
+      }
+      .tool .ok {
+        display: none;
+      }
+      .tool.done {
+        background: rgba(5, 150, 105, 0.2);
+        color: var(--accent-press);
+      }
+      .tool.done .cp {
+        display: none;
+      }
+      .tool.done .ok {
+        display: block;
+      }
+
+      .detail-foot {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 6px;
+        padding: 10px 14px;
+        border-top: 1px solid var(--line);
+      }
+      .btn {
+        flex: 1;
+        height: 30px;
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border: 0;
+        border-radius: 5px;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background var(--fast) var(--ease),
+          transform var(--fast) var(--ease),
+          box-shadow var(--fast) var(--ease),
+          border-color var(--fast);
+      }
+      .btn .i {
+        width: 12px;
+        height: 12px;
+        stroke-width: 1.9;
+      }
+      .btn.primary {
+        background: var(--accent-strong);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        background: var(--accent-press);
+        box-shadow: 0 3px 10px -2px rgba(4, 120, 87, 0.45);
+        transform: translateY(-1px);
+      }
+      .btn.primary:active {
+        transform: scale(0.98);
+        box-shadow: none;
+      }
+      .btn.ghost {
+        background: rgba(255, 255, 255, 0.6);
+        color: var(--t1);
+        border: 1px solid var(--line);
+      }
+      .btn.ghost:hover {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: var(--line-2);
+      }
+
+      /* 状态栏 */
+      .statusbar {
+        flex: 0 0 auto;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px;
+        background: rgba(255, 255, 255, 0.44);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--line);
+        font-size: 10.5px;
+        color: var(--t3);
+        letter-spacing: 0.005em;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.16);
+        animation: pulse 3.2s ease-in-out infinite;
+      }
+      .statusbar .spring {
+        flex: 1;
+      }
+
+      /* Toast —— 落在窗口内，不再是 fixed */
+      .toast {
+        position: absolute;
+        left: 50%;
+        bottom: 40px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 32px;
+        padding: 0 13px;
+        border-radius: 16px;
+        background: rgba(28, 30, 34, 0.9);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: -0.002em;
+        box-shadow: 0 10px 28px -6px rgba(10, 12, 16, 0.45);
+        pointer-events: none;
+        opacity: 0;
+        transform: translate(-50%, 10px) scale(0.97);
+        transition:
+          opacity 220ms var(--ease),
+          transform 220ms var(--ease);
+      }
+      .toast .i {
+        width: 13px;
+        height: 13px;
+        stroke-width: 2.1;
+        color: #34d399;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+
+      /* 滚动条 */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(16, 18, 22, 0.18) transparent;
+      }
+      ::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(16, 18, 22, 0.14);
+        border-radius: 9px;
+        border: 3px solid transparent;
+        background-clip: content-box;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(16, 18, 22, 0.26);
+        background-clip: content-box;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 1px;
+      }
+
+      /* 动效 */
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes rowIn {
+        from {
+          opacity: 0;
+          transform: translateX(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.45;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .details {
+          display: none;
+        }
+        .sidebar {
+          width: 184px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-delay: 0ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" aria-hidden="true" style="position: absolute">
+      <defs>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="M12 3.3 18.5 6v5.3c0 4.1-2.8 7.6-6.5 8.5-3.7-.9-6.5-4.4-6.5-8.5V6L12 3.3Z" />
+        </symbol>
+        <symbol id="i-search" viewBox="0 0 24 24">
+          <circle cx="10.8" cy="10.8" r="6.3" />
+          <path d="m15.5 15.5 4.2 4.2" />
+        </symbol>
+        <symbol id="i-grid" viewBox="0 0 24 24">
+          <rect x="3.6" y="3.6" width="7" height="7" rx="2" />
+          <rect x="13.4" y="3.6" width="7" height="7" rx="2" />
+          <rect x="3.6" y="13.4" width="7" height="7" rx="2" />
+          <rect x="13.4" y="13.4" width="7" height="7" rx="2" />
+        </symbol>
+        <symbol id="i-key" viewBox="0 0 24 24">
+          <circle cx="8.4" cy="8.4" r="4.1" />
+          <path d="m11.4 11.4 8.1 8.1" />
+          <path d="m16.2 16.2 1.9-1.9" />
+          <path d="m18.6 18.6 1.7-1.7" />
+        </symbol>
+        <symbol id="i-note" viewBox="0 0 24 24">
+          <path d="M6.4 3.6h7.6l4 4v12.8H6.4z" />
+          <path d="M14 3.6v4h4" />
+          <path d="M9.4 12.2h5.4M9.4 15.6h5.4" />
+        </symbol>
+        <symbol id="i-card" viewBox="0 0 24 24">
+          <rect x="3" y="5.6" width="18" height="12.8" rx="2.6" />
+          <path d="M3 10.2h18" />
+          <path d="M6.6 14.9h3.4" />
+        </symbol>
+        <symbol id="i-user" viewBox="0 0 24 24">
+          <circle cx="12" cy="8.4" r="3.6" />
+          <path d="M4.9 20c.6-3.6 3.6-5.6 7.1-5.6s6.5 2 7.1 5.6" />
+        </symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8.4" />
+          <path d="M3.6 12h16.8" />
+          <path
+            d="M12 3.6c2.4 2.3 3.7 5.3 3.7 8.4S14.4 18.1 12 20.4C9.6 18.1 8.3 15.1 8.3 12S9.6 5.9 12 3.6Z"
+          />
+        </symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24">
+          <rect x="9.2" y="9.2" width="10.6" height="10.6" rx="2.6" />
+          <path
+            d="M15.4 6.3A2.6 2.6 0 0 0 12.9 4H6.6A2.6 2.6 0 0 0 4 6.6v6.3a2.6 2.6 0 0 0 2.3 2.5"
+          />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5.2 12.6 4.5 4.5L18.9 7.6" /></symbol>
+        <symbol id="i-eye" viewBox="0 0 24 24">
+          <path d="M2.7 12S6.3 6.4 12 6.4 21.3 12 21.3 12 17.7 17.6 12 17.6 2.7 12 2.7 12Z" />
+          <circle cx="12" cy="12" r="2.8" />
+        </symbol>
+        <symbol id="i-eye-off" viewBox="0 0 24 24">
+          <path d="m4 4.6 15.9 15" />
+          <path d="M9.8 7.1a10 10 0 0 1 2.2-.2c5.7 0 9.3 5.1 9.3 5.1a16 16 0 0 1-2.6 3" />
+          <path d="M6.6 8.7A16 16 0 0 0 2.7 12s3.6 5.6 9.3 5.6c1 0 1.9-.2 2.7-.5" />
+        </symbol>
+        <symbol id="i-edit" viewBox="0 0 24 24">
+          <path d="M16.4 4.3a2.2 2.2 0 0 1 3.1 3.1L8.9 18l-4.2 1.1L5.8 15z" />
+        </symbol>
+        <symbol id="i-more" viewBox="0 0 24 24">
+          <circle cx="12" cy="5.4" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none" />
+        </symbol>
+        <symbol id="i-star" viewBox="0 0 24 24">
+          <path d="m12 3.9 2.6 5.3 5.9.9-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.9z" />
+        </symbol>
+        <symbol id="i-lock" viewBox="0 0 24 24">
+          <rect x="4.6" y="10.4" width="14.8" height="10" rx="2.6" />
+          <path d="M8.1 10.4V8a3.9 3.9 0 0 1 7.8 0v2.4" />
+        </symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.2v13.6M5.2 12h13.6" /></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8.4" />
+          <path d="M12 7.6V12l2.9 1.8" />
+        </symbol>
+        <symbol id="i-refresh" viewBox="0 0 24 24">
+          <path d="M20 12a8 8 0 1 1-2.6-5.9" />
+          <path d="M20 4.6V10h-5.4" />
+        </symbol>
+        <symbol id="i-min" viewBox="0 0 12 12"><path d="M2.2 6h7.6" /></symbol>
+        <symbol id="i-max" viewBox="0 0 12 12">
+          <rect x="2.6" y="2.6" width="6.8" height="6.8" rx="1" />
+        </symbol>
+        <symbol id="i-close" viewBox="0 0 12 12">
+          <path d="m2.4 2.4 7.2 7.2M9.6 2.4 2.4 9.6" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="window">
+      <!-- 标题栏 -->
+      <header class="titlebar">
+        <div class="brand">
+          <svg class="i"><use href="#i-shield" /></svg>
+          <span>LocalPass</span>
+          <em>— 保险库</em>
+        </div>
+        <div class="spring"></div>
+        <div class="caption">
+          <button aria-label="最小化">
+            <svg class="i"><use href="#i-min" /></svg>
+          </button>
+          <button aria-label="最大化">
+            <svg class="i"><use href="#i-max" /></svg>
+          </button>
+          <button class="close" aria-label="关闭">
+            <svg class="i"><use href="#i-close" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <!-- 侧边栏 -->
+        <nav class="sidebar">
+          <div class="search">
+            <svg class="i"><use href="#i-search" /></svg>
+            <input type="text" placeholder="搜索保险库" aria-label="搜索保险库条目" />
+          </div>
+
+          <div class="nav">
+            <p class="nav-label">保险库</p>
+            <button class="nav-item" aria-current="true">
+              <svg class="i"><use href="#i-grid" /></svg><span>所有项目</span
+              ><span class="count">6</span>
+            </button>
+            <button class="nav-item">
+              <svg class="i"><use href="#i-star" /></svg><span>收藏</span
+              ><span class="count">2</span>
+            </button>
+            <button class="nav-item">
+              <svg class="i"><use href="#i-clock" /></svg><span>最近使用</span>
+            </button>
+
+            <p class="nav-label">分类</p>
+            <button class="nav-item">
+              <svg class="i"><use href="#i-key" /></svg><span>密码</span
+              ><span class="count">3</span>
+            </button>
+            <button class="nav-item">
+              <svg class="i"><use href="#i-note" /></svg><span>笔记</span
+              ><span class="count">1</span>
+            </button>
+            <button class="nav-item">
+              <svg class="i"><use href="#i-card" /></svg><span>支付卡</span
+              ><span class="count">1</span>
+            </button>
+            <button class="nav-item">
+              <svg class="i"><use href="#i-user" /></svg><span>身份信息</span
+              ><span class="count">1</span>
+            </button>
+          </div>
+
+          <div class="sidebar-foot">
+            <svg class="i"><use href="#i-lock" /></svg>
+            <span><b>已锁定</b> · 12 分钟后</span>
+          </div>
+        </nav>
+
+        <!-- 列表 -->
+        <section class="list">
+          <div class="list-head">
+            <span>所有项目</span>
+            <span class="n">6</span>
+            <div class="spring"></div>
+            <button class="mini">
+              <svg class="i"><use href="#i-plus" /></svg>新建
+            </button>
+          </div>
+
+          <div class="rows" role="listbox" aria-label="保险库条目">
+            <button
+              class="row"
+              role="option"
+              aria-selected="true"
+              style="animation-delay: 0ms"
+              data-name="Gmail"
+              data-sub="user@gmail.com"
+              data-kind="登录凭证"
+              data-user="user@gmail.com"
+              data-pass="Lp-7f2#Kq9!vR"
+              data-code="4821 8830 5517"
+              data-updated="2 小时前"
+              data-icon="#i-globe"
+            >
+              <span class="row-ico"
+                ><svg class="i"><use href="#i-globe" /></svg
+              ></span>
+              <span class="row-txt">
+                <span class="row-name">Gmail</span>
+                <span class="row-sub">user@gmail.com</span>
+              </span>
+              <span class="row-when">2 小时前</span>
+            </button>
+
+            <button
+              class="row"
+              role="option"
+              aria-selected="false"
+              style="animation-delay: 35ms"
+              data-name="GitHub"
+              data-sub="developer"
+              data-kind="登录凭证"
+              data-user="developer"
+              data-pass="gh_9x!Tb4#mQ2z"
+              data-code="7734 9021 5580"
+              data-updated="昨天"
+              data-icon="#i-key"
+            >
+              <span class="row-ico"
+                ><svg class="i"><use href="#i-key" /></svg
+              ></span>
+              <span class="row-txt">
+                <span class="row-name">GitHub</span>
+                <span class="row-sub">developer</span>
+              </span>
+              <span class="row-when">昨天</span>
+            </button>
+
+            <button
+              class="row"
+              role="option"
+              aria-selected="false"
+              style="animation-delay: 70ms"
+              data-name="AWS Console"
+              data-sub="admin@company.com"
+              data-kind="登录凭证"
+              data-user="admin@company.com"
+              data-pass="Aw5#rT8n!pL3"
+              data-code="1188 4402 9913"
+              data-updated="3 天前"
+              data-icon="#i-globe"
+            >
+              <span class="row-ico"
+                ><svg class="i"><use href="#i-globe" /></svg
+              ></span>
+              <span class="row-txt">
+                <span class="row-name">AWS Console</span>
+                <span class="row-sub">admin@company.com</span>
+              </span>
+              <span class="row-when">3 天前</span>
+            </button>
+
+            <button
+              class="row"
+              role="option"
+              aria-selected="false"
+              style="animation-delay: 105ms"
+              data-name="MasterCard"
+              data-sub="•••• 1234"
+              data-kind="支付卡"
+              data-user="•••• •••• •••• 1234"
+              data-pass="12/26 · 842"
+              data-code="—"
+              data-updated="上周"
+              data-icon="#i-card"
+            >
+              <span class="row-ico"
+                ><svg class="i"><use href="#i-card" /></svg
+              ></span>
+              <span class="row-txt">
+                <span class="row-name">MasterCard</span>
+                <span class="row-sub">•••• 1234</span>
+              </span>
+              <span class="row-when">上周</span>
+            </button>
+
+            <button
+              class="row"
+              role="option"
+              aria-selected="false"
+              style="animation-delay: 140ms"
+              data-name="服务器 root"
+              data-sub="root@10.0.0.4"
+              data-kind="登录凭证"
+              data-user="root@10.0.0.4"
+              data-pass="S3rv#r00t!9x"
+              data-code="—"
+              data-updated="上周"
+              data-icon="#i-key"
+            >
+              <span class="row-ico"
+                ><svg class="i"><use href="#i-key" /></svg
+              ></span>
+              <span class="row-txt">
+                <span class="row-name">服务器 root</span>
+                <span class="row-sub">root@10.0.0.4</span>
+              </span>
+              <span class="row-when">上周</span>
+            </button>
+
+            <button
+              class="row"
+              role="option"
+              aria-selected="false"
+              style="animation-delay: 175ms"
+              data-name="办公无线网络"
+              data-sub="Office-5G · 安全笔记"
+              data-kind="安全笔记"
+              data-user="Office-5G"
+              data-pass="Wi-Fi 密钥存放在 IT 处"
+              data-code="—"
+              data-updated="2 周前"
+              data-icon="#i-note"
+            >
+              <span class="row-ico"
+                ><svg class="i"><use href="#i-note" /></svg
+              ></span>
+              <span class="row-txt">
+                <span class="row-name">办公无线网络</span>
+                <span class="row-sub">Office-5G · 安全笔记</span>
+              </span>
+              <span class="row-when">2 周前</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 详情 -->
+        <aside class="details">
+          <div class="detail-head">
+            <div class="hero-ico">
+              <svg class="i" id="dIcon"><use href="#i-globe" /></svg>
+            </div>
+            <div class="hero-txt">
+              <h2 id="dName">Gmail</h2>
+              <p id="dKind">登录凭证 · user@gmail.com</p>
+              <span class="badge"
+                ><svg class="i"><use href="#i-clock" /></svg
+                ><span id="dUpdated">2 小时前更新</span></span
+              >
+            </div>
+          </div>
+
+          <div class="detail-scroll">
+            <div class="field">
+              <span class="field-label">用户名</span>
+              <div class="field-row">
+                <div class="field-val" id="dUser">user@gmail.com</div>
+                <button class="tool" data-copy="dUser" aria-label="复制用户名">
+                  <svg class="i cp"><use href="#i-copy" /></svg>
+                  <svg class="i ok"><use href="#i-check" /></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field-label">密码</span>
+              <div class="field-row">
+                <div class="field-val mono masked" id="dPass">••••••••••••</div>
+                <button class="tool" id="revealBtn" aria-label="显示密码">
+                  <svg class="i cp"><use href="#i-eye" /></svg>
+                  <svg class="i ok"><use href="#i-eye-off" /></svg>
+                </button>
+                <button class="tool" id="copyPass" aria-label="复制密码">
+                  <svg class="i cp"><use href="#i-copy" /></svg>
+                  <svg class="i ok"><use href="#i-check" /></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field-label">一次性恢复代码</span>
+              <div class="field-row">
+                <div class="field-val mono" id="dCode">4821 8830 5517</div>
+                <button class="tool" data-copy="dCode" aria-label="复制恢复代码">
+                  <svg class="i cp"><use href="#i-copy" /></svg>
+                  <svg class="i ok"><use href="#i-check" /></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-foot">
+            <button class="btn primary">
+              <svg class="i"><use href="#i-edit" /></svg>编辑
+            </button>
+            <button class="btn ghost">更多</button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- 状态栏 -->
+      <footer class="statusbar">
+        <span class="dot"></span>
+        <span>已加密保存</span>
+        <span class="spring"></span>
+        <span>本地 · 无网络请求</span>
+      </footer>
+
+      <div class="toast" id="toast" role="status" aria-live="polite">
+        <svg class="i"><use href="#i-check" /></svg>
+        <span id="toastText">已复制到剪贴板</span>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const rows = Array.from(document.querySelectorAll(".row"));
+        const dName = document.getElementById("dName");
+        const dKind = document.getElementById("dKind");
+        const dUser = document.getElementById("dUser");
+        const dPass = document.getElementById("dPass");
+        const dCode = document.getElementById("dCode");
+        const dUpdated = document.getElementById("dUpdated");
+        const dIconUse = document.querySelector("#dIcon use");
+        const revealBtn = document.getElementById("revealBtn");
+        const copyPass = document.getElementById("copyPass");
+        const toast = document.getElementById("toast");
+        const toastText = document.getElementById("toastText");
+
+        let revealed = false;
+        let currentPass = "";
+        let toastTimer = 0;
+
+        function paint(row) {
+          const d = row.dataset;
+          dName.textContent = d.name;
+          dKind.textContent = d.kind + " · " + d.sub;
+          dUser.textContent = d.user;
+          dCode.textContent = d.code;
+          dUpdated.textContent = d.updated + "更新";
+          dIconUse.setAttribute("href", d.icon);
+          currentPass = d.pass;
+          revealed = false;
+          dPass.textContent = "••••••••••••";
+          dPass.classList.add("masked");
+          revealBtn.classList.remove("done");
+        }
+
+        function select(row) {
+          rows.forEach((r) => r.setAttribute("aria-selected", r === row ? "true" : "false"));
+          paint(row);
+        }
+
+        rows.forEach((row) => {
+          row.addEventListener("click", () => select(row));
+          row.addEventListener("keydown", (e) => {
+            const i = rows.indexOf(row);
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+              e.preventDefault();
+              const next = rows[i + (e.key === "ArrowDown" ? 1 : -1)];
+              if (next) {
+                next.focus();
+                select(next);
+              }
+            }
+          });
+        });
+
+        // 详情面板键盘导航
+        document.querySelector(".rows").addEventListener("keydown", (e) => {
+          if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+          const i = rows.indexOf(document.activeElement);
+          if (i < 0) return;
+          e.preventDefault();
+          const next =
+            rows[Math.min(rows.length - 1, Math.max(0, i + (e.key === "ArrowDown" ? 1 : -1)))];
+          next.focus();
+          select(next);
+        });
+
+        function flash(text) {
+          toastText.textContent = text;
+          toast.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => toast.classList.remove("show"), 1900);
+        }
+
+        function copyText(value) {
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(value).catch(() => {});
+          }
+        }
+
+        function copyFrom(btn, text, label) {
+          copyText(text);
+          flash(label);
+          btn.classList.add("done");
+          setTimeout(() => btn.classList.remove("done"), 1300);
+        }
+
+        document.querySelectorAll("[data-copy]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const el = document.getElementById(btn.dataset.copy);
+            copyFrom(btn, el.textContent.trim(), btn.getAttribute("aria-label") + "已复制");
+          });
+        });
+
+        copyPass.addEventListener("click", () => {
+          copyFrom(copyPass, currentPass, "密码已复制");
+        });
+
+        revealBtn.addEventListener("click", () => {
+          revealed = !revealed;
+          if (revealed) {
+            dPass.textContent = currentPass;
+            dPass.classList.remove("masked");
+            revealBtn.setAttribute("aria-label", "隐藏密码");
+          } else {
+            dPass.textContent = "••••••••••••";
+            dPass.classList.add("masked");
+            revealBtn.setAttribute("aria-label", "显示密码");
+          }
+          revealBtn.classList.toggle("done", revealed);
+        });
+
+        // 分类切换
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.addEventListener("click", () => {
+            document
+              .querySelectorAll(".nav-item")
+              .forEach((el) => el.removeAttribute("aria-current"));
+            item.setAttribute("aria-current", "true");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

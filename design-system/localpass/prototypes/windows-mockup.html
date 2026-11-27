@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LocalPass Windows 原型</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        overflow: hidden;
+      }
+
+      .window-chrome {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: #192134;
+        border: 1px solid #334155;
+      }
+
+      .window-header {
+        height: 32px;
+        background: linear-gradient(to bottom, #2d3e56, #192134);
+        border-bottom: 1px solid #334155;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        font-size: 12px;
+        user-select: none;
+        position: relative;
+      }
+
+      .window-buttons {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        gap: 8px;
+      }
+
+      .window-btn {
+        width: 36px;
+        height: 24px;
+        border: none;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 2px;
+      }
+
+      .window-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .window-btn.close:hover {
+        background: #ef4444;
+        color: white;
+      }
+
+      .content {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+      }
+
+      .sidebar {
+        width: 220px;
+        background: #1e3a5f;
+        border-right: 1px solid #334155;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .search-box {
+        padding: 12px;
+        flex-shrink: 0;
+      }
+
+      .search-box input {
+        width: 100%;
+        height: 32px;
+        border: 1px solid #334155;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.3);
+        color: #e2e8f0;
+        padding: 0 8px;
+        font-size: 12px;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: #059669;
+        box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
+      }
+
+      .sidebar-section {
+        flex-shrink: 0;
+        padding: 8px 0;
+      }
+
+      .sidebar-label {
+        padding: 6px 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #64748b;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .sidebar-item {
+        padding: 10px 12px;
+        margin: 2px 6px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 150ms ease;
+        border-left: 3px solid transparent;
+        padding-left: 9px;
+        font-size: 13px;
+      }
+
+      .sidebar-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .sidebar-item.active {
+        background: rgba(5, 150, 105, 0.15);
+        border-left-color: #059669;
+        color: #59f3c6;
+      }
+
+      .main-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #0f172a;
+      }
+
+      .toolbar {
+        height: 40px;
+        background: #192134;
+        border-bottom: 1px solid #334155;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        flex-shrink: 0;
+      }
+
+      .btn {
+        height: 28px;
+        padding: 0 12px;
+        border: 1px solid #334155;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #e2e8f0;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 150ms ease;
+      }
+
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #59f3c6;
+      }
+
+      .btn.primary {
+        background: #059669;
+        color: #000000;
+        border-color: #059669;
+      }
+
+      .btn.primary:hover {
+        background: #04945b;
+      }
+
+      .list-area {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .item-row {
+        padding: 12px;
+        border-bottom: 1px solid #334155;
+        cursor: pointer;
+        transition: background 150ms ease;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .item-row:hover {
+        background: rgba(5, 150, 105, 0.1);
+      }
+
+      .item-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .item-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .item-title {
+        font-size: 13px;
+        font-weight: 500;
+        color: #f8fafc;
+        margin-bottom: 2px;
+      }
+
+      .item-subtitle {
+        font-size: 11px;
+        color: #94a3b8;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .detail-pane {
+        width: 280px;
+        background: #1e3a5f;
+        border-left: 1px solid #334155;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .detail-field {
+        margin-bottom: 20px;
+      }
+
+      .detail-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        color: #64748b;
+        font-weight: 600;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+      }
+
+      .detail-value {
+        font-size: 12px;
+        color: #e2e8f0;
+        word-break: break-all;
+        font-family: "Segoe UI Mono", monospace;
+        padding: 6px 8px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .copy-btn {
+        width: 24px;
+        height: 24px;
+        border: none;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+
+      .copy-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+      }
+
+      .context-menu {
+        position: fixed;
+        background: rgba(25, 33, 52, 0.95);
+        border: 1px solid #334155;
+        border-radius: 4px;
+        min-width: 160px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        display: none;
+        flex-direction: column;
+      }
+
+      .context-menu.show {
+        display: flex;
+      }
+
+      .context-item {
+        padding: 8px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 150ms ease;
+      }
+
+      .context-item:hover {
+        background: rgba(5, 150, 105, 0.2);
+      }
+
+      .context-divider {
+        height: 1px;
+        background: #334155;
+        margin: 4px 0;
+      }
+
+      .statusbar {
+        height: 24px;
+        background: #192134;
+        border-top: 1px solid #334155;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        font-size: 11px;
+        color: #64748b;
+        flex-shrink: 0;
+      }
+
+      .mockup-title {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        color: #94a3b8;
+      }
+
+      .info-box {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        max-width: 300px;
+        background: #1e3a5f;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        padding: 12px;
+        font-size: 12px;
+        color: #e2e8f0;
+        line-height: 1.5;
+        z-index: 999;
+      }
+
+      .info-box strong {
+        color: #59f3c6;
+      }
+
+      /* 焦点可见性 - WCAG AA 要求 */
+      button:focus-visible,
+      input:focus-visible,
+      .sidebar-item:focus-visible,
+      .item-row:focus-visible,
+      .context-item:focus-visible {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+      }
+
+      /* 减少动画支持 */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="window-chrome">
+      <div class="window-header">
+        <span class="mockup-title">Windows 10/11 · 三列布局 · 右键菜单演示</span>
+        <div class="window-buttons">
+          <button class="window-btn" aria-label="最小化">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <line
+                x1="4"
+                y1="8"
+                x2="12"
+                y2="8"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <button class="window-btn" aria-label="最大化">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="3.5"
+                y="3.5"
+                width="9"
+                height="9"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <button class="window-btn close" aria-label="关闭">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 4L12 12M12 4L4 12"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="sidebar">
+          <div class="search-box">
+            <input type="text" placeholder="搜索..." />
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-label">保险库</div>
+            <div class="sidebar-item active">所有条目</div>
+            <div class="sidebar-item">登录</div>
+            <div class="sidebar-item">密码</div>
+            <div class="sidebar-item">笔记</div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-label">其他</div>
+            <div class="sidebar-item">生成器</div>
+            <div class="sidebar-item">设置</div>
+          </div>
+        </div>
+
+        <div class="main-area">
+          <div class="toolbar">
+            <button class="btn primary">新建</button>
+            <button class="btn">编辑</button>
+            <button class="btn">删除</button>
+            <span style="flex: 1"></span>
+            <button class="btn" aria-label="锁定保险库">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style="display: inline; margin-right: 6px; vertical-align: middle"
+              >
+                <path
+                  d="M12 1C5.9 1 1 4.6 1 9v6c0 4.4 4.9 8 11 8s11-3.6 11-8V9c0-4.4-4.9-8-11-8z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+              </svg>
+              锁定
+            </button>
+          </div>
+
+          <div class="list-area">
+            <div
+              class="item-row"
+              style="background: rgba(5, 150, 105, 0.15); border-left: 3px solid #059669"
+              tabindex="0"
+              role="button"
+              aria-label="GitHub 条目"
+            >
+              <div class="item-icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 7v3h2v8c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-8h2V7H3zm4 0h8v3H7V7zm0 5h8v8H7v-8z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+              <div class="item-info">
+                <div class="item-title">GitHub</div>
+                <div class="item-subtitle">admin@example.com</div>
+              </div>
+            </div>
+            <div class="item-row" tabindex="0" role="button" aria-label="Gmail 条目">
+              <div class="item-icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 4l-7 4.5L5 7V5l7 4.5L19 5v2z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+              <div class="item-info">
+                <div class="item-title">Gmail</div>
+                <div class="item-subtitle">user@gmail.com</div>
+              </div>
+            </div>
+            <div class="item-row" tabindex="0" role="button" aria-label="AWS Console 条目">
+              <div class="item-icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+              <div class="item-info">
+                <div class="item-title">AWS Console</div>
+                <div class="item-subtitle">aws-admin@corp.com</div>
+              </div>
+            </div>
+            <div class="item-row" tabindex="0" role="button" aria-label="Database 条目">
+              <div class="item-icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 1C5.9 1 1 4.6 1 9v6c0 4.4 4.9 8 11 8s11-3.6 11-8V9c0-4.4-4.9-8-11-8zm0 2c5 0 9 2.2 9 5s-4 5-9 5-9-2.2-9-5 4-5 9-5zm0 10c-5 0-9-2.2-9-5v3c0 2.8 4 5 9 5s9-2.2 9-5v-3c0 2.8-4 5-9 5zm0 4c-5 0-9-2.2-9-5v3c0 2.8 4 5 9 5s9-2.2 9-5v-3c0 2.8-4 5-9 5z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+              <div class="item-info">
+                <div class="item-title">Database</div>
+                <div class="item-subtitle">prod_db_user</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-pane">
+          <h3 style="margin-bottom: 12px; font-size: 13px">GitHub</h3>
+
+          <div class="detail-field">
+            <div class="detail-label">用户名</div>
+            <div class="detail-value">
+              <span>admin</span>
+              <button class="copy-btn" title="复制">📋</button>
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <div class="detail-label">密码</div>
+            <div class="detail-value">
+              <span>••••••••</span>
+              <button class="copy-btn" title="复制">📋</button>
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <div class="detail-label">URL</div>
+            <div class="detail-value">
+              <span style="font-size: 11px">github.com</span>
+              <button class="copy-btn" title="复制">📋</button>
+            </div>
+          </div>
+
+          <button class="btn" style="width: 100%; margin-top: auto">编辑</button>
+        </div>
+      </div>
+
+      <div class="statusbar">选中: GitHub · 1 / 4 条目</div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+      <div class="context-item">复制用户名</div>
+      <div class="context-item">复制密码</div>
+      <div class="context-divider"></div>
+      <div class="context-item">编辑</div>
+      <div class="context-item">删除</div>
+      <div class="context-divider"></div>
+      <div class="context-item">浏览网址</div>
+    </div>
+
+    <div class="info-box">
+      <strong>Windows 特性:</strong><br />
+      • 三列布局 (侧边栏/列表/详情)<br />
+      • Ctrl+L 锁定, Ctrl+N 新建<br />
+      • 右键菜单 (试试)<br />
+      • 状态栏显示条目总数
+    </div>
+
+    <script>
+      const contextMenu = document.getElementById("contextMenu");
+      const itemRows = document.querySelectorAll(".item-row");
+
+      // 右键菜单演示
+      document.addEventListener("contextmenu", (e) => {
+        if (e.target.closest(".item-row")) {
+          e.preventDefault();
+          contextMenu.style.left = e.pageX + "px";
+          contextMenu.style.top = e.pageY + "px";
+          contextMenu.classList.add("show");
+        }
+      });
+
+      document.addEventListener("click", () => {
+        contextMenu.classList.remove("show");
+      });
+
+      // 条目选择演示
+      itemRows.forEach((row, idx) => {
+        row.addEventListener("click", () => {
+          itemRows.forEach((r) => (r.style.background = ""));
+          itemRows.forEach((r) => (r.style.borderLeft = ""));
+          row.style.background = "rgba(5,150,105,0.15)";
+          row.style.borderLeft = "3px solid #059669";
+        });
+      });
+    </script>
+  </body>
+</html>

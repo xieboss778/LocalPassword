@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LocalPass Android 原型</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+        background: #f5f5f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .device-frame {
+        width: 360px;
+        height: 720px;
+        background: white;
+        border-radius: 40px;
+        border: 12px solid #000;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .status-bar {
+        height: 24px;
+        background: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 12px;
+        font-size: 10px;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .app-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #0f172a;
+        overflow: hidden;
+      }
+
+      .top-app-bar {
+        height: 56px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 4px 0 16px;
+        background: #0f172a;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        flex-shrink: 0;
+      }
+
+      .top-app-bar-action {
+        width: 48px;
+        height: 48px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 150ms ease;
+      }
+
+      .top-app-bar-action:active {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .top-app-bar-title {
+        flex: 1;
+        font-size: 22px;
+        font-weight: 600;
+        color: #f8fafc;
+      }
+
+      .search-box {
+        height: 40px;
+        margin: 8px 12px;
+        padding: 0 12px;
+        border: 1px solid #334155;
+        border-radius: 8dp;
+        background: #192134;
+        color: #e2e8f0;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .search-box input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: #e2e8f0;
+        font-size: 14px;
+      }
+
+      .search-box input::placeholder {
+        color: #64748b;
+      }
+
+      .search-box input:focus {
+        outline: none;
+      }
+
+      .list-area {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+      }
+
+      .vault-item {
+        min-height: 72px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid #334155;
+        cursor: pointer;
+        transition: background 150ms ease;
+      }
+
+      .vault-item:active {
+        background: rgba(5, 150, 105, 0.1);
+      }
+
+      .vault-item-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .vault-item-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .vault-item-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #f8fafc;
+        margin-bottom: 2px;
+      }
+
+      .vault-item-subtitle {
+        font-size: 14px;
+        color: #94a3b8;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .fab {
+        width: 56px;
+        height: 56px;
+        background: #059669;
+        color: #000000;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 200ms ease;
+        z-index: 100;
+      }
+
+      .fab:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* BottomSheet Modal */
+      .bottom-sheet-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+        display: none;
+      }
+
+      .bottom-sheet-overlay.show {
+        display: block;
+        animation: fadeIn 300ms ease;
+      }
+
+      .bottom-sheet-content {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #0f172a;
+        border-radius: 16px 16px 0 0;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: slideUpAndroid 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+        display: none;
+        flex-direction: column;
+        z-index: 1001;
+      }
+
+      .bottom-sheet-content.show {
+        display: flex;
+      }
+
+      .bottom-sheet-handle {
+        width: 32px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        margin: 8px auto 12px;
+        flex-shrink: 0;
+      }
+
+      .bottom-sheet-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #f8fafc;
+        padding: 0 16px;
+        margin-bottom: 12px;
+      }
+
+      .bottom-sheet-body {
+        flex: 1;
+        padding: 0 16px 16px;
+        overflow-y: auto;
+      }
+
+      .bottom-sheet-buttons {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px;
+        border-top: 1px solid #334155;
+        flex-shrink: 0;
+      }
+
+      .bottom-sheet-buttons button {
+        flex: 1;
+        height: 40px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 150ms ease;
+      }
+
+      .btn-cancel {
+        background: transparent;
+        border: 1px solid #334155;
+        color: #e2e8f0;
+      }
+
+      .btn-cancel:active {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .btn-confirm {
+        background: #059669;
+        color: #000000;
+      }
+
+      .btn-confirm:active {
+        background: #04945b;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-label {
+        font-size: 12px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      .form-input {
+        width: 100%;
+        height: 40px;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.3);
+        color: #e2e8f0;
+        padding: 0 12px;
+        font-size: 14px;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #059669;
+      }
+
+      /* Snackbar */
+      .snackbar {
+        position: fixed;
+        left: 16px;
+        right: 16px;
+        bottom: 76px;
+        min-height: 48px;
+        padding: 0 8px 0 16px;
+        border-radius: 8px;
+        background: #1e293b;
+        color: #f8fafc;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        animation: slideIn 200ms ease;
+      }
+
+      .snackbar.show {
+        display: flex;
+      }
+
+      .snackbar-action {
+        min-width: 48px;
+        height: 40px;
+        color: #10b981;
+        font-weight: 600;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .gesture-hint {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 10px;
+        color: white;
+        max-width: 200px;
+        z-index: 50;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUpAndroid {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="device-frame">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>🔋 📶</span>
+      </div>
+
+      <div class="app-container">
+        <div class="top-app-bar">
+          <div class="top-app-bar-action">☰</div>
+          <div class="top-app-bar-title">LocalPass</div>
+          <div class="top-app-bar-action">🔍</div>
+        </div>
+
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" placeholder="搜索..." />
+        </div>
+
+        <div class="list-area">
+          <div class="vault-item">
+            <div class="vault-item-icon">🔑</div>
+            <div class="vault-item-info">
+              <div class="vault-item-title">GitHub</div>
+              <div class="vault-item-subtitle">admin@example.com</div>
+            </div>
+          </div>
+          <div class="vault-item">
+            <div class="vault-item-icon">🌐</div>
+            <div class="vault-item-info">
+              <div class="vault-item-title">Gmail</div>
+              <div class="vault-item-subtitle">user@gmail.com</div>
+            </div>
+          </div>
+          <div class="vault-item">
+            <div class="vault-item-icon">💳</div>
+            <div class="vault-item-info">
+              <div class="vault-item-title">AWS Console</div>
+              <div class="vault-item-subtitle">aws-admin@corp.com</div>
+            </div>
+          </div>
+          <div class="vault-item">
+            <div class="vault-item-icon">🔐</div>
+            <div class="vault-item-info">
+              <div class="vault-item-title">Database</div>
+              <div class="vault-item-subtitle">prod_db_user</div>
+            </div>
+          </div>
+          <div class="vault-item">
+            <div class="vault-item-icon">📱</div>
+            <div class="vault-item-info">
+              <div class="vault-item-title">Apple ID</div>
+              <div class="vault-item-subtitle">me@icloud.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="fab" onclick="openSheet()">➕</button>
+
+      <div class="gesture-hint">
+        👆 Material Design 3<br />
+        • 下拉刷新<br />
+        • 56dp FAB<br />
+        • 长按菜单
+      </div>
+    </div>
+
+    <div class="bottom-sheet-overlay" id="sheetOverlay"></div>
+
+    <div class="bottom-sheet-content" id="bottomSheet">
+      <div class="bottom-sheet-handle"></div>
+      <div class="bottom-sheet-title">新建条目</div>
+      <div class="bottom-sheet-body">
+        <form>
+          <div class="form-group">
+            <label class="form-label">标题</label>
+            <input class="form-input" type="text" placeholder="输入标题" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">用户名 / 邮箱</label>
+            <input class="form-input" type="text" placeholder="输入用户名" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <input class="form-input" type="password" placeholder="输入密码" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">网址 (可选)</label>
+            <input class="form-input" type="url" placeholder="https://..." />
+          </div>
+        </form>
+      </div>
+      <div class="bottom-sheet-buttons">
+        <button class="btn-cancel" onclick="closeSheet()">取消</button>
+        <button class="btn-confirm" onclick="closeSheet()">保存</button>
+      </div>
+    </div>
+
+    <div class="snackbar" id="snackbar">
+      <span id="snackbarText">已复制到剪贴板</span>
+      <button class="snackbar-action" onclick="dismissSnackbar()">撤销</button>
+    </div>
+
+    <script>
+      const sheetOverlay = document.getElementById("sheetOverlay");
+      const bottomSheet = document.getElementById("bottomSheet");
+      const snackbar = document.getElementById("snackbar");
+
+      function openSheet() {
+        sheetOverlay.classList.add("show");
+        bottomSheet.classList.add("show");
+      }
+
+      function closeSheet() {
+        sheetOverlay.classList.remove("show");
+        bottomSheet.classList.remove("show");
+      }
+
+      function dismissSnackbar() {
+        snackbar.classList.remove("show");
+      }
+
+      // 点击遮罩关闭
+      sheetOverlay.addEventListener("click", closeSheet);
+
+      // 模拟条目点击显示 Snackbar
+      document.querySelectorAll(".vault-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          snackbar.classList.add("show");
+          setTimeout(dismissSnackbar, 3000);
+        });
+      });
+    </script>
+  </body>
+</html>

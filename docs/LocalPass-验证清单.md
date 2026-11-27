@@ -42,8 +42,17 @@
 
 ## 三、CI 覆盖不到的已知限制
 
-- **macOS 打包**：GitHub 的 macos runner 长期排队，CI 里这条是 `continue-on-error`；
-  代码层面的 Safari appex 依赖已移除（`after-pack.js`），但产物是否成功需要 runner 可用时确认。
+- **macOS 打包**：`macos-15` runner 可能长时间排队，但 dmg 是交付物，
+  该 job 已改为**必过**（不再是 `continue-on-error`）；构建失败会让流水线变红。
 - **Passkey / PRF 行为**：依赖真实认证器与浏览器实现，CI 只能做类型与单测，行为需按上面第 8、9 条人工确认。
-- **全量单测**：本仓库 9700+ 用例用 ts-jest 跑完需 1.5–2.5 小时，因此只在手动触发时执行；
-  推送门禁跑的是改动范围（local-vault / importer / key-management-ui / 钓鱼检测）。
+- **全量单测**：当前约 1280 suites / 26245 tests，只在手动触发 `workflow_dispatch` 时全量执行；
+  推送门禁跑的是改动范围（`libs/local-vault` / `importer` / `key-management-ui` / `common/src/dirt`）。
+- **重复导入不去重**：导入预览能显示“重复条目 / 无法识别”，但导入服务不跳过已有条目，
+  重复数恒为 0（见 [屏对照表](./LocalPass-屏对照表.md)「已知差异」第 1 条）。这是已知功能缺口，不是预览 bug。
+- **桌面设置缺口**：已登记安全密钥的“管理”入口、外观页语言切换入口尚未实现；
+  安全密码修改已可用。
+- **替换扩展构建后必须重新加载**：用新产物覆盖 `apps/browser/build` 后，旧的 MV3 service worker
+  可能仍在运行，弹出页按钮会无响应。到 `chrome://extensions` 点「重新加载」，
+  或关闭浏览器重开；只重启扩展进程不够。
+- **同步没有后台任务**：关闭弹窗可能中断正在进行的同步；重新打开后手动重试。
+  桶里不会因本地改动自动出现新对象。

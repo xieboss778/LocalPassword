@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LocalPass — Bitwarden 原生布局界面原型</title>
+    <!--
+      原型：按上游 bitwarden/clients 的布局与组件语言重做的 LocalPass 界面。
+      覆盖扩展弹窗（380×620）、桌面端（1160×760）与网页内联自动填充（1160×760），数据全部为假。
+      不是产品代码：没有测试、没有错误处理、不碰真实存储。
+      拍板后按 angular-modernization + writing-client-code 重写进 apps/ 与 libs/。
+    -->
+    <link rel="stylesheet" href="bwi.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="suite-head">
+      <div class="suite-brand">
+        <svg class="suite-logo" viewBox="0 0 148 44" aria-hidden="true">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M22 2 40 8.6v15.2C40 32.3 31.8 38.9 22 42 12.2 38.9 4 32.3 4 23.8V8.6L22 2Zm-9.6 11.4v17.2h7.4v-3.4h-3.9V13.4h-3.5Zm11.2 0v17.2h3.5v-6.5h4.1c3.6 0 5.9-2 5.9-5.4 0-3.2-2.2-5.3-5.8-5.3h-7.7Zm3.5 3.1h3.8c1.7 0 2.7 1 2.6 2.6 0 1.8-1 2.7-2.7 2.7h-3.8v-5.3Z"
+          />
+        </svg>
+        <div class="suite-title">
+          <b>LocalPass</b>
+          <span>界面原型 · Bitwarden 原生布局</span>
+        </div>
+      </div>
+      <div class="suite-actions">
+        <div class="devices" role="group" aria-label="设备">
+          <button type="button" data-device="popup" aria-pressed="true">扩展弹窗 380×620</button>
+          <button type="button" data-device="desktop" aria-pressed="false">桌面端 1160×760</button>
+          <button type="button" data-device="inline" aria-pressed="false">网页内联 1160×760</button>
+        </div>
+        <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false">
+          <i class="bwi bwi-palette" aria-hidden="true"></i>
+          <span>深色</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="suite">
+      <aside class="index" id="index" aria-label="界面目录"></aside>
+      <main class="stage">
+        <div id="frame"></div>
+      </main>
+    </div>
+
+    <div class="legend-bar">
+      左侧选界面 · 界面里的行与按钮可点 · ① ② ③ 切关键流程 ·
+      <span>这是原型，不是产品</span>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

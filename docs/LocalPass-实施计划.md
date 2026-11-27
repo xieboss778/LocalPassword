@@ -1,6 +1,11 @@
-# LocalPass（localpass/clients 二开）实施计划
+# LocalPass（独立衍生客户端）实施计划
 
 > 初版：2026-11-24　｜　修订 v2：2026-11-24（加入桌面端、代码瘦身、桌面端阻断项）
+> 修订 v3：2026-11-27（执行状态、同步策略、界面基准与验证基线对齐当前代码）
+>
+> **命名说明**：本文初版写于改名之前，文中「localpass/clients」「LocalPass 官方」是
+> 本仓库历史基线的旧称，实际指 Bitwarden clients 上游。当前产品名为 LocalPass，
+> 与 Bitwarden 没有隶属、赞助或背书关系。本文只记录本仓库的决策，不构成对上游的跟踪承诺。
 
 ## v2 修订说明
 
@@ -8,39 +13,55 @@
 
 1. **客户端从 1 个变成 2 个。** 除 Chrome 扩展外，同时做 **桌面端（Electron：Windows / macOS / Linux）**。Web 与 CLI 明确不做，并从仓库中删除。
 2. **新增"代码瘦身"阶段，且排在功能开发之前。** 当前仓库 188 MB / 10,510 个文件，其中约 123 MB 是本次不用的 Web、CLI、企业版代码和多余语言包。先瘦身能把构建时间、`lint`/`tsc`/`jest` 的耗时压下来，后续每个阶段都受益。
-3. **架构从"单客户端改分支"改为"共享核心库 + 平台适配层"。** 否则同样的本地写入、同步、备份逻辑要在扩展和桌面各写一遍。
+3. **架构从"单客户端改分支"改为"共享核心库 + 平台适配层"。** 否则同样的本地写入、同步、导出逻辑要在扩展和桌面各写一遍。
 
-另外记录三个在桌面端发现的**必须先处理的上游阻断项**（v1 未覆盖，见"阶段 0"）：
+另外记录三个在桌面端发现的**上游阻断项**（v1 未覆盖，见“阶段 0”；均已在阶段 0–3 处理）：
 
-- 桌面端自动更新指向 `https://artifacts.local.invalid/desktop`（`apps/desktop/electron-builder.json:28-30`），不关掉会把我们的构建直接替换成 LocalPass 官方版。
-- 浏览器↔桌面通信硬编码了 `com.8bit.localpass` 和 LocalPass 扩展 ID（`apps/desktop/src/main/native-messaging.main.ts:174-188`、`473-478`）。
-- 桌面端构建强制需要 Rust 工具链（`apps/desktop/desktop_native/`），本机目前没有，v1 的"没有 Rust 就停下来"必须升级为"先装工具链"。
+- 桌面端自动更新曾指向 `https://artifacts.local.invalid/desktop`（`apps/desktop/electron-builder.json:28-30`），不关掉会把我们的构建直接替换成上游官方版；现已删除 `publish` 段并短路 updater。
+- 浏览器↔桌面通信曾硬编码 `com.8bit.localpass` 和上游扩展 ID（`apps/desktop/src/main/native-messaging.main.ts:174-188`、`473-478`）；现已改为 `com.localpass.desktop` 与本仓库固定扩展 ID。
+- 桌面端构建强制需要 Rust 工具链（`apps/desktop/desktop_native/`）；本地构建前必须先装工具链，CI 已覆盖。
 
-## 执行状态（2026-11-26，阶段 2–7 完成）
+## 执行状态（2026-11-27）
 
-- **开发规则**：见 `docs/LocalPass-开发规则.md`。硬规则：本地不做构建/打包/测试，全部在 GitHub Actions 完成。
-- **阶段 2（本地账户与本地读写）**：完成。`CreateLocalAccountService`（创建 + 从 `account.json` 恢复）、`DefaultLocalVaultWriter`、`CipherService`/`FolderApiService` 的本地分支、`DefaultSyncService` 本地分支、导入器本地分支。
-- **阶段 3（桌面端接入）**：完成。原生消息改名 `com.localpass.desktop`、禁 SSO cookie、`data.json.bak` 滚动备份。
-- **阶段 4（R2 同步与手动备份）**：完成。SigV4 + S3 客户端、快照合并（清单 412 重试）、备份导出与保留、`account.json` 上传、云端恢复页；调度器已移除，同步/备份改为纯手动。
-- **阶段 5（Passkey/PRF）**：代码完成。`LocalWebAuthnPrfEnrollmentService` + 安全密钥页；解锁 RP ID 回退到扩展主机名。
-- **阶段 6（TOTP）**：完成。Google Authenticator `otpauth-migration` 解码器（含单测）、导入页、条目详情二维码弹窗。
-- **阶段 7（打包）**：Windows NSIS 由 CI 成功产出；macOS 的 Safari appex 硬依赖已移除，job 为 `continue-on-error`，等 macos-15 runner 产出 dmg。
+> 基线：`main` @ `26f058f6`。阶段 0–7 是历史计划；当前实现状态以本节和代码为准。
 
-### CI 证据（`main` @ `fa224eb`）
+- **阶段 0–1（基线 / 瘦身）**：完成。仓库只保留 `apps/browser` 与 `apps/desktop`；
+  Web、CLI、企业版目录已删除，删除映射见 `removed-from-upstream.md`。
+  **只使用 `origin`，不添加上游 remote，不拉取/合并/拣选上游代码。**
+- **阶段 2（本地保险库核心）**：完成。`CreateLocalAccountService`、
+  `DefaultLocalVaultWriter`、`CipherService` / `FolderApiService` 本地分支、
+  `DefaultSyncService` 本地分支、导入器本地分支、`LocalPassApiService` 网络闸门均已接线。
+- **阶段 3（桌面端接入）**：完成。原生消息 host `com.localpass.desktop`、禁 SSO cookie、
+  `data.json.bak` 滚动备份；桌面端可从桶根 `account.json` 恢复。
+- **阶段 4（R2 同步与导出备份）**：完成，**纯手动**。SigV4 + S3 客户端、快照合并
+  （清单 412 重试）、`account.json`（version 2，`userId` 必填，桶 = 库边界）、
+  导出备份与保留、云端恢复页；调度器已删除，进程内没有定时器。
+  自动同步仍是待评审设计，见 `LocalPass-离线优先与R2同步设计.md`，**尚未实施**。
+- **阶段 5（Passkey / PRF）**：代码完成。`LocalWebAuthnPrfEnrollmentService` + 安全密钥页；
+  解锁 RP ID 回退到扩展主机名。真机验证见 `LocalPass-验证清单.md`。
+- **阶段 6（TOTP）**：完成。Google Authenticator `otpauth-migration` 解码器（含单测）、
+  导入页、条目详情二维码弹窗。
+- **阶段 7（打包）**：Windows NSIS、macOS dmg、Chrome zip 均纳入 CI；
+  macOS job 已改为必过，不再 `continue-on-error`。
+- **界面**：以 `design-system/legacy/prototypes/ui-redo-d/` 为视觉基准，
+  逐屏落点见 `LocalPass-屏对照表.md`，规范见 `LocalPass-界面规范.md`。
 
-| Job                                                                          | 结论                    |
-| ---------------------------------------------------------------------------- | ----------------------- |
-| 静态检查（46 个 tsc 项目 + eslint + prettier + 语言包 + 依赖归属）           | ✅                      |
-| 单元测试（local-vault / importer / key-management-ui / 钓鱼检测，2158 用例） | ✅                      |
-| Chrome 扩展生产构建 + `localpass-chrome` 产物                                | ✅                      |
-| 桌面端 Windows（Rust native → 应用 → NSIS → `localpass-windows`）            | ✅                      |
-| 桌面端 macOS                                                                 | 排队（runner 供给问题） |
+### 验证基线（2026-11-27 最近一次完整验证）
 
-未由 CI 覆盖的内容与人工步骤见 `docs/LocalPass-验证清单.md`。
+| 检查                                                  | 结果                                                |
+| ----------------------------------------------------- | --------------------------------------------------- |
+| `npm run lint`                                        | 0 errors（95 个既有 warning）                       |
+| `npm run test:types`                                  | 通过                                                |
+| Jest                                                  | 1280 suites / 26245 tests 通过（6 skipped、5 todo） |
+| `npm run build:chrome --workspace @localpass/browser` | 通过                                                |
+| `npm run build:dev --workspace @localpass/desktop`    | 通过                                                |
+| 桌面打包烟测                                          | 未跑；CI 的 macOS dmg 任务是必过项                  |
+
+人工步骤与 CI 覆盖不到的内容见 `LocalPass-验证清单.md`。
 
 ## Context
 
-在 localpass/clients 基础上做 **LocalPass**，两个客户端：
+在 Bitwarden clients 来源基线（本仓库历史 clone，旧称 localpass/clients）上做 **LocalPass**，两个客户端：
 
 - **Chrome 扩展**（主战场，MV3）
 - **桌面端**（Electron，Windows 优先，兼顾 macOS / Linux）
@@ -49,16 +70,18 @@
 
 - 完全离线可用，不依赖任何密码管理服务器。
 - 所有付费功能免费。
-- 必须包含：Google 动态二维码（TOTP 导入 / 展示）、Passkey 与安全密钥、定时备份。
-- 可选授权 Cloudflare R2（或其他 S3 兼容存储）：联网时自动同步，断网排队，联网后补传。
+- 必须包含：Google 动态二维码（TOTP 导入 / 展示）、Passkey 与安全密钥、导出备份。
+- 可选授权 Cloudflare R2（或其他 S3 兼容存储）：在本机与桶之间手动推送 / 拉取加密快照；
+  自动同步是待评审设计（见同步设计文档），当前实现不启后台任务。
 - 两端的保险库数据格式互通（同一个 `account.json`，同一套快照格式）。
 
 已确认的决定：
 
-- **只做本地保险库**，移除登录 LocalPass / Vaultwarden 的入口。
+- **只做本地保险库**，移除登录厂商服务器 / Vaultwarden 的入口。
 - 附件排在必做功能之后。
 - 品牌名 LocalPass。
-- **不再追上游 `main`**，只按版本拣安全补丁。原因见"阶段 1"末尾。
+- **不跟踪上游**：上游只作为来源说明，不添加 remote、不拉取、不合并、不拣选补丁；
+  安全修复在本仓库独立完成。原因见“阶段 1”末尾。
 
 上游现状（本地克隆，已逐项核实）：
 
@@ -73,13 +96,13 @@
 
 ```
                   ┌──────────────── libs/local-vault（新，平台无关）────────────────┐
-                  │  本地账户引导 · 本地读写分支 · 同步引擎 · 备份调度 · 网络闸门策略   │
+                  │  本地账户引导 · 本地读写分支 · 同步引擎 · 网络闸门策略           │
                   └───────┬───────────────────────────────┬───────────────────────┘
-                          │ 适配：StorageService           │ 适配：定时器 / 后台执行
+                          │ 适配：StorageService           │ 适配：后台消息 / 生命周期
         ┌─────────────────▼──────────────┐   ┌────────────▼─────────────────────┐
         │ Chrome 扩展（MV3）              │   │ 桌面端（Electron）                │
         │ chrome.storage（密文）          │   │ electron-store data.json（密文）   │
-        │ service worker + alarms        │   │ 主进程 timer + 托盘常驻            │
+        │ service worker + 手动触发       │   │ 主进程 IPC + 手动触发              │
         │ 解锁：主密码 / PIN / PRF 安全密钥│   │ 解锁：主密码 / PIN / 系统生物识别   │
         │ 自动填充：content script       │   │ 自动填充：autotype + 原生消息中继  │
         └─────────────────┬──────────────┘   └────────────┬─────────────────────┘
@@ -97,23 +120,23 @@
 
 1. **本地分支加在 TypeScript 服务层，不伪造服务器。** 写入收口在少数几个方法里。伪造服务器行不通：SDK 的 HTTP 无法注入，任何 401/403 都会触发登出。
 2. **本地账户复用上游"登录成功后"的状态。** 创建保险库时在本地生成全部密钥，再按登录流程的顺序写入同样的状态。之后锁定、解锁、PIN、自动填充全部沿用现有代码，两端都是。
-3. **两端共用一个核心库，平台能力通过接口注入。** 差异只有三处：存储后端、定时器/后台生命周期、解锁方式。核心库不 import 任何 `chrome.*` 或 `electron`。
+3. **两端共用一个核心库，平台能力通过接口注入。** 差异只有三处：存储后端、后台消息生命周期、解锁方式。核心库不 import 任何 `chrome.*` 或 `electron`。
 4. **R2 同步采用"快照 + 清单 + 按条目合并"。** 每次推送上传完整快照，清单指向最新快照；拉取时逐条比较修改时间，新者胜；删除用墓碑传播。
 5. **R2 凭据用用户密钥加密后存储。** 扩展没有系统级安全存储；桌面有 `safeStorage`（DPAPI / Keychain），桌面端可优先用它。
-6. **两端的解锁方式不同，不强行统一。** 扩展用 WebAuthn PRF（RP ID = 扩展 ID）；桌面用系统生物识别。`account.json` 里同时保存两类解锁数据，各自只读自己那类。
+6. **两端的解锁方式不同，不强行统一。** 扩展用 WebAuthn PRF（RP ID = 扩展 ID）；桌面用系统生物识别。`account.json` 只保存主密码解锁材料与包装私钥；桌面生物识别凭据在系统钥匙串，扩展 PRF 选项只在本机，均不随 `account.json` 跨端。
 
 ## 阶段 0：基线与阻断项
 
 **仓库**
 
-- 完整历史已确认（非 shallow）。新建分支 `local-password`；添加 `upstream` 远源备用。
+- 完整历史已确认（非 shallow）。只使用 `origin`；不添加上游 remote。分支从 `main` 切出，合并后删除。
 - 除非明确要求，不提交、不推送。
 
 **先关桌面端自动更新（在做任何桌面构建之前）**
 
 - `apps/desktop/electron-builder.json:28-30` 删除 `publish` 段（或改为自有地址）。
 - `apps/desktop/src/main/updater.main.ts` 在 `bootstrap` 直接返回，不再注册 `autoUpdater` 事件；保留 `ELECTRON_NO_UPDATER=1` 作为双保险。
-- 理由：`electron-updater` 会定期访问 LocalPass 官方源下载并安装更新，等于把 LocalPass 替换掉，同时暴露固定指纹的请求。
+- 理由：`electron-updater` 会定期访问上游官方源下载并安装更新，等于把本产品替换掉，同时暴露固定指纹的请求。
 
 **工具链（桌面端把 Rust 变成硬前置）**
 
@@ -190,7 +213,7 @@
 
 - 候选：`libs/pricing`、`libs/subscription`、`libs/organization-invite-link`、`libs/pam`、`libs/billing`、`libs/automation-driver`、`libs/dirt/card`。
 - 验证方式：先 `npx nx graph --focus=@localpass/browser` 与 `--focus=@localpass/desktop` 导出依赖，确认候选库不在闭包内；再全量 `npm run test:types`。
-- **不做"半删"**：不为了瘦身去拆 `libs/common`、`libs/vault`、`libs/admin-console` 内部的 Web 代码。这些库两端都用，拆内部结构会让后续同步上游补丁变难，性价比低。`admin-console` 保留，只在 UI 上隐藏组织/企业入口。
+- **不做"半删"**：不为了瘦身去拆 `libs/common`、`libs/vault`、`libs/admin-console` 内部的 Web 代码。这些库两端都用，拆内部结构会让后续审计与维护变难，性价比低。`admin-console` 保留，只在 UI 上隐藏组织/企业入口。
 
 ### 1.4 清理构建与打包配置
 
@@ -208,7 +231,9 @@
 - **每一步一个独立 commit**，删除清单写进 `docs/removed-from-upstream.md`（删了什么、为什么、对应上游路径）。
 - 每步之后必过：`npm run lint`、`npm run test:types`、`npm test`、`npm run build:prod:chrome --workspace @localpass/browser`、`npm run build:oss --workspace @localpass/desktop`。
 - 全部完成后跑一次两端手动冒烟：解锁、增删改、导入、自动填充。
-- **上游策略变更**：瘦身之后与上游 `main` 已无法逐行合并，因此不再追 `main`；改为按上游 release tag 只拣安全与加密相关补丁，手工移植。这个取舍要在项目记录里写明，避免以后误判。
+- **上游策略变更**：瘦身之后与上游 `main` 已无法逐行合并；本仓库因此独立维护，
+  不添加 upstream remote，不拉取、不合并、不拣选补丁。`removed-from-upstream.md`
+  只用于追溯“删了什么、来自哪里”，不是后续同步计划。
 
 ## 阶段 2：本地保险库核心（共享库 + 扩展接线）
 
@@ -273,17 +298,19 @@
 - 需要确认两点：单文件写入体量（快照可能数 MB）与启动时反序列化耗时；快照类大对象建议独立文件存放，不进 `data.json`。
 - `electron-store` 底层 `atomically` 保证原子写；额外加一份 `data.json.bak` 滚动备份，用于极端情况恢复。
 
-**3.2 后台与定时**
+**3.2 后台与触发**
 
-- 桌面端没有 service worker 生命周期问题，定时任务放主进程 `setInterval` + 托盘常驻；窗口关闭后仍可同步。
-- 与扩展共用 `sync/` 核心：扩展用 `chrome.alarms`，桌面用主进程 timer，只替换调度适配器。
-- 应用退出前若队列非空，提示"还有未上传的修改"。
+- 桌面端没有 service worker 生命周期问题，但同步/导出仍是**纯手动**：不注册主进程 timer，
+  也不在窗口关闭后自行上传。
+- 与扩展共用 `sync/` 核心；两端只提供手动触发入口，不替换调度适配器。
+- 扩展侧没有后台队列：弹窗关闭可能中断一次进行中的同步，重新打开后由用户再点一次即可；
+  不承诺“退出后继续补传”。
 
 **3.3 解锁方式**
 
 - 主密码 + PIN 沿用现有代码。
 - 生物识别：`BiometricsService`（Rust，Windows Hello / Touch ID）已可用，登记与解锁路径基本不用改。
-- **桌面端不做 WebAuthn PRF 解锁**：Electron 的 WebAuthn 需要与域名绑定的 RP ID，无法像扩展那样用扩展 ID；强行做会引入不可靠依赖。`account.json` 里保留 PRF 数据只是为了另一端能读，桌面端忽略即可，界面上写明"安全密钥解锁仅在浏览器扩展中可用"。
+- **桌面端不做 WebAuthn PRF 解锁**：Electron 的 WebAuthn 需要与域名绑定的 RP ID，无法像扩展那样用扩展 ID；强行做会引入不可靠依赖。PRF 选项只保存在扩展本机、不写入 `account.json`，桌面端不做读取，界面上写明"安全密钥解锁仅在浏览器扩展中可用"。
 
 **3.4 自动填充**
 
@@ -303,7 +330,7 @@
 - Linux：flatpak / snap 清单里的 LocalPass ID 与 URL 必须改，否则清单无效；v1 可只出 AppImage。
 - 不签名意味着 SmartScreen 警告，安装说明里写清"更多信息→仍要运行"。
 
-## 阶段 4：R2 同步与定时备份（两端共用）
+## 阶段 4：R2 同步与导出备份（两端共用）
 
 **核心库 `libs/local-vault/src/sync/`**
 
@@ -311,8 +338,10 @@
   - Cloudflare R2 预设：端点按账户 ID 和辖区拼接，region 为 `auto`。
   - 通用 S3 兼容：自定义端点、region、路径风格。MinIO、Backblaze B2、阿里云 OSS、腾讯云 COS 都走这一套。
 - `vault-backup-sync.service.ts`：同步引擎。
-- `vault-backup-scheduler.service.ts`：**已移除**。备份/同步只由用户手动触发，进程内不再有任何定时器。
-- 状态键 `StateDefinition("vaultBackup", "disk")`：配置（密文）、待同步队列、墓碑、同步状态、备份设置。
+- `vault-backup-scheduler.service.ts`：**已移除**。同步/导出只由用户手动触发，进程内不再有任何定时器。
+- 状态键：`localVaultSync`（存储配置、同步状态、上次同步快照）与
+  `localVaultBackup`（保留数、包装后的备份口令、上次导出时间）。新增状态必须注册到
+  `libs/state/src/core/state-definitions.ts`。
 
 **"授权 Cloudflare"的实际形式**
 
@@ -345,12 +374,15 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 - **从 R2 恢复**（新设备/另一端）：填端点/桶/令牌 → 输入主密码 → 读取桶根 `account.json` → 复用其中的 `userId` 重建账号 → 拉取全部条目。
 - **从文件恢复**：先创建空保险库，再用导入页导入备份文件，走阶段 2 的本地导入。
 
-**设置页**：扩展 `apps/browser/src/tools/popup/settings/backup/`，桌面复用同一 Angular 组件（放 `libs/angular` 或已有 settings 区块）。入口加在 `vault-settings.component.html`。内容：配置表单、测试连接、同步状态、同步、导出备份、备份口令、断开。
+**设置页**：共享组件在 `libs/angular/src/tools/backup/backup-settings-v2.component.ts`，
+扩展与桌面各自在设置路由挂载；入口在云备份设置项。内容：配置表单、测试连接、
+同步状态、同步、导出备份、备份口令、断开。
 
-**注册到两端**
+**挂载到两端**
 
-- 扩展：`libs/scheduling/src/scheduled-task-name.enum.ts` 加任务名；`MainBackground` 构造服务并注册；`services.module.ts` 的 `safeProviders` 注册弹出页版本；耗时操作走 `runtime.background.ts` 的 `messagesWithResponse`（关掉弹出页不中断）。
-- 桌面：主进程注册 timer 与任务处理；渲染进程通过既有 IPC 通道触发。
+- 扩展：弹出页直接调用共享组件与服务；没有调度任务，也没有后台队列。
+- 桌面：渲染进程直接调用共享服务；主进程不注册 timer。
+- 关闭弹窗/窗口可能中断正在进行的请求，重新打开后重试即可。
 
 ## 阶段 5：Passkey 与安全密钥
 
@@ -365,7 +397,7 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 - 存储：`WEBAUTHN_PRF_OPTIONS`（`libs/common/src/key-management/state-definitions.ts:120`）。
 - 解锁：沿用 `UnlockViaPrfComponent` 与 `DefaultWebAuthnPrfUnlockService`；`default-webauthn-prf-unlock.service.ts:249-269` 的 RP ID 改为直接取扩展 ID。
 - **桌面**：不做 PRF（见 3.3），用 Windows Hello / Touch ID。设置页按平台显示不同项。
-- 多设备：解锁数据随 `account.json` 同步；PRF 凭据只在扩展端有效，桌面端显示"不可用"。
+- 多设备：PRF 凭据只保存在登记它的扩展本机，不随 `account.json` 同步；换设备需重新登记，桌面端显示"不可用"。
 - 弹出页被关闭的情况：如果 Chrome 弹系统验证框时关闭了弹出页，改在独立窗口完成（仓库已有弹出窗口工具）。
 
 ## 阶段 6：Google 动态二维码（两端）
@@ -405,7 +437,6 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 | 本地校验主密码   | `DefaultMasterPasswordUnlockService.proofOfDecryption`                                                |
 | 加密导出         | `IndividualVaultExportService.getPasswordProtectedExport`                                             |
 | 加密导出的导入   | `localpass-password-protected-importer.ts`                                                            |
-| 定时任务         | `ScheduledTaskNames`、`TaskSchedulerService`                                                          |
 | 请求拦截         | `ApiService.addMiddleware`                                                                            |
 | 安全密钥解锁     | `DefaultWebAuthnPrfUnlockService`、`UnlockViaPrfComponent`、`RotateableKeySetService`                 |
 | 桌面持久化       | `ElectronStoreBackend`、`ElectronRendererStorageService`（IPC）                                       |
@@ -438,25 +469,26 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 **R2（需要你提供测试用 R2 令牌和存储桶）**
 
 1. 配置并测试连接。
-2. 修改条目后自动上传；断网修改，联网后补传。
-3. 扩展 + 桌面同时使用，确认双向同步与冲突规则。
-4. 手动或等待定时备份，用备份口令在另一个客户端导入成功。
-5. 全新环境走"从 R2 恢复"。
+2. 点「同步」上传本机快照并拉取远端更新；确认桶根出现 `account.json`、`manifest.json` 与 `snapshots/`。
+3. 修改条目后再点「同步」；确认只产生新快照，没有后台自动上传。
+4. 扩展 + 桌面同时使用，确认双向同步与冲突规则。
+5. 点「导出备份」，用备份口令在另一个客户端导入成功。
+6. 全新环境走"从 R2 恢复"。
 
 ## 风险与对策
 
 | 风险                                                  | 对策                                                                       |
 | ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| **桌面端自动更新把应用替换成 LocalPass 官方版**       | 阶段 0 第一步就删 `publish` 与 updater 注册；打包后断网验证不发起更新请求  |
+| **桌面端自动更新把应用替换成上游官方版**              | 阶段 0 第一步就删 `publish` 与 updater 注册；打包后断网验证不发起更新请求  |
 | Rust SDK 黑盒，本地数据格式可能不一致                 | 阶段 0 验证 + "导出再导入"交叉验证；失败停下来给替代方案                   |
 | 服务器下发的功能开关默认全关                          | 测试时逐个确认，确需的本地给默认值                                         |
 | 桌面构建链（Rust + MSVC + Electron 下载）在国内易失败 | 先单独跑通 `build-native`，配 Electron 镜像；失败即报，不硬试              |
 | 桌面未签名：SmartScreen / Gatekeeper 拦截             | 安装说明写明绕过步骤；后续可买证书                                         |
 | macOS 生物识别与 keychain 需要 entitlements           | 保留并核对 `entitlements.mac.plist`；不做公证则只能右键打开                |
-| MV3 后台会被随时终止                                  | 上传中断后队列不清空，下次触发重试；每次推送新快照，重试不会损坏           |
-| 桌面端不在运行就没法定时备份                          | 托盘常驻 + 启动时补做；设置页说明                                          |
+| MV3 后台会被随时终止                                  | 同步只在弹窗内手动触发；中断后重新打开再点一次，不承诺后台续传             |
+| 没有后台同步                                          | 只在点「同步 / 导出备份」时上传；设置页明确写出，不提供定时器              |
 | 修改主密码不轮换密钥                                  | 旧备份仍能用旧密码打开；真正轮换放到附件之后                               |
-| 瘦身造成上游补丁难合并                                | 已决策不追 `main`；保留 `docs/removed-from-upstream.md` 做映射             |
+| 瘦身造成与上游差异扩大                                | 已决策独立维护、不合并上游；`docs/removed-from-upstream.md` 只做来源追溯   |
 | 许可（GPL-3.0）                                       | 分发即公开源码；桌面安装包附源码链接                                       |
 | 两端功能漂移                                          | 阶段 2 起所有业务逻辑进 `libs/local-vault`；两端只写适配器，代码评审时检查 |
 
@@ -468,7 +500,7 @@ Cloudflare 没有第三方登录授权流程。做法是：在 Cloudflare 控制
 | 1 瘦身                                 | 2–3 天        |
 | 2 本地保险库核心 + 扩展接线            | 6–8 天        |
 | 3 桌面端接入                           | 6–8 天        |
-| 4 R2 同步 + 定时备份                   | 5–7 天        |
+| 4 R2 同步 + 导出备份                   | 5–7 天        |
 | 5 Passkey / 安全密钥                   | 3–5 天        |
 | 6 TOTP 二维码                          | 3–4 天        |
 | 7 打包发布                             | 3–4 天        |

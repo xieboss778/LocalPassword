@@ -3,6 +3,20 @@
 These instructions apply to every agent working in this repository. More specific
 `AGENTS.md` files and direct user instructions take precedence.
 
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live as GitHub issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical triage roles map to labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` and `docs/adr/` at repo root. See `docs/agents/domain.md`.
+
 ## Project Identity
 
 - Product name: **LocalPass**; repository: `LocalPassword`.
@@ -35,7 +49,7 @@ These instructions apply to every agent working in this repository. More specifi
 - `apps/<client>/` contains client-specific code.
 - `libs/common/` is shared with non-Angular clients: no Angular decorators, `inject()`,
   `@Injectable`, or template-only APIs.
-- `libs/angular/` may contain Angular APIs shared by browser, desktop, and web.
+- `libs/angular/` may contain Angular APIs shared by browser and desktop.
 - Place new code as deep and narrow as possible. Promote to `libs/` only when a second
   client needs it.
 - Respect `eslint.config.mjs`, `nx.json`, and each app/library's TypeScript and Jest config.
@@ -50,6 +64,18 @@ These instructions apply to every agent working in this repository. More specifi
 - The canonical theme is `libs/components/tailwind.config.base.js`.
 - Reuse existing components from `libs/components/` before creating new primitives.
 - User-visible strings use the project's i18n pipe and locale files.
+
+## Documentation
+
+- The documentation index is `docs/README.md`. Read the docs relevant to the area you
+  are changing before editing, and update them in the same change when behavior, paths,
+  commands, or status change.
+- One source of truth per fact. Delete superseded docs instead of keeping duplicates;
+  git history preserves them.
+- Mark unimplemented designs as `待评审 / 未实施` in the document header. Never describe
+  a proposal as current behavior.
+- Use `GLOSSARY.md` terms: `同步` is the encrypted snapshot mirror, `导出` is the standard
+  JSON export, `恢复` rebuilds the account. Do not use `备份` as a mechanism name.
 
 ## Scoped References
 
