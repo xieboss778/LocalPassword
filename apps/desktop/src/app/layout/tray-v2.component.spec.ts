@@ -8,10 +8,12 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
 import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@localpass/common/vault/enums/cipher-type";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import { LockService } from "@localpass/unlock";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { TrayV2Component } from "./tray-v2.component";
 
@@ -24,6 +26,7 @@ describe("TrayV2Component", () => {
   const platformUtilsService = mock<PlatformUtilsService>();
   const messagingService = mock<MessagingService>();
   const lockService = mock<LockService>();
+  const passwordRepromptService = mock<PasswordRepromptService>();
   const toast = mock<LpToastService>();
 
   const login = (id: string, name: string, password: string): CipherView =>
@@ -41,6 +44,7 @@ describe("TrayV2Component", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     i18nService.t.mockImplementation((key: string) => key);
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
     cipherService.cipherViews$.mockReturnValue(
       of([login("alpha", "Alpha", "secret-1"), login("beta", "Beta", "secret-2")]),
     );
@@ -61,12 +65,13 @@ describe("TrayV2Component", () => {
         { provide: PlatformUtilsService, useValue: platformUtilsService },
         { provide: MessagingService, useValue: messagingService },
         { provide: LockService, useValue: lockService },
+        { provide: PasswordRepromptService, useValue: passwordRepromptService },
         { provide: LpToastService, useValue: toast },
       ],
     }).compileComponents();
   });
 
-  it("lists recent logins, narrows them by search and copies a password", () => {
+  it("lists recent logins, narrows them by search and copies a password", async () => {
     const fixture = TestBed.createComponent(TrayV2Component);
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
@@ -84,9 +89,27 @@ describe("TrayV2Component", () => {
 
     const copy = root.querySelector(".agy-tray-row button") as HTMLButtonElement;
     copy.click();
+    await fixture.whenStable();
 
     expect(platformUtilsService.copyToClipboard).toHaveBeenCalledWith("secret-2");
     expect(toast.showClipboard).toHaveBeenCalledWith("valueCopied", expect.any(Function));
+  });
+
+  it("does not copy a password when the master password re-prompt is cancelled", async () => {
+    const protectedLogin = login("protected", "Protected", "protected-secret");
+    protectedLogin.reprompt = CipherRepromptType.Password;
+    cipherService.cipherViews$.mockReturnValue(of([protectedLogin]));
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(TrayV2Component);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+
+    (root.querySelector(".agy-tray-row button") as HTMLButtonElement).click();
+    await fixture.whenStable();
+
+    expect(passwordRepromptService.passwordRepromptCheck).toHaveBeenCalledWith(protectedLogin);
+    expect(platformUtilsService.copyToClipboard).not.toHaveBeenCalled();
   });
 
   it("opens the main window from the footer", () => {

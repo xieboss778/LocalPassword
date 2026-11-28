@@ -12,6 +12,7 @@ import { CipherService } from "@localpass/common/vault/abstractions/cipher.servi
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { LoginView } from "@localpass/common/vault/models/view/login.view";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { LocalQuickAccessComponent } from "./quick-access.component";
 
@@ -20,6 +21,7 @@ describe("LocalQuickAccessComponent", () => {
   const cipherService = mock<CipherService>();
   const folderService = mock<FolderService>();
   const accountService = mock<AccountService>();
+  const passwordRepromptService = mock<PasswordRepromptService>();
   const router = { navigate: jest.fn().mockResolvedValue(true) };
 
   const login = Object.assign(new LoginView(), {
@@ -41,6 +43,7 @@ describe("LocalQuickAccessComponent", () => {
     i18nService.t.mockImplementation((key: string) => key);
     cipherService.getAllDecrypted.mockResolvedValue([cipher]);
     folderService.folderViews$.mockReturnValue(of([]));
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
     accountService.activeAccount$ = of({
       id: "user-id" as Account["id"],
       email: "local@example.invalid",
@@ -58,6 +61,7 @@ describe("LocalQuickAccessComponent", () => {
         { provide: AccountService, useValue: accountService },
         { provide: Router, useValue: router },
         { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
+        { provide: PasswordRepromptService, useValue: passwordRepromptService },
         { provide: GlobalStateProvider, useValue: new FakeGlobalStateProvider() },
       ],
     }).compileComponents();

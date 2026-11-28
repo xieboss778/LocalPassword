@@ -39,6 +39,7 @@ import {
   readFieldValues,
   withoutKindField,
 } from "@localpass/local-vault";
+import { PasswordRepromptService } from "@localpass/vault";
 
 interface QuickRow {
   readonly item: CipherView;
@@ -171,6 +172,7 @@ export class LocalQuickAccessComponent {
   private readonly toast = inject(LpToastService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
   private readonly shortcutsService = inject(DesktopShortcutsService);
+  private readonly passwordRepromptService = inject(PasswordRepromptService);
 
   readonly open = input.required<boolean>();
   readonly closed = output<void>();
@@ -248,7 +250,7 @@ export class LocalQuickAccessComponent {
     this.close();
   }
 
-  protected onDialogKeydown(event: KeyboardEvent): void {
+  protected async onDialogKeydown(event: KeyboardEvent): Promise<void> {
     // 对话框打开时，应用内其它 ⌘ 快捷键（新建/编辑/删除）不应同时生效。
     event.stopPropagation();
     const meta = event.metaKey || event.ctrlKey;
@@ -301,12 +303,12 @@ export class LocalQuickAccessComponent {
           return;
         }
         event.preventDefault();
-        this.copy(active.item.login.password, this.i18n.t("password"));
+        await this.copy(active.item.login.password, this.i18n.t("password"), active.item, true);
         return;
       }
       if (active.item.login.username && this.shortcutsService.isEnabled(DesktopShortcut.Copy)) {
         event.preventDefault();
-        this.copy(active.item.login.username, this.i18n.t("username"));
+        await this.copy(active.item.login.username, this.i18n.t("username"), active.item);
       }
     }
   }
@@ -341,7 +343,18 @@ export class LocalQuickAccessComponent {
     return rows[Math.min(this.activeIndex(), rows.length - 1)] ?? null;
   }
 
-  private copy(value: string, label: string): void {
+  private async copy(
+    value: string,
+    label: string,
+    cipher: CipherView,
+    protectedValue = false,
+  ): Promise<void> {
+    if (
+      protectedValue &&
+      !(await this.passwordRepromptService.passwordRepromptCheck(cipher).catch(() => false))
+    ) {
+      return;
+    }
     // 走平台剪贴板服务：桌面端会按设置安排自动清空，并避免写入历史。
     this.platformUtilsService.copyToClipboard(value);
     this.toast.showClipboard(this.i18n.t("valueCopied", label), () => {

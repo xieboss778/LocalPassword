@@ -30,6 +30,7 @@ import {
   kindOf,
 } from "@localpass/local-vault";
 import { LockService, LockSource } from "@localpass/unlock";
+import { PasswordRepromptService } from "@localpass/vault";
 
 const GENERATED_PASSWORD_OPTIONS = { ...DEFAULT_PASSWORD_OPTIONS, length: 20 } as const;
 const RECENT_LIMIT = 4;
@@ -136,6 +137,7 @@ export class TrayV2Component implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly lockService = inject(LockService);
   private readonly toast = inject(LpToastService);
+  private readonly passwordRepromptService = inject(PasswordRepromptService);
 
   protected readonly query = signal("");
   protected readonly activeIndex = signal(0);
@@ -211,9 +213,12 @@ export class TrayV2Component implements OnInit {
     }
   }
 
-  protected copyPassword(item: CipherView): void {
+  protected async copyPassword(item: CipherView): Promise<void> {
     const password = item.login?.password;
     if (!password) {
+      return;
+    }
+    if (!(await this.passwordRepromptService.passwordRepromptCheck(item).catch(() => false))) {
       return;
     }
     this.platformUtilsService.copyToClipboard(password);
@@ -262,7 +267,7 @@ export class TrayV2Component implements OnInit {
       const active = this.items()[this.activeIndex()];
       if (active) {
         event.preventDefault();
-        this.copyPassword(active);
+        void this.copyPassword(active);
       }
       return;
     }

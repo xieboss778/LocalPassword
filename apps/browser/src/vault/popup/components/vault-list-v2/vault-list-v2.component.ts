@@ -50,7 +50,7 @@ import {
 } from "@localpass/local-vault";
 import { CipherListView } from "@localpass/sdk-internal";
 import { LockService, LockSource } from "@localpass/unlock";
-import { MY_ITEMS_ROUTE } from "@localpass/vault";
+import { MY_ITEMS_ROUTE, PasswordRepromptService } from "@localpass/vault";
 
 import { ImportConfirmationPopupService } from "../../../../tools/popup/settings/import/import-confirmation-popup.service";
 import { VaultPopupAutofillService } from "../../services/vault-popup-autofill.service";
@@ -352,6 +352,7 @@ export class VaultListV2Component implements OnInit {
   private readonly importConfirmationPopup = inject(ImportConfirmationPopupService);
   private readonly autofillService = inject(VaultPopupAutofillService);
   private readonly densityService = inject(VaultDensityService);
+  private readonly passwordRepromptService = inject(PasswordRepromptService);
   private readonly biometricsService = inject(BiometricsService, { optional: true });
   private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
     optional: true,
@@ -706,6 +707,9 @@ export class VaultListV2Component implements OnInit {
     event.stopPropagation();
     const view = await this.decrypt(id);
     if (!view) {
+      return;
+    }
+    if (!(await this.passwordRepromptService.passwordRepromptCheck(view).catch(() => false))) {
       return;
     }
     const kind = kindOf(view);

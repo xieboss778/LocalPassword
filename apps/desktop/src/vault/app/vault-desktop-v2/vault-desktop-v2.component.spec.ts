@@ -14,10 +14,12 @@ import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/pass
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@localpass/common/vault/enums/cipher-type";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { PasswordHistoryView } from "@localpass/common/vault/models/view/password-history.view";
 import { DialogService } from "@localpass/components";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { VaultDesktopV2Component } from "./vault-desktop-v2.component";
 
@@ -29,6 +31,8 @@ describe("VaultDesktopV2Component", () => {
   const accountService = mock<AccountService>();
   const versionHistoryService = mock<CipherVersionHistoryService>();
   const passwordStrengthService = mock<PasswordStrengthServiceAbstraction>();
+  const passwordRepromptService = mock<PasswordRepromptService>();
+  const platformUtilsService = mock<PlatformUtilsService>();
   const router = { navigate: jest.fn().mockResolvedValue(true), navigateByUrl: jest.fn() };
 
   beforeEach(async () => {
@@ -39,6 +43,7 @@ describe("VaultDesktopV2Component", () => {
     folderService.folderViews$.mockReturnValue(of([]));
     versionHistoryService.rows.mockResolvedValue([]);
     passwordStrengthService.getPasswordStrength.mockReturnValue({ score: 3 } as any);
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
     accountService.activeAccount$ = of({ id: "user-id" } as any);
 
     await TestBed.configureTestingModule({
@@ -56,8 +61,9 @@ describe("VaultDesktopV2Component", () => {
         { provide: GlobalStateProvider, useValue: new FakeGlobalStateProvider() },
         {
           provide: PlatformUtilsService,
-          useValue: mock<PlatformUtilsService>(),
+          useValue: platformUtilsService,
         },
+        { provide: PasswordRepromptService, useValue: passwordRepromptService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -356,5 +362,56 @@ describe("VaultDesktopV2Component", () => {
 
     expect(cipherService.restoreWithServer).toHaveBeenCalledWith("login-id", "user-id");
     toast.hide();
+  });
+
+  it("keeps a protected item closed until the master password re-prompt passes", async () => {
+    const item = new CipherView();
+    item.id = "protected-id";
+    item.name = "Protected Mail";
+    item.type = CipherType.Login;
+    item.reprompt = CipherRepromptType.Password;
+    item.login.password = "protected-secret";
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const row = (
+      Array.from(fixture.nativeElement.querySelectorAll("[role=option]")) as HTMLElement[]
+    ).find((element) => element.textContent?.includes("Protected Mail"));
+    row?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(passwordRepromptService.passwordRepromptCheck).toHaveBeenCalledWith(item);
+    expect(fixture.nativeElement.querySelector("aside h2")?.textContent ?? "").not.toContain(
+      "Protected Mail",
+    );
+  });
+
+  it("does not copy a protected password from the list before the re-prompt passes", async () => {
+    const item = new CipherView();
+    item.id = "protected-id";
+    item.name = "Protected Mail";
+    item.type = CipherType.Login;
+    item.reprompt = CipherRepromptType.Password;
+    item.login.password = "protected-secret";
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    (
+      fixture.nativeElement.querySelector('.agy-mac-row [title="copyPassword"]') as HTMLElement
+    ).click();
+    await fixture.whenStable();
+
+    expect(platformUtilsService.copyToClipboard).not.toHaveBeenCalled();
   });
 });

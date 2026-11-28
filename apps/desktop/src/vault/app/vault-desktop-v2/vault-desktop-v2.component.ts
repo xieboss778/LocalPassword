@@ -10,7 +10,7 @@ import {
   signal,
 } from "@angular/core";
 import { takeUntilDestroyed, toObservable, toSignal } from "@angular/core/rxjs-interop";
-import { Router, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { firstValueFrom, of, switchMap } from "rxjs";
 
 import {
@@ -68,7 +68,7 @@ import {
   setKind,
   withoutKindField,
 } from "@localpass/local-vault";
-import { TotpQrComponent } from "@localpass/vault";
+import { PasswordRepromptService, TotpQrComponent } from "@localpass/vault";
 
 type DrawerMode = "closed" | "edit" | "new-type" | "new-form" | "history" | "qr";
 type TypeFilter = "all" | "other" | ItemKind;
@@ -549,8 +549,8 @@ const MASK = "••••••••••••";
                     [class.agy-copied]="copiedKey() === 'otp'"
                     role="button"
                     tabindex="0"
-                    (click)="copyValue(otp.copy, otp.label, 'otp')"
-                    (keydown.enter)="copyValue(otp.copy, otp.label, 'otp')"
+                    (click)="copyValue(otp.copy, otp.label, 'otp', true)"
+                    (keydown.enter)="copyValue(otp.copy, otp.label, 'otp', true)"
                   >
                     <span class="agy-ring" aria-hidden="true">
                       <svg viewBox="0 0 24 24">
@@ -583,7 +583,9 @@ const MASK = "••••••••••••";
                       class="agy-iconbtn agy-sm"
                       [attr.title]="i18n.t('copy')"
                       [attr.aria-label]="i18n.t('totpCodeLabel')"
-                      (click)="$event.stopPropagation(); copyValue(otp.copy, otp.label, 'otp')"
+                      (click)="
+                        $event.stopPropagation(); copyValue(otp.copy, otp.label, 'otp', true)
+                      "
                     >
                       <bit-icon
                         [name]="copiedKey() === 'otp' ? 'bwi-check' : 'bwi-copy'"
@@ -605,7 +607,7 @@ const MASK = "••••••••••••";
                             class="agy-field"
                             [class.agy-copied]="copiedKey() === row.label"
                             [attr.data-act]="row.copy ? 'copy' : null"
-                            (click)="copyValue(row.copy, row.label, row.label)"
+                            (click)="copyValue(row.copy, row.label, row.label, row.secret)"
                           >
                             <span class="agy-k" [attr.title]="row.label">{{ row.label }}</span>
                             @if (row.secret) {
@@ -682,7 +684,7 @@ const MASK = "••••••••••••";
                                   [attr.aria-label]="row.label"
                                   (click)="
                                     $event.stopPropagation();
-                                    copyValue(row.copy, row.label, row.label)
+                                    copyValue(row.copy, row.label, row.label, row.secret)
                                   "
                                 >
                                   <bit-icon
@@ -732,7 +734,14 @@ const MASK = "••••••••••••";
                         <div
                           class="agy-field"
                           data-act="copy"
-                          (click)="copyValue(field.value, field.name ?? '')"
+                          (click)="
+                            copyValue(
+                              field.value,
+                              field.name ?? '',
+                              undefined,
+                              field.type === fieldType.Hidden
+                            )
+                          "
                         >
                           <span class="agy-k" [attr.title]="field.name">{{ field.name }}</span>
                           <span
@@ -776,7 +785,15 @@ const MASK = "••••••••••••";
                               class="agy-iconbtn agy-sm"
                               [attr.title]="field.name"
                               [attr.aria-label]="field.name"
-                              (click)="$event.stopPropagation(); copyValue(field.value, field.name)"
+                              (click)="
+                                $event.stopPropagation();
+                                copyValue(
+                                  field.value,
+                                  field.name,
+                                  undefined,
+                                  field.type === fieldType.Hidden
+                                )
+                              "
                             >
                               <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
                             </button>
@@ -1186,7 +1203,9 @@ const MASK = "••••••••••••";
                             class="agy-iconbtn agy-sm"
                             [attr.title]="i18n.t('copy')"
                             [attr.aria-label]="i18n.t('copy')"
-                            (click)="copyValue(currentSecret.value, currentSecret.label)"
+                            (click)="
+                              copyValue(currentSecret.value, currentSecret.label, undefined, true)
+                            "
                           >
                             <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
                           </button>
@@ -1241,7 +1260,9 @@ const MASK = "••••••••••••";
                               class="agy-iconbtn agy-sm"
                               [attr.title]="i18n.t('copy')"
                               [attr.aria-label]="i18n.t('copy')"
-                              (click)="copyValue(versionSecret.value, versionSecret.label)"
+                              (click)="
+                                copyValue(versionSecret.value, versionSecret.label, undefined, true)
+                              "
                             >
                               <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
                             </button>
@@ -1311,7 +1332,7 @@ const MASK = "••••••••••••";
                             class="agy-iconbtn agy-sm"
                             [attr.title]="i18n.t('copyPassword')"
                             [attr.aria-label]="i18n.t('copyPassword')"
-                            (click)="copyValue(row.password, i18n.t('password'))"
+                            (click)="copyValue(row.password, i18n.t('password'), undefined, true)"
                           >
                             <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
                           </button>
@@ -1357,8 +1378,12 @@ const MASK = "••••••••••••";
                         class="agy-ext-field"
                         role="button"
                         tabindex="0"
-                        (click)="copyValue(totpBase32Secret(), i18n.t('totpSecret'))"
-                        (keydown.enter)="copyValue(totpBase32Secret(), i18n.t('totpSecret'))"
+                        (click)="
+                          copyValue(totpBase32Secret(), i18n.t('totpSecret'), undefined, true)
+                        "
+                        (keydown.enter)="
+                          copyValue(totpBase32Secret(), i18n.t('totpSecret'), undefined, true)
+                        "
                       >
                         <span class="agy-k">{{ i18n.t("totpSecret") }}</span>
                         <span class="agy-v agy-mono">{{ totpBase32Secret() }}</span>
@@ -1504,6 +1529,7 @@ export class VaultDesktopV2Component implements OnInit {
   private readonly shortcutsService = inject(DesktopShortcutsService);
   private readonly passwordAutoHideService = inject(PasswordAutoHideService);
   private readonly passwordStrengthService = inject(PasswordStrengthServiceAbstraction);
+  private readonly passwordRepromptService = inject(PasswordRepromptService);
 
   protected readonly autoHide = toSignal(this.passwordAutoHideService.autoHide$, {
     initialValue: true,
@@ -1559,6 +1585,7 @@ export class VaultDesktopV2Component implements OnInit {
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly historyRevealed = signal<ReadonlySet<number>>(new Set());
+  private readonly repromptedCipherId = signal<string | null>(null);
   protected readonly versionRows = signal<readonly CipherVersionRow[]>([]);
   protected readonly versionLoading = signal(false);
   protected readonly versionRevealed = signal<ReadonlySet<number>>(new Set());
@@ -2067,6 +2094,7 @@ export class VaultDesktopV2Component implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.destroyRef.onDestroy(() => this.clearRevealTimers());
+    this.repromptedCipherId.set(null);
     const folder = this.route.snapshot.queryParamMap.get("folder");
     if (folder) {
       this.folderFilter.set(folder);
@@ -2084,30 +2112,34 @@ export class VaultDesktopV2Component implements OnInit {
       // 快速检索（⌘K）与安全体检用 `cipherId` 把选中条目带回来；`edit=1` 直接展开编辑抽屉。
       // 先清掉可能挡住它的列表筛选。
       this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-        const cipherId = params.get("cipherId");
-        if (!cipherId) {
-          return;
-        }
-        const item = this.items().find((cipher) => String(cipher.id) === cipherId);
-        if (!item) {
-          return;
-        }
-        const startEditing = params.get("edit") === "1";
-        this.clearFilters();
-        this.openView(item);
-        if (startEditing) {
-          this.startEdit();
-        }
-        void this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: { cipherId: null, edit: null },
-          queryParamsHandling: "merge",
-          replaceUrl: true,
-        });
+        void this.openFromQuery(params);
       });
     } finally {
       this.loading.set(false);
     }
+  }
+
+  private async openFromQuery(params: ParamMap): Promise<void> {
+    const cipherId = params.get("cipherId");
+    if (!cipherId) {
+      return;
+    }
+    const item = this.items().find((cipher) => String(cipher.id) === cipherId);
+    if (!item) {
+      return;
+    }
+    const startEditing = params.get("edit") === "1";
+    this.clearFilters();
+    await this.openView(item);
+    if (startEditing) {
+      await this.startEdit();
+    }
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { cipherId: null, edit: null },
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
   }
 
   protected kindLabel(kind: ItemKind): string {
@@ -2215,8 +2247,12 @@ export class VaultDesktopV2Component implements OnInit {
     this.favoritesOnly.set(false);
   }
 
-  protected openView(item: CipherView, event?: Event): void {
+  protected async openView(item: CipherView, event?: Event): Promise<void> {
     event?.stopPropagation();
+    this.repromptedCipherId.set(null);
+    if (item.reprompt !== CipherRepromptType.None && !(await this.ensureReprompt(item))) {
+      return;
+    }
     this.clearRevealTimers();
     this.selected.set(item);
     this.revealedLabels.set(new Set());
@@ -2228,7 +2264,7 @@ export class VaultDesktopV2Component implements OnInit {
     const target = this.items().find((entry) => entry.id === sshId);
     if (target) {
       this.clearFilters();
-      this.openView(target);
+      void this.openView(target);
     }
   }
 
@@ -2266,6 +2302,7 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   protected closeDrawer(): void {
+    this.repromptedCipherId.set(null);
     if (this.drawer() === "edit") {
       this.cancelEdit();
       return;
@@ -2276,6 +2313,7 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   protected clearSelection(): void {
+    this.repromptedCipherId.set(null);
     this.clearRevealTimers();
     this.selected.set(null);
     this.revealedLabels.set(new Set());
@@ -2307,9 +2345,12 @@ export class VaultDesktopV2Component implements OnInit {
     this.drawer.set("new-form");
   }
 
-  protected startEdit(): void {
+  protected async startEdit(): Promise<void> {
     const item = this.selected();
-    if (!item) {
+    if (
+      !item ||
+      (item.reprompt !== CipherRepromptType.None && !(await this.ensureReprompt(item)))
+    ) {
       return;
     }
     const kind = kindOf(item);
@@ -2341,12 +2382,17 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   protected cancelEdit(): void {
+    this.repromptedCipherId.set(null);
     this.drawer.set("closed");
     this.errorMessage.set(null);
   }
 
-  protected openHistory(): void {
-    if (!this.selected()) {
+  protected async openHistory(): Promise<void> {
+    const item = this.selected();
+    if (
+      !item ||
+      (item.reprompt !== CipherRepromptType.None && !(await this.ensureReprompt(item)))
+    ) {
       return;
     }
     this.historyRevealed.set(new Set());
@@ -2398,7 +2444,7 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected async restoreVersion(row: CipherVersionRow): Promise<void> {
     const item = this.selected();
-    if (!item?.id || item.id !== row.view.id) {
+    if (!item?.id || item.id !== row.view.id || !(await this.ensureReprompt(item))) {
       return;
     }
 
@@ -2441,7 +2487,12 @@ export class VaultDesktopV2Component implements OnInit {
    */
   protected async restoreHistory(row: PasswordHistoryView): Promise<void> {
     const item = this.selected();
-    if (!item?.id || kindOf(item) !== ItemKind.Login || !row.password) {
+    if (
+      !item?.id ||
+      kindOf(item) !== ItemKind.Login ||
+      !row.password ||
+      !(await this.ensureReprompt(item))
+    ) {
       return;
     }
 
@@ -2619,7 +2670,7 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   private async archiveItem(item: CipherView): Promise<void> {
-    if (!item.id) {
+    if (!item.id || !(await this.ensureReprompt(item))) {
       return;
     }
 
@@ -2697,16 +2748,45 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected copyUsername(item: CipherView, event: Event): void {
     event.stopPropagation();
-    this.copyValue(item.login.username, this.i18n.t("username"));
+    void this.copyValue(item.login.username, this.i18n.t("username"));
   }
 
-  protected copyPassword(item: CipherView, event: Event): void {
+  protected async copyPassword(item: CipherView, event: Event): Promise<void> {
     event.stopPropagation();
-    this.copyValue(item.login.password, this.i18n.t("password"));
+    await this.copyValue(item.login.password, this.i18n.t("password"), undefined, true, item);
   }
 
-  protected copyValue(value: string | null | undefined, label: string, flashKey?: string): void {
+  private async ensureReprompt(cipher: CipherView | null | undefined): Promise<boolean> {
+    if (!cipher) {
+      return false;
+    }
+    if (cipher.reprompt === CipherRepromptType.None) {
+      return true;
+    }
+    const cipherId = cipher.id == null ? null : String(cipher.id);
+    if (cipherId != null && this.repromptedCipherId() === cipherId) {
+      return true;
+    }
+    const passed = await this.passwordRepromptService
+      .passwordRepromptCheck(cipher)
+      .catch(() => false);
+    if (passed && cipherId != null) {
+      this.repromptedCipherId.set(cipherId);
+    }
+    return passed;
+  }
+
+  protected async copyValue(
+    value: string | null | undefined,
+    label: string,
+    flashKey?: string,
+    protectedValue = false,
+    cipher?: CipherView | null,
+  ): Promise<void> {
     if (!value) {
+      return;
+    }
+    if (protectedValue && !(await this.ensureReprompt(cipher ?? this.selected()))) {
       return;
     }
     // 走平台剪贴板服务，按设置自动清空；不把明文留在系统剪贴板历史里。
@@ -2840,7 +2920,7 @@ export class VaultDesktopV2Component implements OnInit {
     if (meta && key === "e") {
       if (selected && this.shortcutEnabled(DesktopShortcut.Edit)) {
         event.preventDefault();
-        this.startEdit();
+        void this.startEdit();
       }
       return;
     }
@@ -2858,12 +2938,18 @@ export class VaultDesktopV2Component implements OnInit {
     if (meta && selected && this.shortcutEnabled(DesktopShortcut.Copy)) {
       if (event.shiftKey && key === "c" && selected.login.password) {
         event.preventDefault();
-        this.copyValue(selected.login.password, this.i18n.t("password"));
+        void this.copyValue(
+          selected.login.password,
+          this.i18n.t("password"),
+          undefined,
+          true,
+          selected,
+        );
         return;
       }
       if (!event.shiftKey && key === "c" && selected.login.username) {
         event.preventDefault();
-        this.copyValue(selected.login.username, this.i18n.t("username"));
+        void this.copyValue(selected.login.username, this.i18n.t("username"));
         return;
       }
     }
@@ -2881,7 +2967,7 @@ export class VaultDesktopV2Component implements OnInit {
       const delta = event.key === "ArrowDown" ? 1 : -1;
       const next = rows[(index + delta + rows.length) % rows.length];
       if (next) {
-        this.openView(next.item);
+        void this.openView(next.item);
         setTimeout(() => {
           document
             .querySelector<HTMLElement>(`.agy-mac-row[data-cipher-id="${next.item.id}"]`)
