@@ -86,13 +86,33 @@ describe("AutofillFillReceiptContentService", () => {
     expect(service["handlers"]).toBeUndefined();
   });
 
+  it("notifies the owner once when a shown receipt dismisses", () => {
+    const onDismiss = jest.fn();
+    service.show(receipt, { onUndo, onRefill, onDismiss });
+
+    jest.advanceTimersByTime(8000);
+
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not notify dismissal for a receipt that was never shown", () => {
+    const onDismiss = jest.fn();
+
+    service.destroy();
+    service.destroy();
+
+    expect(onDismiss).not.toHaveBeenCalled();
+  });
+
   it("is idempotent when destroyed", () => {
-    service.show(receipt, { onUndo, onRefill });
+    const onDismiss = jest.fn();
+    service.show(receipt, { onUndo, onRefill, onDismiss });
 
     service.destroy();
     service.destroy();
 
     expect(service["host"]).toBeUndefined();
     expect(jest.getTimerCount()).toBe(0);
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 });

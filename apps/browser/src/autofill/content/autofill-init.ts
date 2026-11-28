@@ -29,11 +29,25 @@ type FillReceiptUndoEntry = {
   checked?: boolean;
 };
 
+type PendingFillReceipt = {
+  receipt: InlineMenuFillReceipt;
+  token: string;
+};
+
 class AutofillInit implements AutofillInitInterface {
   private readonly sendExtensionMessage = sendExtensionMessage;
   private readonly collectAutofillContentService: CollectAutofillContentService;
   private readonly insertAutofillContentService: InsertAutofillContentService;
   private readonly fillReceiptContentService = new AutofillFillReceiptContentService();
+  /**
+   * Per-fill undo snapshots held in this frame's memory only. The token is opaque, so the
+   * background can address a fill across frames without ever seeing field values.
+   */
+  private readonly fillReceiptSessions = new Map<string, FillReceiptUndoEntry[]>();
+  private readonly fillInProgressTokens = new Set<string>();
+  private readonly pendingRestoreTokens = new Set<string>();
+  private pendingFillReceipt?: PendingFillReceipt;
+  private activeFillReceiptToken?: string;
   private collectPageDetailsOnLoadTimeout: number | NodeJS.Timeout | undefined;
   private lastContextMenuClickedElement: HTMLElement | null = null;
   private isMonitoring = false;
@@ -50,6 +64,12 @@ class AutofillInit implements AutofillInitInterface {
     clearTargetingRulesCache: () => this.handleClearTargetingRulesCache(),
     startAutofillMonitors: () => this.startMonitoring(),
     stopAutofillMonitors: () => this.stopMonitoring(),
+    showInlineMenuFillReceipt: ({ message }) =>
+      this.isMonitoring ? this.showInlineMenuFillReceipt(message) : undefined,
+    restoreInlineMenuFill: ({ message }) =>
+      this.isMonitoring ? this.restoreInlineMenuFill(message) : undefined,
+    clearInlineMenuFillState: ({ message }) =>
+      this.isMonitoring ? this.clearInlineMenuFillState(message) : undefined,
   };
 
   /**
@@ -129,6 +149,11 @@ class AutofillInit implements AutofillInitInterface {
     this.autofillOverlayContentService?.stopMonitoring();
     this.autofillInlineMenuContentService?.stopMonitoring();
     this.fillReceiptContentService.destroy();
+    this.fillReceiptSessions.clear();
+    this.fillInProgressTokens.clear();
+    this.pendingRestoreTokens.clear();
+    this.pendingFillReceipt = undefined;
+    this.activeFillReceiptToken = undefined;
   }
 
   /**
@@ -206,17 +231,19 @@ class AutofillInit implements AutofillInitInterface {
   }
 
   /**
-   * Whether this content script runs in the tab's top-level document. The background sends the
-   * same fill message to every frame it writes, so without this check each filled frame would
-   * render its own receipt. Undo is also frame-local: it restores the fields this frame captured
-   * before the fill.
+   * Whether this content script runs in the tab's top-level document. The receipt is anchored to
+   * the bottom-right of the viewport: in a subframe it would be clipped by the iframe, so only the
+   * top document renders it. Each filled frame keeps its own undo snapshot, addressed by the
+   * fill's opaque token, so the top document's receipt can undo every frame the fill touched.
    */
   private isTopLevelFrame(): boolean {
     return globalThis.self === globalThis.top;
   }
 
   /**
-   * Fills the form with the given fill script.
+   * Fills the form with the given fill script. A frame that receives an inline-menu fill also
+   * keeps the pre-fill values of the fields it writes under the fill's token; the top document
+   * shows the receipt when the background confirms the fill landed.
    *
    * @param {AutofillExtensionMessage} message
    */
@@ -225,17 +252,19 @@ class AutofillInit implements AutofillInitInterface {
     pageDetailsUrl,
     showAnimations,
     retainInlineMenu,
-    inlineMenuFillReceipt,
+    inlineMenuFillToken,
   }: AutofillExtensionMessage) {
     if ((document.defaultView || window).location.href !== pageDetailsUrl || !fillScript) {
       return;
     }
 
-    // The receipt is anchored to the bottom-right of the viewport. In a subframe it would be
-    // clipped by the iframe, and its undo could only restore the fields this frame captured, so
-    // only the top-level document renders it.
-    const fillReceipt = this.isTopLevelFrame() ? inlineMenuFillReceipt : undefined;
-    const undoState = fillReceipt ? this.captureFillReceiptUndoState(fillScript) : undefined;
+    if (inlineMenuFillToken) {
+      this.fillInProgressTokens.add(inlineMenuFillToken);
+      this.fillReceiptSessions.set(
+        inlineMenuFillToken,
+        this.captureFillReceiptUndoState(fillScript),
+      );
+    }
 
     if (retainInlineMenu) {
       // The fill started from the inline menu list: keep the list mounted so it can render its
@@ -248,13 +277,25 @@ class AutofillInit implements AutofillInitInterface {
     await this.sendExtensionMessage("updateIsFieldCurrentlyFilling", {
       isFieldCurrentlyFilling: true,
     });
-    const didFill = await this.insertAutofillContentService.fillForm(
-      fillScript,
-      showAnimations ?? true,
-    );
-
-    if (fillReceipt && didFill !== false) {
-      this.showFillReceipt(fillReceipt, fillScript, undoState, showAnimations ?? true);
+    let didFill: boolean | undefined;
+    try {
+      didFill = await this.insertAutofillContentService.fillForm(
+        fillScript,
+        showAnimations ?? true,
+      );
+    } finally {
+      // Clear the in-progress marker even when the fill throws, so a restore or receipt that
+      // arrives later is not held back forever. Only an explicit `false` means the fill wrote
+      // nothing; the service historically leaves an unfulfilled result as `undefined`.
+      if (inlineMenuFillToken) {
+        this.fillInProgressTokens.delete(inlineMenuFillToken);
+        if (didFill === false) {
+          this.clearFillReceiptSession(inlineMenuFillToken);
+        } else {
+          this.applyPendingRestore(inlineMenuFillToken);
+          this.showPendingFillReceipt(inlineMenuFillToken);
+        }
+      }
     }
 
     setTimeout(() => {
@@ -268,28 +309,129 @@ class AutofillInit implements AutofillInitInterface {
   }
 
   /**
-   * Shows the bottom-right card or identity receipt. The receipt can undo the fill by restoring
-   * the values captured before it ran, and can re-run the same fill afterwards.
+   * Renders the bottom-right receipt once the background confirms an inline-menu fill landed.
+   * The top document shows it even when the fill only wrote a subframe. Its undo addresses the
+   * fill's token, and the background fans the restore out to every frame that kept a snapshot.
    */
-  private showFillReceipt(
-    receipt: InlineMenuFillReceipt,
-    fillScript: AutofillScript,
-    undoState: FillReceiptUndoEntry[] | undefined,
-    showAnimations: boolean,
-  ) {
-    let entries = undoState ?? [];
+  private showInlineMenuFillReceipt({
+    inlineMenuFillReceipt,
+    inlineMenuFillToken,
+  }: AutofillExtensionMessage) {
+    if (!this.isTopLevelFrame() || !inlineMenuFillReceipt || !inlineMenuFillToken) {
+      return;
+    }
+
+    // A top-document fill is still writing its fields. Defer so the receipt reports a fill that
+    // has finished rather than one in progress.
+    if (this.fillInProgressTokens.has(inlineMenuFillToken)) {
+      this.pendingFillReceipt = {
+        receipt: inlineMenuFillReceipt,
+        token: inlineMenuFillToken,
+      };
+      return;
+    }
+
+    this.showFillReceipt(inlineMenuFillReceipt, inlineMenuFillToken);
+  }
+
+  private showPendingFillReceipt(token: string) {
+    const pending = this.pendingFillReceipt;
+    if (pending?.token !== token) {
+      return;
+    }
+    this.pendingFillReceipt = undefined;
+    this.showFillReceipt(pending.receipt, token);
+  }
+
+  /**
+   * Shows the receipt for one fill token and wires its actions. Undo restores this frame's
+   * snapshot immediately and asks the background to restore the other frames; refill re-runs the
+   * fill through the background, which holds the cipher and page details, so every frame is
+   * rewritten rather than only the top one.
+   */
+  private showFillReceipt(receipt: InlineMenuFillReceipt, token: string) {
+    if (!this.isMonitoring || !this.isTopLevelFrame()) {
+      return;
+    }
+
+    const previousToken = this.activeFillReceiptToken;
+    if (previousToken && previousToken !== token) {
+      this.clearFillReceiptSession(previousToken);
+    }
+    this.activeFillReceiptToken = token;
+
     this.fillReceiptContentService.show(receipt, {
       onUndo: () => {
-        this.restoreFillReceiptUndoState(entries);
+        this.restoreFillReceiptSession(token);
+        void this.sendExtensionMessage("undoInlineMenuFill", { inlineMenuFillToken: token });
         this.fillReceiptContentService.setUndone(true);
       },
       onRefill: () => {
-        entries = this.captureFillReceiptUndoState(fillScript);
-        void this.insertAutofillContentService
-          .fillForm(fillScript, showAnimations)
-          .then(() => this.fillReceiptContentService.setUndone(false));
+        void this.sendExtensionMessage("refillInlineMenuFill", {
+          inlineMenuFillToken: token,
+        });
+      },
+      onDismiss: () => {
+        this.clearFillReceiptSession(token);
+        void this.sendExtensionMessage("dismissInlineMenuFillReceipt", {
+          inlineMenuFillToken: token,
+        });
       },
     });
+  }
+
+  /**
+   * Restores the fields a fill wrote in this frame when the receipt's undo is broadcast to every
+   * frame. A frame that has already restored the token ignores the repeat.
+   */
+  private restoreInlineMenuFill({ inlineMenuFillToken }: AutofillExtensionMessage) {
+    if (!inlineMenuFillToken) {
+      return;
+    }
+    if (this.fillInProgressTokens.has(inlineMenuFillToken)) {
+      // Do not restore under a fill that is still writing; apply it once the fill settles.
+      this.pendingRestoreTokens.add(inlineMenuFillToken);
+      return;
+    }
+    this.restoreFillReceiptSession(inlineMenuFillToken);
+  }
+
+  private applyPendingRestore(token: string) {
+    if (this.pendingRestoreTokens.delete(token)) {
+      this.restoreFillReceiptSession(token);
+    }
+  }
+
+  private restoreFillReceiptSession(token: string) {
+    const entries = this.fillReceiptSessions.get(token);
+    if (!entries) {
+      return;
+    }
+    this.restoreFillReceiptUndoState(entries);
+    this.fillReceiptSessions.delete(token);
+    if (this.pendingFillReceipt?.token === token) {
+      this.pendingFillReceipt = undefined;
+    }
+  }
+
+  /**
+   * Drops the transient undo state for a fill once its receipt is dismissed.
+   */
+  private clearInlineMenuFillState({ inlineMenuFillToken }: AutofillExtensionMessage) {
+    if (inlineMenuFillToken) {
+      this.clearFillReceiptSession(inlineMenuFillToken);
+    }
+  }
+
+  private clearFillReceiptSession(token: string) {
+    this.fillReceiptSessions.delete(token);
+    this.pendingRestoreTokens.delete(token);
+    if (this.pendingFillReceipt?.token === token) {
+      this.pendingFillReceipt = undefined;
+    }
+    if (this.activeFillReceiptToken === token) {
+      this.activeFillReceiptToken = undefined;
+    }
   }
 
   /**

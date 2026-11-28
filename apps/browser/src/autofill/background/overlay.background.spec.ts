@@ -493,6 +493,19 @@ describe("OverlayBackground", () => {
 
       expect(overlayBackground["focusedFieldData"]).toBeNull();
     });
+
+    it("retires the tab's fill session so a stale receipt can no longer act on it", () => {
+      overlayBackground["inlineMenuFillSessions"][1] = {
+        token: "fill-token",
+        tab: createChromeTabMock({ id: 1 }),
+        receipt: { kind: "identity", theme: ThemeType.Light },
+        createdAt: Date.now(),
+      };
+
+      overlayBackground.removePageDetails(1);
+
+      expect(overlayBackground["inlineMenuFillSessions"][1]).toBeUndefined();
+    });
   });
 
   describe("inline menu list port init message", () => {
@@ -4110,6 +4123,217 @@ describe("OverlayBackground", () => {
         });
       });
     });
+
+    describe("inline menu fill receipt message handlers", () => {
+      const tab = createChromeTabMock({ id: 1, url: "https://example.com" });
+      const sender = mock<chrome.runtime.MessageSender>({ tab, frameId: 0 });
+      const receipt = { kind: "card" as const, last4: "4242", theme: ThemeType.Light };
+      const pageDetails = [createPageDetailMock({ frameId: 0, tab })];
+      const cipher = mock<CipherView>({ id: "cipher-id", type: CipherType.Card });
+
+      function seedSession(token = "fill-token") {
+        overlayBackground["inlineMenuFillSessions"][tab.id] = {
+          token,
+          tab,
+          receipt,
+          createdAt: Date.now(),
+          refill: { cipher, pageDetails },
+        };
+        return token;
+      }
+
+      beforeEach(() => {
+        tabsSendMessageSpy.mockClear();
+      });
+
+      it("broadcasts an undo to every frame of the sender's tab and keeps the fill addressable", () => {
+        const token = seedSession();
+
+        sendMockExtensionMessage(
+          { command: "undoInlineMenuFill", inlineMenuFillToken: token },
+          sender,
+        );
+
+        expect(tabsSendMessageSpy).toHaveBeenCalledWith(tab, {
+          command: "restoreInlineMenuFill",
+          inlineMenuFillToken: token,
+        });
+        // Undo restores the DOM; the token stays valid so the receipt can offer a refill.
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]?.token).toBe(token);
+      });
+
+      it("ignores an undo carrying a stale token", () => {
+        seedSession("fill-token");
+
+        sendMockExtensionMessage(
+          { command: "undoInlineMenuFill", inlineMenuFillToken: "a-stale-token" },
+          sender,
+        );
+
+        expect(tabsSendMessageSpy).not.toHaveBeenCalled();
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]?.token).toBe("fill-token");
+      });
+
+      it("ignores an undo sent for another tab", () => {
+        const token = seedSession();
+        const otherTabSender = mock<chrome.runtime.MessageSender>({
+          tab: createChromeTabMock({ id: 2, url: "https://other.example.com" }),
+          frameId: 0,
+        });
+
+        sendMockExtensionMessage(
+          { command: "undoInlineMenuFill", inlineMenuFillToken: token },
+          otherTabSender,
+        );
+
+        expect(tabsSendMessageSpy).not.toHaveBeenCalled();
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]?.token).toBe(token);
+      });
+
+      it("ignores an undo sent from a subframe", () => {
+        const token = seedSession();
+        const subFrameSender = mock<chrome.runtime.MessageSender>({ tab, frameId: 1 });
+
+        sendMockExtensionMessage(
+          { command: "undoInlineMenuFill", inlineMenuFillToken: token },
+          subFrameSender,
+        );
+
+        expect(tabsSendMessageSpy).not.toHaveBeenCalled();
+      });
+
+      it("ignores an undo for an expired fill", () => {
+        const token = seedSession();
+        overlayBackground["inlineMenuFillSessions"][tab.id].createdAt = Date.now() - 30_001;
+
+        sendMockExtensionMessage(
+          { command: "undoInlineMenuFill", inlineMenuFillToken: token },
+          sender,
+        );
+
+        expect(tabsSendMessageSpy).not.toHaveBeenCalled();
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]).toBeUndefined();
+      });
+
+      it("retires the fill and clears frame state when the receipt is dismissed", () => {
+        const token = seedSession();
+
+        sendMockExtensionMessage(
+          { command: "dismissInlineMenuFillReceipt", inlineMenuFillToken: token },
+          sender,
+        );
+
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]).toBeUndefined();
+        expect(tabsSendMessageSpy).toHaveBeenCalledWith(tab, {
+          command: "clearInlineMenuFillState",
+          inlineMenuFillToken: token,
+        });
+      });
+
+      it("ignores a dismissal carrying a stale token", () => {
+        const token = seedSession();
+
+        sendMockExtensionMessage(
+          { command: "dismissInlineMenuFillReceipt", inlineMenuFillToken: "a-stale-token" },
+          sender,
+        );
+
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]?.token).toBe(token);
+        expect(tabsSendMessageSpy).not.toHaveBeenCalled();
+      });
+
+      it("re-runs the fill through the orchestrator and posts a fresh receipt", async () => {
+        const token = seedSession();
+        autofillOrchestrator.fillCipher.mockResolvedValue({ outcome: AutofillOutcome.Filled });
+        const sendResponse = jest.fn();
+
+        sendMockExtensionMessage(
+          { command: "refillInlineMenuFill", inlineMenuFillToken: token },
+          sender,
+          sendResponse,
+        );
+        await flushPromises();
+
+        const fillOptions = autofillOrchestrator.fillCipher.mock.calls[0][0];
+        expect(fillOptions).toEqual(
+          expect.objectContaining({
+            tab,
+            cipher,
+            pageDetails,
+            retainInlineMenu: true,
+            inlineMenuFillReceipt: receipt,
+          }),
+        );
+        expect(fillOptions.inlineMenuFillToken).toEqual(expect.any(String));
+        expect(fillOptions.inlineMenuFillToken).not.toBe(token);
+        expect(tabsSendMessageSpy).toHaveBeenCalledWith(
+          tab,
+          {
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: receipt,
+            inlineMenuFillToken: fillOptions.inlineMenuFillToken,
+          },
+          { frameId: 0 },
+        );
+        // The old snapshot is retired so only the fresh token's undo data stays in the frames.
+        expect(tabsSendMessageSpy).toHaveBeenCalledWith(tab, {
+          command: "clearInlineMenuFillState",
+          inlineMenuFillToken: token,
+        });
+        expect(sendResponse).toHaveBeenCalledWith({ didRefill: true });
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]?.token).toBe(
+          fillOptions.inlineMenuFillToken,
+        );
+      });
+
+      it("leaves the fill addressable when the refill places nothing", async () => {
+        const token = seedSession();
+        autofillOrchestrator.fillCipher.mockResolvedValue({ outcome: AutofillOutcome.Absent });
+        const sendResponse = jest.fn();
+
+        sendMockExtensionMessage(
+          { command: "refillInlineMenuFill", inlineMenuFillToken: token },
+          sender,
+          sendResponse,
+        );
+        await flushPromises();
+
+        expect(sendResponse).toHaveBeenCalledWith({ didRefill: false });
+        expect(tabsSendMessageSpy).not.toHaveBeenCalledWith(
+          tab,
+          expect.objectContaining({ command: "showInlineMenuFillReceipt" }),
+          expect.anything(),
+        );
+        expect(overlayBackground["inlineMenuFillSessions"][tab.id]?.token).toBe(token);
+      });
+
+      it("refuses to refill once the vault lock dropped the fill's cipher data", async () => {
+        const token = seedSession();
+        delete overlayBackground["inlineMenuFillSessions"][tab.id].refill;
+        const sendResponse = jest.fn();
+
+        sendMockExtensionMessage(
+          { command: "refillInlineMenuFill", inlineMenuFillToken: token },
+          sender,
+          sendResponse,
+        );
+        await flushPromises();
+
+        expect(autofillOrchestrator.fillCipher).not.toHaveBeenCalled();
+        expect(sendResponse).toHaveBeenCalledWith({ didRefill: false });
+      });
+
+      it("keeps undo addressable but drops refill data when the vault locks", async () => {
+        const token = seedSession();
+
+        activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+        await flushPromises();
+
+        const session = overlayBackground["inlineMenuFillSessions"][tab.id];
+        expect(session.token).toBe(token);
+        expect(session.refill).toBeUndefined();
+      });
+    });
   });
 
   describe("inline menu list message handlers", () => {
@@ -4407,9 +4631,21 @@ describe("OverlayBackground", () => {
             },
           }),
         );
+        const cardFillOptions = autofillOrchestrator.fillCipher.mock.calls[0][0];
+        expect(cardFillOptions.inlineMenuFillToken).toEqual(expect.any(String));
+        expect(tabsSendMessageSpy).toHaveBeenCalledWith(
+          sender.tab,
+          {
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: { kind: "card", last4: "0005", theme: ThemeType.Light },
+            inlineMenuFillToken: cardFillOptions.inlineMenuFillToken,
+          },
+          { frameId: 0 },
+        );
         expect(JSON.stringify(autofillOrchestrator.fillCipher.mock.calls)).not.toContain(
           "378282246310005",
         );
+        expect(JSON.stringify(tabsSendMessageSpy.mock.calls)).not.toContain("378282246310005");
       });
 
       it("sends an identity receipt without identity field values", async () => {
@@ -4438,6 +4674,70 @@ describe("OverlayBackground", () => {
           }),
         );
         expect(JSON.stringify(autofillOrchestrator.fillCipher.mock.calls)).not.toContain("Jane");
+      });
+
+      it("does not show a receipt when the fill wrote no frame", async () => {
+        const cipher = mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          type: CipherType.Identity,
+          identity: {},
+        });
+        overlayBackground["inlineMenuCiphers"] = new Map([["inline-menu-cipher-1", cipher]]);
+        overlayBackground["pageDetailsForTab"][sender.tab.id] = new Map([
+          [sender.frameId, { frameId: sender.frameId, tab: sender.tab, details: pageDetails }],
+        ]);
+        autofillService.isPasswordRepromptRequired.mockResolvedValue(false);
+        autofillOrchestrator.fillCipher.mockResolvedValue({ outcome: AutofillOutcome.Absent });
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "fillAutofillInlineMenuCipher",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(tabsSendMessageSpy).not.toHaveBeenCalledWith(
+          sender.tab,
+          expect.objectContaining({ command: "showInlineMenuFillReceipt" }),
+          expect.anything(),
+        );
+        // Nothing was written, so no token may stay addressable for an undo or refill.
+        expect(overlayBackground["inlineMenuFillSessions"][sender.tab.id]).toBeUndefined();
+      });
+
+      it("clears the superseded fill's frame state when a new fill starts", async () => {
+        const cipher = mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          type: CipherType.Identity,
+          identity: {},
+        });
+        overlayBackground["inlineMenuCiphers"] = new Map([["inline-menu-cipher-1", cipher]]);
+        overlayBackground["pageDetailsForTab"][sender.tab.id] = new Map([
+          [sender.frameId, { frameId: sender.frameId, tab: sender.tab, details: pageDetails }],
+        ]);
+        overlayBackground["inlineMenuFillSessions"][sender.tab.id] = {
+          token: "previous-fill-token",
+          tab: sender.tab,
+          receipt: { kind: "identity", theme: ThemeType.Light },
+          createdAt: Date.now(),
+        };
+        autofillService.isPasswordRepromptRequired.mockResolvedValue(false);
+        autofillOrchestrator.fillCipher.mockResolvedValue({ outcome: AutofillOutcome.Filled });
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "fillAutofillInlineMenuCipher",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(tabsSendMessageSpy).toHaveBeenCalledWith(sender.tab, {
+          command: "clearInlineMenuFillState",
+          inlineMenuFillToken: "previous-fill-token",
+        });
+        expect(overlayBackground["inlineMenuFillSessions"][sender.tab.id]?.token).not.toBe(
+          "previous-fill-token",
+        );
       });
 
       it("does not record last-used (reorder the ciphers map) when no fill occurs", async () => {
@@ -5258,6 +5558,24 @@ describe("OverlayBackground", () => {
         triggerWebNavigationOnCommittedEvent(sender);
 
         expect(overlayBackground["subFrameOffsetsForTab"][sender.tabId]).toBe(undefined);
+      });
+
+      it("retires the tab's fill session", async () => {
+        const sender = mock<chrome.webNavigation.WebNavigationFramedCallbackDetails>({
+          tabId: 1,
+          frameId: 0,
+        });
+        overlayBackground["inlineMenuFillSessions"][sender.tabId] = {
+          token: "fill-token",
+          tab: createChromeTabMock({ id: sender.tabId }),
+          receipt: { kind: "identity", theme: ThemeType.Light },
+          createdAt: Date.now(),
+        };
+
+        triggerWebNavigationOnCommittedEvent(sender);
+        await flushPromises();
+
+        expect(overlayBackground["inlineMenuFillSessions"][sender.tabId]).toBeUndefined();
       });
     });
 

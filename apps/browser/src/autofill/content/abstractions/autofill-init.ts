@@ -21,6 +21,11 @@ export type AutofillExtensionMessage = {
   retainInlineMenu?: boolean;
   /** Display-safe card / identity receipt for the bottom-right fill confirmation card. */
   inlineMenuFillReceipt?: InlineMenuFillReceipt;
+  /**
+   * Opaque token identifying one inline-menu fill across frames. Each frame that receives the
+   * fill keeps the pre-fill values of the fields it wrote under this token.
+   */
+  inlineMenuFillToken?: string;
   ciphers?: any;
   isInlineMenuHidden?: boolean;
   overlayElement?: AutofillOverlayElementType;
@@ -48,6 +53,9 @@ export type AutofillExtensionMessageHandlers = {
   clearTargetingRulesCache: () => void;
   startAutofillMonitors: () => void;
   stopAutofillMonitors: () => void;
+  showInlineMenuFillReceipt: ({ message }: AutofillExtensionMessageParam) => void;
+  restoreInlineMenuFill: ({ message }: AutofillExtensionMessageParam) => void;
+  clearInlineMenuFillState: ({ message }: AutofillExtensionMessageParam) => void;
 };
 
 export interface AutofillInit extends AutofillMonitor {

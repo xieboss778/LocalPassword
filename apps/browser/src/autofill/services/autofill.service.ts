@@ -567,6 +567,11 @@ export default class AutofillService implements AutofillServiceInterface {
             ...(options.inlineMenuFillReceipt
               ? { inlineMenuFillReceipt: options.inlineMenuFillReceipt }
               : {}),
+            // The token is opaque and only lets the receipt's undo address the same fill in
+            // every frame; it carries no vault data.
+            ...(options.inlineMenuFillToken
+              ? { inlineMenuFillToken: options.inlineMenuFillToken }
+              : {}),
           },
           { frameId: pd.frameId },
         );

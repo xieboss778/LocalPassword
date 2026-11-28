@@ -44,6 +44,12 @@ export interface AutoFillOptions {
    * content script shows a bottom-right undo card once the fill lands.
    */
   inlineMenuFillReceipt?: InlineMenuFillReceipt;
+  /**
+   * Opaque, per-fill token shared with every frame the fill is written to. Each frame keeps the
+   * pre-fill values of the fields it wrote under this token, so the receipt in the top document
+   * can undo the fill across every frame it touched. Never derived from vault data.
+   */
+  inlineMenuFillToken?: string;
 }
 
 interface FormDataBase {

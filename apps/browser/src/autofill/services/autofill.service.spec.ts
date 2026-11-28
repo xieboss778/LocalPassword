@@ -964,6 +964,27 @@ describe("AutofillService", () => {
       );
     });
 
+    it("forwards the opaque fill token so every filled frame can key its undo snapshot", async () => {
+      autofillOptions.inlineMenuFillReceipt = {
+        kind: "identity",
+        theme: ThemeType.Light,
+      };
+      autofillOptions.inlineMenuFillToken = "fill-token";
+
+      await autofillService.doAutoFill(autofillOptions);
+
+      const currentAutofillPageDetails = autofillOptions.pageDetails[0];
+      expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(
+        currentAutofillPageDetails.tab.id,
+        expect.objectContaining({
+          command: "fillForm",
+          inlineMenuFillToken: "fill-token",
+        }),
+        { frameId: currentAutofillPageDetails.frameId },
+        expect.any(Function),
+      );
+    });
+
     it("will autofill card data for a page", async () => {
       autofillOptions.cipher.type = CipherType.Card;
       autofillOptions.cipher.card = mock<CardView>({

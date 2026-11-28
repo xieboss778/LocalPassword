@@ -12,6 +12,11 @@ const RECEIPT_VISIBLE_MS = 8000;
 export type AutofillFillReceiptHandlers = {
   onUndo: () => void;
   onRefill: () => void;
+  /**
+   * Invoked when a shown receipt goes away on its own or with the page listener teardown, so the
+   * owner can drop the transient undo state it kept for the receipt.
+   */
+  onDismiss?: () => void;
 };
 
 /**
@@ -47,6 +52,8 @@ export class AutofillFillReceiptContentService {
   }
 
   destroy(): void {
+    const onDismiss = this.receipt ? this.handlers?.onDismiss : undefined;
+
     this.clearDismissTimeout();
     if (this.shadowRoot) {
       render(null, this.shadowRoot);
@@ -57,6 +64,8 @@ export class AutofillFillReceiptContentService {
     this.receipt = undefined;
     this.handlers = undefined;
     this.undone = false;
+
+    onDismiss?.();
   }
 
   private ensureHost() {

@@ -153,6 +153,33 @@ const nonLoginInlineCipherType: CipherType[] = [
   CipherType.SshKey,
 ];
 
+/**
+ * How long one inline-menu fill stays addressable for undo or refill. The receipt is shown for at
+ * most about sixteen seconds (its timer restarts once when undo switches it to refill), so this
+ * bound only catches a dismissal message that was lost, for example when the service worker is
+ * torn down mid-life.
+ */
+const INLINE_MENU_FILL_SESSION_TTL_MS = 30_000;
+
+/**
+ * What the background retains about an inline-menu fill so a receipt action can address it
+ * without any vault data crossing the page. The undo path only needs the token; the refill data
+ * is dropped as soon as the vault locks.
+ */
+type InlineMenuFillSession = {
+  token: string;
+  tab: chrome.tabs.Tab;
+  receipt: InlineMenuFillReceipt;
+  createdAt: number;
+  refill?: {
+    cipher: CipherView;
+    pageDetails: PageDetail[];
+    focusedFieldForm?: string;
+    focusedFieldOpid?: string;
+    inlineMenuFillType?: InlineMenuFillType;
+  };
+};
+
 export class OverlayBackground implements OverlayBackgroundInterface {
   // Assigned as members so jest.spyOn can intercept them in tests
   private readonly openUnlockPopout = openUnlockPopout;
@@ -174,6 +201,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private credential$ = new BehaviorSubject<string>("");
   private credentialPipelineSubscription: Subscription | undefined;
   private pageDetailsForTab: PageDetailsForTab = {};
+  private inlineMenuFillSessions: Record<number, InlineMenuFillSession> = {};
   private subFrameOffsetsForTab: SubFrameOffsetsForTab = {};
   private portKeyForTab: Record<number, string> = {};
   private expiredPorts: chrome.runtime.Port[] = [];
@@ -255,6 +283,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       void this.withSenderTab(sender, (tab) => this.abortFido2ActiveRequest(tab.id)),
     routeTargetedFieldsToFrame: ({ message, sender }) =>
       void this.withSenderTab(sender, (tab) => this.routeTargetedFieldsToFrame(tab, message)),
+    undoInlineMenuFill: ({ message, sender }) => this.undoInlineMenuFill(message, sender),
+    refillInlineMenuFill: ({ message, sender }) => this.refillInlineMenuFill(message, sender),
+    dismissInlineMenuFillReceipt: ({ message, sender }) =>
+      this.dismissInlineMenuFillReceipt(message, sender),
   };
   private readonly inlineMenuButtonPortMessageHandlers: InlineMenuButtonPortMessageHandlers = {
     triggerDelayedAutofillInlineMenuClosure: () => this.startInlineMenuDelayedClose$.next(),
@@ -471,6 +503,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     this.inlineMenuCiphers = new Map();
     this.cardAndIdentityCiphers = null;
     this.inlineMenuFido2Credentials.clear();
+    // A locked vault must not remain refillable from memory. The token stays valid so a receipt
+    // already on the page can still undo its fill, which needs no cipher data.
+    for (const session of Object.values(this.inlineMenuFillSessions)) {
+      delete session.refill;
+    }
 
     const tabIds = Object.keys(this.portKeyForTab).map((tabId) => Number(tabId));
     await Promise.all(
@@ -503,6 +540,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     if (this.portKeyForTab[tabId]) {
       delete this.portKeyForTab[tabId];
     }
+
+    // A navigation replaced the fields the fill's receipt would restore or refill, so the token
+    // must stop being addressable.
+    delete this.inlineMenuFillSessions[tabId];
 
     this.clearGeneratedPassword$.next();
     // The focused field belongs to one tab. Closing any other tab must not wipe it, or the next
@@ -1705,6 +1746,27 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     this.inlineMenuFillConfirmationUntil = Date.now() + 1500;
 
     const inlineMenuFillReceipt = await this.buildInlineMenuFillReceipt(cipher);
+    // The token is the only identifier shared with the frames; it never encodes vault data.
+    const inlineMenuFillSession: InlineMenuFillSession | undefined = inlineMenuFillReceipt
+      ? {
+          token: generateRandomChars(16),
+          tab,
+          receipt: inlineMenuFillReceipt,
+          createdAt: Date.now(),
+          refill: {
+            cipher,
+            pageDetails,
+            focusedFieldForm: this.focusedFieldData?.focusedFieldForm,
+            focusedFieldOpid: this.focusedFieldData?.focusedFieldOpid,
+            inlineMenuFillType: this.focusedFieldData?.inlineMenuFillType,
+          },
+        }
+      : undefined;
+    if (inlineMenuFillSession) {
+      // A newer fill supersedes the previous one; the page's receipt is replaced in step.
+      this.replaceInlineMenuFillSession(tabId, inlineMenuFillSession);
+    }
+
     const result = await this.autofillOrchestrator.fillCipher({
       tab,
       cipher,
@@ -1717,8 +1779,18 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       // The fill was chosen from the list: let it stay mounted to show the TOTP card or
       // collapsed password chip instead of being closed with the field blur.
       retainInlineMenu: true,
-      ...(inlineMenuFillReceipt ? { inlineMenuFillReceipt } : {}),
+      ...(inlineMenuFillSession
+        ? {
+            inlineMenuFillReceipt: inlineMenuFillSession.receipt,
+            inlineMenuFillToken: inlineMenuFillSession.token,
+          }
+        : {}),
     });
+
+    if (inlineMenuFillSession && result.outcome !== AutofillOutcome.Filled) {
+      // No frame was written, so there is nothing for a receipt to undo or refill.
+      this.clearInlineMenuFillSession(tabId, inlineMenuFillSession.token);
+    }
 
     // A denial terminates the request.
     if (!didFillOccur(result)) {
@@ -1728,6 +1800,12 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         didFill: false,
       });
       return;
+    }
+
+    if (inlineMenuFillSession && result.outcome === AutofillOutcome.Filled) {
+      // The receipt belongs to the top document only. Sending it there is also what makes a fill
+      // that wrote only a subframe visible at all.
+      this.postInlineMenuFillReceipt(tab, inlineMenuFillSession);
     }
 
     const canAutoCopyTotp = shouldAutoCopyTotp(result);
@@ -1750,6 +1828,170 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     this.updateLastUsedInlineMenuCipher(inlineMenuCipherId, cipher);
+  }
+
+  /**
+   * Installs a fill session for a tab, retiring the one it replaces. Frames still holding the old
+   * token's snapshot are told to drop it, so repeated fills on a long-lived page do not accumulate
+   * undo state that no receipt can reach.
+   */
+  private replaceInlineMenuFillSession(tabId: number, session: InlineMenuFillSession) {
+    const previousToken = this.inlineMenuFillSessions[tabId]?.token;
+    this.inlineMenuFillSessions[tabId] = session;
+    if (previousToken && previousToken !== session.token) {
+      this.broadcastInlineMenuFillStateClear(session.tab, previousToken);
+    }
+  }
+
+  /**
+   * Tells every frame of a tab to drop the undo snapshot it kept for a fill token.
+   */
+  private broadcastInlineMenuFillStateClear(tab: chrome.tabs.Tab, token: string) {
+    void BrowserApi.tabSendMessage(tab, {
+      command: "clearInlineMenuFillState",
+      inlineMenuFillToken: token,
+    }).catch((error) => this.logService.error(error));
+  }
+
+  /**
+   * Drops a fill session only when it still belongs to the given token, so a stale dismissal
+   * cannot remove a newer fill's receipt.
+   */
+  private clearInlineMenuFillSession(tabId: number, token: string) {
+    if (this.inlineMenuFillSessions[tabId]?.token === token) {
+      delete this.inlineMenuFillSessions[tabId];
+    }
+  }
+
+  /**
+   * Sends the display-safe receipt to the top document of the tab. This is the one place the
+   * receipt is shown, whichever frame the fill actually wrote.
+   */
+  private postInlineMenuFillReceipt(tab: chrome.tabs.Tab, session: InlineMenuFillSession) {
+    void BrowserApi.tabSendMessage(
+      tab,
+      {
+        command: "showInlineMenuFillReceipt",
+        inlineMenuFillReceipt: session.receipt,
+        inlineMenuFillToken: session.token,
+      },
+      { frameId: 0 },
+    ).catch((error) => this.logService.error(error));
+  }
+
+  /**
+   * Resolves the fill session a receipt action refers to, or undefined when the action is stale
+   * or comes from anywhere other than the top document of the tab that owns the session.
+   */
+  private getActiveInlineMenuFillSession(
+    token: string | undefined,
+    sender: chrome.runtime.MessageSender,
+  ): { session: InlineMenuFillSession; tab: chrome.tabs.Tab & { id: number } } | undefined {
+    if (!token || sender.frameId !== 0 || !this.senderHasValidTab(sender)) {
+      return undefined;
+    }
+    const session = this.inlineMenuFillSessions[sender.tab.id];
+    if (!session || session.token !== token) {
+      return undefined;
+    }
+    if (Date.now() - session.createdAt > INLINE_MENU_FILL_SESSION_TTL_MS) {
+      delete this.inlineMenuFillSessions[sender.tab.id];
+      return undefined;
+    }
+
+    return { session, tab: sender.tab };
+  }
+
+  /**
+   * Fans an undo out to every frame of the tab. Each frame restores the snapshot it kept for the
+   * token and ignores the message when it has none, so frames the fill never wrote are no-ops.
+   * The session stays addressable afterwards so the receipt can still offer a refill.
+   */
+  private undoInlineMenuFill(
+    { inlineMenuFillToken }: OverlayBackgroundExtensionMessage,
+    sender: chrome.runtime.MessageSender,
+  ) {
+    const active = this.getActiveInlineMenuFillSession(inlineMenuFillToken, sender);
+    if (!active) {
+      return;
+    }
+
+    void BrowserApi.tabSendMessage(active.tab, {
+      command: "restoreInlineMenuFill",
+      inlineMenuFillToken: active.session.token,
+    }).catch((error) => this.logService.error(error));
+  }
+
+  /**
+   * Re-runs a fill's cipher across the frames that were filled, so refilling after an undo does
+   * not leave a half-refilled page. The cipher and page details never leave the background; the
+   * frames only receive the usual fill script as part of the dispatched fill. A refill is refused
+   * once the vault is locked, leaving only the undo path usable.
+   */
+  private async refillInlineMenuFill(
+    { inlineMenuFillToken }: OverlayBackgroundExtensionMessage,
+    sender: chrome.runtime.MessageSender,
+  ): Promise<{ didRefill: boolean }> {
+    const active = this.getActiveInlineMenuFillSession(inlineMenuFillToken, sender);
+    if (!active?.session.refill) {
+      return { didRefill: false };
+    }
+    if ((await this.getAuthStatus()) !== AuthenticationStatus.Unlocked) {
+      return { didRefill: false };
+    }
+
+    // Re-read the refill data after the auth check: a lock that ran while it was awaited drops
+    // `refill`, and the narrowing above does not survive the await.
+    const { session } = active;
+    const refill = session.refill;
+    if (!refill) {
+      return { didRefill: false };
+    }
+
+    const previousToken = session.token;
+    const token = generateRandomChars(16);
+    const result = await this.autofillOrchestrator.fillCipher({
+      tab: session.tab,
+      cipher: refill.cipher,
+      pageDetails: refill.pageDetails,
+      fillNewPassword: true,
+      allowTotpAutofill: true,
+      focusedFieldForm: refill.focusedFieldForm,
+      focusedFieldOpid: refill.focusedFieldOpid,
+      inlineMenuFillType: refill.inlineMenuFillType,
+      retainInlineMenu: true,
+      inlineMenuFillReceipt: session.receipt,
+      inlineMenuFillToken: token,
+    });
+    if (result.outcome !== AutofillOutcome.Filled) {
+      // Keep the old token addressable so the receipt's refill can be tried again.
+      return { didRefill: false };
+    }
+
+    session.token = token;
+    session.createdAt = Date.now();
+    // The frames already dropped the old snapshot on undo; this also catches a refill triggered
+    // without one. The fresh receipt replaces the previous one in the top document.
+    this.broadcastInlineMenuFillStateClear(session.tab, previousToken);
+    this.postInlineMenuFillReceipt(session.tab, session);
+    return { didRefill: true };
+  }
+
+  /**
+   * Retires a fill once its receipt is dismissed, telling every frame to drop the undo snapshot
+   * it kept for the token.
+   */
+  private dismissInlineMenuFillReceipt(
+    { inlineMenuFillToken }: OverlayBackgroundExtensionMessage,
+    sender: chrome.runtime.MessageSender,
+  ) {
+    const active = this.getActiveInlineMenuFillSession(inlineMenuFillToken, sender);
+    if (!active) {
+      return;
+    }
+
+    this.clearInlineMenuFillSession(active.tab.id, active.session.token);
+    this.broadcastInlineMenuFillStateClear(active.tab, active.session.token);
   }
 
   /**

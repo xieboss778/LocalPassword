@@ -64,7 +64,13 @@ describe("AutofillInit", () => {
     window.IntersectionObserver = jest.fn(() => mock<IntersectionObserver>());
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Detach the content service's DOM mutation observer before the jsdom window is torn down.
+    // A mutation queued by a test's DOM cleanup would otherwise be delivered after the window
+    // closes, where reading the page location throws inside the observer callback.
+    autofillInit.destroy();
+    await flushPromises();
+
     jest.resetModules();
     jest.clearAllMocks();
     Object.defineProperty(document, "readyState", {
@@ -689,7 +695,7 @@ describe("AutofillInit", () => {
           );
         });
 
-        it("shows a fill receipt and restores the written field on undo", async () => {
+        it("shows a fill receipt in the top document and restores the written field on undo", async () => {
           const input = document.createElement("input");
           input.value = "before";
           document.body.appendChild(input);
@@ -714,26 +720,189 @@ describe("AutofillInit", () => {
             command: "fillForm",
             fillScript,
             pageDetailsUrl: window.location.href,
+            inlineMenuFillToken: "fill-token",
             inlineMenuFillReceipt: receipt,
           });
           await flushPromises();
 
+          // Writing the fields does not render the receipt; the background's receipt message does,
+          // once the fill has landed in every frame it touches.
+          expect(showSpy).not.toHaveBeenCalled();
+
+          sendMockExtensionMessage({
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: receipt,
+            inlineMenuFillToken: "fill-token",
+          });
+          await flushPromises();
+
+          expect(showSpy).toHaveBeenCalledTimes(1);
           expect(showSpy).toHaveBeenCalledWith(receipt, expect.any(Object));
           input.value = "4242424242424242";
           showSpy.mock.calls[0][1].onUndo();
 
           expect(input.value).toBe("before");
           expect(setUndoneSpy).toHaveBeenCalledWith(true);
+          expect(sendExtensionMessageSpy).toHaveBeenCalledWith("undoInlineMenuFill", {
+            inlineMenuFillToken: "fill-token",
+          });
           input.remove();
         });
 
-        it("refills the script and clears the undone state", async () => {
-          jest.spyOn(autofillInit["insertAutofillContentService"], "fillForm").mockResolvedValue();
+        it("defers the receipt until an in-flight top-document fill settles", async () => {
+          let resolveFill: (didFill: boolean) => void = () => {};
+          jest
+            .spyOn(autofillInit["collectAutofillContentService"], "getAutofillFieldElementByOpid")
+            .mockReturnValue(null);
+          jest
+            .spyOn(autofillInit["insertAutofillContentService"], "fillForm")
+            .mockReturnValue(new Promise((resolve) => (resolveFill = resolve)));
           const showSpy = jest
             .spyOn(autofillInit["fillReceiptContentService"], "show")
             .mockImplementation();
-          const setUndoneSpy = jest
-            .spyOn(autofillInit["fillReceiptContentService"], "setUndone")
+          const receipt = { kind: "identity" as const, theme: ThemeTypes.Light };
+
+          fillScript = new AutofillScript();
+          fillScript.script = [["fill_by_opid", "opid-1", "value"]];
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillToken: "fill-token",
+          });
+          sendMockExtensionMessage({
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: receipt,
+            inlineMenuFillToken: "fill-token",
+          });
+
+          expect(showSpy).not.toHaveBeenCalled();
+
+          resolveFill(true);
+          await flushPromises();
+
+          expect(showSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("defers an undo broadcast until an in-flight fill settles", async () => {
+          let resolveFill: (didFill: boolean) => void = () => {};
+          const input = document.createElement("input");
+          input.value = "before";
+          document.body.appendChild(input);
+          jest
+            .spyOn(autofillInit["collectAutofillContentService"], "getAutofillFieldElementByOpid")
+            .mockReturnValue(input);
+          jest
+            .spyOn(autofillInit["insertAutofillContentService"], "fillForm")
+            .mockReturnValue(new Promise((resolve) => (resolveFill = resolve)));
+
+          fillScript = new AutofillScript();
+          fillScript.script = [["fill_by_opid", "opid-1", "4242424242424242"]];
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillToken: "fill-token",
+          });
+          await flushPromises();
+
+          input.value = "4242424242424242";
+          sendMockExtensionMessage({
+            command: "restoreInlineMenuFill",
+            inlineMenuFillToken: "fill-token",
+          });
+
+          // Restoring under a fill that is still writing would be overwritten by it.
+          expect(input.value).toBe("4242424242424242");
+
+          resolveFill(true);
+          await flushPromises();
+
+          expect(input.value).toBe("before");
+          input.remove();
+        });
+
+        it("shows a top-document receipt when only a subframe was filled", async () => {
+          // This frame received no fill, so it holds no undo snapshot of its own.
+          const showSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "show")
+            .mockImplementation();
+          const receipt = { kind: "identity" as const, theme: ThemeTypes.Light };
+
+          sendMockExtensionMessage({
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: receipt,
+            inlineMenuFillToken: "subframe-fill-token",
+          });
+          await flushPromises();
+
+          expect(showSpy).toHaveBeenCalledTimes(1);
+          expect(showSpy).toHaveBeenCalledWith(receipt, expect.any(Object));
+        });
+
+        it("restores the fields a subframe fill wrote when undo is broadcast", async () => {
+          jest.spyOn(autofillInit as any, "isTopLevelFrame").mockReturnValue(false);
+          const input = document.createElement("input");
+          input.value = "before";
+          document.body.appendChild(input);
+          jest
+            .spyOn(autofillInit["collectAutofillContentService"], "getAutofillFieldElementByOpid")
+            .mockReturnValue(input);
+          fillScript = new AutofillScript();
+          fillScript.script = [["fill_by_opid", "opid-1", "4242424242424242"]];
+
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillToken: "subframe-fill-token",
+          });
+          await flushPromises();
+
+          input.value = "4242424242424242";
+          sendMockExtensionMessage({
+            command: "restoreInlineMenuFill",
+            inlineMenuFillToken: "subframe-fill-token",
+          });
+
+          expect(input.value).toBe("before");
+          input.remove();
+        });
+
+        it("ignores a restore for a token this frame did not retain", async () => {
+          const input = document.createElement("input");
+          input.value = "before";
+          document.body.appendChild(input);
+          jest
+            .spyOn(autofillInit["collectAutofillContentService"], "getAutofillFieldElementByOpid")
+            .mockReturnValue(input);
+          fillScript = new AutofillScript();
+          fillScript.script = [["fill_by_opid", "opid-1", "4242424242424242"]];
+
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillToken: "fill-token",
+          });
+          await flushPromises();
+
+          input.value = "4242424242424242";
+          sendMockExtensionMessage({
+            command: "restoreInlineMenuFill",
+            inlineMenuFillToken: "a-stale-token",
+          });
+
+          expect(input.value).toBe("4242424242424242");
+          input.remove();
+        });
+
+        it("asks the background to refill instead of re-running only this frame's script", async () => {
+          const fillFormSpy = jest
+            .spyOn(autofillInit["insertAutofillContentService"], "fillForm")
+            .mockResolvedValue(true);
+          const showSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "show")
             .mockImplementation();
           fillScript = new AutofillScript();
 
@@ -741,21 +910,65 @@ describe("AutofillInit", () => {
             command: "fillForm",
             fillScript,
             pageDetailsUrl: window.location.href,
-            inlineMenuFillReceipt: {
-              kind: "identity" as const,
-              theme: ThemeTypes.Light,
-            },
+            inlineMenuFillToken: "fill-token",
+          });
+          sendMockExtensionMessage({
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: { kind: "identity" as const, theme: ThemeTypes.Light },
+            inlineMenuFillToken: "fill-token",
+          });
+          await flushPromises();
+          fillFormSpy.mockClear();
+
+          showSpy.mock.calls[0][1].onRefill();
+
+          expect(fillFormSpy).not.toHaveBeenCalled();
+          expect(sendExtensionMessageSpy).toHaveBeenCalledWith("refillInlineMenuFill", {
+            inlineMenuFillToken: "fill-token",
+          });
+        });
+
+        it("clears the transient undo state when the receipt is dismissed", async () => {
+          const input = document.createElement("input");
+          input.value = "before";
+          document.body.appendChild(input);
+          jest
+            .spyOn(autofillInit["collectAutofillContentService"], "getAutofillFieldElementByOpid")
+            .mockReturnValue(input);
+          const showSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "show")
+            .mockImplementation();
+          fillScript = new AutofillScript();
+          fillScript.script = [["fill_by_opid", "opid-1", "4242424242424242"]];
+
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillToken: "fill-token",
+          });
+          sendMockExtensionMessage({
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: { kind: "identity" as const, theme: ThemeTypes.Light },
+            inlineMenuFillToken: "fill-token",
           });
           await flushPromises();
 
-          showSpy.mock.calls[0][1].onRefill();
-          await flushPromises();
+          showSpy.mock.calls[0][1].onDismiss();
 
-          expect(autofillInit["insertAutofillContentService"].fillForm).toHaveBeenCalledWith(
-            fillScript,
-            true,
-          );
-          expect(setUndoneSpy).toHaveBeenCalledWith(false);
+          expect(autofillInit["fillReceiptSessions"].has("fill-token")).toBe(false);
+          expect(sendExtensionMessageSpy).toHaveBeenCalledWith("dismissInlineMenuFillReceipt", {
+            inlineMenuFillToken: "fill-token",
+          });
+
+          input.value = "4242424242424242";
+          sendMockExtensionMessage({
+            command: "restoreInlineMenuFill",
+            inlineMenuFillToken: "fill-token",
+          });
+
+          expect(input.value).toBe("4242424242424242");
+          input.remove();
         });
 
         it("keeps no receipt when the fill did not start from the inline menu", async () => {
@@ -771,7 +984,7 @@ describe("AutofillInit", () => {
           expect(showSpy).not.toHaveBeenCalled();
         });
 
-        it("does not show or capture a receipt in a subframe", async () => {
+        it("captures undo state in a subframe but does not render the receipt there", async () => {
           jest.spyOn(autofillInit as any, "isTopLevelFrame").mockReturnValue(false);
           const input = document.createElement("input");
           input.value = "before";
@@ -789,16 +1002,27 @@ describe("AutofillInit", () => {
             command: "fillForm",
             fillScript,
             pageDetailsUrl: window.location.href,
+            inlineMenuFillToken: "subframe-fill-token",
             inlineMenuFillReceipt: {
               kind: "card" as const,
               last4: "4242",
               theme: ThemeTypes.Light,
             },
           });
+          sendMockExtensionMessage({
+            command: "showInlineMenuFillReceipt",
+            inlineMenuFillReceipt: {
+              kind: "card" as const,
+              last4: "4242",
+              theme: ThemeTypes.Light,
+            },
+            inlineMenuFillToken: "subframe-fill-token",
+          });
           await flushPromises();
 
+          expect(getElementSpy).toHaveBeenCalled();
+          expect(autofillInit["fillReceiptSessions"].has("subframe-fill-token")).toBe(true);
           expect(showSpy).not.toHaveBeenCalled();
-          expect(getElementSpy).not.toHaveBeenCalled();
           input.remove();
         });
       });

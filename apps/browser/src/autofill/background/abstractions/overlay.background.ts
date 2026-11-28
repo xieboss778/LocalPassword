@@ -158,6 +158,11 @@ export type OverlayBackgroundExtensionMessage = {
   styles?: Partial<CSSStyleDeclaration>;
   iframeSrc?: string;
   iframeTargetedFields?: { selector: string; fieldType: string; formCategory?: string }[];
+  /**
+   * Opaque token for one inline-menu fill. The top document echoes it back for undo, refill and
+   * dismissal; content scripts match it against the snapshot they kept locally.
+   */
+  inlineMenuFillToken?: string;
 } & OverlayAddNewItemMessage &
   CloseInlineMenuMessage &
   ToggleInlineMenuHiddenMessage &
@@ -287,6 +292,12 @@ export type OverlayBackgroundExtensionMessageHandlers = {
   collectPageDetailsResponse: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
   fido2AbortRequest: ({ sender }: BackgroundSenderParam) => void;
   routeTargetedFieldsToFrame: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
+  undoInlineMenuFill: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
+  refillInlineMenuFill: ({
+    message,
+    sender,
+  }: BackgroundOnMessageHandlerParams) => Promise<{ didRefill: boolean }>;
+  dismissInlineMenuFillReceipt: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
 };
 
 export type PortMessageParam = {
