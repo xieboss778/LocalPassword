@@ -36,6 +36,14 @@ import DomElementVisibilityService from "./dom-element-visibility.service";
 import { DomQueryService } from "./dom-query.service";
 import { InlineMenuFieldQualificationService } from "./inline-menu-field-qualification.service";
 
+jest.mock("../content/fill-receipt-content.service", () => ({
+  AutofillFillReceiptContentService: jest.fn().mockImplementation(() => ({
+    show: jest.fn(),
+    setUndone: jest.fn(),
+    destroy: jest.fn(),
+  })),
+}));
+
 const defaultWindowReadyState = document.readyState;
 const defaultDocumentVisibilityState = document.visibilityState;
 
@@ -539,6 +547,58 @@ describe("AutofillOverlayContentService", () => {
           passwordFieldElement.dispatchEvent(new Event("input"));
           expect(autofillOverlayContentService["userFilledFields"].password).toEqual(
             passwordFieldElement,
+          );
+        });
+
+        it("stores the current password of a password change form", async () => {
+          document.body.innerHTML = `
+          <form id="changeFormId">
+            <label for="current-password">Current password</label>
+            <input type="password" id="current-password" autocomplete="current-password" />
+            <label for="new-password">New password</label>
+            <input type="password" id="new-password" autocomplete="new-password" />
+          </form>
+          `;
+          const currentPasswordElement = document.getElementById(
+            "current-password",
+          ) as ElementWithOpId<FillableFormFieldElement>;
+          const currentPasswordData = createAutofillFieldMock({
+            opid: "current-password",
+            htmlID: "current-password",
+            form: "changeFormId",
+            elementNumber: 1,
+            type: "password",
+            placeholder: "",
+            autoCompleteType: "current-password",
+            "label-tag": "Current password",
+            // The collector folds the form's descriptive copy into the field label. "Choose a
+            // new password" reads as account-creation copy and used to disqualify the field.
+            "label-left":
+              "Change passwordChoose a new password for your Northwind account.Current password",
+          });
+          const newPasswordData = createAutofillFieldMock({
+            opid: "new-password",
+            htmlID: "new-password",
+            form: "changeFormId",
+            elementNumber: 2,
+            type: "password",
+            placeholder: "",
+            autoCompleteType: "new-password",
+            "label-tag": "New password",
+          });
+          pageDetailsMock.forms = { changeFormId: mock<AutofillForm>() };
+          pageDetailsMock.fields = [currentPasswordData, newPasswordData];
+
+          await autofillOverlayContentService.setupOverlayListeners(
+            currentPasswordElement,
+            currentPasswordData,
+            pageDetailsMock,
+          );
+          currentPasswordElement.value = "oldpass123";
+          currentPasswordElement.dispatchEvent(new Event("input"));
+
+          expect(autofillOverlayContentService["userFilledFields"].password?.value).toEqual(
+            "oldpass123",
           );
         });
 
@@ -1151,6 +1211,28 @@ describe("AutofillOverlayContentService", () => {
 
             expect(autofillOverlayContentService["userFilledFields"].newPassword).toEqual(
               inputFieldElement,
+            );
+          });
+
+          it("refreshes the stored value on every keystroke of a continuous typing burst", async () => {
+            const inputFieldElement = document.createElement(
+              "input",
+            ) as ElementWithOpId<FillableFormFieldElement>;
+
+            pageDetailsMock.fields = [inputFieldData, passwordFieldData, confirmPasswordFieldData];
+            await autofillOverlayContentService.setupOverlayListeners(
+              inputFieldElement,
+              passwordFieldData,
+              pageDetailsMock,
+            );
+
+            inputFieldElement.value = "N";
+            inputFieldElement.dispatchEvent(new Event("input"));
+            inputFieldElement.value = "NewSecret456!";
+            inputFieldElement.dispatchEvent(new Event("input"));
+
+            expect(autofillOverlayContentService["userFilledFields"].newPassword.value).toEqual(
+              "NewSecret456!",
             );
           });
         });

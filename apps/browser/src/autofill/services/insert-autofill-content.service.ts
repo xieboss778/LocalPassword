@@ -42,7 +42,7 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
    * @returns {Promise<void>}
    * @public
    */
-  async fillForm(fillScript: AutofillScript, showAnimations: boolean = true) {
+  async fillForm(fillScript: AutofillScript, showAnimations: boolean = true): Promise<boolean> {
     this.showAnimations = showAnimations;
     if (
       !fillScript.script?.length ||
@@ -50,12 +50,13 @@ class InsertAutofillContentService implements InsertAutofillContentServiceInterf
       this.userCancelledInsecureUrlAutofill(fillScript.requiresInsecurePageConfirmation) ||
       this.userCancelledUntrustedIframeAutofill(fillScript)
     ) {
-      return;
+      return false;
     }
 
     for (let index = 0; index < fillScript.script.length; index++) {
       await this.runFillScriptAction(fillScript.script[index]);
     }
+    return true;
   }
 
   /**

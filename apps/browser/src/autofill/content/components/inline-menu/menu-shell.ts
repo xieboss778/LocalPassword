@@ -10,29 +10,22 @@ export type InlineMenuShellProps = {
   children: TemplateResult | TemplateResult[];
   ariaLabel: string;
   dataTestId?: string;
-  compact?: boolean;
 };
 
-export function InlineMenuShell({
-  theme,
-  children,
-  ariaLabel,
-  dataTestId,
-  compact = false,
-}: InlineMenuShellProps) {
+export function InlineMenuShell({ theme, children, ariaLabel, dataTestId }: InlineMenuShellProps) {
   return html`
     <div
       role="dialog"
       aria-label=${ariaLabel}
       data-testid=${dataTestId ?? "inline-menu-shell"}
-      class=${inlineMenuShellStyles(theme, compact)}
+      class=${inlineMenuShellStyles(theme)}
     >
       ${children}
     </div>
   `;
 }
 
-const inlineMenuShellStyles = (theme: Theme, compact: boolean) => {
+const inlineMenuShellStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
@@ -40,7 +33,7 @@ const inlineMenuShellStyles = (theme: Theme, compact: boolean) => {
     width: 100%;
     overflow: hidden;
     border: 1px solid ${colors.border};
-    border-radius: ${compact ? "10px" : "12px"};
+    border-radius: 8px;
     background: ${colors.surface};
     color: ${colors.text};
     box-shadow: ${colors.shadow};

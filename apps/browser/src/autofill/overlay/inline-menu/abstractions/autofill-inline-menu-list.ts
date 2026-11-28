@@ -39,6 +39,8 @@ export type InitAutofillInlineMenuListMessage = AutofillInlineMenuListMessage & 
   domain?: string;
   focusedFieldValue?: string;
   isTotpField?: boolean;
+  /** True when the desktop bridge can complete an unlock with biometrics. */
+  showBiometricsUnlock?: boolean;
 };
 
 export type AutofillInlineMenuListWindowMessageHandlers = {
@@ -55,5 +57,6 @@ export type AutofillInlineMenuListWindowMessageHandlers = {
   }: {
     message: UpdateAutofillInlineMenuGeneratedPasswordMessage;
   }) => void;
+  unlockVaultFailed: () => void;
   focusAutofillInlineMenuList: () => void;
 };

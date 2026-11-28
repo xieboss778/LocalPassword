@@ -1,5 +1,7 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { ThemeTypes } from "@localpass/common/platform/enums";
+
 import AutofillField from "../models/autofill-field";
 import AutofillPageDetails from "../models/autofill-page-details";
 import AutofillScript from "../models/autofill-script";
@@ -18,6 +20,14 @@ import { EventSecurity } from "../utils/event-security";
 
 import { AutofillExtensionMessage } from "./abstractions/autofill-init";
 import AutofillInit from "./autofill-init";
+
+jest.mock("./fill-receipt-content.service", () => ({
+  AutofillFillReceiptContentService: jest.fn().mockImplementation(() => ({
+    show: jest.fn(),
+    setUndone: jest.fn(),
+    destroy: jest.fn(),
+  })),
+}));
 
 describe("AutofillInit", () => {
   let domQueryService: MockProxy<DomQueryService>;
@@ -677,6 +687,88 @@ describe("AutofillInit", () => {
             "updateIsFieldCurrentlyFilling",
             { isFieldCurrentlyFilling: false },
           );
+        });
+
+        it("shows a fill receipt and restores the written field on undo", async () => {
+          const input = document.createElement("input");
+          input.value = "before";
+          document.body.appendChild(input);
+          jest
+            .spyOn(autofillInit["collectAutofillContentService"], "getAutofillFieldElementByOpid")
+            .mockReturnValue(input);
+          const showSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "show")
+            .mockImplementation();
+          const setUndoneSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "setUndone")
+            .mockImplementation();
+          const receipt = {
+            kind: "card" as const,
+            last4: "4242",
+            theme: ThemeTypes.Light,
+          };
+
+          fillScript = new AutofillScript();
+          fillScript.script = [["fill_by_opid", "opid-1", "4242424242424242"]];
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillReceipt: receipt,
+          });
+          await flushPromises();
+
+          expect(showSpy).toHaveBeenCalledWith(receipt, expect.any(Object));
+          input.value = "4242424242424242";
+          showSpy.mock.calls[0][1].onUndo();
+
+          expect(input.value).toBe("before");
+          expect(setUndoneSpy).toHaveBeenCalledWith(true);
+          input.remove();
+        });
+
+        it("refills the script and clears the undone state", async () => {
+          jest.spyOn(autofillInit["insertAutofillContentService"], "fillForm").mockResolvedValue();
+          const showSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "show")
+            .mockImplementation();
+          const setUndoneSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "setUndone")
+            .mockImplementation();
+          fillScript = new AutofillScript();
+
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillReceipt: {
+              kind: "identity" as const,
+              theme: ThemeTypes.Light,
+            },
+          });
+          await flushPromises();
+
+          showSpy.mock.calls[0][1].onRefill();
+          await flushPromises();
+
+          expect(autofillInit["insertAutofillContentService"].fillForm).toHaveBeenCalledWith(
+            fillScript,
+            true,
+          );
+          expect(setUndoneSpy).toHaveBeenCalledWith(false);
+        });
+
+        it("keeps no receipt when the fill did not start from the inline menu", async () => {
+          const showSpy = jest.spyOn(autofillInit["fillReceiptContentService"], "show");
+
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+          });
+          await flushPromises();
+
+          expect(showSpy).not.toHaveBeenCalled();
         });
       });
     });

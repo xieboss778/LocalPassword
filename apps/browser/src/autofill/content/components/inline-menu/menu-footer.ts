@@ -1,5 +1,5 @@
 import { css } from "@emotion/css";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 
 import { Theme } from "@localpass/common/platform/enums";
 
@@ -7,55 +7,92 @@ import { EventSecurity } from "../../../utils/event-security";
 
 import { inlineMenuColors, inlineMenuFocusRing } from "./menu-styles";
 
-export type InlineMenuFooterProps = {
-  theme: Theme;
-  hint: string;
-  newItem?: {
-    text: string;
-    aria: string;
-    icon: TemplateResult;
-    handleAction: (event: Event) => void;
-  };
-  note?: {
-    text: string;
-    icon: TemplateResult;
-  };
+export type InlineMenuFooterAction = {
+  text: string;
+  aria: string;
+  icon: TemplateResult;
+  testId?: string;
+  handleAction: (event: Event) => void;
+  /** Keyboard shortcut for moving between footer actions and the menu's primary row. */
+  handleKeyUp?: (event: KeyboardEvent) => void;
 };
 
-export function InlineMenuFooter({ theme, hint, newItem, note }: InlineMenuFooterProps) {
-  const handleNewItem = (event: Event) => {
+export type InlineMenuFooterProps = {
+  theme: Theme;
+  actions?: InlineMenuFooterAction[];
+  /** Right-aligned statement, for example the read-only domain disclosure. */
+  note?: {
+    text: string;
+    icon?: TemplateResult;
+  };
+  /** Keyboard hints rendered in a dedicated strip below the footer. */
+  hint?: string | { text: string; right?: string };
+};
+
+export function InlineMenuFooter({ theme, actions, note, hint }: InlineMenuFooterProps) {
+  const handleAction = (action: InlineMenuFooterAction) => (event: Event) => {
     if (EventSecurity.isEventTrusted(event)) {
-      newItem?.handleAction(event);
+      action.handleAction(event);
     }
   };
+  const hasFooter = !!actions?.length || !!note;
 
   return html`
-    <div class=${footerStyles(theme)}>
-      ${
-        newItem
-          ? html`<button
-              type="button"
-              tabindex="-1"
-              data-inline-new-item
-              data-inline-menu-focusable
-              data-testid="inline-menu-new-item-button"
-              class=${newItemStyles(theme)}
-              aria-label=${newItem.aria}
-              @click=${handleNewItem}
-            >
-              <span class=${footerIconStyles} aria-hidden="true">${newItem.icon}</span>
-              <span>${newItem.text}</span>
-            </button>`
-          : note
-            ? html`<span class=${noteStyles(theme)}>
-                <span class=${footerIconStyles} aria-hidden="true">${note.icon}</span>
-                <span>${note.text}</span>
-              </span>`
-            : html`<span></span>`
-      }
-      <span class=${keysStyles(theme)}>${hint}</span>
+    ${
+      hasFooter
+        ? html`<div class=${footerStyles(theme)}>
+            <span class=${actionsStyles(theme)}>
+              ${
+                actions?.length
+                  ? actions.map(
+                      (action) =>
+                        html`<button
+                          type="button"
+                          tabindex="-1"
+                          data-inline-menu-focusable
+                          data-testid=${action.testId ?? nothing}
+                          class=${actionStyles(theme)}
+                          aria-label=${action.aria}
+                          @click=${handleAction(action)}
+                          @keyup=${action.handleKeyUp}
+                        >
+                          <span class=${footerIconStyles} aria-hidden="true">${action.icon}</span>
+                          <span>${action.text}</span>
+                        </button>`,
+                    )
+                  : note
+                    ? noteTemplate(theme, note)
+                    : nothing
+              }
+            </span>
+            ${actions?.length && note ? noteTemplate(theme, note, true) : nothing}
+          </div>`
+        : nothing
+    }
+    ${hint ? hintTemplate(theme, hint) : nothing}
+  `;
+}
+
+function hintTemplate(theme: Theme, hint: NonNullable<InlineMenuFooterProps["hint"]>) {
+  const label = typeof hint === "string" ? { text: hint, right: undefined } : hint;
+
+  return html`
+    <div class=${keyboardStyles(theme)}>
+      <span>${label.text}</span>
+      ${label.right ? html`<span class=${keyboardRightStyles}>${label.right}</span>` : nothing}
     </div>
   `;
+}
+
+function noteTemplate(
+  theme: Theme,
+  note: NonNullable<InlineMenuFooterProps["note"]>,
+  rightAligned = false,
+) {
+  return html`<span class=${`${noteStyles(theme)}${rightAligned ? " is-right" : ""}`}>
+    ${note.icon ? html`<span class=${footerIconStyles} aria-hidden="true">${note.icon}</span>` : nothing}
+    <span>${note.text}</span>
+  </span>`;
 }
 
 const footerStyles = (theme: Theme) => {
@@ -65,31 +102,45 @@ const footerStyles = (theme: Theme) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    min-height: 42px;
-    padding: 0 14px;
-    border-top: 1px solid ${colors.border};
-    background: ${colors.surface};
+    gap: 8px;
+    min-height: 26px;
+    padding: 0 8px;
+    border-top: 1px solid ${colors.borderLight};
+    background: ${colors.surfaceAlt};
+    color: ${colors.textSubtle};
+    font-size: 9.5px;
+    line-height: 12px;
   `;
 };
 
-const newItemStyles = (theme: Theme) => {
+const actionsStyles = (theme: Theme) => css`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+
+  > button:first-child {
+    margin-left: -4px;
+  }
+`;
+
+const actionStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 6px;
-    margin-left: -6px;
+    gap: 3px;
+    padding: 2px 4px;
     border: 0;
-    border-radius: 6px;
+    border-radius: 4px;
     background: transparent;
     color: ${colors.brand};
     font-family: inherit;
-    font-size: 10.5px;
-    font-weight: 600;
-    line-height: 14px;
+    font-size: 9.5px;
+    font-weight: 550;
+    line-height: 12px;
+    white-space: nowrap;
     cursor: pointer;
 
     :hover {
@@ -105,11 +156,15 @@ const noteStyles = (theme: Theme) => {
 
   return css`
     display: inline-flex;
+    flex: none;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     color: ${colors.textSubtle};
-    font-size: 9.5px;
-    line-height: 13px;
+    white-space: nowrap;
+
+    &.is-right {
+      margin-left: auto;
+    }
   `;
 };
 
@@ -117,19 +172,29 @@ const footerIconStyles = css`
   display: inline-flex;
 
   svg {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 `;
 
-const keysStyles = (theme: Theme) => {
+const keyboardStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
-    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 20px;
+    padding: 0 8px;
+    border-top: 1px solid ${colors.borderLight};
+    background: ${colors.surfaceAlt};
     color: ${colors.textSubtle};
     font-size: 9px;
     line-height: 12px;
     white-space: nowrap;
   `;
 };
+
+const keyboardRightStyles = css`
+  margin-left: auto;
+`;

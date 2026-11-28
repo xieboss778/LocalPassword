@@ -1,7 +1,7 @@
 import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { EventSecurity } from "../../../../utils/event-security";
-import { keyupEvent, litHandler, litValues } from "../../lit-stories/lit-values";
+import { keyupEvent } from "../../lit-stories/lit-values";
 import { mockI18n, mockPasswordGeneratorI18n } from "../../lit-stories/mock-data";
 import { InlineMenuPasswordGenerator } from "../password-generator";
 
@@ -18,37 +18,51 @@ describe("InlineMenuPasswordGenerator", () => {
     handleRefreshPassword: jest.fn(),
   };
 
-  const FILL_CLICK_SLOT = 4;
-  const FILL_KEYUP_SLOT = 5;
-  const REFRESH_CLICK_SLOT = 14;
-  const REFRESH_KEYUP_SLOT = 15;
+  /**
+   * Handlers in template order: fill click, fill keyup, footer action click, footer action keyup.
+   * The Lit mock returns each template's interpolated values as nested arrays, so the handlers are
+   * collected depth-first to keep the test stable when surrounding markup changes.
+   */
+  function renderHandlers() {
+    const handlers = collectHandlers(InlineMenuPasswordGenerator(baseProps));
+    return {
+      fillClick: handlers[0],
+      fillKeyUp: handlers[1],
+      refreshClick: handlers[2],
+      refreshKeyUp: handlers[3],
+    };
+  }
+
+  function collectHandlers(value: unknown, found: Array<(event: Event) => void> = []) {
+    if (typeof value === "function") {
+      found.push(value as (event: Event) => void);
+    } else if (Array.isArray(value)) {
+      value.forEach((item) => collectHandlers(item, found));
+    }
+    return found;
+  }
 
   beforeEach(() => {
     jest.clearAllMocks();
+    document.body.innerHTML = "";
   });
 
-  /** Builds a `[data-password-generator-actions]` fixture with fill/refresh buttons, matching the real markup. */
-  function renderActionsDom() {
-    const actions = document.createElement("div");
-    actions.setAttribute("data-password-generator-actions", "");
+  function renderKeyboardDom() {
     const fill = document.createElement("button");
     fill.setAttribute("data-fill-generated-password", "");
     const refresh = document.createElement("button");
-    refresh.setAttribute("data-refresh-generated-password", "");
-    actions.append(fill, refresh);
+    refresh.setAttribute("data-testid", "refresh-generated-password");
+    document.body.append(fill, refresh);
     fill.focus = jest.fn();
     refresh.focus = jest.fn();
-    return { actions, fill, refresh };
+    return { fill, refresh };
   }
 
   describe("click handlers", () => {
     it("calls handleFillPassword when the event is trusted", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        FILL_CLICK_SLOT,
-      )(new MouseEvent("click"));
+      renderHandlers().fillClick(new MouseEvent("click"));
 
       expect(baseProps.handleFillPassword).toHaveBeenCalled();
     });
@@ -56,115 +70,105 @@ describe("InlineMenuPasswordGenerator", () => {
     it("does not call handleFillPassword when the event is untrusted", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(false);
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        FILL_CLICK_SLOT,
-      )(new MouseEvent("click"));
+      renderHandlers().fillClick(new MouseEvent("click"));
 
       expect(baseProps.handleFillPassword).not.toHaveBeenCalled();
     });
 
     it("calls handleRefreshPassword when the event is trusted", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
-      const actions = document.createElement("div");
-      actions.setAttribute("data-password-generator-actions", "");
-      const button = document.createElement("button");
-      actions.appendChild(button);
-      const event = new MouseEvent("click", { bubbles: true });
-      Object.defineProperty(event, "target", { value: button });
 
-      litHandler(litValues(InlineMenuPasswordGenerator(baseProps)), REFRESH_CLICK_SLOT)(event);
+      renderHandlers().refreshClick(new MouseEvent("click"));
 
       expect(baseProps.handleRefreshPassword).toHaveBeenCalled();
-      expect(actions.classList.contains("remove-outline")).toBe(true);
     });
 
     it("does not call handleRefreshPassword when the event is untrusted", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(false);
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        REFRESH_CLICK_SLOT,
-      )(new MouseEvent("click"));
+      renderHandlers().refreshClick(new MouseEvent("click"));
 
       expect(baseProps.handleRefreshPassword).not.toHaveBeenCalled();
     });
   });
 
   describe("keyboard navigation", () => {
-    it("moves focus to the refresh button on ArrowRight and marks the outline removed", () => {
+    it("moves focus to the footer refresh action on ArrowRight", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
-      const { actions, fill, refresh } = renderActionsDom();
+      const { fill, refresh } = renderKeyboardDom();
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        FILL_KEYUP_SLOT,
-      )(keyupEvent("ArrowRight", fill));
+      renderHandlers().fillKeyUp(keyupEvent("ArrowRight", fill));
 
       expect(refresh.focus).toHaveBeenCalled();
-      expect(actions.classList.contains("remove-outline")).toBe(true);
     });
 
     it("does not move focus on ArrowRight when the event is untrusted", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(false);
-      const { fill, refresh } = renderActionsDom();
+      const { fill, refresh } = renderKeyboardDom();
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        FILL_KEYUP_SLOT,
-      )(keyupEvent("ArrowRight", fill));
+      renderHandlers().fillKeyUp(keyupEvent("ArrowRight", fill));
 
       expect(refresh.focus).not.toHaveBeenCalled();
     });
 
     it("ignores ArrowLeft on the fill button's keyup handler", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
-      const { fill, refresh } = renderActionsDom();
+      const { fill, refresh } = renderKeyboardDom();
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        FILL_KEYUP_SLOT,
-      )(keyupEvent("ArrowLeft", fill));
+      renderHandlers().fillKeyUp(keyupEvent("ArrowLeft", fill));
 
       expect(refresh.focus).not.toHaveBeenCalled();
     });
 
     it("ignores keyup events with modifier keys held", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
-      const { fill, refresh } = renderActionsDom();
+      const { fill, refresh } = renderKeyboardDom();
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        FILL_KEYUP_SLOT,
-      )(keyupEvent("ArrowRight", fill, { ctrlKey: true }));
+      renderHandlers().fillKeyUp(keyupEvent("ArrowRight", fill, { ctrlKey: true }));
 
       expect(refresh.focus).not.toHaveBeenCalled();
     });
 
-    it("moves focus to the fill button on ArrowLeft and clears the outline removal", () => {
+    it("moves focus back to the fill row on ArrowLeft", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
-      const { actions, fill, refresh } = renderActionsDom();
-      actions.classList.add("remove-outline");
+      const { fill, refresh } = renderKeyboardDom();
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        REFRESH_KEYUP_SLOT,
-      )(keyupEvent("ArrowLeft", refresh));
+      renderHandlers().refreshKeyUp(keyupEvent("ArrowLeft", refresh));
 
       expect(fill.focus).toHaveBeenCalled();
-      expect(actions.classList.contains("remove-outline")).toBe(false);
     });
 
-    it("ignores ArrowRight on the refresh button's keyup handler", () => {
+    it("ignores ArrowRight on the refresh action's keyup handler", () => {
       jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
-      const { fill, refresh } = renderActionsDom();
+      const { fill, refresh } = renderKeyboardDom();
 
-      litHandler(
-        litValues(InlineMenuPasswordGenerator(baseProps)),
-        REFRESH_KEYUP_SLOT,
-      )(keyupEvent("ArrowRight", refresh));
+      renderHandlers().refreshKeyUp(keyupEvent("ArrowRight", refresh));
 
       expect(fill.focus).not.toHaveBeenCalled();
+    });
+
+    it("moves focus between fill and refresh inside a closed shadow root", () => {
+      jest.spyOn(EventSecurity, "isEventTrusted").mockReturnValue(true);
+      const host = document.createElement("div");
+      document.body.append(host);
+      const shadow = host.attachShadow({ mode: "closed" });
+      const container = document.createElement("div");
+      container.setAttribute("data-testid", "inline-menu-password-generator");
+      const fill = document.createElement("button");
+      fill.setAttribute("data-fill-generated-password", "");
+      fill.focus = jest.fn();
+      const refresh = document.createElement("button");
+      refresh.setAttribute("data-testid", "refresh-generated-password");
+      refresh.focus = jest.fn();
+      container.append(fill, refresh);
+      shadow.append(container);
+
+      const handlers = renderHandlers();
+      handlers.fillKeyUp(keyupEvent("ArrowRight", fill));
+      expect(refresh.focus).toHaveBeenCalledTimes(1);
+
+      handlers.refreshKeyUp(keyupEvent("ArrowLeft", refresh));
+      expect(fill.focus).toHaveBeenCalledTimes(1);
     });
   });
 });

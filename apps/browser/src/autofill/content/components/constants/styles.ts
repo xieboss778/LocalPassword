@@ -21,9 +21,9 @@ const lightTheme = {
     700: `rgba(63, 75, 99)`,
   },
   success: {
-    100: `rgba(219, 229, 246)`,
-    600: `rgba(121, 161, 233)`,
-    700: `rgba(26, 65, 172)`,
+    100: `#ecfdf5`,
+    600: `#047857`,
+    700: `#065f46`,
   },
   danger: {
     100: `rgba(255, 236, 239)`,
@@ -59,7 +59,7 @@ const lightTheme = {
     alt4: `rgba(2, 15, 102)`,
   },
   brandLogo: `rgba(23, 93, 220)`,
-  passwordSpecial: `rgba(184, 0, 23)`,
+  passwordSpecial: `#047857`,
   passwordNumber: `rgba(20, 82, 193)`,
 };
 
@@ -82,9 +82,9 @@ const darkTheme = {
     700: `rgba(158, 167, 181)`,
   },
   success: {
-    100: `rgba(11, 111, 21)`,
-    600: `rgba(107, 241, 120)`,
-    700: `rgba(191, 236, 195)`,
+    100: `rgba(52, 211, 153, 0.13)`,
+    600: `#34d399`,
+    700: `#6ee7b7`,
   },
   danger: {
     100: `rgba(149, 27, 42)`,
@@ -120,7 +120,7 @@ const darkTheme = {
     alt4: `rgba(18, 26, 39)`,
   },
   brandLogo: `rgba(255, 255, 255)`,
-  passwordSpecial: `rgba(255, 141, 133)`,
+  passwordSpecial: `#34d399`,
   passwordNumber: `rgba(111, 157, 241)`,
 };
 

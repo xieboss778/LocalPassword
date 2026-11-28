@@ -12,6 +12,8 @@ export type InlineMenuColors = {
   textMuted: string;
   textSubtle: string;
   brand: string;
+  brandFill: string;
+  brandFillStrong: string;
   brandSoft: string;
   brandStrong: string;
   hover: string;
@@ -40,6 +42,8 @@ export function inlineMenuColors(theme: Theme): InlineMenuColors {
     textMuted: tokens.text.muted,
     textSubtle: tokens.secondary["500"],
     brand: tokens.primary["600"],
+    brandFill: dark ? "#2563eb" : tokens.primary["600"],
+    brandFillStrong: dark ? "#1d4ed8" : tokens.primary["700"],
     brandSoft: tokens.primary["100"],
     brandStrong: tokens.primary["700"],
     hover: tokens.primary["100"],

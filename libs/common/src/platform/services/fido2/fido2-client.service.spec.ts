@@ -725,6 +725,17 @@ describe("FidoAuthenticatorService", () => {
 
         expect(authenticator.getAssertion).toHaveBeenCalledTimes(2);
       });
+
+      it("throws AbortError instead of TypeError when the active conditional request is aborted", async () => {
+        requestManager.newActiveRequest.mockResolvedValueOnce({
+          type: Fido2ActiveRequestEvents.Abort,
+        });
+
+        await expect(client.assertCredential(params, windowReference)).rejects.toMatchObject({
+          name: "AbortError",
+        });
+        expect(authenticator.getAssertion).not.toHaveBeenCalled();
+      });
     });
 
     function createParams(params: Partial<AssertCredentialParams> = {}): AssertCredentialParams {

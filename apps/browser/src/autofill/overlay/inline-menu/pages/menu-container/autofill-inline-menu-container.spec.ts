@@ -208,6 +208,15 @@ describe("AutofillInlineMenuContainer", () => {
       expect(port.postMessage).toHaveBeenCalledWith(message);
     });
 
+    it("forwards the search-all action from the inline menu to the background", () => {
+      const token = autofillInlineMenuContainer["token"];
+      const message = { command: "searchAllFromInlineMenu", portKey, token };
+
+      postWindowMessage(message, "null", iframe.contentWindow as any);
+
+      expect(port.postMessage).toHaveBeenCalledWith(message);
+    });
+
     it("posts a message to the inline menu iframe from the parent", () => {
       const message = { command: "checkInlineMenuButtonFocused", portKey };
 

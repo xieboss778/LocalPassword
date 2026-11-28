@@ -8,6 +8,7 @@ import { ConfigService } from "../../platform/abstractions/config/config.service
 import { SingleUserState } from "../../platform/state";
 import { UserId } from "../../types/guid";
 import { RestrictedItemTypesService } from "../../vault/services/restricted-item-types.service";
+import { ClearClipboardDelay } from "../constants";
 
 import { AutofillSettingsService } from "./autofill-settings.service";
 
@@ -247,6 +248,22 @@ describe("AutofillSettingsService", () => {
 
       expect(emissions).toEqual([true]);
       subscription.unsubscribe();
+    });
+  });
+
+  describe("clearClipboardDelay$", () => {
+    it("defaults to thirty seconds when the user has not chosen a delay", async () => {
+      await expect(firstValueFrom(autofillSettingsService.clearClipboardDelay$)).resolves.toBe(
+        ClearClipboardDelay.ThirtySeconds,
+      );
+    });
+
+    it("returns the stored delay", async () => {
+      await autofillSettingsService.setClearClipboardDelay(ClearClipboardDelay.TwoMinutes);
+
+      await expect(firstValueFrom(autofillSettingsService.clearClipboardDelay$)).resolves.toBe(
+        ClearClipboardDelay.TwoMinutes,
+      );
     });
   });
 });

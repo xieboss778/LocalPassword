@@ -173,6 +173,8 @@ export type OverlayPortCommand =
   | "blurred"
   | "updateColorScheme"
   | "unlockVault"
+  | "unlockVaultWithPassword"
+  | "unlockVaultWithBiometrics"
   | "refreshGeneratedPassword"
   | "fillGeneratedPassword";
 
@@ -187,6 +189,8 @@ export type OverlayPortMessage = {
   viewsCipherData?: InlineMenuCipherData;
   loginUrl?: string;
   fillGeneratedPassword?: boolean;
+  /** Master password typed into the inline locked menu. Never logged or persisted. */
+  password?: string;
 };
 
 export type InlineMenuCipherData = {
@@ -210,9 +214,15 @@ export type InlineMenuCipherData = {
     } | null;
   };
   card?: string;
+  /** Last four digits, masked, e.g. "•••• 4242". Never the full number. */
+  cardMask?: string;
+  /** Normalized expiry, e.g. "09/29". */
+  cardExpiry?: string;
   identity?: {
     fullName: string;
     username?: string;
+    /** Street line plus locality, used as the compact identity menu subtitle. */
+    address?: string;
   };
 };
 
@@ -223,7 +233,7 @@ export type BuildCipherDataParams = {
   showFavicons?: boolean;
   showInlineMenuAccountCreation?: boolean;
   hasPasskey?: boolean;
-  identityData?: { fullName: string; username?: string };
+  identityData?: InlineMenuCipherData["identity"];
 };
 
 export type BackgroundMessageParam = {
@@ -303,6 +313,8 @@ export type InlineMenuListPortMessageHandlers = {
   checkAutofillInlineMenuButtonFocused: ({ port }: PortConnectionParam) => void;
   autofillInlineMenuBlurred: ({ port }: PortConnectionParam) => void;
   unlockVault: ({ port }: PortConnectionParam) => void;
+  unlockVaultWithPassword: ({ message, port }: PortOnMessageHandlerParams) => void;
+  unlockVaultWithBiometrics: ({ port }: PortConnectionParam) => void;
   fillAutofillInlineMenuCipher: ({ message, port }: PortOnMessageHandlerParams) => void;
   addNewVaultItem: ({ message, port }: PortOnMessageHandlerParams) => void;
   viewSelectedCipher: ({ message, port }: PortOnMessageHandlerParams) => void;
@@ -310,6 +322,7 @@ export type InlineMenuListPortMessageHandlers = {
   updateAutofillInlineMenuListHeight: ({ message, port }: PortOnMessageHandlerParams) => void;
   refreshGeneratedPassword: () => Promise<void>;
   fillGeneratedPassword: ({ port }: PortConnectionParam) => Promise<void>;
+  searchAllFromInlineMenu: ({ port }: PortConnectionParam) => Promise<void>;
   refreshOverlayCiphers: () => Promise<void>;
   copyInlineMenuTotp: ({ message, port }: PortOnMessageHandlerParams) => void;
   cancelInlineMenuPasskey: ({ port }: PortConnectionParam) => void;

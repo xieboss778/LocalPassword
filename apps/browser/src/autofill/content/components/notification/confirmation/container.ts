@@ -119,7 +119,7 @@ const notificationContainerStyles = (theme: Theme) => css`
   }
 `;
 
-function getConfirmationMessage(i18n: I18n, type?: NotificationType, error?: string) {
+export function getConfirmationMessage(i18n: I18n, type?: NotificationType, error?: string) {
   if (error) {
     return i18n.saveFailureDetails;
   }

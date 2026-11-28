@@ -10,6 +10,14 @@ import { ElementWithOpId } from "../../../types";
 
 import { AutofillInlineMenuContentService } from "./autofill-inline-menu-content.service";
 
+jest.mock("../../../content/fill-receipt-content.service", () => ({
+  AutofillFillReceiptContentService: jest.fn().mockImplementation(() => ({
+    show: jest.fn(),
+    setUndone: jest.fn(),
+    destroy: jest.fn(),
+  })),
+}));
+
 describe("AutofillInlineMenuContentService", () => {
   let domQueryService: MockProxy<DomQueryService>;
   let domElementVisibilityService: DomElementVisibilityService;

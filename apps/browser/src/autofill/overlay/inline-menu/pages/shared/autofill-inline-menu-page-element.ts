@@ -171,6 +171,29 @@ export class AutofillInlineMenuPageElement extends HTMLElement {
       return;
     }
 
+    const active = this.shadowDom.activeElement as HTMLElement | null;
+    const unlockForm = active?.closest("[data-inline-menu-unlock-form]");
+    if (unlockForm && event.code !== "Escape") {
+      if (event.code === "Tab") {
+        const controls = Array.from(
+          unlockForm.querySelectorAll<HTMLElement>("input:not(:disabled), button:not(:disabled)"),
+        );
+        const index = active ? controls.indexOf(active) : -1;
+        if (index !== -1) {
+          const next = event.shiftKey ? index - 1 : index + 1;
+          if (next >= 0 && next < controls.length) {
+            event.preventDefault();
+            event.stopPropagation();
+            controls[next].focus();
+            return;
+          }
+        }
+      } else {
+        // Keep ArrowUp/ArrowDown from being swallowed inside the unlock input.
+        return;
+      }
+    }
+
     event.preventDefault();
     event.stopPropagation();
 

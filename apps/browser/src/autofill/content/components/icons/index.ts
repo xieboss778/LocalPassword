@@ -23,3 +23,4 @@ export { Search } from "./search";
 export { Shield } from "./shield";
 export { Spinner } from "./spinner";
 export { User } from "./user";
+export { Wand } from "./wand";

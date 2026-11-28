@@ -64,15 +64,25 @@ type NotificationBarIframeInitData = {
    * Cipher details used when opening the notification bar in confirmation state.
    * Only relevant when `isConfirmation` is true.
    */
-  confirmationData?: { cipherId?: string; itemName?: string };
+  confirmationData?: {
+    cipherId?: string;
+    itemName?: string;
+    username?: string;
+    folderName?: string;
+  };
 };
 
 type NotificationBarWindowMessage = {
   command: string;
   data?: {
     cipherId?: string;
+    /** Set when the change card saved the submitted credentials as a new entry. */
+    saveAsNew?: boolean;
     task?: NotificationTaskInfo;
     itemName?: string;
+    /** Account and folder shown on the compact save confirmation. */
+    username?: string;
+    folderName?: string;
   };
   error?: string;
   initData?: NotificationBarIframeInitData;
@@ -83,6 +93,21 @@ type NotificationBarWindowMessageHandlers = {
   [key: string]: CallableFunction;
   initNotificationBar: ({ message }: { message: NotificationBarWindowMessage }) => void;
   saveCipherAttemptCompleted: ({ message }: { message: NotificationBarWindowMessage }) => void;
+};
+
+/**
+ * Local health finding for a saved login whose submitted password is reused or weak.
+ */
+type LocalAtRiskPasswordParams = {
+  /** The local health rule that flagged the saved password. */
+  kind: "reused" | "weak";
+  /** Number of saved logins sharing the password, including the matched one. */
+  sharedCount: number;
+  /** The matched saved entry's name and username, for the card's identity line. */
+  entryName: string;
+  username: string;
+  /** The matched entry, so the card's change action opens that entry's editor locally. */
+  cipherId: string;
 };
 
 /**
@@ -99,10 +124,13 @@ type NotificationBarWindowMessageHandlers = {
 type AtRiskPasswordNotificationParams = {
   hasPasswordChangeUri: boolean;
   organizationName: string;
+  /** Present when the risk comes from the local vault scan rather than an organization task. */
+  localRisk?: LocalAtRiskPasswordParams;
 };
 
 export {
   AtRiskPasswordNotificationParams,
+  LocalAtRiskPasswordParams,
   NotificationTaskInfo,
   NotificationTypes,
   NotificationType,

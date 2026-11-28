@@ -48,8 +48,11 @@ import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { Fido2CredentialView } from "@localpass/common/vault/models/view/fido2-credential.view";
 import { CredentialGeneratorService } from "@localpass/generator-core";
 import { GeneratedCredential, GeneratorHistoryService } from "@localpass/generator-history";
+import { BiometricsService, BiometricsStatus } from "@localpass/key-management";
+import { UnlockService } from "@localpass/unlock";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
+import BrowserPopupUtils from "../../platform/browser/browser-popup-utils";
 import { BrowserPlatformUtilsService } from "../../platform/services/platform-utils/browser-platform-utils.service";
 import { AutofillOutcome } from "../enums/autofill-outcome.enum";
 import {
@@ -137,6 +140,8 @@ describe("OverlayBackground", () => {
   let generatorService: MockProxy<CredentialGeneratorService>;
   let generatorHistoryService: MockProxy<GeneratorHistoryService>;
   let autofillOrchestrator: MockProxy<AutofillOrchestrator>;
+  let unlockService: MockProxy<UnlockService>;
+  let biometricsService: MockProxy<BiometricsService>;
   let overlayBackground: OverlayBackground;
   // A real channel rather than a mock: what is under test is that the class reads the
   // channel's own messages, which no mocked listener would demonstrate.
@@ -266,6 +271,13 @@ describe("OverlayBackground", () => {
     autofillOrchestrator.fillCipher.mockResolvedValue({ outcome: AutofillOutcome.Filled });
     fillCipherPolicy = new DefaultFillCipherPolicy(cipherService);
     jest.spyOn(fillCipherPolicy, "ciphersForUrl");
+    unlockService = mock<UnlockService>();
+    unlockService.unlockWithMasterPassword.mockResolvedValue(undefined);
+    unlockService.unlockWithBiometrics.mockResolvedValue(undefined);
+    biometricsService = mock<BiometricsService>();
+    biometricsService.getBiometricsStatus.mockResolvedValue(
+      BiometricsStatus.NotEnabledInConnectedDesktopApp,
+    );
     overlayBackground = new OverlayBackground(
       logService,
       cipherService,
@@ -290,6 +302,8 @@ describe("OverlayBackground", () => {
       // Wired as `MainBackground` wires it, so ingest tagging is exercised rather than faked.
       new MessageListener(intraprocessMessageSender.messages$({ external$: externalMessages })),
       fillCipherPolicy,
+      unlockService,
+      biometricsService,
     );
     portKeyForTabSpy = overlayBackground["portKeyForTab"];
     pageDetailsForTabSpy = overlayBackground["pageDetailsForTab"];
@@ -509,6 +523,33 @@ describe("OverlayBackground", () => {
         );
       },
     );
+
+    it("offers biometrics unlock while locked when the desktop bridge is available", async () => {
+      activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+      biometricsService.getBiometricsStatus.mockResolvedValue(BiometricsStatus.Available);
+
+      await initOverlayElementPorts({ initList: true, initButton: false });
+
+      expect(listPortSpy.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "initAutofillInlineMenuList",
+          showBiometricsUnlock: true,
+        }),
+      );
+    });
+
+    it("hides biometrics unlock when the desktop bridge is unavailable", async () => {
+      activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+
+      await initOverlayElementPorts({ initList: true, initButton: false });
+
+      expect(listPortSpy.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "initAutofillInlineMenuList",
+          showBiometricsUnlock: false,
+        }),
+      );
+    });
   });
 
   describe("when enableFillAssist is turned off", () => {
@@ -1407,6 +1448,91 @@ describe("OverlayBackground", () => {
           },
         ],
       });
+    });
+
+    it("sends only the masked card number and expiry to the inline menu", async () => {
+      const cardWithNumber = mock<CipherView>({
+        id: "id-card-1",
+        localData: { lastUsedDate: 222 },
+        name: "Visa",
+        type: CipherType.Card,
+        favorite: true,
+        card: {
+          number: "4242424242424242",
+          subTitle: "Visa, *4242",
+          expMonth: "09",
+          expYear: "2029",
+          expiration: "09 / 2029",
+        },
+      });
+      overlayBackground["focusedFieldData"] = createFocusedFieldDataMock({
+        tabId: tab.id,
+        inlineMenuFillType: CipherType.Card,
+      });
+      cipherService.getAllDecryptedForUrl.mockResolvedValue([cardWithNumber]);
+      cipherService.sortCiphersByLastUsedThenName.mockReturnValue(-1);
+      getTabFromCurrentWindowIdSpy.mockResolvedValueOnce(tab);
+
+      await overlayBackground.updateOverlayCiphers();
+      await flushPromises();
+
+      expect(listPortSpy.postMessage).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          ciphers: [
+            expect.objectContaining({
+              card: "Visa, *4242",
+              cardMask: "•••• 4242",
+              cardExpiry: "09/29",
+              favorite: true,
+            }),
+          ],
+        }),
+      );
+      expect(JSON.stringify(listPortSpy.postMessage.mock.calls)).not.toContain("4242424242424242");
+    });
+
+    it("sends the identity address as a single-line subtitle", async () => {
+      const identityWithAddress = mock<CipherView>({
+        id: "id-identity-1",
+        localData: { lastUsedDate: 222 },
+        name: "Home",
+        type: CipherType.Identity,
+        identity: {
+          firstName: "Jane",
+          lastName: "Doe",
+          username: "jane.doe",
+          address1: "1 Market St",
+          address2: "Apt 4",
+          address3: "",
+          city: "San Francisco",
+          state: "CA",
+          postalCode: "94105",
+        },
+      });
+      overlayBackground["focusedFieldData"] = createFocusedFieldDataMock({
+        tabId: tab.id,
+        inlineMenuFillType: CipherType.Identity,
+      });
+      cipherService.getAllDecryptedForUrl.mockResolvedValue([identityWithAddress]);
+      cipherService.sortCiphersByLastUsedThenName.mockReturnValue(-1);
+      getTabFromCurrentWindowIdSpy.mockResolvedValueOnce(tab);
+
+      await overlayBackground.updateOverlayCiphers();
+      await flushPromises();
+
+      expect(listPortSpy.postMessage).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          ciphers: [
+            expect.objectContaining({
+              type: CipherType.Identity,
+              identity: {
+                fullName: "Jane Doe",
+                address: "1 Market St, Apt 4, San Francisco",
+              },
+            }),
+          ],
+        }),
+      );
     });
 
     describe("updating ciphers for an account creation inline menu", () => {
@@ -3660,7 +3786,8 @@ describe("OverlayBackground", () => {
     });
 
     describe("autofillInlineMenuButtonClicked message handler", () => {
-      it("opens the unlock vault popout if the user auth status is not unlocked", async () => {
+      it("opens the unlock vault popout if the user auth status is not unlocked when Lit inline menu is disabled", async () => {
+        overlayBackground.useLitInlineMenuComponents$ = of(false);
         activeAccountStatusMock$.next(AuthenticationStatus.Locked);
 
         sendPortMessage(buttonMessageConnectorSpy, {
@@ -3693,6 +3820,23 @@ describe("OverlayBackground", () => {
             },
           },
         ]);
+      });
+
+      it("opens the in-place unlock inline menu when locked and Lit inline menu is enabled", async () => {
+        overlayBackground.useLitInlineMenuComponents$ = of(true);
+        activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+        const openInlineMenuSpy = jest
+          .spyOn(overlayBackground as any, "openInlineMenu")
+          .mockResolvedValue(undefined);
+
+        sendPortMessage(buttonMessageConnectorSpy, {
+          command: "autofillInlineMenuButtonClicked",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(openInlineMenuSpy).toHaveBeenCalledWith(sender, true);
+        expect(openUnlockPopoutSpy).not.toHaveBeenCalled();
       });
 
       it("opens the inline menu if the user auth status is unlocked", async () => {
@@ -4023,6 +4167,100 @@ describe("OverlayBackground", () => {
       });
     });
 
+    describe("unlockVaultWithPassword message handler", () => {
+      it("unlocks with the typed master password and refreshes the inline menu", async () => {
+        activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+        const openInlineMenuSpy = jest
+          .spyOn(overlayBackground as any, "openInlineMenu")
+          .mockResolvedValue(undefined);
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "unlockVaultWithPassword",
+          password: "master-password",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(unlockService.unlockWithMasterPassword).toHaveBeenCalledWith(
+          mockUserId,
+          "master-password",
+        );
+        expect(openInlineMenuSpy).toHaveBeenCalled();
+      });
+
+      it("asks the locked menu to retry when the password is rejected", async () => {
+        activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+        unlockService.unlockWithMasterPassword.mockRejectedValue(new Error("rejected"));
+        const postMessageSpy = jest.spyOn(
+          overlayBackground as any,
+          "postMessageToInlineMenuListPage",
+        );
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "unlockVaultWithPassword",
+          password: "wrong-password",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(postMessageSpy).toHaveBeenCalledWith({ command: "unlockVaultFailed" });
+        expect(logService.error).not.toHaveBeenCalledWith(
+          expect.stringContaining("wrong-password"),
+        );
+      });
+
+      it("rejects an empty password without touching the unlock service", async () => {
+        const postMessageSpy = jest.spyOn(
+          overlayBackground as any,
+          "postMessageToInlineMenuListPage",
+        );
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "unlockVaultWithPassword",
+          password: "",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(unlockService.unlockWithMasterPassword).not.toHaveBeenCalled();
+        expect(postMessageSpy).toHaveBeenCalledWith({ command: "unlockVaultFailed" });
+      });
+    });
+
+    describe("unlockVaultWithBiometrics message handler", () => {
+      it("unlocks through the desktop bridge and refreshes the inline menu", async () => {
+        activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+        const openInlineMenuSpy = jest
+          .spyOn(overlayBackground as any, "openInlineMenu")
+          .mockResolvedValue(undefined);
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "unlockVaultWithBiometrics",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(unlockService.unlockWithBiometrics).toHaveBeenCalledWith(mockUserId);
+        expect(openInlineMenuSpy).toHaveBeenCalled();
+      });
+
+      it("asks the locked menu to retry when biometrics fail", async () => {
+        unlockService.unlockWithBiometrics.mockRejectedValue(new Error("cancelled"));
+        const postMessageSpy = jest.spyOn(
+          overlayBackground as any,
+          "postMessageToInlineMenuListPage",
+        );
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "unlockVaultWithBiometrics",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(postMessageSpy).toHaveBeenCalledWith({ command: "unlockVaultFailed" });
+      });
+    });
+
     describe("fillAutofillInlineMenuCipher message handler", () => {
       const pageDetails = createAutofillPageDetailsMock({
         login: { username: "username1", password: "password1" },
@@ -4126,6 +4364,68 @@ describe("OverlayBackground", () => {
             ["inline-menu-cipher-3", cipher3],
           ]).entries(),
         );
+      });
+
+      it("sends a display-safe card receipt for an inline-menu card fill", async () => {
+        const cipher = mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          type: CipherType.Card,
+          card: { number: "378282246310005", subTitle: "Amex, *0005" },
+        });
+        overlayBackground["inlineMenuCiphers"] = new Map([["inline-menu-cipher-1", cipher]]);
+        overlayBackground["pageDetailsForTab"][sender.tab.id] = new Map([
+          [sender.frameId, { frameId: sender.frameId, tab: sender.tab, details: pageDetails }],
+        ]);
+        autofillService.isPasswordRepromptRequired.mockResolvedValue(false);
+        autofillOrchestrator.fillCipher.mockResolvedValue({ outcome: AutofillOutcome.Filled });
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "fillAutofillInlineMenuCipher",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(autofillOrchestrator.fillCipher).toHaveBeenCalledWith(
+          expect.objectContaining({
+            inlineMenuFillReceipt: {
+              kind: "card",
+              last4: "0005",
+              theme: ThemeType.Light,
+            },
+          }),
+        );
+        expect(JSON.stringify(autofillOrchestrator.fillCipher.mock.calls)).not.toContain(
+          "378282246310005",
+        );
+      });
+
+      it("sends an identity receipt without identity field values", async () => {
+        const cipher = mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          type: CipherType.Identity,
+          identity: { firstName: "Jane", lastName: "Doe" },
+        });
+        overlayBackground["inlineMenuCiphers"] = new Map([["inline-menu-cipher-1", cipher]]);
+        overlayBackground["pageDetailsForTab"][sender.tab.id] = new Map([
+          [sender.frameId, { frameId: sender.frameId, tab: sender.tab, details: pageDetails }],
+        ]);
+        autofillService.isPasswordRepromptRequired.mockResolvedValue(false);
+        autofillOrchestrator.fillCipher.mockResolvedValue({ outcome: AutofillOutcome.Filled });
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "fillAutofillInlineMenuCipher",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(autofillOrchestrator.fillCipher).toHaveBeenCalledWith(
+          expect.objectContaining({
+            inlineMenuFillReceipt: { kind: "identity", theme: ThemeType.Light },
+          }),
+        );
+        expect(JSON.stringify(autofillOrchestrator.fillCipher.mock.calls)).not.toContain("Jane");
       });
 
       it("does not record last-used (reorder the ciphers map) when no fill occurs", async () => {
@@ -4621,6 +4921,40 @@ describe("OverlayBackground", () => {
           "redirectAutofillInlineMenuFocusOut",
           { direction: RedirectFocusDirection.Next },
         );
+      });
+    });
+
+    describe("searchAllFromInlineMenu message handler", () => {
+      let openPopoutSpy: jest.SpyInstance;
+      let closeInlineMenuSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        openPopoutSpy = jest.spyOn(BrowserPopupUtils, "openPopout").mockResolvedValue(undefined);
+        closeInlineMenuSpy = jest
+          .spyOn(overlayBackground as any, "closeInlineMenu")
+          .mockImplementation();
+      });
+
+      afterEach(() => {
+        openPopoutSpy.mockRestore();
+        closeInlineMenuSpy.mockRestore();
+      });
+
+      it("closes the inline menu and opens the vault list in a popout", async () => {
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "searchAllFromInlineMenu",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(closeInlineMenuSpy).toHaveBeenCalledTimes(1);
+        expect(closeInlineMenuSpy.mock.calls[0][0]).toBe(listMessageConnectorSpy.sender);
+        expect(closeInlineMenuSpy.mock.calls[0][1]).toEqual({ forceCloseInlineMenu: true });
+        expect(openPopoutSpy).toHaveBeenCalledWith("popup/index.html#/tabs/vault", {
+          singleActionKey: "inlineMenuSearchAll",
+          senderWindowId: listMessageConnectorSpy.sender.tab.windowId,
+          forceCloseExistingWindows: true,
+        });
       });
     });
 

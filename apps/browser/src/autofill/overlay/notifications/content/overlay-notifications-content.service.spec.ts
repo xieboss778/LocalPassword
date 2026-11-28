@@ -10,6 +10,14 @@ import { NotificationTypeData } from "../abstractions/overlay-notifications-cont
 
 import { OverlayNotificationsContentService } from "./overlay-notifications-content.service";
 
+jest.mock("../../../content/fill-receipt-content.service", () => ({
+  AutofillFillReceiptContentService: jest.fn().mockImplementation(() => ({
+    show: jest.fn(),
+    setUndone: jest.fn(),
+    destroy: jest.fn(),
+  })),
+}));
+
 describe("OverlayNotificationsContentService", () => {
   let overlayNotificationsContentService: OverlayNotificationsContentService;
   let domQueryService: MockProxy<DomQueryService>;

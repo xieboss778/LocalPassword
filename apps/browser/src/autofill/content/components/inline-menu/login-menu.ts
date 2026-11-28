@@ -4,7 +4,7 @@ import { html } from "lit";
 import { Theme } from "@localpass/common/platform/enums";
 
 import { InlineMenuCipherData } from "../../../background/abstractions/overlay.background";
-import { Clock, Plus } from "../icons";
+import { Clock, Key, Search } from "../icons";
 
 import { InlineMenuAccountRow, InlineMenuAccountRowI18n } from "./account-row";
 import { InlineMenuEmptyState } from "./empty-state";
@@ -37,10 +37,14 @@ export type InlineMenuLoginMenuI18n = InlineMenuAccountRowI18n &
     totpContext: string;
     totpRefreshNote: string;
     totpFill: string;
+    totpCopyOnly?: string;
     emptyTitle: string;
     emptyDescription: string;
     emptyDescriptionNoQuery: string;
     showAllAccounts: string;
+    generatePassword: string;
+    searchAll: string;
+    readOnlyDomain: string;
     closeAria: string;
     menuAriaLabel: string;
     totpMenuAriaLabel: string;
@@ -60,7 +64,10 @@ export type InlineMenuLoginMenuProps = {
   i18n: InlineMenuLoginMenuI18n;
   onFill: (cipher: InlineMenuCipherData, method: InlineMenuAccountMethod, event: Event) => void;
   onFillTotp: (cipher: InlineMenuCipherData, event: Event) => void;
+  onCopyTotp?: (cipher: InlineMenuCipherData, event: Event) => void;
   onNewItem: (event: Event) => void;
+  onGeneratePassword: (event: Event) => void;
+  onSearchAll: (event: Event) => void;
   onClearFilter: (event: Event) => void;
   onClose: (event: Event) => void;
   onTotpPeriodElapsed?: () => void;
@@ -78,7 +85,10 @@ export function InlineMenuLoginMenu({
   i18n,
   onFill,
   onFillTotp,
+  onCopyTotp,
   onNewItem,
+  onGeneratePassword,
+  onSearchAll,
   onClearFilter,
   onClose,
   onTotpPeriodElapsed,
@@ -113,8 +123,16 @@ export function InlineMenuLoginMenu({
 
   const hasRows = isTotp ? totpRows.length > 0 : visibleGroups.length > 0;
   const matchedAccounts = isTotp ? allTotpRows.length : groups.matchedAccounts;
+  const isFilteredEmpty =
+    !isTotp && !!query && groups.matchedAccounts === 0 && groups.totalAccounts > 0;
+  const isNoMatch = !isTotp && !query && groups.totalAccounts === 0;
+  const activeTotpCipher =
+    allTotpRows.find((row) => row.rowKey === resolvedActiveRowKey)?.cipher ??
+    allTotpRows[0]?.cipher;
   const contextText = isTotp
-    ? i18n.totpContext.replace("{username}", currentTotpUsername)
+    ? currentTotpUsername
+      ? i18n.totpContext.replace("{username}", currentTotpUsername)
+      : i18n.emptyDescriptionNoQuery
     : query
       ? i18n.filterMatch
           .replace("{query}", query)
@@ -126,6 +144,10 @@ export function InlineMenuLoginMenu({
     ? i18n.emptyDescription.replace("{query}", query)
     : i18n.emptyDescriptionNoQuery;
 
+  const headerCountText = isFilteredEmpty
+    ? `${groups.matchedAccounts} / ${groups.totalAccounts}`
+    : i18n.accountCount.replace("{count}", `${matchedAccounts}`);
+
   return InlineMenuShell({
     theme,
     ariaLabel: isTotp ? i18n.totpMenuAriaLabel : i18n.menuAriaLabel,
@@ -134,8 +156,10 @@ export function InlineMenuLoginMenu({
       ${InlineMenuHeader({
         theme,
         domain,
-        countText: i18n.accountCount.replace("{count}", `${matchedAccounts}`),
+        countText: headerCountText,
+        countTone: isFilteredEmpty ? "warn" : "default",
         contextText,
+        showContext: !isNoMatch,
         showClear: !isTotp && !!query && groups.matchedAccounts > 0,
         i18n: { closeAria: i18n.closeAria, showAll: i18n.showAll },
         onClear: onClearFilter,
@@ -178,26 +202,60 @@ export function InlineMenuLoginMenu({
                   showAll: i18n.showAllAccounts,
                 },
                 onClear: onClearFilter,
+                newItem: {
+                  text: i18n.newLogin,
+                  aria: i18n.newLoginAria,
+                  onAction: onNewItem,
+                },
+                ...(isNoMatch
+                  ? {
+                      generatePassword: {
+                        text: i18n.generatePassword,
+                        aria: i18n.generatePassword,
+                        onAction: onGeneratePassword,
+                      },
+                    }
+                  : {}),
               })
         }
       </div>
       ${InlineMenuFooter({
         theme,
-        hint: isTotp ? i18n.totpKeyboardHint : i18n.keyboardHint,
-        newItem: isTotp
-          ? undefined
-          : {
-              text: i18n.newLogin,
-              aria: i18n.newLoginAria,
-              icon: Plus({ theme, color: colors.brand }),
-              handleAction: onNewItem,
-            },
+        actions: isTotp
+          ? onCopyTotp && activeTotpCipher && i18n.totpCopyOnly
+            ? [
+                {
+                  text: i18n.totpCopyOnly,
+                  aria: i18n.totpCopyOnly,
+                  icon: Clock({ theme, color: colors.brand }),
+                  testId: "inline-menu-totp-copy-only",
+                  handleAction: (event) => onCopyTotp(activeTotpCipher, event),
+                },
+              ]
+            : undefined
+          : [
+              {
+                text: i18n.generatePassword,
+                aria: i18n.generatePassword,
+                icon: Key({ theme, color: colors.brand }),
+                testId: "inline-menu-generate-password",
+                handleAction: onGeneratePassword,
+              },
+              {
+                text: i18n.searchAll,
+                aria: i18n.searchAll,
+                icon: Search({ theme, color: colors.brand }),
+                testId: "inline-menu-search-all",
+                handleAction: onSearchAll,
+              },
+            ],
         note: isTotp
           ? {
               text: i18n.totpRefreshNote,
               icon: Clock({ theme, color: colors.brand }),
             }
-          : undefined,
+          : { text: i18n.readOnlyDomain },
+        hint: isTotp ? i18n.totpKeyboardHint : i18n.keyboardHint,
       })}
     `,
   });
@@ -206,8 +264,7 @@ export function InlineMenuLoginMenu({
 function groupHeading(theme: Theme, text: string, count: number) {
   return html`
     <div class=${groupHeadingStyles(theme)} role="presentation">
-      <span>${text}</span>
-      <span>${count}</span>
+      <span>${text} · ${count}</span>
     </div>
   `;
 }
@@ -295,10 +352,6 @@ const scrollStyles = (theme: Theme) => css`
 `;
 
 const groupStyles = (theme: Theme) => css`
-  & + & {
-    margin-top: 2px;
-  }
-
   & + & > div:first-child {
     border-top: 1px solid ${inlineMenuColors(theme).borderLight};
   }
@@ -310,13 +363,14 @@ const groupHeadingStyles = (theme: Theme) => {
   return css`
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 8px 14px 4px;
+    min-height: 18px;
+    padding: 0 8px;
     background: ${colors.surfaceAlt};
     color: ${colors.textSubtle};
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    line-height: 14px;
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    line-height: 12px;
+    text-transform: uppercase;
   `;
 };

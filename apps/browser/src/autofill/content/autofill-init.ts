@@ -1,6 +1,7 @@
 import { EVENTS } from "@localpass/common/autofill/constants";
 
 import AutofillPageDetails from "../models/autofill-page-details";
+import AutofillScript, { FillScriptActionTypes } from "../models/autofill-script";
 import { AutofillInlineMenuContentService } from "../overlay/inline-menu/abstractions/autofill-inline-menu-content.service";
 import { OverlayNotificationsContentService } from "../overlay/notifications/abstractions/overlay-notifications-content.service";
 import { AutofillOverlayContentService } from "../services/abstractions/autofill-overlay-content.service";
@@ -9,7 +10,9 @@ import { DomQueryService } from "../services/abstractions/dom-query.service";
 import { CollectAutofillContentService } from "../services/collect-autofill-content.service";
 import InsertAutofillContentService from "../services/insert-autofill-content.service";
 import { DefaultRuleQualificationService } from "../services/rule-qualification.service";
+import { FormFieldElement } from "../types";
 import { AutofillTriageResponse } from "../types/autofill-triage";
+import { InlineMenuFillReceipt } from "../types/inline-menu-fill-receipt";
 import { sendExtensionMessage } from "../utils";
 import { EventSecurity } from "../utils/event-security";
 
@@ -18,11 +21,19 @@ import {
   AutofillExtensionMessageHandlers,
   AutofillInit as AutofillInitInterface,
 } from "./abstractions/autofill-init";
+import { AutofillFillReceiptContentService } from "./fill-receipt-content.service";
+
+type FillReceiptUndoEntry = {
+  element: FormFieldElement;
+  value: string;
+  checked?: boolean;
+};
 
 class AutofillInit implements AutofillInitInterface {
   private readonly sendExtensionMessage = sendExtensionMessage;
   private readonly collectAutofillContentService: CollectAutofillContentService;
   private readonly insertAutofillContentService: InsertAutofillContentService;
+  private readonly fillReceiptContentService = new AutofillFillReceiptContentService();
   private collectPageDetailsOnLoadTimeout: number | NodeJS.Timeout | undefined;
   private lastContextMenuClickedElement: HTMLElement | null = null;
   private isMonitoring = false;
@@ -117,6 +128,7 @@ class AutofillInit implements AutofillInitInterface {
     this.collectAutofillContentService.stopMonitoring();
     this.autofillOverlayContentService?.stopMonitoring();
     this.autofillInlineMenuContentService?.stopMonitoring();
+    this.fillReceiptContentService.destroy();
   }
 
   /**
@@ -203,10 +215,15 @@ class AutofillInit implements AutofillInitInterface {
     pageDetailsUrl,
     showAnimations,
     retainInlineMenu,
+    inlineMenuFillReceipt,
   }: AutofillExtensionMessage) {
     if ((document.defaultView || window).location.href !== pageDetailsUrl || !fillScript) {
       return;
     }
+
+    const undoState = inlineMenuFillReceipt
+      ? this.captureFillReceiptUndoState(fillScript)
+      : undefined;
 
     if (retainInlineMenu) {
       // The fill started from the inline menu list: keep the list mounted so it can render its
@@ -219,7 +236,14 @@ class AutofillInit implements AutofillInitInterface {
     await this.sendExtensionMessage("updateIsFieldCurrentlyFilling", {
       isFieldCurrentlyFilling: true,
     });
-    await this.insertAutofillContentService.fillForm(fillScript, showAnimations ?? true);
+    const didFill = await this.insertAutofillContentService.fillForm(
+      fillScript,
+      showAnimations ?? true,
+    );
+
+    if (inlineMenuFillReceipt && didFill !== false) {
+      this.showFillReceipt(inlineMenuFillReceipt, fillScript, undoState, showAnimations ?? true);
+    }
 
     setTimeout(() => {
       if (retainInlineMenu) {
@@ -229,6 +253,76 @@ class AutofillInit implements AutofillInitInterface {
         isFieldCurrentlyFilling: false,
       });
     }, 250);
+  }
+
+  /**
+   * Shows the bottom-right card or identity receipt. The receipt can undo the fill by restoring
+   * the values captured before it ran, and can re-run the same fill afterwards.
+   */
+  private showFillReceipt(
+    receipt: InlineMenuFillReceipt,
+    fillScript: AutofillScript,
+    undoState: FillReceiptUndoEntry[] | undefined,
+    showAnimations: boolean,
+  ) {
+    let entries = undoState ?? [];
+    this.fillReceiptContentService.show(receipt, {
+      onUndo: () => {
+        this.restoreFillReceiptUndoState(entries);
+        this.fillReceiptContentService.setUndone(true);
+      },
+      onRefill: () => {
+        entries = this.captureFillReceiptUndoState(fillScript);
+        void this.insertAutofillContentService
+          .fillForm(fillScript, showAnimations)
+          .then(() => this.fillReceiptContentService.setUndone(false));
+      },
+    });
+  }
+
+  /**
+   * Records the values and checked state of every field the fill script will write, so undo can
+   * put the page back as it was. Fields that are no longer in the DOM are skipped.
+   */
+  private captureFillReceiptUndoState(fillScript: AutofillScript): FillReceiptUndoEntry[] {
+    const entries: FillReceiptUndoEntry[] = [];
+    const script = Array.isArray(fillScript.script) ? fillScript.script : [];
+
+    for (const [action, opid] of script) {
+      if (action !== FillScriptActionTypes.fill_by_opid || !opid) {
+        continue;
+      }
+      const element = this.collectAutofillContentService.getAutofillFieldElementByOpid(opid);
+      if (!element || entries.some((entry) => entry.element === element)) {
+        continue;
+      }
+      entries.push({
+        element,
+        value: "value" in element ? element.value : "",
+        checked: element instanceof HTMLInputElement ? element.checked : undefined,
+      });
+    }
+
+    return entries;
+  }
+
+  private restoreFillReceiptUndoState(entries: FillReceiptUndoEntry[]) {
+    for (const { element, value, checked } of entries) {
+      if (!element.isConnected) {
+        continue;
+      }
+
+      if ("value" in element) {
+        element.value = value;
+        element.dispatchEvent(new Event("input", { bubbles: true }));
+        element.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+
+      if (checked !== undefined && element instanceof HTMLInputElement) {
+        element.checked = checked;
+        element.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
   }
 
   /**

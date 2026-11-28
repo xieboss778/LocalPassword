@@ -5,10 +5,9 @@ import { ref } from "lit/directives/ref.js";
 import { Theme } from "@localpass/common/platform/enums";
 
 import { EventSecurity } from "../../../utils/event-security";
-import { Check, Copy } from "../icons";
+import { Check } from "../icons";
 
 import { inlineMenuColors, inlineMenuFocusRing } from "./menu-styles";
-import { formatTotpCode } from "./totp-row";
 
 export type InlineMenuTotpFilledCardI18n = {
   ariaLabel: string;
@@ -34,25 +33,18 @@ export type InlineMenuTotpFilledCardProps = {
   onSwitchAccount: (event: Event) => void;
 };
 
+/**
+ * 验证码填充后的收窄确认条：只说明「已填入 / 剩余秒数」，不再把验证码摊在屏幕上。
+ * 右侧动作回到验证码列表，让用户换一个账户重新填。
+ */
 export function InlineMenuTotpFilledCard({
   theme,
   username,
-  code,
   period,
-  masked = false,
-  copied = false,
   i18n,
-  onCopy,
   onSwitchAccount,
 }: InlineMenuTotpFilledCardProps) {
-  const colors = inlineMenuColors(theme);
   const [remainingBefore, remainingAfter = ""] = i18n.remaining.split("{seconds}");
-
-  const handleCopy = (event: Event) => {
-    if (EventSecurity.isEventTrusted(event)) {
-      onCopy(event);
-    }
-  };
 
   const handleSwitchAccount = (event: Event) => {
     if (EventSecurity.isEventTrusted(event)) {
@@ -66,32 +58,24 @@ export function InlineMenuTotpFilledCard({
       aria-live="polite"
       aria-label=${i18n.ariaLabel}
       data-testid="inline-menu-totp-filled"
-      class=${filledCardStyles(theme)}
+      class=${cardStyles(theme)}
     >
-      <div class=${filledMainStyles}>
-        <span class=${checkStyles(theme)} aria-hidden="true">${Check({ theme })}</span>
-        <span class=${filledTextStyles(theme)}>
-          <b>${i18n.title.replace("{username}", username)}</b>
-          <span>${copied ? i18n.copiedBody : i18n.body}</span>
-        </span>
-        <button
-          type="button"
-          tabindex="-1"
-          data-inline-totp-copy
-          data-inline-menu-focusable
-          class=${iconButtonStyles(theme)}
-          aria-label=${copied ? i18n.copied : i18n.copyAria}
-          title=${copied ? i18n.copied : i18n.copyAria}
-          @click=${handleCopy}
-        >
-          ${Copy({ theme, color: colors.textSubtle })}
-        </button>
+      <div class=${headerStyles(theme)}>
+        <span class=${brandStyles(theme)} aria-hidden="true">LP</span>
+        <span class=${nameStyles(theme)}>LocalPass</span>
+        <span class=${suffixStyles(theme)}>· ${i18n.ariaLabel}</span>
       </div>
-      <div class=${filledMetaStyles(theme)}>
-        <span class=${codeStyles(theme)}>${formatTotpCode(code, masked)}</span>
-        <span class=${remainingStyles(theme)}>
-          ${remainingBefore}<b data-inline-totp-remaining ${ref(createRemainingRef(period))}></b
-          >${remainingAfter}
+      <div class=${successRowStyles(theme)}>
+        <span class=${checkStyles(theme)} aria-hidden="true">${Check({ theme })}</span>
+        <span class=${textStyles(theme)}>
+          <b>${i18n.title.replace("{username}", username)}</b>
+          <span class=${metaStyles(theme)}>
+            <span class=${bodyTextStyles(theme)}>${i18n.body}</span>
+            <span class=${remainingStyles(theme)}>
+              ${remainingBefore}<b data-inline-totp-remaining ${ref(createRemainingRef(period))}></b
+              >${remainingAfter}
+            </span>
+          </span>
         </span>
         <button
           type="button"
@@ -131,15 +115,15 @@ function createRemainingRef(period: number) {
   };
 }
 
-const filledCardStyles = (theme: Theme) => {
+const cardStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
     box-sizing: border-box;
     width: 100%;
-    padding: 12px 14px;
+    overflow: hidden;
     border: 1px solid ${colors.border};
-    border-radius: 12px;
+    border-radius: 8px;
     background: ${colors.surface};
     color: ${colors.text};
     box-shadow: ${colors.shadow};
@@ -147,11 +131,73 @@ const filledCardStyles = (theme: Theme) => {
   `;
 };
 
-const filledMainStyles = css`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
+const headerStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 30px;
+    padding: 0 10px;
+    border-bottom: 1px solid ${colors.borderLight};
+  `;
+};
+
+const brandStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    background: ${colors.brand};
+    color: #fff;
+    font-size: 7px;
+    font-weight: 700;
+  `;
+};
+
+const nameStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    color: ${colors.text};
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 14px;
+  `;
+};
+
+const suffixStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    min-width: 0;
+    overflow: hidden;
+    color: ${colors.textSubtle};
+    font-size: 10px;
+    line-height: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `;
+};
+
+const successRowStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 10px;
+    background: ${colors.successSoft};
+  `;
+};
 
 const checkStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
@@ -160,20 +206,20 @@ const checkStyles = (theme: Theme) => {
     display: grid;
     flex: none;
     place-items: center;
-    width: 30px;
-    height: 30px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    background: ${colors.successSoft};
-    color: ${colors.successStrong};
+    background: ${colors.successStrong};
+    color: ${colors.surface};
 
     svg {
-      width: 14px;
-      height: 14px;
+      width: 10px;
+      height: 10px;
     }
   `;
 };
 
-const filledTextStyles = (theme: Theme) => {
+const textStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
@@ -186,76 +232,38 @@ const filledTextStyles = (theme: Theme) => {
     b {
       overflow: hidden;
       color: ${colors.text};
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 600;
-      line-height: 16px;
+      line-height: 15px;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-
-    span {
-      color: ${colors.textSubtle};
-      font-size: 10px;
-      line-height: 14px;
-    }
   `;
 };
 
-const iconButtonStyles = (theme: Theme) => {
-  const colors = inlineMenuColors(theme);
-
-  return css`
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    padding: 0;
-    border: 0;
-    border-radius: 6px;
-    background: transparent;
-    color: ${colors.textSubtle};
-    cursor: pointer;
-
-    svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    :hover {
-      background: ${colors.surfaceAlt};
-    }
-
-    ${inlineMenuFocusRing(colors.brand)}
-  `;
-};
-
-const filledMetaStyles = (theme: Theme) => {
+const metaStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid ${colors.borderLight};
+    gap: 4px;
+    min-width: 0;
     color: ${colors.textSubtle};
-    font-size: 10px;
-    line-height: 14px;
+    font-size: 9.5px;
+    line-height: 13px;
   `;
 };
 
-const codeStyles = (theme: Theme) => {
+const bodyTextStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
-    color: ${colors.text};
-    font-family: ${colors.mono};
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    font-variant-numeric: tabular-nums;
+    min-width: 0;
+    overflow: hidden;
+    color: ${colors.textSubtle};
+    text-overflow: ellipsis;
+    white-space: nowrap;
   `;
 };
 
@@ -263,9 +271,14 @@ const remainingStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
+    flex: none;
+    color: ${colors.textSubtle};
+    white-space: nowrap;
+
     b {
       color: ${colors.text};
       font-variant-numeric: tabular-nums;
+      font-weight: 600;
     }
   `;
 };
@@ -274,21 +287,21 @@ const switchActionStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
-    margin-left: auto;
-    padding: 2px 0;
+    flex: none;
+    padding: 3px 8px;
     border: 0;
-    border-radius: 4px;
-    background: transparent;
-    color: ${colors.brand};
+    border-radius: 999px;
+    background: ${colors.surface};
+    color: ${colors.brandStrong};
     font-family: inherit;
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 600;
-    line-height: 14px;
+    line-height: 12px;
     white-space: nowrap;
     cursor: pointer;
 
     :hover {
-      text-decoration: underline;
+      background: ${colors.brandSoft};
     }
 
     ${inlineMenuFocusRing(colors.brand)}

@@ -54,4 +54,8 @@ export type NotificationCipherData = BaseCipherData<typeof CipherTypes.Login> & 
     username: string;
   };
   organizationCategories?: OrganizationCategory[];
+  /** Current revision number derived from the local version stack; 1 when no version is stored. */
+  versionCount?: number;
+  /** Epoch milliseconds of the last autofill, from the cipher's local (never synced) data. */
+  lastUsedAt?: number;
 };

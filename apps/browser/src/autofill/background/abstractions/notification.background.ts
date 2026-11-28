@@ -7,6 +7,7 @@ import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { CollectionView } from "../../content/components/common-types";
 import { NotificationType } from "../../enums/notification-type.enum";
 import AutofillPageDetails from "../../models/autofill-page-details";
+import { LocalAtRiskPasswordParams } from "../../notification/abstractions/notification-bar";
 
 /**
  * Generic notification queue message structure.
@@ -32,6 +33,16 @@ export type AddLoginNotificationData = {
 export type ChangePasswordNotificationData = {
   cipherIds: CipherView["id"][];
   newPassword: string;
+  /** The username submitted alongside the password change, used when saving a new entry. */
+  username: string;
+  /** The page URI the credentials were submitted from, used when saving a new entry. */
+  uri: string;
+  /**
+   * Total login entries already saved for this page, including entries that did not match the
+   * submitted password. Numbers the notification's "save as new entry" option after the vault's
+   * count. Absent when the vault was locked, so the count could not be read.
+   */
+  existingEntryCount?: number;
 };
 
 export type UnlockVaultNotificationData = never;
@@ -43,6 +54,8 @@ export type UnlockVaultNotificationData = never;
 export type AtRiskPasswordNotificationData = {
   organizationName: string;
   hasPasswordChangeUri: boolean;
+  /** Present when the risk comes from this device's vault scan rather than an organization task. */
+  localRisk?: LocalAtRiskPasswordParams;
 };
 
 // Notification queue message types using generic pattern
@@ -149,6 +162,11 @@ export type NotificationBackgroundExtensionMessage = {
   data?: Partial<AdjustNotificationBarMessageData> & Partial<UnlockVaultMessageData>;
   folder?: string;
   edit?: boolean;
+  /**
+   * Set when the notification bar's change-password card commits "save as a new entry"
+   * instead of updating one of the matched ciphers.
+   */
+  saveAsNew?: boolean;
   details?: AutofillPageDetails;
   tab?: chrome.tabs.Tab;
   sender?: string;
@@ -169,6 +187,7 @@ export type NotificationBackgroundExtensionMessageHandlers = {
     sender,
   }: BackgroundOnMessageHandlerParams) => Promise<CollectionView[]>;
   bgCloseNotificationBar: ({ message, sender }: BackgroundOnMessageHandlerParams) => Promise<void>;
+  bgFixAtRiskPassword: ({ message, sender }: BackgroundOnMessageHandlerParams) => Promise<void>;
   bgOpenAtRiskPasswords: ({ message, sender }: BackgroundOnMessageHandlerParams) => Promise<void>;
   bgOpenChangePasswordUrl: ({ message, sender }: BackgroundOnMessageHandlerParams) => Promise<void>;
   bgAdjustNotificationBar: ({ message, sender }: BackgroundOnMessageHandlerParams) => Promise<void>;

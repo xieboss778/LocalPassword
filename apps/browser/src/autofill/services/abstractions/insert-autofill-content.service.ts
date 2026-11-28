@@ -1,7 +1,10 @@
 import AutofillScript from "../../models/autofill-script";
 
 interface InsertAutofillContentService {
-  fillForm(fillScript: AutofillScript, showAnimations?: boolean): void;
+  fillForm(
+    fillScript: AutofillScript,
+    showAnimations?: boolean,
+  ): Promise<boolean> | Promise<void> | void;
 }
 
 export { InsertAutofillContentService };

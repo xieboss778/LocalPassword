@@ -4,6 +4,8 @@ export { InlineMenuContainer } from "./container";
 export type { InlineMenuContainerProps } from "./container";
 export { InlineMenuPrompt } from "./prompt";
 export type { InlineMenuPromptI18n, InlineMenuPromptProps } from "./prompt";
+export { InlineMenuUnlock } from "./unlock";
+export type { InlineMenuUnlockI18n, InlineMenuUnlockProps } from "./unlock";
 export { InlineMenuCipherItem } from "./cipher-item";
 export type { InlineMenuCipherItemProps } from "./cipher-item";
 export { InlineMenuCipherList } from "./cipher-list";
@@ -23,6 +25,12 @@ export type {
 } from "./password-generator";
 export { InlineMenuLoginMenu } from "./login-menu";
 export type { InlineMenuLoginMenuI18n, InlineMenuLoginMenuProps } from "./login-menu";
+export { InlineMenuCardIdentityMenu } from "./card-identity-menu";
+export type {
+  InlineMenuCardIdentityKind,
+  InlineMenuCardIdentityMenuI18n,
+  InlineMenuCardIdentityMenuProps,
+} from "./card-identity-menu";
 export { InlineMenuAccountRow } from "./account-row";
 export type { InlineMenuAccountRowI18n, InlineMenuAccountRowProps } from "./account-row";
 export { InlineMenuTotpRow, formatTotpCode } from "./totp-row";

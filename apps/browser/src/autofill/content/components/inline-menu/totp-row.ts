@@ -6,7 +6,6 @@ import { Theme } from "@localpass/common/platform/enums";
 import { InlineMenuCipherData } from "../../../background/abstractions/overlay.background";
 import { EventSecurity } from "../../../utils/event-security";
 
-import { getAvatarTone } from "./avatar";
 import { inlineMenuColors, inlineMenuFocusRing } from "./menu-styles";
 import { InlineMenuTotpRing } from "./totp-ring";
 
@@ -51,8 +50,6 @@ export function InlineMenuTotpRow({
   const formattedCode = formatTotpCode(code, masked);
   const secondaryText = `${username}${isCurrent ? ` · ${i18n.currentAccount}` : label ? ` · ${label}` : ""}`;
   const ariaLabel = i18n.fillAria.replace("{username}", username || label);
-  const initial = (username || label || "?").charAt(0).toUpperCase();
-  const tone = getAvatarTone(username || label || cipher.id);
 
   const handleClick = (event: Event) => {
     if (EventSecurity.isEventTrusted(event)) {
@@ -73,10 +70,7 @@ export function InlineMenuTotpRow({
       class=${`${totpRowStyles(theme)}${active ? " is-active" : ""}`}
       @click=${handleClick}
     >
-      <span class=${totpAvatarWrapStyles(theme)} aria-hidden="true">
-        <span class=${totpAvatarStyles(theme, tone)}>${initial}</span>
-        ${InlineMenuTotpRing({ theme, period, onPeriodElapsed })}
-      </span>
+      ${InlineMenuTotpRing({ theme, period, onPeriodElapsed })}
       <span class=${totpMainStyles(theme)}>
         <span
           class=${totpCodeStyles(theme)}
@@ -111,9 +105,10 @@ const totpRowStyles = (theme: Theme) => {
   return css`
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
-    padding: 10px 14px;
+    min-height: 42px;
+    padding: 6px 10px;
     border: 0;
     border-top: 1px solid ${colors.borderLight};
     background: transparent;
@@ -130,7 +125,11 @@ const totpRowStyles = (theme: Theme) => {
     &.is-active,
     &:hover {
       background: ${colors.hover};
-      box-shadow: inset 3px 0 0 ${colors.brand};
+      box-shadow: inset 2.5px 0 0 ${colors.brand};
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
     }
 
     ${inlineMenuFocusRing(colors.brand)}
@@ -187,49 +186,9 @@ const totpActionStyles = (theme: Theme) => {
 
     button.is-active &,
     button:hover & {
-      background: ${colors.brand};
+      background: ${colors.brandFill};
       color: #fff;
     }
-  `;
-};
-
-const totpAvatarWrapStyles = (_theme: Theme) => css`
-  position: relative;
-  flex: none;
-  width: 34px;
-  height: 34px;
-
-  /* Ring overlays the avatar */
-  [data-inline-totp-ring] {
-    position: absolute;
-    inset: 0;
-  }
-
-  /* Let the avatar colour show through the ring's transparent centre */
-  [data-inline-totp-ring] > span {
-    background: transparent;
-  }
-`;
-
-const totpAvatarStyles = (theme: Theme, tone: "a" | "b" | "c") => {
-  const colors = inlineMenuColors(theme);
-  const tones = {
-    a: { background: colors.brandSoft, color: colors.brandStrong },
-    b: { background: colors.tealSoft, color: colors.tealStrong },
-    c: { background: colors.orangeSoft, color: colors.orangeStrong },
-  };
-  const toneColors = tones[tone];
-
-  return css`
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: ${toneColors.background};
-    color: ${toneColors.color};
-    font-size: 12.5px;
-    font-weight: 700;
   `;
 };
 

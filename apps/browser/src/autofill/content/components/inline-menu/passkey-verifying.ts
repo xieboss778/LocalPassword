@@ -57,9 +57,10 @@ export function InlineMenuPasskeyVerifying({
       })}
       <div class=${verifyStyles(theme)} role="status" aria-live="polite">
         <span class=${spinnerStyles(theme)} aria-hidden="true"></span>
-        <b>${i18n.title.replace("{username}", username)}</b>
-        <p>${i18n.body}</p>
-        <span class=${metaStyles(theme)}>${i18n.meta.replace("{domain}", domain)}</span>
+        <span class=${infoStyles(theme)}>
+          <b>${i18n.title.replace("{username}", username)}</b>
+          <span>${i18n.body}</span>
+        </span>
         <button
           type="button"
           tabindex="-1"
@@ -71,6 +72,7 @@ export function InlineMenuPasskeyVerifying({
           ${i18n.cancel}
         </button>
       </div>
+      <div class=${metaBarStyles(theme)}>${i18n.meta.replace("{domain}", domain)}</div>
     `,
   });
 }
@@ -80,25 +82,41 @@ const verifyStyles = (theme: Theme) => {
 
   return css`
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 24px 28px 22px;
-    text-align: center;
+    min-height: 46px;
+    padding: 8px 10px;
+    background: ${colors.surface};
+  `;
+};
+
+const infoStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
 
     b {
+      overflow: hidden;
       color: ${colors.text};
-      font-size: 12.5px;
+      font-size: 11px;
       font-weight: 600;
-      line-height: 17px;
+      line-height: 14px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    p {
-      max-width: 320px;
-      margin: 0;
+    span {
+      overflow: hidden;
       color: ${colors.textMuted};
-      font-size: 10.5px;
-      line-height: 16px;
+      font-size: 9.5px;
+      line-height: 13px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   `;
 };
@@ -107,10 +125,10 @@ const spinnerStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
-    width: 30px;
-    height: 30px;
-    margin-bottom: 2px;
-    border: 3px solid ${colors.brandSoft};
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid ${colors.brandSoft};
     border-top-color: ${colors.brand};
     border-radius: 50%;
     animation: inline-menu-verify-spin 800ms linear infinite;
@@ -120,19 +138,23 @@ const spinnerStyles = (theme: Theme) => {
         transform: rotate(360deg);
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   `;
 };
 
-const metaStyles = (theme: Theme) => {
+const metaBarStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
-    padding: 3px 8px;
-    border-radius: 999px;
+    padding: 5px 10px;
+    border-top: 1px solid ${colors.borderLight};
     background: ${colors.surfaceAlt};
     color: ${colors.textSubtle};
-    font-size: 9.5px;
-    line-height: 13px;
+    font-size: 9px;
+    line-height: 12px;
   `;
 };
 
@@ -140,20 +162,23 @@ const cancelStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
-    margin-top: 4px;
-    padding: 6px 14px;
+    flex: none;
+    height: 22px;
+    padding: 0 9px;
     border: 1px solid ${colors.border};
-    border-radius: 7px;
+    border-radius: 5px;
     background: ${colors.surface};
     color: ${colors.textMuted};
     font-family: inherit;
-    font-size: 10.5px;
-    font-weight: 500;
-    line-height: 14px;
+    font-size: 10px;
+    font-weight: 550;
+    line-height: 1;
+    white-space: nowrap;
     cursor: pointer;
 
     :hover {
       background: ${colors.surfaceAlt};
+      color: ${colors.text};
     }
 
     ${inlineMenuFocusRing(colors.brand)}

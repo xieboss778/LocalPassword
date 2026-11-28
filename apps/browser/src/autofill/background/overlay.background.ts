@@ -67,11 +67,14 @@ import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import { SshKeyView } from "@localpass/common/vault/models/view/ssh-key.view";
 import { CredentialGeneratorService, GenerateRequest, Type } from "@localpass/generator-core";
 import { GeneratorHistoryService } from "@localpass/generator-history";
+import { BiometricsService, BiometricsStatus } from "@localpass/key-management";
+import { UnlockService } from "@localpass/unlock";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports
 import { openUnlockPopout } from "../../auth/popup/utils/auth-popout-window";
 import { BrowserApi } from "../../platform/browser/browser-api";
+import BrowserPopupUtils from "../../platform/browser/browser-popup-utils";
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports
 import {
@@ -93,6 +96,10 @@ import { AutofillOrchestrator, didFillOccur, shouldAutoCopyTotp } from "../orche
 import { AutofillService, PageDetail } from "../services/abstractions/autofill.service";
 import { CipherUse, FillCipherPolicy } from "../services/abstractions/fill-cipher-policy";
 import { InlineMenuFieldQualificationService } from "../services/abstractions/inline-menu-field-qualifications.service";
+import {
+  InlineMenuFillReceipt,
+  InlineMenuFillReceiptKind,
+} from "../types/inline-menu-fill-receipt";
 import {
   areKeyValuesNull,
   generateDomainMatchPatterns,
@@ -260,6 +267,8 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       this.checkInlineMenuButtonFocused(port.sender),
     autofillInlineMenuBlurred: ({ port }) => this.checkInlineMenuButtonFocused(port.sender),
     unlockVault: ({ port }) => this.unlockVault(port),
+    unlockVaultWithPassword: ({ message, port }) => this.unlockVaultWithPassword(port, message),
+    unlockVaultWithBiometrics: ({ port }) => this.unlockVaultWithBiometrics(port),
     fillAutofillInlineMenuCipher: ({ message, port }) => this.fillInlineMenuCipher(message, port),
     copyInlineMenuTotp: ({ message, port }) => this.copyInlineMenuTotp(message, port),
     cancelInlineMenuPasskey: ({ port }) => this.cancelInlineMenuPasskey(port),
@@ -270,6 +279,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     updateAutofillInlineMenuListHeight: ({ message }) => this.updateInlineMenuListHeight(message),
     refreshGeneratedPassword: () => this.updateGeneratedPassword(true),
     fillGeneratedPassword: ({ port }) => this.fillGeneratedPassword(port),
+    searchAllFromInlineMenu: ({ port }) => this.openInlineMenuVaultSearch(port),
     refreshOverlayCiphers: () => this.updateOverlayCiphers(false),
   };
 
@@ -297,6 +307,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     private intraprocessMessageSender: IntraprocessMessageSender,
     private messageListener: MessageListener,
     private fillCipherPolicy: FillCipherPolicy,
+    /** Unlocks performed from the inline menu use the same background service as biometrics. */
+    private unlockService: UnlockService,
+    private biometricsService: BiometricsService,
   ) {
     this.initOverlayEventObservables();
   }
@@ -958,6 +971,38 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   }
 
   /**
+   * Builds the display-safe receipt the page shows after an inline-menu fill. Only the entry name
+   * (login) or last four digits (card) leave the vault with the receipt; undo restores the values
+   * captured before the fill ran.
+   *
+   * @param cipher - The cipher that was filled
+   */
+  private async buildInlineMenuFillReceipt(
+    cipher: CipherView,
+  ): Promise<InlineMenuFillReceipt | undefined> {
+    if (
+      cipher.type !== CipherType.Login &&
+      cipher.type !== CipherType.Card &&
+      cipher.type !== CipherType.Identity
+    ) {
+      return undefined;
+    }
+
+    const theme = await firstValueFrom(this.themeStateService.selectedTheme$);
+    if (cipher.type === CipherType.Login) {
+      return { kind: InlineMenuFillReceiptKind.Login, title: cipher.name, theme };
+    }
+    if (cipher.type === CipherType.Identity) {
+      return { kind: InlineMenuFillReceiptKind.Identity, theme };
+    }
+
+    const cardNumber = cipher.card?.number;
+    const last4 =
+      typeof cardNumber === "string" ? cardNumber.replace(/\s+/g, "").slice(-4) : undefined;
+    return { kind: InlineMenuFillReceiptKind.Card, last4, theme };
+  }
+
+  /**
    * Builds the cipher data for the inline menu list.
    *
    * @param inlineMenuCipherId - The ID of the inline menu cipher
@@ -1013,6 +1058,24 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     if (cipher.type === CipherType.Card) {
       inlineMenuData.card = cipher.card.subTitle;
+
+      const cardNumber = cipher.card.number;
+      const lastFour =
+        typeof cardNumber === "string" ? cardNumber.replace(/\s+/g, "").slice(-4) : undefined;
+      if (lastFour) {
+        inlineMenuData.cardMask = `•••• ${lastFour}`;
+      }
+
+      // The inline menu mirrors the prototype's compact "MM/YY" label, so a stored four-digit
+      // year is trimmed to its last two digits here rather than leaking the full year.
+      const cardExpiration = cipher.card.expiration;
+      const expiration =
+        typeof cardExpiration === "string" ? cardExpiration.replace(/\s+/g, "") : undefined;
+      const expiryParts = expiration ? /^(\d{2})\/(\d{2,4})$/.exec(expiration) : null;
+      if (expiryParts) {
+        inlineMenuData.cardExpiry = `${expiryParts[1]}/${expiryParts[2].slice(-2)}`;
+      }
+
       return inlineMenuData;
     }
 
@@ -1034,7 +1097,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private getIdentityCipherData(
     cipher: CipherView,
     showInlineMenuAccountCreation: boolean = false,
-  ): { fullName: string; username?: string } {
+  ): InlineMenuCipherData["identity"] {
     const { firstName, lastName } = cipher.identity;
 
     let fullName = "";
@@ -1047,22 +1110,56 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       fullName = fullName.trim();
     }
 
+    const identityData: NonNullable<InlineMenuCipherData["identity"]> = { fullName };
+    const address = this.getIdentityAddress(cipher);
+    if (address) {
+      identityData.address = address;
+    }
+
     if (
       !showInlineMenuAccountCreation ||
       !this.focusedFieldData?.accountCreationFieldType ||
       this.focusedFieldMatchesAccountCreationType(InlineMenuAccountCreationFieldType.Password)
     ) {
-      return { fullName };
+      return identityData;
     }
 
     return {
-      fullName,
+      ...identityData,
       username: this.focusedFieldMatchesAccountCreationType(
         InlineMenuAccountCreationFieldType.Email,
       )
         ? cipher.identity.email
         : cipher.identity.username,
     };
+  }
+
+  /**
+   * Builds a one-line address for the compact identity inline menu. Falls back from the street
+   * line to the locality so a partially filled identity still has a useful subtitle.
+   *
+   * @param cipher - The identity cipher to read the address from
+   */
+  private getIdentityAddress(cipher: CipherView): string | undefined {
+    const { address1, address2, address3, city, state, postalCode } = cipher.identity;
+    const street = [address1, address2, address3]
+      .filter((line): line is string => typeof line === "string")
+      .map((line) => line.trim())
+      .filter((line) => !!line)
+      .join(", ");
+    const locality = typeof city === "string" ? city.trim() : undefined;
+
+    if (street) {
+      return locality ? `${street}, ${locality}` : street;
+    }
+
+    const addressTail = [city, state, postalCode]
+      .filter((part): part is string => typeof part === "string")
+      .map((part) => part.trim())
+      .filter((part) => !!part)
+      .join(", ");
+
+    return addressTail || undefined;
   }
 
   /**
@@ -1600,6 +1697,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     // that blur so it can render its own post-fill confirmation.
     this.inlineMenuFillConfirmationUntil = Date.now() + 1500;
 
+    const inlineMenuFillReceipt = await this.buildInlineMenuFillReceipt(cipher);
     const result = await this.autofillOrchestrator.fillCipher({
       tab,
       cipher,
@@ -1612,6 +1710,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       // The fill was chosen from the list: let it stay mounted to show the TOTP card or
       // collapsed password chip instead of being closed with the field blur.
       retainInlineMenu: true,
+      ...(inlineMenuFillReceipt ? { inlineMenuFillReceipt } : {}),
     });
 
     // A denial terminates the request.
@@ -2753,7 +2852,16 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     this.cancelInlineMenuDelayedClose$.next(true);
     this.cancelInlineMenuFadeInAndPositionUpdate();
 
-    if ((await this.getAuthStatus()) !== AuthenticationStatus.Unlocked) {
+    const authStatus = await this.getAuthStatus();
+    if (authStatus !== AuthenticationStatus.Unlocked) {
+      if (
+        authStatus === AuthenticationStatus.Locked &&
+        port.sender &&
+        (await firstValueFrom(this.useLitInlineMenuComponents$))
+      ) {
+        await this.openInlineMenu(port.sender, true);
+        return;
+      }
       await this.unlockVault(port);
       return;
     }
@@ -2789,6 +2897,64 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   }
 
   /**
+   * Unlocks from the inline menu with the master password typed into the extension's iframe.
+   *
+   * The password is used once and never logged or written to state. A bad password re-renders the
+   * locked menu with an error instead of opening a popup.
+   */
+  private async unlockVaultWithPassword(port: chrome.runtime.Port, message: OverlayPortMessage) {
+    const sender = port.sender;
+    const password = message.password;
+    if (!sender?.tab || !password) {
+      this.notifyInlineMenuUnlockFailed();
+      return;
+    }
+
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      await this.unlockService.unlockWithMasterPassword(userId, password);
+      await this.updateInlineMenuButtonAuthStatus();
+      await this.openInlineMenu(sender, true);
+    } catch {
+      this.notifyInlineMenuUnlockFailed();
+    }
+  }
+
+  /** Unlocks from the inline menu through the desktop biometrics bridge. */
+  private async unlockVaultWithBiometrics(port: chrome.runtime.Port) {
+    const sender = port.sender;
+    if (!sender?.tab) {
+      this.notifyInlineMenuUnlockFailed();
+      return;
+    }
+
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      await this.unlockService.unlockWithBiometrics(userId);
+      await this.updateInlineMenuButtonAuthStatus();
+      await this.openInlineMenu(sender, true);
+    } catch {
+      this.notifyInlineMenuUnlockFailed();
+    }
+  }
+
+  private notifyInlineMenuUnlockFailed() {
+    this.postMessageToInlineMenuListPage({ command: "unlockVaultFailed" });
+  }
+
+  /**
+   * Whether the locked inline menu should offer a biometrics action. Any failure reading the
+   * status (no native host, desktop disconnected) simply hides the action.
+   */
+  private async canUnlockWithBiometrics(): Promise<boolean> {
+    try {
+      return (await this.biometricsService.getBiometricsStatus()) === BiometricsStatus.Available;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Triggers the opening of a vault item popout window associated
    * with the passed cipher ID.
    * @param inlineMenuCipherId - Cipher ID corresponding to the inlineMenuCiphers map. Does not correspond to the actual cipher's ID.
@@ -2816,6 +2982,29 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       cipherId: cipher.id,
       action: SHOW_AUTOFILL_BUTTON,
     });
+  }
+
+  /**
+   * Closes the inline menu and opens the vault list in a popout window so the
+   * user can search every saved item rather than only the current site's accounts.
+   */
+  private async openInlineMenuVaultSearch({ sender }: chrome.runtime.Port) {
+    const tab = sender?.tab;
+    if (!sender || !tab) {
+      return;
+    }
+
+    this.closeInlineMenu(sender, { forceCloseInlineMenu: true });
+
+    try {
+      await BrowserPopupUtils.openPopout("popup/index.html#/tabs/vault", {
+        singleActionKey: "inlineMenuSearchAll",
+        senderWindowId: tab.windowId,
+        forceCloseExistingWindows: true,
+      });
+    } catch (error) {
+      this.logService.error(error);
+    }
   }
 
   /**
@@ -2866,9 +3055,18 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "fillGeneratedPassword",
         "fillVerificationCode",
         "fillVerificationCodeAria",
+        "generatePassword",
         "generatedPassword",
+        "generatorSubtitle",
+        "inlineGeneratorDescription",
+        "inlineGeneratorHeading",
+        "inlineGeneratorLocalOnly",
+        "inlineGeneratorRegenerate",
         "inlineMenuAccountCount",
         "inlineMenuCancel",
+        "inlineMenuCardMaskedNote",
+        "inlineMenuCardMenuAriaLabel",
+        "inlineMenuCardsMenu",
         "inlineMenuCloseAria",
         "inlineMenuCollapsedPasswordDetail",
         "inlineMenuCollapsedPasswordTitle",
@@ -2879,13 +3077,24 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "inlineMenuEmptyTitle",
         "inlineMenuExpand",
         "inlineMenuExpandAria",
+        "inlineMenuFavorite",
         "inlineMenuFill",
+        "inlineMenuFillCardAria",
+        "inlineMenuFillIdentityAria",
         "inlineMenuFillPasswordAria",
         "inlineMenuFilterMatch",
+        "inlineMenuGeneratePassword",
+        "inlineMenuIdentityFillNote",
+        "inlineMenuIdentityMenu",
+        "inlineMenuIdentityMenuAriaLabel",
+        "inlineMenuInlineKeys",
         "inlineMenuKeyboardHint",
         "inlineMenuLastUsed",
+        "inlineMenuLocked",
         "inlineMenuMenuAriaLabel",
         "inlineMenuNewLogin",
+        "inlineMenuReadOnlyDomain",
+        "inlineMenuSearchAll",
         "inlineMenuPasskey",
         "inlineMenuPasskeyVerifyingAria",
         "inlineMenuPasskeyVerifyingBody",
@@ -2901,6 +3110,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "inlineMenuTotpContext",
         "inlineMenuTotpCopiedBody",
         "inlineMenuTotpCopyAria",
+        "inlineMenuTotpCopyOnly",
         "inlineMenuTotpFilledAria",
         "inlineMenuTotpFilledBody",
         "inlineMenuTotpFilledBodyNoCopy",
@@ -2912,12 +3122,17 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "inlineMenuTotpMenuAriaLabel",
         "inlineMenuTotpRefreshNote",
         "inlineMenuTotpRemaining",
+        "inlineMenuUnlockAria",
+        "inlineMenuUnlockFailed",
+        "inlineMenuUnlockFootnote",
+        "inlineMenuUnlockToFill",
         "inlineMenuUsePasskeyAria",
         "inlineMenuVerificationCode",
         "inlineMenuVerify",
         "inlineMenuVerifying",
         "lowercaseAriaLabel",
         "logInWithPasskeyAriaLabel",
+        "masterPassword",
         "newCard",
         "newIdentity",
         "newItem",
@@ -2927,6 +3142,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "passkeys",
         "passwordRegenerated",
         "passwords",
+        "regenerate",
         "regeneratePassword",
         "saveToLocalPass",
         "toggleLocalPassVaultOverlay",
@@ -2934,6 +3150,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "totpSecondsSpanAria",
         "unlockAccount",
         "unlockAccountAria",
+        "unlockWithBiometrics",
         "unlockYourAccountToViewAutofillSuggestions",
         "uppercaseAriaLabel",
         "username",
@@ -3820,6 +4037,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       domain: isInlineMenuListPort
         ? Utils.getHostname(port.sender.tab.url ?? "") || port.sender.tab.url || ""
         : undefined,
+      showBiometricsUnlock:
+        isInlineMenuListPort && authStatus === AuthenticationStatus.Locked
+          ? await this.canUnlockWithBiometrics()
+          : false,
       focusedFieldValue: isInlineMenuListPort
         ? (this.focusedFieldData?.focusedFieldValue ?? "")
         : undefined,

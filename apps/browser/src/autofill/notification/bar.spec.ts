@@ -1,9 +1,14 @@
 import { mock } from "jest-mock-extended";
 
+import { NotificationCipherData } from "../content/components/cipher/types";
 import { postWindowMessage } from "../spec/testing-utils";
 
 import { NotificationBarWindowMessage } from "./abstractions/notification-bar";
-import "./bar";
+import {
+  getChangeNotificationCiphers,
+  getChangeNotificationExistingEntryCount,
+  getI18n,
+} from "./bar";
 
 jest.mock("lit", () => ({ render: jest.fn() }));
 jest.mock("@lit-labs/signals", () => ({
@@ -117,5 +122,51 @@ describe("NotificationBar iframe handleWindowMessage security", () => {
     expect(validMessage.command).toBe("initNotificationBar");
     expect(validMessage.parentOrigin).toBe(trustedOrigin);
     expect(validMessage.initData).toBeDefined();
+  });
+});
+
+describe("getChangeNotificationCiphers", () => {
+  const alex = mock<NotificationCipherData>({ id: "cipher-alex", name: "Northwind Alex" });
+  const ops = mock<NotificationCipherData>({ id: "cipher-ops", name: "Northwind Ops" });
+
+  it("keeps only the queued candidates, in queue order", () => {
+    expect(getChangeNotificationCiphers([alex, ops], ["cipher-ops"])).toEqual([ops]);
+    expect(getChangeNotificationCiphers([alex, ops], ["cipher-ops", "cipher-alex"])).toEqual([
+      ops,
+      alex,
+    ]);
+  });
+
+  it("drops queued ids that the URL cipher list no longer contains", () => {
+    expect(getChangeNotificationCiphers([alex, ops], ["cipher-ops", "deleted"])).toEqual([ops]);
+  });
+});
+
+describe("getChangeNotificationExistingEntryCount", () => {
+  it("reads a whole, non-negative entry count from the queued params", () => {
+    expect(getChangeNotificationExistingEntryCount({ existingEntryCount: 3 })).toBe(3);
+  });
+
+  it("ignores missing, malformed, or negative counts", () => {
+    expect(getChangeNotificationExistingEntryCount(undefined)).toBeUndefined();
+    expect(getChangeNotificationExistingEntryCount({})).toBeUndefined();
+    expect(getChangeNotificationExistingEntryCount({ existingEntryCount: "3" })).toBeUndefined();
+    expect(getChangeNotificationExistingEntryCount({ existingEntryCount: -1 })).toBeUndefined();
+    expect(
+      getChangeNotificationExistingEntryCount({ existingEntryCount: Number.NaN }),
+    ).toBeUndefined();
+  });
+});
+
+describe("getI18n", () => {
+  it("localizes the change card's switch and ignore actions", () => {
+    (chrome.i18n.getMessage as jest.Mock).mockImplementation((key: string) => `msg:${key}`);
+
+    const i18n = getI18n();
+
+    expect(i18n.notificationChangeToggle).toEqual("msg:notificationChangeToggle");
+    expect(i18n.notificationChangeIgnore).toEqual("msg:notificationChangeIgnore");
+
+    (chrome.i18n.getMessage as jest.Mock).mockReset();
   });
 });

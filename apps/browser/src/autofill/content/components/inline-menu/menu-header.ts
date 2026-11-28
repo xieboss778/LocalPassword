@@ -16,10 +16,14 @@ export type InlineMenuHeaderI18n = {
 export type InlineMenuHeaderProps = {
   theme: Theme;
   domain: string;
-  countText: string;
+  /** Optional count chip; omitted for menus that do not page through a large list. */
+  countText?: string;
+  countTone?: "default" | "warn";
   contextText: string;
   showContext?: boolean;
   showClear?: boolean;
+  /** Renders the dismiss control; the password generator menu is dismissed by leaving the field. */
+  showClose?: boolean;
   i18n: InlineMenuHeaderI18n;
   onClear?: (event: Event) => void;
   onClose?: (event: Event) => void;
@@ -29,9 +33,11 @@ export function InlineMenuHeader({
   theme,
   domain,
   countText,
+  countTone = "default",
   contextText,
   showContext = true,
   showClear = false,
+  showClose = true,
   i18n,
   onClear,
   onClose,
@@ -53,24 +59,26 @@ export function InlineMenuHeader({
   return html`
     <div data-inline-menu-header class=${headerStyles(theme)}>
       <span class=${brandMarkStyles(theme)} aria-hidden="true">
-        ${LocalPassMark({ theme, color: colors.brand })}
+        ${LocalPassMark({ theme, color: "#fff" })}
       </span>
-      <span class=${headMainStyles(theme)}>
-        <b>LocalPass</b>
-        <span title=${domain}>${domain}</span>
-      </span>
-      <span class=${countStyles(theme)}>${countText}</span>
-      <button
-        type="button"
-        tabindex="-1"
-        data-inline-menu-close
-        class=${closeButtonStyles(theme)}
-        aria-label=${i18n.closeAria}
-        title=${i18n.closeAria}
-        @click=${handleClose}
-      >
-        ${Close({ theme, color: colors.textSubtle })}
-      </button>
+      <span class=${nameStyles(theme)}>LocalPass</span>
+      <span class=${domainStyles(theme)} title=${domain}>· ${domain}</span>
+      ${countText ? html`<span class=${countStyles(theme, countTone)}>${countText}</span>` : nothing}
+      ${
+        showClose
+          ? html`<button
+              type="button"
+              tabindex="-1"
+              data-inline-menu-close
+              class=${closeButtonStyles(theme)}
+              aria-label=${i18n.closeAria}
+              title=${i18n.closeAria}
+              @click=${handleClose}
+            >
+              ${Close({ theme, color: colors.textSubtle })}
+            </button>`
+          : nothing
+      }
     </div>
     ${
       showContext
@@ -98,10 +106,14 @@ export function InlineMenuHeader({
 const headerStyles = (theme: Theme) => css`
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 11px 14px;
+  gap: 5px;
+  min-height: 28px;
+  padding: 0 8px;
   border-bottom: 1px solid ${inlineMenuColors(theme).borderLight};
-  background: ${inlineMenuColors(theme).surface};
+  background: ${inlineMenuColors(theme).surfaceAlt};
+  color: ${inlineMenuColors(theme).textSubtle};
+  font-size: 10.5px;
+  line-height: 14px;
 `;
 
 const brandMarkStyles = (theme: Theme) => {
@@ -111,57 +123,61 @@ const brandMarkStyles = (theme: Theme) => {
     display: grid;
     flex: none;
     place-items: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    background: ${colors.brandSoft};
-    color: ${colors.brand};
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    background: ${colors.brandFill};
 
     svg {
-      width: 20px;
-      height: 20px;
+      width: 9px;
+      height: 9px;
     }
   `;
 };
 
-const headMainStyles = (theme: Theme) => {
-  const colors = inlineMenuColors(theme);
-
-  return css`
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    min-width: 0;
-
-    b {
-      color: ${colors.text};
-      font-size: 12.5px;
-      font-weight: 600;
-      line-height: 16px;
-    }
-
-    span {
-      overflow: hidden;
-      color: ${colors.textSubtle};
-      font-size: 10px;
-      line-height: 13px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  `;
-};
-
-const countStyles = (theme: Theme) => {
+const nameStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
     flex: none;
-    margin-left: auto;
-    padding: 3px 8px;
+    color: ${colors.text};
+    font-weight: 650;
+    white-space: nowrap;
+  `;
+};
+
+const domainStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    color: ${colors.textSubtle};
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `;
+};
+
+const countStyles = (theme: Theme, tone: "default" | "warn" = "default") => {
+  const colors = inlineMenuColors(theme);
+  const dark = theme === "dark";
+  const background =
+    tone === "warn"
+      ? dark
+        ? "rgba(245, 158, 11, 0.16)"
+        : "rgba(217, 119, 6, 0.12)"
+      : colors.surface;
+  const color = tone === "warn" ? (dark ? "#fbbf24" : "#b45309") : colors.textSubtle;
+
+  return css`
+    flex: none;
+    padding: 1px 6px;
     border-radius: 999px;
-    background: ${colors.surfaceAlt};
-    color: ${colors.textMuted};
-    font-size: 9.5px;
+    background: ${background};
+    color: ${color};
+    font-size: 9px;
+    font-weight: ${tone === "warn" ? "600" : "400"};
     line-height: 12px;
     white-space: nowrap;
   `;
@@ -174,23 +190,22 @@ const closeButtonStyles = (theme: Theme) => {
     display: grid;
     flex: none;
     place-items: center;
-    width: 24px;
-    height: 24px;
-    margin-left: 2px;
+    width: 16px;
+    height: 16px;
     padding: 0;
     border: 0;
-    border-radius: 6px;
+    border-radius: 4px;
     background: transparent;
     color: ${colors.textSubtle};
     cursor: pointer;
 
     svg {
-      width: 11px;
-      height: 11px;
+      width: 10px;
+      height: 10px;
     }
 
     :hover {
-      background: ${colors.surfaceAlt};
+      background: ${colors.surface};
     }
 
     ${inlineMenuFocusRing(colors.brand)}
@@ -205,13 +220,13 @@ const contextStyles = (theme: Theme) => {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    min-height: 31px;
-    padding: 0 14px;
+    min-height: 20px;
+    padding: 0 8px;
     border-bottom: 1px solid ${colors.borderLight};
-    background: ${colors.surfaceAlt};
+    background: ${colors.surface};
     color: ${colors.textSubtle};
-    font-size: 10px;
-    line-height: 14px;
+    font-size: 9.5px;
+    line-height: 12px;
 
     > span {
       overflow: hidden;
@@ -226,14 +241,15 @@ const contextActionStyles = (theme: Theme) => {
 
   return css`
     flex: none;
-    padding: 2px 0;
+    padding: 1px 0;
     border: 0;
-    border-radius: 4px;
+    border-radius: 3px;
     background: transparent;
     color: ${colors.brand};
     font-family: inherit;
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 600;
+    line-height: 12px;
     white-space: nowrap;
     cursor: pointer;
 

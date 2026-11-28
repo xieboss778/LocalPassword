@@ -877,10 +877,37 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    */
   private handleFormFieldInputEvent = (formFieldElement: ElementWithOpId<FormFieldElement>) => {
     return this.useEventHandlersMemo(
-      debounce(() => this.triggerFormFieldInput(formFieldElement), 100, true),
+      this.createFormFieldInputHandler(formFieldElement),
       this.getFormFieldHandlerMemoIndex(formFieldElement, EVENTS.INPUT),
     );
   };
+
+  /**
+   * Builds the input handler for a form field element. The field value is snapshotted on every
+   * keystroke because the debounced callback below only runs on the leading edge of a typing
+   * burst; storing the value inside it would keep only the first character of a continuously
+   * typed value, which is then saved as the new password or login password.
+   *
+   * @param formFieldElement - The form field element that triggered the input event.
+   */
+  private createFormFieldInputHandler(formFieldElement: ElementWithOpId<FormFieldElement>) {
+    const handleDebouncedInput = debounce(
+      () => this.triggerFormFieldInput(formFieldElement),
+      100,
+      true,
+    );
+
+    return () => {
+      if (
+        elementIsFillableFormField(formFieldElement) &&
+        !isReadonlyOrDisabledFormFieldElement(formFieldElement)
+      ) {
+        this.storeModifiedFormElement(formFieldElement);
+      }
+
+      handleDebouncedInput();
+    };
+  }
 
   /**
    * Triggers when the form field element receives an input event. This method will
@@ -945,8 +972,14 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     if (!autofillFieldData.fieldQualifier) {
       switch (autofillFieldData.inlineMenuFillType) {
         case CipherType.Login:
-        case InlineMenuFillTypes.CurrentPasswordUpdate:
           this.qualifyUserFilledField(autofillFieldData, this.loginFieldQualifiers);
+          break;
+        case InlineMenuFillTypes.CurrentPasswordUpdate:
+          // The fill type already identifies the current password of a password change form.
+          // Re-running the login qualifiers can reject it: nearby copy such as "choose a new
+          // password" is captured in the label text and reads as an account-creation field,
+          // leaving the typed current password uncaptured for the save notification.
+          autofillFieldData.fieldQualifier = AutofillFieldQualifier.password;
           break;
         case InlineMenuFillTypes.AccountCreationUsername:
         case InlineMenuFillTypes.PasswordGeneration:

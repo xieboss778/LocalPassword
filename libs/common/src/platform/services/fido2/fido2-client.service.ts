@@ -447,6 +447,10 @@ export class Fido2ClientService<
       }
     }
 
+    if (!getAssertionResult) {
+      throw new DOMException("The operation either timed out or was not allowed.", "AbortError");
+    }
+
     return this.generateAssertCredentialResult(getAssertionResult, clientDataJSONBytes);
   }
 

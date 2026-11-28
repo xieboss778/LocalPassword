@@ -3,6 +3,7 @@ import { CipherType } from "@localpass/common/vault/enums";
 
 import { AutofillOverlayElementType } from "../../enums/autofill-overlay.enum";
 import AutofillScript from "../../models/autofill-script";
+import { InlineMenuFillReceipt } from "../../types/inline-menu-fill-receipt";
 
 import { AutofillMonitor } from "./autofill-monitor";
 
@@ -18,6 +19,8 @@ export type AutofillExtensionMessage = {
   showAnimations?: boolean;
   /** Set when the fill started from the inline menu list; the list shows its own confirmation. */
   retainInlineMenu?: boolean;
+  /** Display-safe card / identity receipt for the bottom-right fill confirmation card. */
+  inlineMenuFillReceipt?: InlineMenuFillReceipt;
   ciphers?: any;
   isInlineMenuHidden?: boolean;
   overlayElement?: AutofillOverlayElementType;

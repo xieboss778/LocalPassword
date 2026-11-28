@@ -33,6 +33,7 @@ import {
 } from "@localpass/common/platform/abstractions/environment.service";
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { ThemeType } from "@localpass/common/platform/enums";
 import { MessageListener } from "@localpass/common/platform/messaging";
 import { Utils } from "@localpass/common/platform/misc/utils";
 import {
@@ -937,6 +938,26 @@ describe("AutofillService", () => {
         expect.objectContaining({
           command: "fillForm",
           showAnimations: false,
+        }),
+        { frameId: currentAutofillPageDetails.frameId },
+        expect.any(Function),
+      );
+    });
+
+    it("forwards the inline menu fill receipt to the content script", async () => {
+      autofillOptions.inlineMenuFillReceipt = {
+        kind: "identity",
+        theme: ThemeType.Light,
+      };
+
+      await autofillService.doAutoFill(autofillOptions);
+
+      const currentAutofillPageDetails = autofillOptions.pageDetails[0];
+      expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(
+        currentAutofillPageDetails.tab.id,
+        expect.objectContaining({
+          command: "fillForm",
+          inlineMenuFillReceipt: { kind: "identity", theme: ThemeType.Light },
         }),
         { frameId: currentAutofillPageDetails.frameId },
         expect.any(Function),

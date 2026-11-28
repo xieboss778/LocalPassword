@@ -381,6 +381,7 @@ describe("ContextMenuClickedHandler", () => {
 
       beforeEach(() => {
         collectAutofillTriage.mockResolvedValue({ pageDetails: mockPageDetails } as any);
+        jest.spyOn(BrowserApi, "sendMessage").mockResolvedValue(undefined);
         jest.spyOn(BrowserPopupUtils, "openPopout").mockResolvedValue(undefined);
         jest.spyOn(BrowserApi, "setSidePanelOptions").mockResolvedValue(undefined);
         jest.spyOn(BrowserApi, "openSidePanel").mockResolvedValue(undefined);

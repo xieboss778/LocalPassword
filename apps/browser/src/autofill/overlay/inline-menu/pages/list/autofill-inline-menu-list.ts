@@ -11,8 +11,11 @@ import { CipherRepromptType, CipherType } from "@localpass/common/vault/enums";
 
 import { InlineMenuCipherData } from "../../../../background/abstractions/overlay.background";
 import { ActionButton } from "../../../../content/components/buttons/action-button";
-import { Lock, Plus } from "../../../../content/components/icons";
+import { Plus } from "../../../../content/components/icons";
 import {
+  InlineMenuCardIdentityKind,
+  InlineMenuCardIdentityMenu,
+  InlineMenuCardIdentityMenuI18n,
   InlineMenuCipherList,
   InlineMenuCipherListNewItem,
   InlineMenuCollapsedChip,
@@ -23,6 +26,7 @@ import {
   InlineMenuPasswordGenerator,
   InlineMenuPrompt,
   InlineMenuTotpFilledCard,
+  InlineMenuUnlock,
 } from "../../../../content/components/inline-menu";
 import { accountMatchesQuery } from "../../../../content/components/inline-menu/login-menu-data";
 import {
@@ -74,7 +78,7 @@ type InlineMenuLitView =
 
 type PendingFill = {
   cipher: InlineMenuCipherData;
-  method: "password" | "totp" | "passkey";
+  method: "password" | "totp" | "passkey" | "card" | "identity";
 };
 
 export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
@@ -116,6 +120,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
   private inlineMenuDomain = "";
   private focusedFieldValue = "";
   private isTotpField = false;
+  private showBiometricsUnlock = false;
+  private unlocking = false;
+  private unlockError: string | null = null;
   private inlineMenuView: InlineMenuLitView = { type: "list" };
   private activeRowKey?: string;
   private selectedTotpAccountId: string | null = null;
@@ -133,6 +140,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       updateAutofillInlineMenuGeneratedPassword: ({ message }) =>
         this.handleUpdateAutofillInlineMenuGeneratedPassword(message),
       showSaveLoginInlineMenuList: () => this.handleShowSaveLoginInlineMenuList(),
+      unlockVaultFailed: () => this.handleUnlockVaultFailed(),
       focusAutofillInlineMenuList: () => this.focusInlineMenuList(),
       inlineMenuCipherFilled: ({ message }: { message: AutofillInlineMenuCipherFilledMessage }) =>
         this.handleInlineMenuCipherFilled(message),
@@ -169,6 +177,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       domain = "",
       focusedFieldValue = "",
       isTotpField = false,
+      showBiometricsUnlock = false,
     } = message;
     const linkElement = await this.initAutofillInlineMenuPage(
       "list",
@@ -184,6 +193,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     this.inlineMenuDomain = domain;
     this.focusedFieldValue = focusedFieldValue;
     this.isTotpField = isTotpField;
+    this.showBiometricsUnlock = showBiometricsUnlock;
+    this.unlocking = false;
+    this.unlockError = null;
     if (useLitComponents) {
       this.theme = resolveTheme(theme);
     }
@@ -232,15 +244,32 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
   private buildLockedInlineMenu() {
     if (this.useLitComponents) {
       this.renderLit(
-        InlineMenuPrompt({
-          message: this.getTranslation("unlockYourAccountToViewAutofillSuggestions"),
-          actionText: this.getTranslation("unlockAccount"),
-          i18n: { actionAria: this.getTranslation("unlockAccountAria") },
+        InlineMenuUnlock({
           theme: this.theme,
-          icon: Lock,
-          handleAction: (event) => this.handleUnlockButtonClick(event as MouseEvent),
-          dataTestId: "inline-menu-locked-state",
-          actionDataTestId: "inline-menu-unlock-button",
+          domain: this.inlineMenuDomain,
+          showBiometrics: this.showBiometricsUnlock,
+          busy: this.unlocking,
+          error: this.unlockError,
+          i18n: {
+            closeAria: this.getTranslation("inlineMenuCloseAria"),
+            showAll: this.getTranslation("inlineMenuShowAll"),
+            locked: this.getTranslation("inlineMenuLocked"),
+            message: this.inlineMenuDomain
+              ? this.getTranslation("inlineMenuUnlockToFill").replace(
+                  "{domain}",
+                  this.inlineMenuDomain,
+                )
+              : this.getTranslation("unlockYourAccountToViewAutofillSuggestions"),
+            password: this.getTranslation("masterPassword"),
+            unlock: this.getTranslation("unlockAccount"),
+            unlockAria: this.getTranslation("inlineMenuUnlockAria"),
+            biometrics: this.getTranslation("unlockWithBiometrics"),
+            biometricsAria: this.getTranslation("unlockWithBiometrics"),
+            footnote: this.getTranslation("inlineMenuUnlockFootnote"),
+          },
+          onSubmit: (password) => this.handleInlineUnlock(password),
+          onBiometrics: () => this.handleInlineUnlockWithBiometrics(),
+          onClose: () => this.renderCloseMenu(),
         }),
       );
       return;
@@ -394,6 +423,39 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     this.postMessageToParent({ command: "unlockVault" });
   };
 
+  /** Sends the password typed in the inline form to the background; nothing is cached here. */
+  private handleInlineUnlock(password: string) {
+    if (this.unlocking || password === "") {
+      return;
+    }
+
+    this.unlocking = true;
+    this.unlockError = null;
+    this.postMessageToParent({ command: "unlockVaultWithPassword", password });
+    this.buildLockedInlineMenu();
+  }
+
+  private handleInlineUnlockWithBiometrics() {
+    if (this.unlocking) {
+      return;
+    }
+
+    this.unlocking = true;
+    this.unlockError = null;
+    this.postMessageToParent({ command: "unlockVaultWithBiometrics" });
+    this.buildLockedInlineMenu();
+  }
+
+  private handleUnlockVaultFailed() {
+    if (!this.unlocking) {
+      return;
+    }
+
+    this.unlocking = false;
+    this.unlockError = this.getTranslation("inlineMenuUnlockFailed");
+    this.buildLockedInlineMenu();
+  }
+
   /**
    * Builds the password generator within the inline menu.
    *
@@ -487,6 +549,13 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
           uppercaseAriaLabel: this.getTranslation("uppercaseAriaLabel"),
           regeneratePassword: this.getTranslation("regeneratePassword"),
           characterDescriptors,
+          generateHeading: this.getTranslation("inlineGeneratorHeading"),
+          description: this.getTranslation("inlineGeneratorDescription"),
+          fill: this.getTranslation("inlineMenuTotpFill"),
+          regenerate: this.getTranslation("inlineGeneratorRegenerate"),
+          localOnly: this.getTranslation("inlineGeneratorLocalOnly"),
+          closeAria: this.getTranslation("inlineMenuCloseAria"),
+          showAll: this.getTranslation("inlineMenuShowAll"),
         },
         handleFillPassword: () => this.postMessageToParent({ command: "fillGeneratedPassword" }),
         handleRefreshPassword: () =>
@@ -723,6 +792,10 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       return;
     }
 
+    // Receiving ciphers from background proves the vault is unlocked (including after in-place unlock).
+    this.authStatus = AuthenticationStatus.Unlocked;
+    this.unlocking = false;
+    this.unlockError = null;
     this.ciphers = this.getFilteredCiphersForTotpField(ciphers);
     this.showInlineMenuAccountCreation = showInlineMenuAccountCreation;
     if (showPasskeysLabels !== undefined) {
@@ -785,9 +858,28 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     return this.ciphers.every((cipher) => cipher.type === CipherType.Login);
   }
 
+  /**
+   * Whether the compact card or identity menu should render. A mixed suggestion list (for
+   * example identities offered while creating a login) keeps the legacy list so every item
+   * remains reachable.
+   */
+  private shouldUseCardIdentityMenu(): boolean {
+    const fillType = this.inlineMenuFillType;
+    if (
+      !this.useLitComponents ||
+      (fillType !== CipherType.Card && fillType !== CipherType.Identity)
+    ) {
+      return false;
+    }
+
+    return this.ciphers.every((cipher) => cipher.type === fillType);
+  }
+
   private renderLitCipherList() {
     if (this.shouldUseAccountMenu()) {
       this.renderAccountMenu();
+    } else if (this.shouldUseCardIdentityMenu()) {
+      this.renderCardIdentityMenu();
     } else {
       this.renderLit(
         InlineMenuCipherList({
@@ -849,10 +941,29 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
         i18n: this.buildLoginMenuI18n(),
         onFill: (cipher, method, event) => this.handleLoginMenuFill(cipher, method, event),
         onFillTotp: (cipher, event) => this.handleTotpMenuFill(cipher, event),
+        onCopyTotp: (cipher) => this.handleCopyTotp(cipher),
         onNewItem: (event) => this.handleNewLoginVaultItemAction(event as MouseEvent),
+        onGeneratePassword: () => this.postMessageToParent({ command: "refreshGeneratedPassword" }),
+        onSearchAll: () => this.postMessageToParent({ command: "searchAllFromInlineMenu" }),
         onClearFilter: () => this.handleClearFilter(),
         onClose: () => this.renderCloseMenu(),
         onTotpPeriodElapsed: () => this.handleTotpPeriodElapsed(),
+      }),
+    );
+  }
+
+  private renderCardIdentityMenu() {
+    const kind: InlineMenuCardIdentityKind =
+      this.inlineMenuFillType === CipherType.Card ? "card" : "identity";
+    this.renderLit(
+      InlineMenuCardIdentityMenu({
+        theme: this.theme,
+        kind,
+        ciphers: this.ciphers,
+        activeRowKey: this.activeRowKey,
+        i18n: this.buildCardIdentityMenuI18n(),
+        onFill: (cipher) => this.triggerFillCipherClickEvent(cipher, false, kind),
+        onClose: () => this.renderCloseMenu(),
       }),
     );
   }
@@ -970,10 +1081,14 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       totpContext: this.getTranslation("inlineMenuTotpContext"),
       totpRefreshNote: this.getTranslation("inlineMenuTotpRefreshNote"),
       totpFill: this.getTranslation("inlineMenuTotpFill"),
+      totpCopyOnly: this.getTranslation("inlineMenuTotpCopyOnly"),
       emptyTitle: this.getTranslation("inlineMenuEmptyTitle"),
       emptyDescription: this.getTranslation("inlineMenuEmptyDescription"),
       emptyDescriptionNoQuery: this.getTranslation("inlineMenuEmptyDescriptionNoQuery"),
       showAllAccounts: this.getTranslation("inlineMenuShowAllAccounts"),
+      generatePassword: this.getTranslation("inlineMenuGeneratePassword"),
+      searchAll: this.getTranslation("inlineMenuSearchAll"),
+      readOnlyDomain: this.getTranslation("inlineMenuReadOnlyDomain"),
       closeAria: this.getTranslation("inlineMenuCloseAria"),
       menuAriaLabel: this.getTranslation("inlineMenuMenuAriaLabel"),
       totpMenuAriaLabel: this.getTranslation("inlineMenuTotpMenuAriaLabel"),
@@ -988,6 +1103,24 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       usePasskeyAria: this.getTranslation("inlineMenuUsePasskeyAria"),
       fillAria: this.getTranslation("inlineMenuTotpFillAria"),
       codeAria: this.getTranslation("totpCodeAria"),
+    };
+  }
+
+  private buildCardIdentityMenuI18n(): InlineMenuCardIdentityMenuI18n {
+    return {
+      cardsTitle: this.getTranslation("inlineMenuCardsMenu"),
+      identityTitle: this.getTranslation("inlineMenuIdentityMenu"),
+      favorite: this.getTranslation("inlineMenuFavorite"),
+      fill: this.getTranslation("inlineMenuFill"),
+      fillCardAria: this.getTranslation("inlineMenuFillCardAria"),
+      fillIdentityAria: this.getTranslation("inlineMenuFillIdentityAria"),
+      cardMaskedNote: this.getTranslation("inlineMenuCardMaskedNote"),
+      identityFillNote: this.getTranslation("inlineMenuIdentityFillNote"),
+      keysHint: this.getTranslation("inlineMenuInlineKeys"),
+      closeAria: this.getTranslation("inlineMenuCloseAria"),
+      showAll: this.getTranslation("inlineMenuShowAll"),
+      cardMenuAriaLabel: this.getTranslation("inlineMenuCardMenuAriaLabel"),
+      identityMenuAriaLabel: this.getTranslation("inlineMenuIdentityMenuAriaLabel"),
     };
   }
 
@@ -1016,9 +1149,29 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
   };
 
   private handleLitMenuKeyUp = (event: KeyboardEvent) => {
+    if (!this.useLitComponents || !EventSecurity.isEventTrusted(event)) {
+      return;
+    }
+
     if (
-      !this.useLitComponents ||
-      !EventSecurity.isEventTrusted(event) ||
+      this.isTotpField &&
+      (event.metaKey || event.ctrlKey) &&
+      event.key.toLowerCase() === "c" &&
+      this.inlineMenuView.type === "list"
+    ) {
+      const targetCipher =
+        this.ciphers.find(
+          (cipher) =>
+            this.activeRowKey?.endsWith(`:${cipher.id}`) || this.activeRowKey === cipher.id,
+        ) ?? this.ciphers.find((cipher) => !!cipher.login?.totp);
+      if (targetCipher) {
+        event.preventDefault();
+        this.handleCopyTotp(targetCipher);
+      }
+      return;
+    }
+
+    if (
       (event.code !== "ArrowDown" && event.code !== "ArrowUp") ||
       !(event.target instanceof Element)
     ) {
@@ -1107,6 +1260,11 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
         period: pending.cipher.login?.totpCodeTimeInterval ?? 30,
         canAutoCopy: !!message.canAutoCopyTotp,
       };
+    } else if (pending.method === "card" || pending.method === "identity") {
+      // Card and identity fills have no post-fill confirmation surface, so the menu returns
+      // focus to the page instead of switching to the password "filled" chip.
+      this.renderCloseMenu();
+      return;
     } else {
       return;
     }
@@ -1185,7 +1343,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
         this.renderCurrentLitView();
       }
       this.postMessageToParent({ command: "checkAutofillInlineMenuButtonFocused" });
-    }, 4000);
+    }, 30000);
   }
 
   private handleCancelPasskeyAuthentication() {
@@ -1786,8 +1944,14 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
    *
    * @param cipher - The cipher to fill.
    * @param usePasskey - Whether the cipher uses a passkey.
+   * @param cardIdentityKind - Set for card and identity rows so the post-fill flow can close
+   *     the menu rather than show a password-specific confirmation.
    */
-  private triggerFillCipherClickEvent = (cipher: InlineMenuCipherData, usePasskey: boolean) => {
+  private triggerFillCipherClickEvent = (
+    cipher: InlineMenuCipherData,
+    usePasskey: boolean,
+    cardIdentityKind?: "card" | "identity",
+  ) => {
     if (usePasskey) {
       this.pendingFill = this.pendingFill ?? { cipher, method: "passkey" };
       if (this.useLitComponents) {
@@ -1796,7 +1960,10 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
         this.createPasskeyAuthenticatingLoader();
       }
     } else if (!this.pendingFill) {
-      this.pendingFill = { cipher, method: this.isTotpField ? "totp" : "password" };
+      this.pendingFill = {
+        cipher,
+        method: cardIdentityKind ?? (this.isTotpField ? "totp" : "password"),
+      };
     }
 
     this.postMessageToParent({
@@ -2284,7 +2451,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     globalThis.setTimeout(() => {
       this.isPasskeyAuthInProgress = false;
       this.postMessageToParent({ command: "checkAutofillInlineMenuButtonFocused" });
-    }, 4000);
+    }, 30000);
   }
 
   /**
@@ -2363,6 +2530,14 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     }
     this.inlineMenuListContainer.setAttribute("role", "dialog");
     this.inlineMenuListContainer.setAttribute("aria-modal", "true");
+
+    const unlockPasswordInput = this.inlineMenuListContainer.querySelector<HTMLElement>(
+      "[data-inline-menu-unlock-password]:not(:disabled)",
+    );
+    if (unlockPasswordInput) {
+      unlockPasswordInput.focus();
+      return;
+    }
 
     const unlockButtonElement = this.inlineMenuListContainer.querySelector(
       "#unlock-button, [data-testid='inline-menu-unlock-button']",

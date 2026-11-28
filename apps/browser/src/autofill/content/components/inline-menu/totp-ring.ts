@@ -97,8 +97,8 @@ const totpRingStyles = (theme: Theme) => {
     display: grid;
     flex: none;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: conic-gradient(
       ${colors.brand} var(--inline-totp-progress),
@@ -115,13 +115,13 @@ const totpRingStyles = (theme: Theme) => {
     > span {
       display: grid;
       place-items: center;
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       background: ${colors.surface};
       color: ${colors.textMuted};
-      font-size: 9.5px;
-      font-weight: 600;
+      font-size: 9px;
+      font-weight: 650;
       font-variant-numeric: tabular-nums;
     }
   `;

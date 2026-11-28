@@ -10,6 +10,7 @@ import AutofillField from "../../models/autofill-field";
 import AutofillForm from "../../models/autofill-form";
 import AutofillPageDetails from "../../models/autofill-page-details";
 import { FillResult } from "../../orchestration";
+import { InlineMenuFillReceipt } from "../../types/inline-menu-fill-receipt";
 
 export interface PageDetail {
   frameId: number;
@@ -38,6 +39,11 @@ export interface AutoFillOptions {
    * being torn down with the field blur that a normal fill performs.
    */
   retainInlineMenu?: boolean;
+  /**
+   * Display-safe receipt for a card or identity fill that started from the inline menu. The
+   * content script shows a bottom-right undo card once the fill lands.
+   */
+  inlineMenuFillReceipt?: InlineMenuFillReceipt;
 }
 
 interface FormDataBase {

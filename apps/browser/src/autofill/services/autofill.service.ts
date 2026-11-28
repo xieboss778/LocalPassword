@@ -564,6 +564,9 @@ export default class AutofillService implements AutofillServiceInterface {
             // Only set for fills started from the inline menu list, so the content script can
             // keep that list alive to render its own post-fill confirmation.
             ...(options.retainInlineMenu ? { retainInlineMenu: true } : {}),
+            ...(options.inlineMenuFillReceipt
+              ? { inlineMenuFillReceipt: options.inlineMenuFillReceipt }
+              : {}),
           },
           { frameId: pd.frameId },
         );

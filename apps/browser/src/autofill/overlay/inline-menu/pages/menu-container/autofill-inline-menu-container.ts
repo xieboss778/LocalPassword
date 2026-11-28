@@ -25,10 +25,13 @@ const ALLOWED_BG_COMMANDS = new Set<string>([
   "redirectAutofillInlineMenuFocusOut",
   "refreshGeneratedPassword",
   "refreshOverlayCiphers",
+  "searchAllFromInlineMenu",
   "triggerDelayedAutofillInlineMenuClosure",
   "updateAutofillInlineMenuColorScheme",
   "updateAutofillInlineMenuListHeight",
   "unlockVault",
+  "unlockVaultWithPassword",
+  "unlockVaultWithBiometrics",
   "viewSelectedCipher",
 ]);
 

@@ -33,6 +33,7 @@ import {
 } from "@localpass/common/platform/messaging";
 import { Utils } from "@localpass/common/platform/misc/utils";
 import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
 import { UserId } from "@localpass/common/types/guid";
 import { ChangeLoginPasswordService } from "@localpass/common/vault/abstractions/change-login-password.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
@@ -46,6 +47,8 @@ import { LoginView } from "@localpass/common/vault/models/view/login.view";
 import { TaskService } from "@localpass/common/vault/tasks";
 import { SecurityTaskStatus, SecurityTaskType } from "@localpass/common/vault/tasks/enums";
 import { SecurityTask } from "@localpass/common/vault/tasks/models/security-task";
+import { CIPHER_VERSION_HISTORY } from "@localpass/local-vault";
+import { StateProvider } from "@localpass/state";
 
 // FIXME (PM-22628): Popup imports are forbidden in background
 // eslint-disable-next-line no-restricted-imports
@@ -76,6 +79,7 @@ import {
   AddChangePasswordNotificationQueueMessage,
   AddLoginQueueMessage,
   AddLoginMessageData,
+  AtRiskPasswordNotificationData,
   AtRiskPasswordQueueMessage,
   NotificationQueueMessageItem,
   ADD_TO_LOCKED_VAULT_PENDING_NOTIFICATIONS,
@@ -102,6 +106,9 @@ const inputScenarios = {
   password: "password",
 } as const;
 
+/** Mirrors the vault health scan: a zxcvbn score below 3 counts as weak. */
+const WEAK_PASSWORD_MAX_SCORE = 3;
+
 type InputScenarioKey = keyof typeof inputScenarios;
 type InputScenario = (typeof inputScenarios)[InputScenarioKey];
 
@@ -124,7 +131,8 @@ function saveCandidateFor(
   if (queueMessage.type === NotificationType.AddLogin) {
     return queueMessage.data;
   }
-  return { uri: tab.url ?? "", newPassword: queueMessage.data.newPassword };
+  const { newPassword, username } = queueMessage.data;
+  return { uri: tab.url ?? "", username, newPassword };
 }
 
 export default class NotificationBackground {
@@ -143,6 +151,8 @@ export default class NotificationBackground {
       this.handleAdjustNotificationBarMessage(message, sender),
     bgCloseNotificationBar: ({ message, sender }) =>
       this.handleCloseNotificationBarMessage(message, sender),
+    bgFixAtRiskPassword: ({ message, sender }) =>
+      this.withSenderTab(sender, (tab) => this.fixAtRiskPassword(message, tab)),
     bgOpenAtRiskPasswords: ({ message, sender }) =>
       this.handleOpenAtRiskPasswordsMessage(message, sender),
     bgOpenChangePasswordUrl: ({ message, sender }) =>
@@ -196,6 +206,8 @@ export default class NotificationBackground {
     private intraprocessMessageSender: IntraprocessMessageSender,
     private messageListener: MessageListener,
     private fillCipherPolicy: FillCipherPolicy,
+    private passwordStrengthService: PasswordStrengthServiceAbstraction,
+    private stateProvider: StateProvider,
   ) {}
 
   init() {
@@ -265,10 +277,13 @@ export default class NotificationBackground {
       return [];
     }
 
-    const [decryptedCiphers, organizations] = await Promise.all([
+    const [decryptedCiphers, organizations, versionHistory] = await Promise.all([
       this.fillCipherPolicy.ciphersForUrl(currentTab.url, activeUserId, CipherUse.SavePrompt),
       firstValueFrom(this.organizationService.organizations$(activeUserId)),
+      firstValueFrom(this.stateProvider.getUser(activeUserId, CIPHER_VERSION_HISTORY).state$),
     ]);
+    // The card's vN is the real revision number: stored snapshots plus the current version.
+    const versionCount = (id: string) => (versionHistory?.[id]?.length ?? 0) + 1;
 
     const iconsServerUrl: string | null = env.getIconsUrl() ?? null;
 
@@ -297,12 +312,16 @@ export default class NotificationBackground {
         );
         return cipherViews.map((cipherView) => {
           const organizationType = getOrganizationType(cipherView.organizationId);
-          return this.convertToNotificationCipherData(
-            cipherView,
-            iconsServerUrl,
-            showFavicons,
-            organizationType,
-          );
+          return {
+            ...this.convertToNotificationCipherData(
+              cipherView,
+              iconsServerUrl,
+              showFavicons,
+              organizationType,
+            ),
+            versionCount: versionCount(cipherView.id),
+            lastUsedAt: cipherView.localData?.lastUsedDate ?? undefined,
+          };
         });
       } else {
         cipherView = this.convertAddLoginQueueMessageToCipherView(cipherQueueMessage);
@@ -311,23 +330,29 @@ export default class NotificationBackground {
       const organizationType = getOrganizationType(cipherView.organizationId);
 
       return [
-        this.convertToNotificationCipherData(
-          cipherView,
-          iconsServerUrl,
-          showFavicons,
-          organizationType,
-        ),
+        {
+          ...this.convertToNotificationCipherData(
+            cipherView,
+            iconsServerUrl,
+            showFavicons,
+            organizationType,
+          ),
+          versionCount: versionCount(cipherView.id),
+          lastUsedAt: cipherView.localData?.lastUsedDate ?? undefined,
+        },
       ];
     }
 
-    return decryptedCiphers.map((view) =>
-      this.convertToNotificationCipherData(
+    return decryptedCiphers.map((view) => ({
+      ...this.convertToNotificationCipherData(
         view,
         iconsServerUrl,
         showFavicons,
         getOrganizationType(view.organizationId),
       ),
-    );
+      versionCount: versionCount(view.id),
+      lastUsedAt: view.localData?.lastUsedDate ?? undefined,
+    }));
   }
 
   /**
@@ -569,23 +594,43 @@ export default class NotificationBackground {
       activeUserId,
     );
 
-    if (!loginSecurityTaskInfo) {
+    const authStatus = await this.getAuthStatus();
+
+    // Local vaults have no organization security tasks. The same warning is raised from the
+    // on-device health rules when the submitted, already-saved password is reused or weak. The
+    // scan needs decrypted ciphers, so a locked vault skips it rather than attempting a lookup
+    // without keys.
+    const localRiskInfo =
+      loginSecurityTaskInfo || authStatus !== AuthenticationStatus.Unlocked
+        ? null
+        : await this.getLocalAtRiskForLoginData(data, activeUserId);
+
+    if (!loginSecurityTaskInfo && !localRiskInfo) {
       return false;
     }
 
-    const { securityTask, cipher } = loginSecurityTaskInfo;
-    const domain = Utils.getDomain(tab.url);
-    const passwordChangeUri = await this.changeLoginPasswordService.getChangePasswordUrl(cipher);
+    const cipher = loginSecurityTaskInfo?.cipher ?? localRiskInfo?.cipher;
+    if (!cipher) {
+      return false;
+    }
 
-    const authStatus = await this.getAuthStatus();
+    const domain = Utils.getDomain(tab.url);
+
+    // The organization flow may point at the site's well-known change-password endpoint. A local
+    // vault is offline and opens the entry editor instead, so it never resolves or fetches a URL.
+    const passwordChangeUri = loginSecurityTaskInfo
+      ? await this.changeLoginPasswordService.getChangePasswordUrl(cipher)
+      : null;
 
     const wasVaultLocked = authStatus === AuthenticationStatus.Locked;
 
-    const organization = await firstValueFrom(
-      this.organizationService
-        .organizations$(activeUserId)
-        .pipe(getOrganizationById(securityTask.organizationId)),
-    );
+    const organization = loginSecurityTaskInfo
+      ? await firstValueFrom(
+          this.organizationService
+            .organizations$(activeUserId)
+            .pipe(getOrganizationById(loginSecurityTaskInfo.securityTask.organizationId)),
+        )
+      : null;
 
     this.removeTabFromNotificationQueue(tab);
     const launchTimestamp = new Date().getTime();
@@ -596,6 +641,7 @@ export default class NotificationBackground {
       data: {
         hasPasswordChangeUri: passwordChangeUri != null,
         organizationName: organization?.name ?? "",
+        ...(localRiskInfo ? { localRisk: localRiskInfo.localRisk } : {}),
       },
       tab: tab,
       launchTimestamp,
@@ -604,6 +650,85 @@ export default class NotificationBackground {
     this.notificationQueue.push(queueMessage);
     await this.checkNotificationQueue(tab);
     return true;
+  }
+
+  /**
+   * Applies the local vault health rules to the login the user just submitted. The saved entry
+   * must match both the submitted username and password, so the warning never fires for a new or
+   * changed credential. Only summary fields leave this method: the password itself stays in memory.
+   */
+  private async getLocalAtRiskForLoginData(
+    data: ModifyLoginCipherFormData,
+    activeUserId: UserId,
+  ): Promise<{
+    cipher: CipherView;
+    localRisk: NonNullable<AtRiskPasswordNotificationData["localRisk"]>;
+  } | null> {
+    const submittedUsername = data.username ?? "";
+    const submittedPassword = data.password ?? "";
+    if (submittedPassword === "") {
+      return null;
+    }
+
+    const urlCiphers = await this.fillCipherPolicy.ciphersForUrl(
+      data.uri,
+      activeUserId,
+      CipherUse.SecurityTask,
+    );
+    const cipher = urlCiphers.find(
+      (candidate) =>
+        !candidate.deletedDate &&
+        !candidate.isArchived &&
+        candidate.type === CipherType.Login &&
+        candidate.login?.username === submittedUsername &&
+        candidate.login?.password === submittedPassword,
+    );
+    if (!cipher) {
+      return null;
+    }
+
+    const allCiphers = await this.fillCipherPolicy.ciphers(activeUserId, CipherUse.SecurityTask);
+    const sharedCount = allCiphers.filter(
+      (candidate) =>
+        candidate.type === CipherType.Login &&
+        !candidate.deletedDate &&
+        !candidate.isArchived &&
+        candidate.login?.password === submittedPassword,
+    ).length;
+
+    if (sharedCount > 1) {
+      return {
+        cipher,
+        localRisk: {
+          kind: "reused",
+          sharedCount,
+          entryName: cipher.name,
+          username: cipher.login?.username ?? "",
+          cipherId: cipher.id ?? "",
+        },
+      };
+    }
+
+    const score =
+      this.passwordStrengthService.getPasswordStrength(
+        submittedPassword,
+        cipher.login?.username ?? undefined,
+        [cipher.name],
+      )?.score ?? 0;
+    if (score < WEAK_PASSWORD_MAX_SCORE) {
+      return {
+        cipher,
+        localRisk: {
+          kind: "weak",
+          sharedCount: 1,
+          entryName: cipher.name,
+          username: cipher.login?.username ?? "",
+          cipherId: cipher.id ?? "",
+        },
+      };
+    }
+
+    return null;
   }
 
   /**
@@ -771,7 +896,10 @@ export default class NotificationBackground {
         return false;
       }
       // This needs to be the call that includes the full form data
-      await this.pushChangePasswordToQueue(null, loginDomain, newPasswordFieldValue, tab, true);
+      await this.pushChangePasswordToQueue(null, loginDomain, newPasswordFieldValue, tab, true, {
+        username: usernameFieldValue ?? "",
+        uri: data.uri,
+      });
 
       return true;
     }
@@ -916,6 +1044,10 @@ export default class NotificationBackground {
     changePasswordNotificationIsEnabled: boolean;
     newLoginNotificationIsEnabled: boolean;
   }): Promise<boolean> {
+    // The submitted credentials are kept with the queue message so the notification card can
+    // offer "save as a new entry" without re-reading the form.
+    const submittedLogin = { username: data.username ?? "", uri: data.uri };
+
     const {
       newPasswordOnlyMatches,
       noFieldMatches,
@@ -979,6 +1111,9 @@ export default class NotificationBackground {
             // @TODO handle empty strings / incomplete data structure
             data.newPassword || data.password,
             tab,
+            false,
+            submittedLogin,
+            ciphersForURL.length,
           );
 
           return true;
@@ -1033,6 +1168,9 @@ export default class NotificationBackground {
           // @TODO handle empty strings / incomplete data structure
           data.newPassword || data.password,
           tab,
+          false,
+          submittedLogin,
+          ciphersForURL.length,
         );
 
         return true;
@@ -1061,6 +1199,9 @@ export default class NotificationBackground {
           // @TODO handle empty strings / incomplete data structure
           data.newPassword || data.password,
           tab,
+          false,
+          submittedLogin,
+          ciphersForURL.length,
         );
 
         return true;
@@ -1127,6 +1268,9 @@ export default class NotificationBackground {
           // @TODO handle empty strings / incomplete data structure
           data.newPassword || data.password,
           tab,
+          false,
+          submittedLogin,
+          ciphersForURL.length,
         );
 
         return true;
@@ -1173,6 +1317,8 @@ export default class NotificationBackground {
     newPassword: string,
     tab: chrome.tabs.Tab,
     isVaultLocked = false,
+    submittedLogin: { username: string; uri: string } = { username: "", uri: "" },
+    existingEntryCount?: number,
   ) {
     const ciphers = cipherIds ?? [];
     // remove any old messages for this tab
@@ -1180,7 +1326,13 @@ export default class NotificationBackground {
     const launchTimestamp = new Date().getTime();
     const message: AddChangePasswordNotificationQueueMessage = {
       type: NotificationType.ChangePassword,
-      data: { cipherIds: ciphers, newPassword: newPassword },
+      data: {
+        cipherIds: ciphers,
+        newPassword: newPassword,
+        username: submittedLogin.username,
+        uri: submittedLogin.uri,
+        ...(existingEntryCount != null ? { existingEntryCount } : {}),
+      },
       domain: loginDomain,
       tab: tab,
       launchTimestamp,
@@ -1226,7 +1378,14 @@ export default class NotificationBackground {
       return;
     }
 
-    await this.saveOrUpdateCredentials(tab, message.cipherId, message?.edit, message.folder);
+    await this.saveOrUpdateCredentials(
+      tab,
+      message.cipherId,
+      message?.edit,
+      message.folder,
+      false,
+      message?.saveAsNew,
+    );
   }
 
   async handleCipherUpdateRepromptResponse(message: NotificationBackgroundExtensionMessage) {
@@ -1257,6 +1416,7 @@ export default class NotificationBackground {
     edit?: boolean,
     folderId?: string,
     skipReprompt: boolean = false,
+    saveAsNew: boolean = false,
   ) {
     const resolvedEdit = edit ?? false;
     for (let i = this.notificationQueue.length - 1; i >= 0; i--) {
@@ -1295,6 +1455,13 @@ export default class NotificationBackground {
         const {
           data: { newPassword },
         } = queueMessage;
+
+        if (saveAsNew) {
+          this.notificationQueue.splice(i, 1);
+          await this.saveChangeAsNewCipher(queueMessage, tab, folderId, activeUserId);
+          return;
+        }
+
         const cipherView = await this.getDecryptedCipherById(cipherId, activeUserId);
         if (cipherView == null) {
           continue;
@@ -1353,6 +1520,8 @@ export default class NotificationBackground {
         await BrowserApi.tabSendMessageData(tab, "saveCipherAttemptCompleted", {
           itemName: newCipher?.name && String(newCipher?.name),
           cipherId: resultCipher?.id && String(resultCipher?.id),
+          username: newCipher?.login?.username || undefined,
+          folderName: await this.folderNameFor(folderId, activeUserId),
         });
         await BrowserApi.tabSendMessage(tab, { command: "addedCipher" });
       } catch (error) {
@@ -1420,9 +1589,15 @@ export default class NotificationBackground {
 
       await this.cipherService.updateWithServer(cipherView, userId);
 
+      // The queued suggestion has been consumed. Leave it in the queue and the next page load
+      // (or `checkNotificationQueue`) would re-open the card with the pre-update candidate list.
+      this.removeTabFromNotificationQueue(tab);
+
       await BrowserApi.tabSendMessageData(tab, "saveCipherAttemptCompleted", {
         itemName: cipherView?.name && String(cipherView?.name),
         cipherId: cipherView?.id && String(cipherView.id),
+        username: cipherView.login?.username || undefined,
+        folderName: await this.folderNameFor(cipherView.folderId, userId),
         task: taskData,
       });
 
@@ -1437,6 +1612,48 @@ export default class NotificationBackground {
           }),
         );
       }
+    } catch (error) {
+      await BrowserApi.tabSendMessageData(tab, "saveCipherAttemptCompleted", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  /**
+   * Creates a new login from the credentials submitted in a change-password flow, leaving the
+   * matched ciphers untouched. Used by the change notification card's "save as a new entry"
+   * choice, which lets the user keep an ambiguous or unrecognized credential set without
+   * overwriting an existing entry.
+   */
+  private async saveChangeAsNewCipher(
+    queueMessage: AddChangePasswordNotificationQueueMessage,
+    tab: chrome.tabs.Tab,
+    folderId: string | undefined,
+    userId: UserId,
+  ) {
+    const { username, uri, newPassword } = queueMessage.data;
+    const resolvedFolderId =
+      folderId != null && (await this.folderExists(folderId, userId)) ? folderId : undefined;
+    const newCipher = this.buildLoginCipherView({
+      username,
+      password: newPassword,
+      uri,
+      domain: queueMessage.domain,
+      folderId: resolvedFolderId,
+    });
+
+    try {
+      const resultCipher = await this.cipherService.createWithServer(newCipher, userId);
+      await BrowserApi.tabSendMessageData(tab, "saveCipherAttemptCompleted", {
+        itemName: newCipher.name && String(newCipher.name),
+        cipherId: resultCipher?.id && String(resultCipher.id),
+        username: newCipher.login?.username || undefined,
+        folderName: await this.folderNameFor(resolvedFolderId, userId),
+        // The change card recorded a new entry instead of updating one; the confirmation
+        // container uses this to report a save rather than an update.
+        saveAsNew: true,
+      });
+      await BrowserApi.tabSendMessage(tab, { command: "addedCipher" });
     } catch (error) {
       await BrowserApi.tabSendMessageData(tab, "saveCipherAttemptCompleted", {
         error: error instanceof Error ? error.message : String(error),
@@ -1518,6 +1735,18 @@ export default class NotificationBackground {
     }
     const folders = await firstValueFrom(this.folderService.folderViews$(userId));
     return folders.some((x) => x.id === folderId);
+  }
+
+  /**
+   * Name of the folder the saved entry was filed into, for the compact save confirmation.
+   * Undefined when the entry stays unfiled, so the card never claims a folder it did not use.
+   */
+  private async folderNameFor(folderId: string | undefined, userId: UserId) {
+    if (folderId == null || Utils.isNullOrWhitespace(folderId) || folderId === "null") {
+      return undefined;
+    }
+    const folders = await firstValueFrom(this.folderService.folderViews$(userId));
+    return folders.find((folder) => folder.id === folderId)?.name;
   }
 
   private async getDecryptedCipherById(cipherId: string, userId: UserId) {
@@ -1834,6 +2063,32 @@ export default class NotificationBackground {
   }
 
   /**
+   * Sends the user from the local at-risk card to the flagged entry's editor.
+   *
+   * The cipher is looked up by ID in the active account's vault rather than trusting any URL from
+   * the card. A local vault stays offline, so there is no well-known change-password lookup.
+   *
+   * @param message - The extension message, carrying the flagged cipher's ID
+   * @param tab - The tab that sent the message
+   */
+  private async fixAtRiskPassword(
+    message: NotificationBackgroundExtensionMessage,
+    tab: chrome.tabs.Tab,
+  ) {
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getOptionalUserId));
+    const cipherId = message.cipherId;
+
+    if (userId && cipherId) {
+      const cipher = await this.getDecryptedCipherById(cipherId, userId);
+      if (cipher) {
+        await this.openAddEditVaultItemPopout(tab, { cipherId });
+      }
+    }
+
+    await BrowserApi.tabSendMessageData(tab, "closeNotificationBar");
+  }
+
+  /**
    * Sends a message back to the sender tab which triggers
    * an CSS adjustment of the notification bar.
    *
@@ -1860,16 +2115,44 @@ export default class NotificationBackground {
     message: AddLoginQueueMessage,
     folderId?: string,
   ): CipherView {
+    return this.buildLoginCipherView({
+      username: message.data.username,
+      password: message.data.password,
+      uri: message.data.uri,
+      domain: message.domain,
+      folderId,
+    });
+  }
+
+  /**
+   * Builds a login cipher view from collected form values.
+   *
+   * @param login - The credentials and the page they were submitted from
+   * @param login.folderId - The folder to add the cipher to
+   */
+  private buildLoginCipherView({
+    username,
+    password,
+    uri,
+    domain,
+    folderId,
+  }: {
+    username: string;
+    password: string;
+    uri: string;
+    domain: string;
+    folderId?: string;
+  }): CipherView {
     const uriView = new LoginUriView();
-    uriView.uri = message.data.uri;
+    uriView.uri = uri;
 
     const loginView = new LoginView();
     loginView.uris = [uriView];
-    loginView.username = message.data.username;
-    loginView.password = message.data.password;
+    loginView.username = username;
+    loginView.password = password;
 
     const cipherView = new CipherView();
-    cipherView.name = (Utils.getHostname(message.data.uri) || message.domain).replace(/^www\./, "");
+    cipherView.name = (Utils.getHostname(uri) || domain).replace(/^www\./, "");
     cipherView.folderId = folderId;
     cipherView.type = CipherType.Login;
     cipherView.login = loginView;
