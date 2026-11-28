@@ -16,7 +16,7 @@
 git clone https://github.com/xieboss778/LocalPass.git
 cd LocalPass
 npm ci
-npm run build:chrome
+npm run build:chrome --workspace @localpass/browser
 ```
 
 构建产物在 `apps/browser/build`，用 `chrome://extensions` 的「加载已解压的扩展程序」加载即可调试。

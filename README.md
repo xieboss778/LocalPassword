@@ -78,7 +78,7 @@ cd LocalPass
 npm ci
 
 # 3. 构建 Chrome 扩展
-npm run build:chrome
+npm run build:chrome --workspace @localpass/browser
 ```
 
 然后在浏览器中打开 `chrome://extensions` → 开启右上角「开发者模式」→ 点击「加载已解压的扩展程序」→ 选择 `apps/browser/build` 目录。
@@ -86,7 +86,7 @@ npm run build:chrome
 也可以直接打包出 zip：
 
 ```bash
-npm run dist:chrome   # 产物：dist-chrome.zip
+npm run dist:chrome --workspace @localpass/browser  # 产物：apps/browser/dist/oss-dist-chrome.zip
 ```
 
 ### 开发
@@ -94,10 +94,10 @@ npm run dist:chrome   # 产物：dist-chrome.zip
 这是一个 [Nx](https://nx.dev) monorepo，常用命令：
 
 ```bash
-npm run build:chrome      # 构建扩展（开发模式）
-npm run build:prod:chrome # 构建扩展（生产模式）
-npm test                  # 单元测试
-npm run lint              # 代码检查
+npm run build:chrome --workspace @localpass/browser      # 构建扩展（开发模式）
+npm run build:prod:chrome --workspace @localpass/browser # 构建扩展（生产模式）
+npm test                                                 # 单元测试
+npm run lint                                             # 代码检查
 ```
 
 更多请参考 [CONTRIBUTING.md](CONTRIBUTING.md) 与本仓库的 [文档索引](docs/README.md)。
