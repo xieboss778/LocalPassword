@@ -2,6 +2,7 @@ import { mock } from "jest-mock-extended";
 import { firstValueFrom, Observable } from "rxjs";
 
 import { Fido2CredentialView } from "../../../vault/models/view/fido2-credential.view";
+import { Fido2ActiveRequestEvents } from "../../abstractions/fido2/fido2-active-request-manager.abstraction";
 
 import { Fido2ActiveRequestManager } from "./fido2-active-request-manager";
 
@@ -47,6 +48,27 @@ describe("Fido2ActiveRequestManager", () => {
     await flushPromises();
 
     expect(result).toBe(credentialId);
+  });
+
+  it("aborts a pending request when its abort controller is aborted", async () => {
+    const abortController = new AbortController();
+    (firstValueFrom as jest.Mock).mockImplementation(jest.requireActual("rxjs").firstValueFrom);
+
+    const pending = requestManager.newActiveRequest(tabId, [], abortController);
+    await flushPromises();
+    abortController.abort();
+
+    await expect(pending).resolves.toEqual({ type: Fido2ActiveRequestEvents.Abort });
+  });
+
+  it("rejects a request that starts with an already-aborted controller", async () => {
+    const abortController = new AbortController();
+    abortController.abort();
+    (firstValueFrom as jest.Mock).mockImplementation(jest.requireActual("rxjs").firstValueFrom);
+
+    await expect(requestManager.newActiveRequest(tabId, [], abortController)).rejects.toMatchObject(
+      { name: "AbortError" },
+    );
   });
 
   it("gets the observable stream of active requests", async () => {

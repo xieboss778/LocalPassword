@@ -170,6 +170,36 @@ describe("Fido2 Content Script", () => {
     });
   });
 
+  it("forwards an abort that arrives while the credential request is still pending", async () => {
+    const message = mock<MessageWithMetadata>({
+      type: MessageTypes.CredentialCreationRequest,
+      data: mock<InsecureCreateCredentialParams>(),
+    });
+    const abortController = new AbortController();
+    let resolveRequest!: (value: unknown) => void;
+    const pending = new Promise((resolve) => (resolveRequest = resolve));
+    jest.spyOn(chrome.runtime, "sendMessage").mockImplementation((sent) => {
+      if ((sent as { command?: string }).command === "fido2AbortRequest") {
+        return Promise.resolve();
+      }
+      return pending;
+    });
+
+    // FIXME: Remove when updating file. Eslint update
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("./fido2-content-script");
+
+    const result = messenger.handler!(message, abortController);
+    abortController.abort();
+    resolveRequest({ credentialId: "mock" });
+    await result;
+
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+      command: "fido2AbortRequest",
+      abortedRequestId: expect.any(String),
+    });
+  });
+
   it("rejects credential requests and returns an error result", async () => {
     const errorMessage = "Test error";
     const message = mock<MessageWithMetadata>({

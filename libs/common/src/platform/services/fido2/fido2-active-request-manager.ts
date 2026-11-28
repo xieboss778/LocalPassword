@@ -67,10 +67,16 @@ export class Fido2ActiveRequestManager implements Fido2ActiveRequestManagerAbstr
 
     const abortListener = () => this.abortActiveRequest(tabId);
     abortController.signal.addEventListener("abort", abortListener);
-    const requestResult = firstValueFrom(newRequest.subject);
-    abortController.signal.removeEventListener("abort", abortListener);
-
-    return requestResult;
+    try {
+      // An already-aborted signal does not replay its event to a new listener, so abort the
+      // request explicitly before waiting on it.
+      if (abortController.signal.aborted) {
+        this.abortActiveRequest(tabId);
+      }
+      return await firstValueFrom(newRequest.subject);
+    } finally {
+      abortController.signal.removeEventListener("abort", abortListener);
+    }
   }
 
   /**

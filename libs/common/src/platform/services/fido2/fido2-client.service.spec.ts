@@ -716,14 +716,15 @@ describe("FidoAuthenticatorService", () => {
         expect(authenticator.getAssertion).toHaveBeenCalledTimes(2);
       });
 
-      it("restarts the mediated conditional request if a the abort controller aborts the request", async () => {
+      it("stops retrying the mediated conditional request when its abort controller aborts", async () => {
         const abortController = new AbortController();
         abortController.abort();
         authenticator.getAssertion.mockRejectedValueOnce(new DOMException("AbortError"));
 
-        await client.assertCredential(params, windowReference);
-
-        expect(authenticator.getAssertion).toHaveBeenCalledTimes(2);
+        await expect(
+          client.assertCredential(params, windowReference, abortController),
+        ).rejects.toMatchObject({ name: "AbortError" });
+        expect(authenticator.getAssertion).toHaveBeenCalledTimes(1);
       });
 
       it("throws AbortError instead of TypeError when the active conditional request is aborted", async () => {

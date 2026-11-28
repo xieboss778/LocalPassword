@@ -60,21 +60,23 @@ import { MessageWithMetadata, Messenger } from "./messaging/messenger";
 
     try {
       if (message.type === MessageTypes.CredentialCreationRequest) {
-        return handleCredentialCreationRequestMessage(
+        // Await the request inside the try: a bare `return promise` would run the finally block
+        // immediately and drop the abort listener while the credential request is still pending.
+        return await handleCredentialCreationRequestMessage(
           requestId,
           message.data as InsecureCreateCredentialParams,
         );
       }
 
       if (message.type === MessageTypes.CredentialGetRequest) {
-        return handleCredentialGetRequestMessage(
+        return await handleCredentialGetRequestMessage(
           requestId,
           message.data as InsecureAssertCredentialParams,
         );
       }
 
       if (message.type === MessageTypes.AbortRequest) {
-        return sendExtensionMessage("fido2AbortRequest", { abortedRequestId: requestId });
+        return await sendExtensionMessage("fido2AbortRequest", { abortedRequestId: requestId });
       }
     } finally {
       abortController?.signal.removeEventListener("abort", abortHandler);

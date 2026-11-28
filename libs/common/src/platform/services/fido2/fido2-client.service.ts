@@ -444,6 +444,9 @@ export class Fido2ClientService<
 
       if (abortController.signal.aborted) {
         this.logService?.info(`[Fido2Client] Aborted with AbortController`);
+        // Leave the loop so the caller sees the AbortError instead of retrying a cancelled
+        // request until the 30 second timeout.
+        break;
       }
     }
 
