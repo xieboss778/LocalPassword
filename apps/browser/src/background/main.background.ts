@@ -307,6 +307,7 @@ import {
   LocalAccountService,
   LocalPassApiService,
   LocalVaultNetworkGate,
+  TrashMaintenanceService,
 } from "@localpass/local-vault";
 import { FlightRecorderLogRecorder, limitPerformanceMeasurements } from "@localpass/logging";
 import {
@@ -1984,6 +1985,18 @@ export default class MainBackground {
     await this.ipcContentScriptManagerService.init();
     await this.ipcService.init();
     await this.sharedUnlockPeerService.start();
+
+    // 回收站保留 30 天：解锁后清掉已经到期的条目。弹窗里的解锁会通过
+    // CrossContextUnlockService 的 runOnUnlockActions 走到这个后台实例，所以注册在自动
+    // 解锁之前即可同时覆盖手动解锁与 never-lock 启动解锁；服务内部吞掉错误，不影响解锁。
+    const trashMaintenance = new TrashMaintenanceService(
+      this.localVaultWriter,
+      this.stateProvider,
+      this.logService,
+    );
+    this.unlockService.registerOnUnlockAction(async (userId) => {
+      await trashMaintenance.purgeExpiredTrash(userId);
+    });
 
     for (const userId of userIds) {
       try {

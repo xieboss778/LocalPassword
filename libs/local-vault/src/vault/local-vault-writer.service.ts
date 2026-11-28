@@ -317,14 +317,17 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
     });
   }
 
+  /**
+   * Decides whether a save created a revision worth keeping in the version stack.
+   *
+   * Flag toggles (favorite, reprompt) are deliberately excluded: they change how the item behaves
+   * in the UI, not its content, so starring an item must not push a duplicate into its history.
+   */
   private hasContentChanges(previous: CipherView, next: CipherView): boolean {
     if (diffFieldLabelKeys(previous, next).length > 0) {
       return true;
     }
     if ((previous.folderId ?? "") !== (next.folderId ?? "")) {
-      return true;
-    }
-    if (previous.favorite !== next.favorite || previous.reprompt !== next.reprompt) {
       return true;
     }
     return this.passkeyFingerprint(previous) !== this.passkeyFingerprint(next);

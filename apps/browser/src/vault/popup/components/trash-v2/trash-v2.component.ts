@@ -21,7 +21,7 @@ import { CipherType } from "@localpass/common/vault/enums/cipher-type";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
 import { DialogService, IconModule } from "@localpass/components";
-import { ItemKind, kindOf } from "@localpass/local-vault";
+import { ItemKind, TRASH_RETENTION_DAYS, kindOf } from "@localpass/local-vault";
 
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
 import { PopupCipherViewLike } from "../../views/popup-cipher.view";
@@ -183,7 +183,7 @@ export class TrashV2Component {
       return null;
     }
     const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000));
-    return Math.max(0, 30 - days);
+    return Math.max(0, TRASH_RETENTION_DAYS - days);
   }
 
   private deletedAgo(item: PopupCipherViewLike): string {

@@ -19,10 +19,13 @@ import { ServerNotificationsService } from "@localpass/common/platform/server-no
 import { ContainerService } from "@localpass/common/platform/services/container.service";
 import { MigrationRunner } from "@localpass/common/platform/services/migration-runner";
 import { UserId } from "@localpass/common/types/guid";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import { BiometricsService, KeyService as KeyServiceAbstraction } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import { EncryptService, LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { TrashMaintenanceService } from "@localpass/local-vault";
 import { limitPerformanceMeasurements, LogService } from "@localpass/logging";
+import { StateProvider } from "@localpass/state";
 import { UnlockService } from "@localpass/unlock";
 
 import { DesktopAutofillService } from "../../autofill/services/desktop-autofill.service";
@@ -71,6 +74,8 @@ export class InitService {
     private updateRestartService: UpdateRestartService,
     private logService: LogService,
     private automationDriver: AutomationDriver,
+    private localVaultWriter: LocalVaultWriter,
+    private stateProvider: StateProvider,
   ) {}
 
   init() {
@@ -89,6 +94,17 @@ export class InitService {
 
       // Shared unlock starts before auto unlock, so the peer's unlock hook reports the restored unlock.
       await this.sharedUnlockPeerService.start();
+
+      // 回收站保留 30 天：解锁后清掉已经到期的条目。放在自动解锁之前，never-lock 的本地
+      // 保险库在启动时也会被清理；服务内部吞掉错误，不会影响解锁本身。
+      const trashMaintenance = new TrashMaintenanceService(
+        this.localVaultWriter,
+        this.stateProvider,
+        this.logService,
+      );
+      this.unlockService.registerOnUnlockAction(async (userId) => {
+        await trashMaintenance.purgeExpiredTrash(userId);
+      });
 
       // For each acct, we must await the process of unlocking with the never-lock key
       // if it is set, to avoid race conditions of any code trying to access the user key

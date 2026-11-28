@@ -23,7 +23,7 @@ import { FolderService } from "@localpass/common/vault/abstractions/folder/folde
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { DialogService, IconModule } from "@localpass/components";
-import { kindOf } from "@localpass/local-vault";
+import { TRASH_RETENTION_DAYS, kindOf } from "@localpass/local-vault";
 
 /** 回收站保留 30 天，删掉的条目会在这里展示删除时间。 */
 
@@ -152,7 +152,7 @@ export class TrashDesktopV2Component implements OnInit {
       0,
       Math.floor((Date.now() - item.deletedDate.getTime()) / (24 * 60 * 60 * 1000)),
     );
-    const remaining = Math.max(0, 30 - days);
+    const remaining = Math.max(0, TRASH_RETENTION_DAYS - days);
     const ago = days === 0 ? this.i18n.t("deletedToday") : this.i18n.t("daysAgo", String(days));
     return `${ago} · ${this.i18n.t("remainingDays", String(remaining))}`;
   }

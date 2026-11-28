@@ -4,6 +4,7 @@ import { of } from "rxjs";
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { UserId } from "@localpass/common/types/guid";
 import { CipherEncryptionService } from "@localpass/common/vault/abstractions/cipher-encryption.service";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@localpass/common/vault/enums/cipher-type";
 import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
 import { FolderData } from "@localpass/common/vault/models/data/folder.data";
@@ -238,6 +239,102 @@ describe("DefaultLocalVaultWriter", () => {
     await writer.updateCipher(next, userId);
 
     expect(versions[id]).toBeUndefined();
+  });
+
+  it("records the previous revision for a real field change", async () => {
+    const id = "card-id";
+    state[id] = {
+      id,
+      type: CipherType.Card,
+      creationDate: "2026-01-01T00:00:00.000Z",
+      revisionDate: "2026-01-01T00:00:00.000Z",
+    } as CipherData;
+    const writer = createWriter();
+
+    const previous = card("4111111111111111");
+    previous.id = id;
+    const next = card("4111111111111111");
+    next.id = id;
+    next.name = "Renamed card";
+    cipherEncryptionService.encrypt.mockResolvedValue({ cipher: new Cipher() } as any);
+    cipherEncryptionService.decrypt.mockResolvedValueOnce(previous).mockResolvedValueOnce(next);
+
+    await writer.updateCipher(next, userId);
+
+    expect(versions[id]).toHaveLength(1);
+  });
+
+  it("does not record a version when only the favorite flag is toggled", async () => {
+    const id = "card-id";
+    state[id] = {
+      id,
+      type: CipherType.Card,
+      creationDate: "2026-01-01T00:00:00.000Z",
+      revisionDate: "2026-01-01T00:00:00.000Z",
+    } as CipherData;
+    const writer = createWriter();
+
+    const previous = card("4111111111111111");
+    previous.id = id;
+    previous.favorite = false;
+    const next = card("4111111111111111");
+    next.id = id;
+    next.favorite = true;
+    cipherEncryptionService.encrypt.mockResolvedValue({ cipher: new Cipher() } as any);
+    cipherEncryptionService.decrypt.mockResolvedValueOnce(previous).mockResolvedValueOnce(next);
+
+    await writer.updateCipher(next, userId);
+
+    // 收藏只是一个标记：切换它不应把同一条内容再压进版本历史。
+    expect(versions[id]).toBeUndefined();
+  });
+
+  it("does not record a version when only the reprompt setting is toggled", async () => {
+    const id = "card-id";
+    state[id] = {
+      id,
+      type: CipherType.Card,
+      creationDate: "2026-01-01T00:00:00.000Z",
+      revisionDate: "2026-01-01T00:00:00.000Z",
+    } as CipherData;
+    const writer = createWriter();
+
+    const previous = card("4111111111111111");
+    previous.id = id;
+    previous.reprompt = CipherRepromptType.None;
+    const next = card("4111111111111111");
+    next.id = id;
+    next.reprompt = CipherRepromptType.Password;
+    cipherEncryptionService.encrypt.mockResolvedValue({ cipher: new Cipher() } as any);
+    cipherEncryptionService.decrypt.mockResolvedValueOnce(previous).mockResolvedValueOnce(next);
+
+    await writer.updateCipher(next, userId);
+
+    expect(versions[id]).toBeUndefined();
+  });
+
+  it("still records a version when the item moves to another folder", async () => {
+    const id = "card-id";
+    state[id] = {
+      id,
+      type: CipherType.Card,
+      creationDate: "2026-01-01T00:00:00.000Z",
+      revisionDate: "2026-01-01T00:00:00.000Z",
+    } as CipherData;
+    const writer = createWriter();
+
+    const previous = card("4111111111111111");
+    previous.id = id;
+    previous.folderId = "folder-1";
+    const next = card("4111111111111111");
+    next.id = id;
+    next.folderId = "folder-2";
+    cipherEncryptionService.encrypt.mockResolvedValue({ cipher: new Cipher() } as any);
+    cipherEncryptionService.decrypt.mockResolvedValueOnce(previous).mockResolvedValueOnce(next);
+
+    await writer.updateCipher(next, userId);
+
+    expect(versions[id]).toHaveLength(1);
   });
 
   it("keeps only ten versions and drops them when the item is permanently removed", async () => {
