@@ -1288,7 +1288,7 @@ const INITIAL_GEN_HISTORY = [
 
 const CHANGELOG_ENTRIES = [
   {
-    ver: "2026.11.1",
+    ver: "2026.11.2",
     date: "2026-11-27",
     items: [
       "紧凑 4px 栅格工作台 + 极紧 30px 密度切换",
@@ -1323,7 +1323,7 @@ const KNOWN_LIMITS = [
 ];
 
 const DIAGNOSTIC_SAMPLE = `LocalPass 诊断报告（无敏感数据 · 仅供反馈粘贴）
-版本：2026.11.1-compact-v4 | 平台：macOS 15.2 + Chrome MV3
+版本：2026.11.2-compact-v4 | 平台：macOS 15.2 + Chrome MV3
 保险库统计：128 条目（归档 3 / 回收站 3）· 4 文件夹
 原生消息桥接：com.localpass.desktop（已连接 · 触控 ID 可用）
 R2 同步：已配置（gen #42 · 待同步 0 · 未解决冲突 0）

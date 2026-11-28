@@ -410,7 +410,7 @@ function extSettingsView(state) {
       state.density === "ultra" ? "极紧模式 32px" : "紧凑模式 36px",
     ],
     ["ext-data", "lock", "数据与安全清空", "清空本机扩展库前提醒先导出"],
-    ["ext-about", "info", "关于与零敏感诊断", "v2026.11.1 · GPL-3.0"],
+    ["ext-about", "info", "关于与零敏感诊断", "v2026.11.2 · GPL-3.0"],
   ];
   const groupHtml = (arr) =>
     `<div class="grp">${arr
@@ -715,7 +715,7 @@ function extSubpageView(state, id) {
   if (id === "ext-about") {
     return `<div class="ext lp">${extHeader("关于与离线诊断", state, { back: true })}<div class="ext-scroll">
       <div class="grp">
-        <div class="ext-field"><span class="k">版本</span><span class="v mono">2026.11.1-compact-v4</span><span class="chip brand">GPL-3.0</span></div>
+        <div class="ext-field"><span class="k">版本</span><span class="v mono">2026.11.2-compact-v4</span><span class="chip brand">GPL-3.0</span></div>
         <div class="ext-field"><span class="k">原生桥接</span><span class="v mono">com.localpass.desktop</span><span class="chip ok">正常</span></div>
       </div>
       <div class="seclbl">零敏感诊断包</div>

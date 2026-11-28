@@ -1542,7 +1542,7 @@ function macAboutPage() {
     <div style="display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:10px;margin-top:10px">
       <div>
         <div class="panel" style="margin-top:0">
-          <div class="panel-h">版本更新记录 <span class="sub">v2026.11.1-compact-v4</span></div>
+          <div class="panel-h">版本更新记录 <span class="sub">v2026.11.2-compact-v4</span></div>
           ${CHANGELOG_ENTRIES.map(
             (c) => `<div style="padding:8px 10px;border-bottom:1px solid var(--border-light)">
             <div style="display:flex;align-items:center;gap:6px"><span class="chip brand">v${c.ver}</span><span style="font-size:10px;color:var(--text-3)">${c.date}</span></div>

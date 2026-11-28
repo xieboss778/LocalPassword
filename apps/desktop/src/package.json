@@ -3,7 +3,7 @@
   "productName": "LocalPass",
   "desktopName": "localpass.desktop",
   "description": "A fully offline password manager.",
-  "version": "2026.11.1",
+  "version": "2026.11.2",
   "author": "LocalPass contributors (https://github.com/xieboss778/LocalPass)",
   "homepage": "https://github.com/xieboss778/LocalPass",
   "license": "GPL-3.0",
