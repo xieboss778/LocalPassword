@@ -73,7 +73,9 @@ export const authGuard: CanActivateFn = async (
     }
     // TODO PM-9674: when extension refresh is finished, remove promptBiometric
     // as it has been integrated into the component as a default feature.
-    return router.createUrlTree(["lock"], { queryParams: { promptBiometric: true } });
+    return router.createUrlTree(["lock"], {
+      queryParams: { promptBiometric: true, redirectUrl: routerState.url },
+    });
   }
 
   // Handle cases where a user needs to set a password when they don't already have one:

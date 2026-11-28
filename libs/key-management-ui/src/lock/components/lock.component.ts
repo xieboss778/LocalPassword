@@ -792,6 +792,16 @@ export class LockComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Return to the page the guard interrupted, e.g. the menu-bar tray panel. Only local routes
+    // are honoured: the query parameter comes from the URL and must not become an open redirect.
+    // Contexts that disable automatic redirects keep control of their own post-unlock navigation.
+    const redirectUrl = this.activatedRoute.snapshot.queryParamMap.get("redirectUrl");
+    const redirectDisabled = this.activatedRoute.snapshot.paramMap.get("disable-redirect") !== null;
+    if (!redirectDisabled && redirectUrl != null && isLocalRoute(redirectUrl)) {
+      await this.router.navigateByUrl(redirectUrl);
+      return;
+    }
+
     // determine success route based on client type
     // The disable-redirect parameter allows callers to prevent automatic navigation after unlock,
     // useful when the lock component is used in contexts where custom post-unlock behavior is needed
@@ -959,4 +969,12 @@ export class LockComponent implements OnInit, OnDestroy {
         );
     }
   }
+}
+
+/**
+ * Accepts only in-app paths. Absolute URLs and protocol-relative routes are rejected so a
+ * crafted `redirectUrl` query parameter cannot turn the lock screen into an open redirect.
+ */
+function isLocalRoute(url: string): boolean {
+  return url.startsWith("/") && !url.startsWith("//") && !url.startsWith("/lock");
 }

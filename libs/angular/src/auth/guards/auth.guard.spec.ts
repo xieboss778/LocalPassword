@@ -106,6 +106,7 @@ describe("AuthGuard", () => {
 
     await router.navigate(["guarded-route"]);
     expect(router.url).toContain("/lock");
+    expect(router.url).toContain("redirectUrl=%2Fguarded-route");
   });
 
   it("should redirect to / when user is logged out", async () => {

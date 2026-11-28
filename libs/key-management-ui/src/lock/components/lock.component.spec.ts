@@ -95,6 +95,9 @@ describe("LockComponent", () => {
       paramMap: {
         get: jest.fn().mockReturnValue(null), // return null for 'disable-redirect' param
       },
+      queryParamMap: {
+        get: jest.fn().mockReturnValue(null),
+      },
     },
   };
 
@@ -105,6 +108,8 @@ describe("LockComponent", () => {
     mockPlatformUtilsService.getClientType.mockReturnValue(ClientType.Web);
     mockKeyService.hasUserKey.mockResolvedValue(false);
     mockI18nService.t.mockImplementation((key: string) => key);
+    mockActivatedRoute.snapshot.paramMap.get.mockReturnValue(null);
+    mockActivatedRoute.snapshot.queryParamMap.get.mockReturnValue(null);
 
     // Mock observables that cause timeouts
     mockBiometricStateService.promptAutomatically$.mockReturnValue(of(false));
@@ -387,6 +392,54 @@ describe("LockComponent", () => {
         }
       },
     );
+
+    it("navigates back to the guarded route instead of the default success route", async () => {
+      component.clientType = ClientType.Desktop;
+      mockLockComponentService.getPreviousUrl.mockReturnValue(null);
+      mockActivatedRoute.snapshot.queryParamMap.get.mockImplementation((key: string) =>
+        key === "redirectUrl" ? "/tray" : null,
+      );
+
+      await component.successfulMasterPasswordUnlock({ userKey: mockUserKey, masterPassword });
+
+      assertUnlocked();
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith("/tray");
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
+
+    it.each(["//evil.example/vault", "https://evil.example/vault", "/lock?x=1"])(
+      "ignores a non-local redirect url = %o",
+      async (redirectUrl) => {
+        component.clientType = ClientType.Desktop;
+        mockLockComponentService.getPreviousUrl.mockReturnValue(null);
+        mockActivatedRoute.snapshot.queryParamMap.get.mockImplementation((key: string) =>
+          key === "redirectUrl" ? redirectUrl : null,
+        );
+
+        await component.successfulMasterPasswordUnlock({ userKey: mockUserKey, masterPassword });
+
+        assertUnlocked();
+        expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
+        expect(mockRouter.navigate).toHaveBeenCalledWith(["vault"]);
+      },
+    );
+
+    it("leaves navigation to the caller when automatic redirects are disabled", async () => {
+      component.clientType = ClientType.Desktop;
+      mockLockComponentService.getPreviousUrl.mockReturnValue(null);
+      mockActivatedRoute.snapshot.paramMap.get.mockImplementation((key: string) =>
+        key === "disable-redirect" ? "" : null,
+      );
+      mockActivatedRoute.snapshot.queryParamMap.get.mockImplementation((key: string) =>
+        key === "redirectUrl" ? "/tray" : null,
+      );
+
+      await component.successfulMasterPasswordUnlock({ userKey: mockUserKey, masterPassword });
+
+      assertUnlocked();
+      expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
 
     it.each([
       ["/tabs/current", ClientType.Browser],
