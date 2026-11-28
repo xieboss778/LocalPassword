@@ -103,6 +103,7 @@ import { ImportShellDesktopComponent } from "./tools/import/import-shell-desktop
 import { NetworkGateDesktopV2Component } from "./tools/network-gate/network-gate-desktop-v2.component";
 import { unsavedSendEditsGuard } from "./tools/send/guards/unsaved-send-edits.guard";
 import { SendComponent } from "./tools/send/send.component";
+import { unsavedVaultEditsGuard } from "./vault/guards/unsaved-vault-edits.guard";
 
 /**
  * Data properties acceptable for use in route objects in the desktop
@@ -523,6 +524,7 @@ export const routes: Routes = [
         path: "vault",
         pathMatch: "full",
         component: VaultDesktopV2Component,
+        canDeactivate: [unsavedVaultEditsGuard],
         data: { pageTitle: { key: "vault" } } satisfies RouteDataProperties,
       },
       {

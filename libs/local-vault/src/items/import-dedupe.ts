@@ -1,6 +1,6 @@
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
-import { readFieldValues, type FieldValues } from "./item-fields";
+import { FIELDS, readField } from "./item-fields";
 import { ItemKind, kindOf } from "./item-kind";
 
 /** 导入结果里的关系是「条目下标 → 文件夹/集合下标」，去重后要同步重排。 */
@@ -87,7 +87,6 @@ interface ImportIdentity {
 
 function importIdentityOf(cipher: CipherView): ImportIdentity {
   const kind = kindOf(cipher);
-  const values = readFieldValues(cipher, kind);
 
   let identity = "";
   let discriminating = false;
@@ -97,16 +96,16 @@ function importIdentityOf(cipher: CipherView): ImportIdentity {
     identity = [username, primaryUri].join("\u0001");
     discriminating = username !== "" || primaryUri !== "";
   } else if (kind === ItemKind.Token) {
-    identity = normalize(values["service"]);
+    identity = normalize(safeField(cipher, kind, "service"));
     discriminating = identity !== "";
   } else if (kind === ItemKind.SshKey) {
     identity = normalize(cipher.sshKey?.keyFingerprint);
     discriminating = identity !== "";
   } else if (kind === ItemKind.License) {
-    identity = normalize(values["software"]);
+    identity = normalize(safeField(cipher, kind, "software"));
     discriminating = identity !== "";
   } else if (kind === ItemKind.Server) {
-    identity = normalize(values["host"]);
+    identity = normalize(safeField(cipher, kind, "host"));
     discriminating = identity !== "";
   } else if (kind === ItemKind.Card) {
     identity = normalize(lastFour(cipher.card?.number ?? ""));
@@ -118,7 +117,7 @@ function importIdentityOf(cipher: CipherView): ImportIdentity {
   }
 
   const fingerprint = [kind, normalize(cipher.name), identity].join("\u0000");
-  const extras = extraInFileFields(kind, values);
+  const extras = extraInFileFields(cipher, kind);
   // 追加的字段即使为空也占位：两边都为空时键相同（照旧合并），任一侧不同则不合并。
   const inFileKey = extras.length === 0 ? fingerprint : [fingerprint, ...extras].join("\u0000");
 
@@ -130,36 +129,50 @@ function importIdentityOf(cipher: CipherView): ImportIdentity {
  * 令牌的 accessKeyId、许可证的版本与订单号、服务器的端口/协议/登录用户、
  * 身份的邮箱与电话。值统一走 {@link normalize}；顺序固定，空值也保留占位。
  */
-function extraInFileFields(kind: ItemKind, values: FieldValues): string[] {
+function extraInFileFields(cipher: CipherView, kind: ItemKind): string[] {
   if (kind === ItemKind.Token) {
-    return [normalize(values["accessKeyId"])];
+    return [normalize(safeField(cipher, kind, "accessKeyId"))];
   }
   if (kind === ItemKind.License) {
-    return [normalize(values["edition"]), normalize(values["orderId"])];
+    return [
+      normalize(safeField(cipher, kind, "edition")),
+      normalize(safeField(cipher, kind, "orderId")),
+    ];
   }
   if (kind === ItemKind.Server) {
     return [
-      normalize(values["port"]),
-      normalize(values["protocol"]),
-      normalize(values["loginUser"]),
+      normalize(safeField(cipher, kind, "port")),
+      normalize(safeField(cipher, kind, "protocol")),
+      normalize(safeField(cipher, kind, "loginUser")),
     ];
   }
   if (kind === ItemKind.Identity) {
-    return [normalize(values["email"]), normalize(values["phone"])];
+    return [
+      normalize(safeField(cipher, kind, "email")),
+      normalize(safeField(cipher, kind, "phone")),
+    ];
   }
   return [];
 }
 
+/** Read only the field named by the identity policy; avoid materializing secret fields. */
+function safeField(cipher: CipherView, kind: ItemKind, fieldId: string): string {
+  const target = FIELDS[kind].find((field) => field.id === fieldId)?.target;
+  return target == null ? "" : readField(cipher, target);
+}
+
 function normalizeUri(value: string | null | undefined): string {
-  const trimmed = (value ?? "").trim().toLowerCase().replace(/\/+$/, "");
+  const trimmed = (value ?? "").trim();
   if (!trimmed) {
     return "";
   }
   try {
     const parsed = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`);
-    return parsed.hostname + (parsed.pathname === "/" ? "" : parsed.pathname);
+    // Hostnames are case-insensitive; ports and path case can distinguish endpoints.
+    const pathname = parsed.pathname.replace(/\/+$/, "");
+    return `${parsed.hostname.toLowerCase()}${parsed.port ? `:${parsed.port}` : ""}${pathname}${parsed.search}${parsed.hash}`;
   } catch {
-    return trimmed;
+    return trimmed.toLowerCase();
   }
 }
 

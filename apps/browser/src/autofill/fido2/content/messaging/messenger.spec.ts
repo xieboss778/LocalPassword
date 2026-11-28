@@ -74,6 +74,41 @@ describe("Messenger", () => {
     expect(received[0].abortController?.signal.aborted).toBe(true);
   });
 
+  it("should reject the pending request when its abort signal fires", async () => {
+    const abortController = new AbortController();
+    const request = messengerA.request(createRequest(), abortController.signal);
+
+    abortController.abort();
+
+    const received = handlerB.receive()[0];
+    const outcome = await Promise.race([
+      request.then(
+        () => "resolved",
+        (error) => error,
+      ),
+      new Promise<string>((resolve) => setTimeout(() => resolve("timeout"), 20)),
+    ]);
+
+    // On a broken implementation, release the request before asserting so the test does not leave
+    // its synthetic channel hanging in the suite.
+    received.respond(createResponse());
+    expect(received.abortController?.signal.aborted).toBe(true);
+    expect(outcome).toMatchObject({ name: "AbortError" });
+  });
+
+  it("should reject an already-aborted request without sending it", async () => {
+    const abortController = new AbortController();
+    abortController.abort();
+
+    await expect(messengerA.request(createRequest(), abortController.signal)).rejects.toMatchObject(
+      {
+        name: "AbortError",
+      },
+    );
+
+    expect(handlerB.receive()).toHaveLength(0);
+  });
+
   describe("Messenger message validation", () => {
     let listener!: (e: MessageEvent<MessageWithMetadata>) => void;
 

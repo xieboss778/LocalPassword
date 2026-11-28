@@ -150,6 +150,10 @@ import { Messenger } from "./messaging/messenger";
     const abortSignal = options?.signal || new AbortController().signal;
     const fallbackSupported = browserNativeWebauthnSupport;
 
+    if (abortSignal.aborted) {
+      throw new DOMException("The operation was aborted.", "AbortError");
+    }
+
     if (options?.mediation && options.mediation === "conditional") {
       const internalAbortControllers = [new AbortController(), new AbortController()];
       const localpassResponse = async (internalAbortController: AbortController) => {

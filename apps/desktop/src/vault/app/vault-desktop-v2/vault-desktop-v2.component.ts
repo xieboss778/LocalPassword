@@ -53,7 +53,7 @@ import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { PasswordHistoryView } from "@localpass/common/vault/models/view/password-history.view";
-import { IconModule } from "@localpass/components";
+import { DialogService, IconModule } from "@localpass/components";
 import {
   applyCustomFields,
   applyFieldValues,
@@ -1425,7 +1425,7 @@ const QR_SECRET_LABEL = "qr-secret";
                   <button
                     type="button"
                     class="agy-btn agy-danger agy-lg"
-                    (click)="closeDrawer(); remove()"
+                    (click)="closeEditAndRemove()"
                   >
                     {{ i18n.t("delete") }}
                   </button>
@@ -1553,6 +1553,7 @@ export class VaultDesktopV2Component implements OnInit {
   private readonly passwordAutoHideService = inject(PasswordAutoHideService);
   private readonly passwordStrengthService = inject(PasswordStrengthServiceAbstraction);
   private readonly passwordRepromptService = inject(PasswordRepromptService);
+  private readonly dialogService = inject(DialogService);
   private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
     optional: true,
   });
@@ -1601,6 +1602,7 @@ export class VaultDesktopV2Component implements OnInit {
   protected readonly newKind = signal<ItemKind>(ItemKind.Login);
   protected readonly values = signal<FieldValues>({});
   protected readonly editFolderId = signal("");
+  private readonly newItemInitialFolderId = signal("");
   protected readonly editFavorite = signal(false);
   protected readonly editReprompt = signal(false);
   protected readonly editCustomFields = signal<readonly CustomFieldDraft[]>([]);
@@ -2374,12 +2376,97 @@ export class VaultDesktopV2Component implements OnInit {
     return field.options ?? this.noOptions;
   }
 
-  protected closeDrawer(): void {
-    this.repromptedCipherId.set(null);
-    if (this.drawer() === "edit") {
-      this.cancelEdit();
+  async confirmNavigationAway(): Promise<boolean> {
+    return (
+      (this.drawer() !== "edit" && this.drawer() !== "new-form") ||
+      (await this.confirmDiscardEdits())
+    );
+  }
+
+  protected async closeDrawer(): Promise<void> {
+    if (
+      (this.drawer() === "edit" || this.drawer() === "new-form") &&
+      !(await this.confirmDiscardEdits())
+    ) {
       return;
     }
+    this.repromptedCipherId.set(null);
+    this.drawer.set("closed");
+    this.clearRevealTimers();
+    this.historyRevealed.set(new Set());
+    this.versionRevealed.set(new Set());
+    this.errorMessage.set(null);
+  }
+
+  private async confirmDiscardEdits(): Promise<boolean> {
+    if (!this.hasUnsavedEdits()) {
+      return true;
+    }
+    return this.dialogService.openSimpleDialog({
+      title: { key: "discardEditsTitle" },
+      content: { key: "discardEditsConfirmation" },
+      type: "warning",
+      acceptButtonText: { key: "discardEdits" },
+      cancelButtonText: { key: "keepEditing" },
+    });
+  }
+
+  private hasUnsavedEdits(): boolean {
+    if (this.drawer() === "new-form") {
+      const hasValues = Object.values(this.values()).some((value) => value.trim().length > 0);
+      const hasCustomFields = this.editCustomFields().some(
+        (field) => field.name.trim().length > 0 || field.value.trim().length > 0,
+      );
+      return (
+        hasValues ||
+        hasCustomFields ||
+        this.editFolderId() !== this.newItemInitialFolderId() ||
+        this.editFavorite() ||
+        this.editReprompt()
+      );
+    }
+
+    const item = this.selected();
+    if (!item) {
+      return false;
+    }
+    const kind = this.selectedKind();
+    const originalValues = readFieldValues(item, kind);
+    const values = this.values();
+    if (
+      Object.keys({ ...originalValues, ...values }).some(
+        (id) => (originalValues[id] ?? "") !== (values[id] ?? ""),
+      ) ||
+      (item.folderId ?? "") !== this.editFolderId() ||
+      item.favorite !== this.editFavorite() ||
+      (item.reprompt !== CipherRepromptType.None) !== this.editReprompt()
+    ) {
+      return true;
+    }
+
+    const originalCustomFields = readCustomFields(item, kind);
+    const customFields = this.editCustomFields();
+    return (
+      originalCustomFields.length !== customFields.length ||
+      originalCustomFields.some(
+        (field, index) =>
+          field.name !== customFields[index]?.name ||
+          field.value !== customFields[index]?.value ||
+          !!field.hidden !== !!customFields[index]?.hidden,
+      )
+    );
+  }
+
+  protected async closeEditAndRemove(): Promise<void> {
+    if (!(await this.confirmDiscardEdits())) {
+      return;
+    }
+    this.closeDrawerWithoutConfirmation();
+    this.remove();
+  }
+
+  private closeDrawerWithoutConfirmation(): void {
+    this.repromptedCipherId.set(null);
     this.drawer.set("closed");
     this.clearRevealTimers();
     this.historyRevealed.set(new Set());
@@ -2402,9 +2489,10 @@ export class VaultDesktopV2Component implements OnInit {
     this.editReprompt.set(false);
     this.editCustomFields.set([]);
     this.editHiddenFields.set(new Set());
-    this.editFolderId.set(
-      this.folderFilter() !== "all" && this.folderFilter() !== "none" ? this.folderFilter() : "",
-    );
+    const initialFolderId =
+      this.folderFilter() !== "all" && this.folderFilter() !== "none" ? this.folderFilter() : "";
+    this.newItemInitialFolderId.set(initialFolderId);
+    this.editFolderId.set(initialFolderId);
     this.errorMessage.set(null);
     this.drawer.set("new-type");
   }
@@ -2456,10 +2544,8 @@ export class VaultDesktopV2Component implements OnInit {
     this.editHiddenFields.set(collapsed);
   }
 
-  protected cancelEdit(): void {
-    this.repromptedCipherId.set(null);
-    this.drawer.set("closed");
-    this.errorMessage.set(null);
+  protected async cancelEdit(): Promise<void> {
+    await this.closeDrawer();
   }
 
   protected async openHistory(): Promise<void> {
@@ -3016,7 +3102,7 @@ export class VaultDesktopV2Component implements OnInit {
 
     if (event.key === "Escape" && this.drawer() !== "closed") {
       event.preventDefault();
-      this.closeDrawer();
+      void this.closeDrawer();
       return;
     }
 

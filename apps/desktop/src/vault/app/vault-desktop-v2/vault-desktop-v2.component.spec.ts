@@ -36,6 +36,7 @@ describe("VaultDesktopV2Component", () => {
   const passwordRepromptService = mock<PasswordRepromptService>();
   const platformUtilsService = mock<PlatformUtilsService>();
   const autofillSettingsService = mock<AutofillSettingsServiceAbstraction>();
+  const dialogService = mock<DialogService>();
   const router = { navigate: jest.fn().mockResolvedValue(true), navigateByUrl: jest.fn() };
 
   beforeEach(async () => {
@@ -47,6 +48,7 @@ describe("VaultDesktopV2Component", () => {
     versionHistoryService.rows.mockResolvedValue([]);
     passwordStrengthService.getPasswordStrength.mockReturnValue({ score: 3 } as any);
     passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
+    dialogService.openSimpleDialog.mockResolvedValue(true);
     accountService.activeAccount$ = of({ id: "user-id" } as any);
     autofillSettingsService.clearClipboardDelay$ = of(ClearClipboardDelay.ThirtySeconds);
 
@@ -61,7 +63,7 @@ describe("VaultDesktopV2Component", () => {
         { provide: CipherVersionHistoryService, useValue: versionHistoryService },
         { provide: PasswordStrengthServiceAbstraction, useValue: passwordStrengthService },
         { provide: Router, useValue: router },
-        { provide: DialogService, useValue: mock<DialogService>() },
+        { provide: DialogService, useValue: dialogService },
         { provide: GlobalStateProvider, useValue: new FakeGlobalStateProvider() },
         {
           provide: PlatformUtilsService,
@@ -248,6 +250,322 @@ describe("VaultDesktopV2Component", () => {
     expect(cipherService.updateWithServer).toHaveBeenCalled();
     const saved = cipherService.updateWithServer.mock.calls[0][0];
     expect(saved.login.password).toBe("older-password");
+  });
+
+  it("guards drawer close and scrim after rejecting discard, then keeps the drawer open", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    dialogService.openSimpleDialog.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "edit")
+      ?.click();
+    fixture.detectChanges();
+
+    const input = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    input.value = "First edit";
+    input.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-ext-foot button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "cancel")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    (
+      Array.from(
+        fixture.nativeElement.querySelector(".agy-sheetwrap")?.querySelectorAll("button") ?? [],
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.getAttribute("aria-label") === "close")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(dialogService.openSimpleDialog).toHaveBeenCalledTimes(2);
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).not.toBeNull();
+  });
+
+  it("keeps the open edit when the user rejects the save confirmation on delete", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    dialogService.openSimpleDialog.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "edit")
+      ?.click();
+    fixture.detectChanges();
+
+    const input = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    input.value = "First edit";
+    input.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-ext-foot button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "delete")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(dialogService.openSimpleDialog).toHaveBeenCalledTimes(1);
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).not.toBeNull();
+    expect(fixture.nativeElement.querySelector("[role=dialog]")).toBeNull();
+  });
+
+  it("keeps an edit open when the user declines to discard changes", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    dialogService.openSimpleDialog.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "edit")
+      ?.click();
+    fixture.detectChanges();
+
+    const nameInput = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    nameInput.value = "Renamed";
+    nameInput.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-ext-foot button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "cancel")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(dialogService.openSimpleDialog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: { key: "discardEditsTitle" },
+        content: { key: "discardEditsConfirmation" },
+        acceptButtonText: { key: "discardEdits" },
+        cancelButtonText: { key: "keepEditing" },
+      }),
+    );
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).not.toBeNull();
+    expect(
+      (fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement).value,
+    ).toBe("Renamed");
+  });
+
+  it("blocks route deactivation when the user declines to discard an edited item", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    dialogService.openSimpleDialog.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "edit")
+      ?.click();
+    fixture.detectChanges();
+    const input = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    input.value = "Unsaved navigation draft";
+    input.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    await expect(fixture.componentInstance.confirmNavigationAway()).resolves.toBe(false);
+    expect(dialogService.openSimpleDialog).toHaveBeenCalledWith(
+      expect.objectContaining({ content: { key: "discardEditsConfirmation" } }),
+    );
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).not.toBeNull();
+  });
+
+  it("closes an unchanged edit without asking to discard", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "edit")
+      ?.click();
+    fixture.detectChanges();
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-ext-foot button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "cancel")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(dialogService.openSimpleDialog).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).toBeNull();
+  });
+
+  it("keeps a new-item form open when the user declines to discard changes", async () => {
+    dialogService.openSimpleDialog.mockResolvedValue(false);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector(".agy-mac-welcome button") as HTMLButtonElement).click();
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector(".agy-typegrid button") as HTMLButtonElement).click();
+    fixture.detectChanges();
+    const nameInput = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    nameInput.value = "Synthetic draft";
+    nameInput.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-ext-foot button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "cancel")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(dialogService.openSimpleDialog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: { key: "discardEditsTitle" },
+        content: { key: "discardEditsConfirmation" },
+        acceptButtonText: { key: "discardEdits" },
+        cancelButtonText: { key: "keepEditing" },
+      }),
+    );
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).not.toBeNull();
+    expect(
+      (fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement).value,
+    ).toBe("Synthetic draft");
+  });
+
+  it("closes a new-item form without prompting when it is still empty", async () => {
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector(".agy-mac-welcome button") as HTMLButtonElement).click();
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector(".agy-typegrid button") as HTMLButtonElement).click();
+    fixture.detectChanges();
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-ext-foot button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "cancel")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(dialogService.openSimpleDialog).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).toBeNull();
+  });
+
+  it("discards edited values only after the user confirms", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    dialogService.openSimpleDialog.mockResolvedValue(true);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "edit")
+      ?.click();
+    fixture.detectChanges();
+
+    const nameInput = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    nameInput.value = "Renamed";
+    nameInput.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-ext-foot button"),
+      ) as HTMLButtonElement[]
+    )
+      .find((button) => button.textContent?.trim() === "cancel")
+      ?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector(".agy-drawer")).toBeNull();
+    expect(item.name).toBe("Mail");
   });
 
   it("leaves the cached item untouched when an edit fails to save", async () => {

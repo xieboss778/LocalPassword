@@ -368,6 +368,33 @@ describe("DefaultLocalVaultWriter", () => {
     expect(versions[id]).toBeUndefined();
   });
 
+  it("trashes and restores an imported row without rebuilding it or losing its archive", async () => {
+    const row = Object.assign(new CipherData(), {
+      id: "row",
+      archivedDate: "2026-01-01T00:00:00.000Z",
+      data: "synthetic-payload",
+    });
+    state = { row };
+    const writer = createWriter();
+    await writer.softDeleteManyCiphers(["row"], userId);
+    expect(state.row.deletedDate).toBeDefined();
+    await writer.restoreManyCiphers(["row"], userId);
+    expect(state.row.deletedDate).toBeUndefined();
+    expect(state.row.archivedDate).toBe(row.archivedDate);
+    expect(state.row.data === row.data).toBe(true);
+  });
+
+  it("marks only reassigned items as revised when deleting a folder", async () => {
+    const before = "2026-01-01T00:00:00.000Z";
+    state = {
+      moved: Object.assign(new CipherData(), { id: "moved", folderId: "f1", revisionDate: before }),
+      kept: Object.assign(new CipherData(), { id: "kept", folderId: "f2", revisionDate: before }),
+    };
+    await createWriter().deleteFolder(["f1"], userId);
+    expect(state.moved.revisionDate > before).toBe(true);
+    expect(state.kept.revisionDate).toBe(before);
+  });
+
   it("moves a deleted folder's items to no folder", async () => {
     state = {
       kept: Object.assign(new CipherData(), { id: "kept", folderId: "folder-2" }),

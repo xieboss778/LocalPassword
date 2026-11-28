@@ -240,6 +240,24 @@ describe("AppComponent (desktop)", () => {
     });
   });
 
+  describe("native new-item menu messages", () => {
+    it.each([
+      ["newLogin", "login"],
+      ["newCard", "card"],
+      ["newIdentity", "identity"],
+      ["newSecureNote", "note"],
+      ["newSshKey", "ssh-key"],
+    ])("opens the %s editor from the vault route", async (command, kind) => {
+      router.url = "/vault";
+
+      await dispatchMessage({ command });
+
+      expect(router.navigate).toHaveBeenCalledWith(["/edit-item-v2"], {
+        queryParams: { kind },
+      });
+    });
+  });
+
   describe("switchAccount message", () => {
     const targetUserId = "user-2" as UserId;
 

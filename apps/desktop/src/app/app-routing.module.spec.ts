@@ -3,7 +3,10 @@ import { Route } from "@angular/router";
 import { IMPORT_DESTINATION_ROUTE_PATH } from "@localpass/importer-ui";
 import { vaultFilterRestoreGuard, VAULT_FILTER_SCOPE } from "@localpass/vault";
 
+import { VaultDesktopV2Component } from "../vault/app/vault-desktop-v2/vault-desktop-v2.component";
+
 import { routes } from "./app-routing.module";
+import { unsavedVaultEditsGuard } from "./vault/guards/unsaved-vault-edits.guard";
 
 /** A route that omits the filter memory fails silently, so every scoped path is asserted here. */
 const SCOPED_VAULT_PATHS = [
@@ -42,6 +45,16 @@ describe("desktop vault routes", () => {
     it("restores the remembered filters", () => {
       expect(scopedRoutes()[0].canActivate).toContain(vaultFilterRestoreGuard);
     });
+  });
+});
+
+describe("desktop local vault edit protection", () => {
+  it("routes the LocalPass vault through the unsaved-edits deactivation guard", () => {
+    const vaultRoute = findRoute(routes, "vault").find(
+      (route) => route.component === VaultDesktopV2Component,
+    );
+
+    expect(vaultRoute?.canDeactivate).toContain(unsavedVaultEditsGuard);
   });
 });
 

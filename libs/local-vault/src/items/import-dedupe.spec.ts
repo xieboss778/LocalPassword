@@ -175,6 +175,26 @@ describe("dedupeImportCiphers", () => {
     expect(result.ciphers).toHaveLength(2);
   });
 
+  it.each([
+    ["https://example.test:8443/portal", "https://example.test:9443/portal"],
+    ["https://example.test/Alpha", "https://example.test/alpha"],
+  ])("keeps distinct login endpoints in both file and vault comparisons", (first, second) => {
+    const a = login("Portal", "fixture", "", first);
+    const b = login("Portal", "fixture", "", second);
+    expect(dedupeImportCiphers([a, b], []).duplicateCount).toBe(0);
+    expect(dedupeImportCiphers([b], [a]).duplicateCount).toBe(0);
+  });
+
+  it("reads only identity fields from login rows", () => {
+    const a = login("Portal", "fixture");
+    Object.defineProperty(a.login, "password", {
+      get: () => {
+        throw new Error("non-identity field read");
+      },
+    });
+    expect(dedupeImportCiphers([a], [login("Portal", "fixture")]).duplicateCount).toBe(1);
+  });
+
   it("keeps logins without a username or URI instead of collapsing them by name", () => {
     const result = dedupeImportCiphers([login("Work", ""), login("Work", "")], []);
 

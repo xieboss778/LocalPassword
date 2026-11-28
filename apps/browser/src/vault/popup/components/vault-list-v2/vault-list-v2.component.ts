@@ -252,7 +252,7 @@ interface SearchQuery {
                 [attr.data-row]="rowKey(group.key, i)"
                 [attr.aria-label]="row.name"
                 (click)="open(row.id)"
-                (keydown.enter)="open(row.id)"
+                (keydown.enter)="onRowEnter($event, row.id)"
                 (keydown.space)="onRowSpace($event, row.id)"
                 (focus)="activeId.set(row.id)"
               >
@@ -664,7 +664,17 @@ export class VaultListV2Component implements OnInit {
     void this.router.navigate(["/view-cipher-v2"], { queryParams: { cipherId: id } });
   }
 
+  protected onRowEnter(event: Event, id: string): void {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    this.open(id);
+  }
+
   protected onRowSpace(event: Event, id: string): void {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
     event.preventDefault();
     this.open(id);
   }

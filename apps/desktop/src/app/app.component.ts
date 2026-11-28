@@ -54,13 +54,13 @@ import { UserId } from "@localpass/common/types/guid";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { InternalFolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { PremiumUpgradePromptService } from "@localpass/common/vault/abstractions/premium-upgrade-prompt.service";
-import { CipherType } from "@localpass/common/vault/enums";
 import { RestrictedItemTypesService } from "@localpass/common/vault/services/restricted-item-types.service";
 import { DialogRef, DialogService, ToastOptions, ToastService } from "@localpass/components";
 import { CredentialGeneratorHistoryDialogComponent } from "@localpass/generator-components";
 import { KeyService, BiometricStateService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import { LegacyCompatKeyService } from "@localpass/legacy-crypto";
+import { ItemKind } from "@localpass/local-vault";
 import { TroubleshootingDialogComponent } from "@localpass/logging-angular";
 import { LockService, LockSource } from "@localpass/unlock";
 import { AddEditFolderDialogComponent, AddEditFolderDialogResult } from "@localpass/vault";
@@ -393,19 +393,19 @@ export class AppComponent implements OnInit, OnDestroy {
             await this.router.navigate(["/export"]);
             break;
           case "newLogin":
-            this.routeToVault("add", CipherType.Login);
+            await this.routeToNewItem(ItemKind.Login);
             break;
           case "newCard":
-            this.routeToVault("add", CipherType.Card);
+            await this.routeToNewItem(ItemKind.Card);
             break;
           case "newIdentity":
-            this.routeToVault("add", CipherType.Identity);
+            await this.routeToNewItem(ItemKind.Identity);
             break;
           case "newSecureNote":
-            this.routeToVault("add", CipherType.SecureNote);
+            await this.routeToNewItem(ItemKind.Note);
             break;
           case "newSshKey":
-            this.routeToVault("add", CipherType.SshKey);
+            await this.routeToNewItem(ItemKind.SshKey);
             break;
           default:
             break;
@@ -812,18 +812,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  private routeToVault(action: string, cipherType: CipherType) {
-    if (!this.router.url.includes("vault")) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["/vault"], {
-        queryParams: {
-          action: action,
-          addType: cipherType,
-        },
-        replaceUrl: true,
-      });
-    }
+  private async routeToNewItem(kind: ItemKind): Promise<void> {
+    await this.router.navigate(["/edit-item-v2"], {
+      queryParams: { kind },
+    });
   }
 
   private async checkForSystemTimeout(timeout: VaultTimeout): Promise<void> {

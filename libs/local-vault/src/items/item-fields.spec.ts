@@ -1,3 +1,4 @@
+import { UriMatchStrategy } from "@localpass/common/models/domain/domain-service";
 import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FieldView } from "@localpass/common/vault/models/view/field.view";
@@ -229,6 +230,32 @@ describe("item field mapping", () => {
       "https://gist.github.com",
       "http://localhost:4180",
     ]);
+  });
+
+  it("preserves URI match settings when saving a different field or editing the URI", () => {
+    const view = emptyView();
+    applyFieldValues(view, ItemKind.Login, {
+      uri: "https://one.example.test",
+      uri2: "https://two.example.test",
+    });
+    view.login.uris[0].match = UriMatchStrategy.Exact;
+    view.login.uris[1].match = UriMatchStrategy.Host;
+    applyFieldValues(view, ItemKind.Login, {
+      ...readFieldValues(view, ItemKind.Login),
+      name: "updated",
+      uri2: "https://new.example.test",
+    });
+    expect(view.login.uris.map((uri) => uri.match)).toEqual([
+      UriMatchStrategy.Exact,
+      UriMatchStrategy.Host,
+    ]);
+  });
+
+  it("can save a login imported with a null URI list", () => {
+    const view = emptyView();
+    Object.assign(view.login, { uris: null });
+    applyFieldValues(view, ItemKind.Login, { name: "updated" });
+    expect(view.login.uris).toEqual([]);
   });
 
   it("groups fields for the form, with the item section first", () => {

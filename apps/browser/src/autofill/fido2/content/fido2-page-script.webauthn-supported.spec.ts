@@ -144,6 +144,20 @@ describe("Fido2 page script with native WebAuthn support", () => {
         mockCredentialAssertResult,
       );
     });
+
+    it("rejects an already-aborted conditional request without starting a ceremony", async () => {
+      const abortController = new AbortController();
+      abortController.abort();
+      const options = createCredentialRequestOptionsMock({
+        mediation: "conditional",
+        signal: abortController.signal,
+      });
+
+      await expect(navigator.credentials.get(options)).rejects.toMatchObject({
+        name: "AbortError",
+      });
+      expect(messenger.request).not.toHaveBeenCalled();
+    });
   });
 
   describe("DOMException rehydration across the messenger boundary", () => {

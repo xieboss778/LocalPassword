@@ -70,26 +70,35 @@ export class Messenger {
   async request(request: Message, abortSignal?: AbortSignal): Promise<Message> {
     const requestChannel = new MessageChannel();
     const { port1: localPort, port2: remotePort } = requestChannel;
+    let abortListener: (() => void) | undefined;
 
     try {
-      const promise = new Promise<Message>((resolve) => {
+      if (abortSignal?.aborted) {
+        throw new DOMException("The operation was aborted.", "AbortError");
+      }
+
+      const promise = new Promise<Message>((resolve, reject) => {
         localPort.onmessage = (event: MessageEvent<MessageWithMetadata>) => resolve(event.data);
+        abortListener = () => {
+          localPort.postMessage({
+            metadata: { SENDER },
+            type: MessageTypes.AbortRequest,
+          });
+          reject(new DOMException("The operation was aborted.", "AbortError"));
+        };
+        abortSignal?.addEventListener("abort", abortListener, { once: true });
       });
 
-      const abortListener = () =>
-        localPort.postMessage({
-          metadata: { SENDER },
-          type: MessageTypes.AbortRequest,
-        });
-      abortSignal?.addEventListener("abort", abortListener);
-
-      this.broadcastChannel.postMessage(
-        { ...request, SENDER, senderId: this.messengerId },
-        remotePort,
-      );
+      // The signal may have been aborted as its listener was attached.
+      if (abortSignal?.aborted) {
+        abortListener?.();
+      } else {
+        this.broadcastChannel.postMessage(
+          { ...request, SENDER, senderId: this.messengerId },
+          remotePort,
+        );
+      }
       const response = await promise;
-
-      abortSignal?.removeEventListener("abort", abortListener);
 
       if (response.type === MessageTypes.ErrorResponse) {
         const error = new Error();
@@ -99,7 +108,11 @@ export class Messenger {
 
       return response;
     } finally {
+      if (abortListener) {
+        abortSignal?.removeEventListener("abort", abortListener);
+      }
       localPort.close();
+      remotePort.close();
     }
   }
 

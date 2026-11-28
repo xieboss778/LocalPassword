@@ -639,10 +639,11 @@ export function applyFieldValues(view: CipherView, kind: ItemKind, values: Field
  * Dropping them would silently widen or narrow where the login autofills.
  */
 function applyLoginUris(view: CipherView, values: FieldValues): void {
-  const extras = view.login.uris.slice(2);
+  const current = view.login.uris ?? [];
+  const extras = current.slice(2);
   view.login.uris = [
-    values.uri ? uriView(values.uri) : undefined,
-    values.uri2 ? uriView(values.uri2) : undefined,
+    values.uri ? uriView(values.uri, current[0]?.match) : undefined,
+    values.uri2 ? uriView(values.uri2, current[1]?.match) : undefined,
     ...extras,
   ].filter((uri): uri is LoginUriView => !!uri);
 }
@@ -790,9 +791,10 @@ export function writeField(view: CipherView, target: FieldTarget, value: string)
   }
 }
 
-function uriView(value: string): LoginUriView {
+function uriView(value: string, match?: LoginUriView["match"]): LoginUriView {
   const uri = new LoginUriView();
   uri.uri = value;
+  uri.match = match;
   return uri;
 }
 

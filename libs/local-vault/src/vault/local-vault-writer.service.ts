@@ -195,7 +195,11 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
       const next = { ...(state ?? {}) };
       for (const [cipherId, data] of Object.entries(next)) {
         if (data.folderId != null && ids.includes(data.folderId)) {
-          next[cipherId as CipherId] = { ...data, folderId: undefined };
+          next[cipherId as CipherId] = {
+            ...data,
+            folderId: undefined,
+            revisionDate: new Date().toISOString(),
+          };
         }
       }
       return next;

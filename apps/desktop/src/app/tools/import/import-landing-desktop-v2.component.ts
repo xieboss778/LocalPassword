@@ -244,8 +244,9 @@ export class ImportLandingDesktopV2Component {
   /** Hands the file to the preview page; the contents stay in memory and are consumed there. */
   private async preview(file: File, preferred: ImportType | null): Promise<void> {
     try {
-      const importType = resolveImportType(file.name, preferred);
-      const contents = await readImportFileContents(importType, file);
+      const initialType = resolveImportType(file.name, preferred);
+      const contents = await readImportFileContents(initialType, file);
+      const importType = resolveImportType(file.name, preferred, contents);
       this.staging.set({
         importType,
         fileName: file.name,
@@ -258,7 +259,11 @@ export class ImportLandingDesktopV2Component {
   }
 }
 
-function resolveImportType(fileName: string, preferred: ImportType | null): ImportType {
+export function resolveImportType(
+  fileName: string,
+  preferred: ImportType | null,
+  contents = "",
+): ImportType {
   const lower = fileName.toLowerCase();
   if (lower.endsWith(".1pux")) {
     return "1password1pux";
@@ -268,7 +273,14 @@ function resolveImportType(fileName: string, preferred: ImportType | null): Impo
   }
   if (lower.endsWith(".csv")) {
     if (preferred === "1password1pux") {
+      const firstLine = contents.split(/\r?\n/, 1)[0] ?? "";
+      if (/\bUUID\b/i.test(firstLine) && /\bSCOPE\b/i.test(firstLine)) {
+        return "1passwordwincsv";
+      }
       return "1passwordmaccsv";
+    }
+    if (preferred === "localpassjson") {
+      return "localpasscsv";
     }
     return preferred ?? "localpasscsv";
   }
