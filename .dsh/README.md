@@ -11,9 +11,8 @@ state here.
 - Skills: `.dsh/skills/<name>/SKILL.md` and flat `.dsh/skills/<name>.md` files.
 - Skill resources: files beside each `SKILL.md`, loaded on demand.
 
-DSH does **not** automatically load `.dsh/CLAUDE.md`, `.dsh/settings.json`, or
-`.dsh/rules/`. The original Claude copies are preserved under
-`.dsh/legacy-claude/` for reference and are not active.
+DSH does **not** automatically load `.claude/` project configuration; active
+instructions live in repository-root `AGENTS.md` and `.claude/rules/`.
 
 ## Skill policy for Hermes
 
