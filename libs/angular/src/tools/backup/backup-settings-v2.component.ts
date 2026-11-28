@@ -19,6 +19,7 @@ import { PlatformUtilsService } from "@localpass/common/platform/abstractions/pl
 import { ButtonModule, CalloutModule, DialogService, IconModule } from "@localpass/components";
 import {
   PendingVaultConflict,
+  RemoteSnapshotUnavailableError,
   RemoteVaultMismatchError,
   S3Client,
   SNAPSHOT_PREFIX,
@@ -360,7 +361,21 @@ interface ConfigField {
           }
 
           @if (errorMessage()) {
-            <p class="agy-hint agy-hint-error">{{ errorMessage() }}</p>
+            <div class="tw-flex tw-flex-col tw-items-start tw-gap-2">
+              <p class="agy-hint agy-hint-error">{{ errorMessage() }}</p>
+              @if (canRepair()) {
+                <button
+                  type="button"
+                  bitButton
+                  buttonType="danger"
+                  [disabled]="busy()"
+                  data-testid="backup_repair_remote"
+                  (click)="repair()"
+                >
+                  {{ i18n.t("syncConflictKeepLocal") }}
+                </button>
+              }
+            </div>
           }
 
           <h2 class="agy-seclbl tw-pt-2">{{ i18n.t("backupRecentSnapshots") }}</h2>
@@ -530,6 +545,8 @@ export class BackupSettingsV2Component implements OnInit {
   protected readonly pendingConflicts = signal<readonly PendingVaultConflict[]>([]);
   protected readonly busy = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  /** True when the cloud copy is unreadable and the user can replace it with this device's vault. */
+  protected readonly canRepair = signal(false);
 
   async ngOnInit(): Promise<void> {
     const userId = await this.userId();
@@ -671,6 +688,7 @@ export class BackupSettingsV2Component implements OnInit {
     this.busy.set(true);
     this.phase.set("loading");
     this.errorMessage.set(null);
+    this.canRepair.set(false);
     try {
       const userId = await this.userId();
       const result = await this.syncService.sync(userId);
@@ -688,11 +706,63 @@ export class BackupSettingsV2Component implements OnInit {
         this.toast.show(this.i18n.t("backupSynced"));
       }
     } catch (error) {
+      if (error instanceof RemoteSnapshotUnavailableError) {
+        // 云端清单或快照读不出来。提供显式的「用本机覆盖云端」修复；用户确认前不写任何对象。
+        this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+        this.canRepair.set(true);
+        this.phase.set("error");
+        return;
+      }
       this.errorMessage.set(
         error instanceof RemoteVaultMismatchError
           ? this.i18n.t("backupBucketInUse")
           : this.i18n.t("backupSyncFailed"),
       );
+      this.phase.set("error");
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  /**
+   * 用本机保险库替换读不出来的云端清单与快照。
+   *
+   * 只在同步因云端副本损坏而失败后提供，并且必须二次确认：被替换的云端版本既不能合并也不能读回。
+   */
+  protected async repair(): Promise<void> {
+    if (this.busy()) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "backupTitle" },
+      content: { key: "syncConflictKeepLocalHint" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.busy.set(true);
+    this.errorMessage.set(null);
+    try {
+      const result = await this.syncService.repairRemote(await this.userId());
+      await this.reload();
+      if (!result.uploaded) {
+        this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+        this.phase.set("error");
+        return;
+      }
+      this.canRepair.set(false);
+      this.phase.set("idle");
+      this.toast.show(this.i18n.t("backupSynced"));
+    } catch (error) {
+      if (error instanceof RemoteVaultMismatchError) {
+        this.canRepair.set(false);
+        this.errorMessage.set(this.i18n.t("backupBucketInUse"));
+      } else {
+        this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+      }
       this.phase.set("error");
     } finally {
       this.busy.set(false);

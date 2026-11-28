@@ -518,12 +518,25 @@ describe("VaultBackupSyncService", () => {
       body: JSON.stringify({ snapshot: "other", updatedAt: "2026-11-24T09:00:00.000Z" }),
       etag: "etag-other",
     });
+    fakeS3.objects.set(`${SNAPSHOT_PREFIX}other.json`, {
+      body: JSON.stringify({
+        updatedAt: "2026-11-24T09:00:00.000Z",
+        ciphers: [{ id: "c2", revisionDate: "2026-11-24T09:00:00.000Z", data: { blob: "other" } }],
+        folders: [],
+        tombstones: [],
+      } satisfies Snapshot),
+      etag: "etag-other-snapshot",
+    });
 
     const result = await service.push(userId);
 
     expect(result.uploaded).toBe(true);
     const manifest = JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body);
     expect(manifest.snapshot).not.toBe("other");
+    // The other device's record was merged instead of being clobbered.
+    expect((await service.buildSnapshot(userId)).ciphers.map((record) => record.id)).toContain(
+      "c2",
+    );
   });
 
   it("refuses to pull from a bucket that belongs to another vault", async () => {
@@ -619,6 +632,15 @@ describe("VaultBackupSyncService", () => {
         gen: 7,
       }),
       etag: "etag-remote",
+    });
+    fakeS3.objects.set(`${SNAPSHOT_PREFIX}remote-7.json`, {
+      body: JSON.stringify({
+        updatedAt: "2026-11-24T09:00:00.000Z",
+        ciphers: [],
+        folders: [],
+        tombstones: [],
+      } satisfies Snapshot),
+      etag: "etag-remote-7",
     });
     await service.push(userId);
     expect(JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body).gen).toBe(8);
@@ -737,5 +759,163 @@ describe("VaultBackupSyncService", () => {
     expect((await service.buildSnapshot(userId)).ciphers.map((record) => record.id)).toEqual([
       "c1",
     ]);
+  });
+
+  it("repairs a manifest that points at a missing snapshot", async () => {
+    const { service, fakeS3, state } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+    fakeS3.objects.set(ACCOUNT_OBJECT, { body: JSON.stringify(account), etag: "etag-account" });
+    fakeS3.objects.set(MANIFEST_OBJECT, {
+      body: JSON.stringify({ snapshot: "gone", updatedAt: "2026-11-24T11:00:00.000Z" }),
+      etag: "etag-broken",
+    });
+
+    const result = await service.repairRemote(userId);
+
+    expect(result.uploaded).toBe(true);
+    const manifestObject = fakeS3.objects.get(MANIFEST_OBJECT)!;
+    const manifest = JSON.parse(manifestObject.body);
+    const repaired = fakeS3.objects.get(`${SNAPSHOT_PREFIX}${manifest.snapshot}.json`);
+    expect(repaired).toBeDefined();
+    expect(JSON.parse(repaired!.body).ciphers.map((record: VaultRecord) => record.id)).toEqual([
+      "c1",
+    ]);
+
+    // Local bookkeeping points at the repaired objects, so the next sync does not pull the
+    // broken copy and report a failure again.
+    const syncState = valueOf<{ manifestEtag: string | null; pending: boolean }>(
+      state,
+      "localVaultSync:backupSyncState",
+    );
+    expect(syncState.manifestEtag).toBe(manifestObject.etag);
+    expect(syncState.pending).toBe(false);
+    expect(
+      valueOf<Snapshot>(state, "localVaultSync:baseSnapshot").ciphers.map((record) => record.id),
+    ).toEqual(["c1"]);
+
+    const nextSync = await service.sync(userId);
+    expect(nextSync.pulled.upToDate).toBe(true);
+    expect(nextSync.pulled.applied).toBe(0);
+  });
+
+  it("repairs a manifest that is not readable", async () => {
+    const { service, fakeS3 } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+    fakeS3.objects.set(ACCOUNT_OBJECT, { body: JSON.stringify(account), etag: "etag-account" });
+    fakeS3.objects.set(MANIFEST_OBJECT, { body: "<html>not json</html>", etag: "etag-broken" });
+
+    const result = await service.repairRemote(userId);
+
+    expect(result.uploaded).toBe(true);
+    const manifest = JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body);
+    expect(manifest.snapshot).toBe(result.snapshotId);
+    expect(fakeS3.objects.has(`${SNAPSHOT_PREFIX}${result.snapshotId}.json`)).toBe(true);
+  });
+
+  it("retries the repair when the manifest changes under it, without parsing the remote copy", async () => {
+    const { service, fakeS3 } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+    fakeS3.objects.set(ACCOUNT_OBJECT, { body: JSON.stringify(account), etag: "etag-account" });
+    fakeS3.objects.set(MANIFEST_OBJECT, { body: "corrupt", etag: "etag-old" });
+
+    const put = fakeS3.putObject.bind(fakeS3);
+    const preconditions: Array<string | undefined> = [];
+    fakeS3.putObject = async (path, body, options = {}) => {
+      if (path === MANIFEST_OBJECT) {
+        preconditions.push(options.ifMatch);
+        if (preconditions.length === 1) {
+          // Another device writes a still-unreadable manifest between our read and our PUT.
+          fakeS3.objects.set(MANIFEST_OBJECT, {
+            body: "still not json",
+            etag: "etag-race",
+          });
+        }
+      }
+      return put(path, body, options);
+    };
+
+    const result = await service.repairRemote(userId);
+
+    expect(result.uploaded).toBe(true);
+    expect(preconditions).toEqual(["etag-old", "etag-race"]);
+    expect(JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body).snapshot).toBe(result.snapshotId);
+  });
+
+  it("does not repair while a conflict needs a decision", async () => {
+    const fixture = remoteConflictFixture("local", "remote");
+    const { service, fakeS3, state } = setup({
+      "ciphers:ciphers": { c1: fixture.local.data },
+    });
+    await configure(service);
+    state.get("localVaultSync:pendingConflicts")!.next([
+      {
+        id: "c1",
+        kind: "cipher",
+        local: fixture.local,
+        remote: fixture.remote,
+        copyId: "0b7a9f2e-3a6d-5b6f-8f0a-1c2d3e4f5a6b",
+      },
+    ]);
+    fakeS3.objects.set(MANIFEST_OBJECT, { body: "corrupt", etag: "etag-broken" });
+
+    await expect(service.repairRemote(userId)).rejects.toThrow();
+
+    // Nothing was written: no account object, no repair snapshot, no manifest change.
+    expect([...fakeS3.objects.keys()]).toEqual([MANIFEST_OBJECT]);
+    expect(fakeS3.objects.get(MANIFEST_OBJECT)!.body).toBe("corrupt");
+  });
+
+  it("does not repair a bucket that belongs to another vault", async () => {
+    const { service, fakeS3 } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+    fakeS3.objects.set(ACCOUNT_OBJECT, {
+      body: JSON.stringify({ ...account, userId: otherUserId }),
+      etag: "etag-foreign",
+    });
+    fakeS3.objects.set(MANIFEST_OBJECT, { body: "corrupt", etag: "etag-broken" });
+
+    await expect(service.repairRemote(userId)).rejects.toBeInstanceOf(RemoteVaultMismatchError);
+
+    expect([...fakeS3.objects.keys()].filter((key) => key.startsWith(SNAPSHOT_PREFIX))).toEqual([]);
+    expect(JSON.parse(fakeS3.objects.get(ACCOUNT_OBJECT)!.body).userId).toBe(otherUserId);
+  });
+
+  it("fails loudly instead of overwriting when a push retry meets a corrupt manifest", async () => {
+    const { service, fakeS3 } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+    fakeS3.objects.set(ACCOUNT_OBJECT, { body: JSON.stringify(account), etag: "etag-account" });
+    fakeS3.objects.set(MANIFEST_OBJECT, { body: "<html>not json</html>", etag: "etag-broken" });
+
+    await expect(service.push(userId)).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+
+    // The unreadable manifest is left alone; recovery is an explicit repair, not a push.
+    expect(fakeS3.objects.get(MANIFEST_OBJECT)!.body).toBe("<html>not json</html>");
+  });
+
+  it("fails loudly instead of overwriting when a push retry meets a missing snapshot", async () => {
+    const { service, fakeS3 } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+    fakeS3.objects.set(ACCOUNT_OBJECT, { body: JSON.stringify(account), etag: "etag-account" });
+    const manifestBody = JSON.stringify({
+      snapshot: "gone",
+      updatedAt: "2026-11-24T11:00:00.000Z",
+    });
+    fakeS3.objects.set(MANIFEST_OBJECT, { body: manifestBody, etag: "etag-broken" });
+
+    await expect(service.push(userId)).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+
+    expect(fakeS3.objects.get(MANIFEST_OBJECT)!.body).toBe(manifestBody);
   });
 });

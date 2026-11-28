@@ -484,37 +484,40 @@ export class VaultBackupSyncService {
           continue;
         }
         manifestEtag = remote.etag;
-        const remoteManifest = JSON.parse(remote.text) as Manifest;
+        // A damaged bucket must fail loudly here. Bare JSON.parse would leak a SyntaxError,
+        // and skipping the merge would silently overwrite whatever the other device wrote.
+        const remoteManifest = this.parseManifest(remote.text);
         generation = Math.max(generation, remoteManifest.gen ?? 0);
         const remoteSnapshot = await syncClient.getText(
           `${SNAPSHOT_PREFIX}${remoteManifest.snapshot}.json`,
         );
-        if (remoteSnapshot != null) {
-          const parsedRemote = JSON.parse(remoteSnapshot.text) as Snapshot;
-          const base = await firstValueFrom(this.baseSnapshotState(userId).state$);
-          const mergeResult = mergeSnapshots(snapshot, parsedRemote, base);
-          if (mergeResult.conflicts.length > 0) {
-            const holdLocal: Record<string, ConflictPreference> = {};
-            for (const conflict of mergeResult.conflicts) {
-              holdLocal[conflict.id] = "local";
-            }
-            const held = mergeSnapshots(snapshot, parsedRemote, base, holdLocal);
-            const nextPending = pendingFrom(held.conflicts, snapshot, parsedRemote);
-            await this.applySnapshot(userId, held.snapshot);
-            await this.conflictsState(userId).update(() => nextPending);
-            await this.baseSnapshotState(userId).update(() => held.snapshot);
-            await this.syncState(userId).update((current) => ({
-              ...current,
-              manifestEtag,
-              lastSyncedAt: this.clock().toISOString(),
-              generation: generation || null,
-              pending: true,
-            }));
-            return { uploaded: false, snapshotId: null };
-          }
-          snapshot = mergeResult.snapshot;
-          mergedFromRemote = true;
+        if (remoteSnapshot == null) {
+          throw new RemoteSnapshotUnavailableError();
         }
+        const parsedRemote = this.parseSnapshot(remoteSnapshot.text);
+        const base = await firstValueFrom(this.baseSnapshotState(userId).state$);
+        const mergeResult = mergeSnapshots(snapshot, parsedRemote, base);
+        if (mergeResult.conflicts.length > 0) {
+          const holdLocal: Record<string, ConflictPreference> = {};
+          for (const conflict of mergeResult.conflicts) {
+            holdLocal[conflict.id] = "local";
+          }
+          const held = mergeSnapshots(snapshot, parsedRemote, base, holdLocal);
+          const nextPending = pendingFrom(held.conflicts, snapshot, parsedRemote);
+          await this.applySnapshot(userId, held.snapshot);
+          await this.conflictsState(userId).update(() => nextPending);
+          await this.baseSnapshotState(userId).update(() => held.snapshot);
+          await this.syncState(userId).update((current) => ({
+            ...current,
+            manifestEtag,
+            lastSyncedAt: this.clock().toISOString(),
+            generation: generation || null,
+            pending: true,
+          }));
+          return { uploaded: false, snapshotId: null };
+        }
+        snapshot = mergeResult.snapshot;
+        mergedFromRemote = true;
         continue;
       }
 
@@ -535,6 +538,86 @@ export class VaultBackupSyncService {
     }
 
     this.logService.error("Gave up pushing the vault snapshot after repeated manifest races");
+    return { uploaded: false, snapshotId: null };
+  }
+
+  /**
+   * Replaces the cloud manifest and snapshot with this device's vault.
+   *
+   * This is the explicit recovery path for a bucket whose manifest or snapshot cannot be read:
+   * the remote copy is never parsed, because replacing it is the whole point. The current
+   * manifest ETag is re-read on every attempt instead of trusting the local sync state, and a
+   * concurrent writer still fails the precondition, so repair retries rather than clobbers it
+   * unnoticed. The snapshot the user confirmed to keep is always this device's.
+   */
+  async repairRemote(userId: UserId, client?: S3Client): Promise<PushResult> {
+    const pending = await this.getPendingConflicts(userId);
+    if (pending.length > 0) {
+      // Publishing now would pick a side of a conflict the user has not decided yet.
+      throw new Error("Resolve pending vault conflicts before repairing the cloud backup.");
+    }
+
+    const syncClient = client ?? (await this.requireClient(userId));
+    // Ownership comes before any write: repair must never replace a foreign vault's objects.
+    await this.ensureAccountObject(userId, syncClient);
+
+    const snapshot = await this.buildSnapshot(userId);
+    const snapshotId = snapshotIdFor(this.clock());
+    await syncClient.putObject(`${SNAPSHOT_PREFIX}${snapshotId}.json`, JSON.stringify(snapshot), {
+      contentType: "application/json",
+    });
+
+    const syncState = await this.getSyncState(userId);
+    let generation = syncState.generation ?? 0;
+
+    for (let attempt = 0; attempt < MAX_MANIFEST_RETRIES; attempt++) {
+      // Read the bucket fresh: the local ETag may describe the broken manifest, and a stale
+      // one would fail the precondition on every attempt.
+      const current = await syncClient.getText(MANIFEST_OBJECT);
+      if (current != null) {
+        generation = Math.max(generation, generationOf(current.text) ?? 0);
+      }
+
+      const manifest: Manifest = {
+        snapshot: snapshotId,
+        updatedAt: this.clock().toISOString(),
+        gen: generation + 1,
+      };
+
+      let newEtag: string | null;
+      try {
+        newEtag = await syncClient.putObject(MANIFEST_OBJECT, JSON.stringify(manifest), {
+          contentType: "application/json",
+          ifMatch: current?.etag ?? undefined,
+          ifNoneMatch: current == null ? "*" : undefined,
+        });
+      } catch (error) {
+        if (!(error instanceof S3PreconditionFailedError)) {
+          throw error;
+        }
+
+        // Another device wrote in between. Re-read its ETag and retry the same local snapshot:
+        // merging would mean parsing the damaged remote copy repair was asked to replace.
+        this.logService.info("Manifest changed while repairing; retrying over the fresh ETag");
+        continue;
+      }
+
+      // The next normal sync must not pull the broken objects back: point the local state at
+      // the manifest and baseline this device has just written.
+      await this.baseSnapshotState(userId).update(() => snapshot);
+      await this.syncState(userId).update(() => ({
+        manifestEtag: newEtag,
+        lastSyncedAt: this.clock().toISOString(),
+        generation: generation + 1,
+        pending: false,
+      }));
+
+      await this.prune(userId, syncClient);
+
+      return { uploaded: true, snapshotId };
+    }
+
+    this.logService.error("Gave up repairing the cloud backup after repeated manifest races");
     return { uploaded: false, snapshotId: null };
   }
 
@@ -815,6 +898,16 @@ function isManifest(value: unknown): value is Manifest {
   }
   const manifest = value as Partial<Manifest>;
   return typeof manifest.snapshot === "string" && manifest.snapshot.length > 0;
+}
+
+/** Best-effort generation read so a damaged manifest cannot block a repair. */
+function generationOf(manifest: string): number | null {
+  try {
+    const parsed: unknown = JSON.parse(manifest);
+    return isManifest(parsed) && typeof parsed.gen === "number" ? parsed.gen : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Records written by this service always carry an id and a revision timestamp. */

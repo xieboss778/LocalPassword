@@ -12,9 +12,10 @@ import {
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { ButtonModule, CalloutModule, IconModule } from "@localpass/components";
+import { ButtonModule, CalloutModule, DialogService, IconModule } from "@localpass/components";
 import {
   PendingVaultConflict,
+  RemoteSnapshotUnavailableError,
   RemoteVaultMismatchError,
   SNAPSHOT_PREFIX,
   VaultBackupService,
@@ -164,7 +165,21 @@ interface SnapshotRow {
             </p>
 
             @if (errorMessage()) {
-              <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
+              <div class="tw-mt-3 tw-flex tw-flex-col tw-items-start tw-gap-2">
+                <p class="tw-mb-0 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
+                @if (canRepair()) {
+                  <button
+                    type="button"
+                    bitButton
+                    buttonType="danger"
+                    [disabled]="busy()"
+                    data-testid="backup_repair_remote"
+                    (click)="repair()"
+                  >
+                    {{ i18n.t("syncConflictKeepLocal") }}
+                  </button>
+                }
+              </div>
             }
           </div>
 
@@ -224,6 +239,7 @@ export class BackupStatusDesktopV2Component implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly toast = inject(LpToastService);
   private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
   private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en" });
 
   protected readonly loading = signal(true);
@@ -237,6 +253,8 @@ export class BackupStatusDesktopV2Component implements OnInit {
   protected readonly bucketName = signal("");
   protected readonly pendingChanges = signal(0);
   protected readonly errorMessage = signal<string | null>(null);
+  /** True when the cloud copy is damaged and the user can replace it with this device's vault. */
+  protected readonly canRepair = signal(false);
   protected readonly pendingConflicts = signal<readonly PendingVaultConflict[]>([]);
 
   async ngOnInit(): Promise<void> {
@@ -312,6 +330,7 @@ export class BackupStatusDesktopV2Component implements OnInit {
     }
     this.busy.set(true);
     this.errorMessage.set(null);
+    this.canRepair.set(false);
     try {
       const result = await this.syncService.sync(await this.userId());
       await this.reload();
@@ -324,11 +343,61 @@ export class BackupStatusDesktopV2Component implements OnInit {
       }
       this.toast.show(this.i18n.t("backupSynced"));
     } catch (error) {
+      if (error instanceof RemoteSnapshotUnavailableError) {
+        // The bucket cannot be read. Offer the explicit local-overwrites-remote repair;
+        // nothing is written until the user confirms it in the dialog.
+        this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+        this.canRepair.set(true);
+        return;
+      }
       this.errorMessage.set(
         error instanceof RemoteVaultMismatchError
           ? this.i18n.t("backupBucketInUse")
           : this.i18n.t("backupSyncFailed"),
       );
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  /**
+   * Replaces a damaged cloud manifest and snapshot with this device's vault.
+   *
+   * Only offered after a sync failed on an unreadable cloud copy, and always behind a
+   * confirmation: the cloud version it replaces cannot be merged or read back.
+   */
+  protected async repair(): Promise<void> {
+    if (this.busy()) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "backupTitle" },
+      content: { key: "syncConflictKeepLocalHint" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.busy.set(true);
+    this.errorMessage.set(null);
+    try {
+      const result = await this.syncService.repairRemote(await this.userId());
+      await this.reload();
+      if (!result.uploaded) {
+        this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+        return;
+      }
+      this.canRepair.set(false);
+      this.toast.show(this.i18n.t("backupSynced"));
+    } catch (error) {
+      if (error instanceof RemoteVaultMismatchError) {
+        this.canRepair.set(false);
+        this.errorMessage.set(this.i18n.t("backupBucketInUse"));
+        return;
+      }
+      this.errorMessage.set(this.i18n.t("backupSyncFailed"));
     } finally {
       this.busy.set(false);
     }
