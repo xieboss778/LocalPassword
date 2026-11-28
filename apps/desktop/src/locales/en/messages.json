@@ -2,6 +2,9 @@
   "appLogoLabel": {
     "message": "LocalPass logo"
   },
+  "appName": {
+    "message": "LocalPass"
+  },
   "localpass": {
     "message": "LocalPass"
   },
@@ -2413,6 +2416,64 @@
   "passwordHistory": {
     "message": "Password history"
   },
+  "passwordHistoryCurrent": {
+    "message": "Current password"
+  },
+  "passwordHistorySavedValue": {
+    "message": "Saved password"
+  },
+  "passwordHistoryEmptyTitle": {
+    "message": "No older passwords yet"
+  },
+  "passwordHistoryEmptyHint": {
+    "message": "Change this item's password and the previous value is kept here."
+  },
+  "passwordHistoryRetention": {
+    "message": "Keeps the 10 most recent passwords · restoring keeps the current one"
+  },
+  "passwordHistoryRestored": {
+    "message": "Password restored"
+  },
+  "itemVersionHistory": {
+    "message": "Version history"
+  },
+  "itemHistoryCurrent": {
+    "message": "Current version"
+  },
+  "itemHistoryVersion": {
+    "message": "Version v$N$",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "itemHistoryDiff": {
+    "message": "Differs from current: $FIELDS$",
+    "placeholders": {
+      "fields": {
+        "content": "$1"
+      }
+    }
+  },
+  "itemHistoryEmptyTitle": {
+    "message": "No older versions yet"
+  },
+  "itemHistoryEmptyHint": {
+    "message": "Each save keeps the previous version here, encrypted on this device."
+  },
+  "itemHistoryRetention": {
+    "message": "Keeps the 10 most recent versions · restoring snapshots the current one first"
+  },
+  "itemHistoryRestored": {
+    "message": "Version restored"
+  },
+  "showPassword": {
+    "message": "Show password"
+  },
+  "hidePassword": {
+    "message": "Hide password"
+  },
   "generatorHistory": {
     "message": "Generator history"
   },
@@ -2423,7 +2484,7 @@
     "message": "All history entries will be permanently deleted. Continue?"
   },
   "generatorHistorySubtitle": {
-    "message": "Kept on this device only · never online"
+    "message": "In memory only · cleared when locked"
   },
   "generatorHistoryEmpty": {
     "message": "No generator history yet"
@@ -2432,7 +2493,7 @@
     "message": "Values you generate and copy will appear here."
   },
   "generatorHistoryLocalOnly": {
-    "message": "Generator history stays on this device. It is never synced or written to logs."
+    "message": "Generator history lives only in memory for this unlock session. It is never written to disk, synced, or logged."
   },
   "generatorHistoryCleared": {
     "message": "History cleared"
@@ -6813,6 +6874,60 @@
   "editShortcut": {
     "message": "Edit shortcut"
   },
+  "shortcuts": {
+    "message": "Shortcuts"
+  },
+  "appShortcuts": {
+    "message": "App shortcuts"
+  },
+  "appShortcutsHint": {
+    "message": "These shortcuts only work inside the LocalPass window. No system-wide hotkeys are registered."
+  },
+  "resetShortcuts": {
+    "message": "Reset defaults"
+  },
+  "removeShortcut": {
+    "message": "Remove shortcut"
+  },
+  "shortcutsEmpty": {
+    "message": "All app shortcuts have been removed."
+  },
+  "shortcutSearchTitle": {
+    "message": "Open quick search"
+  },
+  "shortcutSearchDesc": {
+    "message": "Search every field without leaving the window."
+  },
+  "shortcutNavTitle": {
+    "message": "Move through the item list"
+  },
+  "shortcutNavDesc": {
+    "message": "Use the arrow keys to select and Enter to open."
+  },
+  "shortcutCopyTitle": {
+    "message": "Copy username or password"
+  },
+  "shortcutCopyDesc": {
+    "message": "Copy from the highlighted item."
+  },
+  "shortcutEditTitle": {
+    "message": "New or edit item"
+  },
+  "shortcutEditDesc": {
+    "message": "Open the inline field editor for the selected item."
+  },
+  "shortcutDeleteTitle": {
+    "message": "Archive or delete item"
+  },
+  "shortcutDeleteDesc": {
+    "message": "Move the selected item to the archive or trash, with undo."
+  },
+  "shortcutLockTitle": {
+    "message": "Lock the vault"
+  },
+  "shortcutLockDesc": {
+    "message": "Lock LocalPass immediately."
+  },
   "archiveNoun": {
     "message": "Archive",
     "description": "Noun"
@@ -8038,7 +8153,7 @@
   "backupSecretKey": {
     "message": "Secret Key"
   },
-    "backupTest": {
+  "backupTest": {
     "message": "Test connection"
   },
   "backupNow": {
@@ -8557,17 +8672,72 @@
   "syncConflictTitle": {
     "message": "Items changed on both sides"
   },
-  "syncConflictAccept": {
-    "message": "Got it"
+  "syncConflictNotice": {
+    "message": "This device and the cloud both changed the items below since the last sync. Choose what to keep; nothing uploads until you resolve them."
+  },
+  "syncConflictFieldsDiffer": {
+    "message": "Differing fields: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "syncConflictLocalSide": {
+    "message": "This device"
+  },
+  "syncConflictRemoteSide": {
+    "message": "Cloud backup"
+  },
+  "syncConflictUpdatedAt": {
+    "message": "Updated $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "syncConflictFolder": {
+    "message": "Folder"
+  },
+  "syncConflictUntitledItem": {
+    "message": "Untitled item"
+  },
+  "syncConflictKeepBoth": {
+    "message": "Keep both (recommended)"
+  },
+  "syncConflictKeepBothHint": {
+    "message": "Keep this device's copy and save the cloud version as a separate conflict copy."
+  },
+  "syncConflictKeepLocal": {
+    "message": "Keep this device"
+  },
+  "syncConflictKeepLocalHint": {
+    "message": "Replace the cloud version. Earlier snapshots stay in the bucket history."
+  },
+  "syncConflictKeepRemote": {
+    "message": "Use the cloud version"
+  },
+  "syncConflictKeepRemoteHint": {
+    "message": "Replace this device's copy with the cloud version."
+  },
+  "syncConflictResolve": {
+    "message": "Submit resolution"
+  },
+  "syncConflictResolved": {
+    "message": "Conflict resolved and synced"
+  },
+  "syncConflictFailed": {
+    "message": "Could not resolve the conflict — nothing was uploaded. Try again."
   },
   "backupSyncFailed": {
     "message": "Sync failed — the local vault is untouched"
   },
   "createLocalVaultTitle": {
-    "message": "Create local vault"
+    "message": "Set up a local vault on this device"
   },
   "createLocalVaultSubtitle": {
-    "message": "No account, no sign-up. The security password only decrypts data on this computer."
+    "message": "No account, no server. The email only identifies this vault on this computer, and a forgotten master password cannot be recovered."
   },
   "vaultIdentity": {
     "message": "Identity"
@@ -8646,6 +8816,9 @@
   },
   "folderLocalOnlyNotice": {
     "message": "Folders are only a local way to organize items; they are not part of encryption."
+  },
+  "foldersAllItemsSub": {
+    "message": "Includes unfiled items and every folder"
   },
   "generatorLocalOnlyNotice": {
     "message": "Passwords are generated on this device and never sent anywhere."
@@ -8829,6 +9002,21 @@
   "appearanceSubtitle": {
     "message": "Theme and language"
   },
+  "listDensity": {
+    "message": "List density"
+  },
+  "densityCompact": {
+    "message": "Compact"
+  },
+  "densityUltra": {
+    "message": "Ultra compact"
+  },
+  "densityCompactDesc": {
+    "message": "Two-line rows with details."
+  },
+  "densityUltraDesc": {
+    "message": "Single-line rows; shows more entries per screen."
+  },
   "dangerZone": {
     "message": "Danger zone"
   },
@@ -8846,6 +9034,18 @@
   },
   "searchVaultPlaceholder": {
     "message": "Search name, account or folder"
+  },
+  "searchVaultPlaceholderAll": {
+    "message": "Search name, username, URL, notes, or custom fields"
+  },
+  "searchAllFieldsPlaceholder": {
+    "message": "Search all fields · =totp · =ssh"
+  },
+  "compactRows": {
+    "message": "Compact rows"
+  },
+  "selectAnItemHint": {
+    "message": "Select an item to see its details."
   },
   "noMatchingItemsDesc": {
     "message": "Try another keyword, or clear the current filters."
@@ -9013,6 +9213,15 @@
   "backupKeyNote": {
     "message": "Use a dedicated key that can only read and write this bucket."
   },
+  "r2CorsPolicy": {
+    "message": "R2 CORS policy"
+  },
+  "r2CorsHint": {
+    "message": "Paste this into R2 → bucket → Settings → CORS Policy. The desktop app needs it to reach R2 directly; it exposes ETag so conditional writes stay safe."
+  },
+  "r2CorsCopied": {
+    "message": "CORS policy copied"
+  },
   "backupStatusActions": {
     "message": "Status"
   },
@@ -9097,6 +9306,57 @@
   },
   "aboutDescription": {
     "message": "A completely offline password manager. Data only lives on your own computer; no account, no server."
+  },
+  "changelog": {
+    "message": "Changelog"
+  },
+  "changelogDesc": {
+    "message": "See what changed in each version on GitHub."
+  },
+  "knownLimitations": {
+    "message": "Known limitations"
+  },
+  "knownLimitSyncTitle": {
+    "message": "Sync is manual"
+  },
+  "knownLimitSyncDesc": {
+    "message": "Nothing uploads in the background. Backups run only when you press sync."
+  },
+  "knownLimitConflictTitle": {
+    "message": "No per-field conflict merge"
+  },
+  "knownLimitConflictDesc": {
+    "message": "When both devices change one item, choose this device's copy, the cloud copy, or keep both. Fields are not merged one by one."
+  },
+  "knownLimitHistoryTitle": {
+    "message": "Version history keeps 10 versions"
+  },
+  "knownLimitHistoryDesc": {
+    "message": "Up to 10 encrypted version snapshots are stored locally on this device and are not uploaded with sync snapshots."
+  },
+  "offlineDiagnostics": {
+    "message": "Offline diagnostics"
+  },
+  "diagnosticsTitle": {
+    "message": "Diagnostic report"
+  },
+  "diagnosticsDesc": {
+    "message": "Assembled on this device. Versions, platform, settings, aggregate counts, and sync status only — never item names, URLs, usernames, notes, passwords, TOTP secrets, or ciphertext."
+  },
+  "showReport": {
+    "message": "Show report"
+  },
+  "hideReport": {
+    "message": "Hide report"
+  },
+  "copyDiagnostics": {
+    "message": "Copy diagnostics"
+  },
+  "diagnosticsCopied": {
+    "message": "Diagnostic report copied"
+  },
+  "diagnosticsCopyFailed": {
+    "message": "Could not copy the diagnostic report"
   },
   "settingsNoteTheme": {
     "message": "The theme only changes the display, not encryption or storage."
@@ -9357,8 +9617,17 @@
   "networkGateIntro": {
     "message": "Except for the addresses in the allowlist and actions you start yourself, the extension blocks every outbound request. You can verify this in the developer tools network panel."
   },
+  "networkGateIntroDesktop": {
+    "message": "Only the destinations below and the actions you start yourself are allowed to leave LocalPass. Every other request is rejected on this device."
+  },
   "networkGateAllowlist": {
     "message": "Allowlist"
+  },
+  "networkGatePolicyTitle": {
+    "message": "Default deny"
+  },
+  "networkGatePolicyDesc": {
+    "message": "There is no hidden blocklist and no background traffic. While the vault is locked, outbound requests stay at zero."
   },
   "networkGateRecentBlocked": {
     "message": "Recently blocked"
@@ -9392,6 +9661,12 @@
   },
   "clearVaultWarning": {
     "message": "Clearing the vault deletes every item on this computer and cannot be undone. Older snapshots in the cloud backup are not touched."
+  },
+  "clearVaultConfirmCheckbox": {
+    "message": "I understand this permanently deletes every item and cannot be undone."
+  },
+  "exportFirst": {
+    "message": "Export vault first"
   },
   "backupConfigSubtitle": {
     "message": "S3 compatible · you own it"
@@ -9478,6 +9753,14 @@
     "message": "Plain JSON (not recommended)",
     "description": "Plain JSON export format option"
   },
+  "exportFormatCsv": {
+    "message": "Universal CSV (plain text)",
+    "description": "CSV export format option"
+  },
+  "exportCsvWarning": {
+    "message": "A CSV file contains unencrypted passwords as readable text and only includes logins and secure notes. It is meant for importing into another password manager; delete it immediately after use.",
+    "description": "Warning shown when exporting CSV"
+  },
   "exportPlainWarning": {
     "message": "A plain JSON file contains every item as readable text. Use it only when necessary and move it somewhere safe immediately.",
     "description": "Warning shown when exporting plain JSON"
@@ -9531,6 +9814,36 @@
   "backupConfigPrompt": {
     "message": "Open settings above to add S3-compatible credentials."
   },
+  "backupPendingChangeOne": {
+    "message": "1 change waiting to upload"
+  },
+  "backupPendingChanges": {
+    "message": "$COUNT$ changes waiting to upload",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "backupSynced": {
+    "message": "Synced · encrypted snapshot"
+  },
+  "backupGeneration": {
+    "message": "gen #$N$",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "backupBucketName": {
+    "message": "bucket $BUCKET$",
+    "placeholders": {
+      "bucket": {
+        "content": "$1"
+      }
+    }
+  },
   "backupFootnote": {
     "message": "It only goes online when you press “Sync now”. Tray and background runs never upload."
   },
@@ -9544,5 +9857,309 @@
         "content": "$1"
       }
     }
+  },
+  "quickAccess": {
+    "message": "Quick search",
+    "description": "In-app command palette opened with Command+K"
+  },
+  "quickActions": {
+    "message": "Quick actions"
+  },
+  "quickAccessGenerate": {
+    "message": "Generate a 20-character password and copy it"
+  },
+  "quickAccessScope": {
+    "message": "App only · no system-wide hotkey"
+  },
+  "allFields": {
+    "message": "All fields"
+  },
+  "healthCheck": {
+    "message": "Security checkup"
+  },
+  "healthCheckDesc": {
+    "message": "Reused or weak passwords, stale logins and missing 2FA"
+  },
+  "healthCheckSubtitle": {
+    "message": "All checks run on this device. Passwords never leave it."
+  },
+  "healthCheckRescan": {
+    "message": "Rescan"
+  },
+  "healthCheckScanned": {
+    "message": "Local scan complete"
+  },
+  "healthCheckReusedStat": {
+    "message": "Reused passwords"
+  },
+  "healthCheckWeakOrStaleStat": {
+    "message": "Weak / over 365 days"
+  },
+  "healthCheckMissingTotpStat": {
+    "message": "Missing 2FA"
+  },
+  "healthCheckStrongStat": {
+    "message": "Strong passwords"
+  },
+  "healthCheckPriority": {
+    "message": "Priority fixes"
+  },
+  "healthCheckPriorityDesc": {
+    "message": "Sorted by impact · opens the editor"
+  },
+  "healthCheckFix": {
+    "message": "Fix"
+  },
+  "healthCheckReusedChip": {
+    "message": "Reused"
+  },
+  "healthCheckWeakChip": {
+    "message": "Weak"
+  },
+  "healthCheckStaleChip": {
+    "message": "Over 365 days"
+  },
+  "healthCheckMissingTotpChip": {
+    "message": "No 2FA"
+  },
+  "healthCheckSharedWith": {
+    "message": "Shared with {NAMES}"
+  },
+  "healthCheckWeakDetail": {
+    "message": "Weak password · {COUNT} characters"
+  },
+  "healthCheckChangedOn": {
+    "message": "Last changed {DATE}"
+  },
+  "healthCheckMissingTotpDetail": {
+    "message": "No verification code configured"
+  },
+  "healthCheckAllClear": {
+    "message": "No issues found"
+  },
+  "healthCheckAllClearDesc": {
+    "message": "No reused or weak passwords, nothing older than 365 days, and every login has a verification code."
+  },
+  "healthCheckNoLogins": {
+    "message": "No passwords to check"
+  },
+  "healthCheckNoLoginsDesc": {
+    "message": "Add a login to your vault to run the local security check."
+  },
+  "healthCheckPrivacyTitle": {
+    "message": "Privacy boundary"
+  },
+  "healthCheckPrivacy": {
+    "message": "Local checks only. No breach lookup, no telemetry, no outbound request."
+  },
+  "healthCheckOfflineRule": {
+    "message": "Offline rules"
+  },
+  "trayQuickSearch": {
+    "message": "Search and copy…"
+  },
+  "trayRecent": {
+    "message": "Recent · one-click copy"
+  },
+  "trayGenerate": {
+    "message": "Generate & copy"
+  },
+  "trayOpenMain": {
+    "message": "Open main window"
+  },
+  "itemKindTokenAccessKeyId": {
+    "message": "Access Key ID"
+  },
+  "itemKindSshKeyAlgorithm": {
+    "message": "Algorithm & bits"
+  },
+  "itemKindSshKeyFingerprint": {
+    "message": "Fingerprint"
+  },
+  "itemKindSshKeyPassphrase": {
+    "message": "Passphrase"
+  },
+  "itemKindSshKeyHosts": {
+    "message": "Allowed hosts"
+  },
+  "itemKindLicenseEdition": {
+    "message": "Edition"
+  },
+  "itemKindLicenseEmail": {
+    "message": "Licensed email"
+  },
+  "itemKindLicenseOrderId": {
+    "message": "Order ID"
+  },
+  "itemKindCardPin": {
+    "message": "Card PIN"
+  },
+  "itemKindCardBillingZip": {
+    "message": "Billing postal code"
+  },
+  "itemKindIdentityIdType": {
+    "message": "Document type"
+  },
+  "itemKindServerHost": {
+    "message": "Host"
+  },
+  "itemKindServerPort": {
+    "message": "Port"
+  },
+  "itemKindServerLoginUser": {
+    "message": "Login account"
+  },
+  "itemKindServerLinkedSsh": {
+    "message": "Linked SSH key"
+  },
+  "itemKindServerRegion": {
+    "message": "Region / datacenter"
+  },
+  "itemKindNoteCategory": {
+    "message": "Category"
+  },
+  "itemKindNoteRecoveryHint": {
+    "message": "Storage location hint"
+  },
+  "preset": {
+    "message": "Preset"
+  },
+  "none": {
+    "message": "None"
+  },
+  "autoHide30sChip": {
+    "message": "30s"
+  },
+  "clearNow": {
+    "message": "Clear now"
+  },
+  "clipboardClearCountdown": {
+    "message": "Clipboard clears in $SECONDS$s",
+    "placeholders": {
+      "seconds": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "networkGateLockedRuleTitle": {
+    "message": "Zero requests while locked"
+  },
+  "networkGateLockedRuleDesc": {
+    "message": "No outbound request is permitted while the vault is locked."
+  },
+  "networkGateNoFaviconRuleTitle": {
+    "message": "No remote website icons"
+  },
+  "networkGateNoFaviconRuleDesc": {
+    "message": "All item tiles are generated locally without leaking visited domains."
+  },
+  "restorePrfNotSyncedNote": {
+    "message": "WebAuthn security keys stay bound to the browser where they were enrolled and are not synced in account.json."
+  },
+  "importFromActiveTab": {
+    "message": "Scan active tab"
+  },
+  "importKeepBoth": {
+    "message": "Keep both"
+  },
+  "trashEmptied": {
+    "message": "Trash emptied"
+  },
+  "deleted": {
+    "message": "Permanently deleted"
+  },
+  "healthIssuesCount": {
+    "message": "$COUNT$ items to review",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "dataFileMode": {
+    "message": "Local file mode"
+  },
+  "dataServerCopies": {
+    "message": "Vendor server copies"
+  },
+  "extensionOnlyBadge": {
+    "message": "Extension only"
+  },
+  "import1Password": {
+    "message": "1Password (.1pux / .1pif / .csv)"
+  },
+  "import1PasswordDesc": {
+    "message": "Keeps tags, TOTP, custom fields and folders"
+  },
+  "importGenericCsv": {
+    "message": "Generic CSV (Chrome / Safari)"
+  },
+  "importGenericCsvDesc": {
+    "message": "Maps URL, username and password columns automatically"
+  },
+  "languageChanged": {
+    "message": "Interface language updated"
+  },
+  "languageSwitchDesc": {
+    "message": "Switch display language without touching vault data."
+  },
+  "localChangePasswordNotice": {
+    "message": "LocalPass runs completely offline without a password-management server. Local master-password rotation requires re-wrapping your local encryption keys and is pending security review. To switch safety passwords today, export an encrypted backup and create a new local vault."
+  },
+  "openSshKey": {
+    "message": "Open linked SSH key"
+  },
+  "passwordStrength": {
+    "message": "Password strength"
+  },
+  "runInBackgroundTray": {
+    "message": "Keep running in menu bar"
+  },
+  "runInBackgroundTrayDesc": {
+    "message": "Keep the menu bar tray available for quick copy and lock when closed."
+  },
+  "securityKeyDesktopPlatformDesc": {
+    "message": "WebAuthn PRF security-key unlock is only available in the browser extension. Desktop uses system biometrics (Touch ID / Windows Hello)."
+  },
+  "totalItems": {
+    "message": "Total parsed"
+  },
+  "biometricsStatusHelptextDesktopDisconnected": {
+    "message": "Biometric unlock is unavailable because the LocalPass desktop app is closed."
+  },
+  "biometricsStatusHelptextNotEnabledInDesktop": {
+    "message": "Biometric unlock is unavailable because it is not enabled for $EMAIL$ in the LocalPass desktop app.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "mail@example.com"
+      }
+    }
+  },
+  "itemCountShort": {
+    "message": "items"
+  },
+  "manualEntry": {
+    "message": "Manual entry"
+  },
+  "passwordAutoHide": {
+    "message": "Auto-hide revealed passwords"
+  },
+  "passwordAutoHideDesc": {
+    "message": "Revealed values return to dots after 30 seconds."
+  },
+  "totpQrCardHint": {
+    "message": "Scan it into an authenticator outside LocalPass as a backup device."
+  },
+  "totpQrFootnote": {
+    "message": "Codes change every 30 seconds. LocalPass computes them locally and never goes online."
+  },
+  "totpQrTitle": {
+    "message": "Authenticator QR code"
+  },
+  "totpSecret": {
+    "message": "Secret"
   }
 }

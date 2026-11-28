@@ -494,6 +494,18 @@
   "select": {
     "message": "Select"
   },
+  "inlineGeneratorHeading": {
+    "message": "Strong password suggestion"
+  },
+  "inlineGeneratorDescription": {
+    "message": "20-character password · fills and opens the save confirmation"
+  },
+  "inlineGeneratorRegenerate": {
+    "message": "Another one"
+  },
+  "inlineGeneratorLocalOnly": {
+    "message": "Generated on this device only"
+  },
   "generatePassword": {
     "message": "Generate password"
   },
@@ -1331,6 +1343,12 @@
     "message": "Automatically clear copied values from your clipboard.",
     "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
+  "passwordAutoHide": {
+    "message": "Auto-hide revealed passwords"
+  },
+  "passwordAutoHideDesc": {
+    "message": "Revealed values return to dots after 30 seconds."
+  },
   "clipboardSettingUpdated": {
     "message": "Clipboard setting updated"
   },
@@ -1339,6 +1357,69 @@
   },
   "jumpToSetting": {
     "message": "Jump to setting"
+  },
+  "notificationAddHeading": {
+    "message": "Save the login for $SITE$?",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddSubtitleChoice": {
+    "message": "First login to $SITE$ · choose a folder, then save on this device",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddSubtitleNoFolder": {
+    "message": "First login to $SITE$ · saves encrypted on this device",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddSaveToFolder": {
+    "message": "Save to “$FOLDER$”",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationNeverForSite": {
+    "message": "Never for this site"
+  },
+  "notificationAtRiskHeading": {
+    "message": "This account uses a reused or weak password"
+  },
+  "reusedPasswordsPlaces": {
+    "message": "Reused in $COUNT$ places",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationSaveConfirmed": {
+    "message": "Safely saved to LocalPass"
+  },
+  "notificationSaveBody": {
+    "message": "Saved encrypted on this device · auto-closes in 2 minutes"
+  },
+  "notificationSaveFolderBody": {
+    "message": "Encrypted into “$FOLDER$” · auto-closes in 2 minutes",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddTotp": {
+    "message": "Add 2FA / Edit entry"
   },
   "notificationAddDesc": {
     "message": "Should LocalPass remember this password for you?"
@@ -1483,6 +1564,115 @@
   },
   "notificationChangeSave": {
     "message": "Update"
+  },
+  "notificationChangeHeader": {
+    "message": "Update the password for $NAME$?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Northwind"
+      }
+    }
+  },
+  "notificationLastUsedJustNow": {
+    "message": "used just now"
+  },
+  "notificationLastUsedMinutes": {
+    "message": "used $COUNT$ min ago",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationLastUsedHours": {
+    "message": "used $COUNT$ h ago",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationLastUsedDays": {
+    "message": "used $COUNT$ d ago",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationChangeBodyVersion": {
+    "message": "A password change was detected. Updating keeps v$VERSION$ in version history.",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationUpdateVersion": {
+    "message": "Update entry (v$VERSION$)",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationChangeBodyDesc": {
+    "message": "A password change was detected. Updating keeps the previous password in local history."
+  },
+  "notificationChangeToggle": {
+    "message": "Switch / save as new"
+  },
+  "notificationChangeIgnore": {
+    "message": "Ignore"
+  },
+  "notificationMultiSaveHeader": {
+    "message": "$DOMAIN$ has multiple saved entries",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "northwind.io"
+      }
+    }
+  },
+  "notificationMultiSaveDesc": {
+    "message": "A password change was detected. Choose the entry to update — nothing is overwritten silently."
+  },
+  "notificationMultiSaveNewEntry": {
+    "message": "Save as new entry #$COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "notificationMultiSaveNewEntryDesc": {
+    "message": "Leave existing entries untouched and record these credentials separately"
+  },
+  "notificationMultiSaveCreate": {
+    "message": "Create entry #$COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "notificationMultiSaveUpdate": {
+    "message": "Update $USERNAME$ password",
+    "placeholders": {
+      "username": {
+        "content": "$1",
+        "example": "alex@northwind.io"
+      }
+    }
+  },
+  "notificationMultiSaveUpdateGeneric": {
+    "message": "Update selected entry"
+  },
+  "notificationMultiSaveNoUsername": {
+    "message": "No username saved"
   },
   "notificationUnlockDesc": {
     "message": "Unlock your LocalPass vault to complete the autofill request."
@@ -2877,7 +3067,7 @@
     "message": "If you continue, all entries will be permanently deleted from generator's history. Are you sure you want to continue?"
   },
   "generatorHistorySubtitle": {
-    "message": "Kept on this device only, never uploaded"
+    "message": "In memory only · cleared when locked"
   },
   "generatorHistoryEmpty": {
     "message": "No generator history yet"
@@ -2886,7 +3076,7 @@
     "message": "Values you generate and copy will appear here."
   },
   "generatorHistoryLocalOnly": {
-    "message": "Generator history stays on this device. It is never synced or written to logs."
+    "message": "Generator history lives only in memory for this unlock session. It is never written to disk, synced, or logged."
   },
   "generatorHistoryCleared": {
     "message": "Generator history cleared"
@@ -5220,6 +5410,22 @@
     "message": "Unlock your account to view autofill suggestions",
     "description": "Text to display in overlay when the account is locked."
   },
+  "inlineMenuLocked": {
+    "message": "Locked"
+  },
+  "inlineMenuUnlockToFill": {
+    "message": "Unlock to fill {domain}",
+    "description": "Inline unlock prompt; {domain} is replaced with the site hostname."
+  },
+  "inlineMenuUnlockAria": {
+    "message": "Unlock the vault"
+  },
+  "inlineMenuUnlockFootnote": {
+    "message": "This also unlocks the extension popup."
+  },
+  "inlineMenuUnlockFailed": {
+    "message": "Could not unlock. Try again."
+  },
   "unlockAccount": {
     "message": "Unlock account",
     "description": "Button text to display in overlay when the account is locked."
@@ -5293,7 +5499,7 @@
     "description": "Heading of the verification code list in the inline menu"
   },
   "inlineMenuKeyboardHint": {
-    "message": "↑↓ select · Enter fill",
+    "message": "↑↓ select · Enter fill · Esc close",
     "description": "Keyboard hint in the inline menu footer"
   },
   "inlineMenuTotpKeyboardHint": {
@@ -5303,6 +5509,18 @@
   "inlineMenuNewLogin": {
     "message": "New login item",
     "description": "Button in the inline menu footer that adds a new login item"
+  },
+  "inlineMenuGeneratePassword": {
+    "message": "Generate password",
+    "description": "Footer action in the inline login menu that opens the password generator"
+  },
+  "inlineMenuSearchAll": {
+    "message": "Search all items",
+    "description": "Footer action in the inline login menu that opens the full vault list"
+  },
+  "inlineMenuReadOnlyDomain": {
+    "message": "Read-only domain",
+    "description": "Footer note stating the inline menu only reads the page domain and never changes the page"
   },
   "inlineMenuTotpContext": {
     "message": "Current account {username} first · Fills and copies on selection",
@@ -5339,6 +5557,46 @@
   "inlineMenuTotpMenuAriaLabel": {
     "message": "LocalPass verification codes",
     "description": "Aria label for the inline verification code menu dialog"
+  },
+  "inlineMenuCardsMenu": {
+    "message": "Cards",
+    "description": "Header suffix of the inline card suggestions menu"
+  },
+  "inlineMenuIdentityMenu": {
+    "message": "Identity & address",
+    "description": "Header suffix of the inline identity suggestions menu"
+  },
+  "inlineMenuCardMenuAriaLabel": {
+    "message": "LocalPass card suggestions",
+    "description": "Aria label for the inline card menu dialog"
+  },
+  "inlineMenuIdentityMenuAriaLabel": {
+    "message": "LocalPass identity suggestions",
+    "description": "Aria label for the inline identity menu dialog"
+  },
+  "inlineMenuFavorite": {
+    "message": "Favorite",
+    "description": "Chip marking a favorite card or identity in the inline menu"
+  },
+  "inlineMenuFillCardAria": {
+    "message": "Fill card {name}",
+    "description": "Aria label for filling a card in the inline menu"
+  },
+  "inlineMenuFillIdentityAria": {
+    "message": "Fill identity {name}",
+    "description": "Aria label for filling an identity in the inline menu"
+  },
+  "inlineMenuCardMaskedNote": {
+    "message": "Full card number stays hidden",
+    "description": "Keyboard strip note in the inline card menu explaining masking"
+  },
+  "inlineMenuIdentityFillNote": {
+    "message": "Fills name and address",
+    "description": "Keyboard strip note in the inline identity menu"
+  },
+  "inlineMenuInlineKeys": {
+    "message": "↑↓ ↵ esc",
+    "description": "Compact keyboard hint shown on the right of the inline card and identity menus"
   },
   "inlineMenuPasskey": {
     "message": "passkey",
@@ -9767,7 +10025,7 @@
   "backupSecretKey": {
     "message": "Secret Key"
   },
-    "backupTest": {
+  "backupTest": {
     "message": "Test connection"
   },
   "backupNow": {
@@ -10244,17 +10502,72 @@
   "syncConflictTitle": {
     "message": "Items changed on both sides"
   },
-  "syncConflictAccept": {
-    "message": "Got it"
+  "syncConflictNotice": {
+    "message": "This device and the cloud both changed the items below since the last sync. Choose what to keep; nothing uploads until you resolve them."
+  },
+  "syncConflictFieldsDiffer": {
+    "message": "Differing fields: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "syncConflictLocalSide": {
+    "message": "This device"
+  },
+  "syncConflictRemoteSide": {
+    "message": "Cloud backup"
+  },
+  "syncConflictUpdatedAt": {
+    "message": "Updated $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "syncConflictFolder": {
+    "message": "Folder"
+  },
+  "syncConflictUntitledItem": {
+    "message": "Untitled item"
+  },
+  "syncConflictKeepBoth": {
+    "message": "Keep both (recommended)"
+  },
+  "syncConflictKeepBothHint": {
+    "message": "Keep this device's copy and save the cloud version as a separate conflict copy."
+  },
+  "syncConflictKeepLocal": {
+    "message": "Keep this device"
+  },
+  "syncConflictKeepLocalHint": {
+    "message": "Replace the cloud version. Earlier snapshots stay in the bucket history."
+  },
+  "syncConflictKeepRemote": {
+    "message": "Use the cloud version"
+  },
+  "syncConflictKeepRemoteHint": {
+    "message": "Replace this device's copy with the cloud version."
+  },
+  "syncConflictResolve": {
+    "message": "Submit resolution"
+  },
+  "syncConflictResolved": {
+    "message": "Conflict resolved and synced"
+  },
+  "syncConflictFailed": {
+    "message": "Could not resolve the conflict — nothing was uploaded. Try again."
   },
   "backupSyncFailed": {
     "message": "Sync failed — the local vault is untouched"
   },
   "createLocalVaultTitle": {
-    "message": "Create a local vault"
+    "message": "Set up a local vault on this device"
   },
   "createLocalVaultSubtitle": {
-    "message": "No account, no sign-up. The master password only decrypts data on this computer."
+    "message": "No account, no server. The email only identifies this vault on this computer, and a forgotten master password cannot be recovered."
   },
   "vaultIdentity": {
     "message": "Identity"
@@ -10282,6 +10595,12 @@
   },
   "networkGateRecentBlocked": {
     "message": "Recently blocked"
+  },
+  "networkGatePolicyTitle": {
+    "message": "Default deny"
+  },
+  "networkGatePolicyDesc": {
+    "message": "There is no hidden blocklist and no background traffic. While the vault is locked, outbound requests stay at zero."
   },
   "networkGateErrorReporting": {
     "message": "Error reporting"
@@ -10348,6 +10667,9 @@
   },
   "folderLocalOnlyNotice": {
     "message": "Folders are only a local way to organize items. They are not encrypted or uploaded anywhere."
+  },
+  "foldersAllItemsSub": {
+    "message": "Includes unfiled items and every folder"
   },
   "openFolder": {
     "message": "Open folder"
@@ -10450,6 +10772,9 @@
   "movedToTrash": {
     "message": "Moved to trash"
   },
+  "undo": {
+    "message": "Undo"
+  },
   "touchIdUnlock": {
     "message": "Touch ID unlock"
   },
@@ -10549,8 +10874,26 @@
   "appearanceSubtitle": {
     "message": "Theme and language"
   },
+  "listDensity": {
+    "message": "List density"
+  },
+  "densityCompact": {
+    "message": "Compact"
+  },
+  "densityUltra": {
+    "message": "Ultra compact"
+  },
+  "densityCompactDesc": {
+    "message": "Two-line rows with details."
+  },
+  "densityUltraDesc": {
+    "message": "Single-line rows; shows about 3 more entries."
+  },
   "accountGroup": {
     "message": "Account"
+  },
+  "securityAndUnlockGroup": {
+    "message": "Security & unlock"
   },
   "backupPrivacyGroup": {
     "message": "Backup & privacy"
@@ -10560,6 +10903,30 @@
   },
   "searchVaultPlaceholder": {
     "message": "Search name, username, or folder"
+  },
+  "searchVaultPlaceholderAll": {
+    "message": "Search name, username, URL, notes, or custom fields"
+  },
+  "recentAndAll": {
+    "message": "Recent & all"
+  },
+  "allFieldsSearchHint": {
+    "message": "Search covers name, username, URL, notes, and custom fields."
+  },
+  "shortcutHelpTitle": {
+    "message": "Keyboard shortcuts"
+  },
+  "shortcutOpenPopup": {
+    "message": "Open extension popup"
+  },
+  "shortcutFillPage": {
+    "message": "Autofill current page"
+  },
+  "shortcutListMove": {
+    "message": "Move through the list / open"
+  },
+  "shortcutCopyFields": {
+    "message": "Copy username / password"
   },
   "emailBackupHint": {
     "message": "Never uploaded and never used to sign in."
@@ -10596,6 +10963,24 @@
   "desktopOnlyMac": {
     "message": "Only available in the macOS desktop app"
   },
+  "touchIdBridgeOn": {
+    "message": "On · Mac unlock is bridged through the desktop app"
+  },
+  "touchIdBridgeReady": {
+    "message": "Desktop connected · turn on to request Mac unlock"
+  },
+  "touchIdBridgeNeedsPermission": {
+    "message": "Grant native messaging in Account security"
+  },
+  "touchIdBridgeOffline": {
+    "message": "Desktop app is not running"
+  },
+  "touchIdBridgeDesktopSetup": {
+    "message": "Turn on Touch ID in the desktop app first"
+  },
+  "touchIdBridgeUnavailable": {
+    "message": "Touch ID bridge unavailable"
+  },
   "encryptedBackup": {
     "message": "Encrypted backups"
   },
@@ -10628,6 +11013,9 @@
   },
   "clearVaultDescription": {
     "message": "Clearing the vault deletes every item on this device and cannot be undone. Old encrypted snapshots in cloud backup are not deleted."
+  },
+  "clearVaultConfirmCheckbox": {
+    "message": "I understand this permanently deletes every item and cannot be undone."
   },
   "clearVault": {
     "message": "Clear vault"
@@ -10671,17 +11059,44 @@
   "blockedCdn": {
     "message": "cdn.jsdelivr.net · fonts"
   },
+  "importOnePassword": {
+    "message": "1Password (.1pux / .1pif / .csv)"
+  },
+  "importOnePasswordSub": {
+    "message": "Keeps tags, TOTP, custom fields and folders"
+  },
   "importLocalPassBackup": {
     "message": "LocalPass encrypted backup"
   },
   "importLocalPassBackupSub": {
     "message": ".json · needs the master password"
   },
-  "importBitwardenExport": {
-    "message": "Bitwarden encrypted export"
+  "importBitwardenExportAny": {
+    "message": "Bitwarden export"
   },
-  "importBitwardenExportSub": {
-    "message": "Compatible format · .json"
+  "importBitwardenExportAnySub": {
+    "message": ".json / .csv · encrypted or plain text"
+  },
+  "importGenericCsv": {
+    "message": "Generic CSV (Chrome / Safari)"
+  },
+  "importGenericCsvSub": {
+    "message": "Maps URL, username and password columns automatically"
+  },
+  "importSourceRecommended": {
+    "message": "Recommended"
+  },
+  "importSourceNative": {
+    "message": "Native"
+  },
+  "importSourceCompatible": {
+    "message": "Compatible"
+  },
+  "importSourceTwoFactor": {
+    "message": "2FA"
+  },
+  "importSourceGeneric": {
+    "message": "Generic"
   },
   "googleAuthenticator": {
     "message": "Google Authenticator"
@@ -10741,6 +11156,12 @@
   },
   "exportFormatPlain": {
     "message": "Plain JSON (not recommended)"
+  },
+  "exportFormatCsv": {
+    "message": "Universal CSV (plain text)"
+  },
+  "exportCsvWarning": {
+    "message": "A CSV file contains unencrypted passwords as readable text and only includes logins and secure notes. It is meant for importing into another password manager; delete it immediately after use."
   },
   "exportFormatLabel": {
     "message": "Format"
@@ -10878,6 +11299,30 @@
   "aboutDescription": {
     "message": "A completely offline password manager. Data lives only on your own computer; there is no account and no server."
   },
+  "offlineDiagnostics": {
+    "message": "Offline diagnostics"
+  },
+  "diagnosticsTitle": {
+    "message": "Diagnostic report"
+  },
+  "diagnosticsDesc": {
+    "message": "Assembled on this device. Versions, platform, settings, aggregate counts, and sync status only — never item names, URLs, usernames, notes, passwords, TOTP secrets, or ciphertext."
+  },
+  "showReport": {
+    "message": "Show report"
+  },
+  "hideReport": {
+    "message": "Hide report"
+  },
+  "copyDiagnostics": {
+    "message": "Copy diagnostics"
+  },
+  "diagnosticsCopied": {
+    "message": "Diagnostic report copied"
+  },
+  "diagnosticsCopyFailed": {
+    "message": "Could not copy the diagnostic report"
+  },
   "vaultIsEmpty": {
     "message": "The vault is empty"
   },
@@ -10975,6 +11420,15 @@
   "backupKeyNote": {
     "message": "Use a dedicated key that can only read and write this bucket."
   },
+  "r2CorsPolicy": {
+    "message": "R2 CORS policy"
+  },
+  "r2CorsHint": {
+    "message": "Paste this into R2 → bucket → Settings → CORS Policy. The desktop app needs it to reach R2 directly; it exposes ETag so conditional writes stay safe."
+  },
+  "r2CorsCopied": {
+    "message": "CORS policy copied"
+  },
   "backupSnapshots": {
     "message": "Snapshots"
   },
@@ -10999,6 +11453,36 @@
   "backupConfigPrompt": {
     "message": "Open settings above to add S3-compatible credentials."
   },
+  "backupPendingChangeOne": {
+    "message": "1 change waiting to upload"
+  },
+  "backupPendingChanges": {
+    "message": "$COUNT$ changes waiting to upload",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "backupSynced": {
+    "message": "Synced · encrypted snapshot"
+  },
+  "backupGeneration": {
+    "message": "gen #$N$",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "backupBucketName": {
+    "message": "bucket $BUCKET$",
+    "placeholders": {
+      "bucket": {
+        "content": "$1"
+      }
+    }
+  },
   "backupFootnote": {
     "message": "It only goes online when you press Sync now. Tray and background runs never upload."
   },
@@ -11009,5 +11493,311 @@
         "content": "$1"
       }
     }
+  },
+  "healthCheck": {
+    "message": "Security checkup"
+  },
+  "healthCheckDesc": {
+    "message": "Reused or weak passwords, stale logins and missing 2FA"
+  },
+  "healthCheckSubtitle": {
+    "message": "All checks run on this device. Passwords never leave it."
+  },
+  "healthCheckRescan": {
+    "message": "Rescan"
+  },
+  "healthCheckScanned": {
+    "message": "Local scan complete"
+  },
+  "healthCheckReusedStat": {
+    "message": "Reused passwords"
+  },
+  "healthCheckWeakOrStaleStat": {
+    "message": "Weak / over 365 days"
+  },
+  "healthCheckMissingTotpStat": {
+    "message": "Missing 2FA"
+  },
+  "healthCheckStrongStat": {
+    "message": "Strong passwords"
+  },
+  "healthCheckPriority": {
+    "message": "Priority fixes"
+  },
+  "healthCheckPriorityDesc": {
+    "message": "Sorted by impact · opens the editor"
+  },
+  "healthCheckFix": {
+    "message": "Fix"
+  },
+  "healthCheckReusedChip": {
+    "message": "Reused"
+  },
+  "healthCheckWeakChip": {
+    "message": "Weak"
+  },
+  "healthCheckStaleChip": {
+    "message": "Over 365 days"
+  },
+  "healthCheckMissingTotpChip": {
+    "message": "No 2FA"
+  },
+  "healthCheckSharedWith": {
+    "message": "Shared with {NAMES}"
+  },
+  "healthCheckWeakDetail": {
+    "message": "Weak password · {COUNT} characters"
+  },
+  "healthCheckChangedOn": {
+    "message": "Last changed {DATE}"
+  },
+  "healthCheckMissingTotpDetail": {
+    "message": "No verification code configured"
+  },
+  "healthCheckAllClear": {
+    "message": "No issues found"
+  },
+  "healthCheckAllClearDesc": {
+    "message": "No reused or weak passwords, nothing older than 365 days, and every login has a verification code."
+  },
+  "healthCheckNoLogins": {
+    "message": "No passwords to check"
+  },
+  "healthCheckNoLoginsDesc": {
+    "message": "Add a login to your vault to run the local security check."
+  },
+  "healthCheckPrivacyTitle": {
+    "message": "Privacy boundary"
+  },
+  "healthCheckPrivacy": {
+    "message": "Local checks only. No breach lookup, no telemetry, no outbound request."
+  },
+  "healthCheckOfflineRule": {
+    "message": "Offline rules"
+  },
+  "showPassword": {
+    "message": "Show password"
+  },
+  "hidePassword": {
+    "message": "Hide password"
+  },
+  "autofillFillReceiptAria": {
+    "message": "Autofill receipt",
+    "description": "Accessible label for the bottom-right card confirming an inline-menu fill"
+  },
+  "autofillFillReceiptLoginTitle": {
+    "message": "Filled credentials for $NAME$",
+    "description": "Title of the fill receipt after filling a login",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "autofillFillReceiptLoginDetail": {
+    "message": "Writes to this page only · never leaves this device",
+    "description": "Detail line of the fill receipt after filling a login"
+  },
+  "autofillFillReceiptCardTitle": {
+    "message": "Filled card ending $LAST4$",
+    "description": "Title of the fill receipt after filling a card",
+    "placeholders": {
+      "last4": {
+        "content": "$1",
+        "example": "4242"
+      }
+    }
+  },
+  "autofillFillReceiptCardTitleNoLast4": {
+    "message": "Filled card",
+    "description": "Title of the fill receipt when the card has no number saved"
+  },
+  "autofillFillReceiptCardDetail": {
+    "message": "Writes to this page only · full number stays in the vault",
+    "description": "Detail line of the fill receipt after filling a card"
+  },
+  "autofillFillReceiptIdentityTitle": {
+    "message": "Filled contact and address",
+    "description": "Title of the fill receipt after filling an identity"
+  },
+  "autofillFillReceiptIdentityDetail": {
+    "message": "Writes to this page only · never leaves this device",
+    "description": "Detail line of the fill receipt after filling an identity"
+  },
+  "autofillFillReceiptUndo": {
+    "message": "Undo",
+    "description": "Button that clears the fields the inline-menu fill wrote"
+  },
+  "autofillFillReceiptRefill": {
+    "message": "Refill",
+    "description": "Button that re-applies the inline-menu fill after an undo"
+  },
+  "autofillFillReceiptUndoneTitle": {
+    "message": "Undid the page fill",
+    "description": "Title of the fill receipt after the user undoes the fill"
+  },
+  "autofillFillReceiptUndoneDetail": {
+    "message": "Fields cleared · refill is available",
+    "description": "Detail line of the fill receipt after the user undoes the fill"
+  },
+  "itemKindTokenAccessKeyId": {
+    "message": "Access Key ID"
+  },
+  "itemKindSshKeyAlgorithm": {
+    "message": "Algorithm & bits"
+  },
+  "itemKindSshKeyFingerprint": {
+    "message": "Fingerprint"
+  },
+  "itemKindSshKeyPassphrase": {
+    "message": "Passphrase"
+  },
+  "itemKindSshKeyHosts": {
+    "message": "Allowed hosts"
+  },
+  "itemKindLicenseEdition": {
+    "message": "Edition"
+  },
+  "itemKindLicenseEmail": {
+    "message": "Licensed email"
+  },
+  "itemKindLicenseOrderId": {
+    "message": "Order ID"
+  },
+  "itemKindCardPin": {
+    "message": "Card PIN"
+  },
+  "itemKindCardBillingZip": {
+    "message": "Billing postal code"
+  },
+  "itemKindIdentityIdType": {
+    "message": "Document type"
+  },
+  "itemKindServerHost": {
+    "message": "Host"
+  },
+  "itemKindServerPort": {
+    "message": "Port"
+  },
+  "itemKindServerLoginUser": {
+    "message": "Login account"
+  },
+  "itemKindServerLinkedSsh": {
+    "message": "Linked SSH key"
+  },
+  "itemKindServerRegion": {
+    "message": "Region / datacenter"
+  },
+  "itemKindNoteCategory": {
+    "message": "Category"
+  },
+  "itemKindNoteRecoveryHint": {
+    "message": "Storage location hint"
+  },
+  "preset": {
+    "message": "Preset"
+  },
+  "none": {
+    "message": "None"
+  },
+  "passkey": {
+    "message": "Passkey"
+  },
+  "autoHide30sChip": {
+    "message": "30s"
+  },
+  "clearNow": {
+    "message": "Clear now"
+  },
+  "clipboardClearCountdown": {
+    "message": "Clipboard clears in $SECONDS$s",
+    "placeholders": {
+      "seconds": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "rulesTitle": {
+    "message": "Default rules"
+  },
+  "networkGateLockedRuleTitle": {
+    "message": "Zero requests while locked"
+  },
+  "networkGateLockedRuleDesc": {
+    "message": "No outbound request is permitted while the vault is locked."
+  },
+  "networkGateNoFaviconRuleTitle": {
+    "message": "No remote website icons"
+  },
+  "networkGateNoFaviconRuleDesc": {
+    "message": "All item tiles are generated locally without leaking visited domains."
+  },
+  "restorePrfNotSyncedNote": {
+    "message": "WebAuthn security keys stay bound to the browser where they were enrolled and are not synced in account.json."
+  },
+  "importFromActiveTab": {
+    "message": "Scan active tab"
+  },
+  "importKeepBoth": {
+    "message": "Keep both"
+  },
+  "trashEmptied": {
+    "message": "Trash emptied"
+  },
+  "deleted": {
+    "message": "Permanently deleted"
+  },
+  "healthIssuesCount": {
+    "message": "$COUNT$ items to review",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "bridgeBadge": {
+    "message": "Desktop"
+  },
+  "desktopBridgeTitle": {
+    "message": "Desktop Touch ID bridge"
+  },
+  "popupWidth": {
+    "message": "Popup width"
+  },
+  "securityKeyWaiting": {
+    "message": "Waiting for security key…"
+  },
+  "securityKeyWaitingHint": {
+    "message": "Touch your security key or complete the browser prompt to continue."
+  },
+  "securityKeyRemoveConfirm": {
+    "message": "Removing registered security keys disables security-key unlock in this browser. Your safety password still unlocks the vault."
+  },
+  "securityKeyRemoved": {
+    "message": "Security keys removed"
+  },
+  "inlineMenuTotpCopyOnly": {
+    "message": "Copy only (⌘C)"
+  },
+  "weakPasswordLabel": {
+    "message": "Weak password"
+  },
+  "charset": {
+    "message": "Character set"
+  },
+  "generatorRulesNote": {
+    "message": "The generator never goes online or records anything. Closing the window keeps history in settings; clear it there."
+  },
+  "restoreConfirmTitle": {
+    "message": "Confirm"
+  },
+  "restoreSettingsDesc": {
+    "message": "A failed restore leaves the vault untouched"
+  },
+  "restoreStartAction": {
+    "message": "Start restore"
   }
 }

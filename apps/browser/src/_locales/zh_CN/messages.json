@@ -916,7 +916,7 @@
     }
   },
   "invalidMasterPassword": {
-    "message": "无效的主密码"
+    "message": "安全密码无效"
   },
   "invalidMasterPasswordConfirmEmailAndHost": {
     "message": "无效的主密码。请确认您的电子邮箱正确无误，以及您的账户是在 $HOST$ 上创建的。",
@@ -991,7 +991,7 @@
     "message": "安全"
   },
   "confirmMasterPassword": {
-    "message": "再输一次"
+    "message": "确认安全密码"
   },
   "masterPassword": {
     "message": "安全密码"
@@ -1015,7 +1015,7 @@
     "message": "无效的电子邮箱地址。"
   },
   "masterPasswordRequired": {
-    "message": "必须填写主密码。"
+    "message": "必须填写安全密码。"
   },
   "confirmMasterPasswordRequired": {
     "message": "必须填写确认主密码。"
@@ -3295,7 +3295,7 @@
     "message": "使用生物识别解锁"
   },
   "unlockWithMasterPassword": {
-    "message": "使用主密码解锁"
+    "message": "使用安全密码解锁"
   },
   "awaitDesktop": {
     "message": "等待来自桌面端的确认"
@@ -7886,7 +7886,7 @@
     "message": "您删除的项目将显示在这里，直到你恢复或永久删除。"
   },
   "trashWarning": {
-    "message": "回收站中的项目会一直保留，直到你恢复或永久删除"
+    "message": "清空回收站后无法恢复；桶内可能仍保留旧的加密快照。"
   },
   "restore": {
     "message": "恢复"
@@ -9714,7 +9714,7 @@
     "message": "登出会把保险库从本机删除。没有服务器副本可以恢复，如果还没备份，请先去导出。"
   },
   "cloudBackup": {
-    "message": "云备份"
+    "message": "R2 同步"
   },
   "cloudBackupDescription": {
     "message": "把这份保险库的加密副本存到 S3 兼容存储（Cloudflare R2、MinIO、Backblaze B2…）。先在控制台创建一个只授权单桶读写的 API 令牌，再把这些值填进来。"
@@ -9734,14 +9734,14 @@
   "backupSecretKey": {
     "message": "Secret Key"
   },
-    "backupTest": {
+  "backupTest": {
     "message": "测试连接"
   },
   "backupNow": {
-    "message": "导出备份"
+    "message": "导出"
   },
   "backupActionHint": {
-    "message": "同步与桶交换快照；导出备份写一份带独立口令、可导入的标准 JSON。"
+    "message": "同步与桶交换加密快照；导出生成带独立口令、可导入的标准 JSON。"
   },
   "backupBucketInUse": {
     "message": "这个桶已经属于另一座保险库，请换一个桶。"
@@ -9819,7 +9819,7 @@
     "message": "安全密钥"
   },
   "securityKeyDescription": {
-    "message": "WebAuthn PRF · 仅本机验证"
+    "message": "登记一把安全密钥或通行密钥，之后不用输安全密码就能解锁。密钥绑定在这个扩展上：换浏览器或到桌面端都不能用。"
   },
   "securityKeyEnroll": {
     "message": "登记安全密钥"
@@ -9969,7 +9969,7 @@
     "message": "手动"
   },
   "backupTitle": {
-    "message": "云备份"
+    "message": "R2 同步"
   },
   "exportData": {
     "message": "导出加密 JSON"
@@ -10014,7 +10014,7 @@
     "message": "上次同步"
   },
   "lastBackup": {
-    "message": "最近备份"
+    "message": "最近同步"
   },
   "backupMode": {
     "message": "同步方式"
@@ -10038,7 +10038,7 @@
     "message": "先填端点、桶名和凭据"
   },
   "restoreTitle": {
-    "message": "从备份恢复"
+    "message": "从云存储恢复"
   },
   "restoreSubtitle": {
     "message": "失败不会改动现有数据"
@@ -10221,13 +10221,13 @@
     "message": "创建本机保险库"
   },
   "createLocalVaultSubtitle": {
-    "message": "没有账号，没有注册。安全密码只用来在这台电脑上解密数据。"
+    "message": "无需注册、不连服务器。安全密码仅用于在这台设备上解密保险库。"
   },
   "vaultIdentity": {
     "message": "身份"
   },
   "restoreFromBackup": {
-    "message": "从备份恢复"
+    "message": "从云存储恢复"
   },
   "createLocalVaultNote": {
     "message": "指纹解锁只在 macOS 桌面端的「设置 → 安全」里开启，扩展本身没有这个能力。"
@@ -10395,7 +10395,7 @@
     "message": "GPL v3.0"
   },
   "lockVaultHint": {
-    "message": "不会删除任何数据"
+    "message": "立即锁定保险库；再次进入需要安全密码或触控 ID。"
   },
   "newItemKindNotice": {
     "message": "先选类型，字段会跟着类型变；所有内容都在本地加密。"
@@ -10524,7 +10524,7 @@
     "message": "密码与短语"
   },
   "backupSettingsDesc": {
-    "message": "手动同步到你自己拥有的存储"
+    "message": "配置自选桶并手动推送 / 拉取加密快照"
   },
   "networkSettingsDesc": {
     "message": "拦截未经授权的出站请求"
@@ -10536,7 +10536,7 @@
     "message": "版本"
   },
   "settingsPrivacyNote": {
-    "message": "LocalPass 没有账号、没有服务器。删除扩展前请先导出或备份。"
+    "message": "LocalPass 完全离线运行，没有服务器。卸载前请先导出或同步。"
   },
   "unlockOptionsDesc": {
     "message": "PIN 及其他解锁方式"
@@ -10568,7 +10568,7 @@
     "message": "账户"
   },
   "backupPrivacyGroup": {
-    "message": "备份与隐私"
+    "message": "同步与隐私"
   },
   "favoriteHint": {
     "message": "在列表里置顶显示"
@@ -10612,10 +10612,10 @@
     "message": "仅 macOS 桌面端可用"
   },
   "encryptedBackup": {
-    "message": "加密备份"
+    "message": "R2 加密同步"
   },
   "encryptedBackupDesc": {
-    "message": "手动，永不自动上传"
+    "message": "与自选 R2 / S3 桶手动交换加密快照"
   },
   "dataLocation": {
     "message": "数据位置"
@@ -10633,16 +10633,16 @@
     "message": "浏览器扩展本地存储"
   },
   "exportEncryptedBackup": {
-    "message": "导出加密备份"
+    "message": "导出加密 JSON"
   },
   "exportBeforeClear": {
-    "message": "先导出，再清空"
+    "message": "清空本机保险库前建议先导出"
   },
   "dangerZone": {
     "message": "危险操作"
   },
   "clearVaultDescription": {
-    "message": "清空保险库会删除本机全部条目，无法撤销。云备份里的旧快照不会被删除。"
+    "message": "清空保险库会删除本机全部条目，无法撤销。桶内已有的旧快照不会被删除。"
   },
   "clearVault": {
     "message": "清空保险库"
@@ -10891,7 +10891,7 @@
     }
   },
   "aboutDescription": {
-    "message": "完全离线的密码管理器。数据只存在你自己的电脑上，没有账号，也没有服务器。"
+    "message": "完全离线的密码管理器。数据只存在你自己的设备上，没有服务器。"
   },
   "vaultIsEmpty": {
     "message": "保险库是空的"
@@ -10939,10 +10939,10 @@
     "message": "移除 PIN 解锁？下次需要输入安全密码。"
   },
   "trashFootnote": {
-    "message": "清空回收站后无法恢复；云备份里可能仍有旧的加密快照。"
+    "message": "清空回收站后无法恢复；桶内可能仍保留旧的加密快照。"
   },
   "forgotPasswordRestore": {
-    "message": "忘记密码？从备份恢复",
+    "message": "忘记安全密码？从云存储恢复",
     "description": "解锁页：从备份恢复入口"
   },
   "entropyLabel": {
@@ -10970,7 +10970,7 @@
     "message": "恢复前会校验快照与安全密码；任何一步失败都不会改动现有数据。"
   },
   "unlockOfflineFootnote": {
-    "message": "完全离线 · 没有账号 · AES-256-GCM 加密"
+    "message": "完全离线 · 本地优先 · AES-256-GCM 加密"
   },
   "pinUnlock": {
     "message": "PIN 解锁"
@@ -11024,5 +11024,804 @@
         "content": "$1"
       }
     }
+  },
+  "itemKindTokenAccessKeyId": {
+    "message": "访问密钥 ID"
+  },
+  "itemKindSshKeyAlgorithm": {
+    "message": "算法与位数"
+  },
+  "itemKindSshKeyFingerprint": {
+    "message": "公钥指纹"
+  },
+  "itemKindSshKeyPassphrase": {
+    "message": "保护口令"
+  },
+  "itemKindSshKeyHosts": {
+    "message": "适用主机"
+  },
+  "itemKindLicenseEdition": {
+    "message": "授权档位"
+  },
+  "itemKindLicenseEmail": {
+    "message": "授权邮箱"
+  },
+  "itemKindLicenseOrderId": {
+    "message": "订单编号"
+  },
+  "itemKindCardPin": {
+    "message": "交易 PIN"
+  },
+  "itemKindCardBillingZip": {
+    "message": "账单邮编"
+  },
+  "itemKindIdentityIdType": {
+    "message": "证件类型"
+  },
+  "itemKindServerHost": {
+    "message": "主机地址"
+  },
+  "itemKindServerPort": {
+    "message": "端口"
+  },
+  "itemKindServerLoginUser": {
+    "message": "登录账号"
+  },
+  "itemKindServerLinkedSsh": {
+    "message": "关联 SSH 密钥"
+  },
+  "itemKindServerRegion": {
+    "message": "区域 / 机房"
+  },
+  "itemKindNoteCategory": {
+    "message": "笔记分类"
+  },
+  "itemKindNoteRecoveryHint": {
+    "message": "介质存放提示"
+  },
+  "preset": {
+    "message": "预设"
+  },
+  "none": {
+    "message": "无"
+  },
+  "passkey": {
+    "message": "通行密钥"
+  },
+  "autoHide30sChip": {
+    "message": "30 秒"
+  },
+  "clearNow": {
+    "message": "立即清空"
+  },
+  "clipboardClearCountdown": {
+    "message": "$SECONDS$ 秒后自动清空剪贴板",
+    "placeholders": {
+      "seconds": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "rulesTitle": {
+    "message": "默认守则"
+  },
+  "networkGateLockedRuleTitle": {
+    "message": "锁库时零出站请求"
+  },
+  "networkGateLockedRuleDesc": {
+    "message": "保险库锁定期间不发起任何网络请求。"
+  },
+  "networkGateNoFaviconRuleTitle": {
+    "message": "不拉取远程网站图标"
+  },
+  "networkGateNoFaviconRuleDesc": {
+    "message": "条目图标全部本机生成，不向外部暴露访问域名。"
+  },
+  "restorePrfNotSyncedNote": {
+    "message": "WebAuthn 安全密钥仅绑定在登记它的浏览器本机，不随 account.json 同步，恢复后需按需重新登记。"
+  },
+  "importFromActiveTab": {
+    "message": "识别当前标签页"
+  },
+  "importKeepBoth": {
+    "message": "两份都保留"
+  },
+  "trashEmptied": {
+    "message": "回收站已清空"
+  },
+  "deleted": {
+    "message": "已彻底删除"
+  },
+  "healthIssuesCount": {
+    "message": "$COUNT$ 项待处理",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "bridgeBadge": {
+    "message": "桌面已连"
+  },
+  "desktopBridgeTitle": {
+    "message": "桌面触控 ID 桥接"
+  },
+  "popupWidth": {
+    "message": "弹窗宽度"
+  },
+  "securityKeyWaiting": {
+    "message": "正在等待安全密钥确认…"
+  },
+  "securityKeyWaitingHint": {
+    "message": "请轻触硬件安全密钥或完成浏览器验证提示以继续。"
+  },
+  "securityKeyRemoveConfirm": {
+    "message": "移除已登记的安全密钥后，本浏览器将无法用安全密钥解锁，仍可使用安全密码解锁保险库。"
+  },
+  "securityKeyRemoved": {
+    "message": "安全密钥已移除"
+  },
+  "inlineMenuTotpCopyOnly": {
+    "message": "仅复制 (⌘C)"
+  },
+  "weakPasswordLabel": {
+    "message": "弱密码"
+  },
+  "charset": {
+    "message": "字符集"
+  },
+  "generatorRulesNote": {
+    "message": "生成器不联网、不记录。关闭窗口后历史仍在设置里，可手动清除。"
+  },
+  "restoreConfirmTitle": {
+    "message": "确认"
+  },
+  "restoreSettingsDesc": {
+    "message": "失败不会改动现有数据"
+  },
+  "restoreStartAction": {
+    "message": "开始恢复"
+  },
+  "inlineGeneratorHeading": {
+    "message": "强密码建议"
+  },
+  "inlineGeneratorDescription": {
+    "message": "20 位强密码 · 填入并打开保存确认条"
+  },
+  "inlineGeneratorRegenerate": {
+    "message": "换一个"
+  },
+  "inlineGeneratorLocalOnly": {
+    "message": "只在本机生成"
+  },
+  "passwordAutoHide": {
+    "message": "明文 30 秒自动收回"
+  },
+  "passwordAutoHideDesc": {
+    "message": "点击显示密码后，30 秒自动恢复掩码。"
+  },
+  "notificationAddHeading": {
+    "message": "要保存 $SITE$ 的登录吗？",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddSubtitleChoice": {
+    "message": "首次登录 $SITE$ · 选择归属文件夹后加密存入本机",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddSubtitleNoFolder": {
+    "message": "首次登录 $SITE$ · 将加密存入本机保险库",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddSaveToFolder": {
+    "message": "保存到「$FOLDER$」",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationNeverForSite": {
+    "message": "从不提示此站"
+  },
+  "notificationAtRiskHeading": {
+    "message": "此账号使用了重复或偏弱密码"
+  },
+  "reusedPasswordsPlaces": {
+    "message": "重复 $COUNT$ 处",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationSaveConfirmed": {
+    "message": "已安全保存到 LocalPass"
+  },
+  "notificationSaveBody": {
+    "message": "已加密存入本机 · 2 分钟内自动收起"
+  },
+  "notificationSaveFolderBody": {
+    "message": "已加密存入「$FOLDER$」· 2 分钟内自动收起",
+    "placeholders": {
+      "folder": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationAddTotp": {
+    "message": "补充 2FA / 编辑条目"
+  },
+  "notificationChangeHeader": {
+    "message": "更新 $NAME$ 的密码？",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Northwind"
+      }
+    }
+  },
+  "notificationLastUsedJustNow": {
+    "message": "刚刚使用"
+  },
+  "notificationLastUsedMinutes": {
+    "message": "$COUNT$ 分钟前使用",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationLastUsedHours": {
+    "message": "$COUNT$ 小时前使用",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationLastUsedDays": {
+    "message": "$COUNT$ 天前使用",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationChangeBodyVersion": {
+    "message": "检测到密码已更改。更新后将在版本历史中保留 v$VERSION$。",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationUpdateVersion": {
+    "message": "更新条目 (v$VERSION$)",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "notificationChangeBodyDesc": {
+    "message": "检测到密码已更改。更新后将在本机历史中保留旧密码。"
+  },
+  "notificationChangeToggle": {
+    "message": "切换 / 存为新条"
+  },
+  "notificationChangeIgnore": {
+    "message": "忽略"
+  },
+  "notificationMultiSaveHeader": {
+    "message": "$DOMAIN$ 有多条已保存登录",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "northwind.io"
+      }
+    }
+  },
+  "notificationMultiSaveDesc": {
+    "message": "检测到密码已更改，请选择要更新的条目，不会静默覆盖。"
+  },
+  "notificationMultiSaveNewEntry": {
+    "message": "另存为新条目 #$COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "notificationMultiSaveNewEntryDesc": {
+    "message": "保留原有条目不变，将本次凭据单独存为新条目"
+  },
+  "notificationMultiSaveCreate": {
+    "message": "新建条目 #$COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "notificationMultiSaveUpdate": {
+    "message": "更新 $USERNAME$ 密码",
+    "placeholders": {
+      "username": {
+        "content": "$1",
+        "example": "alex@northwind.io"
+      }
+    }
+  },
+  "notificationMultiSaveUpdateGeneric": {
+    "message": "更新所选条目"
+  },
+  "notificationMultiSaveNoUsername": {
+    "message": "未保存用户名"
+  },
+  "inlineMenuLocked": {
+    "message": "已锁定"
+  },
+  "inlineMenuUnlockToFill": {
+    "message": "解锁以填充 {domain}",
+    "description": "Inline unlock prompt; {domain} is replaced with the site hostname."
+  },
+  "inlineMenuUnlockAria": {
+    "message": "解锁保险库"
+  },
+  "inlineMenuUnlockFootnote": {
+    "message": "解锁后扩展弹窗也将同步解锁。"
+  },
+  "inlineMenuUnlockFailed": {
+    "message": "解锁失败，请重试。"
+  },
+  "inlineMenuGeneratePassword": {
+    "message": "生成密码",
+    "description": "Footer action in the inline login menu that opens the password generator"
+  },
+  "inlineMenuSearchAll": {
+    "message": "在扩展中搜全部",
+    "description": "Footer action in the inline login menu that opens the full vault list"
+  },
+  "inlineMenuReadOnlyDomain": {
+    "message": "只读域名",
+    "description": "Footer note stating the inline menu only reads the page domain and never changes the page"
+  },
+  "inlineMenuCardsMenu": {
+    "message": "银行卡",
+    "description": "Header suffix of the inline card suggestions menu"
+  },
+  "inlineMenuIdentityMenu": {
+    "message": "身份与地址",
+    "description": "Header suffix of the inline identity suggestions menu"
+  },
+  "inlineMenuCardMenuAriaLabel": {
+    "message": "LocalPass 银行卡建议",
+    "description": "Aria label for the inline card menu dialog"
+  },
+  "inlineMenuIdentityMenuAriaLabel": {
+    "message": "LocalPass 身份与地址建议",
+    "description": "Aria label for the inline identity menu dialog"
+  },
+  "inlineMenuFavorite": {
+    "message": "收藏",
+    "description": "Chip marking a favorite card or identity in the inline menu"
+  },
+  "inlineMenuFillCardAria": {
+    "message": "填充卡片 {name}",
+    "description": "Aria label for filling a card in the inline menu"
+  },
+  "inlineMenuFillIdentityAria": {
+    "message": "填充身份 {name}",
+    "description": "Aria label for filling an identity in the inline menu"
+  },
+  "inlineMenuCardMaskedNote": {
+    "message": "完整卡号始终隐藏",
+    "description": "Keyboard strip note in the inline card menu explaining masking"
+  },
+  "inlineMenuIdentityFillNote": {
+    "message": "填充姓名与地址",
+    "description": "Keyboard strip note in the inline identity menu"
+  },
+  "inlineMenuInlineKeys": {
+    "message": "↑↓ ↵ esc",
+    "description": "Compact keyboard hint shown on the right of the inline card and identity menus"
+  },
+  "syncConflictNotice": {
+    "message": "自上次同步以来，本机与桶内快照同时修改了以下条目。请选择保留方式，解决前不会上传。"
+  },
+  "syncConflictFieldsDiffer": {
+    "message": "存在差异的字段数：$COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "syncConflictLocalSide": {
+    "message": "本机版本"
+  },
+  "syncConflictRemoteSide": {
+    "message": "桶内快照"
+  },
+  "syncConflictUpdatedAt": {
+    "message": "更新于 $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "syncConflictFolder": {
+    "message": "文件夹"
+  },
+  "syncConflictUntitledItem": {
+    "message": "未命名条目"
+  },
+  "syncConflictKeepBoth": {
+    "message": "两份都留（推荐）"
+  },
+  "syncConflictKeepBothHint": {
+    "message": "保留本机条目，并将桶内快照另存为独立冲突副本。"
+  },
+  "syncConflictKeepLocal": {
+    "message": "只留本机"
+  },
+  "syncConflictKeepLocalHint": {
+    "message": "以本机版本覆盖桶内快照，旧快照仍保留在桶历史中。"
+  },
+  "syncConflictKeepRemote": {
+    "message": "采用桶内快照"
+  },
+  "syncConflictKeepRemoteHint": {
+    "message": "用桶内快照覆盖本机条目。"
+  },
+  "syncConflictResolve": {
+    "message": "提交解决方案"
+  },
+  "syncConflictResolved": {
+    "message": "冲突已解决并完成同步"
+  },
+  "syncConflictFailed": {
+    "message": "未能解决冲突，本次未上传，请重试。"
+  },
+  "networkGatePolicyTitle": {
+    "message": "默认拒绝（Default Deny）"
+  },
+  "networkGatePolicyDesc": {
+    "message": "没有隐藏黑名单，也没有后台定时流量；保险库锁定时出站请求恒为 0。"
+  },
+  "foldersAllItemsSub": {
+    "message": "包含未分组及全部文件夹中的条目"
+  },
+  "undo": {
+    "message": "撤销"
+  },
+  "listDensity": {
+    "message": "列表密度"
+  },
+  "densityCompact": {
+    "message": "紧凑"
+  },
+  "densityUltra": {
+    "message": "极紧"
+  },
+  "densityCompactDesc": {
+    "message": "双行显示条目名称与副标题。"
+  },
+  "densityUltraDesc": {
+    "message": "单行紧凑显示，首屏可多看约 3 条。"
+  },
+  "securityAndUnlockGroup": {
+    "message": "安全与解锁"
+  },
+  "searchVaultPlaceholderAll": {
+    "message": "搜索名称、用户名、网址、备注或自定义字段"
+  },
+  "recentAndAll": {
+    "message": "最近与全部"
+  },
+  "allFieldsSearchHint": {
+    "message": "搜索覆盖名称、用户名、网址、备注与自定义字段。"
+  },
+  "shortcutHelpTitle": {
+    "message": "快捷键说明"
+  },
+  "shortcutOpenPopup": {
+    "message": "打开扩展弹窗"
+  },
+  "shortcutFillPage": {
+    "message": "自动填充当前网页"
+  },
+  "shortcutListMove": {
+    "message": "上下选择 / 打开条目"
+  },
+  "shortcutCopyFields": {
+    "message": "复制用户名 / 密码"
+  },
+  "touchIdBridgeOn": {
+    "message": "已开启 · 由 Mac 桌面端代理触控 ID 解锁"
+  },
+  "touchIdBridgeReady": {
+    "message": "桌面端已连接 · 开启后可唤起 Mac 触控 ID"
+  },
+  "touchIdBridgeNeedsPermission": {
+    "message": "点击授权原生消息权限以连接桌面端"
+  },
+  "touchIdBridgeOffline": {
+    "message": "桌面端未运行"
+  },
+  "touchIdBridgeDesktopSetup": {
+    "message": "请先在桌面端开启触控 ID 解锁"
+  },
+  "touchIdBridgeUnavailable": {
+    "message": "触控 ID 代理桥接不可用"
+  },
+  "clearVaultConfirmCheckbox": {
+    "message": "我明白这会永久删除本机全部条目且无法撤销。"
+  },
+  "importOnePassword": {
+    "message": "1Password（.1pux / .1pif / .csv）"
+  },
+  "importOnePasswordSub": {
+    "message": "保留标签、动态口令、自定义字段与文件夹"
+  },
+  "importBitwardenExportAny": {
+    "message": "Bitwarden 导出"
+  },
+  "importBitwardenExportAnySub": {
+    "message": ".json / .csv · 加密或明文"
+  },
+  "importGenericCsv": {
+    "message": "通用 CSV（Chrome / Safari）"
+  },
+  "importGenericCsvSub": {
+    "message": "自动识别网址、用户名与密码列"
+  },
+  "importSourceRecommended": {
+    "message": "推荐"
+  },
+  "importSourceNative": {
+    "message": "原生"
+  },
+  "importSourceCompatible": {
+    "message": "兼容"
+  },
+  "importSourceTwoFactor": {
+    "message": "2FA"
+  },
+  "importSourceGeneric": {
+    "message": "通用"
+  },
+  "exportFormatCsv": {
+    "message": "通用 CSV（明文）"
+  },
+  "exportCsvWarning": {
+    "message": "CSV 文件以明文保存密码，且仅包含登录与安全笔记。仅用于迁移至其他密码管理器，使用后请立即删除。"
+  },
+  "offlineDiagnostics": {
+    "message": "离线诊断"
+  },
+  "diagnosticsTitle": {
+    "message": "零敏感诊断报告"
+  },
+  "diagnosticsDesc": {
+    "message": "完全在本机生成，仅含版本、平台、设置、聚合计数与同步状态，绝不含条目名、网址、用户名、备注、密码、动态口令密钥或密文。"
+  },
+  "showReport": {
+    "message": "预览报告"
+  },
+  "hideReport": {
+    "message": "收起报告"
+  },
+  "copyDiagnostics": {
+    "message": "复制诊断报告"
+  },
+  "diagnosticsCopied": {
+    "message": "诊断报告已复制"
+  },
+  "diagnosticsCopyFailed": {
+    "message": "复制诊断报告失败"
+  },
+  "r2CorsPolicy": {
+    "message": "R2 CORS 策略"
+  },
+  "r2CorsHint": {
+    "message": "粘贴至 R2 → 桶 → 设置 → CORS 策略。桌面端直连 R2 需此配置，且暴露 ETag 以保障条件写入安全。"
+  },
+  "r2CorsCopied": {
+    "message": "CORS 策略已复制"
+  },
+  "backupPendingChangeOne": {
+    "message": "1 项变更待同步"
+  },
+  "backupPendingChanges": {
+    "message": "$COUNT$ 项变更待同步",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "backupSynced": {
+    "message": "已同步 · 加密快照"
+  },
+  "backupGeneration": {
+    "message": "代次 gen #$N$",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "backupBucketName": {
+    "message": "桶 $BUCKET$",
+    "placeholders": {
+      "bucket": {
+        "content": "$1"
+      }
+    }
+  },
+  "healthCheck": {
+    "message": "安全体检"
+  },
+  "healthCheckDesc": {
+    "message": "本地扫描重复密码、弱密码、超期密码与缺失 2FA"
+  },
+  "healthCheckSubtitle": {
+    "message": "全部规则在本机离线运行，密码绝不离开设备。"
+  },
+  "healthCheckRescan": {
+    "message": "重新扫描"
+  },
+  "healthCheckScanned": {
+    "message": "本地安全体检已完成"
+  },
+  "healthCheckReusedStat": {
+    "message": "重复密码"
+  },
+  "healthCheckWeakOrStaleStat": {
+    "message": "弱密码 / 超 365 天"
+  },
+  "healthCheckMissingTotpStat": {
+    "message": "缺少 2FA"
+  },
+  "healthCheckStrongStat": {
+    "message": "强密码"
+  },
+  "healthCheckPriority": {
+    "message": "优先修复项"
+  },
+  "healthCheckPriorityDesc": {
+    "message": "按风险优先级排序 · 点击直接进入编辑"
+  },
+  "healthCheckFix": {
+    "message": "去修改"
+  },
+  "healthCheckReusedChip": {
+    "message": "重复密码"
+  },
+  "healthCheckWeakChip": {
+    "message": "弱密码"
+  },
+  "healthCheckStaleChip": {
+    "message": "超 365 天"
+  },
+  "healthCheckMissingTotpChip": {
+    "message": "缺 2FA"
+  },
+  "healthCheckSharedWith": {
+    "message": "与 {NAMES} 共用同一密码"
+  },
+  "healthCheckWeakDetail": {
+    "message": "密码偏弱 · {COUNT} 位字符"
+  },
+  "healthCheckChangedOn": {
+    "message": "上次修改于 {DATE}"
+  },
+  "healthCheckMissingTotpDetail": {
+    "message": "未配置动态口令（2FA）"
+  },
+  "healthCheckAllClear": {
+    "message": "未发现风险项"
+  },
+  "healthCheckAllClearDesc": {
+    "message": "没有重复或偏弱密码，无超过 365 天未换密码，全部登录均已配置 2FA。"
+  },
+  "healthCheckNoLogins": {
+    "message": "暂无可检测的登录密码"
+  },
+  "healthCheckNoLoginsDesc": {
+    "message": "添加登录条目后即可在本机运行离线安全体检。"
+  },
+  "healthCheckPrivacyTitle": {
+    "message": "隐私边界"
+  },
+  "healthCheckPrivacy": {
+    "message": "纯本机规则计算，不发起泄露查询、不发遥测、不触网。"
+  },
+  "healthCheckOfflineRule": {
+    "message": "离线规则"
+  },
+  "showPassword": {
+    "message": "显示密码"
+  },
+  "hidePassword": {
+    "message": "隐藏密码"
+  },
+  "autofillFillReceiptAria": {
+    "message": "自动填充回执",
+    "description": "Accessible label for the bottom-right card confirming an inline-menu fill"
+  },
+  "autofillFillReceiptLoginTitle": {
+    "message": "已填入 $NAME$ 的凭据",
+    "description": "Title of the fill receipt after filling a login",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "autofillFillReceiptLoginDetail": {
+    "message": "仅写入当前网页 · 绝不离开本机",
+    "description": "Detail line of the fill receipt after filling a login"
+  },
+  "autofillFillReceiptCardTitle": {
+    "message": "已填入尾号 $LAST4$ 的卡片",
+    "description": "Title of the fill receipt after filling a card",
+    "placeholders": {
+      "last4": {
+        "content": "$1",
+        "example": "4242"
+      }
+    }
+  },
+  "autofillFillReceiptCardTitleNoLast4": {
+    "message": "已填入卡片信息",
+    "description": "Title of the fill receipt when the card has no number saved"
+  },
+  "autofillFillReceiptCardDetail": {
+    "message": "仅写入当前网页 · 完整卡号保留在保险库",
+    "description": "Detail line of the fill receipt after filling a card"
+  },
+  "autofillFillReceiptIdentityTitle": {
+    "message": "已填入联系人与地址",
+    "description": "Title of the fill receipt after filling an identity"
+  },
+  "autofillFillReceiptIdentityDetail": {
+    "message": "仅写入当前网页 · 绝不离开本机",
+    "description": "Detail line of the fill receipt after filling an identity"
+  },
+  "autofillFillReceiptUndo": {
+    "message": "撤销",
+    "description": "Button that clears the fields the inline-menu fill wrote"
+  },
+  "autofillFillReceiptRefill": {
+    "message": "重新填充",
+    "description": "Button that re-applies the inline-menu fill after an undo"
+  },
+  "autofillFillReceiptUndoneTitle": {
+    "message": "已撤销页面填充",
+    "description": "Title of the fill receipt after the user undoes the fill"
+  },
+  "autofillFillReceiptUndoneDetail": {
+    "message": "字段已恢复 · 可随时重新填充",
+    "description": "Detail line of the fill receipt after the user undoes the fill"
   }
 }
