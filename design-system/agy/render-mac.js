@@ -512,7 +512,7 @@ function macList(state) {
     const subText = entry.matchSnippet
       ? `${entry.matchField}: ${entry.matchSnippet}`
       : it.user || it.kindLabel;
-    return `<button class="row ${isSel ? "on" : ""}" role="option" aria-selected="${isSel}" data-act="select-item" data-id="${it.id}">
+    return `<div class="row ${isSel ? "on" : ""}" role="option" tabindex="0" aria-selected="${isSel}" data-act="select-item" data-id="${it.id}">
       ${AV(it)}
       <span class="txt">
         <span class="t">
@@ -525,11 +525,11 @@ function macList(state) {
       <span class="meta">
         <span class="chip" style="height:16px;font-size:9px;padding:0 4px">${it.kindLabel}</span>
         <span class="hoveracts">
-          <span class="iconbtn sm" role="button" tabindex="-1" aria-label="复制用户名" title="复制用户名 (⌘C)" data-act="copy" data-label="用户名" data-copy-key="${it.id}:user">${icon("user", 13)}</span>
-          <span class="iconbtn sm" role="button" tabindex="-1" aria-label="复制密码" title="复制密码 (⇧⌘C)" data-act="copy" data-label="密码" data-copy-key="${it.id}:secret">${icon("key", 13)}</span>
+          <button class="iconbtn sm" aria-label="复制用户名" title="复制用户名 (⌘C)" data-act="copy" data-label="用户名" data-copy-key="${it.id}:user">${icon("user", 13)}</button>
+          <button class="iconbtn sm" aria-label="复制密码" title="复制密码 (⇧⌘C)" data-act="copy" data-label="密码" data-copy-key="${it.id}:secret">${icon("key", 13)}</button>
         </span>
       </span>
-    </button>`;
+    </div>`;
   };
 
   let bodyHtml = "";
@@ -772,7 +772,7 @@ function macDetailView(state) {
 
 function macHistoryDrawer(item) {
   const vers = item.versions || [];
-  return `<aside class="drawer lp" role="dialog" aria-label="版本历史">
+  return `<aside class="drawer lp" role="dialog" aria-modal="true" aria-label="版本历史">
     <div class="drawer-h">${icon("clock", 14)}版本历史 <span class="sub">${escapeHtml(item.name)}</span>
       <button class="iconbtn sm" style="margin-left:auto" data-act="mac-drawer" data-drawer="" aria-label="关闭">${icon("x", 14)}</button>
     </div>
@@ -787,8 +787,8 @@ function macHistoryDrawer(item) {
         </div>
         <div class="diff"><span>${v.device}</span><span>·</span><span>${v.summary}</span></div>
         <div style="display:flex;align-items:center;gap:5px;margin-top:2px;font-size:10.5px">
-          <span class="mono" style="color:var(--text-2);flex:1;overflow:hidden;text-overflow:ellipsis">${v.current ? "••••••••••••" : escapeHtml(v.secret)}</span>
-          <button class="btn sm" data-act="copy" data-label="历史密码 v${v.ver}">${icon("copy", 11)}复制</button>
+          <span class="mono" style="color:var(--text-2);flex:1;overflow:hidden;text-overflow:ellipsis">••••••••••••</span>
+          <button class="btn sm" data-act="copy" data-label="历史密码 v${v.ver}" data-copy-val="${escapeHtml(v.secret || "")}">${icon("copy", 11)}复制</button>
           ${!v.current ? `<button class="btn sm primary" data-act="restore-ver" data-ver="${v.ver}">恢复此版</button>` : ""}
         </div>
       </div>`,
@@ -800,7 +800,7 @@ function macHistoryDrawer(item) {
 }
 
 function macQrDrawer(item) {
-  return `<aside class="drawer lp" role="dialog" aria-label="动态口令二维码">
+  return `<aside class="drawer lp" role="dialog" aria-modal="true" aria-label="动态口令二维码">
     <div class="drawer-h">${icon("qr", 14)}验证码二维码 <span class="sub">${escapeHtml(item.name)}</span>
       <button class="iconbtn sm" style="margin-left:auto" data-act="mac-drawer" data-drawer="" aria-label="关闭">${icon("x", 14)}</button>
     </div>
@@ -810,8 +810,8 @@ function macQrDrawer(item) {
       </div>
       <div style="margin-top:10px;font-size:12px;font-weight:600">${escapeHtml(item.name)}</div>
       <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">${escapeHtml(item.user)}</div>
-      <div class="mono" style="margin-top:10px;padding:7px 9px;border-radius:6px;background:var(--bg-alt);border:1px solid var(--border-light);font-size:10.5px">${item.totpSecret || "JBSW Y3DP EHPK 3PXP"}</div>
-      <button class="btn block" style="margin-top:9px" data-act="copy" data-label="TOTP 密钥">${icon("copy", 12)}复制 Base32 密钥</button>
+      <div class="mono" style="margin-top:10px;padding:7px 9px;border-radius:6px;background:var(--bg-alt);border:1px solid var(--border-light);font-size:10.5px">••••••••••••••••</div>
+      <button class="btn block" style="margin-top:9px" data-act="copy" data-label="TOTP 密钥" data-copy-val="${escapeHtml(item.totpSecret || "JBSW Y3DP EHPK 3PXP")}">${icon("copy", 12)}复制 Base32 密钥</button>
     </div>
     <div class="drawer-f">本地 Canvas 渲染，不请求任何外部二维码接口</div>
   </aside>`;
@@ -924,7 +924,7 @@ function macFormDrawer(state, isNew, item) {
   const draft =
     state.formDraft || buildFormDraft(isNew ? state.newKind : item.kind, isNew ? null : item);
   const kind = draft.kind;
-  return `<aside class="drawer lp" role="dialog" aria-label="${isNew ? "新建条目" : "编辑条目"}">
+  return `<aside class="drawer lp" role="dialog" aria-modal="true" aria-label="${isNew ? "新建条目" : "编辑条目"}">
     <div class="drawer-h">${icon(isNew ? "plus" : "pencil", 14)}${isNew ? "新建条目" : "编辑条目"}
       <span class="sub">${isNew ? "8 类定制字段表单" : escapeHtml(draft.name || item.name)}</span>
       <button class="iconbtn sm" style="margin-left:auto" data-act="mac-drawer" data-drawer="" aria-label="关闭">${icon("x", 14)}</button>
@@ -1007,13 +1007,13 @@ function macHealthPage(state) {
   return `<section class="pagearea lp">
     <div class="pagehead">
       <div><h1>安全体检</h1><p>全部本地计算，密码明文永不离开设备。<span class="chip ok">${icon("shield", 10)} 离线规则已开启</span></p></div>
-      <div class="right"><button class="btn sm" data-act="toast-msg" data-msg="已重新扫描 128 个本地条目">重新扫描</button></div>
+      <div class="right"><button class="btn sm" data-act="toast-msg" data-msg="已重新扫描 ${state.items.length} 个本地条目">重新扫描</button></div>
     </div>
     <div class="stats">
       <div class="stat bad"><div class="n">1</div><div class="l">重复使用密码</div></div>
       <div class="stat warn"><div class="n">2</div><div class="l">弱密码 / 超 365 天</div></div>
       <div class="stat"><div class="n">1</div><div class="l">未配置 2FA</div></div>
-      <div class="stat ok"><div class="n">96</div><div class="l">强密码条目</div></div>
+      <div class="stat ok"><div class="n">${Math.max(0, state.items.length - 3)}</div><div class="l">强密码条目</div></div>
     </div>
     <div class="panel">
       <div class="panel-h">优先处理项 <span class="sub">按风险影响排序 · 直达编辑页</span></div>
@@ -1284,7 +1284,7 @@ function macExportPage(state) {
       <div class="right"><button class="btn sm primary" data-act="toast-msg" data-msg="已验证安全密码并生成导出文件">${icon("download", 12)}验证密码并导出</button></div>
     </div>
     <div class="panel">
-      <div class="panel-h">导出格式 <span class="sub">128 条目 · 4 文件夹</span></div>
+      <div class="panel-h">导出格式 <span class="sub">${state.items.length} 条目 · ${FOLDERS.length} 文件夹</span></div>
       ${fmts
         .map(
           ([
@@ -1455,7 +1455,7 @@ function macRestorePage() {
           <div style="padding:10px;display:grid;gap:7px">
             <div style="font-size:10.5px;color:var(--text-3)">请输入创立该桶时的安全密码（离线派生主密钥）：</div>
             <input type="password" value="••••••••••••" aria-label="原安全密码" style="height:30px;border:1px solid var(--border);border-radius:6px;padding:0 9px;background:var(--bg-alt)" />
-            <button class="btn primary block lg" data-act="toast-msg" data-msg="已从 R2 解密 3 个分片并在本机重建 128 条目">解密并覆盖重建本机</button>
+            <button class="btn primary block lg" data-act="toast-msg" data-msg="已从 R2 解密 3 个分片并在本机重建 ${R2_RESTORE_PREVIEW.itemCount} 条目">解密并覆盖重建本机</button>
           </div>
         </div>
         <div class="callout warn">${icon("alert", 14)}<div>说明：扩展端本地保存的 WebAuthn PRF 密钥不同步进桶，新设备恢复后可在扩展中重新登记。</div></div>
@@ -1500,7 +1500,7 @@ function macDataPage(state) {
       </div>
     </div>
     <div class="stats">
-      <div class="stat"><div class="n">128</div><div class="l">本机密文条目</div></div>
+      <div class="stat"><div class="n">${state.items.length}</div><div class="l">本机密文条目</div></div>
       <div class="stat ok"><div class="n">0600</div><div class="l">data.json 权限</div></div>
       <div class="stat"><div class="n">3 份</div><div class="l">.bak 滚动防损坏</div></div>
       <div class="stat ok"><div class="n">0</div><div class="l">服务端副本数</div></div>
@@ -1660,8 +1660,9 @@ function macEmptyPage() {
 function macItemDeleteModal(state) {
   const item = state.items.find((i) => i.id === state.selected) || state.items[0];
   return `<div class="overlay lp" style="align-items:center;padding-top:0">
-    <div class="modal-card" role="dialog" aria-label="确认删除条目">
-      <div class="mh">${icon("trash", 14)}将条目移到回收站？
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+      <span id="deleteModalTitle" class="sr-only">确认删除条目</span>
+      <div class="mh">${icon("trash", 14)}<span>将条目移到回收站？</span>
         <button class="iconbtn sm" style="margin-left:auto" data-act="go-screen" data-surface="mac" data-screen="mac-vault" aria-label="关闭">${icon("x", 14)}</button>
       </div>
       <div class="mb">

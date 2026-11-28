@@ -8,6 +8,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const STATE = {
   surface: "linkage",
   screen: "link-sandbox",
+  linkFocus: null,
   _screenInit: null,
   theme: "light",
   density: "compact",
@@ -94,6 +95,7 @@ const STATE = {
   copiedKey: null,
   clipboard: null,
   toast: null,
+  focusTarget: null,
   ipcLogs: [
     {
       ts: "22:25:48",
@@ -1652,6 +1654,8 @@ function currentScreenObj() {
 }
 
 let toastTimer = null;
+let clipboardClearTimer = null;
+
 function showToast(surface, msg, opts = {}) {
   STATE.toast = { surface, msg, ...opts };
   clearTimeout(toastTimer);
@@ -1665,15 +1669,75 @@ function showToast(surface, msg, opts = {}) {
   render();
 }
 
+function clearSystemClipboard() {
+  if (!navigator.clipboard || !navigator.clipboard.writeText) return Promise.resolve(false);
+  return navigator.clipboard
+    .writeText("")
+    .then(() => true)
+    .catch(() => false);
+}
+
+function resolveCopyValue(copyKey, explicitVal, label) {
+  if (explicitVal) return explicitVal;
+  if (copyKey) {
+    const separator = copyKey.indexOf(":");
+    const itemId = separator === -1 ? copyKey : copyKey.slice(0, separator);
+    const fieldKey = separator === -1 ? "" : copyKey.slice(separator + 1);
+    const item = STATE.items.find((it) => it.id === itemId);
+    if (item) {
+      if (fieldKey === "user")
+        return item.user || item.loginUser || item.email || item.service || "";
+      if (fieldKey === "secret") return item.secret || item.cardNumber || item.cardCode || "";
+      if (fieldKey === "otp") return item.otp || "";
+      if (fieldKey.startsWith("cf_")) {
+        const custom = item.custom?.[Number(fieldKey.slice(3))];
+        return custom?.value || "";
+      }
+      const row = getItemSections(item, new Set())
+        .flatMap((section) => section.rows)
+        .find((candidate) => candidate.key === fieldKey);
+      if (row?.copy) return row.copy;
+    }
+  }
+  if (label.includes("生成") || label.includes("新密码")) return STATE.genValue;
+  return "";
+}
+
 function triggerCopy(copyKey, label, explicitVal) {
-  let surface = STATE.surface === "linkage" ? "mac" : STATE.surface;
+  const surface = STATE.surface === "linkage" ? "mac" : STATE.surface;
+  const value = resolveCopyValue(copyKey, explicitVal, label);
+  if (!value) {
+    showToast(surface, `无法复制${label}：当前字段没有可用值`, { tone: "bad" });
+    return;
+  }
   if (copyKey) STATE.copiedKey = copyKey;
   STATE.clipboard = { label, secs: 30 };
-  if (explicitVal && navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(explicitVal).catch(() => {});
-  }
-  logIpc("clipboard", `已复制「${label}」· 30 秒后自动清空`);
-  showToast(surface, `${label}已复制 · 30 秒后自动清空`, { clearClip: true, tone: "" });
+  clearTimeout(clipboardClearTimer);
+
+  const write =
+    navigator.clipboard && navigator.clipboard.writeText
+      ? navigator.clipboard
+          .writeText(value)
+          .then(() => true)
+          .catch(() => false)
+      : Promise.resolve(false);
+
+  write.then((success) => {
+    if (!success) {
+      STATE.clipboard = null;
+      STATE.copiedKey = null;
+      showToast(surface, `无法复制${label}：浏览器未授予剪贴板权限`, { tone: "bad" });
+      return;
+    }
+    logIpc("clipboard", `已复制「${label}」· 30 秒后自动清空`);
+    showToast(surface, `${label}已复制 · 30 秒后自动清空`, { clearClip: true, tone: "" });
+    clipboardClearTimer = setTimeout(() => {
+      clearSystemClipboard();
+      STATE.clipboard = null;
+      STATE.copiedKey = null;
+      render();
+    }, 30000);
+  });
 }
 
 function renderIndex() {
@@ -1732,14 +1796,18 @@ function fit() {
   box.style.transform = `scale(${scale})`;
   holder.style.width = `${Math.round(w * scale)}px`;
   holder.style.height = `${Math.round(h * scale)}px`;
+  stage.dataset.scale = scale.toFixed(2);
 }
 
 function render() {
-  const activeSearchId = document.activeElement && document.activeElement.id;
+  const activeElement = document.activeElement;
+  const activeSearchId = activeElement && activeElement.id;
   const selPos =
-    document.activeElement && typeof document.activeElement.selectionStart === "number"
-      ? document.activeElement.selectionStart
+    activeElement && typeof activeElement.selectionStart === "number"
+      ? activeElement.selectionStart
       : null;
+  const focusTarget = STATE.focusTarget;
+  STATE.focusTarget = null;
 
   $$(".surfaces button").forEach((b) =>
     b.setAttribute("aria-selected", String(b.dataset.surface === STATE.surface)),
@@ -1751,11 +1819,13 @@ function render() {
   renderNotes(sc);
   requestAnimationFrame(fit);
 
-  if (activeSearchId) {
-    const el = document.getElementById(activeSearchId);
+  const focusSelector = focusTarget || (activeSearchId ? `#${activeSearchId}` : "");
+  if (focusSelector) {
+    const el = document.querySelector(focusSelector);
     if (el) {
       el.focus();
-      if (selPos !== null && el.setSelectionRange) el.setSelectionRange(selPos, selPos);
+      if (!focusTarget && selPos !== null && el.setSelectionRange)
+        el.setSelectionRange(selPos, selPos);
     }
   }
 }
@@ -2103,6 +2173,8 @@ document.addEventListener("click", (e) => {
   }
   if (act === "clear-clip") {
     e.stopPropagation();
+    clearTimeout(clipboardClearTimer);
+    clearSystemClipboard();
     STATE.clipboard = null;
     STATE.copiedKey = null;
     STATE.toast = null;
@@ -2126,6 +2198,14 @@ document.addEventListener("click", (e) => {
   }
   if (act === "toggle-lock") {
     STATE.locked = !STATE.locked;
+    if (STATE.locked) {
+      clearTimeout(clipboardClearTimer);
+      clearSystemClipboard();
+      STATE.clipboard = null;
+      STATE.copiedKey = null;
+      STATE.revealedIds.clear();
+      STATE.genHistoryRevealed.clear();
+    }
     logIpc(
       "com.localpass.desktop",
       STATE.locked ? "主动锁库 → 三端同步进入锁定态" : "触控 ID 解锁 → 三端会话同步恢复",
@@ -2198,6 +2278,11 @@ document.addEventListener("click", (e) => {
   }
   if (act === "link-ext") {
     STATE.extLinkScreen = actEl.dataset.ext;
+    render();
+    return;
+  }
+  if (act === "link-focus") {
+    STATE.linkFocus = actEl.dataset.target;
     render();
     return;
   }
@@ -2684,21 +2769,101 @@ document.addEventListener("change", (e) => {
 
 document.addEventListener("keydown", (e) => {
   const tag = document.activeElement?.tagName;
-  const inInput = tag === "INPUT" || tag === "TEXTAREA";
+  const activeRole = document.activeElement?.getAttribute("role");
+  const inInput = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+  const meta = e.metaKey || e.ctrlKey;
   if (
     (e.key === "Enter" || e.key === " ") &&
     !inInput &&
-    document.activeElement?.getAttribute("role") === "button" &&
-    document.activeElement.hasAttribute("data-act")
+    (activeRole === "button" || activeRole === "switch") &&
+    document.activeElement?.hasAttribute("data-act")
   ) {
     e.preventDefault();
     document.activeElement.click();
     return;
   }
-  const meta = e.metaKey || e.ctrlKey;
+  if (activeRole === "switch" && (e.key === "Enter" || e.key === " ")) {
+    e.preventDefault();
+    document.activeElement.click();
+    return;
+  }
   if (meta && e.key.toLowerCase() === "k" && STATE.shortcuts.some((s) => s.id === "sc-search")) {
     e.preventDefault();
+    STATE.focusTarget = "#qsInput";
     go("mac", "mac-quick-access");
+    return;
+  }
+  if (!inInput && e.key === "/" && STATE.shortcuts.some((s) => s.id === "sc-search")) {
+    e.preventDefault();
+    STATE.focusTarget = "#qsInput";
+    go("mac", "mac-quick-access");
+    return;
+  }
+  if (
+    meta &&
+    !e.shiftKey &&
+    e.key.toLowerCase() === "c" &&
+    STATE.shortcuts.some((s) => s.id === "sc-copy")
+  ) {
+    if (STATE.surface === "mac" && STATE.selected) {
+      e.preventDefault();
+      triggerCopy(`${STATE.selected}:user`, "用户名");
+      return;
+    }
+  }
+  if (
+    meta &&
+    e.shiftKey &&
+    e.key.toLowerCase() === "c" &&
+    STATE.shortcuts.some((s) => s.id === "sc-copy")
+  ) {
+    if (STATE.surface === "mac" && STATE.selected) {
+      e.preventDefault();
+      triggerCopy(`${STATE.selected}:secret`, "密码");
+      return;
+    }
+  }
+  if (meta && e.key.toLowerCase() === "n" && STATE.shortcuts.some((s) => s.id === "sc-edit")) {
+    if (STATE.surface === "mac") {
+      e.preventDefault();
+      STATE.macSub = "vault";
+      STATE.macDrawer = "new";
+      STATE.formDraft = buildFormDraft(STATE.newKind || "login");
+      render();
+      return;
+    }
+  }
+  if (meta && e.key.toLowerCase() === "e" && STATE.shortcuts.some((s) => s.id === "sc-edit")) {
+    if (STATE.surface === "mac" && STATE.selected) {
+      e.preventDefault();
+      STATE.macSub = "vault";
+      STATE.macDrawer = "edit";
+      ensureDraftFor(false);
+      render();
+      return;
+    }
+  }
+  if (meta && e.key.toLowerCase() === "l" && STATE.shortcuts.some((s) => s.id === "sc-lock")) {
+    e.preventDefault();
+    if (!STATE.locked) {
+      STATE.locked = true;
+      clearTimeout(clipboardClearTimer);
+      clearSystemClipboard();
+      STATE.clipboard = null;
+      STATE.copiedKey = null;
+      STATE.revealedIds.clear();
+      STATE.genHistoryRevealed.clear();
+      logIpc("com.localpass.desktop", "快捷键锁库 → 三端同步进入锁定态");
+      if (STATE.surface === "mac") go("mac", "mac-unlock");
+      else if (STATE.surface === "ext") go("ext", "ext-unlock");
+      else render();
+    }
+    return;
+  }
+  if (meta && e.key.toLowerCase() === "z" && STATE.lastUndo) {
+    e.preventDefault();
+    const undoButton = document.querySelector('[data-act="undo-last"]');
+    if (undoButton) undoButton.click();
     return;
   }
   if (
@@ -2747,11 +2912,26 @@ document.addEventListener("keydown", (e) => {
       render();
       return;
     }
-    if (STATE.saveBarOpen) {
+    if (STATE.saveBarOpen || STATE.atRiskBarOpen || STATE.inlineMode !== "none") {
       STATE.saveBarOpen = false;
+      STATE.saveNewMode = false;
+      STATE.saveConfirmedMode = false;
+      STATE.multiSaveMode = false;
+      STATE.atRiskBarOpen = false;
+      STATE.inlineMode = "none";
       render();
       return;
     }
+  }
+  if (e.key === "Enter" && STATE.screen === "mac-quick-access" && !inInput) {
+    e.preventDefault();
+    const res = searchItems(STATE.items, STATE.qsQuery || "north", "all");
+    const current = res[STATE.qsIndex];
+    if (current) {
+      STATE.selected = current.item.id;
+      go("mac", "mac-vault");
+    }
+    return;
   }
   if (e.key === "ArrowDown" || e.key === "ArrowUp") {
     const dir = e.key === "ArrowDown" ? 1 : -1;
@@ -2762,7 +2942,7 @@ document.addEventListener("keydown", (e) => {
       render();
     } else if (STATE.surface === "mac" && STATE.macSub === "vault") {
       const tag = document.activeElement?.tagName;
-      if (tag === "INPUT") return;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       e.preventDefault();
       const res = searchItems(STATE.items, STATE.macQuery, STATE.macFilter);
       const cur = res.findIndex((r) => r.item.id === STATE.selected);

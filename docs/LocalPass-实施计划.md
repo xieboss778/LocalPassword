@@ -3,6 +3,7 @@
 > 初版：2026-11-24　｜　修订 v2：2026-11-24（加入桌面端、代码瘦身、桌面端阻断项）
 > 修订 v3：2026-11-27（执行状态、同步策略、界面基准与验证基线对齐当前代码）
 > 修订 v4：2026-11-28（UI 目标规范切换为 `design-system/agy/` 73 屏原型，待按屏对照表逐屏升级；归并 `docs/adr` 与 `docs/agents`）
+> 修订 v5：2026-11-28（AGY 73 屏收口：72 个产品屏完成，`link-sandbox` 保留为演示辅助页；文档状态、同步代次与新增文案回退说明同步）
 >
 > **命名说明**：本文初版写于改名之前，文中「localpass/clients」「LocalPass 官方」是
 > 本仓库历史基线的旧称，实际指 Bitwarden clients 上游。当前产品名为 LocalPass，
@@ -22,9 +23,9 @@
 - 浏览器↔桌面通信曾硬编码 `com.8bit.localpass` 和上游扩展 ID（`apps/desktop/src/main/native-messaging.main.ts:174-188`、`473-478`）；现已改为 `com.localpass.desktop` 与本仓库固定扩展 ID。
 - 桌面端构建强制需要 Rust 工具链（`apps/desktop/desktop_native/`）；本地构建前必须先装工具链，CI 已覆盖。
 
-## 执行状态（2026-11-27）
+## 执行状态（2026-11-28）
 
-> 基线：`main` @ `26f058f6`。阶段 0–7 是历史计划；当前实现状态以本节和代码为准。
+> 基线：`main` @ `5fbb3f1e`（含当前工作树）。阶段 0–7 是历史计划；当前实现状态以本节和代码为准。
 
 - **阶段 0–1（基线 / 瘦身）**：完成。仓库只保留 `apps/browser` 与 `apps/desktop`；
   Web、CLI、企业版目录已删除，删除映射见 `removed-from-upstream.md`。
@@ -47,7 +48,8 @@
 - **界面**：初版曾按旧基线 `ui-redo-d`（58 屏）完成主体落点；现已明确以
   [design-system/agy/](../design-system/agy/)（AGY Compact v4 · **73 屏**：联动 1 + Mac 29 + 扩展 29 + 网页内联 14）作为新视觉与交互目标规范，
   具体完成度与待改造差异见 [LocalPass-屏对照表.md](./LocalPass-屏对照表.md)，视觉与交互红线见 [LocalPass-界面规范.md](./LocalPass-界面规范.md)
-  （AGY 新增屏及 8 类可增删动态表单 / 列表去 2FA 验证码 / 取消系统全局热键等改进当前处于**待逐屏落地**阶段）。
+  （AGY 新增屏、8 类可增删动态表单、列表去 2FA 验证码、取消系统全局热键等改进已全部落地；
+  72 个产品屏标为 ✅，`link-sandbox` 为原型演示辅助页 —）。
 
 ### 验证基线（2026-11-27 最近一次完整验证）
 
@@ -59,6 +61,18 @@
 | `npm run build:chrome --workspace @localpass/browser` | 通过                                                |
 | `npm run build:dev --workspace @localpass/desktop`    | 通过                                                |
 | 桌面打包烟测                                          | 未跑；CI 的 macOS dmg 任务是必过项                  |
+
+> 2026-11-28 AGY 全量核查与实现轮次：
+>
+> - `node design-system/agy/check.js`：通过（73 屏 + 8 类 13 条合成记录）。
+> - 语言包一致性脚本：browser `en=3189 / zh_CN=3195`（0 缺键、0 占位符差异），desktop `en=2764 / zh_CN=2769`（0 缺键、0 占位符差异），按 `GLOSSARY.md` 统一术语。
+> - 改动文件 `prettier` + `eslint`：0 errors、0 warnings。
+> - `npm run test:types`：通过（全部子库 + 3,649 个 strict 文件全过）。
+> - Jest 改动面专项套件：47/47 suites、952/952 tests、16/16 snapshots 通过（2 todo）。
+> - `npm run build:chrome --workspace @localpass/browser`：通过（`main` + `background`）。
+> - `npm run build:dev --workspace @localpass/desktop`：通过（`main` + `renderer` + `preload`）。
+> - 遗留待仓库负责人拍板（密钥/加密改动护栏）：桌面端本地修改安全密码的密钥重包装尚未实施，目前以说明弹窗替代已失效的远端 API 调用，避免误导或报错。
+> - 完整全仓 Jest 基线仍以上表 2026-11-27 的结果为准。
 
 人工步骤与 CI 覆盖不到的内容见 `LocalPass-验证清单.md`。
 

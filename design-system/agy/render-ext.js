@@ -49,7 +49,7 @@ function extListView(state) {
     const sub = entry.matchSnippet
       ? `${entry.matchField}: ${entry.matchSnippet}`
       : it.user || it.kindLabel;
-    return `<button class="ext-row ${it.id === state.selected ? "on" : ""}" data-act="ext-open" data-id="${it.id}">
+    return `<div class="ext-row ${it.id === state.selected ? "on" : ""}" role="option" tabindex="0" aria-selected="${it.id === state.selected}" data-act="ext-open" data-id="${it.id}">
       ${AV(it, "sm")}
       <span style="min-width:0;flex:1">
         <span class="t">${escapeHtml(it.name)}</span>
@@ -60,12 +60,12 @@ function extListView(state) {
           <span class="chip" style="height:16px;font-size:9px;padding:0 4px">${it.kindLabel}</span>
         </span>
         <span class="hoveracts">
-          <span class="iconbtn sm" role="button" tabindex="-1" data-act="copy" data-label="用户名" data-copy-key="${it.id}:user" title="复制用户名">${icon("user", 12)}</span>
-          <span class="iconbtn sm" role="button" tabindex="-1" data-act="copy" data-label="密码" data-copy-key="${it.id}:secret" title="复制密码">${icon("key", 12)}</span>
-          ${isSite ? `<span class="btn sm primary" role="button" tabindex="-1" style="height:20px;padding:0 6px;font-size:9.5px" data-act="fill-from-ext" data-id="${it.id}">填充</span>` : ""}
+          <button class="iconbtn sm" aria-label="复制用户名" data-act="copy" data-label="用户名" data-copy-key="${it.id}:user" title="复制用户名">${icon("user", 12)}</button>
+          <button class="iconbtn sm" aria-label="复制密码" data-act="copy" data-label="密码" data-copy-key="${it.id}:secret" title="复制密码">${icon("key", 12)}</button>
+          ${isSite ? `<button class="btn sm primary" aria-label="填充 ${escapeHtml(it.name)}" style="height:20px;padding:0 6px;font-size:9.5px" data-act="fill-from-ext" data-id="${it.id}">填充</button>` : ""}
         </span>
       </span>
-    </button>`;
+    </div>`;
   };
 
   let listContent = "";
@@ -98,10 +98,10 @@ function extListView(state) {
       ${icon("search", 13)}
       <input id="extSearchInput" value="${escapeHtml(state.extQuery)}" placeholder="搜索名称、用户名、网址、备注…" aria-label="搜索扩展保险库" autocomplete="off" />
     </label>
-    <div class="ext-tabs" role="tablist">
-      ${filters.map(([id, label, n]) => `<button class="${state.extFilter === id ? "on" : ""}" data-act="ext-filter" data-filter="${id}">${label}<span class="n">${n}</span></button>`).join("")}
+    <div class="ext-tabs" role="tablist" aria-label="条目类型筛选">
+      ${filters.map(([id, label, n]) => `<button role="tab" aria-selected="${state.extFilter === id}" class="${state.extFilter === id ? "on" : ""}" data-act="ext-filter" data-filter="${id}">${label}<span class="n">${n}</span></button>`).join("")}
     </div>
-    <div class="ext-list" role="listbox">${listContent}</div>
+    <div class="ext-list" role="listbox" aria-label="扩展保险库条目">${listContent}</div>
     ${
       state.extKeyCheat
         ? `<div class="sheetwrap" data-act="toggle-ext-keys"><div class="sheet" onclick="event.stopPropagation()">
@@ -447,9 +447,9 @@ function extSecurityView(state) {
     <div class="ext-scroll">
       <div class="grp">
         <div class="setrow" style="cursor:pointer" data-act="ext-go" data-ext="ext-security-key"><div><div class="k">硬件安全密钥 (WebAuthn PRF)</div><div class="d">已登记 ${PRF_KEYS.length} 个（仅保存于此扩展本机）</div></div><div class="right"><span class="chip ok">已就绪</span>${icon("chevron", 12)}</div></div>
-        <div class="setrow"><div><div class="k">桌面端触控 ID 代理桥接</div><div class="d">通过 <span class="mono">com.localpass.desktop</span> 请求 Mac 解锁</div></div><div class="right"><span class="toggle ${state.nativeBridgeOn ? "" : "off"}" data-act="toggle-bridge"></span></div></div>
+        <div class="setrow"><div><div class="k">桌面端触控 ID 代理桥接</div><div class="d">通过 <span class="mono">com.localpass.desktop</span> 请求 Mac 解锁</div></div><div class="right"><span class="toggle ${state.nativeBridgeOn ? "" : "off"}" role="switch" tabindex="0" aria-checked="${state.nativeBridgeOn}" aria-label="桌面端触控 ID 代理桥接" data-act="toggle-bridge"></span></div></div>
         <div class="setrow"><div><div class="k">剪贴板自动清除</div><div class="d">复制密码 30 秒后自动清空</div></div><div class="right"><span class="chip brand">30 秒</span></div></div>
-        <div class="setrow"><div><div class="k">密码显示自动收回</div><div class="d">30 秒后恢复掩码</div></div><div class="right"><span class="toggle"></span></div></div>
+        <div class="setrow"><div><div class="k">密码显示自动收回</div><div class="d">30 秒后恢复掩码</div></div><div class="right"><span class="toggle" role="switch" tabindex="0" aria-checked="true" aria-label="密码显示自动收回"></span></div></div>
       </div>
       <button class="btn primary block" style="margin-top:9px" data-act="ext-go" data-ext="ext-security-key">管理 WebAuthn PRF 安全密钥 →</button>
       <div style="margin-top:8px;font-size:9.5px;color:var(--text-3);line-height:1.5">说明：浏览器扩展不提供原生指纹按钮，触控 ID 依赖 Mac 桌面端运行桥接；连续输错 5 次只递增等待，绝不销毁本地库。</div>
@@ -604,7 +604,7 @@ function extSubpageView(state, id) {
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
         <div class="stat bad" style="padding:6px 8px"><div class="n" style="font-size:15px">1</div><div class="l">重复密码</div></div>
         <div class="stat warn" style="padding:6px 8px"><div class="n" style="font-size:15px">2</div><div class="l">弱/超期</div></div>
-        <div class="stat ok" style="padding:6px 8px"><div class="n" style="font-size:15px">96</div><div class="l">强密码</div></div>
+        <div class="stat ok" style="padding:6px 8px"><div class="n" style="font-size:15px">${Math.max(0, state.items.length - 3)}</div><div class="l">强密码</div></div>
       </div>
       <div class="grp" style="margin-top:8px">
         ${HEALTH_ISSUES.map(
@@ -660,7 +660,7 @@ function extSubpageView(state, id) {
         <button class="setrow" style="width:100%;text-align:left;background:${state.exportFormat === "csv" ? "var(--brand-softer)" : ""}" data-act="pick-export" data-fmt="csv"><div><div class="k">通用 CSV / 明文 JSON</div><div class="d">含明文密码风险警示</div></div><div class="right"><span class="chip">可选</span></div></button>
       </div>
       <div class="grp" style="margin-top:8px">
-        <div class="ext-field" role="button" tabindex="0" data-act="copy" data-label="备份口令" data-copy-val="${R2_CONFIG.backupPassphrase}"><span class="k">备份口令</span><span class="v mono">${R2_CONFIG.backupPassphrase}</span><button class="iconbtn sm">${icon("copy", 12)}</button></div>
+        <div class="ext-field" role="button" tabindex="0" data-act="copy" data-label="备份口令" data-copy-val="${escapeHtml(R2_CONFIG.backupPassphrase)}"><span class="k">备份口令</span><span class="v mono">••••••••••••</span><button class="iconbtn sm" data-act="copy" data-label="备份口令" data-copy-val="${escapeHtml(R2_CONFIG.backupPassphrase)}" aria-label="复制备份口令">${icon("copy", 12)}</button></div>
       </div>
       <input type="password" value="••••••••••••" aria-label="输入安全密码确认" style="width:100%;height:30px;margin-top:8px;border:1px solid var(--border);border-radius:6px;padding:0 8px;background:var(--bg-alt)" />
       <button class="btn primary block lg" style="margin-top:9px" data-act="toast-msg" data-msg="已校验密码并下载导出文件">验证并导出</button>

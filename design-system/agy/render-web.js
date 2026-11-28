@@ -19,7 +19,7 @@ function inlineMenuPopup(state) {
   }
 
   if (mode === "unlock") {
-    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-label="网页内联解锁">
+    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-modal="true" aria-label="网页内联解锁">
       <div class="in-h"><span class="av sm av-blue" style="width:15px;height:15px;font-size:7px">LP</span><span class="name">LocalPass</span><span>· 已锁定</span>
         <span class="right"><button class="iconbtn sm" data-act="set-inline" data-imode="collapsed" aria-label="关闭">${icon("x", 12)}</button></span>
       </div>
@@ -36,7 +36,7 @@ function inlineMenuPopup(state) {
   }
 
   if (mode === "totp") {
-    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-label="验证码内联选择">
+    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-modal="true" aria-label="验证码内联选择">
       <div class="in-h"><span class="av sm av-blue" style="width:15px;height:15px;font-size:7px">LP</span><span class="name">LocalPass</span><span>· 验证码</span>
         <span class="right"><span class="chip ok">剩余 <span class="secs">20</span>s</span></span>
       </div>
@@ -130,7 +130,7 @@ function inlineMenuPopup(state) {
   }
 
   if (mode === "empty") {
-    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-label="过滤无匹配空态">
+    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-modal="true" aria-label="过滤无匹配空态">
       <div class="in-h">
         <span class="av sm av-blue" style="width:15px;height:15px;font-size:7px">LP</span>
         <span class="name">LocalPass</span><span>· northwind.io</span>
@@ -152,7 +152,7 @@ function inlineMenuPopup(state) {
   }
 
   if (mode === "no-match") {
-    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-label="全新域名无凭据引导">
+    return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-modal="true" aria-label="全新域名无凭据引导">
       <div class="in-h">
         <span class="av sm av-blue" style="width:15px;height:15px;font-size:7px">LP</span>
         <span class="name">LocalPass</span><span>· newvendor.io</span>
@@ -175,7 +175,7 @@ function inlineMenuPopup(state) {
 
   // Default: Login Inline Menu (Account-first, Passkey + Password grouped)
   const logins = state.items.filter((i) => i.siteMatch);
-  return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-label="网页登录建议菜单">
+  return `<div class="inline lp" style="left:304px;top:184px" role="dialog" aria-modal="true" aria-label="网页登录建议菜单">
     <div class="in-h">
       <span class="av sm av-blue" style="width:15px;height:15px;font-size:7px">LP</span>
       <span class="name">LocalPass</span><span>· northwind.io</span>
@@ -220,7 +220,7 @@ function inlineMenuPopup(state) {
 
 function saveNotificationCard(state) {
   if (state.atRiskBarOpen) {
-    return `<div class="savecard lp" style="width:326px" role="dialog" aria-label="弱密码与重复密码改密提醒">
+    return `<div class="savecard lp" style="width:326px" role="dialog" aria-modal="true" aria-label="弱密码与重复密码改密提醒">
       <div class="hd">
         <span class="av sm av-amber" style="width:16px;height:16px;font-size:7.5px">!</span>
         <span>此账号使用了重复或偏弱密码</span>
@@ -241,7 +241,7 @@ function saveNotificationCard(state) {
   }
   if (!state.saveBarOpen) return "";
   if (state.saveConfirmedMode) {
-    return `<div class="savecard lp" style="width:316px" role="dialog" aria-label="保存成功确认提示">
+    return `<div class="savecard lp" style="width:316px" role="dialog" aria-modal="true" aria-label="保存成功确认提示">
       <div class="hd" style="background:var(--success-soft)">
         <span style="width:16px;height:16px;border-radius:50%;background:var(--success);color:#fff;display:grid;place-items:center">${icon("check", 10)}</span>
         <span style="color:var(--success)">已安全保存到 LocalPass</span>
@@ -261,7 +261,7 @@ function saveNotificationCard(state) {
     </div>`;
   }
   if (state.saveNewMode) {
-    return `<div class="savecard lp" style="width:320px" role="dialog" aria-label="首次保存新登录到保险库">
+    return `<div class="savecard lp" style="width:320px" role="dialog" aria-modal="true" aria-label="首次保存新登录到保险库">
       <div class="hd">
         <span class="av sm av-blue" style="width:16px;height:16px;font-size:7.5px">LP</span>
         <span>要保存 NewVendor 的登录吗？</span>
@@ -288,7 +288,7 @@ function saveNotificationCard(state) {
       { id: "northwind", title: "alex@northwind.io", sub: "Northwind · 上次使用于 2 分钟前 (v3)" },
       { id: "northwind-ops", title: "ops@northwind.io", sub: "Northwind 运维 · v2" },
     ];
-    return `<div class="savecard lp" style="width:320px" role="dialog" aria-label="多账户保存匹配选择">
+    return `<div class="savecard lp" style="width:320px" role="dialog" aria-modal="true" aria-label="多账户保存匹配选择">
       <div class="hd">
         <span class="av sm av-blue" style="width:16px;height:16px;font-size:7.5px">LP</span>
         <span>northwind.io 已有多个条目</span>
@@ -317,7 +317,7 @@ function saveNotificationCard(state) {
       </div>
     </div>`;
   }
-  return `<div class="savecard lp" role="dialog" aria-label="保存或更新密码确认条">
+  return `<div class="savecard lp" role="dialog" aria-modal="true" aria-label="保存或更新密码确认条">
     <div class="hd">
       <span class="av sm av-blue" style="width:16px;height:16px;font-size:7.5px">LP</span>
       <span>更新 Northwind 的密码？</span>
@@ -373,22 +373,22 @@ function renderWebWorkspace(state) {
   let formHtml = "";
   if (step === "totp") {
     formHtml = `<p class="site-label">6 位验证码</p>
-      <div class="site-input focus" data-act="set-inline" data-imode="totp">
+      <button class="site-input focus" aria-label="验证码输入框" data-act="set-inline" data-imode="totp">
         <span class="grow mono">${state.inlineMode === "totp-filled" ? "492 106" : "输入验证码…"}</span>
         <span class="lpbadge">${icon("clock", 11)}</span>
-      </div>
+      </button>
       <button class="site-submit" data-act="set-site-step" data-step="login">完成验证</button>`;
   } else if (step === "checkout") {
     formHtml = `<p class="site-label">银行卡号（点击触发卡片内联）</p>
-      <div class="site-input focus" data-act="set-inline" data-imode="card"><span class="grow mono">4532 •••• •••• 4421</span><span class="lpbadge">${icon("card", 11)}</span></div>
+      <button class="site-input focus" aria-label="银行卡号输入框" data-act="set-inline" data-imode="card"><span class="grow mono">4532 •••• •••• 4421</span><span class="lpbadge">${icon("card", 11)}</span></button>
       <p class="site-label">收件人与地址（点击触发身份内联）</p>
-      <div class="site-input" data-act="set-inline" data-imode="identity"><span class="grow">陈亚历 · 上海市徐汇区…</span><span class="lpbadge">${icon("id", 11)}</span></div>
+      <button class="site-input" aria-label="收件人与地址输入框" data-act="set-inline" data-imode="identity"><span class="grow">陈亚历 · 上海市徐汇区…</span><span class="lpbadge">${icon("id", 11)}</span></button>
       <button class="site-submit" data-act="toast-msg" data-msg="已提交订单示例">确认支付</button>`;
   } else if (step === "register") {
     formHtml = `<p class="site-label">当前用户名</p>
       <div class="site-input"><span class="grow">alex@northwind.io</span></div>
       <p class="site-label">新密码（触发强密码建议 + 保存条）</p>
-      <div class="site-input focus" data-act="set-inline" data-imode="register"><span class="grow mono">${syntaxPw(state.genValue)}</span><span class="lpbadge">${icon("wand", 11)}</span></div>
+      <button class="site-input focus" aria-label="新密码输入框" data-act="set-inline" data-imode="register"><span class="grow mono">${syntaxPw(state.genValue)}</span><span class="lpbadge">${icon("wand", 11)}</span></button>
       <button class="site-submit" data-act="trigger-save-bar">提交改密（触发保存确认条）</button>`;
   } else {
     const emailDisplay =
@@ -398,26 +398,27 @@ function renderWebWorkspace(state) {
           ? "alex.chen"
           : "alex@northwind.io";
     formHtml = `<p class="site-label">工作邮箱 / 账号</p>
-      <div class="site-input focus" data-act="set-inline" data-imode="login"><span class="grow">${emailDisplay}</span><span class="lpbadge">${icon("key", 11)}</span></div>
+      <button class="site-input focus" aria-label="工作邮箱输入框" data-act="set-inline" data-imode="login"><span class="grow">${emailDisplay}</span><span class="lpbadge">${icon("key", 11)}</span></button>
       <p class="site-label">密码</p>
-      <div class="site-input" data-act="set-inline" data-imode="login"><span class="grow">••••••••••••</span><span class="lpbadge">${icon("key", 11)}</span></div>
+      <button class="site-input" aria-label="密码输入框" data-act="set-inline" data-imode="login"><span class="grow">••••••••••••</span><span class="lpbadge">${icon("key", 11)}</span></button>
       <button class="site-submit" data-act="set-site-step" data-step="totp">登录并进入两步验证 →</button>`;
   }
 
   return `<div class="web lp">
     <div class="chrome">
+      <div class="sr-only" aria-live="polite">${state.toast ? escapeHtml(state.toast.msg) : ""}</div>
       <div class="traffic"><i></i><i></i><i></i></div>
       <div class="tab"><span class="fav">${hostDomain[0].toUpperCase()}</span>${hostDomain} · ${pageTitle}</div>
       <div class="addr">${icon("lock", 11)} https://${hostDomain}/${step}</div>
       <div style="display:flex;gap:3px">
-        <button class="ext-btn ${step === "login" ? "btn primary sm" : ""}" data-act="set-site-step" data-step="login">登录</button>
-        <button class="ext-btn ${step === "totp" ? "btn primary sm" : ""}" data-act="set-site-step" data-step="totp">2FA</button>
-        <button class="ext-btn ${step === "checkout" ? "btn primary sm" : ""}" data-act="set-site-step" data-step="checkout">卡/身份</button>
-        <button class="ext-btn ${step === "register" ? "btn primary sm" : ""}" data-act="set-site-step" data-step="register">改密保存</button>
+        <button class="ext-btn ${step === "login" ? "active" : ""}" aria-pressed="${step === "login"}" data-act="set-site-step" data-step="login">登录</button>
+        <button class="ext-btn ${step === "totp" ? "active" : ""}" aria-pressed="${step === "totp"}" data-act="set-site-step" data-step="totp">2FA</button>
+        <button class="ext-btn ${step === "checkout" ? "active" : ""}" aria-pressed="${step === "checkout"}" data-act="set-site-step" data-step="checkout">卡/身份</button>
+        <button class="ext-btn ${step === "register" ? "active" : ""}" aria-pressed="${step === "register"}" data-act="set-site-step" data-step="register">改密保存</button>
       </div>
     </div>
     <div class="web-body">
-      <div class="site-nav">
+      <div class="site-nav" aria-label="模拟网站导航">
         <div class="site-brand"><span class="sq">${hostDomain[0].toUpperCase()}</span>${hostDomain === "atlasbank.com" ? "Atlas Bank" : hostDomain === "newvendor.io" ? "NewVendor" : "Northwind"}</div>
         <a>工作台</a><a>计费</a><a>安全设置</a>
       </div>
@@ -443,7 +444,7 @@ function renderLinkageWorkspace(state) {
   const webHtml = renderWebWorkspace(state);
   const logs = (state.ipcLogs || []).slice(0, 4);
 
-  return `<div class="linkage-wrap lp">
+  return `<div class="linkage-wrap lp ${state.linkFocus ? `focus-${state.linkFocus}` : ""}">
     <div class="linkage-bus">
       <span class="chip brand">${icon("link", 11)}原生消息桥接 com.localpass.desktop</span>
       <span class="chip ${state.locked ? "warn" : "ok"}"><span class="dot ${state.locked ? "warn" : ""}"></span>会话：${state.locked ? "三端已同步锁定" : "已解锁 · 三端共享"}</span>
@@ -456,9 +457,10 @@ function renderLinkageWorkspace(state) {
       </div>
     </div>
     <div class="linkage-grid">
-      <div class="link-card">
+      <div class="link-card" data-link-target="mac">
         <div class="link-card-head">
           <span>1 · Mac 桌面端（1200×760 主控端）</span>
+          <button class="link-focus-btn" data-act="link-focus" data-target="${state.linkFocus === "mac" ? "" : "mac"}" aria-label="${state.linkFocus === "mac" ? "恢复三端视图" : "放大 Mac 桌面端"}">${icon(state.linkFocus === "mac" ? "x" : "maximize", 11)}</button>
           <span class="link-switch-mini" style="margin-left:auto">
             ${[
               ["vault", "保险库"],
@@ -483,9 +485,10 @@ function renderLinkageWorkspace(state) {
           </div>
         </div>
       </div>
-      <div class="link-card">
+      <div class="link-card" data-link-target="ext">
         <div class="link-card-head">
           <span>2 · Chrome 扩展（380×600）</span>
+          <button class="link-focus-btn" data-act="link-focus" data-target="${state.linkFocus === "ext" ? "" : "ext"}" aria-label="${state.linkFocus === "ext" ? "恢复三端视图" : "放大 Chrome 扩展"}">${icon(state.linkFocus === "ext" ? "x" : "maximize", 11)}</button>
           <span class="link-switch-mini" style="margin-left:auto">
             ${[
               ["ext-list", "列表"],
@@ -504,9 +507,10 @@ function renderLinkageWorkspace(state) {
           <div class="mini-scale" style="transform:scale(0.936)">${extHtml}</div>
         </div>
       </div>
-      <div class="link-card">
+      <div class="link-card" data-link-target="web">
         <div class="link-card-head">
           <span>3 · 浏览器页面内联联动（northwind.io）</span>
+          <button class="link-focus-btn" data-act="link-focus" data-target="${state.linkFocus === "web" ? "" : "web"}" aria-label="${state.linkFocus === "web" ? "恢复三端视图" : "放大网页内联联动"}">${icon(state.linkFocus === "web" ? "x" : "maximize", 11)}</button>
           <span style="margin-left:auto;color:var(--text-3)">网页操作直接写入上方 1 & 2</span>
         </div>
         <div class="link-card-body" style="flex:none;height:440px">

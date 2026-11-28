@@ -570,6 +570,7 @@ export default tseslint.config(
           // In migrated clients we only allow tailwind classes plus the following exceptions
           whitelist: [
             "((bwi)\\-?).*", // Font icons
+            "agy(-.*)?", // LocalPass AGY compact design system (libs/angular/src/local-ui/agy.scss)
             "logo",
             "logo-themed",
             "file-selector",
@@ -954,6 +955,9 @@ export default tseslint.config(
 
       // Agent configuration and its tooling, not shipped code.
       ".claude/",
+
+      // Product-design prototypes and mockups; reference material, not shipped code.
+      "design-system/",
     ],
   },
 );
