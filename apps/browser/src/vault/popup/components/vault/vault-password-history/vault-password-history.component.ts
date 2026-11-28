@@ -11,7 +11,7 @@ import { CipherId, UserId } from "@localpass/common/types/guid";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
-import { PasswordHistoryViewComponent } from "@localpass/vault";
+import { PasswordHistoryViewComponent, PasswordRepromptService } from "@localpass/vault";
 
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup-header.component";
@@ -34,6 +34,7 @@ import { PopupRouterCacheService } from "../../../../../platform/popup/view-cach
 export class PasswordHistoryComponent implements OnInit {
   protected cipher: CipherView;
   private readonly revealedCipherService = inject(RevealedCipherService);
+  private readonly passwordRepromptService = inject(PasswordRepromptService);
 
   constructor(
     private browserRouterHistory: PopupRouterCacheService,
@@ -70,8 +71,20 @@ export class PasswordHistoryComponent implements OnInit {
     const activeUserId = activeAccount.id as UserId;
 
     // A restricted cipher's history exists only in its revealed view.
-    this.cipher =
+    const cipher =
       (await firstValueFrom(this.cipherService.cipherView$(activeUserId, cipherId as CipherId))) ??
       this.revealedCipherService.get(activeUserId, cipherId as CipherId);
+
+    // Old passwords reveal the same secrets as the item itself, so the history page must not
+    // open from a direct link without the master password re-prompt.
+    if (
+      cipher == null ||
+      !(await this.passwordRepromptService.passwordRepromptCheck(cipher).catch(() => false))
+    ) {
+      this.close();
+      return;
+    }
+
+    this.cipher = cipher;
   }
 }

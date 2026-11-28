@@ -28,6 +28,7 @@ import { getOptionalUserId, getUserId } from "@localpass/common/auth/services/ac
 import {
   AutofillOverlayVisibility,
   AutofillTargetingRuleTypes,
+  COPY_VERIFICATION_CODE_ID,
   SHOW_AUTOFILL_BUTTON,
 } from "@localpass/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
@@ -1669,14 +1670,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       }
       this.updateLastUsedInlineMenuCipher(inlineMenuCipherId, cipher);
 
-      if (cipher.login?.totp) {
-        const totpResponse = await firstValueFrom(this.totpService.getCode$(cipher.login.totp));
-
-        if (totpResponse?.code) {
-          this.platformUtilsService.copyToClipboard(totpResponse.code);
-        } else {
-          this.logService.error("Failed to get TOTP code for inline menu cipher");
-        }
+      if (
+        cipher.login?.totp &&
+        (await firstValueFrom(this.autofillSettingsService.autoCopyTotp$))
+      ) {
+        await this.copyTotpForInlineMenuCipher(cipher, tab);
       }
       return;
     }
@@ -1759,6 +1757,28 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     const cipher = this.inlineMenuCiphers.get(inlineMenuCipherId);
     if (!cipher?.login?.totp) {
+      return;
+    }
+
+    await this.copyTotpForInlineMenuCipher(cipher, sender.tab);
+  }
+
+  /**
+   * Copies a cipher's current verification code once the item is allowed to reveal secrets.
+   * A reprompted item opens the password prompt instead; that popout performs the copy after
+   * the master password is confirmed.
+   */
+  private async copyTotpForInlineMenuCipher(
+    cipher: CipherView,
+    tab: chrome.tabs.Tab,
+  ): Promise<void> {
+    if (!cipher.login?.totp) {
+      return;
+    }
+
+    if (
+      await this.autofillService.isPasswordRepromptRequired(cipher, tab, COPY_VERIFICATION_CODE_ID)
+    ) {
       return;
     }
 

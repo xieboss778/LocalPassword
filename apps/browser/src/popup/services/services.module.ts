@@ -24,6 +24,7 @@ import {
   WINDOW,
 } from "@localpass/angular/services/injection-tokens";
 import { JslibServicesModule } from "@localpass/angular/services/jslib-services.module";
+import { ITEM_ENTRY_PASSWORD_REPROMPT } from "@localpass/angular/tools/item-entry";
 import {
   AUTOFILL_NUDGE_SERVICE,
   AUTO_CONFIRM_NUDGE_SERVICE,
@@ -963,6 +964,11 @@ const safeProviders: SafeProvider[] = [
   // place the two can be introduced.
   safeProvider({
     provide: SHARE_PASSWORD_REPROMPT,
+    useExisting: PasswordRepromptService,
+    deps: [],
+  }),
+  safeProvider({
+    provide: ITEM_ENTRY_PASSWORD_REPROMPT,
     useExisting: PasswordRepromptService,
     deps: [],
   }),

@@ -5,6 +5,7 @@ export * from "./account/local-vault-environment";
 export * from "./generator/random-password";
 export * from "./generator/random-passphrase";
 export * from "./generator/random-username";
+export * from "./items/cipher-clone";
 export * from "./items/item-fields";
 export * from "./items/import-dedupe";
 export * from "./items/item-diff";

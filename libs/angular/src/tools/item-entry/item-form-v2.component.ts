@@ -22,6 +22,7 @@ import { DialogService, IconModule } from "@localpass/components";
 import {
   applyCustomFields,
   applyFieldValues,
+  cloneCipherView,
   DEFAULT_PASSWORD_OPTIONS,
   fieldGroups,
   FieldSpec,
@@ -49,6 +50,11 @@ import {
   LpToastService,
   newCustomFieldDraft,
 } from "../../local-ui";
+
+import {
+  ITEM_ENTRY_PASSWORD_REPROMPT,
+  ItemEntryPasswordReprompt,
+} from "./item-entry-password-reprompt.token";
 
 /**
  * 新建 / 编辑表单。字段清单、分组与读写映射都在 `@localpass/local-vault` 的
@@ -230,6 +236,9 @@ export class ItemFormV2Component implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly datePipe = inject(DatePipe);
   private readonly toast = inject(LpToastService);
+  private readonly passwordReprompt: ItemEntryPasswordReprompt = inject(
+    ITEM_ENTRY_PASSWORD_REPROMPT,
+  );
 
   protected readonly loginKind = ItemKind.Login;
   protected readonly noOptions: readonly LpFieldOption[] = [];
@@ -341,6 +350,17 @@ export class ItemFormV2Component implements OnInit {
 
     const cipher = await this.cipherService.get(sourceId, userId);
     const view = await this.cipherService.decrypt(cipher, userId);
+
+    // Editing or cloning reveals every field of the source item, so a protected item must not
+    // open from a direct link without the master password re-prompt.
+    if (
+      view.reprompt !== CipherRepromptType.None &&
+      !(await this.passwordReprompt.passwordRepromptCheck(view).catch(() => false))
+    ) {
+      await this.router.navigateByUrl(this.nextUrl());
+      return;
+    }
+
     // 克隆以「新建」对待：读完源条目的字段后不保留 original，保存时 createWithServer。
     this.original.set(cloneFrom ? null : view);
     this.isEditing.set(!cloneFrom);
@@ -483,7 +503,9 @@ export class ItemFormV2Component implements OnInit {
     this.saving.set(true);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-      const view = this.original() ?? new CipherView();
+      const original = this.original();
+      // Edit a copy: a failed write must leave the cached item the form was opened from untouched.
+      const view = original ? cloneCipherView(original) : new CipherView();
       applyFieldValues(view, this.kind(), { ...this.values(), name });
       applyCustomFields(view, this.kind(), this.customFields());
       setKind(view, this.kind());
@@ -492,7 +514,7 @@ export class ItemFormV2Component implements OnInit {
       view.reprompt = this.reprompt() ? CipherRepromptType.Password : CipherRepromptType.None;
       view.login.fido2Credentials = [...this.passkeys()];
 
-      if (this.original()) {
+      if (original) {
         await this.cipherService.updateWithServer(view, userId);
       } else {
         await this.cipherService.createWithServer(view, userId);

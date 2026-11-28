@@ -14,6 +14,7 @@ import { CipherService } from "@localpass/common/vault/abstractions/cipher.servi
 import { RevealedCipherService } from "@localpass/common/vault/abstractions/revealed-cipher.service";
 import { Cipher } from "@localpass/common/vault/models/domain/cipher";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { PopupRouterCacheService } from "../../../../../platform/popup/view-cache/popup-router-cache.service";
 
@@ -33,6 +34,7 @@ describe("PasswordHistoryComponent", () => {
 
   const back = jest.fn().mockResolvedValue(undefined);
   const revealedCipherService = mock<RevealedCipherService>();
+  const passwordRepromptService = mock<PasswordRepromptService>();
   const cipherView$ = jest
     .fn()
     .mockReturnValue(new BehaviorSubject<Cipher | undefined>(mockCipher));
@@ -40,6 +42,7 @@ describe("PasswordHistoryComponent", () => {
   beforeEach(async () => {
     back.mockClear();
     cipherView$.mockClear();
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
 
     await TestBed.configureTestingModule({
       imports: [PasswordHistoryComponent],
@@ -48,6 +51,7 @@ describe("PasswordHistoryComponent", () => {
         { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
         { provide: ConfigService, useValue: mock<ConfigService>() },
         { provide: RevealedCipherService, useValue: revealedCipherService },
+        { provide: PasswordRepromptService, useValue: passwordRepromptService },
         {
           provide: CipherService,
           useValue: mock<CipherService>({
@@ -94,4 +98,15 @@ describe("PasswordHistoryComponent", () => {
     expect(back).toHaveBeenCalledTimes(1);
     expect(cipherView$).not.toHaveBeenCalled();
   });
+
+  it("requires the master password before showing a protected item's history", fakeAsync(() => {
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(false);
+    params$.next({ cipherId: mockCipherView.id });
+
+    tick(100);
+
+    expect(passwordRepromptService.passwordRepromptCheck).toHaveBeenCalledWith(mockCipher);
+    expect(back).toHaveBeenCalledTimes(1);
+    expect(fixture.componentInstance["cipher"]).toBeUndefined();
+  }));
 });

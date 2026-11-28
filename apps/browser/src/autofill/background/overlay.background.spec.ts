@@ -7,6 +7,7 @@ import { AuthService } from "@localpass/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@localpass/common/auth/enums/authentication-status";
 import {
   AutofillOverlayVisibility,
+  COPY_VERIFICATION_CODE_ID,
   SHOW_AUTOFILL_BUTTON,
 } from "@localpass/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction as AutofillSettingsService } from "@localpass/common/autofill/services/autofill-settings.service";
@@ -4768,6 +4769,33 @@ describe("OverlayBackground", () => {
 
         expect(totpService.getCode$).toHaveBeenCalledWith("totp-secret");
         expect(copyToClipboardSpy).toHaveBeenCalledWith("123456");
+      });
+
+      it("opens the master password prompt instead of copying a protected cipher's code", async () => {
+        const cipher = mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          login: { totp: "totp-secret" },
+        });
+        overlayBackground["inlineMenuCiphers"] = new Map([["inline-menu-cipher-1", cipher]]);
+        autofillService.isPasswordRepromptRequired.mockResolvedValue(true);
+        const copyToClipboardSpy = jest
+          .spyOn(overlayBackground["platformUtilsService"], "copyToClipboard")
+          .mockImplementation();
+
+        sendPortMessage(listMessageConnectorSpy, {
+          command: "copyInlineMenuTotp",
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          portKey,
+        });
+        await flushPromises();
+
+        expect(autofillService.isPasswordRepromptRequired).toHaveBeenCalledWith(
+          cipher,
+          sender.tab,
+          COPY_VERIFICATION_CODE_ID,
+        );
+        expect(totpService.getCode$).not.toHaveBeenCalled();
+        expect(copyToClipboardSpy).not.toHaveBeenCalled();
       });
 
       it("ignores ciphers without a verification code", async () => {

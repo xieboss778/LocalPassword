@@ -53,6 +53,7 @@ import { IconModule } from "@localpass/components";
 import {
   applyCustomFields,
   applyFieldValues,
+  cloneCipherView,
   DEFAULT_PASSWORD_OPTIONS,
   fieldGroups,
   FIELD_SECTIONS,
@@ -2452,7 +2453,7 @@ export class VaultDesktopV2Component implements OnInit {
     this.errorMessage.set(null);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-      const saved = await this.cipherService.updateWithServer(row.view, userId);
+      const saved = await this.cipherService.updateWithServer(cloneCipherView(row.view), userId);
       this.selected.set(saved);
       this.items.update((items) =>
         items.map((entry) =>
@@ -2496,13 +2497,14 @@ export class VaultDesktopV2Component implements OnInit {
       return;
     }
 
-    const previousPassword = item.login.password;
-    item.login.password = row.password;
+    // Restore into a copy so a failed write leaves the cached item on its current password.
+    const view = cloneCipherView(item);
+    view.login.password = row.password;
     this.saving.set(true);
     this.errorMessage.set(null);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-      const saved = await this.cipherService.updateWithServer(item, userId);
+      const saved = await this.cipherService.updateWithServer(view, userId);
       this.selected.set(saved);
       this.items.update((items) =>
         items.map((entry) =>
@@ -2514,7 +2516,6 @@ export class VaultDesktopV2Component implements OnInit {
       await this.loadVersionRows();
       this.toast.show(this.i18n.t("passwordHistoryRestored"));
     } catch {
-      item.login.password = previousPassword;
       this.errorMessage.set(this.i18n.t("unexpectedError"));
     } finally {
       this.saving.set(false);
@@ -2591,10 +2592,12 @@ export class VaultDesktopV2Component implements OnInit {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       const creating = this.drawer() === "new-form" || this.drawer() === "new-type";
       const kind = creating ? this.newKind() : this.selectedKind();
-      const view = creating ? new CipherView() : this.selected();
-      if (!view) {
+      const original = creating ? new CipherView() : this.selected();
+      if (!original) {
         return;
       }
+      // Edit a copy: a failed write must leave the cached item the drawer was opened from intact.
+      const view = creating ? original : cloneCipherView(original);
 
       applyFieldValues(view, kind, { ...this.values(), name });
       applyCustomFields(view, kind, this.editCustomFields());
@@ -2635,9 +2638,11 @@ export class VaultDesktopV2Component implements OnInit {
     }
 
     try {
-      item.favorite = !item.favorite;
+      // Toggle on a copy so a failed write does not leave the cached item's star flipped.
+      const view = cloneCipherView(item);
+      view.favorite = !view.favorite;
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-      const saved = await this.cipherService.updateWithServer(item, userId);
+      const saved = await this.cipherService.updateWithServer(view, userId);
       this.selected.set(saved);
       this.items.update((items) =>
         items.map((entry) =>
@@ -2675,19 +2680,19 @@ export class VaultDesktopV2Component implements OnInit {
     }
 
     // 归档只改条目自身的 archivedDate；不删除、不改历史，也不碰网络。
-    const previous = item.archivedDate;
-    item.archivedDate = new Date();
+    // Archive a copy so a failed write leaves the cached item unarchived.
+    const view = cloneCipherView(item);
+    view.archivedDate = new Date();
     this.saving.set(true);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-      await this.cipherService.updateWithServer(item, userId);
+      await this.cipherService.updateWithServer(view, userId);
       this.items.update((items) => items.filter((entry) => entry.id !== item.id));
       if (this.selected() === item) {
         this.selected.set(null);
       }
       this.toast.show(this.i18n.t("itemArchiveToast"));
     } catch {
-      item.archivedDate = previous;
       this.toast.show(this.i18n.t("unexpectedError"));
     } finally {
       this.saving.set(false);

@@ -242,6 +242,88 @@ describe("VaultDesktopV2Component", () => {
     expect(saved.login.password).toBe("older-password");
   });
 
+  it("leaves the cached item untouched when an edit fails to save", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    item.login.password = "current-password";
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    cipherService.updateWithServer.mockRejectedValue(new Error("local write failed"));
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+
+    const editButton = (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    ).find((button) => button.textContent?.trim() === "edit");
+    editButton?.click();
+    fixture.detectChanges();
+
+    const nameInput = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    nameInput.value = "Renamed";
+    nameInput.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    (
+      fixture.nativeElement.querySelector(".agy-ext-foot .agy-primary") as HTMLButtonElement
+    ).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(cipherService.updateWithServer).toHaveBeenCalled();
+    expect(item.name).toBe("Mail");
+    const component = fixture.componentInstance as unknown as {
+      selected(): CipherView | null;
+    };
+    expect(component.selected()?.name).toBe("Mail");
+    expect(fixture.nativeElement.textContent as string).toContain("unexpectedError");
+  });
+
+  it("keeps the current password when restoring password history fails", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    item.login.password = "current-password";
+    const older = new PasswordHistoryView();
+    older.password = "older-password";
+    older.lastUsedDate = new Date("2026-01-02T00:00:00Z");
+    item.passwordHistory = [older];
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+    cipherService.updateWithServer.mockRejectedValue(new Error("local write failed"));
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+
+    (
+      fixture.nativeElement.querySelector("[data-testid=vault_button_history]") as HTMLElement
+    ).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    (
+      fixture.nativeElement.querySelector(
+        "[data-testid=vault_button_restore_history]",
+      ) as HTMLButtonElement
+    ).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(cipherService.updateWithServer).toHaveBeenCalled();
+    expect(item.login.password).toBe("current-password");
+    expect(fixture.nativeElement.textContent as string).toContain("unexpectedError");
+  });
+
   it("lists encrypted versions for a card and restores the chosen one", async () => {
     const item = new CipherView();
     item.id = "card-id";

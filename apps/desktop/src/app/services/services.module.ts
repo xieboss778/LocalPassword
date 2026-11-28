@@ -24,6 +24,7 @@ import {
   CLIENT_TYPE,
 } from "@localpass/angular/services/injection-tokens";
 import { JslibServicesModule } from "@localpass/angular/services/jslib-services.module";
+import { ITEM_ENTRY_PASSWORD_REPROMPT } from "@localpass/angular/tools/item-entry";
 import {
   LoginComponentService,
   SsoComponentService,
@@ -846,6 +847,11 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: SHARE_PASSWORD_REPROMPT,
+    useExisting: PasswordRepromptService,
+    deps: [],
+  }),
+  safeProvider({
+    provide: ITEM_ENTRY_PASSWORD_REPROMPT,
     useExisting: PasswordRepromptService,
     deps: [],
   }),
