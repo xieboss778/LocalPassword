@@ -770,6 +770,37 @@ describe("AutofillInit", () => {
 
           expect(showSpy).not.toHaveBeenCalled();
         });
+
+        it("does not show or capture a receipt in a subframe", async () => {
+          jest.spyOn(autofillInit as any, "isTopLevelFrame").mockReturnValue(false);
+          const input = document.createElement("input");
+          input.value = "before";
+          document.body.appendChild(input);
+          const getElementSpy = jest
+            .spyOn(autofillInit["collectAutofillContentService"], "getAutofillFieldElementByOpid")
+            .mockReturnValue(input);
+          const showSpy = jest
+            .spyOn(autofillInit["fillReceiptContentService"], "show")
+            .mockImplementation();
+          fillScript = new AutofillScript();
+          fillScript.script = [["fill_by_opid", "opid-1", "4242424242424242"]];
+
+          sendMockExtensionMessage({
+            command: "fillForm",
+            fillScript,
+            pageDetailsUrl: window.location.href,
+            inlineMenuFillReceipt: {
+              kind: "card" as const,
+              last4: "4242",
+              theme: ThemeTypes.Light,
+            },
+          });
+          await flushPromises();
+
+          expect(showSpy).not.toHaveBeenCalled();
+          expect(getElementSpy).not.toHaveBeenCalled();
+          input.remove();
+        });
       });
     });
   });

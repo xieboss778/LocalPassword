@@ -1322,6 +1322,24 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     }, 2000);
   }
 
+  /**
+   * Clears the pending fill only when it belongs to a passkey attempt. A timed-out or cancelled
+   * passkey flow must not leave its pending fill behind, or every later fill's completion message
+   * is compared against the stale cipher and its confirmation is dropped. Password, TOTP, card and
+   * identity fills that are still in flight are left untouched.
+   *
+   * @param cipherId - When set, only a pending passkey fill for this cipher is cleared.
+   */
+  private clearPendingPasskeyFill(cipherId?: string) {
+    if (this.pendingFill?.method !== "passkey") {
+      return;
+    }
+    if (cipherId !== undefined && this.pendingFill.cipher.id !== cipherId) {
+      return;
+    }
+    this.pendingFill = null;
+  }
+
   private showPasskeyVerifying(cipher: InlineMenuCipherData) {
     this.isPasskeyAuthInProgress = true;
     this.inlineMenuView = { type: "passkeyVerifying", cipher };
@@ -1333,6 +1351,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     this.passkeyVerifyTimeout = globalThis.setTimeout(() => {
       this.passkeyVerifyTimeout = undefined;
       this.isPasskeyAuthInProgress = false;
+      this.clearPendingPasskeyFill(cipher.id);
       if (
         this.inlineMenuView.type === "passkeyVerifying" &&
         this.inlineMenuView.cipher.id === cipher.id
@@ -1352,7 +1371,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       this.passkeyVerifyTimeout = undefined;
     }
     this.isPasskeyAuthInProgress = false;
-    this.pendingFill = null;
+    this.clearPendingPasskeyFill();
     this.postMessageToParent({ command: "cancelInlineMenuPasskey" });
     this.inlineMenuView = { type: "list" };
     this.activeRowKey = undefined;
@@ -2457,6 +2476,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
 
     globalThis.setTimeout(() => {
       this.isPasskeyAuthInProgress = false;
+      this.clearPendingPasskeyFill();
       this.postMessageToParent({ command: "checkAutofillInlineMenuButtonFocused" });
     }, 30000);
   }

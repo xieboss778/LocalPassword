@@ -206,6 +206,16 @@ class AutofillInit implements AutofillInitInterface {
   }
 
   /**
+   * Whether this content script runs in the tab's top-level document. The background sends the
+   * same fill message to every frame it writes, so without this check each filled frame would
+   * render its own receipt. Undo is also frame-local: it restores the fields this frame captured
+   * before the fill.
+   */
+  private isTopLevelFrame(): boolean {
+    return globalThis.self === globalThis.top;
+  }
+
+  /**
    * Fills the form with the given fill script.
    *
    * @param {AutofillExtensionMessage} message
@@ -221,9 +231,11 @@ class AutofillInit implements AutofillInitInterface {
       return;
     }
 
-    const undoState = inlineMenuFillReceipt
-      ? this.captureFillReceiptUndoState(fillScript)
-      : undefined;
+    // The receipt is anchored to the bottom-right of the viewport. In a subframe it would be
+    // clipped by the iframe, and its undo could only restore the fields this frame captured, so
+    // only the top-level document renders it.
+    const fillReceipt = this.isTopLevelFrame() ? inlineMenuFillReceipt : undefined;
+    const undoState = fillReceipt ? this.captureFillReceiptUndoState(fillScript) : undefined;
 
     if (retainInlineMenu) {
       // The fill started from the inline menu list: keep the list mounted so it can render its
@@ -241,8 +253,8 @@ class AutofillInit implements AutofillInitInterface {
       showAnimations ?? true,
     );
 
-    if (inlineMenuFillReceipt && didFill !== false) {
-      this.showFillReceipt(inlineMenuFillReceipt, fillScript, undoState, showAnimations ?? true);
+    if (fillReceipt && didFill !== false) {
+      this.showFillReceipt(fillReceipt, fillScript, undoState, showAnimations ?? true);
     }
 
     setTimeout(() => {

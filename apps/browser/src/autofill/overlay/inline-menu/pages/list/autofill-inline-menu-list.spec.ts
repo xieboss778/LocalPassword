@@ -729,6 +729,85 @@ describe("AutofillInlineMenuList", () => {
         expect(InlineMenuLoginMenu).toHaveBeenCalled();
       });
 
+      it("clears the pending passkey fill when verifying times out so later fills still confirm", async () => {
+        const passkeyCipher = createAutofillOverlayCipherDataMock(1, {
+          login: {
+            username: "username1",
+            passkey: {
+              rpName: "https://example.com",
+              userName: "username1",
+            },
+          },
+        });
+        const passwordCipher = createAutofillOverlayCipherDataMock(2);
+        postWindowMessage(
+          createInitAutofillInlineMenuListMessageMock({
+            authStatus: AuthenticationStatus.Unlocked,
+            ciphers: [passkeyCipher, passwordCipher],
+            portKey,
+            useLitComponents: true,
+          }),
+        );
+        await flushPromises();
+        const { onFill } = (InlineMenuLoginMenu as jest.Mock).mock.calls[0][0];
+
+        jest.useFakeTimers();
+        try {
+          onFill(passkeyCipher, "passkey", new Event("click"));
+          expect(autofillInlineMenuList["pendingFill"]).toEqual({
+            cipher: passkeyCipher,
+            method: "passkey",
+          });
+
+          jest.advanceTimersByTime(30000);
+
+          expect(autofillInlineMenuList["pendingFill"]).toBeNull();
+          expect(InlineMenuLoginMenu).toHaveBeenCalled();
+        } finally {
+          jest.useRealTimers();
+        }
+
+        const { onFill: onFillAfterTimeout } = (InlineMenuLoginMenu as jest.Mock).mock.calls.at(
+          -1,
+        )![0];
+        onFillAfterTimeout(passwordCipher, "password", new Event("click"));
+        expect(autofillInlineMenuList["pendingFill"]).toEqual({
+          cipher: passwordCipher,
+          method: "password",
+        });
+
+        postWindowMessage({
+          command: "inlineMenuCipherFilled",
+          inlineMenuCipherId: "2",
+          didFill: true,
+          token: "test-token",
+        });
+        await flushPromises();
+
+        expect(InlineMenuCollapsedChip).toHaveBeenCalled();
+      });
+
+      it("does not clear an in-flight password fill when passkey cancellation runs", async () => {
+        const ciphers = [createAutofillOverlayCipherDataMock(1)];
+        postWindowMessage(
+          createInitAutofillInlineMenuListMessageMock({
+            authStatus: AuthenticationStatus.Unlocked,
+            ciphers,
+            portKey,
+            useLitComponents: true,
+          }),
+        );
+        await flushPromises();
+        autofillInlineMenuList["pendingFill"] = { cipher: ciphers[0], method: "password" };
+
+        autofillInlineMenuList["handleCancelPasskeyAuthentication"]();
+
+        expect(autofillInlineMenuList["pendingFill"]).toEqual({
+          cipher: ciphers[0],
+          method: "password",
+        });
+      });
+
       it("views a cipher from the legacy Lit cipher list", async () => {
         const ciphers = [
           createAutofillOverlayCipherDataMock(1, {
@@ -1664,6 +1743,46 @@ describe("AutofillInlineMenuList", () => {
             fillCipherButton.dispatchEvent(new Event("click"));
 
             expect(autofillInlineMenuList["inlineMenuListContainer"]).toMatchSnapshot();
+          });
+
+          it("clears the pending passkey fill when the passkey loader times out", async () => {
+            const passkeyCipher = createAutofillOverlayCipherDataMock(1, {
+              login: {
+                username: "username1",
+                passkey: {
+                  rpName: "https://example.com",
+                  userName: "username1",
+                },
+              },
+            });
+            postWindowMessage(
+              createInitAutofillInlineMenuListMessageMock({
+                ciphers: [passkeyCipher],
+                showPasskeysLabels: true,
+                portKey,
+              }),
+            );
+            await flushPromises();
+            const fillCipherButton =
+              autofillInlineMenuList["inlineMenuListContainer"].querySelector(
+                ".fill-cipher-button",
+              );
+
+            jest.useFakeTimers();
+            try {
+              fillCipherButton.dispatchEvent(new Event("click"));
+              expect(autofillInlineMenuList["pendingFill"]).toEqual({
+                cipher: passkeyCipher,
+                method: "passkey",
+              });
+
+              jest.advanceTimersByTime(30000);
+
+              expect(autofillInlineMenuList["pendingFill"]).toBeNull();
+              expect(autofillInlineMenuList["isPasskeyAuthInProgress"]).toBe(false);
+            } finally {
+              jest.useRealTimers();
+            }
           });
         });
 
