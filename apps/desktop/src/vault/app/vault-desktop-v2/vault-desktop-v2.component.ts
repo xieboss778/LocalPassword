@@ -2995,7 +2995,9 @@ export class VaultDesktopV2Component implements OnInit {
 
     if (meta && key === "n") {
       event.preventDefault();
-      if (this.shortcutEnabled(DesktopShortcut.Edit)) {
+      // 编辑或新建表单打开时，⌘N 不能替换当前表单、丢掉未保存的输入；保存与取消仍走各自按钮。
+      const formOpen = this.drawer() === "edit" || this.drawer() === "new-form";
+      if (!formOpen && this.shortcutEnabled(DesktopShortcut.Edit)) {
         this.openNew();
       }
       return;

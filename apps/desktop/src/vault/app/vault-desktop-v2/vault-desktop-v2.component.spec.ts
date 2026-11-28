@@ -574,6 +574,102 @@ describe("VaultDesktopV2Component", () => {
     expect(fixture.componentInstance["qrSecretVisible"]()).toBe(false);
   });
 
+  it("keeps unsaved edit input when ⌘N is pressed", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    item.login.username = "synthetic-user";
+    cipherService.getAllDecrypted.mockResolvedValue([item]);
+
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await selectOnlyItem(fixture);
+
+    const editButton = (
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".agy-mac-dhead button"),
+      ) as HTMLButtonElement[]
+    ).find((button) => button.textContent?.trim() === "edit");
+    editButton?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const nameInput = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    nameInput.value = "Unsaved rename";
+    nameInput.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "n", metaKey: true, bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+
+    const component = fixture.componentInstance as unknown as {
+      drawer(): string;
+      values(): Record<string, string>;
+    };
+    expect(component.drawer()).toBe("edit");
+    expect(component.values().name).toBe("Unsaved rename");
+    expect(
+      (fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement).value,
+    ).toBe("Unsaved rename");
+    expect(fixture.nativeElement.textContent as string).not.toContain("newItemPickKind");
+  });
+
+  it("keeps an unsaved new item form when ⌘N is pressed", async () => {
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const newButton = (
+      Array.from(fixture.nativeElement.querySelectorAll("button")) as HTMLButtonElement[]
+    ).find((button) => button.textContent?.includes("newItem"));
+    newButton?.click();
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector(".agy-typegrid button") as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    const nameInput = fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement;
+    nameInput.value = "Unsaved new item";
+    nameInput.dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "n", metaKey: true, bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+
+    const component = fixture.componentInstance as unknown as {
+      drawer(): string;
+      values(): Record<string, string>;
+    };
+    expect(component.drawer()).toBe("new-form");
+    expect(component.values().name).toBe("Unsaved new item");
+    expect(
+      (fixture.nativeElement.querySelector("#vault-field_name") as HTMLInputElement).value,
+    ).toBe("Unsaved new item");
+  });
+
+  it("opens the new item type picker with ⌘N when no form drawer is open", async () => {
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "n", metaKey: true, bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+
+    const component = fixture.componentInstance as unknown as { drawer(): string };
+    expect(component.drawer()).toBe("new-type");
+    expect(fixture.nativeElement.textContent as string).toContain("newItemPickKind");
+  });
+
   it("hides a revealed QR seed and history password after the auto-hide interval", () => {
     const fixture = TestBed.createComponent(VaultDesktopV2Component);
     fixture.detectChanges();
