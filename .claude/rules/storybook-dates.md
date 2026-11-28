@@ -10,7 +10,7 @@ Chromatic flags anything built from the real clock as a diff on every run.
 - Build story dates from a fixed constant, never bare `Date.now()` or `new Date()`:
 
   ```ts
-  import { DAY, STORY_NOW } from "@bitwarden/storybook";
+  import { DAY, STORY_NOW } from "@localpass/storybook";
 
   const daysAgo = (days: number) => new Date(STORY_NOW.getTime() - days * DAY);
   ```
@@ -29,4 +29,4 @@ Chromatic flags anything built from the real clock as a diff on every run.
 - Relative output ("2h left") from `Date.now() + offset` is stable and needs neither.
 
 Import these helpers (`STORY_NOW`, `fromNow`, `liveFromNow`, `startClockAtStoryNow`, `MINUTE`,
-`HOUR`, `DAY`) from `@bitwarden/storybook`.
+`HOUR`, `DAY`) from `@localpass/storybook`.

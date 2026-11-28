@@ -1,16 +1,12 @@
 ---
 paths:
-  - "apps/desktop/resources/com.bitwarden.desktop.devel.yaml"
+  - "apps/desktop/resources/com.localpass.desktop.devel.yaml"
 ---
 
 # Flatpak Manifest
 
-`com.bitwarden.desktop.devel.yaml` is the Flatpak manifest for desktop dev and CI builds
-(`flatpak:dev`, `pack:lin:flatpak`). It is deliberately kept in sync with the upstream **Flathub**
-manifest, which lives in a separate repository (see #12555, "Remove differences from flathub
-flatpak manifest and devel manifest").
+The desktop workspace uses this manifest for local runs (`flatpak:dev`) and bundle builds
+(`pack:lin:flatpak`). If the manifest name or app ID changes, check both scripts in
+[apps/desktop/package.json](../../apps/desktop/package.json).
 
-- **ALWAYS** when this file is changed, the same change must be upstreamed to the Flathub manifest
-  to keep the two builds from diverging.
-- **Code review:** when reviewing a diff that touches this manifest, add a note that the change
-  should be upstreamed to the Flathub manifest.
+For each new sandbox permission in `finish-args`, explain in the PR which desktop feature needs it.

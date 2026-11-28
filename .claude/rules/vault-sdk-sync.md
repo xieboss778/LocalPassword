@@ -9,15 +9,14 @@ paths:
 
 # Vault SDK Sync
 
-Cipher models and operations are mirrored in `bitwarden/sdk-internal` (`crates/bitwarden-vault/src/`). The SDK is the source of truth; drift between the two causes silent data loss when ciphers round-trip through `toSdk`/`fromSdk`.
+The installed `@localpass/sdk-internal` dependency defines what survives a `toSdk`/`fromSdk` round trip. A field added only to a TypeScript model can disappear on conversion. The Rust paths below identify the corresponding SDK types; they are not files to edit in this repository.
 
 ## Model Changes
 
-When a field is added, removed, renamed, or retyped on a model below, flag it and remind the author to:
+When a model field is added, removed, renamed, or retyped:
 
-- Make the matching change in the SDK struct listed below. For sensitive fields (name, notes, type data, custom fields, password history), also update the blob schema in `cipher/blob/v1.rs` and `cipher/blob/conversions/<type>.rs`.
-- Update the model's `toSdk*`/`fromSdk*` mappings (and `fromSdkLocalData`/`toSdkLocalData` for `LocalData`).
-- Bump `@bitwarden/sdk-internal` once the SDK change ships, if the field must round-trip.
+- Check the corresponding type in the installed SDK. If a persisted field needs an SDK or encrypted-format change, stop and discuss it with the maintainer before implementation. Do not add a parallel serialization or encryption path.
+- For a supported field, update both `toSdk*` and `fromSdk*` (or `toSdkLocalData` and `fromSdkLocalData` for `LocalData`). Add a round-trip test with synthetic values so a dropped field fails the test.
 
 | Model (`libs/common/src/vault/`)                                                                            | SDK file (`crates/bitwarden-vault/src/`) |
 | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
@@ -39,5 +38,5 @@ Rows without a path cover `models/domain/<name>.ts`, `models/view/<name>.view.ts
 
 ## CipherService
 
-- New cipher operations **MUST** go through the SDK: server operations (CRUD, share, attachments, collections) via `CipherSdkService`, and encryption/decryption via `CipherEncryptionService`. Flag any new `CipherService` method that calls `ApiService` or `EncryptService` directly.
-- Legacy non-SDK paths exist only behind SDK feature flags and are slated for removal. Flag changes that extend them rather than the SDK path.
+- Local account writes go through `LocalVaultWriter`; use the existing `CipherEncryptionService` for encryption and decryption. SDK-backed operations belong in `CipherSdkService`.
+- Flag new `CipherService` methods that call `ApiService` or `EncryptService` directly. A failed local write must not fall back to a server request.

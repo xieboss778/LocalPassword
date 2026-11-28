@@ -41,7 +41,7 @@ export default {
 export const Edit: Story = { decorators: [atUrl("/organizations/org-1/access-rules/rule-1")] };
 ```
 
-Full example: `bitwarden_license/bit-web/src/app/pam/access-rules/access-rule-edit/access-rule-edit.component.stories.ts`.
+For a local example using real routes, hash routing, and a router outlet, see [the breadcrumbs stories](../../libs/components/src/breadcrumbs/breadcrumbs.stories.ts).
 
 ## Give the story a URL, not just a router
 
@@ -64,9 +64,8 @@ stories, but if a story must leave no trace, navigate at bootstrap instead — `
 withDisabledInitialNavigation())` plus a `provideAppInitializer` calling
 `router.navigateByUrl(url, { skipLocationChange: true })`.
 
-For a component that takes inputs rather than route params, keep rendering it directly and derive
-the URL from the story's args — see the `atFilterUrl` decorator in
-`apps/web/src/app/admin-console/organizations/collections/vault-header/vault-header.component.stories.ts`.
+For a component that takes inputs rather than route params, render it directly and set the story URL
+from its args so the route and query parameters agree with the rendered inputs.
 
 ## What `bit-breadcrumb` compares
 
@@ -77,6 +76,5 @@ the URL from the story's args — see the `atFilterUrl` decorator in
 carries those params.
 
 Check the rendered markup, not just the screenshot: exactly one crumb should carry
-`aria-current="page"`, and only when the trail includes the current page. Trails that end at the
-page title (both vault headers, the PAM edit page) should have **no** active crumb — every crumb is
-an ancestor link.
+`aria-current="page"`, and only when the trail includes the current page. If the title sits outside
+the breadcrumbs, **no** crumb should be active: every crumb is an ancestor link.

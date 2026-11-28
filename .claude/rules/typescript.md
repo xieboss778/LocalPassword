@@ -70,7 +70,7 @@ readonly folders$ = this._folders.asObservable();
 
 Use **RxJS** (not Signals) in services for:
 
-- Code shared with non-Angular clients (CLI)
+- Code shared with background scripts, service workers, or non-UI libraries
 - Complex reactive workflows
 - Interop with existing Observable-based code
 
@@ -88,6 +88,6 @@ Class names include the same suffix: `folder.service.ts` → `FolderService`, `f
 When an abstract class has multiple implementations, prefix the class name:
 
 - `Default` — the default implementation
-- `Web`, `Browser`, `Desktop`, `Cli` — platform-specific implementations
+- `Browser`, `Desktop` — platform-specific implementations
 
 Example: `DefaultFolderService`, `BrowserPlatformUtilsService`.
