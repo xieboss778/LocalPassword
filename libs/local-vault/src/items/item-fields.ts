@@ -653,48 +653,50 @@ export function readField(view: CipherView, target: FieldTarget): string {
       return view.name ?? "";
     case "notes":
       return view.notes ?? "";
+    // Importers may leave a subtype view's collections null (for example a CSV login with no
+    // URI). Reading a field is a display/search/dedupe concern and must not throw on that data.
     case "loginUsername":
-      return view.login.username ?? "";
+      return view.login?.username ?? "";
     case "loginPassword":
-      return view.login.password ?? "";
+      return view.login?.password ?? "";
     case "loginTotp":
-      return view.login.totp ?? "";
+      return view.login?.totp ?? "";
     case "loginUri":
-      return view.login.uris[0]?.uri ?? "";
+      return view.login?.uris?.[0]?.uri ?? "";
     case "loginUri2":
-      return view.login.uris[1]?.uri ?? "";
+      return view.login?.uris?.[1]?.uri ?? "";
     case "sshPrivateKey":
-      return view.sshKey.privateKey ?? "";
+      return view.sshKey?.privateKey ?? "";
     case "sshPublicKey":
-      return view.sshKey.publicKey ?? "";
+      return view.sshKey?.publicKey ?? "";
     case "sshFingerprint":
-      return view.sshKey.keyFingerprint ?? "";
+      return view.sshKey?.keyFingerprint ?? "";
     case "cardholder":
-      return view.card.cardholderName ?? "";
+      return view.card?.cardholderName ?? "";
     case "cardBrand":
-      return view.card.brand ?? "";
+      return view.card?.brand ?? "";
     case "cardNumber":
-      return view.card.number ?? "";
+      return view.card?.number ?? "";
     case "cardCode":
-      return view.card.code ?? "";
+      return view.card?.code ?? "";
     case "cardExpiry":
-      return formatCardExpiry(view.card.expMonth, view.card.expYear);
+      return formatCardExpiry(view.card?.expMonth, view.card?.expYear);
     case "identityFirst":
-      return view.identity.firstName ?? "";
+      return view.identity?.firstName ?? "";
     case "identityLast":
-      return view.identity.lastName ?? "";
+      return view.identity?.lastName ?? "";
     case "identityIdNumber":
-      return view.identity.passportNumber ?? view.identity.licenseNumber ?? "";
+      return view.identity?.passportNumber ?? view.identity?.licenseNumber ?? "";
     case "identityPhone":
-      return view.identity.phone ?? "";
+      return view.identity?.phone ?? "";
     case "identityEmail":
-      return view.identity.email ?? "";
+      return view.identity?.email ?? "";
     case "identityAddress":
-      return view.identity.address1 ?? "";
+      return view.identity?.address1 ?? "";
     case "identityPostalCode":
-      return view.identity.postalCode ?? "";
+      return view.identity?.postalCode ?? "";
     case "identityCompany":
-      return view.identity.company ?? "";
+      return view.identity?.company ?? "";
     default:
       return customField(view, target.custom)?.value ?? "";
   }
@@ -882,7 +884,7 @@ function specCustomNames(kind: ItemKind): ReadonlySet<string> {
 }
 
 function customField(view: CipherView, name: string): FieldView | undefined {
-  return view.fields.find((field) => field.name === name);
+  return view.fields?.find((field) => field.name === name);
 }
 
 function writeCustomField(view: CipherView, name: string, value: string): void {

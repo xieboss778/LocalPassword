@@ -4,10 +4,31 @@ import { dedupeImportCiphers, importFingerprint } from "./import-dedupe";
 import { applyFieldValues } from "./item-fields";
 import { ItemKind, setKind } from "./item-kind";
 
-function login(name: string, username: string, password = "secret"): CipherView {
+function login(name: string, username: string, password = "secret", uri?: string): CipherView {
   const view = new CipherView();
   setKind(view, ItemKind.Login);
-  applyFieldValues(view, ItemKind.Login, { name, username, password });
+  applyFieldValues(view, ItemKind.Login, { name, username, password, uri: uri ?? "" });
+  return view;
+}
+
+function note(name: string, notes: string): CipherView {
+  const view = new CipherView();
+  setKind(view, ItemKind.Note);
+  applyFieldValues(view, ItemKind.Note, { name, notes });
+  return view;
+}
+
+function card(name: string, number: string): CipherView {
+  const view = new CipherView();
+  setKind(view, ItemKind.Card);
+  applyFieldValues(view, ItemKind.Card, { name, number });
+  return view;
+}
+
+function sshKey(name: string, fingerprint: string): CipherView {
+  const view = new CipherView();
+  setKind(view, ItemKind.SshKey);
+  applyFieldValues(view, ItemKind.SshKey, { name, fingerprint });
   return view;
 }
 
@@ -41,14 +62,138 @@ describe("dedupeImportCiphers", () => {
     expect(result.duplicateCount).toBe(0);
   });
 
-  it("keeps duplicates within the import file, since only the local vault is compared", () => {
+  it("skips and counts duplicates within the import file", () => {
     const result = dedupeImportCiphers(
-      [login("GitHub", "bossxie"), login("GitHub", "bossxie")],
+      [
+        login("GitHub", "bossxie"),
+        login("GitHub", "bossxie", "rotated"),
+        login("GitLab", "bossxie"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers.map((cipher) => cipher.name)).toEqual(["GitHub", "GitLab"]);
+  });
+
+  it("counts vault and in-file duplicates together", () => {
+    const result = dedupeImportCiphers(
+      [login("GitHub", "bossxie"), login("GitHub", "bossxie"), login("GitLab", "bossxie")],
+      [login("GitHub", "bossxie")],
+    );
+
+    expect(result.duplicateCount).toBe(2);
+    expect(result.ciphers.map((cipher) => cipher.name)).toEqual(["GitLab"]);
+  });
+
+  it("reads a CSV login whose imported URI list is null without throwing", () => {
+    const first = login("CSV Dup", "dupuser");
+    const second = login("CSV Dup", "dupuser");
+    // 通用 CSV 导入器不带 URI 时留下 null，指纹和搜索读取都必须容忍这种形状。
+    (first.login as unknown as { uris: null }).uris = null;
+    (second.login as unknown as { uris: null }).uris = null;
+
+    const result = dedupeImportCiphers([first, second], []);
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers.map((cipher) => cipher.name)).toEqual(["CSV Dup"]);
+  });
+
+  it("matches in-file logins on the primary URI as well as the username", () => {
+    const result = dedupeImportCiphers(
+      [
+        login("Work", "bossxie", "secret", "https://example.com/login"),
+        login("Work", "bossxie", "rotated", "http://example.com/login/"),
+        login("Work", "bossxie", "secret", "https://other.example/login"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers).toHaveLength(2);
+  });
+
+  it("keeps logins without a username or URI instead of collapsing them by name", () => {
+    const result = dedupeImportCiphers([login("Work", ""), login("Work", "")], []);
+
+    expect(result.duplicateCount).toBe(0);
+    expect(result.ciphers).toHaveLength(2);
+  });
+
+  it("keeps distinct notes that share a name, since notes carry no identity", () => {
+    const result = dedupeImportCiphers(
+      [note("Recovery", "codes for A"), note("Recovery", "codes for B")],
       [],
     );
 
     expect(result.duplicateCount).toBe(0);
     expect(result.ciphers).toHaveLength(2);
+  });
+
+  it("keeps distinct cards that share a name and the last four digits", () => {
+    const result = dedupeImportCiphers(
+      [card("Visa", "4111 1111 1111 1234"), card("Visa", "5500 0000 0000 1234")],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(0);
+    expect(result.ciphers).toHaveLength(2);
+  });
+
+  it("still compares weak identities against the existing vault", () => {
+    const result = dedupeImportCiphers(
+      [note("Recovery", "codes for A")],
+      [note("Recovery", "codes for B")],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers).toHaveLength(0);
+  });
+
+  it("dedupes SSH keys within the file by their key fingerprint", () => {
+    const result = dedupeImportCiphers(
+      [
+        sshKey("Work key", "SHA256:aaa"),
+        sshKey("Work key", "SHA256:aaa"),
+        sshKey("Home key", "SHA256:bbb"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers.map((cipher) => cipher.name)).toEqual(["Work key", "Home key"]);
+  });
+
+  it("remaps folder and collection relationships after dropping an in-file duplicate", () => {
+    const ciphers = [
+      login("GitHub", "bossxie"),
+      login("GitHub", "bossxie"),
+      login("GitLab", "bossxie"),
+    ];
+
+    const result = dedupeImportCiphers(
+      ciphers,
+      [],
+      [
+        [0, 0],
+        [1, 0],
+        [2, 1],
+      ],
+      [
+        [0, 3],
+        [1, 4],
+        [2, 5],
+      ],
+    );
+
+    expect(result.folderRelationships).toEqual([
+      [0, 0],
+      [1, 1],
+    ]);
+    expect(result.collectionRelationships).toEqual([
+      [0, 3],
+      [1, 5],
+    ]);
   });
 
   it("remaps folder and collection relationships to the filtered list", () => {

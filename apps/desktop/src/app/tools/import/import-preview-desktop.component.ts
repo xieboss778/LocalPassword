@@ -236,7 +236,7 @@ export class ImportPreviewDesktopComponent implements OnInit {
       .map((cipher, index) => this.rowOf(cipher, index)),
   );
 
-  /** 与本机保险库比中的条目默认跳过；统计只来自内存里的真实比对。 */
+  /** 本机已有与文件内重复的条目默认跳过；统计只来自内存里的真实比对。 */
   protected readonly duplicateCount = computed(() => this.dedupe()?.duplicateCount ?? 0);
 
   protected readonly importActionLabel = computed(() =>
@@ -259,8 +259,12 @@ export class ImportPreviewDesktopComponent implements OnInit {
     return this.i18n.t("importPreviewFirstFive", String(count));
   }
 
+  /**
+   * 重复数同时包含「本机已有」与「文件内重复」，因此说明文案不再声称只来自保险库；
+   * 数量已显示在上方统计和副标题里。
+   */
   protected duplicateNote(): string {
-    return this.i18n.t("importPreviewDuplicateCount", String(this.duplicateCount()));
+    return this.i18n.t("duplicateSkipped");
   }
 
   protected unrecognizedNote(count: number): string {
