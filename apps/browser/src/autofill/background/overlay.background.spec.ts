@@ -1350,6 +1350,7 @@ describe("OverlayBackground", () => {
               hasPassword: true,
               passkey: null,
               totpField: false,
+              totpAvailable: true,
             },
             name: "name-1",
             reprompt: loginCipher1.reprompt,
@@ -1633,6 +1634,7 @@ describe("OverlayBackground", () => {
                 hasPassword: true,
                 passkey: null,
                 totpField: false,
+                totpAvailable: true,
               },
               name: loginCipher1.name,
               reprompt: loginCipher1.reprompt,
@@ -1763,6 +1765,7 @@ describe("OverlayBackground", () => {
                 userName: passkeyCipher.login.fido2Credentials[0].userName,
               },
               totpField: false,
+              totpAvailable: true,
             },
           },
           {
@@ -1783,6 +1786,7 @@ describe("OverlayBackground", () => {
               hasPassword: true,
               passkey: null,
               totpField: false,
+              totpAvailable: true,
             },
           },
           {
@@ -1803,6 +1807,7 @@ describe("OverlayBackground", () => {
               hasPassword: true,
               passkey: null,
               totpField: false,
+              totpAvailable: true,
             },
           },
         ],
@@ -1854,6 +1859,7 @@ describe("OverlayBackground", () => {
               hasPassword: true,
               passkey: null,
               totpField: false,
+              totpAvailable: true,
             },
           },
           {
@@ -1874,6 +1880,7 @@ describe("OverlayBackground", () => {
               hasPassword: true,
               passkey: null,
               totpField: false,
+              totpAvailable: true,
             },
           },
         ],
@@ -1925,6 +1932,7 @@ describe("OverlayBackground", () => {
               hasPassword: true,
               passkey: null,
               totpField: false,
+              totpAvailable: true,
             },
           },
           {
@@ -1945,6 +1953,7 @@ describe("OverlayBackground", () => {
               hasPassword: true,
               passkey: null,
               totpField: false,
+              totpAvailable: true,
             },
           },
         ],
@@ -1994,6 +2003,7 @@ describe("OverlayBackground", () => {
                 hasPassword: true,
                 passkey: null,
                 totpField: false,
+                totpAvailable: true,
               },
             },
             {
@@ -2014,6 +2024,7 @@ describe("OverlayBackground", () => {
                 hasPassword: false,
                 passkey: null,
                 totpField: false,
+                totpAvailable: true,
               },
             },
           ],
@@ -4745,6 +4756,55 @@ describe("OverlayBackground", () => {
             pageDetails: [expect.objectContaining({ details: pageDetails })],
           }),
         );
+      });
+    });
+
+    describe("inline menu cipher data TOTP disclosure", () => {
+      const loginCipher = (reprompt = CipherRepromptType.None) =>
+        mock<CipherView>({
+          id: "inline-menu-cipher-1",
+          name: "Mail",
+          type: CipherType.Login,
+          reprompt,
+          login: { username: "user", password: "pw", totp: "totp-secret" },
+        });
+
+      const build = (cipher: CipherView) =>
+        overlayBackground["buildCipherData"]({
+          inlineMenuCipherId: "inline-menu-cipher-1",
+          cipher,
+          iconsServerUrl: null,
+        });
+
+      it("computes the live code only while a TOTP field is focused", async () => {
+        jest.spyOn(overlayBackground as any, "isTotpFieldForCurrentField").mockReturnValue(true);
+        totpService.getCode$.mockReturnValue(of({ code: "123456", period: 30 }));
+
+        const data = await build(loginCipher());
+
+        expect(data.login?.totp).toBe("123456");
+        expect(data.login?.totpAvailable).toBe(true);
+        expect(totpService.getCode$).toHaveBeenCalledWith("totp-secret");
+      });
+
+      it("withholds the code outside a TOTP field but still reports availability", async () => {
+        jest.spyOn(overlayBackground as any, "isTotpFieldForCurrentField").mockReturnValue(false);
+
+        const data = await build(loginCipher());
+
+        expect(data.login?.totp).toBeUndefined();
+        expect(data.login?.totpAvailable).toBe(true);
+        expect(totpService.getCode$).not.toHaveBeenCalled();
+      });
+
+      it("withholds the code for a re-prompt-protected cipher on a TOTP field", async () => {
+        jest.spyOn(overlayBackground as any, "isTotpFieldForCurrentField").mockReturnValue(true);
+
+        const data = await build(loginCipher(CipherRepromptType.Password));
+
+        expect(data.login?.totp).toBeUndefined();
+        expect(data.login?.totpAvailable).toBe(true);
+        expect(totpService.getCode$).not.toHaveBeenCalled();
       });
     });
 

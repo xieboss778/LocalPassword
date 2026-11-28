@@ -4,6 +4,8 @@ import { of } from "rxjs";
 
 import { LpToastService } from "@localpass/angular/local-ui";
 import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
@@ -27,6 +29,7 @@ describe("TrayV2Component", () => {
   const messagingService = mock<MessagingService>();
   const lockService = mock<LockService>();
   const passwordRepromptService = mock<PasswordRepromptService>();
+  const autofillSettingsService = mock<AutofillSettingsServiceAbstraction>();
   const toast = mock<LpToastService>();
 
   const login = (id: string, name: string, password: string): CipherView =>
@@ -45,6 +48,7 @@ describe("TrayV2Component", () => {
     jest.clearAllMocks();
     i18nService.t.mockImplementation((key: string) => key);
     passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
+    autofillSettingsService.clearClipboardDelay$ = of(ClearClipboardDelay.TenSeconds);
     cipherService.cipherViews$.mockReturnValue(
       of([login("alpha", "Alpha", "secret-1"), login("beta", "Beta", "secret-2")]),
     );
@@ -66,6 +70,7 @@ describe("TrayV2Component", () => {
         { provide: MessagingService, useValue: messagingService },
         { provide: LockService, useValue: lockService },
         { provide: PasswordRepromptService, useValue: passwordRepromptService },
+        { provide: AutofillSettingsServiceAbstraction, useValue: autofillSettingsService },
         { provide: LpToastService, useValue: toast },
       ],
     }).compileComponents();
@@ -92,7 +97,7 @@ describe("TrayV2Component", () => {
     await fixture.whenStable();
 
     expect(platformUtilsService.copyToClipboard).toHaveBeenCalledWith("secret-2");
-    expect(toast.showClipboard).toHaveBeenCalledWith("valueCopied", expect.any(Function));
+    expect(toast.showClipboard).toHaveBeenCalledWith("valueCopied", expect.any(Function), 10);
   });
 
   it("does not copy a password when the master password re-prompt is cancelled", async () => {

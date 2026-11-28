@@ -14,6 +14,7 @@ import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/pass
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { LockService } from "@localpass/unlock";
+import { PasswordRepromptService } from "@localpass/vault";
 
 import { LocalVaultLayoutComponent } from "./local-vault-layout.component";
 
@@ -39,6 +40,7 @@ describe("LocalVaultLayoutComponent", () => {
           provide: PasswordStrengthServiceAbstraction,
           useValue: mock<PasswordStrengthServiceAbstraction>(),
         },
+        { provide: PasswordRepromptService, useValue: mock<PasswordRepromptService>() },
       ],
     }).compileComponents();
   });

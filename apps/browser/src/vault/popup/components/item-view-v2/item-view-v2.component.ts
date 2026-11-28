@@ -21,6 +21,8 @@ import {
   LpToastService,
   PASSWORD_AUTO_HIDE_MS,
   PasswordAutoHideService,
+  clearClipboardIfStillHolding,
+  clipboardClearSeconds,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
@@ -31,7 +33,6 @@ import {
   COPY_VERIFICATION_CODE_ID,
 } from "@localpass/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
-import { ClearClipboardDelaySetting } from "@localpass/common/autofill/types";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
@@ -839,39 +840,16 @@ export class VaultItemViewV2Component implements OnInit {
     }
     const copied = this.platformUtilsService.copyToClipboard(value, { window });
     if (copied !== false) {
-      const delay = this.clipboardClearSeconds(this.clearClipboardDelay());
+      const delay = clipboardClearSeconds(this.clearClipboardDelay());
       if (delay > 0) {
         this.toast.showClipboard(
           this.i18n.t("copiedField", label),
-          () => {
-            this.platformUtilsService.copyToClipboard("", { window });
-          },
+          () => clearClipboardIfStillHolding(this.platformUtilsService, value),
           delay,
         );
       } else {
         this.toast.show(this.i18n.t("copiedField", label));
       }
-    }
-  }
-
-  /** 设置里存的是可读档位，复制回执需要秒数；Never 与关闭时返回 0。 */
-  private clipboardClearSeconds(setting: ClearClipboardDelaySetting): number {
-    switch (setting) {
-      case ClearClipboardDelay.TenSeconds:
-        return 10;
-      case ClearClipboardDelay.TwentySeconds:
-        return 20;
-      case ClearClipboardDelay.ThirtySeconds:
-        return 30;
-      case ClearClipboardDelay.OneMinute:
-        return 60;
-      case ClearClipboardDelay.TwoMinutes:
-        return 120;
-      case ClearClipboardDelay.FiveMinutes:
-        return 300;
-      case ClearClipboardDelay.Never:
-      default:
-        return 0;
     }
   }
 

@@ -59,7 +59,10 @@ export function cipherHasPassword(cipher: InlineMenuCipherData): boolean {
 }
 
 export function cipherHasTotp(cipher: InlineMenuCipherData): boolean {
-  return !!cipher.login?.totp;
+  // The code itself may be withheld (not a TOTP field, or the item is re-prompt protected);
+  // presence is tracked separately so the masked row still lists. The fallback keeps menus
+  // working while a freshly updated background and an older content script are mismatched.
+  return cipher.login?.totpAvailable ?? !!cipher.login?.totp;
 }
 
 export function accountMatchesQuery(cipher: InlineMenuCipherData, query: string): boolean {

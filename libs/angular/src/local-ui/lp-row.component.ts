@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { IconComponent, LocalPassIcon } from "@localpass/components";
 
+import { clearClipboardIfStillHolding, clipboardClearSeconds } from "./clipboard";
 import { LpToastService } from "./lp-toast.service";
 
 /**
@@ -85,6 +89,15 @@ export class LpRowComponent {
   private readonly toast = inject(LpToastService);
   private readonly i18n = inject(I18nService);
   private readonly platformUtilsService = inject(PlatformUtilsService, { optional: true });
+  private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
+    optional: true,
+  });
+
+  private readonly clearClipboardDelay = this.autofillSettingsService
+    ? toSignal(this.autofillSettingsService.clearClipboardDelay$, {
+        initialValue: ClearClipboardDelay.ThirtySeconds,
+      })
+    : signal(ClearClipboardDelay.ThirtySeconds);
 
   readonly label = input.required<string>();
   readonly sub = input<string>("");
@@ -139,13 +152,20 @@ export class LpRowComponent {
 
     const label = this.copyLabel() || this.label();
     this.copied.set(true);
-    this.toast.showClipboard(this.i18n.t("valueCopied", label), () => {
+    const message = this.i18n.t("valueCopied", label);
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
+    const clearNow = async () => {
       if (this.platformUtilsService) {
-        this.platformUtilsService.copyToClipboard("", { window, clearing: true });
+        await clearClipboardIfStillHolding(this.platformUtilsService, value);
       } else {
         void navigator.clipboard?.writeText("");
       }
-    });
+    };
+    if (delay > 0) {
+      this.toast.showClipboard(message, clearNow, delay);
+    } else {
+      this.toast.show(message);
+    }
     this.copiedValue.emit(value);
 
     const previous = this.timer();

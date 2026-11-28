@@ -203,6 +203,8 @@ export type InlineMenuCipherData = {
   accountCreationFieldType?: string;
   login?: {
     totp?: string;
+    /** Whether the login has a TOTP secret; true even when the code is withheld. */
+    totpAvailable?: boolean;
     totpField?: boolean;
     totpCodeTimeInterval?: number;
     username?: string;

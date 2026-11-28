@@ -1,4 +1,9 @@
 export {
+  clearClipboardIfStillHolding,
+  clipboardClearSeconds,
+  clipboardDelayOptionValue,
+} from "./clipboard";
+export {
   DesktopShortcut,
   DesktopShortcutsService,
   DISABLED_DESKTOP_SHORTCUTS,

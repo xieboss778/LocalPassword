@@ -22,7 +22,7 @@ export function TotpCipherInfo({
   username,
   masked,
 }: TotpCipherInfoProps) {
-  const code = masked ? "●●●●●●" : `${totp.substring(0, 3)} ${totp.substring(3)}`;
+  const code = masked ? "●●●●●●" : totp ? `${totp.substring(0, 3)} ${totp.substring(3)}` : "";
 
   return html`
     <div>
@@ -35,7 +35,6 @@ export function TotpCipherInfo({
       <span
         class=${totpCodeStyles(theme, masked)}
         data-testid="totp-code"
-        title=${code}
         aria-label=${totpCodeAria ?? nothing}
         >${code}</span
       >

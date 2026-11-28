@@ -24,12 +24,13 @@ import {
   LpToastService,
   VaultDensity,
   VaultDensityService,
+  clearClipboardIfStillHolding,
+  clipboardClearSeconds,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
-import { ClearClipboardDelaySetting } from "@localpass/common/autofill/types";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@localpass/common/platform/misc/utils";
@@ -699,7 +700,7 @@ export class VaultListV2Component implements OnInit {
     event.stopPropagation();
     const copied = this.platformUtilsService.copyToClipboard(username, { window });
     if (copied !== false) {
-      this.showCopyToast(this.i18n.t("valueCopied", this.i18n.t("username")));
+      this.showCopyToast(this.i18n.t("valueCopied", this.i18n.t("username")), username);
     }
   }
 
@@ -722,42 +723,20 @@ export class VaultListV2Component implements OnInit {
     const label = secretField ? this.i18n.t(secretField.labelKey) : this.i18n.t("password");
     const copied = this.platformUtilsService.copyToClipboard(secretValue, { window });
     if (copied !== false) {
-      this.showCopyToast(this.i18n.t("valueCopied", label));
+      this.showCopyToast(this.i18n.t("valueCopied", label), secretValue);
     }
   }
 
-  private showCopyToast(message: string): void {
-    const delay = this.clipboardClearSeconds(this.clearClipboardDelay());
+  private showCopyToast(message: string, value: string): void {
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
     if (delay > 0) {
       this.toast.showClipboard(
         message,
-        () => {
-          this.platformUtilsService.copyToClipboard("", { window });
-        },
+        () => clearClipboardIfStillHolding(this.platformUtilsService, value),
         delay,
       );
     } else {
       this.toast.show(message);
-    }
-  }
-
-  private clipboardClearSeconds(setting: ClearClipboardDelaySetting): number {
-    switch (setting) {
-      case ClearClipboardDelay.TenSeconds:
-        return 10;
-      case ClearClipboardDelay.TwentySeconds:
-        return 20;
-      case ClearClipboardDelay.ThirtySeconds:
-        return 30;
-      case ClearClipboardDelay.OneMinute:
-        return 60;
-      case ClearClipboardDelay.TwoMinutes:
-        return 120;
-      case ClearClipboardDelay.FiveMinutes:
-        return 300;
-      case ClearClipboardDelay.Never:
-      default:
-        return 0;
     }
   }
 

@@ -18,7 +18,9 @@ describe("TotpCipherInfo", () => {
   };
 
   const USERNAME_SLOT = 3;
-  const CODE_TEXT_SLOT = 7;
+  // The code is no longer copied into a `title` attribute, so the text slot follows the aria
+  // label by one instead of by two.
+  const CODE_TEXT_SLOT = 6;
 
   it("formats the totp code with a space", () => {
     const values = litValues(TotpCipherInfo(baseProps));

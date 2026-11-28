@@ -30,6 +30,8 @@ import {
   PasswordAutoHideService,
   VaultDensity,
   VaultDensityService,
+  clearClipboardIfStillHolding,
+  clipboardClearSeconds,
   newCustomFieldDraft,
 } from "@localpass/angular/local-ui";
 import {
@@ -38,6 +40,8 @@ import {
 } from "@localpass/angular/vault/services/cipher-version-history.service";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
@@ -66,6 +70,7 @@ import {
   kindOf,
   readCustomFields,
   readFieldValues,
+  searchableFieldValues,
   setKind,
   withoutKindField,
 } from "@localpass/local-vault";
@@ -108,6 +113,9 @@ interface TypeTab {
 }
 
 const MASK = "••••••••••••";
+
+/** QR 抽屉里 Base32 种子的显示状态键；种子能直接生成验证码，默认掩码并自动收回。 */
+const QR_SECRET_LABEL = "qr-secret";
 
 /**
  * 桌面端保险库：页头 + 搜索筛选 + 文件夹卡片 + 条目表格 + 右侧详情抽屉。
@@ -1387,7 +1395,21 @@ const MASK = "••••••••••••";
                         "
                       >
                         <span class="agy-k">{{ i18n.t("totpSecret") }}</span>
-                        <span class="agy-v agy-mono">{{ totpBase32Secret() }}</span>
+                        <span class="agy-v agy-mono">{{
+                          qrSecretVisible() ? totpBase32Secret() : mask
+                        }}</span>
+                        <button
+                          type="button"
+                          class="agy-iconbtn agy-sm"
+                          [attr.title]="i18n.t(qrSecretVisible() ? 'hideValue' : 'showValue')"
+                          [attr.aria-label]="i18n.t('toggleVisibility')"
+                          (click)="$event.stopPropagation(); toggleQrSecret()"
+                        >
+                          <bit-icon
+                            [name]="qrSecretVisible() ? 'bwi-eye-slash' : 'bwi-eye'"
+                            class="tw-text-xs"
+                          ></bit-icon>
+                        </button>
                         <bit-icon name="bwi-copy" class="tw-text-xs tw-text-muted"></bit-icon>
                       </div>
                     </div>
@@ -1531,10 +1553,18 @@ export class VaultDesktopV2Component implements OnInit {
   private readonly passwordAutoHideService = inject(PasswordAutoHideService);
   private readonly passwordStrengthService = inject(PasswordStrengthServiceAbstraction);
   private readonly passwordRepromptService = inject(PasswordRepromptService);
+  private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
+    optional: true,
+  });
 
   protected readonly autoHide = toSignal(this.passwordAutoHideService.autoHide$, {
     initialValue: true,
   });
+  private readonly clearClipboardDelay = this.autofillSettingsService
+    ? toSignal(this.autofillSettingsService.clearClipboardDelay$, {
+        initialValue: ClearClipboardDelay.ThirtySeconds,
+      })
+    : signal(ClearClipboardDelay.ThirtySeconds);
   protected readonly totpRingCircumference = 2 * Math.PI * 9.5;
   protected readonly copiedKey = signal("");
   private readonly copiedTimer = signal<ReturnType<typeof setTimeout> | null>(null);
@@ -1547,6 +1577,7 @@ export class VaultDesktopV2Component implements OnInit {
   protected readonly repromptType = CipherRepromptType;
   protected readonly fieldType = FieldType;
   protected readonly mask = MASK;
+  protected readonly qrSecretVisible = computed(() => this.revealedLabels().has(QR_SECRET_LABEL));
   protected readonly formatExpiry = (value: string, deleting: boolean): string =>
     formatCardExpiryInput(value, { autoSlash: !deleting });
   protected readonly loading = signal(true);
@@ -1726,8 +1757,7 @@ export class VaultDesktopV2Component implements OnInit {
       item.subTitle ?? "",
       item.notes ?? "",
       item.folderId ? (folderNames.get(item.folderId) ?? "") : "",
-      ...Object.values(values),
-      ...withoutKindField(item.fields).flatMap((field) => [field.name ?? "", field.value ?? ""]),
+      ...searchableFieldValues(item, kind),
     ]
       .join(" ")
       .toLowerCase();
@@ -2269,11 +2299,53 @@ export class VaultDesktopV2Component implements OnInit {
     }
   }
 
-  protected openQr(): void {
+  protected async openQr(): Promise<void> {
     if (!this.totpKey()) {
       return;
     }
+    // 二维码和 Base32 种子都能直接生成验证码，和密码一样先过重提示。
+    if (!(await this.ensureReprompt(this.selected()))) {
+      return;
+    }
+    this.hideQrSecret();
     this.drawer.set("qr");
+  }
+
+  protected toggleQrSecret(): void {
+    const willReveal = !this.revealedLabels().has(QR_SECRET_LABEL);
+    this.revealedLabels.update((labels) => {
+      const next = new Set(labels);
+      if (willReveal) {
+        next.add(QR_SECRET_LABEL);
+      } else {
+        next.delete(QR_SECRET_LABEL);
+      }
+      return next;
+    });
+    this.scheduleAutoHide(QR_SECRET_LABEL, willReveal, () => {
+      this.revealedLabels.update((labels) => {
+        const next = new Set(labels);
+        next.delete(QR_SECRET_LABEL);
+        return next;
+      });
+    });
+  }
+
+  /** 重新打开 QR 抽屉时种子回到掩码状态，不让上一次的展开沿用过来。 */
+  private hideQrSecret(): void {
+    const timer = this.revealTimers.get(QR_SECRET_LABEL);
+    if (timer) {
+      clearTimeout(timer);
+      this.revealTimers.delete(QR_SECRET_LABEL);
+    }
+    this.revealedLabels.update((labels) => {
+      if (!labels.has(QR_SECRET_LABEL)) {
+        return labels;
+      }
+      const next = new Set(labels);
+      next.delete(QR_SECRET_LABEL);
+      return next;
+    });
   }
 
   protected formatPasskeyLabel(passkey: { rpId?: string; userName?: string }): string {
@@ -2309,7 +2381,9 @@ export class VaultDesktopV2Component implements OnInit {
       return;
     }
     this.drawer.set("closed");
+    this.clearRevealTimers();
     this.historyRevealed.set(new Set());
+    this.versionRevealed.set(new Set());
     this.errorMessage.set(null);
   }
 
@@ -2396,6 +2470,7 @@ export class VaultDesktopV2Component implements OnInit {
     ) {
       return;
     }
+    this.clearRevealTimers();
     this.historyRevealed.set(new Set());
     this.versionRevealed.set(new Set());
     this.errorMessage.set(null);
@@ -2428,14 +2503,22 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   protected toggleVersionReveal(index: number): void {
+    const willReveal = !this.versionRevealed().has(index);
     this.versionRevealed.update((revealed) => {
       const next = new Set(revealed);
-      if (next.has(index)) {
-        next.delete(index);
-      } else {
+      if (willReveal) {
         next.add(index);
+      } else {
+        next.delete(index);
       }
       return next;
+    });
+    this.scheduleAutoHide(`version:${index}`, willReveal, () => {
+      this.versionRevealed.update((revealed) => {
+        const next = new Set(revealed);
+        next.delete(index);
+        return next;
+      });
     });
   }
 
@@ -2471,14 +2554,22 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   protected toggleHistoryReveal(index: number): void {
+    const willReveal = !this.historyRevealed().has(index);
     this.historyRevealed.update((revealed) => {
       const next = new Set(revealed);
-      if (next.has(index)) {
-        next.delete(index);
-      } else {
+      if (willReveal) {
         next.add(index);
+      } else {
+        next.delete(index);
       }
       return next;
+    });
+    this.scheduleAutoHide(`history:${index}`, willReveal, () => {
+      this.historyRevealed.update((revealed) => {
+        const next = new Set(revealed);
+        next.delete(index);
+        return next;
+      });
     });
   }
 
@@ -2796,9 +2887,17 @@ export class VaultDesktopV2Component implements OnInit {
     }
     // 走平台剪贴板服务，按设置自动清空；不把明文留在系统剪贴板历史里。
     this.platformUtilsService.copyToClipboard(value);
-    this.toast.showClipboard(this.i18n.t("valueCopied", label), () => {
-      this.platformUtilsService.copyToClipboard("", { clearing: true });
-    });
+    const message = this.i18n.t("valueCopied", label);
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
+    if (delay > 0) {
+      this.toast.showClipboard(
+        message,
+        () => clearClipboardIfStillHolding(this.platformUtilsService, value),
+        delay,
+      );
+    } else {
+      this.toast.show(message);
+    }
     if (flashKey) {
       this.flash(flashKey);
     }
@@ -2824,10 +2923,16 @@ export class VaultDesktopV2Component implements OnInit {
       }
       return next;
     });
-    this.scheduleAutoHide(label, willReveal);
+    this.scheduleAutoHide(label, willReveal, () => {
+      this.revealedLabels.update((labels) => {
+        const next = new Set(labels);
+        next.delete(label);
+        return next;
+      });
+    });
   }
 
-  private scheduleAutoHide(label: string, visible: boolean): void {
+  private scheduleAutoHide(label: string, visible: boolean, hide: () => void): void {
     const existing = this.revealTimers.get(label);
     if (existing) {
       clearTimeout(existing);
@@ -2838,11 +2943,7 @@ export class VaultDesktopV2Component implements OnInit {
     }
     const timer = setTimeout(() => {
       this.revealTimers.delete(label);
-      this.revealedLabels.update((labels) => {
-        const next = new Set(labels);
-        next.delete(label);
-        return next;
-      });
+      hide();
     }, PASSWORD_AUTO_HIDE_MS);
     this.revealTimers.set(label, timer);
   }

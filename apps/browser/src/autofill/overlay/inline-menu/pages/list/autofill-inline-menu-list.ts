@@ -768,7 +768,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       ciphers.some((cipher) => cipher.login?.totpField);
 
     if (isTotpField) {
-      return ciphers.filter((cipher) => cipher.login?.totp);
+      return ciphers.filter((cipher) => cipher.login?.totpAvailable ?? !!cipher.login?.totp);
     }
 
     return ciphers;
@@ -1163,7 +1163,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
         this.ciphers.find(
           (cipher) =>
             this.activeRowKey?.endsWith(`:${cipher.id}`) || this.activeRowKey === cipher.id,
-        ) ?? this.ciphers.find((cipher) => !!cipher.login?.totp);
+        ) ?? this.ciphers.find((cipher) => cipher.login?.totpAvailable ?? !!cipher.login?.totp);
       if (targetCipher) {
         event.preventDefault();
         this.handleCopyTotp(targetCipher);
@@ -2142,7 +2142,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     cipherIcon.classList.add("cipher-icon");
     cipherIcon.setAttribute("aria-hidden", "true");
 
-    if (cipher.login?.totpField && cipher.login?.totp) {
+    if (cipher.login?.totpField && (cipher.login?.totpAvailable ?? !!cipher.login?.totp)) {
       const totpContainer = document.createElement("div");
       totpContainer.style.position = "relative";
 
@@ -2263,8 +2263,12 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       return this.buildPasskeysCipherDetailsElement(cipher, cipherDetailsElement);
     }
 
-    if (cipher.login?.totpField && cipher.login?.totp) {
-      return this.buildTotpElement(cipher.login?.totp, cipher.login?.username, cipher.reprompt);
+    if (cipher.login?.totpField && (cipher.login?.totpAvailable ?? !!cipher.login?.totp)) {
+      return this.buildTotpElement(
+        cipher.login?.totp ?? "",
+        cipher.login?.username,
+        cipher.reprompt,
+      );
     }
     const subTitleText = this.getSubTitleText(cipher);
     const cipherSubtitleElement = this.buildCipherSubtitleElement(subTitleText);
@@ -2282,7 +2286,10 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
    */
   private multipleTotpElements(): boolean {
     return (
-      this.ciphers.filter((cipher) => cipher.login?.totpField && cipher.login?.totp).length > 1
+      this.ciphers.filter(
+        (cipher) =>
+          cipher.login?.totpField && (cipher.login?.totpAvailable ?? !!cipher.login?.totp),
+      ).length > 1
     );
   }
 
@@ -2297,7 +2304,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     username: string | undefined,
     reprompt: CipherRepromptType,
   ): HTMLDivElement | null {
-    if (!totpCode) {
+    if (!totpCode && !reprompt) {
       return null;
     }
 

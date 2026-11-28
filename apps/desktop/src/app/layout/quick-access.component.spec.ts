@@ -3,7 +3,10 @@ import { Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
+import { LpToastService } from "@localpass/angular/local-ui";
 import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { GlobalStateProvider } from "@localpass/common/platform/state";
@@ -22,6 +25,7 @@ describe("LocalQuickAccessComponent", () => {
   const folderService = mock<FolderService>();
   const accountService = mock<AccountService>();
   const passwordRepromptService = mock<PasswordRepromptService>();
+  const autofillSettingsService = mock<AutofillSettingsServiceAbstraction>();
   const router = { navigate: jest.fn().mockResolvedValue(true) };
 
   const login = Object.assign(new LoginView(), {
@@ -44,6 +48,7 @@ describe("LocalQuickAccessComponent", () => {
     cipherService.getAllDecrypted.mockResolvedValue([cipher]);
     folderService.folderViews$.mockReturnValue(of([]));
     passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
+    autofillSettingsService.clearClipboardDelay$ = of(ClearClipboardDelay.TenSeconds);
     accountService.activeAccount$ = of({
       id: "user-id" as Account["id"],
       email: "local@example.invalid",
@@ -62,6 +67,7 @@ describe("LocalQuickAccessComponent", () => {
         { provide: Router, useValue: router },
         { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
         { provide: PasswordRepromptService, useValue: passwordRepromptService },
+        { provide: AutofillSettingsServiceAbstraction, useValue: autofillSettingsService },
         { provide: GlobalStateProvider, useValue: new FakeGlobalStateProvider() },
       ],
     }).compileComponents();
@@ -110,5 +116,29 @@ describe("LocalQuickAccessComponent", () => {
     search(fixture, "=ssh");
     expect(root.textContent).not.toContain("Northwind");
     expect(root.textContent).toContain("noResultsFor");
+  });
+
+  it("does not find an item by its password or TOTP seed", async () => {
+    const fixture = await open();
+    const root = fixture.nativeElement as HTMLElement;
+
+    search(fixture, "correct-horse-battery");
+    expect(root.textContent).not.toContain("Northwind");
+
+    search(fixture, "JBSWY3DPEHPK3PXP");
+    expect(root.textContent).not.toContain("Northwind");
+
+    search(fixture, "edge gateway");
+    expect(root.textContent).toContain("Northwind");
+  });
+
+  it("uses the clipboard-clear setting for generated passwords", async () => {
+    const fixture = await open();
+    const toast = TestBed.inject(LpToastService);
+    const showClipboard = jest.spyOn(toast, "showClipboard").mockImplementation();
+
+    fixture.componentInstance["generateAndCopy"]();
+
+    expect(showClipboard).toHaveBeenCalledWith("passwordGenerated", expect.any(Function), 10);
   });
 });

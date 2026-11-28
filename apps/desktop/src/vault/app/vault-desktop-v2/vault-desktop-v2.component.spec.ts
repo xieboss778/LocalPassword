@@ -3,9 +3,11 @@ import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { LpToastService } from "@localpass/angular/local-ui";
+import { LpToastService, PASSWORD_AUTO_HIDE_MS } from "@localpass/angular/local-ui";
 import { CipherVersionHistoryService } from "@localpass/angular/vault/services/cipher-version-history.service";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { GlobalStateProvider } from "@localpass/common/platform/state";
@@ -33,6 +35,7 @@ describe("VaultDesktopV2Component", () => {
   const passwordStrengthService = mock<PasswordStrengthServiceAbstraction>();
   const passwordRepromptService = mock<PasswordRepromptService>();
   const platformUtilsService = mock<PlatformUtilsService>();
+  const autofillSettingsService = mock<AutofillSettingsServiceAbstraction>();
   const router = { navigate: jest.fn().mockResolvedValue(true), navigateByUrl: jest.fn() };
 
   beforeEach(async () => {
@@ -45,6 +48,7 @@ describe("VaultDesktopV2Component", () => {
     passwordStrengthService.getPasswordStrength.mockReturnValue({ score: 3 } as any);
     passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
     accountService.activeAccount$ = of({ id: "user-id" } as any);
+    autofillSettingsService.clearClipboardDelay$ = of(ClearClipboardDelay.ThirtySeconds);
 
     await TestBed.configureTestingModule({
       imports: [VaultDesktopV2Component],
@@ -62,6 +66,10 @@ describe("VaultDesktopV2Component", () => {
         {
           provide: PlatformUtilsService,
           useValue: platformUtilsService,
+        },
+        {
+          provide: AutofillSettingsServiceAbstraction,
+          useValue: autofillSettingsService,
         },
         { provide: PasswordRepromptService, useValue: passwordRepromptService },
         {
@@ -495,5 +503,91 @@ describe("VaultDesktopV2Component", () => {
     await fixture.whenStable();
 
     expect(platformUtilsService.copyToClipboard).not.toHaveBeenCalled();
+  });
+
+  it("uses the clipboard-clear setting for copy receipts", async () => {
+    autofillSettingsService.clearClipboardDelay$ = of(ClearClipboardDelay.TenSeconds);
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const toast = TestBed.inject(LpToastService);
+    const showClipboard = jest.spyOn(toast, "showClipboard").mockImplementation();
+    const show = jest.spyOn(toast, "show").mockImplementation();
+
+    await fixture.componentInstance["copyValue"]("bossxie", "username");
+
+    expect(showClipboard).toHaveBeenCalledWith("valueCopied", expect.any(Function), 10);
+    expect(show).not.toHaveBeenCalled();
+  });
+
+  it("keeps a copied receipt without a countdown when the setting is Never", async () => {
+    autofillSettingsService.clearClipboardDelay$ = of(ClearClipboardDelay.Never);
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const toast = TestBed.inject(LpToastService);
+    const showClipboard = jest.spyOn(toast, "showClipboard").mockImplementation();
+    const show = jest.spyOn(toast, "show").mockImplementation();
+
+    await fixture.componentInstance["copyValue"]("bossxie", "username");
+
+    expect(show).toHaveBeenCalledWith("valueCopied");
+    expect(showClipboard).not.toHaveBeenCalled();
+  });
+
+  it("does not match an item by its password or TOTP seed", () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    item.login.username = "bossxie";
+    item.login.password = "hunter2";
+    item.login.totp = "JBSWY3DP";
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    const matches = (query: string): boolean =>
+      fixture.componentInstance["matchesQuery"](item, query, new Map());
+
+    expect(matches("bossxie")).toBe(true);
+    expect(matches("hunter2")).toBe(false);
+    expect(matches("jbswy3dp")).toBe(false);
+  });
+
+  it("requires the re-prompt before showing the TOTP QR and keeps the seed masked", async () => {
+    const item = new CipherView();
+    item.id = "login-id";
+    item.name = "Mail";
+    item.type = CipherType.Login;
+    item.reprompt = CipherRepromptType.Password;
+    item.login.totp = "JBSWY3DP";
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    fixture.componentInstance["selected"].set(item);
+
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(false);
+    await fixture.componentInstance["openQr"]();
+    expect(fixture.componentInstance["drawer"]()).toBe("closed");
+
+    passwordRepromptService.passwordRepromptCheck.mockResolvedValue(true);
+    await fixture.componentInstance["openQr"]();
+    expect(fixture.componentInstance["drawer"]()).toBe("qr");
+    expect(fixture.componentInstance["qrSecretVisible"]()).toBe(false);
+  });
+
+  it("hides a revealed QR seed and history password after the auto-hide interval", () => {
+    const fixture = TestBed.createComponent(VaultDesktopV2Component);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+
+    jest.useFakeTimers();
+    component["toggleQrSecret"]();
+    component["toggleHistoryReveal"](-1);
+    expect(component["qrSecretVisible"]()).toBe(true);
+    expect(component["historyRevealed"]().has(-1)).toBe(true);
+
+    jest.advanceTimersByTime(PASSWORD_AUTO_HIDE_MS);
+    expect(component["qrSecretVisible"]()).toBe(false);
+    expect(component["historyRevealed"]().has(-1)).toBe(false);
+    jest.useRealTimers();
   });
 });

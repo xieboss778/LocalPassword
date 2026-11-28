@@ -58,6 +58,7 @@ import { CipherService } from "@localpass/common/vault/abstractions/cipher.servi
 import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
 import { VaultSettingsService } from "@localpass/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@localpass/common/vault/enums";
+import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-reprompt-type";
 import { buildCipherIcon } from "@localpass/common/vault/icon/build-cipher-icon";
 import { CardView } from "@localpass/common/vault/models/view/card.view";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
@@ -1033,9 +1034,16 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     };
 
     if (cipher.type === CipherType.Login) {
-      const totpResponse = cipher.login?.totp
-        ? await firstValueFrom(this.totpService.getCode$(cipher.login.totp))
-        : undefined;
+      // The live code is computed only while the user is on a TOTP field and the item may be
+      // revealed. Every other context shows a masked row (or none); sending the code there would
+      // put a fresh secret in the content script for no rendering purpose. Fill and copy
+      // regenerate the code in the background from the vault, so withholding it breaks nothing.
+      const totpResponse =
+        this.isTotpFieldForCurrentField() &&
+        cipher.reprompt === CipherRepromptType.None &&
+        cipher.login?.totp
+          ? await firstValueFrom(this.totpService.getCode$(cipher.login.totp))
+          : undefined;
 
       const fido2Cred = cipher.login.fido2Credentials?.[0];
       const rpName = typeof fido2Cred?.rpName === "string" ? fido2Cred.rpName : undefined;
@@ -1043,6 +1051,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       inlineMenuData.login = {
         username: cipher.login.username,
         totp: totpResponse?.code,
+        totpAvailable: !!cipher.login.totp,
         totpField: this.isTotpFieldForCurrentField(),
         totpCodeTimeInterval: totpResponse?.period,
         // Whether a password exists is derived from the decrypted login; the value itself never

@@ -40,7 +40,9 @@ export function InlineMenuCipherList({
   ...itemProps
 }: InlineMenuCipherListProps) {
   const showTotpUsername =
-    ciphers.filter((cipher) => cipher.login?.totpField && cipher.login?.totp).length > 1;
+    ciphers.filter(
+      (cipher) => cipher.login?.totpField && (cipher.login?.totpAvailable ?? !!cipher.login?.totp),
+    ).length > 1;
   const withHeadings =
     showPasskeysLabels ??
     (ciphers.some((cipher) => !!cipher.login?.passkey) &&

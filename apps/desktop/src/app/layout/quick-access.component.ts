@@ -11,6 +11,7 @@ import {
   signal,
   viewChild,
 } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -20,9 +21,13 @@ import {
   ITEM_KIND_UI,
   LpKindTileComponent,
   LpToastService,
+  clearClipboardIfStillHolding,
+  clipboardClearSeconds,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
@@ -34,9 +39,12 @@ import {
   DEFAULT_PASSWORD_OPTIONS,
   FIELDS,
   generatePasswords,
+  isSecretCustomField,
+  isSecretField,
   ItemKind,
   kindOf,
   readFieldValues,
+  secretCustomFieldNames,
   withoutKindField,
 } from "@localpass/local-vault";
 import { PasswordRepromptService } from "@localpass/vault";
@@ -173,6 +181,15 @@ export class LocalQuickAccessComponent {
   private readonly platformUtilsService = inject(PlatformUtilsService);
   private readonly shortcutsService = inject(DesktopShortcutsService);
   private readonly passwordRepromptService = inject(PasswordRepromptService);
+  private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
+    optional: true,
+  });
+
+  private readonly clearClipboardDelay = this.autofillSettingsService
+    ? toSignal(this.autofillSettingsService.clearClipboardDelay$, {
+        initialValue: ClearClipboardDelay.ThirtySeconds,
+      })
+    : signal(ClearClipboardDelay.ThirtySeconds);
 
   readonly open = input.required<boolean>();
   readonly closed = output<void>();
@@ -326,9 +343,16 @@ export class LocalQuickAccessComponent {
       return;
     }
     this.platformUtilsService.copyToClipboard(password);
-    this.toast.showClipboard(this.i18n.t("passwordGenerated"), () => {
-      this.platformUtilsService.copyToClipboard("", { clearing: true });
-    });
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
+    if (delay > 0) {
+      this.toast.showClipboard(
+        this.i18n.t("passwordGenerated"),
+        () => clearClipboardIfStillHolding(this.platformUtilsService, password),
+        delay,
+      );
+    } else {
+      this.toast.show(this.i18n.t("passwordGenerated"));
+    }
   }
 
   protected close(): void {
@@ -357,9 +381,17 @@ export class LocalQuickAccessComponent {
     }
     // 走平台剪贴板服务：桌面端会按设置安排自动清空，并避免写入历史。
     this.platformUtilsService.copyToClipboard(value);
-    this.toast.showClipboard(this.i18n.t("valueCopied", label), () => {
-      this.platformUtilsService.copyToClipboard("", { clearing: true });
-    });
+    const message = this.i18n.t("valueCopied", label);
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
+    if (delay > 0) {
+      this.toast.showClipboard(
+        message,
+        () => clearClipboardIfStillHolding(this.platformUtilsService, value),
+        delay,
+      );
+    } else {
+      this.toast.show(message);
+    }
   }
 
   /** 输入框里选中了文字时，⌘C 应执行系统复制，而不是复制条目字段。 */
@@ -464,18 +496,25 @@ export class LocalQuickAccessComponent {
     }
 
     const values = readFieldValues(item, kind);
-    const candidates: (readonly [string, string])[] = FIELDS[kind].map((field) => [
-      this.i18n.t(field.labelKey),
-      values[field.id] ?? "",
-    ]);
+    // 密码、TOTP 种子与隐藏自定义字段的值不参与匹配：输入秘密片段不能反查条目。
+    const candidates: (readonly [string, string])[] = FIELDS[kind]
+      .filter((field) => !isSecretField(field))
+      .map((field) => [this.i18n.t(field.labelKey), values[field.id] ?? ""]);
     candidates.push([
       this.i18n.t("folder"),
       item.folderId ? (folderNames.get(item.folderId) ?? "") : "",
     ]);
+    const secretCustomNames = secretCustomFieldNames(kind);
     candidates.push([
       this.i18n.t("customFields"),
       withoutKindField(item.fields)
-        .map((field) => `${field.name ?? ""} ${field.value ?? ""}`)
+        .map((field) => {
+          const name = field.name ?? "";
+          if (secretCustomNames.has(name) || isSecretCustomField(field)) {
+            return name;
+          }
+          return `${name} ${field.value ?? ""}`;
+        })
         .join(" "),
     ]);
 

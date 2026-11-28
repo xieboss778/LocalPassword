@@ -72,12 +72,7 @@ export function InlineMenuTotpRow({
     >
       ${InlineMenuTotpRing({ theme, period, onPeriodElapsed })}
       <span class=${totpMainStyles(theme)}>
-        <span
-          class=${totpCodeStyles(theme)}
-          data-inline-totp-code
-          aria-label=${i18n.codeAria}
-          title=${formattedCode}
-        >
+        <span class=${totpCodeStyles(theme)} data-inline-totp-code aria-label=${i18n.codeAria}>
           ${formattedCode}
         </span>
         <span class=${totpSubStyles(theme)} title=${secondaryText}>${secondaryText}</span>
@@ -88,12 +83,12 @@ export function InlineMenuTotpRow({
 }
 
 export function formatTotpCode(code: string, masked: boolean): string {
-  if (!code) {
-    return "";
-  }
-
   if (masked) {
     return "••• •••";
+  }
+
+  if (!code) {
+    return "";
   }
 
   return code.length > 3 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;

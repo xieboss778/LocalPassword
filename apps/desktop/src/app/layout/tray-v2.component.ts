@@ -12,9 +12,15 @@ import {
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { firstValueFrom, filter, map, switchMap } from "rxjs";
 
-import { LpToastService } from "@localpass/angular/local-ui";
+import {
+  LpToastService,
+  clearClipboardIfStillHolding,
+  clipboardClearSeconds,
+} from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
@@ -138,6 +144,14 @@ export class TrayV2Component implements OnInit {
   private readonly lockService = inject(LockService);
   private readonly toast = inject(LpToastService);
   private readonly passwordRepromptService = inject(PasswordRepromptService);
+  private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
+    optional: true,
+  });
+  private readonly clearClipboardDelay = this.autofillSettingsService
+    ? toSignal(this.autofillSettingsService.clearClipboardDelay$, {
+        initialValue: ClearClipboardDelay.ThirtySeconds,
+      })
+    : signal(ClearClipboardDelay.ThirtySeconds);
 
   protected readonly query = signal("");
   protected readonly activeIndex = signal(0);
@@ -222,9 +236,17 @@ export class TrayV2Component implements OnInit {
       return;
     }
     this.platformUtilsService.copyToClipboard(password);
-    this.toast.showClipboard(this.i18n.t("valueCopied", this.i18n.t("password")), () => {
-      this.platformUtilsService.copyToClipboard("", { clearing: true });
-    });
+    const message = this.i18n.t("valueCopied", this.i18n.t("password"));
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
+    if (delay > 0) {
+      this.toast.showClipboard(
+        message,
+        () => clearClipboardIfStillHolding(this.platformUtilsService, password),
+        delay,
+      );
+    } else {
+      this.toast.show(message);
+    }
   }
 
   protected generate(): void {
@@ -233,9 +255,17 @@ export class TrayV2Component implements OnInit {
       return;
     }
     this.platformUtilsService.copyToClipboard(password);
-    this.toast.showClipboard(this.i18n.t("passwordGenerated"), () => {
-      this.platformUtilsService.copyToClipboard("", { clearing: true });
-    });
+    const message = this.i18n.t("passwordGenerated");
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
+    if (delay > 0) {
+      this.toast.showClipboard(
+        message,
+        () => clearClipboardIfStillHolding(this.platformUtilsService, password),
+        delay,
+      );
+    } else {
+      this.toast.show(message);
+    }
   }
 
   protected openMainWindow(): void {

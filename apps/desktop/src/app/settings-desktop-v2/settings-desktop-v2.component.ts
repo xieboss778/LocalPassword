@@ -13,6 +13,7 @@ import { firstValueFrom, map, switchMap } from "rxjs";
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   buildDiagnosticReport,
+  clipboardDelayOptionValue,
   DesktopShortcut,
   DesktopShortcutsService,
   LpToastService,
@@ -244,11 +245,12 @@ const THEMES: readonly ThemeOption[] = [
                 <select
                   class="agy-input tw-w-28 tw-flex-none tw-text-end"
                   [attr.aria-label]="i18n.t('clearClipboard')"
-                  [value]="clipboardDelayValue()"
                   (change)="setClipboardDelay($event)"
                 >
                   @for (opt of clipboardDelayOptions; track opt.value) {
-                    <option [value]="opt.value">{{ i18n.t(opt.labelKey) }}</option>
+                    <option [value]="opt.value" [selected]="opt.value === clipboardDelayValue()">
+                      {{ i18n.t(opt.labelKey) }}
+                    </option>
                   }
                 </select>
               </div>
@@ -766,7 +768,7 @@ export class SettingsDesktopV2Component implements OnInit {
     initialValue: ClearClipboardDelay.ThirtySeconds,
   });
   protected readonly clipboardDelayValue = computed(() =>
-    this.clipboardDelay() == null ? "never" : String(this.clipboardDelay()),
+    clipboardDelayOptionValue(this.clipboardDelay()),
   );
   protected readonly selectedLocale = computed(() =>
     this.locale().toLowerCase().startsWith("zh") ? "zh-CN" : "en",

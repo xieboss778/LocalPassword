@@ -10,6 +10,7 @@ export * from "./items/item-fields";
 export * from "./items/import-dedupe";
 export * from "./items/item-diff";
 export * from "./items/item-kind";
+export * from "./items/item-search";
 export * from "./network/gate-policy";
 export * from "./network/local-password-api.service";
 export * from "./s3/s3-client";

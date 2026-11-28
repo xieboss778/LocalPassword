@@ -56,7 +56,10 @@ export function InlineMenuCipherItem({
   onTotpPeriodElapsed,
   onListEdgeReached,
 }: InlineMenuCipherItemProps) {
-  const isTotp = !!(cipher.login?.totpField && cipher.login?.totp);
+  const isTotp = !!(
+    cipher.login?.totpField &&
+    (cipher.login?.totpAvailable ?? !!cipher.login?.totp)
+  );
   const period = cipher.login?.totpCodeTimeInterval ?? 30;
   const fillPrefix = cipher.login?.passkey ? logInWithPasskeyAriaLabel : fillCredentialsForText;
   const fillLabel = `${fillPrefix} ${cipher.name}`;
@@ -114,7 +117,7 @@ export function InlineMenuCipherItem({
               ? TotpCipherInfo({
                   theme,
                   heading: fillVerificationCodeText ?? "",
-                  totp: cipher.login!.totp!,
+                  totp: cipher.login?.totp ?? "",
                   totpCodeAria,
                   username: showTotpUsername ? cipher.login?.username : undefined,
                   masked: !!cipher.reprompt,
