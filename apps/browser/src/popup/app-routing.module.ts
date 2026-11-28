@@ -72,7 +72,6 @@ import { AccountSwitcherComponent } from "../auth/popup/account-switching/accoun
 import { AuthExtensionRoute } from "../auth/popup/constants/auth-extension-route.constant";
 import { fido2AuthGuard } from "../auth/popup/guards/fido2-auth.guard";
 import { platformPopoutGuard } from "../auth/popup/guards/platform-popout.guard";
-import { restoreEntryGuard } from "../auth/popup/guards/restore-entry.guard";
 import { SecurityKeyComponent } from "../auth/popup/security-key/security-key.component";
 import { AccountSecurityComponent } from "../auth/popup/settings/account-security.component";
 import { ChangePasswordPageComponent } from "../auth/popup/settings/change-password-page.component";
@@ -676,7 +675,6 @@ const routes: Routes = [
       },
       {
         path: "restore-vault",
-        canActivate: [restoreEntryGuard],
         data: {
           pageTitle: {
             key: "restoreVaultFromCloud",

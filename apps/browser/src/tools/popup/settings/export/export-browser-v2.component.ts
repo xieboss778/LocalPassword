@@ -77,13 +77,6 @@ export class ExportBrowserV2Component {
     this.itemsService.activeCiphers$.pipe(map((ciphers) => ciphers.length)),
     { initialValue: 0 },
   );
-  protected readonly trashCount = toSignal(
-    this.itemsService.deletedCiphers$.pipe(
-      takeUntilDestroyed(),
-      map((ciphers) => ciphers.length),
-    ),
-    { initialValue: 0 },
-  );
   protected readonly folderCount = toSignal(
     this.accountService.activeAccount$.pipe(
       takeUntilDestroyed(),
