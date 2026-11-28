@@ -20,17 +20,11 @@ import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstraction
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
-import {
-  ButtonModule,
-  DialogService,
-  IconButtonModule,
-  IconModule,
-  IconTileComponent,
-} from "@localpass/components";
+import { DialogService, IconModule } from "@localpass/components";
 import { KeyService } from "@localpass/key-management";
 
 import { JslibModule } from "../../jslib.module";
-import { LpEmptyComponent, LpPageHeaderComponent, LpPopupHeaderComponent } from "../../local-ui";
+import { LpPageHeaderComponent, LpPopupHeaderComponent } from "../../local-ui";
 
 interface FolderRow {
   readonly folder: FolderView;
@@ -48,18 +42,14 @@ interface FolderRow {
     CommonModule,
     RouterModule,
     JslibModule,
-    ButtonModule,
-    IconButtonModule,
     IconModule,
-    IconTileComponent,
-    LpEmptyComponent,
     LpPageHeaderComponent,
     LpPopupHeaderComponent,
   ],
   host: { class: "tw-block tw-h-full" },
   template: `
     <div
-      class="tw-flex tw-h-full tw-flex-col"
+      class="agy tw-flex tw-h-full tw-flex-col"
       [class.tw-bg-background-alt]="!compact()"
       [class.tw-bg-background]="compact()"
     >
@@ -73,12 +63,12 @@ interface FolderRow {
           <div slot="actions">
             <button
               type="button"
-              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-fg-brand hover:tw-bg-bg-brand-softer"
+              class="agy-iconbtn tw-text-fg-brand"
               [attr.aria-label]="i18n.t('addFolder')"
               [attr.title]="i18n.t('addFolder')"
               (click)="startAdd()"
             >
-              <bit-icon name="bwi-plus" class="tw-text-lg"></bit-icon>
+              <bit-icon name="bwi-plus" class="tw-text-base"></bit-icon>
             </button>
           </div>
         </lp-popup-header>
@@ -86,11 +76,11 @@ interface FolderRow {
         <lp-page-header [title]="i18n.t('myFolders')" [sub]="subtitle()">
           <button
             type="button"
-            bitButton
-            buttonType="primary"
-            startIcon="bwi-plus"
+            class="agy-btn agy-primary agy-sm"
+            data-testid="folder_add"
             (click)="startAdd()"
           >
+            <bit-icon name="bwi-plus" class="tw-text-xs"></bit-icon>
             {{ i18n.t("addFolder") }}
           </button>
         </lp-page-header>
@@ -98,197 +88,147 @@ interface FolderRow {
 
       <div
         class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-pb-7"
+        [class.agy-ext-scroll]="compact()"
         [class.tw-px-7]="!compact()"
-        [class.tw-px-4]="compact()"
       >
         @if (editing()) {
-          <div
-            class="tw-mb-4 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-4 tw-shadow-sm"
-          >
-            <label class="tw-block">
-              <span class="tw-mb-1.5 tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                i18n.t("folderName")
-              }}</span>
-              <input
-                type="text"
-                class="tw-w-full tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-text-sm tw-text-main tw-outline-none focus:tw-border-border-focus"
-                [value]="draftName()"
-                (input)="onNameInput($event)"
-                (keydown.enter)="save()"
-              />
-            </label>
-            @if (errorMessage()) {
-              <p class="tw-mt-2 tw-text-sm tw-text-fg-danger">{{ errorMessage() }}</p>
-            }
-            <div class="tw-mt-3 tw-flex tw-gap-2">
-              <button
-                type="button"
-                bitButton
-                buttonType="primary"
-                [disabled]="saving()"
-                (click)="save()"
-              >
-                {{ i18n.t("save") }}
-              </button>
-              <button type="button" bitButton buttonType="secondary" (click)="cancelEdit()">
-                {{ i18n.t("cancel") }}
-              </button>
+          <div class="agy-grp tw-mb-2">
+            <div class="agy-formrow">
+              <label class="agy-ext-field tw-cursor-default">
+                <span class="agy-k">{{ i18n.t("folderName") }}</span>
+                <input
+                  type="text"
+                  class="agy-input"
+                  [value]="draftName()"
+                  (input)="onNameInput($event)"
+                  (keydown.enter)="save()"
+                />
+                <span></span>
+              </label>
             </div>
+          </div>
+          @if (errorMessage()) {
+            <p class="agy-hint agy-hint-error">{{ errorMessage() }}</p>
+          }
+          <div class="tw-flex tw-gap-1.5 tw-pb-2">
+            <button
+              type="button"
+              class="agy-btn agy-primary agy-lg tw-flex-1"
+              [disabled]="saving()"
+              (click)="save()"
+            >
+              {{ i18n.t("save") }}
+            </button>
+            <button type="button" class="agy-btn agy-lg tw-flex-1" (click)="cancelEdit()">
+              {{ i18n.t("cancel") }}
+            </button>
           </div>
         }
 
         @if (loading()) {
           <p class="tw-py-10 tw-text-center tw-text-sm tw-text-muted">{{ i18n.t("loading") }}</p>
         } @else if (!rows().length) {
-          <div class="tw-grid tw-min-h-72 tw-place-items-center">
-            <lp-empty
-              icon="bwi-folder"
-              [title]="i18n.t('youHaveNoFoldersV2')"
-              [text]="i18n.t('emptyFoldersDescriptionV2')"
-            >
-              <button type="button" bitButton buttonType="primary" (click)="startAdd()">
+          <div class="agy-empty">
+            <span class="agy-empty-ico">
+              <bit-icon name="bwi-folder" class="tw-text-lg"></bit-icon>
+            </span>
+            <h2 class="agy-empty-h">{{ i18n.t("youHaveNoFoldersV2") }}</h2>
+            <p class="agy-empty-s">{{ i18n.t("emptyFoldersDescriptionV2") }}</p>
+            <div class="agy-empty-act">
+              <button type="button" class="agy-btn agy-primary agy-lg" (click)="startAdd()">
                 {{ i18n.t("addFolder") }}
               </button>
-            </lp-empty>
+            </div>
           </div>
         } @else {
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-shadow-sm"
-          >
+          @if (compact()) {
+            <div class="agy-grp tw-mb-2">
+              <button type="button" class="agy-setrow" (click)="openAll()">
+                <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                  <bit-icon name="bwi-grid" class="tw-text-xs"></bit-icon>
+                </span>
+                <span class="tw-min-w-0 tw-flex-1">
+                  <span class="agy-k tw-block">{{ i18n.t("allItems") }}</span>
+                  <span class="agy-d tw-block">{{ i18n.t("foldersAllItemsSub") }}</span>
+                </span>
+                <span class="agy-chip">{{ totalCount() }}</span>
+              </button>
+            </div>
+          }
+
+          @if (!compact()) {
+            <div class="agy-folder-tiles">
+              @for (row of rows(); track row.folder.id) {
+                <button type="button" class="agy-folder-tile" (click)="openFolder(row.folder)">
+                  <span class="agy-n">{{ row.count }}</span>
+                  <span class="agy-l">{{ row.folder.name }}</span>
+                </button>
+              }
+            </div>
+          }
+
+          <div class="agy-grp">
             @if (!compact()) {
-              <div
-                class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-2.5"
-              >
-                <span class="tw-text-sm tw-font-semibold tw-text-main">{{
-                  i18n.t("folders")
-                }}</span>
-                <span class="tw-text-xs tw-text-muted">{{ rows().length }}</span>
-              </div>
-            }
-            @if (!compact()) {
-              <div
-                class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-bg-background-alt tw-px-4 tw-py-2 tw-text-xs tw-font-medium tw-text-muted"
-              >
-                <span class="tw-min-w-0 tw-flex-1">{{ i18n.t("name") }}</span>
-                <span class="tw-w-40 tw-flex-none">{{ i18n.t("itemsCount") }}</span>
-                <span class="tw-w-28 tw-flex-none tw-text-end">{{ i18n.t("options") }}</span>
+              <div class="agy-grphead">
+                {{ i18n.t("folders") }}
+                <span class="agy-chip">{{ rows().length }}</span>
               </div>
             }
             @for (row of rows(); track row.folder.id) {
-              @if (compact()) {
-                <div
-                  class="tw-group/row tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0 hover:tw-bg-background-alt"
+              <div class="agy-setrow" data-testid="folder_row">
+                <button
+                  type="button"
+                  class="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-2 tw-text-start"
+                  (click)="openFolder(row.folder)"
                 >
-                  <button
-                    type="button"
-                    class="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-3 tw-border-0 tw-bg-transparent tw-p-0 tw-text-start"
-                    (click)="openFolder(row.folder)"
-                  >
-                    <bit-icon-tile icon="bwi-folder" variant="gray" size="base"></bit-icon-tile>
-                    <span class="tw-min-w-0">
-                      <span class="tw-block tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
-                        row.folder.name
-                      }}</span>
-                      <span class="tw-block tw-text-xs tw-text-muted"
-                        >{{ row.count }} {{ i18n.t("itemCountShort") }}</span
-                      >
+                  <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                    <bit-icon name="bwi-folder" class="tw-text-xs"></bit-icon>
+                  </span>
+                  <span class="tw-min-w-0 tw-flex-1">
+                    <span class="agy-k tw-block tw-truncate">{{ row.folder.name }}</span>
+                    <span class="agy-d tw-block">
+                      @if (compact()) {
+                        {{ row.count }} {{ i18n.t("itemCountShort") }}
+                      } @else {
+                        {{ i18n.t("itemCount", row.count) }}
+                      }
                     </span>
-                  </button>
-                  <div
-                    class="tw-relative tw-flex tw-w-16 tw-flex-none tw-items-center tw-justify-end"
-                  >
-                    <button
-                      type="button"
-                      bitIconButton="bwi-angle-right"
-                      size="small"
-                      class="tw-transition-opacity group-focus-within/row:tw-pointer-events-none group-focus-within/row:tw-opacity-0 group-hover/row:tw-pointer-events-none group-hover/row:tw-opacity-0"
-                      [label]="i18n.t('openFolder')"
-                      (click)="openFolder(row.folder)"
-                    ></button>
-                    <div
-                      class="tw-pointer-events-none tw-absolute tw-inset-y-0 tw-end-0 tw-flex tw-items-center tw-gap-1 tw-bg-background tw-opacity-0 tw-transition-opacity group-focus-within/row:tw-pointer-events-auto group-focus-within/row:tw-opacity-100 group-hover/row:tw-pointer-events-auto group-hover/row:tw-opacity-100"
-                    >
-                      <button
-                        type="button"
-                        bitIconButton="bwi-pencil-square"
-                        size="small"
-                        [label]="i18n.t('editFolder')"
-                        (click)="startEdit(row.folder)"
-                      ></button>
-                      <button
-                        type="button"
-                        bitIconButton="bwi-trash"
-                        size="small"
-                        [label]="i18n.t('deleteFolder')"
-                        (click)="remove(row.folder)"
-                      ></button>
-                    </div>
-                  </div>
-                </div>
-              } @else {
-                <div
-                  class="tw-group/row tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0 hover:tw-bg-background-alt"
-                  data-testid="folder_row"
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  class="agy-iconbtn agy-sm"
+                  [attr.aria-label]="i18n.t('editFolder')"
+                  [attr.title]="i18n.t('editFolder')"
+                  data-testid="folder_edit"
+                  (click)="startEdit(row.folder)"
                 >
-                  <button
-                    type="button"
-                    class="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-3 tw-border-0 tw-bg-transparent tw-p-0 tw-text-start"
-                    (click)="openFolder(row.folder)"
-                  >
-                    <bit-icon-tile icon="bwi-folder" size="base"></bit-icon-tile>
-                    <span class="tw-min-w-0">
-                      <span class="tw-block tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
-                        row.folder.name
-                      }}</span>
-                      <span class="tw-block tw-text-xs tw-text-muted">{{
-                        i18n.t("myFolders")
-                      }}</span>
-                    </span>
-                  </button>
-                  <span class="tw-w-40 tw-flex-none tw-text-sm tw-text-muted">{{
-                    i18n.t("itemCount", row.count)
-                  }}</span>
-                  <div
-                    class="tw-relative tw-flex tw-w-28 tw-flex-none tw-items-center tw-justify-end"
-                  >
-                    <div
-                      class="tw-pointer-events-none tw-absolute tw-inset-y-0 tw-end-8 tw-flex tw-items-center tw-gap-1 tw-bg-background tw-opacity-0 tw-transition-opacity group-focus-within/row:tw-pointer-events-auto group-focus-within/row:tw-opacity-100 group-hover/row:tw-pointer-events-auto group-hover/row:tw-opacity-100"
-                    >
-                      <button
-                        type="button"
-                        bitIconButton="bwi-pencil-square"
-                        size="small"
-                        [label]="i18n.t('editFolder')"
-                        data-testid="folder_edit"
-                        (click)="startEdit(row.folder)"
-                      ></button>
-                      <button
-                        type="button"
-                        bitIconButton="bwi-trash"
-                        size="small"
-                        [label]="i18n.t('deleteFolder')"
-                        data-testid="folder_delete"
-                        (click)="remove(row.folder)"
-                      ></button>
-                    </div>
-                    <button
-                      type="button"
-                      bitIconButton="bwi-angle-right"
-                      size="small"
-                      class="tw-pointer-events-none tw-opacity-0 tw-transition-opacity group-focus-within/row:tw-pointer-events-auto group-focus-within/row:tw-opacity-100 group-hover/row:tw-pointer-events-auto group-hover/row:tw-opacity-100"
-                      [label]="i18n.t('openFolder')"
-                      data-testid="folder_open"
-                      (click)="openFolder(row.folder)"
-                    ></button>
-                  </div>
-                </div>
-              }
+                  <bit-icon name="bwi-pencil-square" class="tw-text-xs"></bit-icon>
+                </button>
+                <button
+                  type="button"
+                  class="agy-iconbtn agy-sm"
+                  [attr.aria-label]="i18n.t('deleteFolder')"
+                  [attr.title]="i18n.t('deleteFolder')"
+                  data-testid="folder_delete"
+                  (click)="remove(row.folder)"
+                >
+                  <bit-icon name="bwi-trash" class="tw-text-xs"></bit-icon>
+                </button>
+                <button
+                  type="button"
+                  class="agy-iconbtn agy-sm"
+                  [attr.aria-label]="i18n.t('openFolder')"
+                  [attr.title]="i18n.t('openFolder')"
+                  data-testid="folder_open"
+                  (click)="openFolder(row.folder)"
+                >
+                  <bit-icon name="bwi-angle-right" class="tw-text-xs"></bit-icon>
+                </button>
+              </div>
             }
           </div>
-          <p
-            class="tw-pt-3 tw-text-xs tw-leading-relaxed tw-text-muted"
-            [class.tw-text-center]="compact()"
-          >
+          <p class="agy-note" [class.tw-text-center]="compact()">
             {{ i18n.t("folderLocalOnlyNotice") }}
           </p>
         }
@@ -317,6 +257,7 @@ export class FoldersV2Component implements OnInit {
 
   protected readonly subtitle = signal("");
   protected readonly rows = signal<FolderRow[]>([]);
+  protected readonly totalCount = signal(0);
 
   /** 弹窗路由在 route.data 里标记 compact；桌面端保持大号两栏布局。 */
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
@@ -429,16 +370,22 @@ export class FoldersV2Component implements OnInit {
     void this.router.navigate([route], { queryParams: { folder: folder.id } });
   }
 
+  protected openAll(): void {
+    void this.router.navigateByUrl("/tabs/vault");
+  }
+
   private apply(folders: readonly FolderView[], ciphers: readonly CipherView[]): void {
     const visible = folders.filter((folder) => folder.id !== "");
+    const activeCiphers = ciphers.filter((cipher) => !cipher.isDeleted && !cipher.isArchived);
     const counts = new Map<string, number>();
-    for (const cipher of ciphers) {
-      if (cipher.isDeleted || !cipher.folderId) {
+    for (const cipher of activeCiphers) {
+      if (!cipher.folderId) {
         continue;
       }
       counts.set(cipher.folderId, (counts.get(cipher.folderId) ?? 0) + 1);
     }
     this.rows.set(visible.map((folder) => ({ folder, count: counts.get(folder.id) ?? 0 })));
+    this.totalCount.set(activeCiphers.length);
     this.subtitle.set(this.i18n.t("folderCount", visible.length));
   }
 

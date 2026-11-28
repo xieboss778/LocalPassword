@@ -33,72 +33,69 @@ export function newCustomFieldDraft(name = "", value = "", hidden = false): Cust
   template: `
     <lp-group [label]="i18n.t('customFields')">
       @for (field of fields(); track field.id) {
-        <div class="tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0">
-          <div class="tw-flex tw-items-center tw-gap-2">
-            <input
-              class="tw-min-w-0 tw-flex-1 tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted focus:tw-border-border-focus"
-              [id]="'custom-field_input_name_' + field.id"
-              [value]="field.name"
-              [attr.placeholder]="i18n.t('fieldName')"
-              [attr.aria-label]="i18n.t('fieldName')"
-              (input)="rename(field.id, $event)"
-            />
-            <select
-              class="tw-w-32 tw-flex-none tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-p-2 tw-text-sm tw-text-main tw-outline-none focus:tw-border-border-focus"
-              [id]="'custom-field_select_type_' + field.id"
-              [value]="field.hidden ? 'hidden' : 'text'"
-              [attr.aria-label]="i18n.t('fieldType')"
-              (change)="setHidden(field.id, $event)"
-            >
-              <option value="text">{{ i18n.t("typeText") }}</option>
-              <option value="hidden">{{ i18n.t("typeHidden") }}</option>
-            </select>
+        <div class="agy-cfield">
+          <input
+            class="agy-input"
+            [id]="'custom-field_input_name_' + field.id"
+            [value]="field.name"
+            [attr.placeholder]="i18n.t('fieldName')"
+            [attr.aria-label]="i18n.t('fieldName')"
+            (input)="rename(field.id, $event)"
+          />
+          <input
+            class="agy-input"
+            [class.agy-mono]="field.hidden"
+            [id]="'custom-field_input_value_' + field.id"
+            [type]="field.hidden && !isRevealed(field.id) ? 'password' : 'text'"
+            [value]="field.value"
+            [attr.placeholder]="i18n.t('fieldValue')"
+            [attr.aria-label]="i18n.t('fieldValue')"
+            autocomplete="off"
+            (input)="setValue(field.id, $event)"
+          />
+          <span class="tw-flex tw-flex-none tw-items-center tw-gap-0.5">
             <button
               type="button"
-              class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-danger-soft hover:tw-text-fg-danger"
+              class="agy-iconbtn agy-sm"
+              [attr.aria-label]="field.hidden ? i18n.t('typeHidden') : i18n.t('typeText')"
+              [attr.title]="field.hidden ? i18n.t('typeHidden') : i18n.t('typeText')"
+              (click)="toggleHidden(field.id)"
+            >
+              <bit-icon
+                [name]="field.hidden ? 'bwi-lock' : 'bwi-file-text'"
+                class="tw-text-xs"
+              ></bit-icon>
+            </button>
+            @if (field.hidden) {
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [attr.aria-label]="isRevealed(field.id) ? i18n.t('hideValue') : i18n.t('showValue')"
+                [attr.title]="isRevealed(field.id) ? i18n.t('hideValue') : i18n.t('showValue')"
+                (click)="toggleReveal(field.id)"
+              >
+                <bit-icon
+                  [name]="isRevealed(field.id) ? 'bwi-eye-slash' : 'bwi-eye'"
+                  class="tw-text-xs"
+                ></bit-icon>
+              </button>
+            }
+            <button
+              type="button"
+              class="agy-iconbtn agy-sm"
               [attr.aria-label]="i18n.t('remove')"
               [attr.title]="i18n.t('remove')"
               (click)="remove(field.id)"
             >
-              <bit-icon name="bwi-trash"></bit-icon>
+              <bit-icon name="bwi-trash" class="tw-text-xs"></bit-icon>
             </button>
-          </div>
-
-          <div class="tw-relative tw-mt-2">
-            <input
-              class="tw-w-full tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 tw-py-2 tw-pe-10 tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted focus:tw-border-border-focus"
-              [class.tw-font-mono]="field.hidden"
-              [id]="'custom-field_input_value_' + field.id"
-              [type]="field.hidden && !isRevealed(field.id) ? 'password' : 'text'"
-              [value]="field.value"
-              [attr.placeholder]="i18n.t('fieldValue')"
-              [attr.aria-label]="i18n.t('fieldValue')"
-              autocomplete="off"
-              (input)="setValue(field.id, $event)"
-            />
-            @if (field.hidden) {
-              <button
-                type="button"
-                class="tw-absolute tw-end-1 tw-top-1/2 tw-grid tw-size-8 -tw-translate-y-1/2 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
-                [attr.aria-label]="isRevealed(field.id) ? i18n.t('hideValue') : i18n.t('showValue')"
-                (click)="toggleReveal(field.id)"
-              >
-                <bit-icon
-                  [name]="isRevealed(field.id) ? 'bwi-visibility-off' : 'bwi-visibility'"
-                ></bit-icon>
-              </button>
-            }
-          </div>
+          </span>
         </div>
       }
 
       @if (editable()) {
-        <button
-          type="button"
-          class="tw-flex tw-w-full tw-items-center tw-gap-2 tw-px-4 tw-py-3 tw-text-start tw-text-sm tw-font-medium tw-text-fg-brand hover:tw-bg-bg-brand-softer"
-          (click)="add()"
-        >
-          <bit-icon name="bwi-plus" class="tw-text-base"></bit-icon>
+        <button type="button" class="agy-addrow" (click)="add()">
+          <bit-icon name="bwi-plus" class="tw-text-xs"></bit-icon>
           {{ i18n.t("addField") }}
         </button>
       }
@@ -145,8 +142,9 @@ export class LpCustomFieldsComponent {
     this.patch(id, { value: (event.target as HTMLInputElement).value });
   }
 
-  protected setHidden(id: string, event: Event): void {
-    this.patch(id, { hidden: (event.target as HTMLSelectElement).value === "hidden" });
+  protected toggleHidden(id: string): void {
+    const field = this.fields().find((current) => current.id === id);
+    this.patch(id, { hidden: !field?.hidden });
   }
 
   private patch(id: string, change: Partial<Pick<CustomFieldDraft, "name" | "value" | "hidden">>) {

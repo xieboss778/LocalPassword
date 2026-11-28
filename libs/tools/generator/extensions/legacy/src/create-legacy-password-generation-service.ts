@@ -2,7 +2,6 @@
 // @ts-strict-ignore
 import { PolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
-import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import { StateProvider } from "@localpass/common/platform/state";
 import { engine, services, strategies } from "@localpass/generator-core";
 import { LocalGeneratorHistoryService } from "@localpass/generator-history";
@@ -20,7 +19,6 @@ export function legacyPasswordGenerationServiceFactory(
   policyService: PolicyService,
   accountService: AccountService,
   stateProvider: StateProvider,
-  sdkService: SdkService,
 ): PasswordGenerationServiceAbstraction {
   const randomizer = new SdkRandomizer();
   const passwordRandomizer = new PasswordRandomizer(randomizer, Date.now);
@@ -37,7 +35,7 @@ export function legacyPasswordGenerationServiceFactory(
 
   const navigation = new DefaultGeneratorNavigationService(stateProvider, policyService);
 
-  const history = new LocalGeneratorHistoryService(stateProvider, sdkService);
+  const history = new LocalGeneratorHistoryService(stateProvider);
 
   return new LegacyPasswordGenerationService(
     accountService,

@@ -5,28 +5,14 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
   selector: "lp-page-header",
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      class="tw-flex tw-items-start tw-gap-3"
-      [class.tw-px-6]="!compact()"
-      [class.tw-pt-6]="!compact()"
-      [class.tw-pb-4]="!compact()"
-      [class.tw-px-4]="compact()"
-      [class.tw-pt-4]="compact()"
-      [class.tw-pb-3]="compact()"
-    >
-      <div class="tw-min-w-0 tw-flex-1">
-        <h1
-          class="tw-m-0 tw-font-semibold tw-tracking-tight tw-text-main"
-          [class.tw-text-2xl]="!compact()"
-          [class.tw-text-xl]="compact()"
-        >
-          {{ title() }}
-        </h1>
+    <div class="agy-pagehead" [class.agy-pagehead-compact]="compact()">
+      <div class="agy-pagehead-main">
+        <h1 class="agy-pagehead-h">{{ title() }}</h1>
         @if (sub()) {
-          <div class="tw-mt-1 tw-text-sm tw-text-muted">{{ sub() }}</div>
+          <div class="agy-pagehead-s">{{ sub() }}</div>
         }
       </div>
-      <div class="tw-flex tw-flex-none tw-items-center tw-gap-1">
+      <div class="agy-pagehead-actions">
         <ng-content />
       </div>
     </div>

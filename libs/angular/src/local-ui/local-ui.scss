@@ -1,12 +1,13 @@
 // LocalPass 界面语言：沿用 Bitwarden 的语义令牌。
 // 这里只保留旧页面仍在引用的兼容别名；新代码直接用 tw-bg-background、tw-text-main 等主题类。
+@import "agy";
 
 :root {
   --lp-bg: var(--color-bg-tertiary);
   --lp-card: var(--color-bg-primary);
-  --lp-ink: var(--color-text-main);
-  --lp-ink-2: var(--color-text-main);
-  --lp-ink-3: var(--color-text-muted);
+  --lp-ink: var(--color-fg-heading);
+  --lp-ink-2: var(--color-fg-body);
+  --lp-ink-3: var(--color-fg-body-subtle);
   --lp-line: var(--color-border-light);
   --lp-line-soft: var(--color-border-muted);
   --lp-brand: var(--color-bg-brand);

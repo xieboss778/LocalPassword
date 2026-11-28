@@ -9,17 +9,15 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (label()) {
-      <div
-        class="tw-px-1 tw-pt-4 tw-pb-2 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-text-muted"
-      >
+      <div class="agy-seclbl tw-flex tw-items-center tw-gap-1.5">
         {{ label() }}
       </div>
     }
-    <div class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background">
+    <div class="agy-grp">
       <ng-content />
     </div>
   `,
-  host: { class: "tw-block tw-px-4" },
+  host: { class: "tw-block tw-pb-2" },
 })
 export class LpGroupComponent {
   readonly label = input<string>("");

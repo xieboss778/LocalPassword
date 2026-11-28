@@ -191,6 +191,7 @@ export const SM_ONBOARDING_DISK = new StateDefinition("smOnboarding", "disk", {
 export const EXTENSION_DISK = new StateDefinition("extension", "disk");
 export const GENERATOR_DISK = new StateDefinition("generator", "disk");
 export const GENERATOR_MEMORY = new StateDefinition("generator", "memory");
+export const LOCAL_UI_DISK = new StateDefinition("localUi", "disk");
 export const IMPORT_CONFIRMATION_MEMORY = new StateDefinition("importConfirmation", "memory");
 export const BROWSER_SEND_MEMORY = new StateDefinition("sendBrowser", "memory");
 export const EVENT_COLLECTION_DISK = new StateDefinition("eventCollection", "disk");

@@ -16,17 +16,16 @@ import { AccountService } from "@localpass/common/auth/abstractions/account.serv
 import { getOptionalUserId, getUserId } from "@localpass/common/auth/services/account.service";
 import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@localpass/common/types/guid";
 import { UserKey } from "@localpass/common/types/key";
-import { ButtonModule, CalloutModule } from "@localpass/components";
+import { ButtonModule, CalloutModule, IconModule } from "@localpass/components";
 // account.json 里的 KDF 需要这个类；与既有 restore-vault.component.ts 同样的豁免。
 // eslint-disable-next-line no-restricted-imports
 import { Argon2KdfConfig, KdfType, PBKDF2KdfConfig } from "@localpass/legacy-crypto";
 import {
   ACCOUNT_OBJECT,
-  MergeConflict,
   CreateLocalAccountService,
+  PendingVaultConflict,
   S3Client,
   SNAPSHOT_PREFIX,
   Snapshot,
@@ -34,14 +33,14 @@ import {
   isLocalAccountObject,
 } from "@localpass/local-vault";
 
-import { JslibModule } from "../../jslib.module";
 import {
   LpFieldComponent,
   LpGroupComponent,
   LpPageHeaderComponent,
   LpPopupHeaderComponent,
-  LpRowComponent,
+  LpToastService,
 } from "../../local-ui";
+import { BackupConflictResolutionV2Component } from "../../tools/backup/backup-conflict-resolution.component";
 import { formatSnapshotId } from "../../tools/backup/backup-time";
 
 type RestoreState = "form" | "loading" | "conflict" | "error" | "done";
@@ -60,21 +59,23 @@ interface SnapshotRow {
 @Component({
   selector: "auth-restore-vault-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "tw-block tw-h-full" },
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    JslibModule,
     ButtonModule,
     CalloutModule,
+    IconModule,
     LpFieldComponent,
     LpGroupComponent,
     LpPageHeaderComponent,
     LpPopupHeaderComponent,
-    LpRowComponent,
+    BackupConflictResolutionV2Component,
   ],
   template: `
     <div
       class="tw-flex tw-h-full tw-flex-col"
+      [class.agy]="!desktop()"
       [class.tw-bg-background]="!desktop()"
       [class.tw-bg-background-alt]="desktop()"
     >
@@ -101,7 +102,10 @@ interface SnapshotRow {
         ></lp-popup-header>
       }
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
+      <div
+        class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8"
+        [class.agy-ext-scroll]="!desktop()"
+      >
         @if (desktop()) {
           <div class="tw-flex tw-items-start tw-gap-4 tw-px-7 tw-pt-1">
             <div
@@ -114,6 +118,19 @@ interface SnapshotRow {
                 <p class="tw-mb-0 tw-mt-3 tw-text-sm tw-text-muted">
                   {{ i18n.t("loading") }}
                 </p>
+              } @else if (!hasStoredConfig()) {
+                <p class="tw-mb-0 tw-mt-3 tw-text-sm tw-text-muted">
+                  {{ i18n.t("restoreNoStorage") }}
+                </p>
+                <div class="tw-mt-3 tw-flex tw-gap-2">
+                  <button
+                    type="button"
+                    class="agy-btn agy-primary agy-sm"
+                    (click)="goConfigureStorage()"
+                  >
+                    {{ i18n.t("backupStorage") }}
+                  </button>
+                </div>
               } @else if (!snapshots().length) {
                 <p class="tw-mb-0 tw-mt-3 tw-text-sm tw-text-muted">
                   {{ i18n.t("backupNoSnapshots") }}
@@ -147,6 +164,11 @@ interface SnapshotRow {
                   i18n.t("restoreWarning")
                 }}</bit-callout>
               </div>
+              <div class="tw-mt-2">
+                <bit-callout type="info" [title]="null">{{
+                  i18n.t("restorePrfNotSyncedNote")
+                }}</bit-callout>
+              </div>
               @if (savedError()) {
                 <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-fg-danger">{{ savedError() }}</p>
               }
@@ -154,14 +176,14 @@ interface SnapshotRow {
           </div>
         } @else {
           @if (savedConfig()) {
-            <div class="tw-px-3.5 tw-pt-3">
-              <bit-callout type="warning" [title]="null">{{
-                i18n.t("restoreWarning")
-              }}</bit-callout>
+            <div class="agy-callout agy-warn">
+              <bit-icon name="bwi-exclamation-triangle" class="tw-text-xs"></bit-icon>
+              <div>{{ i18n.t("restoreWarning") }}</div>
             </div>
 
-            <div class="tw-pt-1">
+            <div class="agy-grp tw-mt-2">
               <lp-field
+                layout="row"
                 [label]="i18n.t('masterPassword')"
                 [password]="true"
                 [value]="valueOf('masterPassword')"
@@ -171,60 +193,50 @@ interface SnapshotRow {
             </div>
 
             @if (snapshotsLoading()) {
-              <p class="tw-px-4 tw-pt-3 tw-text-sm tw-text-muted">
-                {{ i18n.t("loading") }}
-              </p>
+              <p class="agy-hint">{{ i18n.t("loading") }}</p>
             } @else if (!snapshots().length) {
-              <p class="tw-px-4 tw-pt-3 tw-text-sm tw-text-muted">
+              <p class="agy-hint">
                 {{
                   i18n.t(valueOf("masterPassword") ? "backupNoSnapshots" : "restoreSnapshotsHint")
                 }}
               </p>
             } @else {
-              <lp-group [label]="i18n.t('restoreSnapshotsTitle')">
+              <lp-group [label]="i18n.t('restoreSnapshotsTitle')" class="tw-mt-1">
                 <ng-container [ngTemplateOutlet]="snapshotRows"></ng-container>
               </lp-group>
             }
 
-            <div class="tw-px-3.5 tw-pt-3">
-              <button
-                type="button"
-                bitButton
-                buttonType="primary"
-                block
-                [disabled]="busy()"
-                [loading]="busy()"
-                data-testid="restore_start"
-                (click)="startRestore()"
-              >
-                {{ i18n.t("restoreStart") }}
-              </button>
+            <button
+              type="button"
+              class="agy-btn agy-primary agy-lg agy-block tw-mt-2"
+              [disabled]="busy()"
+              data-testid="restore_start"
+              (click)="startRestore()"
+            >
+              {{ i18n.t("restoreStart") }}
+            </button>
 
-              @if (savedError()) {
-                <div
-                  class="tw-mt-2 tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-p-3 tw-text-xs tw-leading-relaxed tw-text-fg-danger-strong"
-                >
-                  {{ savedError() }}
-                </div>
-              }
+            @if (savedError()) {
+              <div class="agy-callout agy-bad tw-mt-2">
+                <bit-icon name="bwi-exclamation-triangle" class="tw-text-xs"></bit-icon>
+                <div>{{ savedError() }}</div>
+              </div>
+            }
 
-              <p
-                class="tw-mx-auto tw-mt-3 tw-max-w-md tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted"
-              >
-                {{ i18n.t("restoreFootnote") }}
-              </p>
-            </div>
+            <p class="agy-hint tw-text-center">
+              {{ i18n.t("restoreFootnote") }}
+            </p>
           } @else {
             @switch (state()) {
               @case ("form") {
-                <div class="tw-px-3.5 tw-pt-3">
-                  <bit-callout type="warning" [title]="null">{{
-                    i18n.t("restoreWarning")
-                  }}</bit-callout>
+                <div class="agy-callout agy-warn">
+                  <bit-icon name="bwi-exclamation-triangle" class="tw-text-xs"></bit-icon>
+                  <div>{{ i18n.t("restoreWarning") }}</div>
                 </div>
 
-                <div class="tw-pt-1">
+                <div class="agy-grp tw-mt-2">
                   <lp-field
+                    layout="row"
                     [label]="i18n.t('masterPassword')"
                     [password]="true"
                     [value]="valueOf('masterPassword')"
@@ -232,54 +244,54 @@ interface SnapshotRow {
                   />
                 </div>
 
-                <lp-group [label]="i18n.t('backupStorage')">
+                <div class="agy-seclbl">{{ i18n.t("backupStorage") }}</div>
+                <div class="agy-grp">
                   <lp-field
+                    layout="row"
                     [label]="i18n.t('backupEndpoint')"
                     [value]="valueOf('endpoint')"
                     (valueChange)="set('endpoint', $event)"
                   />
                   <lp-field
+                    layout="row"
                     [label]="i18n.t('backupBucket')"
                     [value]="valueOf('bucket')"
                     (valueChange)="set('bucket', $event)"
                   />
                   <lp-field
+                    layout="row"
                     [label]="i18n.t('backupAccessKey')"
                     [value]="valueOf('accessKeyId')"
                     (valueChange)="set('accessKeyId', $event)"
                   />
                   <lp-field
+                    layout="row"
                     [label]="i18n.t('backupSecretKey')"
                     [password]="true"
                     [value]="valueOf('secretAccessKey')"
                     (valueChange)="set('secretAccessKey', $event)"
                   />
-                </lp-group>
-
-                <div class="tw-px-3.5 tw-pt-3">
-                  <button
-                    type="button"
-                    bitButton
-                    buttonType="primary"
-                    block
-                    [disabled]="busy()"
-                    (click)="submit()"
-                  >
-                    {{ i18n.t("restoreStart") }}
-                  </button>
-                  <p
-                    class="tw-mx-auto tw-mt-3 tw-max-w-md tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted"
-                  >
-                    {{ i18n.t("restoreFootnote") }}
-                  </p>
                 </div>
+
+                <button
+                  type="button"
+                  class="agy-btn agy-primary agy-lg agy-block tw-mt-2"
+                  [disabled]="busy()"
+                  (click)="submit()"
+                >
+                  {{ i18n.t("restoreStart") }}
+                </button>
+
                 @if (errorMessage()) {
-                  <div
-                    class="tw-mx-3.5 tw-mt-2 tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-p-3 tw-text-xs tw-leading-relaxed tw-text-fg-danger-strong"
-                  >
-                    {{ errorMessage() }}
+                  <div class="agy-callout agy-bad tw-mt-2">
+                    <bit-icon name="bwi-exclamation-triangle" class="tw-text-xs"></bit-icon>
+                    <div>{{ errorMessage() }}</div>
                   </div>
                 }
+
+                <p class="agy-hint tw-text-center">
+                  {{ i18n.t("restoreFootnote") }}
+                </p>
               }
 
               @case ("loading") {
@@ -288,59 +300,30 @@ interface SnapshotRow {
                     <div
                       class="tw-mx-auto tw-mb-3 tw-size-8 tw-animate-spin tw-rounded-full tw-border-2 tw-border-border-light tw-border-t-border-brand"
                     ></div>
-                    <p class="tw-m-0 tw-text-sm tw-text-main">
-                      {{ i18n.t("restoreLoading") }}
-                    </p>
-                    <p class="tw-m-0 tw-mt-1 tw-text-xs tw-text-muted">
-                      {{ i18n.t("restoreLoadingHint") }}
-                    </p>
+                    <p class="agy-hint tw-px-0">{{ i18n.t("restoreLoading") }}</p>
+                    <p class="agy-hint tw-px-0">{{ i18n.t("restoreLoadingHint") }}</p>
                   </div>
                 </div>
               }
 
               @case ("conflict") {
-                <div
-                  class="tw-mx-3 tw-mb-2 tw-rounded-xl tw-border tw-border-border-warning-soft tw-bg-bg-warning-soft tw-px-3 tw-py-2.5 tw-text-xs tw-leading-relaxed tw-text-fg-warning-strong"
-                >
-                  {{ i18n.t("restoreConflictHint") }}
-                </div>
-                <lp-group [label]="i18n.t('restoreConflictTitle')">
-                  @for (conflict of conflicts(); track conflict.id) {
-                    <lp-row
-                      [label]="conflict.id"
-                      [sub]="conflict.localRevision + ' → ' + conflict.remoteRevision"
-                      [value]="
-                        conflict.winner === 'local'
-                          ? i18n.t('restoreWinnerLocal')
-                          : i18n.t('restoreWinnerRemote')
-                      "
-                      [clickable]="false"
-                    />
-                  }
-                </lp-group>
-                <div class="tw-flex tw-gap-2 tw-px-3 tw-pt-3">
-                  <button type="button" bitButton buttonType="primary" (click)="finish()">
-                    {{ i18n.t("restoreConflictAccept") }}
-                  </button>
-                </div>
+                <backup-conflict-resolution-v2
+                  [conflicts]="pendingConflicts()"
+                  [compact]="!desktop()"
+                  (resolved)="onConflictsResolved()"
+                ></backup-conflict-resolution-v2>
               }
 
               @case ("error") {
                 <div class="tw-grid tw-h-60 tw-place-items-center">
                   <div class="tw-px-6 tw-text-center">
-                    <p class="tw-m-0 tw-text-base tw-font-semibold tw-text-fg-danger">
-                      {{ i18n.t("restoreFailed") }}
-                    </p>
-                    <p class="tw-m-0 tw-mt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
-                      {{ errorMessage() }}
-                    </p>
-                    <button
-                      type="button"
-                      bitButton
-                      buttonType="secondary"
-                      class="tw-mt-4"
-                      (click)="retry()"
-                    >
+                    <bit-icon
+                      name="bwi-exclamation-triangle"
+                      class="tw-text-2xl tw-text-fg-danger"
+                    ></bit-icon>
+                    <p class="agy-eh tw-mt-2">{{ i18n.t("restoreFailed") }}</p>
+                    <p class="agy-es">{{ errorMessage() }}</p>
+                    <button type="button" class="agy-btn agy-lg tw-mt-3" (click)="retry()">
                       {{ i18n.t("retry") }}
                     </button>
                   </div>
@@ -350,15 +333,11 @@ interface SnapshotRow {
               @case ("done") {
                 <div class="tw-grid tw-h-60 tw-place-items-center">
                   <div class="tw-text-center">
-                    <div class="tw-text-4xl tw-text-fg-success">✓</div>
-                    <p class="tw-m-0 tw-mt-2 tw-text-base tw-font-semibold tw-text-main">
-                      {{ i18n.t("restoreFinished") }}
-                    </p>
+                    <bit-icon name="bwi-check" class="tw-text-3xl tw-text-fg-success"></bit-icon>
+                    <p class="agy-eh tw-mt-2">{{ i18n.t("restoreFinished") }}</p>
                     <button
                       type="button"
-                      bitButton
-                      buttonType="primary"
-                      class="tw-mt-4"
+                      class="agy-btn agy-primary agy-lg tw-mt-3"
                       (click)="finish()"
                     >
                       {{ i18n.t("continue") }}
@@ -375,7 +354,7 @@ interface SnapshotRow {
             <button
               type="button"
               role="radio"
-              class="tw-flex tw-w-full tw-items-center tw-gap-3 tw-border-0 tw-border-b tw-border-border-light tw-bg-transparent tw-px-4 tw-py-3 tw-text-start last:tw-border-b-0 hover:tw-bg-bg-hover"
+              class="agy-setrow"
               [attr.aria-checked]="selectedSnapshotId() === snapshot.id"
               data-testid="restore_snapshot"
               (click)="selectedSnapshotId.set(snapshot.id)"
@@ -390,12 +369,8 @@ interface SnapshotRow {
                 }
               </span>
               <span class="tw-min-w-0">
-                <span class="tw-block tw-text-sm tw-text-main">{{
-                  snapshotLabel(snapshot.id)
-                }}</span>
-                <span class="tw-block tw-text-xs tw-text-muted">{{
-                  formatSize(snapshot.size)
-                }}</span>
+                <span class="agy-k">{{ snapshotLabel(snapshot.id) }}</span>
+                <span class="agy-d">{{ formatSize(snapshot.size) }}</span>
               </span>
             </button>
           }
@@ -411,7 +386,7 @@ export class RestoreVaultV2Component implements OnInit {
   private readonly createLocalAccountService = inject(CreateLocalAccountService);
   private readonly syncService = inject(VaultBackupSyncService);
   private readonly router = inject(Router);
-  private readonly platformUtilsService = inject(PlatformUtilsService);
+  private readonly toast = inject(LpToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly accountService = inject(AccountService);
   private readonly masterPasswordService = inject(InternalMasterPasswordServiceAbstraction);
@@ -423,6 +398,7 @@ export class RestoreVaultV2Component implements OnInit {
   protected readonly snapshots = signal<readonly SnapshotRow[]>([]);
   protected readonly selectedSnapshotId = signal<string | null>(null);
   protected readonly snapshotsLoading = signal(false);
+  protected readonly hasStoredConfig = signal(true);
   /**
    * 已经有配置好的云存储时（桌面端设置、弹窗里已登录的账户），直接挑快照恢复；
    * 只有全新安装才需要手填存储凭据。
@@ -433,7 +409,7 @@ export class RestoreVaultV2Component implements OnInit {
   protected readonly busy = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly savedError = signal<string | null>(null);
-  protected readonly conflicts = signal<readonly MergeConflict[]>([]);
+  protected readonly pendingConflicts = signal<readonly PendingVaultConflict[]>([]);
 
   protected readonly form = this.formBuilder.group({
     endpoint: ["", [Validators.required]],
@@ -538,11 +514,11 @@ export class RestoreVaultV2Component implements OnInit {
         throw new Error(this.i18n.t("backupNoSnapshots"));
       }
 
-      const applied = await this.syncService.applySnapshot(
+      const applied = await this.syncService.restoreSnapshot(
         userId,
         JSON.parse(stored.text) as Snapshot,
       );
-      this.platformUtilsService.showToast("success", "", this.i18n.t("restoreSuccess", applied));
+      this.toast.show(this.i18n.t("restoreSuccess", applied));
       await this.router.navigateByUrl(this.desktop() ? "/vault" : "/");
     } catch (error) {
       this.savedError.set(error instanceof Error ? error.message : this.i18n.t("restoreFailed"));
@@ -627,10 +603,12 @@ export class RestoreVaultV2Component implements OnInit {
       if (client == null) {
         // 弹窗锁定且还没输入密码：保持骨架，等 blur 后再读。
         if (this.desktop()) {
+          this.hasStoredConfig.set(false);
           this.savedError.set(this.i18n.t("restoreNoStorage"));
         }
         return;
       }
+      this.hasStoredConfig.set(true);
 
       try {
         const objects = await client.listObjects(SNAPSHOT_PREFIX);
@@ -728,19 +706,29 @@ export class RestoreVaultV2Component implements OnInit {
 
       const pulled = await this.syncService.pull(userId);
       if (pulled.conflicts.length > 0) {
-        this.conflicts.set(pulled.conflicts);
+        this.pendingConflicts.set(await this.syncService.getPendingConflicts(userId));
         this.state.set("conflict");
         return;
       }
 
       this.state.set("done");
-      this.platformUtilsService.showToast("success", "", this.i18n.t("restoreFinished"));
+      this.toast.show(this.i18n.t("restoreFinished"));
     } catch (error) {
       this.errorMessage.set(error instanceof Error ? error.message : this.i18n.t("restoreFailed"));
       this.state.set("error");
     } finally {
       this.busy.set(false);
     }
+  }
+
+  protected onConflictsResolved(): void {
+    this.pendingConflicts.set([]);
+    this.state.set("done");
+    this.toast.show(this.i18n.t("restoreFinished"));
+  }
+
+  protected goConfigureStorage(): void {
+    void this.router.navigateByUrl("/backup-config");
   }
 
   protected retry(): void {

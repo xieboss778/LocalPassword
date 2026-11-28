@@ -1,172 +1,247 @@
 @if (isDesktop) {
   <div
-    class="tw-flex tw-size-full tw-flex-col tw-items-center tw-justify-center tw-overflow-y-auto tw-bg-gradient-to-b tw-from-bg-brand-softer tw-to-background-alt tw-p-6"
+    class="agy tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-center tw-overflow-y-auto tw-bg-background-alt tw-p-6"
   >
-    <div
-      class="tw-w-full tw-max-w-md tw-rounded-2xl tw-border tw-border-border-light tw-bg-background tw-p-7 tw-shadow-sm"
-    >
-      <span
-        class="tw-mb-4 tw-grid tw-size-16 tw-place-items-center tw-rounded-xl tw-bg-bg-brand-softer tw-text-fg-brand"
-      >
-        <bit-icon name="bwi-localpass-shield" class="tw-text-4xl"></bit-icon>
-      </span>
-      <h1 class="tw-m-0 tw-text-2xl tw-font-semibold tw-text-main">
-        {{ "createLocalVaultTitle" | i18n }}
-      </h1>
-      <p class="tw-mb-5 tw-mt-1 tw-text-sm tw-leading-relaxed tw-text-muted">
-        {{ "createLocalVaultSubtitle" | i18n }}
-      </p>
-      <div class="-tw-mx-4">
-        <lp-field
-          id="create-local-vault_input_email"
-          [label]="'localVaultEmail' | i18n"
-          [hint]="'emailBackupHint' | i18n"
-          [autocomplete]="'email'"
-          [value]="email.value ?? ''"
-          [error]="fieldErrors().email"
-          (valueChange)="setField('email', $event)"
-          (blurred)="onFieldBlur('email')"
-        />
-        <lp-field
+    <form class="agy-wincard" (ngSubmit)="submit()">
+      <h1 class="agy-wincard-h">{{ "createLocalVaultTitle" | i18n }}</h1>
+      <p class="agy-wincard-s">{{ "createLocalVaultSubtitle" | i18n }}</p>
+
+      <input
+        id="create-local-vault_input_email"
+        type="email"
+        class="agy-input"
+        autocomplete="email"
+        [attr.placeholder]="'localVaultEmail' | i18n"
+        [attr.aria-label]="'localVaultEmail' | i18n"
+        [attr.aria-invalid]="fieldErrors().email != null ? 'true' : null"
+        [value]="email.value ?? ''"
+        (input)="onInput('email', $event)"
+        (blur)="onFieldBlur('email')"
+      />
+      <p class="agy-hint">{{ "emailBackupHint" | i18n }}</p>
+      @if (fieldErrors().email != null) {
+        <p class="agy-hint agy-hint-error">{{ fieldErrors().email }}</p>
+      }
+
+      <div class="tw-relative tw-w-full">
+        <input
           id="create-local-vault_input_master-password"
-          [label]="'masterPassword' | i18n"
-          [placeholder]="'setupMasterPassPlaceholder' | i18n"
-          [password]="true"
-          [autocomplete]="'new-password'"
+          [type]="showPassword() ? 'text' : 'password'"
+          class="agy-input tw-pe-8"
+          autocomplete="new-password"
+          [attr.aria-label]="'masterPassword' | i18n"
+          [attr.placeholder]="'setupMasterPassPlaceholder' | i18n"
+          [attr.aria-invalid]="fieldErrors().masterPassword != null ? 'true' : null"
           [value]="masterPassword.value ?? ''"
-          [error]="fieldErrors().masterPassword"
-          (valueChange)="setField('masterPassword', $event)"
-          (blurred)="onFieldBlur('masterPassword')"
+          (input)="onInput('masterPassword', $event)"
+          (blur)="onFieldBlur('masterPassword')"
         />
-        <lp-field
+        <button
+          type="button"
+          class="agy-iconbtn agy-sm tw-absolute tw-end-1 tw-top-1/2 -tw-translate-y-1/2"
+          [attr.aria-label]="showPassword() ? ('hidePassword' | i18n) : ('showPassword' | i18n)"
+          (click)="showPassword.set(!showPassword())"
+        >
+          <bit-icon
+            [name]="showPassword() ? 'bwi-visibility-off' : 'bwi-visibility'"
+            class="tw-text-xs"
+          ></bit-icon>
+        </button>
+      </div>
+      @if (fieldErrors().masterPassword != null) {
+        <p class="agy-hint agy-hint-error">{{ fieldErrors().masterPassword }}</p>
+      }
+
+      <div class="tw-relative tw-w-full">
+        <input
           id="create-local-vault_input_confirm-password"
-          [label]="'confirmMasterPasswordAgain' | i18n"
-          [password]="true"
-          [autocomplete]="'new-password'"
+          [type]="showConfirm() ? 'text' : 'password'"
+          class="agy-input tw-pe-8"
+          autocomplete="new-password"
+          [attr.placeholder]="'confirmMasterPassword' | i18n"
+          [attr.aria-label]="'confirmMasterPassword' | i18n"
+          [attr.aria-invalid]="fieldErrors().confirmMasterPassword != null ? 'true' : null"
           [value]="confirmMasterPassword.value ?? ''"
-          [error]="fieldErrors().confirmMasterPassword"
-          (valueChange)="setField('confirmMasterPassword', $event)"
-          (blurred)="onFieldBlur('confirmMasterPassword')"
+          (input)="onInput('confirmMasterPassword', $event)"
+          (blur)="onFieldBlur('confirmMasterPassword')"
         />
+        <button
+          type="button"
+          class="agy-iconbtn agy-sm tw-absolute tw-end-1 tw-top-1/2 -tw-translate-y-1/2"
+          [attr.aria-label]="showConfirm() ? ('hidePassword' | i18n) : ('showPassword' | i18n)"
+          (click)="showConfirm.set(!showConfirm())"
+        >
+          <bit-icon
+            [name]="showConfirm() ? 'bwi-visibility-off' : 'bwi-visibility'"
+            class="tw-text-xs"
+          ></bit-icon>
+        </button>
+      </div>
+      @if (fieldErrors().confirmMasterPassword != null) {
+        <p class="agy-hint agy-hint-error">{{ fieldErrors().confirmMasterPassword }}</p>
+      }
+
+      <div class="agy-callout tw-mt-2">
+        <bit-icon name="bwi-info-circle" class="tw-text-xs tw-text-fg-brand"></bit-icon>
+        <div>{{ "unlockNoRecoveryNote" | i18n }}</div>
       </div>
 
       @if (errorMessage() != null) {
-        <p class="tw-mt-2 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
+        <div class="agy-callout agy-bad tw-mt-2">
+          <bit-icon name="bwi-exclamation-triangle" class="tw-text-xs"></bit-icon>
+          <div>{{ errorMessage() }}</div>
+        </div>
       }
 
       <button
         id="create-local-vault_button_create"
-        type="button"
-        bitButton
-        buttonType="primary"
-        class="tw-mt-1"
-        [block]="true"
+        type="submit"
+        class="agy-btn agy-primary agy-lg agy-block tw-mt-2.5"
         [disabled]="submitting()"
-        [loading]="submitting()"
-        (click)="submit()"
+      >
+        {{ "createLocalVault" | i18n }}
+      </button>
+      <div class="tw-mt-1.5 tw-flex tw-gap-1.5">
+        <button
+          id="create-local-vault_button_restore"
+          type="button"
+          class="agy-btn agy-lg tw-flex-1"
+          (click)="restoreFromBackup()"
+        >
+          <bit-icon name="bwi-download" class="tw-text-xs"></bit-icon>
+          {{ "restoreFromBackup" | i18n }}
+        </button>
+        <button
+          id="create-local-vault_button_import_after"
+          type="button"
+          class="agy-btn agy-lg tw-flex-1"
+          [class.agy-primary]="importAfterCreate()"
+          [attr.aria-pressed]="importAfterCreate()"
+          (click)="toggleImportAfterCreate()"
+        >
+          <bit-icon name="bwi-upload" class="tw-text-xs"></bit-icon>
+          {{ "importData" | i18n }}
+        </button>
+      </div>
+    </form>
+    <p class="agy-hint tw-mt-3 tw-text-center">
+      {{ "createLocalVaultNote" | i18n }}
+    </p>
+  </div>
+} @else {
+  <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <lp-popup-header [title]="'createLocalVault' | i18n" [avatar]="true"></lp-popup-header>
+
+    <form
+      class="agy-unlock tw-min-h-0 tw-flex-1 tw-justify-center tw-overflow-auto"
+      (ngSubmit)="submit()"
+    >
+      <span class="agy-avatar agy-xl">LP</span>
+      <div class="agy-h">{{ "createLocalVaultTitle" | i18n }}</div>
+      <div class="agy-s">{{ "createLocalVaultSubtitle" | i18n }}</div>
+
+      <input
+        id="create-local-vault_input_email"
+        type="email"
+        autocomplete="email"
+        [attr.placeholder]="'localVaultEmail' | i18n"
+        [attr.aria-label]="'localVaultEmail' | i18n"
+        [attr.aria-invalid]="fieldErrors().email != null ? 'true' : null"
+        [value]="email.value ?? ''"
+        (input)="onInput('email', $event)"
+        (blur)="onFieldBlur('email')"
+      />
+      <p class="agy-hint tw-w-full tw-pl-0 tw-text-start">{{ "emailBackupHint" | i18n }}</p>
+      @if (fieldErrors().email != null) {
+        <p class="agy-hint agy-hint-error tw-w-full tw-pl-0 tw-text-start">
+          {{ fieldErrors().email }}
+        </p>
+      }
+
+      <div class="tw-relative tw-w-full">
+        <input
+          id="create-local-vault_input_master-password"
+          [type]="showPassword() ? 'text' : 'password'"
+          class="tw-pe-8"
+          autocomplete="new-password"
+          [attr.placeholder]="'setupMasterPassPlaceholder' | i18n"
+          [attr.aria-label]="'masterPassword' | i18n"
+          [attr.aria-invalid]="fieldErrors().masterPassword != null ? 'true' : null"
+          [value]="masterPassword.value ?? ''"
+          (input)="onInput('masterPassword', $event)"
+          (blur)="onFieldBlur('masterPassword')"
+        />
+        <button
+          type="button"
+          class="agy-iconbtn agy-sm tw-absolute tw-end-1 tw-top-1/2 -tw-translate-y-1/2"
+          [attr.aria-label]="showPassword() ? ('hidePassword' | i18n) : ('showPassword' | i18n)"
+          (click)="showPassword.set(!showPassword())"
+        >
+          <bit-icon
+            [name]="showPassword() ? 'bwi-visibility-off' : 'bwi-visibility'"
+            class="tw-text-xs"
+          ></bit-icon>
+        </button>
+      </div>
+      @if (fieldErrors().masterPassword != null) {
+        <p class="agy-hint agy-hint-error tw-w-full tw-pl-0 tw-text-start">
+          {{ fieldErrors().masterPassword }}
+        </p>
+      }
+
+      <div class="tw-relative tw-w-full">
+        <input
+          id="create-local-vault_input_confirm-password"
+          [type]="showConfirm() ? 'text' : 'password'"
+          class="tw-pe-8"
+          autocomplete="new-password"
+          [attr.placeholder]="'confirmMasterPassword' | i18n"
+          [attr.aria-label]="'confirmMasterPassword' | i18n"
+          [attr.aria-invalid]="fieldErrors().confirmMasterPassword != null ? 'true' : null"
+          [value]="confirmMasterPassword.value ?? ''"
+          (input)="onInput('confirmMasterPassword', $event)"
+          (blur)="onFieldBlur('confirmMasterPassword')"
+        />
+        <button
+          type="button"
+          class="agy-iconbtn agy-sm tw-absolute tw-end-1 tw-top-1/2 -tw-translate-y-1/2"
+          [attr.aria-label]="showConfirm() ? ('hidePassword' | i18n) : ('showPassword' | i18n)"
+          (click)="showConfirm.set(!showConfirm())"
+        >
+          <bit-icon
+            [name]="showConfirm() ? 'bwi-visibility-off' : 'bwi-visibility'"
+            class="tw-text-xs"
+          ></bit-icon>
+        </button>
+      </div>
+      @if (fieldErrors().confirmMasterPassword != null) {
+        <p class="agy-hint agy-hint-error tw-w-full tw-pl-0 tw-text-start">
+          {{ fieldErrors().confirmMasterPassword }}
+        </p>
+      }
+
+      @if (errorMessage() != null) {
+        <p class="agy-hint agy-hint-error tw-w-full tw-pl-0">{{ errorMessage() }}</p>
+      }
+
+      <button
+        id="create-local-vault_button_create"
+        type="submit"
+        class="agy-btn agy-primary agy-lg agy-block tw-mt-2"
+        [disabled]="submitting()"
       >
         {{ "createLocalVault" | i18n }}
       </button>
       <button
         id="create-local-vault_button_restore"
         type="button"
-        bitLink
-        class="tw-mt-3 tw-self-start tw-text-sm"
+        class="agy-btn agy-lg agy-block tw-mt-1"
         (click)="restoreFromBackup()"
       >
-        {{ "restoreFromBackup" | i18n }}
+        {{ "restoreVaultFromCloud" | i18n }}
       </button>
-    </div>
-    <p class="tw-mb-0 tw-mt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
-      {{ "createLocalVaultNote" | i18n }}
-    </p>
-  </div>
-} @else {
-  <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
-    <lp-hero
-      icon="bwi-localpass-shield"
-      [title]="'createLocalVaultTitle' | i18n"
-      [text]="'createLocalVaultSubtitle' | i18n"
-    ></lp-hero>
+    </form>
 
-    <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
-      <lp-field
-        id="create-local-vault_input_email"
-        [label]="'localVaultEmail' | i18n"
-        [hint]="'emailBackupHint' | i18n"
-        [autocomplete]="'email'"
-        [value]="email.value ?? ''"
-        [error]="fieldErrors().email"
-        (valueChange)="setField('email', $event)"
-        (blurred)="onFieldBlur('email')"
-      />
-      <lp-field
-        id="create-local-vault_input_master-password"
-        [label]="'masterPassword' | i18n"
-        [placeholder]="'setupMasterPassPlaceholder' | i18n"
-        [password]="true"
-        [autocomplete]="'new-password'"
-        [value]="masterPassword.value ?? ''"
-        [error]="fieldErrors().masterPassword"
-        (valueChange)="setField('masterPassword', $event)"
-        (blurred)="onFieldBlur('masterPassword')"
-      />
-      <lp-field
-        id="create-local-vault_input_confirm-password"
-        [label]="'confirmMasterPassword' | i18n"
-        [password]="true"
-        [autocomplete]="'new-password'"
-        [value]="confirmMasterPassword.value ?? ''"
-        [error]="fieldErrors().confirmMasterPassword"
-        (valueChange)="setField('confirmMasterPassword', $event)"
-        (blurred)="onFieldBlur('confirmMasterPassword')"
-      />
-
-      <label
-        class="tw-flex tw-items-start tw-gap-2.5 tw-px-4 tw-py-3 tw-text-xs tw-leading-relaxed tw-text-main"
-      >
-        <input
-          id="create-local-vault_checkbox_backup-ack"
-          type="checkbox"
-          class="tw-mt-0.5 tw-size-4 tw-flex-none tw-rounded tw-border-border-base"
-          [checked]="backupAcknowledged()"
-          (change)="onBackupAcknowledged($event)"
-        />
-        <span>{{ "setupBackupConfirm" | i18n }}</span>
-      </label>
-
-      @if (errorMessage() != null) {
-        <p class="tw-px-4 tw-pt-1 tw-text-xs tw-text-fg-danger">{{ errorMessage() }}</p>
-      }
-
-      <div class="tw-flex tw-flex-col tw-gap-2 tw-px-4 tw-pt-2">
-        <button
-          id="create-local-vault_button_create"
-          type="button"
-          bitButton
-          buttonType="primary"
-          [block]="true"
-          [disabled]="submitting()"
-          [loading]="submitting()"
-          (click)="submit()"
-        >
-          {{ "createLocalVault" | i18n }}
-        </button>
-        <button
-          id="create-local-vault_button_restore"
-          type="button"
-          bitButton
-          buttonType="secondary"
-          [block]="true"
-          (click)="restoreFromBackup()"
-        >
-          {{ "restoreFromBackup" | i18n }}
-        </button>
-      </div>
-
-      <p class="tw-px-4 tw-pt-4 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
-        {{ "createLocalVaultNote" | i18n }}
-      </p>
-    </div>
+    <p class="agy-hint tw-pb-3 tw-pl-0 tw-text-center">{{ "unlockNoRecoveryNote" | i18n }}</p>
   </div>
 }

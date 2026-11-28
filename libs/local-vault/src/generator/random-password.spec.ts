@@ -11,6 +11,11 @@ const options = (over: Partial<PasswordOptions> = {}): PasswordOptions => ({
 });
 
 describe("generatePassword", () => {
+  it("defaults to a 20-character password", () => {
+    expect(DEFAULT_PASSWORD_OPTIONS.length).toBe(20);
+    expect(generatePassword(DEFAULT_PASSWORD_OPTIONS)).toHaveLength(20);
+  });
+
   it("honours the requested length", () => {
     for (const length of [4, 12, 20, 64, 128]) {
       expect(generatePassword(options({ length }))).toHaveLength(length);

@@ -25,7 +25,6 @@ import { BiometricsStatus, KeyService } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import { SymmetricCryptoKey } from "@localpass/legacy-crypto";
 import { LogService } from "@localpass/logging";
-import { CommandDefinition, MessageListener } from "@localpass/messaging";
 import { UnlockService } from "@localpass/unlock";
 import { UserId } from "@localpass/user-core";
 
@@ -43,7 +42,6 @@ describe("MasterPasswordLockComponent", () => {
   const toastService = mock<ToastService>();
   const logService = mock<LogService>();
   const platformUtilsService = mock<PlatformUtilsService>();
-  const messageListener = mock<MessageListener>();
   const webAuthnPrfUnlockService = mock<WebAuthnPrfUnlockService>();
   const dialogService = mock<DialogService>();
   const unlockService = mock<UnlockService>();
@@ -88,10 +86,10 @@ describe("MasterPasswordLockComponent", () => {
 
   const getFormElements = (form: DebugElement) => ({
     masterPasswordInput: form.query(By.css('input[formControlName="masterPassword"]')),
-    toggleButton: form.query(By.css("button[bitPasswordInputToggle]")),
     submitButton: form.query(By.css('button[type="submit"]')),
-    logoutButton: form.query(By.css('button[type="button"]:not([bitPasswordInputToggle])')),
-    secondaryButton: form.query(By.css('button[buttonType="secondary"]')),
+    logoutButton: form.query(By.css('[data-testid="lock-master-password-logout-button"]')),
+    biometricsSwapButton: form.query(By.css('[data-testid="lock-biometric-swap-button"]')),
+    pinSwapButton: form.query(By.css('[data-testid="lock-pin-swap-button"]')),
   });
 
   beforeEach(async () => {
@@ -116,7 +114,6 @@ describe("MasterPasswordLockComponent", () => {
         { provide: ToastService, useValue: toastService },
         { provide: LogService, useValue: logService },
         { provide: PlatformUtilsService, useValue: platformUtilsService },
-        { provide: MessageListener, useValue: messageListener },
         { provide: WebAuthnPrfUnlockService, useValue: webAuthnPrfUnlockService },
         { provide: DialogService, useValue: dialogService },
         { provide: UnlockService, useValue: unlockService },
@@ -124,9 +121,8 @@ describe("MasterPasswordLockComponent", () => {
       ],
     }).compileComponents();
 
-    // Construct as a non-local client so the account-model controls (log out) render; the
-    // LocalPass browser/desktop lock screens intentionally omit them.
-    platformUtilsService.getClientType.mockReturnValue(ClientType.Web);
+    // The lock card is shared by the browser and desktop clients.
+    platformUtilsService.getClientType.mockReturnValue(ClientType.Browser);
     fixture = TestBed.createComponent(MasterPasswordLockComponent);
     component = fixture.componentInstance;
   });
@@ -153,15 +149,7 @@ describe("MasterPasswordLockComponent", () => {
             name: "masterPassword",
             required: true,
           });
-          expect(el.attributes).toHaveProperty("bitInput");
-        },
-      },
-      {
-        name: "password toggle button",
-        selector: "toggleButton",
-        expectations: (el: HTMLButtonElement) => {
-          expect(el.type).toBe("button");
-          expect(el.attributes).toHaveProperty("bitIconButton");
+          expect(el.classList.contains("agy-unlock-input")).toBe(true);
         },
       },
       {
@@ -172,7 +160,7 @@ describe("MasterPasswordLockComponent", () => {
             type: "submit",
             textContent: expect.stringContaining("unlock"),
           });
-          expect(el.attributes).toHaveProperty("bitButton");
+          expect(el.classList.contains("agy-btn")).toBe(true);
         },
       },
       {
@@ -183,7 +171,6 @@ describe("MasterPasswordLockComponent", () => {
             type: "button",
             textContent: expect.stringContaining("logOut"),
           });
-          expect(el.attributes).toHaveProperty("bitButton");
         },
       },
     ];
@@ -208,16 +195,19 @@ describe("MasterPasswordLockComponent", () => {
             },
             "swapBiometrics",
           ),
+        selector: "biometricsSwapButton",
         expectHidden: true,
       },
       {
         case: "biometrics swap button when biometrics is disabled",
         setup: () => setupComponent({}, "swapBiometrics"),
+        selector: "biometricsSwapButton",
         expectHidden: true,
       },
       {
         case: "PIN swap button when PIN is disabled",
         setup: () => setupComponent({}),
+        selector: "pinSwapButton",
         expectHidden: true,
       },
       {
@@ -230,13 +220,14 @@ describe("MasterPasswordLockComponent", () => {
               biometricsStatus: BiometricsStatus.PlatformUnsupported,
             },
           }),
+        selector: "pinSwapButton",
         expectHidden: true,
       },
     ];
 
-    test.each(hiddenButtonTests)("doesn't render $case", ({ setup, expectHidden }) => {
-      const { secondaryButton } = setup();
-      expect(!!secondaryButton).toBe(!expectHidden);
+    test.each(hiddenButtonTests)("doesn't render $case", ({ setup, selector, expectHidden }) => {
+      const element = setup()[selector as "biometricsSwapButton" | "pinSwapButton"];
+      expect(!!element).toBe(!expectHidden);
     });
   });
 
@@ -274,55 +265,6 @@ describe("MasterPasswordLockComponent", () => {
       expect(formGroup?.invalid).toEqual(false);
       expect(formGroup?.get("masterPassword")?.hasError("required")).toBe(false);
     });
-
-    it("should toggle password visibility when toggle button is clicked", async () => {
-      const toggleButton = setup.toggleButton;
-      expect(toggleButton).toBeTruthy();
-      expect(toggleButton.nativeElement).toBeInstanceOf(HTMLButtonElement);
-      const toggleButtonElement = toggleButton.nativeElement as HTMLButtonElement;
-      const input = setup.masterPasswordInput;
-      expect(input).toBeTruthy();
-      expect(input.nativeElement).toBeInstanceOf(HTMLInputElement);
-      const inputElement = input.nativeElement as HTMLInputElement;
-
-      // Initially password should be hidden
-      expect(inputElement.type).toEqual("password");
-
-      // Click toggle button
-      toggleButtonElement.click();
-      fixture.detectChanges();
-
-      expect(inputElement.type).toEqual("text");
-
-      // Click toggle button again
-      toggleButtonElement.click();
-      fixture.detectChanges();
-
-      expect(inputElement.type).toEqual("password");
-    });
-  });
-
-  describe("ngOnInit", () => {
-    test.each([ClientType.Browser, ClientType.Web])(
-      "does nothing when client type is %s",
-      async (clientType) => {
-        platformUtilsService.getClientType.mockReturnValue(clientType);
-        messageListener.messages$.mockReturnValue(of({}));
-
-        await component.ngOnInit();
-
-        expect(messageListener.messages$).not.toHaveBeenCalled();
-      },
-    );
-
-    it("subscribes to windowHidden messages when client type is Desktop", async () => {
-      platformUtilsService.getClientType.mockReturnValue(ClientType.Desktop);
-      messageListener.messages$.mockReturnValue(of({}));
-
-      await component.ngOnInit();
-
-      expect(messageListener.messages$).toHaveBeenCalledWith(new CommandDefinition("windowHidden"));
-    });
   });
 
   describe("logout", () => {
@@ -356,6 +298,7 @@ describe("MasterPasswordLockComponent", () => {
           },
         },
         expectedText: "unlockWithPin",
+        selector: "pinSwapButton",
         shouldShow: true,
         shouldEnable: true,
       },
@@ -369,6 +312,7 @@ describe("MasterPasswordLockComponent", () => {
           },
         },
         expectedText: "unlockWithPin",
+        selector: "pinSwapButton",
         shouldShow: false,
         shouldEnable: false,
       },
@@ -379,6 +323,7 @@ describe("MasterPasswordLockComponent", () => {
           biometrics: { enabled: true, biometricsStatus: BiometricsStatus.Available },
         },
         expectedText: "swapBiometrics",
+        selector: "biometricsSwapButton",
         shouldShow: true,
         shouldEnable: true,
       },
@@ -389,6 +334,7 @@ describe("MasterPasswordLockComponent", () => {
           biometrics: { enabled: false, biometricsStatus: BiometricsStatus.Available },
         },
         expectedText: "swapBiometrics",
+        selector: "biometricsSwapButton",
         shouldShow: true,
         shouldEnable: false,
       },
@@ -399,6 +345,7 @@ describe("MasterPasswordLockComponent", () => {
           biometrics: { enabled: true, biometricsStatus: BiometricsStatus.PlatformUnsupported },
         },
         expectedText: "swapBiometrics",
+        selector: "biometricsSwapButton",
         shouldShow: false,
         shouldEnable: false,
       },
@@ -409,6 +356,7 @@ describe("MasterPasswordLockComponent", () => {
           biometrics: { enabled: false, biometricsStatus: BiometricsStatus.PlatformUnsupported },
         },
         expectedText: "swapBiometrics",
+        selector: "biometricsSwapButton",
         shouldShow: false,
         shouldEnable: false,
       },
@@ -416,26 +364,23 @@ describe("MasterPasswordLockComponent", () => {
 
     test.each(swapButtonScenarios)(
       "renders and handles $name",
-      ({ unlockOptions, expectedText, shouldShow, shouldEnable }) => {
-        const { secondaryButton } = setupComponent(unlockOptions, expectedText);
+      ({ unlockOptions, expectedText, selector, shouldShow, shouldEnable }) => {
+        const element = setupComponent(unlockOptions, expectedText)[
+          selector as "biometricsSwapButton" | "pinSwapButton"
+        ];
 
         if (shouldShow) {
-          expect(secondaryButton).toBeTruthy();
-          expect(secondaryButton.nativeElement.textContent?.trim()).toBe(expectedText);
-
-          if (shouldEnable) {
-            expect(secondaryButton.nativeElement.getAttribute("aria-disabled")).not.toBe("true");
-          } else {
-            expect(secondaryButton.nativeElement.getAttribute("aria-disabled")).toBe("true");
-          }
+          expect(element).toBeTruthy();
+          expect(element.nativeElement.textContent?.trim()).toBe(expectedText);
+          expect((element.nativeElement as HTMLButtonElement).disabled).toBe(!shouldEnable);
         } else {
-          expect(secondaryButton).toBeFalsy();
+          expect(element).toBeFalsy();
         }
       },
     );
 
     it("emits swapToBiometrics when biometrics swap button is clicked", () => {
-      const { secondaryButton } = setupComponent(
+      const { biometricsSwapButton } = setupComponent(
         {
           pin: { enabled: false },
           biometrics: { enabled: true, biometricsStatus: BiometricsStatus.Available },
@@ -447,13 +392,13 @@ describe("MasterPasswordLockComponent", () => {
         emitted = true;
       });
 
-      secondaryButton.nativeElement.click();
+      biometricsSwapButton.nativeElement.click();
 
       expect(emitted).toBe(true);
     });
 
     it("emits swapToPin when PIN swap button is clicked", () => {
-      const { secondaryButton } = setupComponent({
+      const { pinSwapButton } = setupComponent({
         pin: { enabled: true },
         biometrics: {
           enabled: false,
@@ -465,7 +410,7 @@ describe("MasterPasswordLockComponent", () => {
         emitted = true;
       });
 
-      secondaryButton.nativeElement.click();
+      pinSwapButton.nativeElement.click();
 
       expect(emitted).toBe(true);
     });
@@ -572,7 +517,7 @@ describe("MasterPasswordLockComponent", () => {
       const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'))
         .nativeElement as HTMLButtonElement;
       expect(component.formGroup.controls.masterPassword.disabled).toBe(true);
-      expect(submitButton.getAttribute("aria-disabled")).toBe("true");
+      expect(submitButton.disabled).toBe(true);
       expect(fixture.nativeElement.textContent).toContain("unlockWaitTitle");
       expect(fixture.nativeElement.textContent).toContain("unlockWaitRemaining");
 

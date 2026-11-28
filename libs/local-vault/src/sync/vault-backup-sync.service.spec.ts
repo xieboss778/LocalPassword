@@ -8,7 +8,7 @@ import { S3PreconditionFailedError } from "../s3/s3-client";
 
 import { ACCOUNT_OBJECT, MANIFEST_OBJECT, SNAPSHOT_PREFIX } from "./backup-layout";
 import { LocalAccountObject } from "./local-account-object";
-import { Snapshot } from "./snapshot-merge";
+import { Snapshot, VaultRecord } from "./snapshot-merge";
 import { RemoteVaultMismatchError, VaultBackupSyncService } from "./vault-backup-sync.service";
 
 const userId = "11111111-1111-1111-1111-111111111111" as UserId;
@@ -127,10 +127,13 @@ function setup(
 
 function keyDefault(name: string, initial: Record<string, unknown>): unknown {
   if (name.includes("backupSyncState")) {
-    return { manifestEtag: null, lastSyncedAt: null, pending: false };
+    return { manifestEtag: null, lastSyncedAt: null, generation: null, pending: false };
+  }
+  if (name.includes("pendingConflicts")) {
+    return initial[name] ?? [];
   }
   if (name.includes("baseSnapshot")) {
-    return null;
+    return initial[name] ?? null;
   }
   if (name.includes("backupConfig")) {
     return null;
@@ -158,6 +161,46 @@ async function configure(service: VaultBackupSyncService): Promise<void> {
     secretAccessKey: "s",
     forcePathStyle: false,
   });
+}
+
+function valueOf<T>(state: Map<string, BehaviorSubject<unknown>>, key: string): T {
+  return state.get(key)!.value as T;
+}
+
+function remoteConflictFixture(localName: string, remoteName: string) {
+  const base: Snapshot = {
+    updatedAt: "2026-11-24T09:00:00.000Z",
+    ciphers: [
+      {
+        id: "c1",
+        revisionDate: "2026-11-24T09:00:00.000Z",
+        data: { id: "c1", login: { username: "base" } },
+      },
+    ],
+    folders: [],
+    tombstones: [],
+  };
+  const local: VaultRecord = {
+    id: "c1",
+    revisionDate: "2026-11-24T10:00:00.000Z",
+    deletedDate: null,
+    data: {
+      id: "c1",
+      revisionDate: "2026-11-24T10:00:00.000Z",
+      login: { username: localName },
+    },
+  };
+  const remote: VaultRecord = {
+    id: "c1",
+    revisionDate: "2026-11-24T11:00:00.000Z",
+    deletedDate: null,
+    data: {
+      id: "c1",
+      revisionDate: "2026-11-24T11:00:00.000Z",
+      login: { username: remoteName },
+    },
+  };
+  return { base, local, remote };
 }
 
 describe("VaultBackupSyncService", () => {
@@ -213,7 +256,7 @@ describe("VaultBackupSyncService", () => {
 
   it("pushes a snapshot and points the manifest at it", async () => {
     const initialCiphers = { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } };
-    const { service, fakeS3 } = setup({ "localVault:ciphers": initialCiphers });
+    const { service, fakeS3 } = setup({ "ciphers:ciphers": initialCiphers });
     await service.configure(userId, {
       endpoint: "https://acct.r2.cloudflarestorage.com",
       region: "auto",
@@ -228,6 +271,70 @@ describe("VaultBackupSyncService", () => {
     expect(result.uploaded).toBe(true);
     const manifest = JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body);
     expect(fakeS3.objects.has(`${SNAPSHOT_PREFIX}${manifest.snapshot}.json`)).toBe(true);
+  });
+
+  it("counts every record as pending before the first sync", async () => {
+    const { service } = setup({
+      "ciphers:ciphers": {
+        c1: { revisionDate: "2026-11-24T09:00:00.000Z" },
+        c2: { revisionDate: "2026-11-24T09:00:00.000Z" },
+      },
+      "folder:folders": { f1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+
+    await expect(service.countPendingChanges(userId)).resolves.toBe(3);
+  });
+
+  it("counts only records that changed since the last sync", async () => {
+    const base: Snapshot = {
+      updatedAt: "2026-11-24T09:00:00.000Z",
+      ciphers: [
+        { id: "same", revisionDate: "2026-11-24T09:00:00.000Z", deletedDate: null, data: {} },
+        { id: "edited", revisionDate: "2026-11-24T09:00:00.000Z", deletedDate: null, data: {} },
+        { id: "removed", revisionDate: "2026-11-24T09:00:00.000Z", deletedDate: null, data: {} },
+        {
+          id: "restored",
+          revisionDate: "2026-11-24T09:00:00.000Z",
+          deletedDate: "2026-11-24T09:30:00.000Z",
+          data: {},
+        },
+      ],
+      folders: [
+        {
+          id: "folder-same",
+          revisionDate: "2026-11-24T09:00:00.000Z",
+          deletedDate: null,
+          data: {},
+        },
+      ],
+      tombstones: [],
+    };
+    const { service } = setup({
+      "localVaultSync:baseSnapshot": base,
+      "ciphers:ciphers": {
+        same: { revisionDate: "2026-11-24T09:00:00.000Z" },
+        edited: { revisionDate: "2026-11-24T10:00:00.000Z" },
+        added: { revisionDate: "2026-11-24T10:00:00.000Z" },
+        restored: { revisionDate: "2026-11-24T10:00:00.000Z" },
+      },
+      "folder:folders": {
+        "folder-same": { revisionDate: "2026-11-24T09:00:00.000Z" },
+      },
+    });
+
+    // edited, added, removed, and restored; `same` and `folder-same` match the base.
+    await expect(service.countPendingChanges(userId)).resolves.toBe(4);
+  });
+
+  it("reports no pending changes after a push", async () => {
+    const { service } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+
+    await expect(service.countPendingChanges(userId)).resolves.toBe(1);
+    await service.push(userId);
+    await expect(service.countPendingChanges(userId)).resolves.toBe(0);
   });
 
   it("merges the remote snapshot into local state on pull", async () => {
@@ -251,6 +358,143 @@ describe("VaultBackupSyncService", () => {
     const applied = await service.applySnapshot(userId, JSON.parse(remoteBody) as Snapshot);
 
     expect(applied).toBe(1);
+  });
+
+  it("holds this device's record and stores the cloud branch on a conflict", async () => {
+    const fixture = remoteConflictFixture("local", "remote");
+    const { service, fakeS3, state } = setup({
+      "localVaultSync:baseSnapshot": fixture.base,
+      "ciphers:ciphers": { c1: fixture.local.data },
+    });
+    await configure(service);
+    fakeS3.objects.set(MANIFEST_OBJECT, {
+      body: JSON.stringify({ snapshot: "remote-1", updatedAt: "2026-11-24T11:00:00.000Z" }),
+      etag: "etag-m",
+    });
+    fakeS3.objects.set(`${SNAPSHOT_PREFIX}remote-1.json`, {
+      body: JSON.stringify({
+        updatedAt: "2026-11-24T11:00:00.000Z",
+        ciphers: [
+          {
+            id: "c1",
+            revisionDate: "2026-11-24T11:00:00.000Z",
+            data: { id: "c1", login: { username: "remote" } },
+          },
+        ],
+        folders: [],
+        tombstones: [],
+      } satisfies Snapshot),
+      etag: "etag-s",
+    });
+
+    const result = await service.pull(userId);
+
+    expect(result.conflicts).toEqual([
+      {
+        id: "c1",
+        localRevision: "2026-11-24T10:00:00.000Z",
+        remoteRevision: "2026-11-24T11:00:00.000Z",
+        winner: "local",
+      },
+    ]);
+    expect(valueOf<Record<string, any>>(state, "ciphers:ciphers").c1.login.username).toBe("local");
+
+    const pending = valueOf<any[]>(state, "localVaultSync:pendingConflicts");
+    expect(pending).toHaveLength(1);
+    expect(pending[0].kind).toBe("cipher");
+    expect(pending[0].remote.data.login.username).toBe("remote");
+    // The keep-both copy id must be a UUID: non-UUID ids break SDK cipher decryption.
+    expect(pending[0].copyId).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
+    expect(valueOf<{ pending: boolean }>(state, "localVaultSync:backupSyncState").pending).toBe(
+      true,
+    );
+  });
+
+  it("does not upload while a conflict needs a decision", async () => {
+    const fixture = remoteConflictFixture("local", "remote");
+    const copyId = "0b7a9f2e-3a6d-5b6f-8f0a-1c2d3e4f5a6b";
+    const pending = [
+      { id: "c1", kind: "cipher", local: fixture.local, remote: fixture.remote, copyId },
+    ];
+    const { service, fakeS3, state } = setup({
+      "ciphers:ciphers": { c1: fixture.local.data },
+    });
+    await configure(service);
+    state.get("localVaultSync:pendingConflicts")!.next(pending);
+
+    const result = await service.sync(userId);
+
+    expect(result.pushed.uploaded).toBe(false);
+    expect(result.pulled.conflicts).toHaveLength(1);
+    expect(fakeS3.objects.size).toBe(0);
+    expect(valueOf<any[]>(state, "localVaultSync:pendingConflicts")).toHaveLength(1);
+  });
+
+  it("keeps this device's record when resolving with local", async () => {
+    const fixture = remoteConflictFixture("local", "remote");
+    const copyId = "0b7a9f2e-3a6d-5b6f-8f0a-1c2d3e4f5a6b";
+    const pending = [
+      { id: "c1", kind: "cipher", local: fixture.local, remote: fixture.remote, copyId },
+    ];
+    const { service, state } = setup({
+      "ciphers:ciphers": { c1: fixture.local.data },
+    });
+    await configure(service);
+    state.get("localVaultSync:pendingConflicts")!.next(pending);
+
+    const result = await service.resolveConflicts(userId, { c1: "local" });
+
+    expect(result.uploaded).toBe(true);
+    expect(valueOf<Record<string, any>>(state, "ciphers:ciphers").c1.login.username).toBe("local");
+    expect(valueOf<any[]>(state, "localVaultSync:pendingConflicts")).toHaveLength(0);
+  });
+
+  it("writes the cloud record when resolving with remote", async () => {
+    const fixture = remoteConflictFixture("local", "remote");
+    const copyId = "0b7a9f2e-3a6d-5b6f-8f0a-1c2d3e4f5a6b";
+    const pending = [
+      { id: "c1", kind: "cipher", local: fixture.local, remote: fixture.remote, copyId },
+    ];
+    const { service, state } = setup({
+      "ciphers:ciphers": { c1: fixture.local.data },
+    });
+    await configure(service);
+    state.get("localVaultSync:pendingConflicts")!.next(pending);
+
+    const result = await service.resolveConflicts(userId, { c1: "remote" });
+
+    expect(result.uploaded).toBe(true);
+    expect(valueOf<Record<string, any>>(state, "ciphers:ciphers").c1.login.username).toBe("remote");
+    expect(valueOf<any[]>(state, "localVaultSync:pendingConflicts")).toHaveLength(0);
+  });
+
+  it("adds the cloud branch as a stable copy when resolving with both", async () => {
+    const fixture = remoteConflictFixture("local", "remote");
+    const copyId = "0b7a9f2e-3a6d-5b6f-8f0a-1c2d3e4f5a6b";
+    const pending = [
+      { id: "c1", kind: "cipher", local: fixture.local, remote: fixture.remote, copyId },
+    ];
+    const { service, state } = setup({
+      "ciphers:ciphers": { c1: fixture.local.data },
+    });
+    await configure(service);
+    state.get("localVaultSync:pendingConflicts")!.next(pending);
+
+    await service.resolveConflicts(userId, { c1: "both" });
+
+    const ciphers = valueOf<Record<string, any>>(state, "ciphers:ciphers");
+    expect(Object.keys(ciphers).sort()).toEqual([copyId, "c1"].sort());
+    expect(ciphers.c1.login.username).toBe("local");
+    expect(ciphers[copyId].login.username).toBe("remote");
+
+    // A retry after a failed upload replays the same held conflict; the copy must not duplicate.
+    state.get("localVaultSync:pendingConflicts")!.next(pending);
+    await service.resolveConflicts(userId, { c1: "both" });
+    expect(Object.keys(valueOf<Record<string, any>>(state, "ciphers:ciphers")).sort()).toEqual(
+      [copyId, "c1"].sort(),
+    );
   });
 
   it("retries on a manifest race instead of overwriting the other device", async () => {
@@ -347,6 +591,33 @@ describe("VaultBackupSyncService", () => {
     await expect(service.push(userId)).rejects.toThrow();
 
     expect([...fakeS3.objects.keys()].filter((key) => key.startsWith(SNAPSHOT_PREFIX))).toEqual([]);
+  });
+
+  it("advances the manifest generation on every push and adopts a remote one", async () => {
+    const { service, fakeS3, state } = setup();
+    await configure(service);
+
+    await service.push(userId);
+    const first = JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body);
+    expect(first.gen).toBe(1);
+    expect(
+      valueOf<{ generation: number }>(state, "localVaultSync:backupSyncState").generation,
+    ).toBe(1);
+
+    await service.push(userId);
+    expect(JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body).gen).toBe(2);
+
+    // Another device advanced the bucket to gen 7; the retry must continue from there.
+    fakeS3.objects.set(MANIFEST_OBJECT, {
+      body: JSON.stringify({
+        snapshot: "remote-7",
+        updatedAt: "2026-11-24T09:00:00.000Z",
+        gen: 7,
+      }),
+      etag: "etag-remote",
+    });
+    await service.push(userId);
+    expect(JSON.parse(fakeS3.objects.get(MANIFEST_OBJECT)!.body).gen).toBe(8);
   });
 
   it("keeps only the newest snapshots after a push", async () => {

@@ -9,27 +9,16 @@ import {
   signal,
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
-import { ClientType } from "@localpass/client-type";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { UserKey } from "@localpass/common/types/key";
-import {
-  AsyncActionsModule,
-  ButtonModule,
-  FormFieldModule,
-  IconButtonModule,
-  IconModule,
-  LinkModule,
-  ToastService,
-} from "@localpass/components";
+import { AsyncActionsModule, IconModule, ToastService } from "@localpass/components";
 import { BiometricsStatus, KeyService } from "@localpass/key-management";
 import { LogService } from "@localpass/logging";
-import { CommandDefinition, MessageListener } from "@localpass/messaging";
 import { UnlockService } from "@localpass/unlock";
 import { UserId } from "@localpass/user-core";
 
@@ -37,6 +26,40 @@ import { UnlockOptions } from "../../services/lock-component.service";
 import { UnlockViaPrfComponent } from "../unlock-via-prf.component";
 
 const MAX_INVALID_PASSWORD_ATTEMPTS = 5;
+const MP_LOCKOUT_STORAGE_PREFIX = "lp:lockout:mp:";
+
+interface StoredLockout {
+  readonly attempts: number;
+  readonly waitUntil: number;
+}
+
+function readStoredLockout(key: string): StoredLockout {
+  try {
+    const raw = globalThis.localStorage?.getItem(key);
+    if (!raw) {
+      return { attempts: 0, waitUntil: 0 };
+    }
+    const parsed = JSON.parse(raw) as Partial<StoredLockout>;
+    return {
+      attempts: typeof parsed.attempts === "number" ? parsed.attempts : 0,
+      waitUntil: typeof parsed.waitUntil === "number" ? parsed.waitUntil : 0,
+    };
+  } catch {
+    return { attempts: 0, waitUntil: 0 };
+  }
+}
+
+function writeStoredLockout(key: string, value: StoredLockout | null): void {
+  try {
+    if (value == null) {
+      globalThis.localStorage?.removeItem(key);
+    } else {
+      globalThis.localStorage?.setItem(key, JSON.stringify(value));
+    }
+  } catch {
+    // Storage may be unavailable in restricted contexts; in-memory backoff still applies.
+  }
+}
 
 // FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -46,12 +69,8 @@ const MAX_INVALID_PASSWORD_ATTEMPTS = 5;
   imports: [
     JslibModule,
     ReactiveFormsModule,
-    ButtonModule,
-    FormFieldModule,
     AsyncActionsModule,
-    IconButtonModule,
     IconModule,
-    LinkModule,
     UnlockViaPrfComponent,
   ],
 })
@@ -60,8 +79,6 @@ export class MasterPasswordLockComponent implements OnInit, OnDestroy {
   private readonly i18nService = inject(I18nService);
   private readonly toastService = inject(ToastService);
   private readonly logService = inject(LogService);
-  private readonly platformUtilsService = inject(PlatformUtilsService);
-  private readonly messageListener = inject(MessageListener);
   private readonly unlockService = inject(UnlockService);
   private readonly keyService = inject(KeyService);
 
@@ -69,6 +86,8 @@ export class MasterPasswordLockComponent implements OnInit, OnDestroy {
   readonly biometricUnlockBtnText = input.required<string>();
   /** LocalPass lock screens expose "restore from backup" next to the security-key link. */
   readonly showRestore = input(false);
+  /** Local vaults hide destructive logout because there is no cloud account to sign back into. */
+  readonly showLogOut = input(true);
   readonly showPinSwap = computed(() => this.unlockOptions().pin.enabled ?? false);
   readonly biometricsAvailable = computed(() => this.unlockOptions().biometrics.enabled ?? false);
   readonly showBiometricsSwap = computed(() => {
@@ -86,19 +105,20 @@ export class MasterPasswordLockComponent implements OnInit, OnDestroy {
   logOut = output<void>();
   restore = output<void>();
 
-  protected readonly isBrowser = this.platformUtilsService.getClientType() === ClientType.Browser;
-  protected readonly isLocalClient =
-    this.platformUtilsService.getClientType() === ClientType.Browser ||
-    this.platformUtilsService.getClientType() === ClientType.Desktop;
-
-  protected showPassword = false;
   /** LocalPass: repeated wrong passwords pause the form instead of ever logging out or wiping. */
   protected readonly waitingSeconds = signal(0);
   protected readonly waiting = computed(() => this.waitingSeconds() > 0);
+  /** 等待态的大号倒计时，原型用 `mm:ss` 等宽数字呈现。 */
+  protected readonly waitingClock = computed(() => {
+    const seconds = this.waitingSeconds();
+    return `${Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
+  });
   private invalidAttempts = 0;
   private waitUntil = 0;
   private waitTimer: ReturnType<typeof setInterval> | null = null;
-  private destroy$ = new Subject<void>();
+  private activeLockoutKey: string | null = null;
 
   formGroup = new FormGroup({
     masterPassword: new FormControl("", {
@@ -108,20 +128,25 @@ export class MasterPasswordLockComponent implements OnInit, OnDestroy {
   });
 
   async ngOnInit(): Promise<void> {
-    if (this.platformUtilsService.getClientType() === ClientType.Desktop) {
-      this.messageListener
-        .messages$(new CommandDefinition("windowHidden"))
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.showPassword = false;
-        });
+    try {
+      const activeUserId = await firstValueFrom(getUserId(this.accountService.activeAccount$));
+      if (!activeUserId) {
+        return;
+      }
+      this.activeLockoutKey = `${MP_LOCKOUT_STORAGE_PREFIX}${activeUserId}`;
+      const stored = readStoredLockout(this.activeLockoutKey);
+      this.invalidAttempts = stored.attempts;
+      const remainingMs = stored.waitUntil - Date.now();
+      if (remainingMs > 0) {
+        this.startWait(remainingMs);
+      }
+    } catch {
+      // Ignore if account stream has no active user yet.
     }
   }
 
   ngOnDestroy(): void {
     this.stopWaitTimer();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   submit = async () => {
@@ -157,6 +182,10 @@ export class MasterPasswordLockComponent implements OnInit, OnDestroy {
     try {
       await this.unlockService.unlockWithMasterPassword(activeUserId, masterPassword);
       this.invalidAttempts = 0;
+      this.waitUntil = 0;
+      const key = `${MP_LOCKOUT_STORAGE_PREFIX}${activeUserId}`;
+      this.activeLockoutKey = key;
+      writeStoredLockout(key, null);
       this.stopWaitTimer();
       const userKey = await firstValueFrom(this.keyService.userKey$(activeUserId));
       if (!userKey) {
@@ -173,12 +202,17 @@ export class MasterPasswordLockComponent implements OnInit, OnDestroy {
       );
 
       this.invalidAttempts++;
+      const key = `${MP_LOCKOUT_STORAGE_PREFIX}${activeUserId}`;
+      this.activeLockoutKey = key;
       if (this.invalidAttempts >= MAX_INVALID_PASSWORD_ATTEMPTS) {
         // 5th wrong password waits 30s, then 60s for each further failure. Never destroys data.
         const over = this.invalidAttempts - MAX_INVALID_PASSWORD_ATTEMPTS;
-        this.startWait(Math.min(60_000, 30_000 * 2 ** over));
+        const waitMs = Math.min(60_000, 30_000 * 2 ** over);
+        writeStoredLockout(key, { attempts: this.invalidAttempts, waitUntil: Date.now() + waitMs });
+        this.startWait(waitMs);
         return;
       }
+      writeStoredLockout(key, { attempts: this.invalidAttempts, waitUntil: 0 });
 
       this.toastService.showToast({
         variant: "error",

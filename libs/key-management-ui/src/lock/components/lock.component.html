@@ -4,194 +4,207 @@
   </div>
 </ng-template>
 
-<div class="tw-flex tw-h-full tw-flex-col" [class.tw-bg-background-alt]="isBrowser">
-  @if (isBrowser) {
-    <lp-hero
-      icon="bwi-localpass-shield"
-      [title]="'unlockTitle' | i18n"
-      [text]="'unlockSubtitle' | i18n"
-    ></lp-hero>
-  } @else {
-    <div class="tw-px-7 tw-pt-7 tw-pb-5">
-      @if (isDesktop) {
-        <span
-          class="tw-mb-3.5 tw-grid tw-size-14 tw-flex-none tw-place-items-center tw-rounded-2xl tw-bg-bg-brand-softer tw-text-fg-brand"
-        >
-          <bit-svg class="tw-size-9" [content]="logo" [ariaLabel]="'appLogoLabel' | i18n"></bit-svg>
-        </span>
-      } @else {
-        <bit-icon-tile icon="bwi-localpass-shield" variant="primary" size="lg"></bit-icon-tile>
-      }
-      <h1 class="tw-mb-0 tw-mt-4 tw-text-2xl tw-font-semibold tw-text-main">
-        {{ "unlockTitle" | i18n }}
-      </h1>
-      <p class="tw-mb-0 tw-mt-1 tw-text-sm tw-text-muted">{{ "unlockSubtitle" | i18n }}</p>
-    </div>
-  }
+<ng-template #unlockPanels>
+  <ng-container *ngIf="unlockOptions && !loading; else spinner">
+    <!-- Biometrics Unlock -->
+    <ng-container *ngIf="activeUnlockOption === UnlockOption.Biometrics">
+      <button
+        type="button"
+        appAutofocus
+        class="agy-btn agy-primary agy-lg agy-block tw-mt-2"
+        [disabled]="unlockingViaBiometrics || !biometricsAvailable"
+        [attr.title]="biometricUnavailabilityReason"
+        (click)="unlockViaBiometrics()"
+        data-testid="lock-biometric-unlock-button"
+      >
+        @if (unlockingViaBiometrics) {
+          <bit-icon name="bwi-spinner" class="bwi-spin tw-text-xs"></bit-icon>
+        }
+        <span> {{ biometricUnlockBtnText | i18n }}</span>
+      </button>
 
-  <div
-    class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8"
-    [class.tw-px-4]="isBrowser"
-    [class.tw-px-7]="!isBrowser"
-  >
-    <ng-container *ngIf="unlockOptions && !loading; else spinner">
-      <!-- Biometrics Unlock -->
-      <ng-container *ngIf="activeUnlockOption === UnlockOption.Biometrics">
+      <p class="agy-unlock-or">{{ "or" | i18n }}</p>
+
+      <ng-container *ngIf="unlockOptions.masterPassword.enabled">
         <button
           type="button"
-          bitButton
-          appAutofocus
-          buttonType="primary"
-          class="tw-mb-3"
-          [disabled]="unlockingViaBiometrics || !biometricsAvailable"
-          [loading]="unlockingViaBiometrics"
-          block
-          [bitTooltip]="biometricUnavailabilityReason"
-          (click)="unlockViaBiometrics()"
-          data-testid="lock-biometric-unlock-button"
+          class="agy-btn agy-lg agy-block"
+          (click)="swapUnlockOption(UnlockOption.MasterPassword)"
         >
-          <span> {{ biometricUnlockBtnText | i18n }}</span>
+          {{ "unlockWithMasterPassword" | i18n }}
         </button>
+      </ng-container>
 
-        <div class="tw-flex tw-flex-col tw-space-y-3">
-          <p class="tw-text-center tw-mb-0">{{ "or" | i18n }}</p>
+      <ng-container *ngIf="unlockOptions.pin.enabled">
+        <button
+          type="button"
+          class="agy-btn agy-lg agy-block tw-mt-1"
+          (click)="swapUnlockOption(UnlockOption.Pin)"
+        >
+          {{ "unlockWithPin" | i18n }}
+        </button>
+      </ng-container>
 
-          <ng-container *ngIf="unlockOptions.pin.enabled">
-            <button
-              type="button"
-              bitButton
-              buttonType="secondary"
-              block
-              (click)="swapUnlockOption(UnlockOption.Pin)"
-            >
-              {{ "unlockWithPin" | i18n }}
-            </button>
-          </ng-container>
-
-          <ng-container *ngIf="unlockOptions.masterPassword.enabled">
-            <button
-              type="button"
-              bitButton
-              buttonType="secondary"
-              block
-              (click)="swapUnlockOption(UnlockOption.MasterPassword)"
-            >
-              {{ "unlockWithMasterPassword" | i18n }}
-            </button>
-          </ng-container>
-
-          <bit-unlock-via-prf (unlockSuccess)="onPrfUnlockSuccess($event)"></bit-unlock-via-prf>
-
-          <button type="button" bitButton block (click)="logOut()">
+      <div class="agy-foot tw-flex tw-w-full tw-flex-col tw-pt-2">
+        <bit-unlock-via-prf (unlockSuccess)="onPrfUnlockSuccess($event)"></bit-unlock-via-prf>
+        @if (isBrowser || isDesktop) {
+          <button
+            type="button"
+            class="tw-text-xs tw-font-medium tw-text-fg-brand"
+            (click)="restoreFromBackup()"
+          >
+            {{ "forgotPasswordRestore" | i18n }}
+          </button>
+        }
+        @if (!isLocalAccount) {
+          <button type="button" class="tw-text-xs tw-font-medium tw-text-muted" (click)="logOut()">
             {{ "logOut" | i18n }}
           </button>
-        </div>
-      </ng-container>
-
-      <!-- PIN Unlock -->
-      <ng-container *ngIf="unlockOptions.pin.enabled && activeUnlockOption === UnlockOption.Pin">
-        <form [bitSubmit]="submit" [formGroup]="formGroup" #pinForm>
-          <bit-form-field>
-            <bit-label>{{ "pin" | i18n }}</bit-label>
-            <input
-              #pinInput
-              (input)="tryPinWhenComplete(pinInput.value, pinForm)"
-              type="password"
-              formControlName="pin"
-              bitInput
-              appAutofocus
-              name="pin"
-              data-testid="lock-pin-input"
-              class="tw-font-mono"
-              required
-              appInputVerbatim
-              data-testid="lock-pin-input"
-            />
-            <button
-              type="button"
-              bitIconButton
-              bitSuffix
-              bitPasswordInputToggle
-              [(toggled)]="showPassword"
-            ></button>
-          </bit-form-field>
-
-          <div class="tw-flex tw-flex-col tw-space-y-3">
-            <button
-              type="submit"
-              bitButton
-              bitFormButton
-              buttonType="primary"
-              block
-              data-testid="lock-pin-unlock-button"
-            >
-              {{ "unlock" | i18n }}
-            </button>
-
-            <p class="tw-text-center">{{ "or" | i18n }}</p>
-
-            <ng-container *ngIf="showBiometrics">
-              <button
-                type="button"
-                bitButton
-                bitFormButton
-                buttonType="secondary"
-                [disabled]="!biometricsAvailable"
-                block
-                (click)="swapUnlockOption(UnlockOption.Biometrics)"
-                data-testid="lock-biometric-swap-button"
-              >
-                <span> {{ biometricUnlockBtnText | i18n }}</span>
-              </button>
-            </ng-container>
-
-            <ng-container *ngIf="unlockOptions.masterPassword.enabled">
-              <button
-                type="button"
-                bitButton
-                bitFormButton
-                buttonType="secondary"
-                block
-                (click)="swapUnlockOption(UnlockOption.MasterPassword)"
-              >
-                {{ "unlockWithMasterPassword" | i18n }}
-              </button>
-            </ng-container>
-
-            <bit-unlock-via-prf
-              [formButton]="true"
-              (unlockSuccess)="onPrfUnlockSuccess($event)"
-            ></bit-unlock-via-prf>
-
-            <button type="button" bitButton bitFormButton block (click)="logOut()">
-              {{ "logOut" | i18n }}
-            </button>
-          </div>
-        </form>
-      </ng-container>
-
-      <!-- MP Unlock -->
-      @if (
-        unlockOptions.masterPassword.enabled && activeUnlockOption === UnlockOption.MasterPassword
-      ) {
-        <bit-master-password-lock
-          [unlockOptions]="unlockOptions"
-          [biometricUnlockBtnText]="biometricUnlockBtnText"
-          [showRestore]="isBrowser || isDesktop"
-          (successfulUnlock)="successfulMasterPasswordUnlock($event)"
-          (swapToBiometrics)="swapUnlockOption(UnlockOption.Biometrics)"
-          (swapToPin)="swapUnlockOption(UnlockOption.Pin)"
-          (prfUnlockSuccess)="onPrfUnlockSuccess($event)"
-          (logOut)="logOut()"
-          (restore)="restoreFromBackup()"
-        ></bit-master-password-lock>
-      }
+        }
+      </div>
     </ng-container>
 
-    @if (isBrowser) {
-      <p class="tw-px-3 tw-pt-4 tw-pb-2 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+    <!-- PIN Unlock -->
+    <ng-container *ngIf="unlockOptions.pin.enabled && activeUnlockOption === UnlockOption.Pin">
+      <form [bitSubmit]="submit" [formGroup]="formGroup" #pinForm>
+        @if (pinWaitingSeconds > 0) {
+          <div class="agy-callout agy-warn tw-mb-2" role="status" aria-live="polite">
+            <bit-icon
+              name="bwi-exclamation-triangle"
+              class="tw-flex-none tw-text-xs"
+              aria-hidden="true"
+            ></bit-icon>
+            <div>
+              <div class="agy-k">{{ "unlockWaitTitle" | i18n }}</div>
+              <div>{{ "unlockWaitText" | i18n }}</div>
+              <div class="agy-waitclock" aria-hidden="true">{{ pinWaitingClock }}</div>
+              <span class="tw-sr-only">{{
+                "unlockWaitRemaining" | i18n: pinWaitingSeconds.toString()
+              }}</span>
+            </div>
+          </div>
+        }
+
+        <input
+          #pinInput
+          id="pin"
+          (input)="tryPinWhenComplete(pinInput.value, pinForm)"
+          type="password"
+          formControlName="pin"
+          appAutofocus
+          name="pin"
+          data-testid="lock-pin-input"
+          class="agy-unlock-input"
+          required
+          appInputVerbatim
+          [placeholder]="(pinWaitingSeconds > 0 ? 'unlockWaitPlaceholder' : 'pin') | i18n"
+          [attr.aria-label]="'pin' | i18n"
+        />
+
+        <button
+          type="submit"
+          class="agy-btn agy-primary agy-lg agy-block tw-mt-2"
+          [disabled]="pinWaitingSeconds > 0"
+          data-testid="lock-pin-unlock-button"
+        >
+          {{ "unlock" | i18n }}
+        </button>
+
+        <p class="agy-unlock-or">{{ "or" | i18n }}</p>
+
+        <ng-container *ngIf="showBiometrics">
+          <button
+            type="button"
+            class="agy-btn agy-lg agy-block"
+            [disabled]="!biometricsAvailable"
+            (click)="swapUnlockOption(UnlockOption.Biometrics)"
+            data-testid="lock-biometric-swap-button"
+          >
+            <span> {{ biometricUnlockBtnText | i18n }}</span>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="unlockOptions.masterPassword.enabled">
+          <button
+            type="button"
+            class="agy-btn agy-lg agy-block tw-mt-1"
+            (click)="swapUnlockOption(UnlockOption.MasterPassword)"
+          >
+            {{ "unlockWithMasterPassword" | i18n }}
+          </button>
+        </ng-container>
+
+        <div class="agy-foot tw-flex tw-w-full tw-flex-col tw-pt-2">
+          <bit-unlock-via-prf
+            [link]="true"
+            (unlockSuccess)="onPrfUnlockSuccess($event)"
+          ></bit-unlock-via-prf>
+          @if (isBrowser || isDesktop) {
+            <button
+              type="button"
+              class="tw-text-xs tw-font-medium tw-text-fg-brand"
+              (click)="restoreFromBackup()"
+            >
+              {{ "forgotPasswordRestore" | i18n }}
+            </button>
+          }
+          @if (!isLocalAccount) {
+            <button
+              type="button"
+              class="tw-text-xs tw-font-medium tw-text-muted"
+              (click)="logOut()"
+            >
+              {{ "logOut" | i18n }}
+            </button>
+          }
+        </div>
+      </form>
+    </ng-container>
+
+    <!-- MP Unlock -->
+    @if (
+      unlockOptions.masterPassword.enabled && activeUnlockOption === UnlockOption.MasterPassword
+    ) {
+      <bit-master-password-lock
+        [unlockOptions]="unlockOptions"
+        [biometricUnlockBtnText]="biometricUnlockBtnText"
+        [showRestore]="isBrowser || isDesktop"
+        [showLogOut]="!isLocalAccount"
+        (successfulUnlock)="successfulMasterPasswordUnlock($event)"
+        (swapToBiometrics)="swapUnlockOption(UnlockOption.Biometrics)"
+        (swapToPin)="swapUnlockOption(UnlockOption.Pin)"
+        (prfUnlockSuccess)="onPrfUnlockSuccess($event)"
+        (logOut)="logOut()"
+        (restore)="restoreFromBackup()"
+      ></bit-master-password-lock>
+    }
+  </ng-container>
+</ng-template>
+
+@if (isDesktop) {
+  <div class="agy-wincard agy-unlock-card">
+    <div class="agy-unlock-head">
+      <span class="agy-avatar agy-xl">LP</span>
+      <h1 class="agy-unlock-h">{{ "unlockTitle" | i18n }}</h1>
+      <p class="agy-unlock-s">{{ "unlockSubtitle" | i18n }}</p>
+    </div>
+    <ng-container [ngTemplateOutlet]="unlockPanels"></ng-container>
+    <p class="agy-unlock-note">{{ "unlockOfflineFootnote" | i18n }}</p>
+  </div>
+} @else {
+  <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <lp-popup-header [title]="'appName' | i18n" [avatar]="true"></lp-popup-header>
+
+    <div class="agy-unlock tw-min-h-0 tw-flex-1 tw-overflow-auto">
+      <div class="tw-flex tw-flex-col tw-items-center tw-pb-2 tw-text-center">
+        <span class="agy-avatar agy-xl">LP</span>
+        <div class="agy-h">{{ "unlockTitle" | i18n }}</div>
+        <div class="agy-s">{{ "unlockSubtitle" | i18n }}</div>
+      </div>
+      <ng-container [ngTemplateOutlet]="unlockPanels"></ng-container>
+      <p class="agy-hint tw-text-center">
         {{ "unlockNoRecoveryNote" | i18n }}
       </p>
-    }
+    </div>
   </div>
-</div>
+}

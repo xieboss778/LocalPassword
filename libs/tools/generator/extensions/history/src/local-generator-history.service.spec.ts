@@ -7,63 +7,24 @@ if (!(Symbol as any).dispose) {
   (Symbol as any).dispose = Symbol("Symbol.dispose");
 }
 
-import { mock } from "jest-mock-extended";
-import { BehaviorSubject, firstValueFrom } from "rxjs";
-import { Jsonify } from "type-fest";
+import { firstValueFrom } from "rxjs";
 
-import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
-import { DataPacker } from "@localpass/common/tools/state/data-packer.abstraction";
 import { UserId } from "@localpass/common/types/guid";
 import { Algorithm, Type } from "@localpass/generator-core";
 
 import { FakeStateProvider, awaitAsync, mockAccountServiceWith } from "../../../../../common/spec";
 
+import { GENERATOR_HISTORY_MEMORY } from "./key-definitions";
 import { LocalGeneratorHistoryService } from "./local-generator-history.service";
 
 const SomeUser = "SomeUser" as UserId;
 const AnotherUser = "AnotherUser" as UserId;
 
 describe("LocalGeneratorHistoryService", () => {
-  const sdkService = mock<SdkService>();
-
-  const mockCrypto = {
-    encrypt_with_local_user_data_key: jest.fn(),
-    decrypt_with_local_user_data_key: jest.fn(),
-  };
-  const mockSdkClient = {
-    take: () => ({
-      value: { crypto: () => mockCrypto },
-      [Symbol.dispose]: jest.fn(),
-    }),
-  };
-  const mockDataPacker = new (class extends DataPacker {
-    pack<Data>(value: Jsonify<Data>): string {
-      return JSON.stringify(value);
-    }
-    unpack<Data>(packedValue: string): Jsonify<Data> {
-      return JSON.parse(packedValue) as Jsonify<Data>;
-    }
-  })();
-
-  beforeEach(() => {
-    mockCrypto.encrypt_with_local_user_data_key.mockImplementation((s: string) => s);
-    mockCrypto.decrypt_with_local_user_data_key.mockImplementation((s: string) => s);
-    sdkService.userClient$.mockReturnValue(new BehaviorSubject(mockSdkClient as any));
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   describe("credential$", () => {
     it("returns an empty list when no credentials are stored", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       const result = await firstValueFrom(history.credentials$(SomeUser));
 
@@ -74,12 +35,7 @@ describe("LocalGeneratorHistoryService", () => {
   describe("track", () => {
     it("stores a password", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       await history.track(SomeUser, "example", Type.password);
       await awaitAsync();
@@ -88,14 +44,38 @@ describe("LocalGeneratorHistoryService", () => {
       expect(result).toMatchObject({ credential: "example", category: Type.password });
     });
 
+    it("writes to the in-memory state instead of the encrypted disk store", async () => {
+      const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
+      const history = new LocalGeneratorHistoryService(stateProvider);
+
+      await history.track(SomeUser, "example", Type.password);
+      await awaitAsync();
+
+      const memoryState = stateProvider.singleUser.getFake(SomeUser, GENERATOR_HISTORY_MEMORY);
+      expect(memoryState.keyDefinition.stateDefinition.defaultStorageLocation).toBe("memory");
+      expect(await firstValueFrom(memoryState.state$)).toHaveLength(1);
+      expect(stateProvider.singleUser.states.size).toBe(1);
+      expect(GENERATOR_HISTORY_MEMORY.clearOn).toEqual(expect.arrayContaining(["lock", "logout"]));
+    });
+
+    it("keeps only the 20 most recent credentials by default", async () => {
+      const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
+      const history = new LocalGeneratorHistoryService(stateProvider);
+
+      for (let i = 0; i < 21; i++) {
+        await history.track(SomeUser, `example-${i}`, Type.password);
+      }
+      await awaitAsync();
+      const result = await firstValueFrom(history.credentials$(SomeUser));
+
+      expect(result).toHaveLength(20);
+      expect(result[0].credential).toBe("example-20");
+      expect(result.at(-1)?.credential).toBe("example-1");
+    });
+
     it("stores a passphrase", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       await history.track(SomeUser, "example", Type.password);
       await awaitAsync();
@@ -106,12 +86,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("stores the algorithm when provided", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       await history.track(SomeUser, "example", Type.password, undefined, Algorithm.passphrase);
       await awaitAsync();
@@ -126,12 +101,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("stores a specific date when one is provided", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       await history.track(SomeUser, "example", Type.password, new Date(100));
       await awaitAsync();
@@ -146,12 +116,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("skips storing a credential when it's already stored (ignores category)", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       await history.track(SomeUser, "example", Type.password);
       await history.track(SomeUser, "example", Type.password);
@@ -165,12 +130,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("stores multiple credentials when the credential value is different", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       await history.track(SomeUser, "secondResult", Type.password);
       await history.track(SomeUser, "firstResult", Type.password);
@@ -183,12 +143,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("removes history items exceeding maxTotal configuration", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        { maxTotal: 1 },
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider, { maxTotal: 1 });
 
       await history.track(SomeUser, "removed result", Type.password);
       await history.track(SomeUser, "example", Type.password);
@@ -201,12 +156,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("stores history items in per-user collections", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        { maxTotal: 1 },
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider, { maxTotal: 1 });
 
       await history.track(SomeUser, "some user example", Type.password);
       await history.track(AnotherUser, "another user example", Type.password);
@@ -234,12 +184,7 @@ describe("LocalGeneratorHistoryService", () => {
   describe("take", () => {
     it("returns null when there are no credentials stored", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
 
       const result = await history.take(SomeUser, "example");
 
@@ -248,12 +193,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("returns null when the credential wasn't found", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
       await history.track(SomeUser, "example", Type.password);
 
       const result = await history.take(SomeUser, "not found");
@@ -263,12 +203,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("returns a matching credential", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
       await history.track(SomeUser, "example", Type.password);
 
       const result = await history.take(SomeUser, "example");
@@ -281,12 +216,7 @@ describe("LocalGeneratorHistoryService", () => {
 
     it("removes a matching credential", async () => {
       const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
-      const history = new LocalGeneratorHistoryService(
-        stateProvider,
-        sdkService,
-        undefined,
-        mockDataPacker,
-      );
+      const history = new LocalGeneratorHistoryService(stateProvider);
       await history.track(SomeUser, "example", Type.password);
 
       await history.take(SomeUser, "example");
@@ -294,6 +224,20 @@ describe("LocalGeneratorHistoryService", () => {
       const results = await firstValueFrom(history.credentials$(SomeUser));
 
       expect(results).toEqual([]);
+    });
+  });
+
+  describe("clear", () => {
+    it("removes all credentials for a user", async () => {
+      const stateProvider = new FakeStateProvider(mockAccountServiceWith(SomeUser));
+      const history = new LocalGeneratorHistoryService(stateProvider);
+      await history.track(SomeUser, "example", Type.password);
+
+      await history.clear(SomeUser);
+      await awaitAsync();
+      const remaining = await firstValueFrom(history.credentials$(SomeUser));
+
+      expect(remaining).toEqual([]);
     });
   });
 });

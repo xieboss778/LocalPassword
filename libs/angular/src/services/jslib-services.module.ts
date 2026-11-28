@@ -1145,12 +1145,12 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: PasswordGenerationServiceAbstraction,
     useFactory: legacyPasswordGenerationServiceFactory,
-    deps: [PolicyServiceAbstraction, AccountServiceAbstraction, StateProvider, SdkService],
+    deps: [PolicyServiceAbstraction, AccountServiceAbstraction, StateProvider],
   }),
   safeProvider({
     provide: GeneratorHistoryService,
     useClass: LocalGeneratorHistoryService,
-    deps: [StateProvider, SdkService],
+    deps: [StateProvider],
   }),
   safeProvider({
     provide: UsernameGenerationServiceAbstraction,

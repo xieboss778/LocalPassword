@@ -17,7 +17,18 @@ import { S3Client, S3PreconditionFailedError } from "../s3/s3-client";
 
 import { ACCOUNT_OBJECT, EXPORT_PREFIX, MANIFEST_OBJECT, SNAPSHOT_PREFIX } from "./backup-layout";
 import { LocalAccountObject, isLocalAccountObject } from "./local-account-object";
-import { MergeConflict, mergeSnapshots, Snapshot, VaultRecord } from "./snapshot-merge";
+import {
+  PendingVaultConflict,
+  VAULT_BACKUP_PENDING_CONFLICTS,
+  VaultConflictChoice,
+} from "./pending-conflicts";
+import {
+  ConflictPreference,
+  MergeConflict,
+  mergeSnapshots,
+  Snapshot,
+  VaultRecord,
+} from "./snapshot-merge";
 import {
   DEFAULT_BACKUP_SETTINGS,
   StoredVaultBackupConfig,
@@ -33,6 +44,7 @@ import {
 const EMPTY_SYNC_STATE: VaultBackupSyncState = {
   manifestEtag: null,
   lastSyncedAt: null,
+  generation: null,
   pending: false,
 };
 
@@ -55,7 +67,10 @@ export interface PushResult {
 export interface PullResult {
   readonly applied: number;
   readonly upToDate: boolean;
-  /** 这次拉取里两边都改过的条目；按更新时间较新的一侧胜出，界面据此给用户过目。 */
+  /**
+   * 这次拉取里两边都改过的条目。合并时先保留本机版本，远端版本进入待解决冲突，
+   * 由界面让用户在「本机 / 远端 / 两份都留」之间选择；在解决前不会上传。
+   */
   readonly conflicts: readonly MergeConflict[];
 }
 
@@ -67,6 +82,8 @@ export interface SyncResult {
 interface Manifest {
   readonly snapshot: string;
   readonly updatedAt: string;
+  /** Monotonic manifest generation; absent on buckets written by older builds. */
+  readonly gen?: number;
 }
 
 /**
@@ -167,6 +184,7 @@ export class VaultBackupSyncService {
     };
 
     await this.configState(userId).update(() => stored);
+    await this.conflictsState(userId).update(() => []);
     await this.syncState(userId).update((state) => ({
       ...EMPTY_SYNC_STATE,
       ...(state ?? {}),
@@ -179,9 +197,11 @@ export class VaultBackupSyncService {
     await this.syncState(userId).update(() => ({
       manifestEtag: null,
       lastSyncedAt: null,
+      generation: null,
       pending: false,
     }));
     await this.baseSnapshotState(userId).update(() => null);
+    await this.conflictsState(userId).update(() => []);
   }
 
   async getSyncState(userId: UserId): Promise<VaultBackupSyncState> {
@@ -205,18 +225,142 @@ export class VaultBackupSyncService {
       };
     }
 
+    const pending = await this.getPendingConflicts(userId);
+    if (pending.length > 0) {
+      return {
+        pulled: { applied: 0, upToDate: false, conflicts: conflictsFromPending(pending) },
+        pushed: { uploaded: false, snapshotId: null },
+      };
+    }
+
     const client = this.clientFactory(config);
     // The ownership check comes before the pull: a foreign bucket must never merge its
     // snapshot into this vault, even though nothing would be written yet.
     await this.ensureAccountObject(userId, client);
     const pulled = await this.pull(userId, client);
+
+    // A conflicted pull holds this device's records. Uploading now would publish one side of
+    // an unresolved conflict, so the push waits until the user has chosen.
+    if (pulled.conflicts.length > 0) {
+      return { pulled, pushed: { uploaded: false, snapshotId: null } };
+    }
+
     const pushResult = await this.push(userId, client);
 
     return { pulled, pushed: pushResult };
   }
 
+  /** Conflicts from the last pull that still need a user decision, held as encrypted records. */
+  async getPendingConflicts(userId: UserId): Promise<PendingVaultConflict[]> {
+    return (await firstValueFrom(this.conflictsState(userId).state$)) ?? [];
+  }
+
+  /**
+   * Applies the user's choices for the held conflicts, then uploads the resolved snapshot.
+   *
+   * - `local` keeps this device's record untouched.
+   * - `remote` writes the cloud record into local state.
+   * - `both` keeps the local record and adds the cloud branch as a separate copy.
+   *
+   * Every choice is idempotent. The pending state survives a failed upload, and `both` derives
+   * the copy id from the held remote revision, so retrying cannot create duplicate copies.
+   */
+  async resolveConflicts(
+    userId: UserId,
+    choices: Readonly<Record<string, VaultConflictChoice>>,
+  ): Promise<PushResult> {
+    const pending = await this.getPendingConflicts(userId);
+    if (pending.length === 0) {
+      return this.push(userId);
+    }
+
+    const cipherChanges: Record<string, CipherData> = {};
+    const folderChanges: Record<string, FolderData> = {};
+    const apply = (conflict: PendingVaultConflict, targetId: string) => {
+      if (conflict.remote.data == null) {
+        return;
+      }
+      const data = {
+        ...(conflict.remote.data as Record<string, unknown>),
+        id: targetId,
+      };
+      if (conflict.kind === "cipher") {
+        cipherChanges[targetId] = data as unknown as CipherData;
+      } else {
+        folderChanges[targetId] = data as unknown as FolderData;
+      }
+    };
+
+    for (const conflict of pending) {
+      const choice = choices[conflict.id] ?? "both";
+      if (choice === "remote") {
+        apply(conflict, conflict.id);
+      } else if (choice === "both") {
+        apply(conflict, conflict.copyId);
+      }
+    }
+
+    const previousCiphers =
+      Object.keys(cipherChanges).length > 0
+        ? { ...((await firstValueFrom(this.ciphersState(userId).state$)) ?? {}) }
+        : null;
+    const previousFolders =
+      Object.keys(folderChanges).length > 0
+        ? { ...((await firstValueFrom(this.foldersState(userId).state$)) ?? {}) }
+        : null;
+
+    if (previousCiphers != null) {
+      await this.ciphersState(userId).update((state) => ({
+        ...(state ?? {}),
+        ...cipherChanges,
+      }));
+    }
+    if (previousFolders != null) {
+      await this.foldersState(userId).update((state) => ({
+        ...(state ?? {}),
+        ...folderChanges,
+      }));
+    }
+
+    const rollback = async () => {
+      if (previousCiphers != null) {
+        await this.ciphersState(userId).update(() => previousCiphers);
+      }
+      if (previousFolders != null) {
+        await this.foldersState(userId).update(() => previousFolders);
+      }
+      await this.conflictsState(userId).update(() => pending);
+    };
+
+    // push() refuses while conflicts are pending, so clear them for the duration of the upload
+    // and roll back both local edits and pending conflicts if the upload does not succeed.
+    await this.conflictsState(userId).update(() => []);
+    try {
+      const result = await this.push(userId);
+      if (!result.uploaded) {
+        const nextPending = await this.getPendingConflicts(userId);
+        if (nextPending.length === 0) {
+          await rollback();
+        }
+      }
+      return result;
+    } catch (error) {
+      await rollback();
+      throw error;
+    }
+  }
+
   /** Downloads the newest snapshot and applies it, unless it is the one already applied. */
   async pull(userId: UserId, client?: S3Client): Promise<PullResult> {
+    const pendingBefore = await this.getPendingConflicts(userId);
+    if (pendingBefore.length > 0) {
+      return {
+        applied: 0,
+        upToDate: false,
+        conflicts: conflictsFromPending(pendingBefore),
+      };
+    }
+
     const syncClient = client ?? (await this.requireClient(userId));
 
     const manifestObject = await syncClient.getText(MANIFEST_OBJECT);
@@ -239,7 +383,26 @@ export class VaultBackupSyncService {
     const localSnapshot = await this.buildSnapshot(userId);
     const base = await firstValueFrom(this.baseSnapshotState(userId).state$);
 
-    const { snapshot: merged, conflicts } = mergeSnapshots(localSnapshot, remoteSnapshot, base);
+    const firstMerge = mergeSnapshots(localSnapshot, remoteSnapshot, base);
+    let merged = firstMerge.snapshot;
+    let conflicts = firstMerge.conflicts;
+
+    if (conflicts.length > 0) {
+      // Hold this device's version for every conflicted record. The cloud branch stays in the
+      // pending state until the user chooses; nothing is silently overwritten.
+      const holdLocal: Record<string, ConflictPreference> = {};
+      for (const conflict of conflicts) {
+        holdLocal[conflict.id] = "local";
+      }
+      const held = mergeSnapshots(localSnapshot, remoteSnapshot, base, holdLocal);
+      merged = held.snapshot;
+      conflicts = held.conflicts;
+      const pending = pendingFrom(conflicts, localSnapshot, remoteSnapshot);
+      await this.conflictsState(userId).update(() => pending);
+    } else {
+      await this.conflictsState(userId).update(() => []);
+    }
+
     const applied = await this.applySnapshot(userId, merged);
 
     await this.baseSnapshotState(userId).update(() => merged);
@@ -247,6 +410,7 @@ export class VaultBackupSyncService {
       ...current,
       manifestEtag: manifestObject.etag,
       lastSyncedAt: this.clock().toISOString(),
+      generation: Math.max(current?.generation ?? 0, manifest.gen ?? 0) || null,
       pending: conflicts.length > 0,
     }));
 
@@ -256,13 +420,24 @@ export class VaultBackupSyncService {
   /** Uploads a new snapshot and points the manifest at it. */
   async push(userId: UserId, client?: S3Client): Promise<PushResult> {
     const syncClient = client ?? (await this.requireClient(userId));
+
+    const pending = await this.getPendingConflicts(userId);
+    if (pending.length > 0) {
+      // Publishing now would pick a side of an unresolved conflict.
+      this.logService.info("Skipped push while vault conflicts need review");
+      return { uploaded: false, snapshotId: null };
+    }
+
     // `sync` has already run the ownership check before pulling; a direct push must run it here.
     if (client == null) {
       await this.ensureAccountObject(userId, syncClient);
     }
 
     let snapshot = await this.buildSnapshot(userId);
-    let manifestEtag = (await this.getSyncState(userId)).manifestEtag;
+    let mergedFromRemote = false;
+    const syncState = await this.getSyncState(userId);
+    let manifestEtag = syncState.manifestEtag;
+    let generation = syncState.generation ?? 0;
 
     for (let attempt = 0; attempt < MAX_MANIFEST_RETRIES; attempt++) {
       const snapshotId = snapshotIdFor(this.clock());
@@ -273,6 +448,7 @@ export class VaultBackupSyncService {
       const manifest: Manifest = {
         snapshot: snapshotId,
         updatedAt: this.clock().toISOString(),
+        gen: generation + 1,
       };
 
       let newEtag: string | null;
@@ -296,24 +472,47 @@ export class VaultBackupSyncService {
         }
         manifestEtag = remote.etag;
         const remoteManifest = JSON.parse(remote.text) as Manifest;
+        generation = Math.max(generation, remoteManifest.gen ?? 0);
         const remoteSnapshot = await syncClient.getText(
           `${SNAPSHOT_PREFIX}${remoteManifest.snapshot}.json`,
         );
         if (remoteSnapshot != null) {
+          const parsedRemote = JSON.parse(remoteSnapshot.text) as Snapshot;
           const base = await firstValueFrom(this.baseSnapshotState(userId).state$);
-          snapshot = mergeSnapshots(
-            snapshot,
-            JSON.parse(remoteSnapshot.text) as Snapshot,
-            base,
-          ).snapshot;
+          const mergeResult = mergeSnapshots(snapshot, parsedRemote, base);
+          if (mergeResult.conflicts.length > 0) {
+            const holdLocal: Record<string, ConflictPreference> = {};
+            for (const conflict of mergeResult.conflicts) {
+              holdLocal[conflict.id] = "local";
+            }
+            const held = mergeSnapshots(snapshot, parsedRemote, base, holdLocal);
+            const nextPending = pendingFrom(held.conflicts, snapshot, parsedRemote);
+            await this.applySnapshot(userId, held.snapshot);
+            await this.conflictsState(userId).update(() => nextPending);
+            await this.baseSnapshotState(userId).update(() => held.snapshot);
+            await this.syncState(userId).update((current) => ({
+              ...current,
+              manifestEtag,
+              lastSyncedAt: this.clock().toISOString(),
+              generation: generation || null,
+              pending: true,
+            }));
+            return { uploaded: false, snapshotId: null };
+          }
+          snapshot = mergeResult.snapshot;
+          mergedFromRemote = true;
         }
         continue;
       }
 
+      if (mergedFromRemote) {
+        await this.applySnapshot(userId, snapshot);
+      }
       await this.baseSnapshotState(userId).update(() => snapshot);
       await this.syncState(userId).update(() => ({
         manifestEtag: newEtag,
         lastSyncedAt: this.clock().toISOString(),
+        generation: generation + 1,
         pending: false,
       }));
 
@@ -419,6 +618,44 @@ export class VaultBackupSyncService {
     }
   }
 
+  /**
+   * How many records differ from the last snapshot this device synced.
+   *
+   * The backup screen shows this as "changes waiting to upload": added, edited, and locally
+   * deleted records all count once. It only reads local state, so it never contacts the bucket.
+   * A vault that has never synced counts every record it holds.
+   */
+  async countPendingChanges(userId: UserId): Promise<number> {
+    const base = await firstValueFrom(this.baseSnapshotState(userId).state$);
+    const current = await this.buildSnapshot(userId);
+
+    if (base == null) {
+      return current.ciphers.length + current.folders.length;
+    }
+
+    let pending = 0;
+    for (const kind of ["ciphers", "folders"] as const) {
+      const unsynced = new Map(base[kind].map((record) => [record.id, record]));
+
+      for (const record of current[kind]) {
+        const synced = unsynced.get(record.id);
+        if (
+          synced == null ||
+          synced.revisionDate !== record.revisionDate ||
+          synced.deletedDate !== record.deletedDate
+        ) {
+          pending++;
+        }
+        unsynced.delete(record.id);
+      }
+
+      // Whatever the base snapshot still has and this device does not is a local deletion.
+      pending += unsynced.size;
+    }
+
+    return pending;
+  }
+
   /** Builds the snapshot that represents what this device holds right now. */
   async buildSnapshot(userId: UserId): Promise<Snapshot> {
     const ciphers = (await firstValueFrom(this.ciphersState(userId).state$)) ?? {};
@@ -435,12 +672,13 @@ export class VaultBackupSyncService {
         data,
       }));
 
+    const now = this.clock().toISOString();
     return {
-      updatedAt: this.clock().toISOString(),
+      updatedAt: now,
       ciphers: records(ciphers as Record<string, CipherData>),
       folders: records(folders as Record<string, FolderData>),
       // Deletions since the last sync travel as tombstones, newest first.
-      tombstones: tombstonesSince(base, [...records(ciphers), ...records(folders)]),
+      tombstones: tombstonesSince(base, [...records(ciphers), ...records(folders)], now),
     };
   }
 
@@ -463,6 +701,23 @@ export class VaultBackupSyncService {
     await this.ciphersState(userId).update(() => ciphers as Record<string, CipherData>);
     await this.foldersState(userId).update(() => folders as Record<string, FolderData>);
     return snapshot.ciphers.length + snapshot.folders.length;
+  }
+
+  /**
+   * Restores a specific snapshot chosen by the user and advances the local baseline so
+   * pending-change counts and sync state reflect the restored vault immediately.
+   */
+  async restoreSnapshot(userId: UserId, snapshot: Snapshot): Promise<number> {
+    const applied = await this.applySnapshot(userId, snapshot);
+    await this.baseSnapshotState(userId).update(() => snapshot);
+    await this.conflictsState(userId).update(() => []);
+    await this.syncState(userId).update((current) => ({
+      ...EMPTY_SYNC_STATE,
+      ...(current ?? {}),
+      lastSyncedAt: this.clock().toISOString(),
+      pending: false,
+    }));
+    return applied;
   }
 
   private async requireClient(userId: UserId): Promise<S3Client> {
@@ -493,6 +748,10 @@ export class VaultBackupSyncService {
     return this.stateProvider.getUser(userId, VAULT_BACKUP_BASE_SNAPSHOT);
   }
 
+  private conflictsState(userId: UserId) {
+    return this.stateProvider.getUser(userId, VAULT_BACKUP_PENDING_CONFLICTS);
+  }
+
   private settingsState(userId: UserId) {
     return this.stateProvider.getUser(userId, VAULT_BACKUP_SETTINGS);
   }
@@ -505,13 +764,67 @@ function isoOf(value: unknown): string {
   return typeof value === "string" ? value : new Date(0).toISOString();
 }
 
+/** Shape held conflicts as the merge summary the sync screen already understands. */
+function conflictsFromPending(pending: readonly PendingVaultConflict[]): MergeConflict[] {
+  return pending.map((conflict) => ({
+    id: conflict.id,
+    localRevision: conflict.local.revisionDate,
+    remoteRevision: conflict.remote.revisionDate,
+    winner: "local",
+  }));
+}
+
+/** Collect the encrypted local and remote records for every id the merge reported. */
+function pendingFrom(
+  conflicts: readonly MergeConflict[],
+  local: Snapshot,
+  remote: Snapshot,
+): PendingVaultConflict[] {
+  const localCiphers = new Map(local.ciphers.map((record) => [record.id, record]));
+  const remoteCiphers = new Map(remote.ciphers.map((record) => [record.id, record]));
+  const localFolders = new Map(local.folders.map((record) => [record.id, record]));
+  const remoteFolders = new Map(remote.folders.map((record) => [record.id, record]));
+
+  const pending: PendingVaultConflict[] = [];
+  for (const conflict of conflicts) {
+    const localCipher = localCiphers.get(conflict.id);
+    const remoteCipher = remoteCiphers.get(conflict.id);
+    if (localCipher != null && remoteCipher != null) {
+      pending.push({
+        id: conflict.id,
+        kind: "cipher",
+        local: localCipher,
+        remote: remoteCipher,
+        copyId: crypto.randomUUID(),
+      });
+      continue;
+    }
+
+    const localFolder = localFolders.get(conflict.id);
+    const remoteFolder = remoteFolders.get(conflict.id);
+    if (localFolder != null && remoteFolder != null) {
+      pending.push({
+        id: conflict.id,
+        kind: "folder",
+        local: localFolder,
+        remote: remoteFolder,
+        copyId: crypto.randomUUID(),
+      });
+    }
+  }
+  return pending;
+}
+
 /** Ids that were in the last synced snapshot but are gone locally are deletions. */
-function tombstonesSince(base: Snapshot | null, current: VaultRecord[]): Snapshot["tombstones"] {
+function tombstonesSince(
+  base: Snapshot | null,
+  current: VaultRecord[],
+  now: string,
+): Snapshot["tombstones"] {
   if (base == null) {
     return [];
   }
   const live = new Set(current.map((record) => record.id));
-  const now = new Date().toISOString();
   return [...base.ciphers, ...base.folders]
     .filter((record) => !live.has(record.id))
     .map((record) => ({ id: record.id, deletedAt: now }));

@@ -1,9 +1,13 @@
 import * as JSZip from "jszip";
 
 import { ImportType } from "../models/import-options";
+import { UpgradeImportType } from "../models/import-upgrade-options";
 
 /** A few formats' exports aren't plain text — extracts the real payload, per format. */
-export async function readImportFileContents(format: ImportType, file: File): Promise<string> {
+export async function readImportFileContents(
+  format: ImportType | UpgradeImportType,
+  file: File,
+): Promise<string> {
   const name = file.name.toLowerCase();
   if (format === "1password1pux" && name.endsWith(".1pux")) {
     return extractZipContent(file, "export.data");

@@ -7,13 +7,15 @@ import { AccountService } from "@localpass/common/auth/abstractions/account.serv
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
-import { ButtonModule, DialogService, IconButtonModule, IconModule } from "@localpass/components";
+import { ButtonModule, DialogService, IconModule } from "@localpass/components";
 import { GeneratedCredential, GeneratorHistoryService } from "@localpass/generator-history";
 
 import { JslibModule } from "../../jslib.module";
 import {
+  GENERATOR_HISTORY_MASK,
   LpEmptyComponent,
   LpPageHeaderComponent,
+  LpPasswordSyntaxComponent,
   LpPopupHeaderComponent,
   LpToastService,
 } from "../../local-ui";
@@ -21,8 +23,8 @@ import {
 /**
  * 生成历史（方向 C）。
  *
- * 记录与加密全部交给 `GeneratorHistoryService`：历史随保险库密钥加密，只在本机，
- * 不上传也不写日志。这里只负责列出、复制与清除。
+ * 记录与内存清理由 `GeneratorHistoryService` 负责：历史只保存在当前解锁会话的内存中，
+ * 不上传、不写磁盘、不写日志，锁库或退出时自动清空。这里只负责默认遮罩下列出、逐条展开、复制与清除。
  */
 @Component({
   selector: "generator-history-v2",
@@ -31,14 +33,14 @@ import {
   imports: [
     JslibModule,
     ButtonModule,
-    IconButtonModule,
     IconModule,
     LpEmptyComponent,
     LpPageHeaderComponent,
+    LpPasswordSyntaxComponent,
     LpPopupHeaderComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
       @if (compact()) {
         <lp-popup-header
           [title]="i18n.t('generatorHistory')"
@@ -50,7 +52,7 @@ import {
             <div slot="actions">
               <button
                 type="button"
-                class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
+                class="agy-iconbtn"
                 [attr.aria-label]="i18n.t('clearGeneratorHistoryTitle')"
                 [attr.title]="i18n.t('clearGeneratorHistoryTitle')"
                 (click)="clear()"
@@ -79,8 +81,8 @@ import {
 
       <div
         class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-pb-7"
+        [class.agy-ext-scroll]="compact()"
         [class.tw-px-7]="!compact()"
-        [class.tw-px-4]="compact()"
       >
         @if (credentials().length === 0) {
           <div class="tw-grid tw-min-h-72 tw-place-items-center">
@@ -92,13 +94,19 @@ import {
           </div>
         } @else {
           <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-shadow-sm"
+            [class.agy-grp]="compact()"
+            [class.tw-overflow-hidden]="!compact()"
+            [class.tw-rounded-xl]="!compact()"
+            [class.tw-border]="!compact()"
+            [class.tw-border-border-light]="!compact()"
+            [class.tw-bg-background]="!compact()"
+            [class.tw-shadow-sm]="!compact()"
           >
             @if (!compact()) {
               <div
                 class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-2.5"
               >
-                <span class="tw-text-sm tw-font-semibold tw-text-main">{{
+                <span class="tw-text-xs tw-font-semibold tw-text-main">{{
                   i18n.t("recentGenerated")
                 }}</span>
                 <span class="tw-text-xs tw-text-muted">{{
@@ -107,10 +115,7 @@ import {
                 <span class="tw-flex-1"></span>
                 <button
                   type="button"
-                  bitButton
-                  buttonType="primaryGhost"
-                  size="small"
-                  class="!tw-text-fg-brand"
+                  class="agy-btn agy-sm"
                   data-testid="generator_history_clear"
                   (click)="clear()"
                 >
@@ -118,9 +123,17 @@ import {
                 </button>
               </div>
             }
-            @for (credential of credentials(); track credential.credential) {
+            @for (credential of credentials(); track $index) {
               <div
-                class="tw-flex tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
+                [class.agy-prow]="compact()"
+                [class.tw-flex]="!compact()"
+                [class.tw-items-center]="!compact()"
+                [class.tw-gap-3]="!compact()"
+                [class.tw-border-b]="!compact()"
+                [class.tw-border-border-light]="!compact()"
+                [class.tw-px-4]="!compact()"
+                [class.tw-py-3]="!compact()"
+                [class.last:tw-border-b-0]="!compact()"
               >
                 @if (!compact()) {
                   <span
@@ -130,31 +143,53 @@ import {
                   </span>
                 }
                 <span class="tw-min-w-0 tw-flex-1">
-                  <span class="tw-block tw-break-all tw-font-mono tw-text-sm tw-text-main">{{
-                    credential.credential
-                  }}</span>
-                  @if (!compact()) {
-                    <span class="tw-mt-0.5 tw-block tw-text-xs tw-leading-relaxed tw-text-muted">
-                      {{ displayTime(credential.generationDate) }}
-                    </span>
-                  }
+                  <span class="tw-block tw-break-all tw-font-mono tw-text-xs tw-text-main">
+                    @if (revealed().has($index)) {
+                      <lp-password-syntax [value]="credential.credential" />
+                    } @else {
+                      {{ mask }}
+                    }
+                  </span>
+                  <span class="tw-mt-0.5 tw-block tw-text-xs tw-leading-relaxed tw-text-muted">
+                    {{ displayTime(credential.generationDate) }} · {{ labelOf(credential) }}
+                  </span>
                 </span>
-                @if (compact()) {
-                  <span class="tw-flex-none tw-text-xs tw-text-muted">{{
-                    displayTime(credential.generationDate)
-                  }}</span>
-                }
                 <button
                   type="button"
-                  bitIconButton="bwi-copy"
-                  [label]="i18n.t('copy')"
+                  class="agy-iconbtn agy-sm"
+                  [attr.aria-label]="
+                    i18n.t(revealed().has($index) ? 'hidePassword' : 'showPassword')
+                  "
+                  [attr.title]="i18n.t(revealed().has($index) ? 'hidePassword' : 'showPassword')"
+                  (click)="toggleReveal($index)"
+                >
+                  <bit-icon
+                    [name]="revealed().has($index) ? 'bwi-eye-slash' : 'bwi-eye'"
+                    class="tw-text-xs"
+                  ></bit-icon>
+                </button>
+                <button
+                  type="button"
+                  class="agy-iconbtn agy-sm"
+                  [attr.aria-label]="i18n.t('copy')"
+                  [attr.title]="i18n.t('copy')"
                   (click)="copy(credential)"
-                ></button>
+                >
+                  <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                </button>
               </div>
             }
           </div>
           @if (compact()) {
-            <p class="tw-px-1 tw-pt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+            <button
+              type="button"
+              class="agy-btn agy-danger agy-lg agy-block tw-mt-2"
+              data-testid="generator_history_clear"
+              (click)="clear()"
+            >
+              {{ i18n.t("clearHistory") }}
+            </button>
+            <p class="agy-hint tw-mt-2 tw-text-center">
               {{ i18n.t("generatorHistoryLocalOnly") }}
             </p>
           }
@@ -175,6 +210,8 @@ export class GeneratorHistoryV2Component {
   private readonly router = inject(Router);
 
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
+  protected readonly mask = GENERATOR_HISTORY_MASK;
+  protected readonly revealed = signal<ReadonlySet<number>>(new Set());
 
   private readonly userId$ = this.accountService.activeAccount$.pipe(getUserId);
   protected readonly credentials = toSignal(
@@ -223,17 +260,28 @@ export class GeneratorHistoryV2Component {
       return `${this.i18n.t("yesterday")} ${time}`;
     }
 
-    if (this.locale().startsWith("zh")) {
-      return `${date.getMonth() + 1} 月 ${date.getDate()} 日`;
-    }
+    return date.toLocaleDateString(this.locale().startsWith("zh") ? "zh-CN" : "en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  }
 
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  protected toggleReveal(index: number): void {
+    const next = new Set(this.revealed());
+    if (next.has(index)) {
+      next.delete(index);
+    } else {
+      next.add(index);
+    }
+    this.revealed.set(next);
   }
 
   protected copy(credential: GeneratedCredential): void {
     const copied = this.platformUtilsService.copyToClipboard(credential.credential, { window });
     if (copied !== false) {
-      this.toast.show(this.i18n.t("valueCopied", this.labelOf(credential)));
+      this.toast.showClipboard(this.i18n.t("valueCopied", this.labelOf(credential)), () => {
+        this.platformUtilsService.copyToClipboard("", { window, clearing: true });
+      });
     }
   }
 
@@ -248,6 +296,7 @@ export class GeneratorHistoryV2Component {
     }
 
     await this.history.clear(await firstValueFrom(this.userId$));
+    this.revealed.set(new Set());
     this.toast.show(this.i18n.t("generatorHistoryCleared"));
   }
 }

@@ -30,7 +30,7 @@ import {
   ],
   template: `
     <div
-      class="tw-flex tw-h-full tw-flex-col"
+      class="agy tw-flex tw-h-full tw-flex-col"
       [class.tw-bg-background-alt]="!compact()"
       [class.tw-bg-background]="compact()"
     >
@@ -49,28 +49,20 @@ import {
         ></lp-page-header>
       }
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-4 tw-pb-6">
-        <div class="tw-grid tw-grid-cols-2 tw-gap-2">
+      <div class="agy-ext-scroll">
+        <h2 class="agy-seclbl">{{ i18n.t("newItemPickKind") }}</h2>
+        <div class="agy-typegrid">
           @for (kind of kinds; track kind) {
-            <button
-              type="button"
-              class="tw-flex tw-flex-col tw-items-start tw-gap-1.5 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-start tw-transition-colors hover:tw-border-border-brand hover:tw-bg-bg-brand-softer"
-              (click)="pick(kind)"
-            >
-              <lp-kind-tile [kind]="kind" size="base"></lp-kind-tile>
-              <span class="tw-text-sm tw-leading-tight tw-font-semibold tw-text-main">{{
-                label(kind)
-              }}</span>
-              <span class="tw-text-xs tw-leading-snug tw-text-muted">{{ blurb(kind) }}</span>
+            <button type="button" (click)="pick(kind)">
+              <lp-kind-tile [kind]="kind" size="xs"></lp-kind-tile>
+              <span>{{ label(kind) }}</span>
             </button>
           }
         </div>
 
-        <div
-          class="tw-mt-3 tw-flex tw-items-start tw-gap-2.5 tw-rounded-lg tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-px-3.5 tw-py-3 tw-text-xs tw-leading-relaxed tw-text-muted"
-        >
-          <bit-icon name="bwi-info-circle" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
-          <span>{{ i18n.t("newItemKindNotice") }}</span>
+        <div class="agy-callout tw-mt-2">
+          <bit-icon name="bwi-info-circle" class="tw-text-xs tw-text-fg-brand"></bit-icon>
+          <div>{{ i18n.t("newItemKindNotice") }}</div>
         </div>
       </div>
     </div>
@@ -91,10 +83,6 @@ export class NewItemV2Component {
 
   protected label(kind: ItemKind): string {
     return this.i18n.t(ITEM_KIND_UI[kind].labelKey);
-  }
-
-  protected blurb(kind: ItemKind): string {
-    return this.i18n.t(ITEM_KIND_UI[kind].blurbKey);
   }
 
   protected pick(kind: ItemKind): void {

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from "@angular/core";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { IconComponent, LocalPassIcon } from "@localpass/components";
 
 import { LpToastService } from "./lp-toast.service";
@@ -17,18 +18,13 @@ import { LpToastService } from "./lp-toast.service";
   imports: [IconComponent],
   host: {
     class:
-      "tw-flex tw-items-center tw-gap-3 tw-transition-colors hover:tw-bg-bg-hover last:tw-border-b-0",
-    "[class.tw-min-h-12]": "!dense()",
-    "[class.tw-border-b]": "!dense() && divider()",
-    "[class.tw-border-border-light]": "!dense()",
-    "[class.tw-px-4]": "!dense()",
-    "[class.tw-py-3]": "!dense()",
-    "[class.tw-px-2.5]": "dense()",
-    "[class.tw-py-2]": "dense()",
+      "agy tw-flex tw-items-center tw-gap-2 tw-transition-colors hover:tw-bg-bg-hover last:tw-border-b-0",
+    "[class.agy-setrow]": "!dense()",
+    "[class.agy-no-divider]": "!divider()",
+    "[class.agy-minirow]": "dense()",
     "[class.tw-cursor-pointer]": "copyValue() || clickable()",
     "[class.tw-cursor-default]": "!copyValue() && !clickable()",
-    "[class.tw-bg-bg-success-soft]": "copied()",
-    "[class.hover:tw-bg-bg-success-soft]": "copied()",
+    "[class.agy-copied]": "copied()",
     "[attr.tabindex]": "copyValue() || clickable() ? 0 : null",
     "[attr.role]": "copyValue() || clickable() ? 'button' : null",
     "(click)": "activate()",
@@ -37,27 +33,23 @@ import { LpToastService } from "./lp-toast.service";
   },
   template: `
     @if (icon()) {
-      <span
-        class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
-      >
-        <bit-icon [name]="icon()" class="tw-text-base"></bit-icon>
+      <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+        <bit-icon [name]="icon()" class="tw-text-xs"></bit-icon>
       </span>
     }
 
     <span class="tw-min-w-0 tw-flex-1">
-      <span class="tw-block tw-text-sm tw-text-main">{{ label() }}</span>
+      <span class="tw-block tw-text-xs tw-text-main">{{ label() }}</span>
       @if (sub()) {
-        <span class="tw-mt-0.5 tw-block tw-text-xs tw-leading-relaxed tw-text-muted">{{
-          sub()
-        }}</span>
+        <span class="agy-sub tw-block">{{ sub() }}</span>
       }
     </span>
 
     @if (value()) {
       <span
-        class="tw-max-w-56 tw-truncate tw-text-end tw-text-sm tw-text-muted"
+        class="tw-max-w-56 tw-truncate tw-text-end tw-text-xs tw-text-muted"
         [class.tw-text-fg-brand]="brand()"
-        [class.tw-font-mono]="mono()"
+        [class.agy-mono]="mono()"
         [attr.title]="value()"
         >{{ value() }}</span
       >
@@ -65,33 +57,34 @@ import { LpToastService } from "./lp-toast.service";
 
     @if (toggle() !== undefined) {
       <span
-        class="tw-relative tw-h-5 tw-w-9 tw-flex-none tw-rounded-full tw-transition-colors"
+        class="tw-relative tw-h-4 tw-w-7 tw-flex-none tw-rounded-full tw-transition-colors"
         [class.tw-bg-bg-brand]="toggle()"
         [class.tw-bg-bg-gray]="!toggle()"
         role="switch"
         [attr.aria-checked]="toggle()"
       >
         <span
-          class="tw-absolute tw-top-0.5 tw-size-4 tw-rounded-full tw-bg-bg-primary tw-shadow-sm tw-transition-all"
-          [style.inset-inline-start.px]="toggle() ? 18 : 2"
+          class="tw-absolute tw-top-0.5 tw-size-3 tw-rounded-full tw-bg-bg-primary tw-shadow-sm tw-transition-all"
+          [style.inset-inline-start.px]="toggle() ? 14 : 2"
         ></span>
       </span>
     } @else if (copyValue()) {
-      <span class="tw-grid tw-size-6 tw-flex-none tw-place-items-center" aria-hidden="true">
+      <span class="tw-grid tw-size-5 tw-flex-none tw-place-items-center" aria-hidden="true">
         @if (copied()) {
-          <bit-icon name="bwi-check" class="tw-text-base tw-text-fg-success"></bit-icon>
+          <bit-icon name="bwi-check" class="tw-text-xs tw-text-fg-success"></bit-icon>
         } @else {
-          <bit-icon name="bwi-copy" class="tw-text-base tw-text-muted"></bit-icon>
+          <bit-icon name="bwi-copy" class="tw-text-xs tw-text-muted"></bit-icon>
         }
       </span>
     } @else if (chevron()) {
-      <bit-icon name="bwi-angle-right" class="tw-text-base tw-text-muted"></bit-icon>
+      <bit-icon name="bwi-angle-right" class="tw-text-xs tw-text-muted"></bit-icon>
     }
   `,
 })
 export class LpRowComponent {
   private readonly toast = inject(LpToastService);
   private readonly i18n = inject(I18nService);
+  private readonly platformUtilsService = inject(PlatformUtilsService, { optional: true });
 
   readonly label = input.required<string>();
   readonly sub = input<string>("");
@@ -135,13 +128,24 @@ export class LpRowComponent {
 
   private async copy(value: string): Promise<void> {
     try {
-      await navigator.clipboard?.writeText(value);
+      if (this.platformUtilsService) {
+        this.platformUtilsService.copyToClipboard(value, { window });
+      } else {
+        await navigator.clipboard?.writeText(value);
+      }
     } catch {
       // 剪贴板不可用（无权限或非安全上下文）也照常给反馈，别让用户以为没点到。
     }
 
+    const label = this.copyLabel() || this.label();
     this.copied.set(true);
-    this.toast.show(this.i18n.t("valueCopied", this.copyLabel() || this.label()));
+    this.toast.showClipboard(this.i18n.t("valueCopied", label), () => {
+      if (this.platformUtilsService) {
+        this.platformUtilsService.copyToClipboard("", { window, clearing: true });
+      } else {
+        void navigator.clipboard?.writeText("");
+      }
+    });
     this.copiedValue.emit(value);
 
     const previous = this.timer();

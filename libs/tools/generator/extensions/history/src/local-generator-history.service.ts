@@ -1,34 +1,26 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { map, of } from "rxjs";
+import { map } from "rxjs";
 
-import { SdkService } from "@localpass/common/platform/abstractions/sdk/sdk.service";
 import { SingleUserState, StateProvider } from "@localpass/common/platform/state";
-import { UserKeyEncryptor } from "@localpass/common/tools/cryptography/user-key-encryptor";
-import { BufferedState } from "@localpass/common/tools/state/buffered-state";
-import { DataPacker } from "@localpass/common/tools/state/data-packer.abstraction";
-import { PaddedDataPacker } from "@localpass/common/tools/state/padded-data-packer";
-import { SecretState } from "@localpass/common/tools/state/secret-state";
 import { UserId } from "@localpass/common/types/guid";
 import { CredentialType } from "@localpass/generator-core";
 
 import { GeneratedCredential } from "./generated-credential";
 import { GeneratorHistoryService } from "./generator-history.abstraction";
-import { GENERATOR_HISTORY, GENERATOR_HISTORY_BUFFER } from "./key-definitions";
-import { LegacyPasswordHistoryDecryptor } from "./legacy-password-history-decryptor";
+import { GENERATOR_HISTORY_MEMORY } from "./key-definitions";
 import { HistoryServiceOptions } from "./options";
 
-const OPTIONS_FRAME_SIZE = 2048;
-
-/** Tracks the history of password generations local to a device.
+/** Tracks the history of password generations local to an unlock session.
  *  {@link GeneratorHistoryService}
+ *
+ *  History is intentionally memory-only: values never touch disk and are cleared
+ *  automatically when the vault locks or the user logs out.
  */
 export class LocalGeneratorHistoryService extends GeneratorHistoryService {
   constructor(
     private readonly stateProvider: StateProvider,
-    private readonly sdkService: SdkService,
-    private readonly options: HistoryServiceOptions = { maxTotal: 200 },
-    private readonly dataPacker: DataPacker = new PaddedDataPacker(OPTIONS_FRAME_SIZE),
+    private readonly options: HistoryServiceOptions = { maxTotal: 20 },
   ) {
     super();
   }
@@ -109,39 +101,10 @@ export class LocalGeneratorHistoryService extends GeneratorHistoryService {
     let state = this._credentialStates.get(userId);
 
     if (!state) {
-      state = this.createSecretState(userId);
+      state = this.stateProvider.getUser(userId, GENERATOR_HISTORY_MEMORY);
       this._credentialStates.set(userId, state);
     }
 
     return state;
-  }
-
-  private createSecretState(userId: UserId): SingleUserState<GeneratedCredential[]> {
-    // construct the encryptor
-    const encryptor$ = of(new UserKeyEncryptor(userId, this.sdkService, this.dataPacker));
-
-    // construct the durable state
-    const state = SecretState.from<
-      GeneratedCredential[],
-      number,
-      GeneratedCredential,
-      Record<keyof GeneratedCredential, never>,
-      GeneratedCredential
-    >(userId, GENERATOR_HISTORY, this.stateProvider, encryptor$);
-
-    // decryptor is just an algorithm, but it can't run until the SDK is available;
-    // providing it via an observable makes running it early impossible
-    const decryptor = new LegacyPasswordHistoryDecryptor(userId, this.sdkService);
-    const decryptor$ = this.sdkService.userClient$(userId).pipe(map((sdk) => sdk && decryptor));
-
-    // move data from the old password history once decryptor is available
-    const buffer = new BufferedState(
-      this.stateProvider,
-      GENERATOR_HISTORY_BUFFER,
-      state,
-      decryptor$,
-    );
-
-    return buffer;
   }
 }

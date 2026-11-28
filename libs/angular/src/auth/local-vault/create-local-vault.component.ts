@@ -5,11 +5,11 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { ValidationService } from "@localpass/common/platform/abstractions/validation.service";
-import { ButtonModule, IconComponent, LinkModule } from "@localpass/components";
+import { IconComponent } from "@localpass/components";
 import { CreateLocalAccountService } from "@localpass/local-vault";
 
 import { JslibModule } from "../../jslib.module";
-import { LpFieldComponent, LpHeroComponent } from "../../local-ui";
+import { LpPopupHeaderComponent } from "../../local-ui";
 
 import {
   createLocalVaultForm,
@@ -28,16 +28,7 @@ import {
   templateUrl: "./create-local-vault.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    JslibModule,
-    ButtonModule,
-    IconComponent,
-    LinkModule,
-    LpFieldComponent,
-    LpHeroComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, JslibModule, IconComponent, LpPopupHeaderComponent],
 })
 export class CreateLocalVaultComponent {
   private readonly formBuilder = inject(FormBuilder);
@@ -50,6 +41,11 @@ export class CreateLocalVaultComponent {
   protected readonly formGroup = createLocalVaultForm(this.formBuilder);
 
   protected readonly submitting = signal(false);
+  protected readonly showPassword = signal(false);
+  protected readonly showConfirm = signal(false);
+  protected readonly importAfterCreate = signal(
+    this.route.snapshot.queryParamMap.get("next") === "import",
+  );
   protected readonly errorMessage = signal<string | null>(null);
   /** Messages shown under each field; empty until the field is left or the form is submitted. */
   protected readonly fieldErrors = signal<LocalVaultFieldErrors>({
@@ -57,8 +53,6 @@ export class CreateLocalVaultComponent {
     masterPassword: null,
     confirmMasterPassword: null,
   });
-  /** 桌面端原型不显示备份确认勾选，默认视为已知晓；弹窗形态保留勾选（默认勾上）。 */
-  protected readonly backupAcknowledged = signal(true);
   /** Desktop mounts this screen in the centered auth card; the popup keeps its stacked hero. */
   protected readonly isDesktop =
     this.route.snapshot.data["localVaultLayout"] === "desktop" ||
@@ -77,6 +71,10 @@ export class CreateLocalVaultComponent {
     }
   }
 
+  protected onInput(field: LocalVaultField, event: Event): void {
+    this.setField(field, (event.target as HTMLInputElement).value);
+  }
+
   protected onFieldBlur(field: LocalVaultField): void {
     this.refreshFieldError(field);
   }
@@ -88,12 +86,12 @@ export class CreateLocalVaultComponent {
     }));
   }
 
-  protected onBackupAcknowledged(event: Event): void {
-    this.backupAcknowledged.set((event.target as HTMLInputElement).checked);
-  }
-
   protected restoreFromBackup(): void {
     void this.router.navigate(["/restore-vault"]);
+  }
+
+  protected toggleImportAfterCreate(): void {
+    this.importAfterCreate.update((current) => !current);
   }
 
   get email() {
@@ -121,11 +119,6 @@ export class CreateLocalVaultComponent {
       return;
     }
 
-    if (!this.backupAcknowledged()) {
-      this.errorMessage.set(this.i18nService.t("setupBackupConfirmRequired"));
-      return;
-    }
-
     this.submitting.set(true);
     try {
       await this.createLocalAccountService.createAccount({
@@ -138,7 +131,9 @@ export class CreateLocalVaultComponent {
       // different routes: the popup has its own LocalPass picker, the desktop window the shared one.
       const next = this.route.snapshot.queryParamMap.get("next");
       const importRoute: string = this.route.snapshot.data["importRoute"] ?? "/import";
-      await this.router.navigate([next === "import" ? importRoute : "/"]);
+      await this.router.navigate([
+        next === "import" || this.importAfterCreate() ? importRoute : "/",
+      ]);
     } catch (error) {
       this.validationService.showError(error);
       this.errorMessage.set(this.i18nService.t("errorOccurred"));

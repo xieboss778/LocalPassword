@@ -8,6 +8,7 @@ import {
   applyFieldValues,
   fieldGroups,
   FIELDS,
+  formatCardExpiryInput,
   readCustomFields,
   readFieldValues,
 } from "./item-fields";
@@ -96,13 +97,27 @@ describe("item field mapping", () => {
       name: "招行储蓄卡",
       cardholder: "XIE",
       number: "6225 8800 1234 5678",
-      expMonth: "08",
-      expYear: "2030",
+      expiry: "08/30",
       code: "123",
     });
 
     expect(view.card.number).toBe("6225 8800 1234 5678");
+    expect(view.card.expMonth).toBe("08");
+    expect(view.card.expYear).toBe("2030");
     expect(readFieldValues(view, ItemKind.Card).code).toBe("123");
+    expect(readFieldValues(view, ItemKind.Card).expiry).toBe("08/30");
+  });
+
+  it("formats card expiry input and displays legacy four-digit years as MM/YY", () => {
+    expect(formatCardExpiryInput("1230")).toBe("12/30");
+    expect(formatCardExpiryInput("12/30")).toBe("12/30");
+    expect(formatCardExpiryInput("12a3456")).toBe("12/34");
+    expect(formatCardExpiryInput("")).toBe("");
+
+    const view = emptyView();
+    view.card.expMonth = "8";
+    view.card.expYear = "2030";
+    expect(readFieldValues(view, ItemKind.Card).expiry).toBe("08/30");
   });
 
   it("round-trips an identity document number", () => {
@@ -117,6 +132,34 @@ describe("item field mapping", () => {
 
     expect(view.identity.passportNumber).toBe("110101199001011234");
     expect(readFieldValues(view, ItemKind.Identity).idNumber).toBe("110101199001011234");
+  });
+
+  it("round-trips identity contact and address fields", () => {
+    const view = emptyView();
+    setKind(view, ItemKind.Identity);
+    applyFieldValues(view, ItemKind.Identity, {
+      name: "家庭地址",
+      firstName: "波",
+      lastName: "谢",
+      phone: "+86 138 0000 0000",
+      email: "bossxie@example.com",
+      address: "上海市徐汇区漕河泾开发路 100 号 8F",
+      postalCode: "200233",
+      company: "LocalPass",
+    });
+
+    expect(view.identity.phone).toBe("+86 138 0000 0000");
+    expect(view.identity.email).toBe("bossxie@example.com");
+    expect(view.identity.address1).toBe("上海市徐汇区漕河泾开发路 100 号 8F");
+    expect(view.identity.postalCode).toBe("200233");
+    expect(view.identity.company).toBe("LocalPass");
+    expect(readFieldValues(view, ItemKind.Identity)).toMatchObject({
+      phone: "+86 138 0000 0000",
+      email: "bossxie@example.com",
+      address: "上海市徐汇区漕河泾开发路 100 号 8F",
+      postalCode: "200233",
+      company: "LocalPass",
+    });
   });
 
   it("round-trips a note", () => {
@@ -239,5 +282,149 @@ describe("item field mapping", () => {
     expect(view.fields.map((field) => field.name)).toEqual(["lp:kind", "scope", "恢复码"]);
     expect(view.fields.find((field) => field.name === "恢复码")?.type).toBe(FieldType.Hidden);
     expect(readFieldValues(view, ItemKind.Token).scope).toBe("Zone.Read");
+  });
+
+  it("round-trips optional fields across Server, Token, License, SSH Key, Card, Identity, and Note", () => {
+    const server = emptyView();
+    setKind(server, ItemKind.Server);
+    applyFieldValues(server, ItemKind.Server, {
+      name: "Prod Bastion",
+      host: "10.0.2.14",
+      port: "2222",
+      protocol: "SSH",
+      loginUser: "ops",
+      password: "secret",
+      linkedSshId: "ssh-1",
+      sudo: "NOPASSWD",
+      region: "ap-east-1",
+    });
+    expect(readFieldValues(server, ItemKind.Server)).toMatchObject({
+      host: "10.0.2.14",
+      port: "2222",
+      protocol: "SSH",
+      loginUser: "ops",
+      linkedSshId: "ssh-1",
+      sudo: "NOPASSWD",
+      region: "ap-east-1",
+    });
+
+    const token = emptyView();
+    setKind(token, ItemKind.Token);
+    applyFieldValues(token, ItemKind.Token, {
+      name: "Cloudflare R2",
+      service: "R2",
+      accessKeyId: "AKIA-SYNTH",
+      token: "tok-123",
+      scope: "Bucket.Write",
+      expires: "2027-01-01",
+      env: "Production",
+      totp: "JBSWY3DP",
+    });
+    expect(readFieldValues(token, ItemKind.Token)).toMatchObject({
+      accessKeyId: "AKIA-SYNTH",
+      expires: "2027-01-01",
+      env: "Production",
+      totp: "JBSWY3DP",
+    });
+
+    const license = emptyView();
+    setKind(license, ItemKind.License);
+    applyFieldValues(license, ItemKind.License, {
+      name: "JetBrains",
+      software: "RustRover",
+      edition: "Pro",
+      serial: "XXXX-YYYY",
+      licensedEmail: "alex@example.test",
+      seats: "2",
+      purchased: "2026-01-01",
+      expires: "2027-06-01",
+      orderId: "ORD-9001",
+    });
+    expect(readFieldValues(license, ItemKind.License)).toMatchObject({
+      software: "RustRover",
+      edition: "Pro",
+      serial: "XXXX-YYYY",
+      licensedEmail: "alex@example.test",
+      seats: "2",
+      purchased: "2026-01-01",
+      expires: "2027-06-01",
+      orderId: "ORD-9001",
+    });
+
+    const ssh = emptyView();
+    setKind(ssh, ItemKind.SshKey);
+    applyFieldValues(ssh, ItemKind.SshKey, {
+      name: "id_ed25519",
+      algorithm: "Ed25519 · 256-bit",
+      privateKey: "-----BEGIN OPENSSH PRIVATE KEY-----",
+      publicKey: "ssh-ed25519 AAAA",
+      fingerprint: "SHA256:abcd1234",
+      passphrase: "pass",
+      hosts: "git.example.test",
+    });
+    expect(readFieldValues(ssh, ItemKind.SshKey)).toMatchObject({
+      algorithm: "Ed25519 · 256-bit",
+      fingerprint: "SHA256:abcd1234",
+      passphrase: "pass",
+      hosts: "git.example.test",
+    });
+
+    // Clearing optional custom fields removes them from view.fields
+    applyFieldValues(ssh, ItemKind.SshKey, {
+      name: "id_ed25519",
+      algorithm: "",
+      privateKey: "-----BEGIN OPENSSH PRIVATE KEY-----",
+      publicKey: "ssh-ed25519 AAAA",
+      fingerprint: "SHA256:abcd1234",
+      passphrase: "",
+      hosts: "",
+    });
+    expect(readFieldValues(ssh, ItemKind.SshKey)).toMatchObject({
+      algorithm: "",
+      passphrase: "",
+      hosts: "",
+    });
+    expect(ssh.fields.map((field) => field.name)).toEqual(["lp:kind"]);
+
+    const card = emptyView();
+    setKind(card, ItemKind.Card);
+    applyFieldValues(card, ItemKind.Card, {
+      name: "Corp Card",
+      brand: "Visa",
+      cardholder: "Alex",
+      number: "4111 1111 1111 1111",
+      expiry: "09/29",
+      code: "321",
+      pin: "4567",
+      billingZip: "94107",
+    });
+    expect(readFieldValues(card, ItemKind.Card)).toMatchObject({
+      brand: "Visa",
+      pin: "4567",
+      billingZip: "94107",
+    });
+
+    const identity = emptyView();
+    setKind(identity, ItemKind.Identity);
+    applyFieldValues(identity, ItemKind.Identity, {
+      name: "ID",
+      firstName: "Alex",
+      lastName: "Chen",
+      idType: "Passport",
+    });
+    expect(readFieldValues(identity, ItemKind.Identity)).toMatchObject({
+      idType: "Passport",
+    });
+
+    const note = emptyView();
+    setKind(note, ItemKind.Note);
+    applyFieldValues(note, ItemKind.Note, {
+      name: "Recovery Codes",
+      category: "Recovery Keys",
+      notes: "1234-5678",
+    });
+    expect(readFieldValues(note, ItemKind.Note)).toMatchObject({
+      category: "Recovery Keys",
+    });
   });
 });

@@ -1,0 +1,2658 @@
+// LocalPass AGY Compact v4 — 产品界面层。
+// 原型见 design-system/agy/。这里只提供紧凑密度与版式类，颜色一律走语义主题变量，
+// 因此浅色/深色主题自动生效。类名统一 agy- 前缀，避免与上游 Bootstrap 样式冲突。
+
+:root {
+  --agy-brand: var(--color-fg-brand);
+  --agy-brand-bg: var(--color-bg-brand);
+  --agy-brand-soft: var(--color-bg-brand-soft);
+  --agy-brand-softer: var(--color-bg-brand-softer);
+
+  --agy-bg: var(--color-bg-primary);
+  --agy-bg-app: var(--color-bg-tertiary);
+  --agy-bg-alt: var(--color-bg-secondary);
+  --agy-bg-hover: var(--color-bg-quaternary);
+  --agy-bg-active: var(--color-bg-brand-soft);
+
+  --agy-border: var(--color-border-base);
+  --agy-border-light: var(--color-border-light);
+  --agy-border-strong: var(--color-border-strong);
+
+  --agy-text: var(--color-fg-heading);
+  --agy-text-2: var(--color-fg-body);
+  --agy-text-3: var(--color-fg-body-subtle);
+  --agy-text-4: var(--color-fg-inactive);
+  --agy-focus: var(--color-border-focus);
+
+  --agy-success: var(--color-fg-success);
+  --agy-success-soft: var(--color-bg-success-soft);
+  --agy-warning: var(--color-fg-warning);
+  --agy-warning-soft: var(--color-bg-warning-soft);
+  --agy-danger: var(--color-fg-danger);
+  --agy-danger-soft: var(--color-bg-danger-soft);
+
+  --agy-mono: var(--font-mono, "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agy,
+  .agy *,
+  .agy *::before,
+  .agy *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.agy {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--agy-text);
+  font-variant-numeric: tabular-nums;
+
+  button:focus-visible,
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--agy-brand);
+    outline-offset: 2px;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--agy-brand);
+    outline-offset: 1px;
+  }
+
+  .agy-ext-list :focus-visible,
+  .agy-mac-rows :focus-visible,
+  .agy-qs-body :focus-visible,
+  .agy-tray-scroll :focus-visible {
+    outline-offset: -2px;
+  }
+}
+
+.agy-sub {
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--agy-text-3);
+}
+
+.agy-mono {
+  font-family: var(--agy-mono);
+}
+
+.agy-tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== 基础控件 ==================== */
+
+.agy-iconbtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  color: var(--agy-text-3);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--agy-bg-hover);
+    color: var(--agy-text);
+  }
+
+  &.agy-sm {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    border-radius: 4px;
+  }
+
+  &.agy-on {
+    color: var(--agy-brand);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.agy-btn {
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 6px;
+  border: 1px solid var(--agy-border);
+  background: var(--agy-bg);
+  color: var(--agy-text-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--agy-bg-hover);
+  }
+
+  &.agy-primary {
+    background: var(--agy-brand-bg);
+    border-color: var(--agy-brand-bg);
+    color: var(--color-fg-contrast);
+
+    &:hover {
+      background: var(--color-bg-brand-strong);
+      border-color: var(--color-bg-brand-strong);
+    }
+  }
+
+  &.agy-danger {
+    color: var(--agy-danger);
+
+    &:hover {
+      background: var(--agy-danger-soft);
+    }
+  }
+
+  &.agy-danger-fill {
+    background: var(--color-bg-danger);
+    border-color: var(--color-bg-danger);
+    color: var(--color-fg-contrast);
+
+    &:hover {
+      background: var(--color-bg-danger-strong);
+      border-color: var(--color-bg-danger-strong);
+    }
+  }
+
+  &.agy-ghost {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  &.agy-sm {
+    height: 22px;
+    padding: 0 7px;
+    font-size: 10.5px;
+    border-radius: 5px;
+  }
+
+  &.agy-lg {
+    height: 30px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  &.agy-block {
+    width: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.agy-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 17px;
+  padding: 0 5px;
+  border: 1px solid var(--agy-border-light);
+  border-radius: 4px;
+  font-size: 9.5px;
+  color: var(--agy-text-3);
+  white-space: nowrap;
+
+  &.agy-brand {
+    background: var(--agy-brand-soft);
+    border-color: transparent;
+    color: var(--agy-brand);
+    font-weight: 600;
+  }
+
+  &.agy-ok {
+    background: var(--agy-success-soft);
+    border-color: transparent;
+    color: var(--agy-success);
+    font-weight: 600;
+  }
+
+  &.agy-warn {
+    background: var(--agy-warning-soft);
+    border-color: transparent;
+    color: var(--agy-warning);
+    font-weight: 600;
+  }
+
+  &.agy-bad {
+    background: var(--agy-danger-soft);
+    border-color: transparent;
+    color: var(--agy-danger);
+    font-weight: 600;
+  }
+}
+
+.agy-seclbl {
+  margin: 9px 2px 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--agy-text-3);
+
+  &:first-child {
+    margin-top: 2px;
+  }
+}
+
+.agy-grp {
+  border: 1px solid var(--agy-border);
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--agy-bg);
+}
+
+.agy-prow {
+  min-height: 34px;
+  padding: 5px 9px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid var(--agy-border-light);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background: var(--agy-bg-alt);
+  }
+
+  .agy-t {
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+
+  .agy-s {
+    margin-top: 1px;
+    font-size: 10px;
+    color: var(--agy-text-3);
+  }
+
+  .agy-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.agy-setrow {
+  min-height: 36px;
+  padding: 6px 9px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid var(--agy-border-light);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  .agy-k {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+
+  .agy-d {
+    display: block;
+    margin-top: 1px;
+    font-size: 10px;
+    color: var(--agy-text-3);
+  }
+
+  .agy-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+}
+
+.agy-setrow.agy-no-divider {
+  border-bottom: 0;
+}
+
+.agy-minirow {
+  width: 100%;
+  min-height: 28px;
+  padding: 2px 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+}
+
+.agy-stat {
+  border: 1px solid var(--agy-border);
+  border-radius: 7px;
+  padding: 6px 8px;
+  background: var(--agy-bg-alt);
+
+  .agy-n {
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+
+  .agy-l {
+    margin-top: 1px;
+    font-size: 10px;
+    color: var(--agy-text-3);
+  }
+
+  &.agy-bad .agy-n {
+    color: var(--agy-danger);
+  }
+
+  &.agy-warn .agy-n {
+    color: var(--agy-warning);
+  }
+
+  &.agy-ok .agy-n {
+    color: var(--agy-success);
+  }
+}
+
+.agy-callout {
+  display: flex;
+  gap: 6px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  background: var(--agy-brand-softer);
+  color: var(--agy-text-2);
+  font-size: 10px;
+  line-height: 1.45;
+
+  &.agy-warn {
+    background: var(--agy-warning-soft);
+    color: var(--agy-warning);
+  }
+
+  &.agy-bad {
+    background: var(--agy-danger-soft);
+    color: var(--agy-danger);
+  }
+}
+
+/* ==================== 扩展弹窗 ==================== */
+
+.agy-ext {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  background: var(--agy-bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.agy-ext-header {
+  height: 38px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border-bottom: 1px solid var(--agy-border);
+  background: var(--agy-bg);
+
+  .agy-name {
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-sub {
+    font-size: 10px;
+    line-height: 1.2;
+    color: var(--agy-text-3);
+  }
+
+  .agy-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+}
+
+.agy-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  background: var(--agy-brand-bg);
+  color: var(--color-fg-contrast);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+
+  &.agy-lg {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  &.agy-xl {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    font-size: 14px;
+  }
+}
+
+.agy-bridge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--agy-success-soft);
+  color: var(--agy-success);
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex: none;
+
+  &.agy-locked {
+    background: var(--agy-warning-soft);
+    color: var(--agy-warning);
+  }
+}
+
+.agy-ring {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex: none;
+  position: relative;
+  background: conic-gradient(var(--agy-brand) calc(var(--p, 0.7) * 360deg), var(--agy-border) 0);
+  display: inline-grid;
+  place-items: center;
+
+  &::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--agy-bg-alt);
+  }
+}
+
+.agy-copy-pill {
+  font-size: 9.5px;
+  color: var(--agy-success);
+  background: var(--agy-success-soft);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex: none;
+}
+
+.agy-preset-back {
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid var(--agy-border);
+  background: var(--agy-bg-alt);
+  color: var(--agy-text-2);
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex: none;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--agy-bg-hover);
+    color: var(--agy-text);
+  }
+}
+
+.agy-ext-search {
+  margin: 6px 8px 0;
+  flex: none;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 1px solid var(--agy-border);
+  border-radius: 6px;
+  background: var(--agy-bg-alt);
+  color: var(--agy-text-3);
+
+  input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--agy-text);
+    font-size: 11px;
+
+    &::placeholder {
+      color: var(--agy-text-3);
+    }
+  }
+}
+
+.agy-ext-tabs {
+  display: flex;
+  gap: 1px;
+  margin: 4px 8px 0;
+  flex: none;
+
+  button {
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10.5px;
+    color: var(--agy-text-3);
+
+    &:hover {
+      background: var(--agy-bg-hover);
+    }
+
+    .agy-n {
+      font-size: 9px;
+      color: var(--agy-text-4);
+    }
+
+    &.agy-on {
+      background: var(--agy-bg-active);
+      color: var(--agy-brand);
+      font-weight: 600;
+
+      .agy-n {
+        color: var(--agy-brand);
+      }
+    }
+  }
+}
+
+.agy-ext-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 5px 6px;
+}
+
+.agy-grouphead {
+  height: 20px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--agy-text-3);
+
+  .agy-n {
+    font-weight: 500;
+  }
+}
+
+.agy-ext-row {
+  position: relative;
+  width: 100%;
+  height: 36px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 5px;
+  text-align: left;
+
+  &:hover,
+  &.agy-on {
+    background: var(--agy-bg-hover);
+  }
+
+  &.agy-on {
+    background: var(--agy-brand-soft);
+  }
+
+  .agy-t {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 560;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-s {
+    display: block;
+    font-size: 10px;
+    color: var(--agy-text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-m {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex: none;
+  }
+
+  .agy-hoveracts {
+    display: none;
+    align-items: center;
+    gap: 2px;
+  }
+
+  &:hover .agy-hoveracts,
+  &.agy-on .agy-hoveracts {
+    display: flex;
+  }
+
+  &:hover .agy-idle-meta,
+  &.agy-on .agy-idle-meta {
+    display: none;
+  }
+}
+
+/* 极紧模式：扩展列表 32px，只留单行标题，多显示约 3 条。 */
+.agy-ultra {
+  .agy-ext-row {
+    height: 32px;
+  }
+
+  .agy-ext-row .agy-s {
+    display: none;
+  }
+}
+
+.agy-ext-nav {
+  height: 38px;
+  flex: none;
+  border-top: 1px solid var(--agy-border);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--agy-bg-alt);
+
+  a,
+  button {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 1px;
+    font-size: 9px;
+    color: var(--agy-text-3);
+
+    &:hover {
+      color: var(--agy-text);
+    }
+
+    &.agy-on {
+      color: var(--agy-brand);
+      font-weight: 600;
+    }
+  }
+}
+
+.agy-ext-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 9px 10px;
+}
+
+.agy-ext-hero {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .agy-h1 {
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-h2 {
+    margin-top: 1px;
+    font-size: 10.5px;
+    color: var(--agy-text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.agy-ext-otp {
+  margin-top: 8px;
+  height: 38px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--agy-border);
+  border-radius: 6px;
+  background: var(--agy-bg-alt);
+  cursor: pointer;
+
+  .agy-code {
+    font-family: var(--agy-mono);
+    font-size: 14.5px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+  }
+}
+
+.agy-copied {
+  background: var(--agy-success-soft);
+}
+
+.agy-ext-field {
+  min-height: 31px;
+  padding: 0 8px;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--agy-border-light);
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background: var(--agy-bg-alt);
+  }
+
+  &.agy-copied {
+    background: var(--agy-success-soft);
+  }
+
+  .agy-k {
+    font-size: 10px;
+    color: var(--agy-text-3);
+  }
+
+  .agy-v {
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .agy-v.agy-mono {
+    font-size: 10.5px;
+  }
+}
+
+.agy-formrow {
+  border-bottom: 1px solid var(--agy-border-light);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  .agy-ext-field {
+    border-bottom: 0;
+    cursor: default;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.agy-input {
+  width: 100%;
+  min-width: 0;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--agy-text);
+  font: inherit;
+  font-size: 11px;
+  outline: none;
+
+  &::placeholder {
+    color: var(--agy-text-4);
+  }
+
+  &.agy-mono {
+    font-size: 10.5px;
+  }
+
+  &.agy-input-error {
+    color: var(--agy-danger);
+  }
+}
+
+textarea.agy-input {
+  min-height: 42px;
+}
+
+.agy-secret-area {
+  -webkit-text-security: disc;
+}
+
+.agy-hint {
+  display: block;
+  padding: 0;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--agy-text-3);
+}
+
+.agy-formrow .agy-hint {
+  padding: 0 8px 5px 70px;
+}
+
+.agy-hint-error {
+  color: var(--agy-danger);
+}
+
+.agy-addrow {
+  width: 100%;
+  min-height: 31px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 1px solid var(--agy-border-light);
+  color: var(--agy-brand);
+  font-size: 11px;
+  text-align: left;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background: var(--agy-bg-alt);
+  }
+}
+
+.agy-cfield {
+  min-height: 31px;
+  padding: 0 4px 0 8px;
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--agy-border-light);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.agy-dropzone {
+  width: 100%;
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border: 1px dashed var(--agy-border);
+  border-radius: 7px;
+  background: var(--agy-bg-alt);
+  text-align: center;
+
+  &:hover {
+    background: var(--agy-bg-hover);
+  }
+}
+
+.agy-ext-foot {
+  flex: none;
+  display: flex;
+  gap: 5px;
+  padding: 6px 9px;
+  border-top: 1px solid var(--agy-border);
+  background: var(--agy-bg);
+}
+
+.agy-sheetwrap {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  background: rgb(9 13 20 / 36%);
+}
+
+.agy-sheet {
+  width: 100%;
+  padding: 6px;
+  border-radius: 10px 10px 0 0;
+  background: var(--agy-bg);
+  box-shadow: 0 -12px 32px rgb(15 23 42 / 18%);
+
+  .agy-st {
+    padding: 2px 8px 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--agy-text-3);
+  }
+
+  .agy-sb {
+    width: 100%;
+    height: 34px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    text-align: left;
+
+    &:hover {
+      background: var(--agy-bg-hover);
+    }
+
+    &.agy-danger {
+      color: var(--agy-danger);
+    }
+  }
+}
+
+.agy-segtabs {
+  display: flex;
+  gap: 1px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--agy-bg-alt);
+
+  button {
+    flex: 1;
+    height: 24px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    color: var(--agy-text-3);
+
+    &.agy-on {
+      background: var(--agy-bg);
+      color: var(--agy-text);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgb(15 23 42 / 8%);
+    }
+  }
+}
+
+.agy-genout {
+  padding: 12px 9px;
+  border: 1px solid var(--agy-border);
+  border-radius: 7px;
+  background: var(--agy-bg-alt);
+  text-align: center;
+
+  .agy-genval {
+    display: block;
+    font-family: var(--agy-mono);
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+    color: var(--agy-text);
+    word-break: break-all;
+  }
+}
+
+.agy-typegrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+
+  button {
+    min-height: 46px;
+    padding: 5px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border: 1px solid var(--agy-border);
+    border-radius: 6px;
+    font-size: 9.5px;
+    color: var(--agy-text-2);
+
+    &:hover {
+      background: var(--agy-bg-alt);
+    }
+
+    &.agy-on {
+      border-color: var(--agy-brand);
+      background: var(--agy-brand-softer);
+      color: var(--agy-brand);
+      font-weight: 600;
+    }
+  }
+}
+
+.agy-unlock-input {
+  width: 100%;
+  height: 32px;
+  margin-top: 10px;
+  padding: 0 9px;
+  border: 1px solid var(--agy-border);
+  border-radius: 6px;
+  background: var(--agy-bg-alt);
+  font-size: 12px;
+  outline: 0;
+
+  &:focus {
+    border-color: var(--agy-brand);
+    background: var(--agy-bg);
+  }
+}
+
+/* ==================== 桌面工作区 ==================== */
+
+.agy-mac {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  background: var(--agy-bg);
+  container-type: inline-size;
+}
+
+.agy-mac-list {
+  width: 296px;
+  flex: none;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--agy-border);
+  background: var(--agy-bg);
+}
+
+.agy-mac-listhead {
+  flex: none;
+  padding: 7px 7px 5px;
+  display: grid;
+  gap: 6px;
+  border-bottom: 1px solid var(--agy-border-light);
+
+  .agy-ext-search {
+    margin: 0;
+    width: auto;
+  }
+}
+
+.agy-mac-filters {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+
+  button {
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10.5px;
+    color: var(--agy-text-3);
+
+    &:hover {
+      background: var(--agy-bg-hover);
+      color: var(--agy-text);
+    }
+
+    &.agy-on {
+      background: var(--agy-bg-active);
+      color: var(--agy-brand);
+      font-weight: 600;
+    }
+
+    .agy-n {
+      font-size: 9px;
+      color: var(--agy-text-4);
+    }
+
+    &.agy-on .agy-n {
+      color: var(--agy-brand);
+    }
+  }
+
+  .agy-spacer {
+    margin-left: auto;
+  }
+}
+
+.agy-mac-minirow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+
+  .agy-k {
+    flex: none;
+    font-size: 10px;
+    color: var(--agy-text-3);
+  }
+
+  .agy-input {
+    flex: 1;
+    min-width: 0;
+    font-size: 10.5px;
+    padding: 2px 0;
+  }
+}
+
+.agy-mac-rows {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 4px 6px;
+}
+
+.agy-mac-row {
+  position: relative;
+  width: 100%;
+  height: 36px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 5px;
+  text-align: left;
+
+  &:hover {
+    background: var(--agy-bg-hover);
+  }
+
+  &.agy-on {
+    background: var(--agy-brand-soft);
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 7px;
+      bottom: 7px;
+      width: 2.5px;
+      border-radius: 2px;
+      background: var(--agy-brand);
+    }
+  }
+
+  .agy-txt {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .agy-t {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 560;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-s {
+    display: block;
+    margin-top: 1px;
+    font-size: 10px;
+    color: var(--agy-text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-m {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex: none;
+  }
+
+  .agy-idle-meta {
+    display: inline-flex;
+  }
+
+  .agy-hoveracts {
+    display: none;
+    align-items: center;
+    gap: 1px;
+  }
+
+  &:hover,
+  &:focus-within {
+    .agy-hoveracts {
+      display: flex;
+    }
+
+    .agy-idle-meta {
+      display: none;
+    }
+  }
+
+  &.agy-ultra {
+    height: 30px;
+
+    .agy-s {
+      display: none;
+    }
+
+    .agy-t {
+      font-size: 11px;
+    }
+  }
+}
+
+.agy-mac-detail {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--agy-bg);
+}
+
+.agy-mac-dhead {
+  height: 38px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--agy-border);
+
+  .agy-crumb {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--agy-text-3);
+
+    b {
+      color: var(--agy-text);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.agy-mac-dbody {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 188px;
+}
+
+.agy-mac-dmain {
+  min-width: 0;
+  overflow: auto;
+  padding: 12px 14px 16px;
+}
+
+.agy-mac-hero {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  .agy-h1 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-h2 {
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--agy-text-3);
+  }
+
+  .agy-acts {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex: none;
+  }
+}
+
+.agy-fgroup {
+  margin-top: 11px;
+}
+
+.agy-flabel {
+  height: 18px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--agy-text-4);
+}
+
+.agy-fbox {
+  border: 1px solid var(--agy-border-light);
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--agy-bg);
+}
+
+.agy-field {
+  min-height: 31px;
+  padding: 0 9px;
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--agy-border-light);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &.agy-copied {
+    background: var(--agy-success-soft);
+  }
+
+  .agy-k {
+    font-size: 10.5px;
+    color: var(--agy-text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agy-v {
+    min-width: 0;
+    font-size: 11.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &.agy-mono {
+      font-size: 11px;
+    }
+
+    &.agy-multiline {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow: visible;
+      text-overflow: clip;
+      padding: 6px 0;
+      line-height: 1.45;
+      font-size: 11px;
+      align-items: flex-start;
+    }
+  }
+
+  .agy-a {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    opacity: 0.35;
+
+    &.agy-always {
+      opacity: 1;
+    }
+  }
+
+  &:hover .agy-a,
+  &:focus-within .agy-a {
+    opacity: 1;
+  }
+
+  &[data-act="copy"] {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--agy-bg-alt);
+    }
+  }
+}
+
+.agy-otpcard {
+  margin-top: 10px;
+  height: 42px;
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--agy-border);
+  border-radius: 7px;
+  background: var(--agy-bg-alt);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--agy-bg-hover);
+  }
+
+  &.agy-copied {
+    background: var(--agy-success-soft);
+  }
+
+  .agy-code {
+    font-family: var(--agy-mono);
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+  }
+
+  .agy-lbl {
+    font-size: 10px;
+    color: var(--agy-text-3);
+  }
+
+  .agy-grow {
+    flex: 1;
+  }
+}
+
+.agy-insp-h {
+  margin: 0 0 5px;
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--agy-text-4);
+}
+
+.agy-mac-inspector {
+  min-height: 0;
+  overflow: auto;
+  padding: 11px 10px;
+  border-left: 1px solid var(--agy-border-light);
+  background: var(--agy-bg-alt);
+
+  .agy-divider {
+    height: 1px;
+    margin: 8px 0;
+    background: var(--agy-border-light);
+  }
+
+  .agy-meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 3px 0;
+    font-size: 10.5px;
+
+    .agy-k {
+      color: var(--agy-text-3);
+    }
+
+    .agy-v {
+      color: var(--agy-text-2);
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+  }
+}
+
+.agy-mac-dfoot {
+  height: 24px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-top: 1px solid var(--agy-border);
+  background: var(--agy-bg-alt);
+  font-size: 9.5px;
+  color: var(--agy-text-3);
+
+  .agy-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.agy-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+
+  kbd {
+    padding: 0 3px;
+    border: 1px solid var(--agy-border-light);
+    border-radius: 3px;
+    background: var(--agy-bg);
+    font-family: inherit;
+    font-size: 9px;
+    color: var(--agy-text-3);
+  }
+}
+
+.agy-mac-empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+
+  .agy-emptyico {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto 8px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--agy-bg-alt);
+    color: var(--agy-text-3);
+  }
+
+  .agy-eh {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--agy-text);
+  }
+
+  .agy-es {
+    margin-top: 3px;
+    font-size: 10.5px;
+    color: var(--agy-text-3);
+  }
+}
+
+/* 桌面抽屉沿用弹窗的紧凑表单，但宽度与页脚按桌面处理。 */
+.agy-drawer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 30;
+  width: 480px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 1px solid var(--agy-border);
+  background: var(--agy-bg);
+  box-shadow: -18px 0 42px rgb(15 23 42 / 16%);
+
+  .agy-drawer-h {
+    height: 38px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 9px;
+    border-bottom: 1px solid var(--agy-border);
+
+    .agy-name {
+      min-width: 0;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .agy-sub {
+      font-size: 10px;
+      color: var(--agy-text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .agy-right {
+      margin-left: auto;
+      display: flex;
+      gap: 2px;
+    }
+  }
+}
+
+.agy-drawer-history {
+  width: 332px;
+}
+
+/* 版本历史：密码历史是唯一真实存在的旧值来源，卡片只展示保存值、时间与恢复入口。 */
+.agy-ver {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 6px;
+  padding: 7px 8px;
+  border: 1px solid var(--agy-border-light);
+  border-radius: 7px;
+  background: var(--agy-bg);
+}
+
+.agy-ver {
+  &.agy-ver-current {
+    border-color: var(--agy-brand);
+    background: var(--agy-brand-softer);
+  }
+
+  .agy-ver-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .agy-ver-when {
+    margin-left: auto;
+    font-size: 9.5px;
+    font-weight: 400;
+    color: var(--agy-text-3);
+  }
+
+  .agy-ver-diff {
+    font-size: 10px;
+    color: var(--agy-text-3);
+  }
+
+  .agy-ver-value {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .agy-mono {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      font-size: 10.5px;
+      color: var(--agy-text-2);
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.agy-unlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 34px 20px 12px;
+  text-align: center;
+
+  .agy-h {
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 650;
+  }
+
+  .agy-s {
+    margin-top: 4px;
+    max-width: 285px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--agy-text-3);
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]) {
+    width: 100%;
+    height: 32px;
+    margin-top: 12px;
+    padding: 0 9px;
+    border: 1px solid var(--agy-border);
+    border-radius: 6px;
+    background: var(--agy-bg-alt);
+    font-size: 12px;
+  }
+
+  .agy-foot {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 9.5px;
+    color: var(--agy-text-3);
+  }
+}
+
+/* 窗口较窄时（扣掉全局侧栏后的内容宽度），检查器让位给详情正文，列表也收窄。 */
+@container (max-width: 760px) {
+  .agy-mac-dbody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .agy-mac-inspector {
+    display: none;
+  }
+}
+
+@container (max-width: 560px) {
+  .agy-mac-list {
+    width: 232px;
+  }
+}
+
+/* 桌面页头 / 空状态：比旧版大标题紧凑一档，窄到弹窗宽度时自动再缩。 */
+.agy-pagehead {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 18px 8px;
+  container-type: inline-size;
+}
+
+.agy-pagehead-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.agy-pagehead-h {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--agy-text);
+}
+
+.agy-pagehead-s {
+  margin-top: 2px;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--agy-text-3);
+}
+
+.agy-pagehead-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.agy-pagehead-compact {
+  padding: 10px 12px 6px;
+
+  .agy-pagehead-h {
+    font-size: 13.5px;
+  }
+
+  .agy-pagehead-s {
+    font-size: 9.5px;
+  }
+}
+
+@container (max-width: 480px) {
+  .agy-pagehead-h {
+    font-size: 13.5px;
+  }
+
+  .agy-pagehead-s {
+    font-size: 9.5px;
+  }
+}
+
+.agy-empty {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.agy-empty-ico {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--agy-brand-softer);
+  color: var(--agy-brand);
+}
+
+.agy-empty-h {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--agy-text);
+}
+
+.agy-empty-s {
+  max-width: 300px;
+  margin: 4px auto 0;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--agy-text-3);
+}
+
+.agy-empty-act {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.agy-folder-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.agy-folder-tile {
+  min-width: 0;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--agy-border);
+  border-radius: 7px;
+  background: var(--agy-bg);
+  text-align: start;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--agy-border-strong);
+  }
+
+  .agy-n {
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--agy-text);
+  }
+
+  .agy-l {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10.5px;
+    color: var(--agy-text-3);
+  }
+}
+
+/* 空保险库：占满内容区的欢迎面板，替代原型里没有内容的列表 + 详情。 */
+.agy-mac-welcome {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--agy-bg);
+}
+
+.agy-welcome-ico {
+  width: 46px;
+  height: 46px;
+  margin-bottom: 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--agy-brand-softer);
+  color: var(--agy-brand);
+}
+
+.agy-welcome-h {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--agy-text);
+}
+
+.agy-welcome-s {
+  max-width: 360px;
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--agy-text-3);
+}
+
+.agy-welcome-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 6px;
+}
+
+.agy-welcome-keys {
+  margin: 12px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  color: var(--agy-text-4);
+}
+
+/* 桌面端设置：横向 tab + 分组卡片，与 Mac 原型一致。 */
+.agy-settings {
+  height: 100%;
+  overflow-y: auto;
+  padding: 14px 18px 20px;
+  background: var(--agy-bg-app);
+}
+
+.agy-settings-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--agy-text);
+}
+
+.agy-settings-sub {
+  margin: 2px 0 0;
+  font-size: 10.5px;
+  color: var(--agy-text-3);
+}
+
+.agy-settings-tabs {
+  display: flex;
+  gap: 2px;
+  margin-top: 11px;
+  border-bottom: 1px solid var(--agy-border);
+}
+
+.agy-settings-tab {
+  height: 30px;
+  padding: 0 9px;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--agy-text-3);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--agy-text);
+  }
+
+  &.agy-on {
+    border-bottom-color: var(--agy-brand);
+    color: var(--agy-text);
+    font-weight: 600;
+  }
+}
+
+.agy-settings-body {
+  width: 100%;
+  max-width: 980px;
+  padding-top: 4px;
+}
+
+.agy-grphead {
+  min-height: 32px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid var(--agy-border-light);
+  background: var(--agy-bg-alt);
+  font-size: 11px;
+  font-weight: 620;
+  color: var(--agy-text);
+
+  .agy-chip {
+    margin-inline-start: auto;
+  }
+}
+
+.agy-switch {
+  position: relative;
+  width: 34px;
+  height: 18px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: var(--agy-border-strong);
+  cursor: pointer;
+  transition: background-color 120ms ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    inset-inline-start: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--agy-bg);
+    transition: transform 120ms ease;
+  }
+
+  &[aria-checked="true"] {
+    background: var(--agy-brand-bg);
+
+    &::after {
+      background: var(--color-fg-contrast);
+      transform: translateX(16px);
+    }
+  }
+}
+
+.agy-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.agy-themecard {
+  min-width: 0;
+  padding: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--agy-border-light);
+  border-radius: 8px;
+  background: var(--agy-bg);
+  text-align: start;
+  cursor: pointer;
+
+  &.agy-on {
+    border-color: var(--agy-brand);
+    box-shadow: 0 0 0 2px var(--agy-brand-soft);
+  }
+
+  .agy-k {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--agy-text);
+  }
+
+  .agy-d {
+    display: block;
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: var(--agy-text-3);
+  }
+}
+
+.agy-note {
+  margin: 8px 0 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--agy-text-3);
+}
+
+.agy-settings .agy-hint {
+  padding: 0;
+}
+
+.agy-settings .agy-setrow {
+  min-height: 44px;
+  padding: 7px 11px;
+}
+
+.agy-settings .agy-k {
+  font-size: 12px;
+}
+
+.agy-settings .agy-d {
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.agy-diag {
+  margin: 0 11px 10px;
+  padding: 8px 10px;
+  overflow: auto;
+  border: 1px solid var(--agy-border-light);
+  border-radius: 7px;
+  background: var(--agy-bg);
+  color: var(--agy-text-2);
+  font-family: var(--agy-mono);
+  font-size: 10px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 桌面端外壳侧栏：对齐 AGY Mac 原型 196px macOS Source List（浅色柔和底 + 暗色语义令牌）。 */
+.agy-sidenav {
+  width: 196px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 6px;
+  border-inline-end: 1px solid var(--agy-border);
+  background: var(--agy-bg-alt);
+  color: var(--agy-text);
+}
+
+.agy-sidenav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--agy-border-light);
+
+  bit-svg {
+    width: 24px;
+    height: 24px;
+    flex: none;
+  }
+}
+
+.agy-sidenav-brandtitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--agy-text);
+}
+
+.agy-sidenav-sec {
+  padding: 9px 6px 3px;
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--agy-text-4);
+}
+
+.agy-sidenav-row {
+  width: 100%;
+  height: 26px;
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--agy-text-2);
+  font: inherit;
+  font-size: 11.5px;
+  text-align: start;
+  cursor: pointer;
+
+  bit-icon {
+    width: 14px;
+    flex: none;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  &:hover {
+    background: var(--agy-bg-hover);
+    color: var(--agy-text);
+  }
+
+  &.agy-on {
+    background: var(--agy-bg-active);
+    color: var(--agy-brand);
+    font-weight: 600;
+
+    .agy-sidenav-badge {
+      color: var(--agy-brand);
+    }
+  }
+}
+
+.agy-sidenav-label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agy-sidenav-badge {
+  font-size: 9.5px;
+  color: var(--agy-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.agy-sidenav-foot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 7px;
+  border-radius: 7px;
+  border: 1px solid var(--agy-border-light);
+  background: var(--agy-bg);
+
+  .agy-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+}
+
+.agy-sidenav-foottext {
+  min-width: 0;
+  flex: 1;
+
+  b {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--agy-text);
+  }
+
+  span {
+    display: block;
+    font-size: 9.5px;
+    color: var(--agy-text-3);
+  }
+}
+
+.agy-sidenav-lock {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--agy-text-3);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--agy-bg-hover);
+    color: var(--agy-text);
+  }
+}
+
+/* 桌面端创建/恢复保险库：原型是一张居中的窄卡片，输入为盒式 30px。 */
+.agy-wincard {
+  width: 368px;
+  max-width: 100%;
+  padding: 20px 18px 16px;
+  border: 1px solid var(--agy-border);
+  border-radius: 10px;
+  background: var(--agy-bg);
+  box-shadow: var(--agy-shadow-2, 0 18px 48px rgb(15 23 42 / 18%));
+
+  &-h {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    color: var(--agy-text);
+  }
+
+  &-s {
+    margin: 3px 0 0;
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--agy-text-3);
+  }
+
+  input.agy-input {
+    height: 30px;
+    margin-top: 12px;
+    padding: 0 9px;
+    border: 1px solid var(--agy-border);
+    border-radius: 6px;
+    background: var(--agy-bg-alt);
+    font-size: 11.5px;
+    transition:
+      border-color 120ms ease,
+      background-color 120ms ease,
+      box-shadow 120ms ease;
+
+    &:focus {
+      border-color: var(--agy-brand);
+      background: var(--agy-bg);
+      box-shadow: 0 0 0 2px var(--agy-brand-soft);
+    }
+  }
+
+  .agy-hint {
+    padding: 0;
+    margin-top: 4px;
+    font-size: 10.5px;
+  }
+}
+
+/* 桌面解锁：整窗只保留一张 336px 卡片，不再叠匿名布局的外框与内层面板。 */
+.agy-lock-page {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  overflow: auto;
+  padding: 24px;
+  background: var(--agy-bg-alt);
+}
+
+/* 防暴力等待的倒计时：桌面卡片与扩展弹窗共用等宽大号数字。 */
+.agy-waitclock {
+  color: var(--agy-warning);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.agy-unlock-or {
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  color: var(--agy-text-3);
+  text-align: center;
+}
+
+.agy-unlock-card {
+  width: 336px;
+  margin: auto;
+  padding: 18px 18px 14px;
+  text-align: center;
+
+  .agy-callout {
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .agy-unlock-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .agy-unlock-h {
+    margin: 9px 0 0;
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--agy-text);
+  }
+
+  .agy-unlock-s {
+    margin: 4px 0 0;
+    max-width: 290px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--agy-text-3);
+  }
+
+  .agy-unlock-input {
+    height: 30px;
+    margin-top: 12px;
+  }
+
+  .agy-foot {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    button {
+      font-size: 10px;
+    }
+  }
+
+  .agy-unlock-note {
+    margin: 10px 0 0;
+    font-size: 9.5px;
+    line-height: 1.45;
+    color: var(--agy-text-4);
+  }
+}
+
+/* 应用内快速检索（⌘K）：覆盖整窗的检索浮层，不注册系统全局热键。 */
+.agy-qs-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 68px 16px 16px;
+  background: rgba(9, 13, 20, 0.34);
+  backdrop-filter: blur(2px);
+}
+
+.agy-qs {
+  width: 520px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--agy-border-strong);
+  border-radius: 10px;
+  background: var(--agy-bg);
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.24);
+
+  kbd {
+    padding: 0 3px;
+    border: 1px solid var(--agy-border-light);
+    border-radius: 3px;
+    background: var(--agy-bg);
+    font-family: inherit;
+    font-size: 9px;
+    color: var(--agy-text-3);
+  }
+}
+
+.agy-qs-in {
+  flex: none;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 11px;
+  border-bottom: 1px solid var(--agy-border-light);
+  color: var(--agy-text-3);
+}
+
+.agy-qs-input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--agy-text);
+  font-size: 13px;
+
+  &::placeholder {
+    color: var(--agy-text-4);
+  }
+}
+
+.agy-qs-body {
+  max-height: 340px;
+  overflow: auto;
+  padding: 4px;
+}
+
+.agy-qs-sect {
+  padding: 5px 8px 2px;
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--agy-text-4);
+}
+
+.agy-qs-row {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  text-align: left;
+  font-size: 11.5px;
+
+  &:hover,
+  &.on {
+    background: var(--agy-brand-soft);
+  }
+}
+
+.agy-qs-txt {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.agy-qs-t {
+  font-weight: 560;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agy-qs-s {
+  flex: none;
+  max-width: 45%;
+  color: var(--agy-text-3);
+  font-size: 10.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agy-qs-meta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  font-size: 10px;
+  color: var(--agy-text-3);
+}
+
+.agy-qs-actionicon {
+  width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  color: var(--agy-brand);
+}
+
+.agy-qs-empty {
+  margin: 0;
+  padding: 18px 10px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--agy-text-3);
+}
+
+.agy-qs-foot {
+  flex: none;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border-top: 1px solid var(--agy-border-light);
+  background: var(--agy-bg-alt);
+  font-size: 9px;
+  color: var(--agy-text-3);
+}
+
+.agy-qs-scope {
+  margin-left: auto;
+}
+
+/* ==================== 菜单栏托盘面板 ==================== */
+
+.agy-tray {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--agy-bg);
+}
+
+.agy-tray-head {
+  flex: none;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--agy-border-light);
+
+  .agy-ext-search {
+    margin: 0;
+    flex: 1;
+    height: 26px;
+  }
+}
+
+.agy-tray-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 4px 4px;
+}
+
+.agy-tray-row.agy-ext-row {
+  height: 34px;
+}
+
+.agy-tray-foot {
+  flex: none;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid var(--agy-border-light);
+  background: var(--agy-bg-alt);
+}

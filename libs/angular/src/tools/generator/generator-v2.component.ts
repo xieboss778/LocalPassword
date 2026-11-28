@@ -1,16 +1,17 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, switchMap } from "rxjs";
 
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
-import { ButtonModule, IconButtonModule, IconModule } from "@localpass/components";
+import { ButtonModule, IconModule } from "@localpass/components";
 import { Type } from "@localpass/generator-core";
-import { GeneratorHistoryService } from "@localpass/generator-history";
+import { GeneratedCredential, GeneratorHistoryService } from "@localpass/generator-history";
 import {
   DEFAULT_PASSPHRASE_OPTIONS,
   DEFAULT_PASSWORD_OPTIONS,
@@ -22,11 +23,13 @@ import {
   PasswordOptions,
   UsernameOptions,
 } from "@localpass/local-vault";
+import { LockService, LockSource } from "@localpass/unlock";
 
 import { JslibModule } from "../../jslib.module";
 import {
-  LpGroupComponent,
+  GENERATOR_HISTORY_MASK,
   LpPageHeaderComponent,
+  LpPasswordSyntaxComponent,
   LpPopupHeaderComponent,
   LpRowComponent,
   LpToastService,
@@ -36,7 +39,7 @@ import {
  * 密码生成器。
  *
  * 生成逻辑是 `@localpass/local-vault` 里的纯函数（有单测），这里只管选项与呈现。
- * 生成不联网。用户复制或重新生成的值会写入本机加密的生成历史。
+ * 生成不联网。用户复制或重新生成的值只记录在当前解锁会话的内存中，锁库即清空。
  */
 type GeneratorMode = "password" | "passphrase" | "username";
 
@@ -53,36 +56,95 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
 @Component({
   selector: "generator-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: "tw-block tw-h-full" },
+  host: {
+    class: "tw-block tw-h-full",
+    "(window:keydown)": "onKeydown($event)",
+  },
   imports: [
     CommonModule,
     RouterModule,
     JslibModule,
     ButtonModule,
-    IconButtonModule,
     IconModule,
-    LpGroupComponent,
     LpPageHeaderComponent,
+    LpPasswordSyntaxComponent,
     LpPopupHeaderComponent,
     LpRowComponent,
   ],
   template: `
     <div
-      class="tw-flex tw-h-full tw-flex-col"
+      class="agy tw-flex tw-h-full tw-flex-col"
       [class.tw-bg-background]="compact()"
       [class.tw-bg-background-alt]="!compact()"
     >
+      <ng-template #recentHistoryPanel>
+        <div class="tw-flex tw-items-center tw-justify-between tw-gap-2">
+          <span class="tw-text-xs tw-font-semibold tw-text-main"
+            >{{ i18n.t("generatorHistory") }}
+            @if (history().length > 0) {
+              <span class="tw-font-normal tw-text-muted">({{ history().length }})</span>
+            }
+          </span>
+          <a
+            [routerLink]="historyRoute"
+            class="tw-text-xs tw-font-semibold tw-text-fg-brand tw-no-underline"
+            >{{ i18n.t("showAll") }}</a
+          >
+        </div>
+        <div class="agy-grp tw-mt-2">
+          @if (recentHistory().length === 0) {
+            <p class="tw-m-0 tw-p-3 tw-text-xs tw-text-muted">
+              {{ i18n.t("generatorHistoryEmpty") }}
+            </p>
+          }
+          @for (credential of recentHistory(); track $index) {
+            <div class="agy-prow">
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="agy-t tw-block tw-font-mono">{{ mask }}</span>
+                <span class="agy-s tw-block"
+                  >{{ historyTime(credential.generationDate) }} ·
+                  {{ historyKind(credential) }}</span
+                >
+              </span>
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [attr.aria-label]="i18n.t('copy')"
+                [attr.title]="i18n.t('copy')"
+                (click)="copyHistory(credential)"
+              >
+                <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+              </button>
+            </div>
+          }
+        </div>
+        <p class="agy-hint tw-mt-1.5">{{ i18n.t("generatorHistoryLocalOnly") }}</p>
+      </ng-template>
+
       @if (compact()) {
-        <lp-popup-header [title]="i18n.t('generator')" [sub]="i18n.t('generatorSubtitle')">
+        <lp-popup-header
+          [title]="i18n.t('generator')"
+          [sub]="i18n.t('generatorSubtitle')"
+          [avatar]="true"
+        >
           <div slot="actions" class="tw-flex tw-items-center tw-gap-0.5">
             <a
               [routerLink]="historyRoute"
-              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
+              class="agy-iconbtn"
               [attr.aria-label]="i18n.t('generatorHistory')"
               [attr.title]="i18n.t('generatorHistory')"
             >
               <bit-icon name="bwi-clock" class="tw-text-base"></bit-icon>
             </a>
+            <button
+              type="button"
+              class="agy-iconbtn"
+              [attr.aria-label]="i18n.t('lockNow')"
+              [attr.title]="i18n.t('lockNow')"
+              (click)="lockVault()"
+            >
+              <bit-icon name="bwi-lock" class="tw-text-base"></bit-icon>
+            </button>
           </div>
         </lp-popup-header>
       } @else {
@@ -95,10 +157,9 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
 
       <div
         class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto"
+        [class.agy-ext-scroll]="compact()"
         [class.tw-pb-7]="!compact()"
-        [class.tw-pb-0]="compact()"
         [class.tw-px-7]="!compact()"
-        [class.tw-px-4]="compact()"
       >
         <div class="tw-grid tw-gap-4 lg:tw-grid-cols-5">
           <div class="tw-space-y-4 lg:tw-col-span-3">
@@ -111,7 +172,7 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
               [class.tw-pt-2]="compact()"
             >
               <div
-                class="tw-mb-3 tw-grid tw-grid-cols-3 tw-gap-1 tw-rounded-lg tw-bg-background-alt tw-p-1"
+                class="agy-segtabs tw-mb-2"
                 role="tablist"
                 [attr.aria-label]="i18n.t('generator')"
               >
@@ -119,14 +180,7 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   <button
                     type="button"
                     role="tab"
-                    class="tw-rounded-md tw-px-3 tw-py-1.5"
-                    [class.tw-text-sm]="!compact()"
-                    [class.tw-text-xs]="compact()"
-                    [class.tw-font-semibold]="mode() === tab.key"
-                    [class.tw-bg-background]="mode() === tab.key"
-                    [class.tw-text-main]="mode() === tab.key"
-                    [class.tw-shadow-sm]="mode() === tab.key"
-                    [class.tw-text-muted]="mode() !== tab.key"
+                    [class.agy-on]="mode() === tab.key"
                     [attr.aria-selected]="mode() === tab.key"
                     (click)="setMode(tab.key)"
                   >
@@ -135,58 +189,32 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                 }
               </div>
 
-              <div
-                class="tw-flex tw-items-center tw-gap-2 tw-rounded-xl tw-bg-bg-brand-softer"
-                [class.tw-border]="!compact()"
-                [class.tw-border-border-light]="!compact()"
-                [class.tw-p-4]="!compact()"
-                [class.tw-px-3.5]="compact()"
-                [class.tw-py-2]="compact()"
-              >
-                <code
-                  class="tw-min-w-0 tw-flex-1 tw-break-all tw-text-center tw-font-mono tw-font-medium tw-text-main"
-                  [class.tw-text-lg]="compact()"
-                  [class.tw-text-xl]="!compact()"
-                  >{{ primary() }}</code
-                >
-                <button
-                  type="button"
-                  bitIconButton="bwi-refresh"
-                  [label]="i18n.t('regenerate')"
-                  (click)="regenerate()"
-                ></button>
+              <div class="agy-genout">
+                <code class="agy-genval"><lp-password-syntax [value]="primary()" /></code>
               </div>
 
-              <div class="tw-mt-2.5 tw-flex tw-gap-2">
-                <button
-                  type="button"
-                  bitButton
-                  buttonType="primary"
-                  startIcon="bwi-copy"
-                  [class.tw-flex-1]="compact()"
-                  (click)="copy(primary())"
-                >
-                  {{ i18n.t("copy") }}
+              <div class="tw-mt-2 tw-flex tw-gap-1.5">
+                <button type="button" class="agy-btn agy-lg tw-flex-1" (click)="regenerate()">
+                  <bit-icon name="bwi-refresh" class="tw-text-xs"></bit-icon>
+                  {{ i18n.t("regenerate") }}
                 </button>
                 <button
                   type="button"
-                  bitButton
-                  buttonType="secondary"
-                  startIcon="bwi-generate"
-                  [class.tw-flex-1]="compact()"
-                  (click)="regenerate()"
+                  class="agy-btn agy-primary agy-lg tw-flex-1"
+                  (click)="copy(primary())"
                 >
-                  {{ i18n.t("regenerate") }}
+                  <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                  {{ i18n.t("copy") }}
                 </button>
               </div>
 
               @if (mode() === "password") {
                 <div [class.tw-mt-3]="compact()" [class.tw-mt-5]="!compact()">
                   <div class="tw-flex tw-items-center tw-justify-between">
-                    <span class="tw-text-sm tw-text-main">{{
+                    <span class="tw-text-xs tw-text-main">{{
                       i18n.t(compact() ? "length" : "passwordLength")
                     }}</span>
-                    <span class="tw-text-sm tw-font-semibold tw-text-main">{{ length() }}</span>
+                    <span class="tw-text-xs tw-font-semibold tw-text-main">{{ length() }}</span>
                   </div>
                   <input
                     type="range"
@@ -214,10 +242,13 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
 
                 <div class="tw-mt-2.5 tw-flex tw-items-center tw-gap-3">
                   <span
-                    class="tw-block tw-h-1 tw-flex-1 tw-overflow-hidden tw-rounded-full tw-bg-secondary-100"
+                    class="tw-block tw-h-1 tw-flex-1 tw-overflow-hidden tw-rounded-full tw-bg-background-alt"
                   >
                     <span
-                      class="tw-block tw-h-full tw-rounded-full tw-bg-success-600"
+                      class="tw-block tw-h-full tw-rounded-full tw-transition-all"
+                      [class.tw-bg-bg-danger]="strengthTone() === 'bad'"
+                      [class.tw-bg-bg-warning]="strengthTone() === 'warn'"
+                      [class.tw-bg-bg-success]="strengthTone() === 'ok'"
                       [style.width.%]="strengthPercent()"
                     ></span>
                   </span>
@@ -226,8 +257,8 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
               } @else if (mode() === "passphrase") {
                 <div [class.tw-mt-3]="compact()" [class.tw-mt-5]="!compact()">
                   <div class="tw-flex tw-items-center tw-justify-between">
-                    <span class="tw-text-sm tw-text-main">{{ i18n.t("numWords") }}</span>
-                    <span class="tw-text-sm tw-font-semibold tw-text-main">{{ wordCount() }}</span>
+                    <span class="tw-text-xs tw-text-main">{{ i18n.t("numWords") }}</span>
+                    <span class="tw-text-xs tw-font-semibold tw-text-main">{{ wordCount() }}</span>
                   </div>
                   <input
                     type="range"
@@ -243,13 +274,13 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                 <div class="tw-mt-4">
                   <label
                     for="generator-v2_input_separator"
-                    class="tw-block tw-text-sm tw-text-main"
+                    class="tw-block tw-text-xs tw-text-main"
                     >{{ i18n.t("wordSeparator") }}</label
                   >
                   <input
                     id="generator-v2_input_separator"
                     type="text"
-                    class="tw-mt-1 tw-w-full tw-rounded-lg tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2 tw-text-sm tw-text-main"
+                    class="tw-mt-1 tw-w-full tw-rounded-lg tw-border tw-border-border-light tw-bg-background tw-px-3 tw-py-2 tw-text-xs tw-text-main"
                     maxlength="3"
                     [value]="passphraseOptions().separator"
                     (input)="setSeparator($event)"
@@ -302,13 +333,18 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                 </p>
               }
             </div>
+            @if (compact()) {
+              <div class="tw-mt-4">
+                <ng-container [ngTemplateOutlet]="recentHistoryPanel" />
+              </div>
+            }
           </div>
 
           @if (!compact()) {
             <aside
               class="tw-self-start tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-5 lg:tw-col-span-2"
             >
-              <h2 class="tw-m-0 tw-text-sm tw-font-semibold tw-text-main">
+              <h2 class="tw-m-0 tw-text-xs tw-font-semibold tw-text-main">
                 {{ i18n.t("rulesTitle") }}
               </h2>
               <dl class="tw-mt-4 tw-space-y-3">
@@ -319,13 +355,13 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("charset") }}</dt>
-                    <dd class="tw-m-0 tw-font-mono tw-text-sm tw-text-main">
+                    <dd class="tw-m-0 tw-font-mono tw-text-xs tw-text-main">
                       {{ charsetSummary() }}
                     </dd>
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("avoidAmbiguous") }}</dt>
-                    <dd class="tw-m-0 tw-font-mono tw-text-sm tw-text-main">
+                    <dd class="tw-m-0 tw-font-mono tw-text-xs tw-text-main">
                       {{ options().avoidAmbiguous ? "0 O l 1" : "—" }}
                     </dd>
                   </div>
@@ -336,19 +372,19 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("wordSeparator") }}</dt>
-                    <dd class="tw-m-0 tw-font-mono tw-text-sm tw-text-main">
+                    <dd class="tw-m-0 tw-font-mono tw-text-xs tw-text-main">
                       "{{ passphraseOptions().separator }}"
                     </dd>
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("capitalize") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
+                    <dd class="tw-m-0 tw-text-xs tw-text-main">
                       {{ passphraseOptions().capitalize ? i18n.t("enabled") : i18n.t("disabled") }}
                     </dd>
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("includeNumber") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
+                    <dd class="tw-m-0 tw-text-xs tw-text-main">
                       {{
                         passphraseOptions().includeNumber ? i18n.t("enabled") : i18n.t("disabled")
                       }}
@@ -357,7 +393,7 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                 } @else {
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("includeNumber") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
+                    <dd class="tw-m-0 tw-text-xs tw-text-main">
                       {{
                         usernameSettings().includeNumber ? i18n.t("enabled") : i18n.t("disabled")
                       }}
@@ -365,7 +401,7 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
                   </div>
                   <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
                     <dt class="tw-text-sm tw-text-muted">{{ i18n.t("usernameUseHyphen") }}</dt>
-                    <dd class="tw-m-0 tw-text-sm tw-text-main">
+                    <dd class="tw-m-0 tw-text-xs tw-text-main">
                       {{ usernameSettings().useHyphen ? i18n.t("enabled") : i18n.t("disabled") }}
                     </dd>
                   </div>
@@ -374,6 +410,9 @@ const DEFAULT_USERNAME_SETTINGS: UsernameSettings = Object.freeze({
               <p class="tw-mt-4 tw-text-xs tw-leading-relaxed tw-text-muted">
                 {{ i18n.t("generatorRulesNote") }}
               </p>
+              <div class="tw-mt-5 tw-border-t tw-border-border-light tw-pt-4">
+                <ng-container [ngTemplateOutlet]="recentHistoryPanel" />
+              </div>
             </aside>
           }
         </div>
@@ -397,6 +436,7 @@ export class GeneratorV2Component {
   private readonly accountService = inject(AccountService);
   private readonly generatorHistoryService = inject(GeneratorHistoryService);
   private readonly logService = inject(LogService);
+  private readonly lockService = inject(LockService, { optional: true });
 
   /** 弹窗路由在 route.data 里标记 compact；桌面端保持完整两栏。 */
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
@@ -405,6 +445,17 @@ export class GeneratorV2Component {
    * 历史页是独立二级页：不挂在 `tabs` 下，弹窗与桌面都用同一个顶层路由，打开时不显示底部导航。
    */
   protected readonly historyRoute = "/generator-history-v2";
+  protected readonly mask = GENERATOR_HISTORY_MASK;
+
+  private readonly userId$ = this.accountService.activeAccount$.pipe(getUserId);
+  protected readonly history = toSignal(
+    this.userId$.pipe(switchMap((userId) => this.generatorHistoryService.credentials$(userId))),
+    { initialValue: [] as GeneratedCredential[] },
+  );
+  /** 侧栏只露最近几条：弹窗 2 条，桌面 3 条；完整列表仍是独立历史页。 */
+  protected readonly recentHistory = computed(() =>
+    this.history().slice(0, this.compact() ? 2 : 3),
+  );
 
   protected readonly mode = signal<GeneratorMode>("password");
   protected readonly modes: readonly { key: GeneratorMode; labelKey: string }[] = [
@@ -440,18 +491,13 @@ export class GeneratorV2Component {
 
   protected readonly length = computed(() => this.options().length);
   protected readonly wordCount = computed(() => this.passphraseOptions().words);
-  protected readonly toggles = computed(() => {
-    const all = [
-      { key: "upper" as const, labelKey: "uppercase" },
-      { key: "lower" as const, labelKey: "lowercase" },
-      { key: "digits" as const, labelKey: "numbers" },
-      { key: "symbols" as const, labelKey: "symbols" },
-      { key: "avoidAmbiguous" as const, labelKey: "avoidAmbiguous" },
-    ];
-    // The desktop prototype only exposes the charset switches; the ambiguity rule stays
-    // visible in the rules panel without a dedicated toggle.
-    return this.compact() ? all : all.filter((toggle) => toggle.key !== "avoidAmbiguous");
-  });
+  protected readonly toggles = computed(() => [
+    { key: "upper" as const, labelKey: "uppercase" },
+    { key: "lower" as const, labelKey: "lowercase" },
+    { key: "digits" as const, labelKey: "numbers" },
+    { key: "symbols" as const, labelKey: "symbols" },
+    { key: "avoidAmbiguous" as const, labelKey: "avoidAmbiguous" },
+  ]);
 
   protected readonly charsetSummary = computed(() => {
     const current = this.options();
@@ -487,11 +533,34 @@ export class GeneratorV2Component {
 
   protected readonly strengthPercent = computed(() => Math.min(100, (this.entropy() / 128) * 100));
 
+  protected readonly strengthTone = computed<"bad" | "warn" | "ok">(() => {
+    const bits = this.entropy();
+    if (bits < 45) {
+      return "bad";
+    }
+    if (bits < 75) {
+      return "warn";
+    }
+    return "ok";
+  });
+
   protected readonly strengthText = computed(() =>
     this.entropy() > 0
       ? this.i18n.t("entropyLabel", this.entropy())
       : this.i18n.t("generatorNoCharset"),
   );
+
+  protected onKeydown(event: KeyboardEvent): void {
+    if (!this.compact() && (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "r") {
+      event.preventDefault();
+      this.regenerate();
+    }
+  }
+
+  protected async lockVault(): Promise<void> {
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+    await this.lockService?.lock(userId, LockSource.Manual);
+  }
 
   protected setMode(mode: GeneratorMode): void {
     this.mode.set(mode);
@@ -539,13 +608,55 @@ export class GeneratorV2Component {
     void this.record(this.primary(), this.mode());
   }
 
+  protected historyKind(credential: GeneratedCredential): string {
+    if (credential.algorithm === "passphrase") {
+      return this.i18n.t("passphrase");
+    }
+    if (credential.algorithm === "username") {
+      return this.i18n.t("username");
+    }
+    return this.i18n.t("password");
+  }
+
+  /** 侧栏历史时间：当天只显示时分，跨天显示日期，不暴露无关细节。 */
+  protected historyTime(date: Date): string {
+    const now = new Date();
+    const sameDay =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    if (sameDay) {
+      const time = date.toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      return `${this.i18n.t("recentlyActiveToday")} ${time}`;
+    }
+
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+
+  /** 从侧栏复制历史值：不再次 track，也不改变当前生成模式。 */
+  protected copyHistory(credential: GeneratedCredential): void {
+    const copied = this.platformUtilsService.copyToClipboard(credential.credential, { window });
+    if (copied !== false) {
+      this.toast.showClipboard(this.i18n.t("valueCopied", this.historyKind(credential)), () => {
+        this.platformUtilsService.copyToClipboard("", { window, clearing: true });
+      });
+    }
+  }
+
   protected copy(value: string): void {
     if (!value) {
       return;
     }
     const copied = this.platformUtilsService.copyToClipboard(value, { window });
     if (copied !== false) {
-      this.toast.show(this.i18n.t("valueCopied", this.i18n.t(this.mode())));
+      this.toast.showClipboard(this.i18n.t("valueCopied", this.i18n.t(this.mode())), () => {
+        this.platformUtilsService.copyToClipboard("", { window, clearing: true });
+      });
       void this.record(value, this.mode());
     }
   }

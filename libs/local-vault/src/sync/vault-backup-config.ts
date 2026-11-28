@@ -30,6 +30,8 @@ export interface VaultBackupSyncState {
   /** ETag of the manifest this device last wrote or read. */
   readonly manifestEtag: string | null;
   readonly lastSyncedAt: string | null;
+  /** Generation of the manifest this device last read or wrote. */
+  readonly generation: number | null;
   /** True when local changes have not reached storage yet. */
   readonly pending: boolean;
 }
@@ -62,6 +64,7 @@ export const VAULT_BACKUP_SYNC_STATE = new UserKeyDefinition<VaultBackupSyncStat
       (value as unknown as VaultBackupSyncState) ?? {
         manifestEtag: null,
         lastSyncedAt: null,
+        generation: null,
         pending: false,
       },
     clearOn: ["logout"],

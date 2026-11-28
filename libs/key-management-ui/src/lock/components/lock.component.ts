@@ -16,8 +16,7 @@ import {
 } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
-import { LpHeroComponent } from "@localpass/angular/local-ui";
-import { LocalPassMark } from "@localpass/assets/svg";
+import { LpPopupHeaderComponent } from "@localpass/angular/local-ui";
 import { InternalPolicyService } from "@localpass/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@localpass/common/admin-console/models/domain/master-password-policy-options";
 import { Account, AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -38,18 +37,13 @@ import { SyncService } from "@localpass/common/platform/sync";
 import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
 import { UserId } from "@localpass/common/types/guid";
 import { UserKey } from "@localpass/common/types/key";
+import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vault-writer.abstraction";
 import {
   AnonLayoutWrapperDataService,
   AsyncActionsModule,
-  ButtonModule,
   DialogService,
-  FormFieldModule,
-  IconButtonModule,
   IconComponent,
-  IconTileComponent,
-  SvgModule,
   ToastService,
-  TooltipDirective,
 } from "@localpass/components";
 import {
   KeyService,
@@ -98,34 +92,62 @@ const BIOMETRIC_UNLOCK_TEMPORARY_UNAVAILABLE_STATUSES = [
   BiometricsStatus.NotEnabledInConnectedDesktopApp,
 ];
 
+const PIN_LOCKOUT_STORAGE_PREFIX = "lp:lockout:pin:";
+
+function readPinLockout(key: string): { attempts: number; waitUntil: number } {
+  try {
+    const raw = globalThis.localStorage?.getItem(key);
+    if (!raw) {
+      return { attempts: 0, waitUntil: 0 };
+    }
+    const parsed = JSON.parse(raw) as { attempts?: unknown; waitUntil?: unknown };
+    return {
+      attempts: typeof parsed.attempts === "number" ? parsed.attempts : 0,
+      waitUntil: typeof parsed.waitUntil === "number" ? parsed.waitUntil : 0,
+    };
+  } catch {
+    return { attempts: 0, waitUntil: 0 };
+  }
+}
+
+function writePinLockout(key: string, value: { attempts: number; waitUntil: number } | null): void {
+  try {
+    if (value == null) {
+      globalThis.localStorage?.removeItem(key);
+    } else {
+      globalThis.localStorage?.setItem(key, JSON.stringify(value));
+    }
+  } catch {
+    // Ignore storage restriction; in-memory lockout still enforces delay.
+  }
+}
+
 // FIXME(https://localpass.atlassian.net/browse/CL-764): Migrate to OnPush
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: "bit-lock",
   templateUrl: "lock.component.html",
-  host: { "data-testid": "lock-screen" },
+  host: {
+    "data-testid": "lock-screen",
+    "[class.agy-lock-page]": "isDesktop",
+    "[class.tw-block]": "!isDesktop",
+    "[class.tw-h-full]": "!isDesktop",
+  },
   imports: [
     IconComponent,
     CommonModule,
-    LpHeroComponent,
+    LpPopupHeaderComponent,
     JslibModule,
     ReactiveFormsModule,
-    ButtonModule,
-    FormFieldModule,
     AsyncActionsModule,
-    IconButtonModule,
-    IconTileComponent,
-    SvgModule,
     UnlockViaPrfComponent,
     MasterPasswordLockComponent,
-    TooltipDirective,
   ],
 })
 export class LockComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private activeAccountChange$ = new Subject<void>();
   protected loading = true;
-  protected readonly logo = LocalPassMark;
 
   activeAccount: Account | null = null;
 
@@ -151,12 +173,15 @@ export class LockComponent implements OnInit, OnDestroy {
   private invalidPinAttempts = 0;
   /** Until this timestamp the PIN form refuses entries instead of logging the user out. */
   private pinLockedUntil: number | null = null;
+  private pinWaitTimer: ReturnType<typeof setInterval> | null = null;
+  protected pinWaitingSeconds = 0;
+  protected isLocalAccount = false;
   private unlockingViaPin = false;
   private readonly pinService = inject(PinServiceAbstraction);
+  private readonly localVaultWriter = inject(LocalVaultWriter, { optional: true });
 
   biometricUnlockBtnText?: string;
 
-  showPassword = false;
   private enforcedMasterPasswordOptions?: MasterPasswordPolicyOptions = undefined;
 
   formGroup: FormGroup | null = null;
@@ -266,6 +291,9 @@ export class LockComponent implements OnInit, OnDestroy {
       },
       { updateOn: "submit" },
     );
+    if (this.pinWaitingSeconds > 0) {
+      this.formGroup.controls.pin.disable();
+    }
   }
 
   private listenForActiveAccountChanges() {
@@ -291,6 +319,9 @@ export class LockComponent implements OnInit, OnDestroy {
     if (await this.keyService.hasUserKey(activeAccount.id)) {
       return;
     }
+
+    this.isLocalAccount = (await this.localVaultWriter?.isLocalAccount(activeAccount.id)) ?? false;
+    this.restorePinLockoutState(activeAccount.id);
 
     this.setEmailAsPageSubtitle(activeAccount.email);
 
@@ -513,10 +544,6 @@ export class LockComponent implements OnInit, OnDestroy {
     form.requestSubmit();
   }
 
-  togglePassword() {
-    this.showPassword = !this.showPassword;
-  }
-
   private validatePin(): boolean {
     if (this.formGroup?.invalid) {
       this.toastService.showToast({
@@ -563,25 +590,31 @@ export class LockComponent implements OnInit, OnDestroy {
 
     try {
       await this.unlockService.unlockWithPin(this.activeAccount.id, pin);
+      this.invalidPinAttempts = 0;
+      this.stopPinWaitTimer();
+      writePinLockout(`${PIN_LOCKOUT_STORAGE_PREFIX}${this.activeAccount.id}`, null);
     } catch {
       // Failure state: invalid PIN or failed decryption
       this.invalidPinAttempts++;
+      const storageKey = `${PIN_LOCKOUT_STORAGE_PREFIX}${this.activeAccount.id}`;
 
       if (this.invalidPinAttempts >= MAX_INVALID_PIN_ENTRY_ATTEMPTS) {
-        // 5th attempt waits 1s, then 2s, 4s … capped at a minute. The vault is never destroyed.
+        // 5th attempt waits 30s, then 60s … capped at a minute. The vault is never destroyed.
         const over = this.invalidPinAttempts - MAX_INVALID_PIN_ENTRY_ATTEMPTS;
-        const waitMs = Math.min(60_000, 2 ** over * 1000);
-        this.pinLockedUntil = Date.now() + waitMs;
+        const waitMs = Math.min(60_000, 30_000 * 2 ** over);
+        writePinLockout(storageKey, {
+          attempts: this.invalidPinAttempts,
+          waitUntil: Date.now() + waitMs,
+        });
+        this.startPinWait(waitMs);
         this.toastService.showToast({
           variant: "error",
           message: this.i18nService.t("tooManyInvalidPinAttemptsWait"),
         });
-        this.formGroup?.controls.pin.reset();
-        setTimeout(() => {
-          this.pinLockedUntil = null;
-        }, waitMs);
         return;
       }
+
+      writePinLockout(storageKey, { attempts: this.invalidPinAttempts, waitUntil: 0 });
 
       this.toastService.showToast({
         variant: "error",
@@ -594,6 +627,54 @@ export class LockComponent implements OnInit, OnDestroy {
       if (pin.length === pinLength) {
         this.formGroup.controls.pin.reset();
       }
+    }
+  }
+
+  get pinWaitingClock(): string {
+    const seconds = this.pinWaitingSeconds;
+    return `${Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
+  }
+
+  private restorePinLockoutState(userId: UserId): void {
+    const stored = readPinLockout(`${PIN_LOCKOUT_STORAGE_PREFIX}${userId}`);
+    this.invalidPinAttempts = stored.attempts;
+    const remainingMs = stored.waitUntil - Date.now();
+    if (remainingMs > 0) {
+      this.startPinWait(remainingMs);
+    } else {
+      this.stopPinWaitTimer();
+    }
+  }
+
+  private startPinWait(waitMs: number): void {
+    this.stopPinWaitTimer();
+    this.pinLockedUntil = Date.now() + waitMs;
+    this.pinWaitingSeconds = Math.ceil(waitMs / 1000);
+    this.formGroup?.controls.pin.disable();
+    this.formGroup?.controls.pin.reset();
+    this.pinWaitTimer = setInterval(() => {
+      const remaining =
+        this.pinLockedUntil == null
+          ? 0
+          : Math.max(0, Math.ceil((this.pinLockedUntil - Date.now()) / 1000));
+      this.pinWaitingSeconds = remaining;
+      if (remaining === 0) {
+        this.stopPinWaitTimer();
+      }
+    }, 250);
+  }
+
+  private stopPinWaitTimer(): void {
+    if (this.pinWaitTimer != null) {
+      clearInterval(this.pinWaitTimer);
+      this.pinWaitTimer = null;
+    }
+    this.pinLockedUntil = null;
+    this.pinWaitingSeconds = 0;
+    if (this.formGroup?.controls.pin.disabled) {
+      this.formGroup.controls.pin.enable();
     }
   }
 
@@ -767,9 +848,6 @@ export class LockComponent implements OnInit, OnDestroy {
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
       this.ngZone.run(() => {
         switch (message.command) {
-          case "windowHidden":
-            this.onWindowHidden();
-            break;
           case "windowIsFocused":
             if (this.deferFocus === null) {
               this.deferFocus = !message.windowIsFocused;
@@ -810,10 +888,6 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  onWindowHidden() {
-    this.showPassword = false;
-  }
-
   private focusInput() {
     if (this.unlockOptions) {
       document.getElementById(this.unlockOptions.pin.enabled ? "pin" : "masterPassword")?.focus();
@@ -823,6 +897,7 @@ export class LockComponent implements OnInit, OnDestroy {
   // -----------------------------------------------------------------------------------------------
 
   ngOnDestroy() {
+    this.stopPinWaitTimer();
     this.destroy$.next();
     this.destroy$.complete();
 
