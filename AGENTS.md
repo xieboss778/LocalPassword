@@ -24,6 +24,21 @@ These instructions apply to every agent working in this repository. More specifi
 5. Make the smallest change that satisfies the request. Preserve unrelated user work.
 6. Validate the changed surface and report the exact commands and observed results.
 
+## Release Versioning
+
+- Distributable Windows, macOS, and browser-extension builds use the same `YYYY.MM.N`
+  version. Before each release build, increment `N` by exactly one from the previous
+  released build; one release must use one version across all three clients.
+- Update every version source before triggering CI: `apps/browser/package.json`,
+  `apps/browser/src/manifest.json`, `apps/browser/src/manifest.v3.json`,
+  `apps/desktop/package.json`, `apps/desktop/src/package.json`,
+  `apps/desktop/src/package-lock.json`, and the workspace metadata in the root
+  `package-lock.json`. Commit the version bump with the release changes.
+- When the previous build number is unclear, inspect the latest successful GitHub
+  Actions run and its artifacts before choosing the next version.
+- Development, watch, and test-only builds that are not distributed do not increment
+  the release version.
+
 ## Multi-Agent Parallel Work (Mandatory)
 
 Split before you start. A task with two or more independent workstreams MUST run those

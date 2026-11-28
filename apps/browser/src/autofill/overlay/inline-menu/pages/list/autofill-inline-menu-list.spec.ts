@@ -664,6 +664,9 @@ describe("AutofillInlineMenuList", () => {
             ciphers,
             portKey,
             useLitComponents: true,
+            translations: {
+              inlineMenuPasskeyVerifyingTimeout: "Closes in 15 seconds",
+            },
           }),
         );
         await flushPromises();
@@ -681,12 +684,15 @@ describe("AutofillInlineMenuList", () => {
           },
           expectedOrigin,
         );
-        expect(InlineMenuPasskeyVerifying).toHaveBeenCalledWith(
+        const passkeyProps = (InlineMenuPasskeyVerifying as jest.Mock).mock.calls[0][0];
+        expect(passkeyProps).toEqual(
           expect.objectContaining({
             username: "username1",
+            i18n: expect.objectContaining({ timeout: "Closes in 15 seconds" }),
             onCancel: expect.any(Function),
           }),
         );
+        expect(passkeyProps.i18n).not.toHaveProperty("meta");
         expect(
           autofillInlineMenuList["inlineMenuListContainer"].querySelector(
             ".passkey-authenticating-loader",
@@ -1306,6 +1312,10 @@ describe("AutofillInlineMenuList", () => {
             generatedPassword,
             portKey,
             useLitComponents: true,
+            translations: {
+              inlineGeneratorDescription:
+                "{length}-character password · fills and opens the save confirmation",
+            },
           }),
         );
         await flushPromises();
@@ -1313,6 +1323,9 @@ describe("AutofillInlineMenuList", () => {
         expect(InlineMenuPasswordGenerator).toHaveBeenCalledWith(
           expect.objectContaining({
             password: generatedPassword,
+            i18n: expect.objectContaining({
+              description: `${generatedPassword.length}-character password · fills and opens the save confirmation`,
+            }),
             handleFillPassword: expect.any(Function),
             handleRefreshPassword: expect.any(Function),
           }),

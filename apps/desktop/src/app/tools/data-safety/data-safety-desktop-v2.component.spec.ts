@@ -97,13 +97,24 @@ describe("DataSafetyDesktopV2Component", () => {
     component = fixture.componentInstance;
   });
 
-  it("shows a non-numeric marker for the vendor server copies tile", () => {
+  it("reports zero server copies", () => {
     fixture.detectChanges();
 
     const value = fixture.nativeElement.querySelector(
       '[data-testid="data_stat_server_copies"]',
     ) as HTMLElement;
-    expect(value.textContent?.trim()).toBe("—");
+    expect(value.textContent?.trim()).toBe("0");
+  });
+
+  it("describes file protection and the data directory without platform-specific values", () => {
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).not.toContain("0600");
+    expect(text).not.toContain("~/Library");
+    expect(text).toContain("OS");
+    expect(text).toContain("dataFileProtection");
+    expect(text).toContain("dataDirectoryManaged");
   });
 
   it("deletes every item in the encrypted state, including trash and archived items", async () => {

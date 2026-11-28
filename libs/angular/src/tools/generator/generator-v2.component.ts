@@ -6,6 +6,8 @@ import { firstValueFrom, switchMap } from "rxjs";
 
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
@@ -27,6 +29,8 @@ import { LockService, LockSource } from "@localpass/unlock";
 
 import { JslibModule } from "../../jslib.module";
 import {
+  clipboardClearSeconds,
+  clearClipboardIfStillHolding,
   GENERATOR_HISTORY_MASK,
   LpPageHeaderComponent,
   LpPasswordSyntaxComponent,
@@ -437,6 +441,16 @@ export class GeneratorV2Component {
   private readonly generatorHistoryService = inject(GeneratorHistoryService);
   private readonly logService = inject(LogService);
   private readonly lockService = inject(LockService, { optional: true });
+  private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
+    optional: true,
+  });
+
+  /** 复制回执的倒计时跟随全局「清除剪贴板」设置；服务缺席时沿用默认 30 秒。 */
+  private readonly clearClipboardDelay = this.autofillSettingsService
+    ? toSignal(this.autofillSettingsService.clearClipboardDelay$, {
+        initialValue: ClearClipboardDelay.ThirtySeconds,
+      })
+    : signal(ClearClipboardDelay.ThirtySeconds);
 
   /** 弹窗路由在 route.data 里标记 compact；桌面端保持完整两栏。 */
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
@@ -642,9 +656,10 @@ export class GeneratorV2Component {
   protected copyHistory(credential: GeneratedCredential): void {
     const copied = this.platformUtilsService.copyToClipboard(credential.credential, { window });
     if (copied !== false) {
-      this.toast.showClipboard(this.i18n.t("valueCopied", this.historyKind(credential)), () => {
-        this.platformUtilsService.copyToClipboard("", { window, clearing: true });
-      });
+      this.showCopyReceipt(
+        credential.credential,
+        this.i18n.t("valueCopied", this.historyKind(credential)),
+      );
     }
   }
 
@@ -654,10 +669,25 @@ export class GeneratorV2Component {
     }
     const copied = this.platformUtilsService.copyToClipboard(value, { window });
     if (copied !== false) {
-      this.toast.showClipboard(this.i18n.t("valueCopied", this.i18n.t(this.mode())), () => {
-        this.platformUtilsService.copyToClipboard("", { window, clearing: true });
-      });
+      this.showCopyReceipt(value, this.i18n.t("valueCopied", this.i18n.t(this.mode())));
       void this.record(value, this.mode());
+    }
+  }
+
+  /**
+   * 复制回执的倒计时使用全局「清除剪贴板」设置。设为「永不」时只显示提示，
+   * 不登记自动清理；需要清理时也只在剪贴板仍持有本次复制值时才清空。
+   */
+  private showCopyReceipt(value: string, message: string): void {
+    const delay = clipboardClearSeconds(this.clearClipboardDelay());
+    if (delay > 0) {
+      this.toast.showClipboard(
+        message,
+        () => clearClipboardIfStillHolding(this.platformUtilsService, value),
+        delay,
+      );
+    } else {
+      this.toast.show(message);
     }
   }
 

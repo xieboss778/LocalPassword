@@ -246,7 +246,7 @@ export function getNotificationTestId(
   }[notificationType];
 }
 
-async function initNotificationBar(message: NotificationBarWindowMessage) {
+export async function initNotificationBar(message: NotificationBarWindowMessage) {
   const { initData } = message;
   if (!initData) {
     return;
@@ -377,11 +377,17 @@ async function initNotificationBar(message: NotificationBarWindowMessage) {
       collections,
     };
 
-    // A change notification carries the entries whose stored credentials matched the submitted
-    // login. The bar's cipher list can be broader (every entry for the URL) when the queue
+    // A change notification carries the entries whose saved password matched the submitted current
+    // password. The bar's cipher list can be broader (every entry for the URL) when the queue
     // lookup misses, so narrow it to the queued candidate ids before offering an update target.
-    const changeCiphers = getChangeNotificationCiphers(ciphers, getChangeNotificationCipherIds());
-    if (notificationType === NotificationTypes.Change && changeCiphers.length > 0) {
+    // The queue may also supply an empty candidate list, which still renders the change card so
+    // the submitted credentials can be saved as a new entry.
+    const changeCipherIds = getChangeNotificationCipherIds();
+    if (
+      notificationType === NotificationTypes.Change &&
+      hasChangeNotificationCipherIds(notificationBarIframeInitData.params)
+    ) {
+      const changeCiphers = getChangeNotificationCiphers(ciphers, changeCipherIds);
       changeNotificationState = {
         ciphers: changeCiphers,
         domain: getNotificationDomain(),
@@ -391,7 +397,7 @@ async function initNotificationBar(message: NotificationBarWindowMessage) {
         expanded: changeCiphers.length > 1,
         i18n,
         notificationTestId,
-        selectedTarget: changeCiphers[0].id,
+        selectedTarget: changeCiphers[0]?.id ?? ChangeNotificationNewEntryTarget,
         theme: resolvedTheme,
       };
       renderChangeNotification();
@@ -468,8 +474,9 @@ function getNotificationDomain(): string {
 }
 
 /**
- * Reads the candidate cipher ids queued with the change notification. Only these entries
- * matched the submitted credentials, so only these may be offered as an update target.
+ * Reads the candidate cipher ids queued with the change notification. Only these entries'
+ * saved passwords matched the submitted current password, so only these may be offered as an
+ * update target.
  */
 function getChangeNotificationCipherIds(): string[] {
   const params = notificationBarIframeInitData.params;
@@ -481,6 +488,18 @@ function getChangeNotificationCipherIds(): string[] {
     return [];
   }
   return cipherIds.filter((cipherId): cipherId is string => typeof cipherId === "string");
+}
+
+/**
+ * Whether the queued change notification supplied a candidate list. An empty array is still a
+ * supplied list and must render the change card with only the "save as new entry" option, so
+ * this intentionally does not check the list's length.
+ */
+export function hasChangeNotificationCipherIds(params: unknown): boolean {
+  if (params == null || typeof params !== "object") {
+    return false;
+  }
+  return Array.isArray((params as Record<string, unknown>)["cipherIds"]);
 }
 
 /**

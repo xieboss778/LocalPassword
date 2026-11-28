@@ -79,6 +79,10 @@ describe("changeNotificationShowsPicker", () => {
     expect(changeNotificationShowsPicker([alexCipher, opsCipher], false)).toBe(true);
   });
 
+  it("opens the picker with only the new-entry row when no entry matched the password", () => {
+    expect(changeNotificationShowsPicker([], false)).toBe(true);
+  });
+
   it("keeps a single matched entry in summary mode until the user expands it", () => {
     expect(changeNotificationShowsPicker([alexCipher], false)).toBe(false);
     expect(changeNotificationShowsPicker([alexCipher], true)).toBe(true);
@@ -98,6 +102,14 @@ describe("getChangeNotificationHeaderMessage", () => {
     getChangeNotificationHeaderMessage([alexCipher, opsCipher], "northwind.io", false);
 
     expect(chrome.i18n.getMessage).toHaveBeenCalledWith("notificationMultiSaveHeader", [
+      "northwind.io",
+    ]);
+  });
+
+  it("asks to save a new password when no entry matched", () => {
+    getChangeNotificationHeaderMessage([], "northwind.io", false);
+
+    expect(chrome.i18n.getMessage).toHaveBeenCalledWith("notificationChangeNoMatchHeader", [
       "northwind.io",
     ]);
   });
@@ -140,6 +152,12 @@ describe("getChangeNotificationPrimaryLabel", () => {
         i18n,
         true,
       ),
+    ).toBe(chrome.i18n.getMessage("notificationMultiSaveCreate", ["3"]));
+  });
+
+  it("numbers the new entry from zero when no candidate matched the password", () => {
+    expect(
+      getChangeNotificationPrimaryLabel([], ChangeNotificationNewEntryTarget, i18n, false, 2),
     ).toBe(chrome.i18n.getMessage("notificationMultiSaveCreate", ["3"]));
   });
 
@@ -192,6 +210,31 @@ describe("NotificationChangeContainer", () => {
     expect(chrome.i18n.getMessage).toHaveBeenCalledWith("notificationMultiSaveUpdate", [
       "alex@northwind.io",
     ]);
+    expect(flat).not.toContain("Switch / save as new");
+  });
+
+  it("renders only the save-as-new row when no entry matched the password", () => {
+    const flat = flatten(
+      render({
+        ciphers: [],
+        existingEntryCount: 3,
+        selectedTarget: ChangeNotificationNewEntryTarget,
+      }),
+    );
+
+    expect(flat).toContain("notificationChangeNoMatchHeader:northwind.io");
+    expect(flat).toContain("notificationChangeNoMatchDesc");
+    expect(flat).not.toContain("notificationMultiSaveHeader:northwind.io");
+    expect(flat).not.toContain("notificationMultiSaveDesc");
+    expect(flat).toContain("notificationMultiSaveNewEntry:4");
+    expect(flat).toContain("notificationMultiSaveNewEntryDesc");
+    expect(flat).toContain("notificationMultiSaveCreate:4");
+    // Zero candidates must still render exactly one radio row: the new-entry option.
+    expect(
+      flat.filter(
+        (value) => typeof value === "string" && value.startsWith("notificationMultiSaveNewEntry:"),
+      ),
+    ).toHaveLength(1);
     expect(flat).not.toContain("Switch / save as new");
   });
 

@@ -247,13 +247,13 @@ describe("AppComponent (desktop)", () => {
       ["newIdentity", "identity"],
       ["newSecureNote", "note"],
       ["newSshKey", "ssh-key"],
-    ])("opens the %s editor from the vault route", async (command, kind) => {
+    ])("opens the %s drawer from the vault route", async (command, kind) => {
       router.url = "/vault";
 
       await dispatchMessage({ command });
 
-      expect(router.navigate).toHaveBeenCalledWith(["/edit-item-v2"], {
-        queryParams: { kind },
+      expect(router.navigate).toHaveBeenCalledWith(["/vault"], {
+        queryParams: { action: "add", kind },
       });
     });
   });

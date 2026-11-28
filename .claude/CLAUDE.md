@@ -21,6 +21,7 @@ Before a review, read the [project overview](../README.md) and [contributing gui
   - No vault data in error messages or console logs
 - **ALWAYS** Respect configuration files at the root and within each app/library (e.g., `eslint.config.mjs`, `jest.config.js`, `tsconfig.json`).
 - **Mandatory parallel work:** when a request has two or more independent workstreams, launch their agents together in one message. Follow [AGENTS.md → Multi-Agent Parallel Work](../AGENTS.md#multi-agent-parallel-work-mandatory) for file ownership, integration, and verification.
+- **Release versioning:** Every distributable build increments the release build number by exactly one and uses the same version across Windows, macOS, and the browser extension. Follow [AGENTS.md → Release Versioning](../AGENTS.md#release-versioning) before triggering CI.
 - **CRITICAL**: Tailwind CSS classes MUST use the `tw-` prefix (e.g., `tw-flex`, `tw-p-4`). Missing prefix means the class is ignored and styling silently breaks. See [.claude/rules/tailwind.md](./rules/tailwind.md) for additional Tailwind rules.
 
 ## Mono-Repo Architecture

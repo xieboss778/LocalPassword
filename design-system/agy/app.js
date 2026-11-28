@@ -32,7 +32,6 @@ const STATE = {
   unlockWaitSecs: 24,
   touchIdOn: true,
   nativeBridgeOn: true,
-  hibpOn: false,
 
   // Mac state
   macSub: "vault",
@@ -116,6 +115,25 @@ function enterScreenOnce(key, initFn) {
     STATE._screenInit = key;
     initFn();
   }
+}
+
+// Generator output for the prototype uses the same WebCrypto RNG the product relies on.
+// Rejection sampling avoids the modulo bias of a plain `random % length`.
+const GENERATOR_CHARS = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%";
+
+function randomInt(max) {
+  const limit = Math.floor(0x100000000 / max) * max;
+  const buffer = new Uint32Array(1);
+  let value;
+  do {
+    crypto.getRandomValues(buffer);
+    value = buffer[0];
+  } while (value >= limit);
+  return value % max;
+}
+
+function randomPassword(length) {
+  return Array.from({ length }, () => GENERATOR_CHARS[randomInt(GENERATOR_CHARS.length)]).join("");
 }
 
 function ensureDraftFor(isNew) {
@@ -382,15 +400,15 @@ const SCREENS = {
       "版本历史 · 后悔药",
       "桌面 · 抽屉",
       "改错密码不再丢上一版",
-      "332px 右侧抽屉保留最近 10 个版本，字段级列出变更摘要，支持直接复制旧值或一键恢复。",
+      "332px 右侧抽屉保留最近 10 个旧版本（当前版本另计），字段级列出变更摘要，支持直接复制旧值或一键恢复。",
       [
         "恢复前自动将当前版本写入历史快照，保证任何操作可逆。",
-        "版本历史随条目加密同步至 R2 桶，换设备同样可回滚。",
+        "版本历史仅保存在本机加密状态，不进入 R2 快照；换设备不会随同步迁移。",
       ],
       [
         ["抽屉宽", "332px"],
         ["版本卡", "74px"],
-        ["保留上限", "10 版"],
+        ["保留上限", "10 个旧版本"],
       ],
       ["esc 关闭"],
       () => {
@@ -532,7 +550,7 @@ const SCREENS = {
       "安全体检 · 离线规则",
       "桌面 · Watchtower",
       "不联网也能给出可执行的安全评分",
-      "弱密码、重复使用、超 365 天未改、缺 2FA 全部在本地计算；HIBP 泄露检查默认关闭且明确告知仅发 5 位前缀。",
+      "弱密码、重复使用、超 365 天未改、缺 2FA 全部在本地计算；产品未实现泄露查询（HIBP），安全体检全程离线、无任何出站请求。",
       [
         "每条风险右侧直接提供「去修改」按钮，点击即跳转对应条目编辑态。",
         "4 张统计卡仅展示待处理数量与强密码基数。",
@@ -598,7 +616,7 @@ const SCREENS = {
       "接出项目中全部本地解析器，1Password .1pux 可完整迁移标签、TOTP、自定义字段与文件夹结构。",
       [
         "选择 LocalPass 加密 JSON 时原地展开备份口令输入框。",
-        "强调确认写入前不改动磁盘 data.json。",
+        "强调确认写入前不改动现有本机保险库。",
       ],
       [
         ["来源", "5 类格式"],
@@ -652,13 +670,13 @@ const SCREENS = {
       "R2 同步与设备状态",
       "桌面 · 同步 v2",
       "把「同步镜像」与「导出备份」彻底拆清",
-      "展示 30 秒去抖自动同步、Ed25519 防回滚、已登记设备列表及元数据边界说明，并直通存储配置、桶恢复与冲突解决。",
+      "展示手动触发的 R2 加密镜像同步、Ed25519 防回滚、已登记设备列表及元数据边界说明；“自动同步”开关仅为原型概念，产品未实现。",
       [
         "桶不可用时本机继续正常读写，仅计入待同步增量计数。",
         "诚实告知 R2 元数据可见边界：「看不到密码，但能看到条目数与改动时间」。",
       ],
       [
-        ["去抖间隔", "30 秒"],
+        ["同步方式", "手动触发"],
         ["校验算法", "Ed25519"],
       ],
       [],
@@ -736,7 +754,7 @@ const SCREENS = {
       "网络闸门",
       "桌面 · 隐私自证",
       "默认拒绝一切未授权出站，白名单全透明",
-      "基于 gate-policy.ts：默认拒绝全部未授权出站请求，仅在主动同步或手动安全比对时放行你授权的白名单域名（已清除遗留冗余拦截清单）。",
+      "基于 gate-policy.ts：默认拒绝全部未授权出站请求，仅在用户主动执行 R2 同步时放行你配置的存储域名（产品未实现泄露查询或任何遥测出站）。",
       [
         "锁库状态下恒为 0 次网络请求，列表头像全部本机生成不拉取远程网站图标。",
         "与 Chrome 扩展共用同一份 Default Deny 白名单策略。",
@@ -756,15 +774,16 @@ const SCREENS = {
       "mac-data",
       "数据与安全边界",
       "桌面 · 数据安全",
-      "本地无服务端副本，清空前先提示导出",
-      "集中展示 data.json (0600 权限) 与 .bak 滚动备份统计、已启用的防暴力与加密护栏，以及带二次勾选确认的危险清空区。",
+      "本机数据由用户自行管理，清空前先提示导出",
+      "集中展示系统文件保护状态、云备份占用与官方服务器副本数、已启用的防暴力与加密护栏，以及带二次勾选确认的危险清空区。下方统计均为原型合成数据。",
       [
         "未勾选风险确认开关前，红色清空按钮保持禁用状态。",
         "紧邻危险操作放置「先导出备份文件」直达入口。",
+        "云备份显示「—」表示未配置 R2；官方服务器副本恒为 0。",
       ],
       [
-        ["文件权限", "0600"],
-        ["滚动备份", "3 份 .bak"],
+        ["文件保护", "系统保护"],
+        ["官方服务器副本", "0"],
       ],
       [],
       () => {
@@ -912,7 +931,7 @@ const SCREENS = {
       "点行即复制 + 完整字段 + 无冗余复制主值按钮",
       "完整呈现该类条目字段与自定义字段、Google 动态口令实时倒计时环与二维码入口，去掉底部冗余的「复制主要值」按钮，让主动作聚焦为「填充到当前网页」或「编辑字段」。",
       [
-        "点「⋯」升起底部半层动作单；点二维码打开本地 Canvas 绘制页。",
+        "点「⋯」升起底部半层动作单；点二维码打开本地合成示意页。",
         "底栏历史版本可直达 Mac 桌面端查看字段级 diff。",
       ],
       [
@@ -943,9 +962,9 @@ const SCREENS = {
       "ext-totp-qr",
       "动态口令 · 二维码页",
       "扩展 · 2FA",
-      "本地 Canvas 绘制，绝不触网",
-      "将选定条目的 TOTP 凭证在扩展本机渲染为 148px 二维码，下方直接附带 Base32 密钥一键复制与 30 秒实时步长。",
-      ["用于在其他设备扫码迁移单个 2FA 密钥，零外网请求。"],
+      "本地合成示意二维码，绝不触网",
+      "以 148px 合成示意矩阵展示选定条目的 TOTP 入口（占位图，不可扫描）；下方直接附带 Base32 密钥一键复制与 30 秒实时步长。",
+      ["仅演示布局与复制密钥入口；真实可扫描二维码由产品端使用 qrious 在本地生成。"],
       [
         ["二维码", "148 × 148"],
         ["密钥行", "31px"],
@@ -1108,8 +1127,8 @@ const SCREENS = {
       "ext-sync",
       "同步与跨端状态",
       "扩展 · 同步",
-      "状态、自动开关、设备与配置入口",
-      "在 380px 内清晰呈现 R2 同步状态、待上传计数、桌面端连接状态与 R2 存储配置 / 恢复入口。",
+      "状态、设备与配置入口",
+      "在 380px 内清晰呈现 R2 手动同步状态、待上传计数、桌面端连接状态与 R2 存储配置 / 恢复入口；“自动同步”开关仅为原型概念，产品未实现。",
       ["详细字段级冲突比对引导至桌面端处理。"],
       [["状态卡", "44px"]],
       [],
@@ -1199,7 +1218,7 @@ const SCREENS = {
       "网络闸门",
       "扩展 · 隐私",
       "Default Deny + 仅放行用户授权白名单",
-      "对齐 gate-policy.ts 策略：默认拒绝全部未授权出站请求，仅放行配置的 R2 域名（与手动 HIBP 查询），彻底移除遗留遥测清单。",
+      "对齐 gate-policy.ts 策略：默认拒绝全部未授权出站请求，仅在用户主动执行 R2 同步时放行配置的存储域名（已清除遗留遥测清单；产品未实现泄露查询）。",
       ["锁库状态下 0 次网络请求。"],
       [["策略", "Default Deny"]],
       [],
@@ -1211,7 +1230,7 @@ const SCREENS = {
       "数据与安全",
       "扩展 · 安全清空",
       "先导出的明确劝导 + 二次勾选解锁",
-      "高危页面强调「本机无服务端副本」，先提供「导出备份」捷径，必须勾选确认才激活红色清空按钮。",
+      "高危页面说明安全密码无法从服务端重置，先提供「导出备份」捷径，必须勾选确认才激活红色清空按钮。",
       ["符合破坏性操作的防呆交互规范。"],
       [["警告区", "100% 宽度"]],
       [],
@@ -2029,11 +2048,7 @@ document.addEventListener("click", (e) => {
   }
   if (act === "gen-pw-draft") {
     const fkey = actEl.dataset.fkey || "secret";
-    const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%";
-    const pw = Array.from(
-      { length: 20 },
-      () => chars[Math.floor(Math.random() * chars.length)],
-    ).join("");
+    const pw = randomPassword(20);
     if (STATE.formDraft) {
       const f = STATE.formDraft.fields.find((x) => x.key === fkey);
       if (f) f.value = pw;
@@ -2524,14 +2539,8 @@ document.addEventListener("click", (e) => {
     return;
   }
   if (act === "gen-pw") {
-    const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%";
     STATE.genValue =
-      STATE.genMode === "passphrase"
-        ? "amber-ridge-cedar-flux-92"
-        : Array.from(
-            { length: STATE.genLen },
-            () => chars[Math.floor(Math.random() * chars.length)],
-          ).join("");
+      STATE.genMode === "passphrase" ? "amber-ridge-cedar-flux-92" : randomPassword(STATE.genLen);
     STATE.genHistory.unshift({
       id: "gh-" + Date.now(),
       value: STATE.genValue,
@@ -2647,11 +2656,6 @@ document.addEventListener("click", (e) => {
   }
   if (act === "toggle-bridge") {
     STATE.nativeBridgeOn = !STATE.nativeBridgeOn;
-    render();
-    return;
-  }
-  if (act === "toggle-hibp") {
-    STATE.hibpOn = !STATE.hibpOn;
     render();
     return;
   }

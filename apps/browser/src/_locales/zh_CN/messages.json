@@ -5424,12 +5424,12 @@
     "description": "Title of the passkey verification panel"
   },
   "inlineMenuPasskeyVerifyingBody": {
-    "message": "请在系统通行密钥提示中确认。验证完成前此菜单会保留。",
+    "message": "网站仅收到一次签名，私钥不出本机。",
     "description": "Body of the passkey verification panel"
   },
-  "inlineMenuPasskeyVerifyingMeta": {
-    "message": "{domain} · WebAuthn",
-    "description": "Domain and protocol shown in the passkey verification panel"
+  "inlineMenuPasskeyVerifyingTimeout": {
+    "message": "30s 超时",
+    "description": "Timeout shown in the passkey verification panel"
   },
   "inlineMenuCancel": {
     "message": "取消",
@@ -9695,6 +9695,9 @@
   "createLocalVault": {
     "message": "创建保险库"
   },
+  "createThenImport": {
+    "message": "创建后导入"
+  },
   "createLocalVaultDescription": {
     "message": "用一个邮箱标识这个保险库，再设置一个主密码来保护它。两者都只留在这台设备上，主密码无法找回。"
   },
@@ -9826,6 +9829,15 @@
   },
   "securityKeyRemove": {
     "message": "移除全部密钥"
+  },
+  "securityKeyRemoveOne": {
+    "message": "移除"
+  },
+  "securityKeyRemoveOneConfirm": {
+    "message": "移除此安全密钥？仍可使用安全密码解锁。"
+  },
+  "securityKeyRemovedOne": {
+    "message": "安全密钥已移除"
   },
   "securityKeyRegistered": {
     "message": "已登记"
@@ -10561,6 +10573,9 @@
   "simplifiedChinese": {
     "message": "简体中文"
   },
+  "languageFollowsBrowser": {
+    "message": "跟随浏览器语言"
+  },
   "appearanceSubtitle": {
     "message": "主题与语言"
   },
@@ -10669,7 +10684,10 @@
     "message": "仅手动同步"
   },
   "breachCheckSub": {
-    "message": "默认关闭，需要手动开启"
+    "message": "未实现：体检完全离线，不发任何泄露查询"
+  },
+  "notImplemented": {
+    "message": "未实现"
   },
   "recentlyBlocked": {
     "message": "最近拦截"
@@ -11188,7 +11206,7 @@
     "message": "强密码建议"
   },
   "inlineGeneratorDescription": {
-    "message": "20 位强密码 · 填入并打开保存确认条"
+    "message": "{length} 位强密码 · 填入并打开保存确认条"
   },
   "inlineGeneratorRegenerate": {
     "message": "换一个"
@@ -11327,7 +11345,7 @@
     "message": "忽略"
   },
   "notificationMultiSaveHeader": {
-    "message": "$DOMAIN$ 有多条已保存登录",
+    "message": "$DOMAIN$ 的已保存登录",
     "placeholders": {
       "domain": {
         "content": "$1",
@@ -11337,6 +11355,18 @@
   },
   "notificationMultiSaveDesc": {
     "message": "检测到密码已更改，请选择要更新的条目，不会静默覆盖。"
+  },
+  "notificationChangeNoMatchHeader": {
+    "message": "为 $DOMAIN$ 保存新密码？",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "northwind.io"
+      }
+    }
+  },
+  "notificationChangeNoMatchDesc": {
+    "message": "没有已保存条目的密码与本次当前密码一致。保存只会新建条目，不会修改已有条目。"
   },
   "notificationMultiSaveNewEntry": {
     "message": "另存为新条目 #$COUNT$",

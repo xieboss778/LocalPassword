@@ -1251,7 +1251,7 @@ describe("NotificationBackground", () => {
           );
         });
 
-        it("and cipher update candidates match `newPassword` only, trigger a new cipher notification", async () => {
+        it("and cipher update candidates match `newPassword` only, still trigger the change notification with no update candidates", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -1272,25 +1272,19 @@ describe("NotificationBackground", () => {
 
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
-          expect(fillCipherPolicy.ciphersForUrl).toHaveBeenCalledWith(
-            formEntryData.uri,
-            userId,
-            CipherUse.SavePrompt,
-          );
-
-          expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
-          expect(pushAddLoginToQueueSpy).toHaveBeenCalledWith(
+          expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
+          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
+            [],
             mockFormattedURI,
-            {
-              password: formEntryData.newPassword,
-              url: formEntryData.uri,
-              username: formEntryData.username,
-            },
+            formEntryData.newPassword,
             sender.tab,
+            false,
+            { username: formEntryData.username, uri: formEntryData.uri },
+            storedCiphersForURL.length,
           );
         });
 
-        it("and cipher update candidates match `newPassword` only, do not trigger a new cipher notification if the new cipher notification setting is disabled", async () => {
+        it("and cipher update candidates match `newPassword` only, still trigger the change notification with no update candidates when the new cipher notification setting is disabled", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -1312,8 +1306,16 @@ describe("NotificationBackground", () => {
 
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
-          expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
+          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
+            [],
+            mockFormattedURI,
+            formEntryData.newPassword,
+            sender.tab,
+            false,
+            { username: formEntryData.username, uri: formEntryData.uri },
+            storedCiphersForURL.length,
+          );
         });
 
         it("and cipher update candidates match `password` only, trigger an update cipher notification with those candidates", async () => {
@@ -1375,7 +1377,7 @@ describe("NotificationBackground", () => {
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
         });
 
-        it("and cipher update candidates match `password` only, as well as `newPassword` only, trigger a new cipher notification", async () => {
+        it("and cipher update candidates match `password` only, as well as `newPassword` only, offer the password-matching candidates for update", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -1400,19 +1402,19 @@ describe("NotificationBackground", () => {
 
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
-          expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
-          expect(pushAddLoginToQueueSpy).toHaveBeenCalledWith(
+          expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
+          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
+            ["cipher-id-1", "cipher-id-3"],
             mockFormattedURI,
-            {
-              password: formEntryData.newPassword,
-              url: formEntryData.uri,
-              username: formEntryData.username,
-            },
+            formEntryData.newPassword,
             sender.tab,
+            false,
+            { username: formEntryData.username, uri: formEntryData.uri },
+            storedCiphersForURL.length,
           );
         });
 
-        it("and cipher update candidates match `username` only, trigger an update cipher notification with those candidates", async () => {
+        it("and cipher update candidates match `username` only, queue the change notification with no update candidates", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -1435,7 +1437,106 @@ describe("NotificationBackground", () => {
 
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
           expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
-            ["cipher-id-2"],
+            [],
+            mockFormattedURI,
+            formEntryData.newPassword,
+            sender.tab,
+            false,
+            { username: formEntryData.username, uri: formEntryData.uri },
+            storedCiphersForURL.length,
+          );
+        });
+
+        it("and the submitted password matches an entry with a different username, offer that entry for update", async () => {
+          const storedCiphersForURL = [
+            mock<CipherView>({
+              id: "cipher-id-1",
+              login: { password: "UShallKnotPassword", username: "gandalfW" },
+            }),
+            mock<CipherView>({
+              id: "cipher-id-2",
+              login: { password: "EdroEdro", username: "gandalfG" },
+            }),
+            mock<CipherView>({
+              id: "cipher-id-3",
+              login: { password: "sting123", username: "BBaggins" },
+            }),
+          ];
+
+          activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
+          getAllDecryptedForUrlSpy.mockResolvedValueOnce(storedCiphersForURL);
+
+          await notificationBackground.triggerCipherNotification(formEntryData, tab);
+
+          expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
+          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
+            ["cipher-id-1"],
+            mockFormattedURI,
+            formEntryData.newPassword,
+            sender.tab,
+            false,
+            { username: formEntryData.username, uri: formEntryData.uri },
+            storedCiphersForURL.length,
+          );
+        });
+
+        it("and an entry matches both the username and the current password, offer only that entry", async () => {
+          const storedCiphersForURL = [
+            mock<CipherView>({
+              id: "cipher-id-1",
+              login: { password: "UShallKnotPassword", username: "gandalfG" },
+            }),
+            mock<CipherView>({
+              id: "cipher-id-2",
+              login: { password: "galadriel4Eva", username: "gandalfG" },
+            }),
+            mock<CipherView>({
+              id: "cipher-id-3",
+              login: { password: "sting123", username: "BBaggins" },
+            }),
+          ];
+
+          activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
+          getAllDecryptedForUrlSpy.mockResolvedValueOnce(storedCiphersForURL);
+
+          await notificationBackground.triggerCipherNotification(formEntryData, tab);
+
+          expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
+          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
+            ["cipher-id-1"],
+            mockFormattedURI,
+            formEntryData.newPassword,
+            sender.tab,
+            false,
+            { username: formEntryData.username, uri: formEntryData.uri },
+            storedCiphersForURL.length,
+          );
+        });
+
+        it("and cipher update candidates match `username` only, as well as `password` or `newPassword` only, offer only the password-matching candidates", async () => {
+          const storedCiphersForURL = [
+            mock<CipherView>({
+              id: "cipher-id-1",
+              login: { password: "UShallKnotPassword", username: "gandalfW" },
+            }),
+            mock<CipherView>({
+              id: "cipher-id-2",
+              login: { password: "Edro2x", username: "BBaggins" },
+            }),
+            mock<CipherView>({
+              id: "cipher-id-3",
+              login: { password: "EdroEdro", username: "gandalfG" },
+            }),
+          ];
+
+          activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
+          getAllDecryptedForUrlSpy.mockResolvedValueOnce(storedCiphersForURL);
+
+          await notificationBackground.triggerCipherNotification(formEntryData, tab);
+
+          expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
+          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
+            ["cipher-id-1"],
             mockFormattedURI,
             formEntryData.newPassword,
             sender.tab,
@@ -1469,39 +1570,6 @@ describe("NotificationBackground", () => {
 
           expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
-        });
-
-        it("and cipher update candidates match `username` only, as well as `password` or `newPassword` only, trigger an update cipher notification with the candidates `username`", async () => {
-          const storedCiphersForURL = [
-            mock<CipherView>({
-              id: "cipher-id-1",
-              login: { password: "UShallKnotPassword", username: "gandalfW" },
-            }),
-            mock<CipherView>({
-              id: "cipher-id-2",
-              login: { password: "Edro2x", username: "BBaggins" },
-            }),
-            mock<CipherView>({
-              id: "cipher-id-3",
-              login: { password: "EdroEdro", username: "gandalfG" },
-            }),
-          ];
-
-          activeAccountStatusMock$.next(AuthenticationStatus.Unlocked);
-          getAllDecryptedForUrlSpy.mockResolvedValueOnce(storedCiphersForURL);
-
-          await notificationBackground.triggerCipherNotification(formEntryData, tab);
-
-          expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
-          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
-            ["cipher-id-3"],
-            mockFormattedURI,
-            formEntryData.newPassword,
-            sender.tab,
-            false,
-            { username: formEntryData.username, uri: formEntryData.uri },
-            storedCiphersForURL.length,
-          );
         });
 
         it("and cipher update candidates match `username` and `newPassword`, do not trigger an update (nothing to change)", async () => {
@@ -1629,7 +1697,7 @@ describe("NotificationBackground", () => {
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
         });
 
-        it("and cipher update candidates match `username` AND `password` as well as any OTHER combination of `username`, `password`, and/or `newPassword` (excluding `username` AND `newPassword`), trigger an update cipher notification with the candidates matching `username` AND `password`", async () => {
+        it("and cipher update candidates match `username` AND `password` as well as any OTHER combination of `username`, `password`, and/or `newPassword` (excluding `username` AND `newPassword`), offer the password-matching candidates", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -1662,9 +1730,11 @@ describe("NotificationBackground", () => {
 
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
+          // `cipher-id-4` matches only the submitted username: its saved password differs from
+          // the submitted current password, so it must not be offered as an update target.
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
           expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
-            ["cipher-id-3"],
+            ["cipher-id-3", "cipher-id-1"],
             mockFormattedURI,
             formEntryData.newPassword,
             sender.tab,
@@ -1781,7 +1851,7 @@ describe("NotificationBackground", () => {
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
         });
 
-        it("and cipher update candidates match only `username`, trigger an update cipher notification with those candidates", async () => {
+        it("and cipher update candidates match only `username`, do not trigger a notification (username alone is insufficient signal)", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -1803,15 +1873,7 @@ describe("NotificationBackground", () => {
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
-          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
-            ["cipher-id-1"],
-            mockFormattedURI,
-            formEntryData.newPassword,
-            sender.tab,
-            false,
-            { username: formEntryData.username, uri: formEntryData.uri },
-            storedCiphersForURL.length,
-          );
+          expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
         });
 
         it("and at least one cipher update candidate matches both `username` and `newPassword`, do not trigger an update (nothing to change)", async () => {
@@ -2284,7 +2346,7 @@ describe("NotificationBackground", () => {
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
         });
 
-        it("and cipher update candidates only match `username`, trigger an update cipher notification with those candidates", async () => {
+        it("and cipher update candidates only match `username`, do not trigger an update cipher notification (username alone is insufficient signal)", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -2306,15 +2368,7 @@ describe("NotificationBackground", () => {
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
-          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
-            ["cipher-id-1", "cipher-id-2"],
-            mockFormattedURI,
-            formEntryData.password,
-            sender.tab,
-            false,
-            { username: formEntryData.username, uri: formEntryData.uri },
-            storedCiphersForURL.length,
-          );
+          expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
         });
 
         it("and cipher update candidates only match `username`, do not trigger an update cipher notification if the update cipher notification setting is disabled", async () => {

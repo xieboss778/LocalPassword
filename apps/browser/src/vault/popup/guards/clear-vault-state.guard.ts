@@ -1,12 +1,18 @@
 import { inject } from "@angular/core";
 import { CanDeactivateFn } from "@angular/router";
-import { map, take } from "rxjs";
+import { catchError, map, of, take, timeout } from "rxjs";
 
 import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 import { ConfigService } from "@localpass/common/platform/abstractions/config/config.service";
 
 import { VaultPopupItemsService } from "../services/vault-popup-items.service";
 import { VaultPopupListFiltersService } from "../services/vault-popup-list-filters.service";
+
+/**
+ * The flag only decides whether legacy filter state is reset. Config can be unavailable for an
+ * offline local vault, so never let the guard block navigation waiting for it.
+ */
+const VFO1_FLAG_TIMEOUT_MS = 250;
 
 /**
  * Guard to clear the vault state (search and filter) when navigating away from the vault view.
@@ -35,6 +41,8 @@ export const clearVaultStateGuard: CanDeactivateFn<object> = (
 
   return configService.getFeatureFlag$(FeatureFlag.VFO1Foundation).pipe(
     take(1),
+    timeout({ first: VFO1_FLAG_TIMEOUT_MS, with: () => of(false) }),
+    catchError(() => of(false)),
     map((vfo1Enabled) => {
       if (!vfo1Enabled) {
         vaultPopupItemsService.applyFilter("");

@@ -237,7 +237,7 @@ function extDetailView(state, opts = {}) {
         ? `<div class="sheetwrap" data-act="toggle-ext-qr"><div class="sheet" style="text-align:center;padding:14px" onclick="event.stopPropagation()">
       <div class="st">${escapeHtml(item.name)} · 动态口令二维码</div>
       <div style="display:inline-block;padding:10px;border-radius:8px;background:#fff;color:#0f172a;border:1px solid var(--border)">${svgQrMatrix(124)}</div>
-      <div style="font-size:10px;color:var(--text-3);margin-top:6px">本地 Canvas 绘制 · 不触网</div>
+      <div style="font-size:10px;color:var(--text-3);margin-top:6px">本地合成示意二维码（占位，不可扫描）</div>
       <button class="btn block" style="margin-top:9px" data-act="toggle-ext-qr">关闭</button>
     </div></div>`
         : ""
@@ -282,7 +282,7 @@ function extTotpQrView(state) {
           <span class="k">步长</span><span class="v tnum">SHA1 · 6 位 · 30 秒</span><span class="chip ok">剩余 <span class="secs">20</span>s</span>
         </div>
       </div>
-      <div class="callout" style="text-align:left">${icon("shield", 14)}<div>本地 Canvas 绘制，不调用任何外部二维码生成接口；扫码或导入仅在设备之间直接移交。</div></div>
+      <div class="callout" style="text-align:left">${icon("shield", 14)}<div>本地合成示意二维码（占位，不可扫描），不调用任何外部二维码生成接口；真实可扫描二维码由产品端使用 qrious 在本地生成。</div></div>
     </div>
     ${toastMarkup(state, "ext")}
   </div>`;
@@ -370,7 +370,7 @@ function extSyncView(state) {
         </div>
       </div>
       <div class="panel">
-        <div class="setrow"><div><div class="k">自动同步</div><div class="d">30 秒去抖上传 / 解锁拉取</div></div><div class="right"><span class="toggle ${state.autoSync ? "" : "off"}" role="switch" aria-checked="${state.autoSync}" data-act="toggle-autosync"></span></div></div>
+        <div class="setrow"><div><div class="k">自动同步（原型概念 · 产品未实现）</div><div class="d">产品仅支持手动同步；此开关只演示 30 秒去抖自动上传的概念</div></div><div class="right"><span class="toggle ${state.autoSync ? "" : "off"}" role="switch" aria-checked="${state.autoSync}" data-act="toggle-autosync"></span></div></div>
         <div class="setrow"><div><div class="k">桌面端原生联动</div><div class="d">com.localpass.desktop</div></div><div class="right"><span class="chip ${state.nativeBridgeOn ? "ok" : ""}">${state.nativeBridgeOn ? "已连接" : "未连接"}</span></div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
@@ -701,7 +701,7 @@ function extSubpageView(state, id) {
   }
   if (id === "ext-data") {
     return `<div class="ext lp">${extHeader("数据与安全", state, { back: true })}<div class="ext-scroll">
-      <div class="callout bad" style="margin-top:0">${icon("alert", 13)}<div><strong>本机无服务端副本。</strong>清空前请务必先导出 JSON 备份或确认拥有 R2 桶恢复口令。</div></div>
+      <div class="callout bad" style="margin-top:0">${icon("alert", 13)}<div><strong>LocalPass 没有可找回安全密码的服务端账号。</strong>清空前请务必先导出 JSON 备份或确认拥有 R2 桶恢复口令。</div></div>
       <button class="btn block" style="margin-top:8px" data-act="ext-go" data-ext="ext-export">${icon("download", 12)}先导出备份文件</button>
       <div style="margin-top:10px;padding:9px;border:1px solid color-mix(in srgb, var(--danger) 35%, transparent);border-radius:7px">
         <button class="check-btn" data-act="toggle-wipe-confirm">

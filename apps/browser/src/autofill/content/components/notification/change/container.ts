@@ -14,17 +14,20 @@ export const ChangeNotificationNewEntryTarget = "new-entry";
 
 export type NotificationChangeContainerProps = {
   /**
-   * The ciphers matched to the submitted credentials. With more than one, the card opens
-   * directly in picker mode so the user never has an entry overwritten silently.
+   * The ciphers whose saved password matched the submitted current password. With more than one,
+   * the card opens directly in picker mode so the user never has an entry overwritten silently.
+   * An empty list still renders the picker so the submitted credentials can be saved as a new
+   * entry.
    */
   ciphers: NotificationCipherData[];
   domain: string;
   /** Whether the candidate picker is shown instead of the single-entry summary. */
   expanded: boolean;
   /**
-   * The number of entries already saved for this page, including entries that did not match the
-   * submitted password. Used to number the "save as new entry" option after the vault's count.
-   * Absent when the vault was locked, in which case the option is numbered after the candidates.
+   * The number of entries already saved for this page, including entries whose password did not
+   * match the submitted one. Used to number the "save as new entry" option after the vault's
+   * count. Absent when the vault was locked, in which case the option is numbered after the
+   * candidates.
    */
   existingEntryCount?: number;
   i18n: I18n;
@@ -38,20 +41,27 @@ export type NotificationChangeContainerProps = {
   handleToggleExpanded: (e: Event) => void;
 };
 
-/** Whether the card shows the candidate picker for this notification. */
+/**
+ * Whether the card shows the candidate picker for this notification. Zero candidates still show
+ * the picker with only the "save as new entry" row; a single candidate keeps the focused summary
+ * until the user expands it.
+ */
 export function changeNotificationShowsPicker(
   ciphers: NotificationCipherData[],
   expanded: boolean,
 ): boolean {
-  return expanded || ciphers.length > 1;
+  return expanded || ciphers.length !== 1;
 }
 
-/** Header line for the change card: the site's entries, or the single matched item. */
+/** Header line for the change card: the matched entry, the site, or the no-match prompt. */
 export function getChangeNotificationHeaderMessage(
   ciphers: NotificationCipherData[],
   domain: string,
   expanded: boolean,
 ): string {
+  if (ciphers.length === 0) {
+    return chrome.i18n.getMessage("notificationChangeNoMatchHeader", [domain]);
+  }
   return changeNotificationShowsPicker(ciphers, expanded)
     ? chrome.i18n.getMessage("notificationMultiSaveHeader", [domain])
     : chrome.i18n.getMessage("notificationChangeHeader", [ciphers[0]?.name ?? domain]);
@@ -111,9 +121,10 @@ function versionHint(cipher: NotificationCipherData): string | undefined {
 }
 
 /**
- * Compact update card for a detected password change. A single matched entry gets a focused
- * summary with an update action; several matched entries open the AGY picker where one entry is
- * updated, or the submitted credentials are recorded as a new entry.
+ * Compact update card for a detected password change. A single entry whose saved password
+ * matched the submitted one gets a focused summary with an update action; zero or several such
+ * entries open the AGY picker where one entry is updated, or the submitted credentials are
+ * recorded as a new entry.
  */
 export function NotificationChangeContainer({
   ciphers,
@@ -208,7 +219,11 @@ export function NotificationChangeContainer({
         showPicker
           ? html`
               <div class=${pickerDescriptionStyles(theme)}>
-                ${chrome.i18n.getMessage("notificationMultiSaveDesc")}
+                ${
+                  ciphers.length === 0
+                    ? chrome.i18n.getMessage("notificationChangeNoMatchDesc")
+                    : chrome.i18n.getMessage("notificationMultiSaveDesc")
+                }
               </div>
               <div class=${pickerRowsStyles} role="radiogroup" @keydown=${onRadioKeyDown}>
                 ${ciphers.map((cipher) => {

@@ -13,7 +13,7 @@ export type InlineMenuPasskeyVerifyingI18n = {
   headerCount: string;
   title: string;
   body: string;
-  meta: string;
+  timeout: string;
   cancel: string;
   ariaLabel: string;
   closeAria: string;
@@ -61,6 +61,8 @@ export function InlineMenuPasskeyVerifying({
           <b>${i18n.title.replace("{username}", username)}</b>
           <span>${i18n.body}</span>
         </span>
+      </div>
+      <div class=${footerStyles(theme)}>
         <button
           type="button"
           tabindex="-1"
@@ -71,8 +73,8 @@ export function InlineMenuPasskeyVerifying({
         >
           ${i18n.cancel}
         </button>
+        <span class=${timeoutStyles(theme)}>${i18n.timeout}</span>
       </div>
-      <div class=${metaBarStyles(theme)}>${i18n.meta.replace("{domain}", domain)}</div>
     `,
   });
 }
@@ -128,8 +130,8 @@ const spinnerStyles = (theme: Theme) => {
     flex: none;
     width: 20px;
     height: 20px;
-    border: 2px solid ${colors.brandSoft};
-    border-top-color: ${colors.brand};
+    border: 2px solid ${colors.brand};
+    border-top-color: transparent;
     border-radius: 50%;
     animation: inline-menu-verify-spin 800ms linear infinite;
 
@@ -145,16 +147,30 @@ const spinnerStyles = (theme: Theme) => {
   `;
 };
 
-const metaBarStyles = (theme: Theme) => {
+const footerStyles = (theme: Theme) => {
   const colors = inlineMenuColors(theme);
 
   return css`
-    padding: 5px 10px;
-    border-top: 1px solid ${colors.borderLight};
-    background: ${colors.surfaceAlt};
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 26px;
+    padding: 0 10px 7px;
+    background: ${colors.surface};
+  `;
+};
+
+const timeoutStyles = (theme: Theme) => {
+  const colors = inlineMenuColors(theme);
+
+  return css`
+    overflow: hidden;
     color: ${colors.textSubtle};
-    font-size: 9px;
+    font-size: 9.5px;
     line-height: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   `;
 };
 

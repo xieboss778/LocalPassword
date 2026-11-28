@@ -1,12 +1,5 @@
 import { CommonModule, Location } from "@angular/common";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  computed,
-  inject,
-  signal,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -15,7 +8,6 @@ import {
   LpGroupComponent,
   LpPageHeaderComponent,
   LpPopupHeaderComponent,
-  LpRowComponent,
   LpToastService,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
@@ -23,6 +15,7 @@ import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { DialogService, IconModule } from "@localpass/components";
 import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui";
+import type { WebAuthnPrfUnlockOption } from "@localpass/sdk-internal";
 
 /**
  * Registers a security key (PRF) as an unlock method for the extension. The vault must be
@@ -40,7 +33,6 @@ import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui"
     LpGroupComponent,
     LpPageHeaderComponent,
     LpPopupHeaderComponent,
-    LpRowComponent,
   ],
 })
 export class SecurityKeyComponent implements OnInit {
@@ -56,11 +48,8 @@ export class SecurityKeyComponent implements OnInit {
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
 
   protected readonly supported = signal(false);
-  protected readonly registeredCount = signal(0);
+  protected readonly registeredKeys = signal<WebAuthnPrfUnlockOption[]>([]);
   protected readonly busy = signal(false);
-  protected readonly registeredText = computed(() =>
-    this.i18nService.t("registeredKeysCount", this.registeredCount().toString()),
-  );
 
   protected goBack(): void {
     const next = this.route.snapshot.queryParamMap.get("next");
@@ -98,6 +87,40 @@ export class SecurityKeyComponent implements OnInit {
     }
   };
 
+  protected maskedCredentialId(option: WebAuthnPrfUnlockOption): string {
+    const id = option.credentialId;
+    if (id == null || id.length <= 8) {
+      return "••••";
+    }
+    return `${id.slice(0, 4)}…${id.slice(-4)}`;
+  }
+
+  protected readonly removeKey = async (option: WebAuthnPrfUnlockOption): Promise<void> => {
+    const credentialId = option.credentialId;
+    if (credentialId == null) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "securityKeyRemoveOne" },
+      content: { key: "securityKeyRemoveOneConfirm" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.busy.set(true);
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      await this.enrollmentService.removeOne(userId, credentialId);
+      await this.refresh();
+      this.toast.show(this.i18nService.t("securityKeyRemovedOne"));
+    } finally {
+      this.busy.set(false);
+    }
+  };
+
   protected readonly removeAll = async (): Promise<void> => {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "securityKeyRemove" },
@@ -121,6 +144,7 @@ export class SecurityKeyComponent implements OnInit {
 
   private async refresh(): Promise<void> {
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-    this.registeredCount.set(await this.enrollmentService.count(userId));
+    const keys = await this.enrollmentService.list(userId);
+    this.registeredKeys.set(keys);
   }
 }

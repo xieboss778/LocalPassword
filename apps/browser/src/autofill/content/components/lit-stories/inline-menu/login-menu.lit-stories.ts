@@ -141,8 +141,8 @@ export const PasskeyVerifying: StoryObj<ComponentAndControls> = {
         i18n: {
           headerCount: "Verifying",
           title: "Verifying passkey for {username}",
-          body: "Confirm in the system passkey prompt. This menu stays until verification completes.",
-          meta: "{domain} · WebAuthn",
+          body: "The site only receives one signature; your private key never leaves this device.",
+          timeout: "30s timeout",
           cancel: "Cancel",
           ariaLabel: "Passkey verification in progress",
           closeAria: "Close LocalPass menu",

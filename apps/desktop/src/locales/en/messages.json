@@ -8748,6 +8748,9 @@
   "createLocalVaultNote": {
     "message": "Touch ID is enabled in macOS settings · backups are always manual"
   },
+  "createThenImport": {
+    "message": "Create, then import"
+  },
   "unlockSubtitle": {
     "message": "Data only lives on this computer. Enter your security password to continue."
   },
@@ -9636,7 +9639,10 @@
     "message": "Only syncs manually"
   },
   "networkGateBreachDefaultOff": {
-    "message": "Off by default, turn it on manually"
+    "message": "Not implemented: health checks run fully offline; no breach query is sent."
+  },
+  "notImplemented": {
+    "message": "Not implemented"
   },
   "networkGateErrorReporting": {
     "message": "Error reporting"
@@ -10078,8 +10084,11 @@
       }
     }
   },
-  "dataFileMode": {
-    "message": "Local file mode"
+  "dataFileProtection": {
+    "message": "OS-protected"
+  },
+  "dataDirectoryManaged": {
+    "message": "Managed by the operating system; the path varies by platform."
   },
   "dataServerCopies": {
     "message": "Vendor server copies"

@@ -813,8 +813,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private async routeToNewItem(kind: ItemKind): Promise<void> {
-    await this.router.navigate(["/edit-item-v2"], {
-      queryParams: { kind },
+    await this.router.navigate(["/vault"], {
+      queryParams: { action: "add", kind },
     });
   }
 

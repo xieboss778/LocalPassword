@@ -19,7 +19,9 @@ function searchItems(items, rawQuery, typeFilter = "all") {
       if (q === "=favorite")
         return it.favorite ? { item: it, matchField: "收藏", matchSnippet: "已星标" } : null;
       if (q === "=totp")
-        return it.otp ? { item: it, matchField: "验证码", matchSnippet: it.otp } : null;
+        return it.otp
+          ? { item: it, matchField: "动态口令", matchSnippet: "已配置（详情页查看）" }
+          : null;
       if (q === "=passkey")
         return it.passkey
           ? { item: it, matchField: "通行密钥", matchSnippet: it.passkey.rp }
@@ -729,7 +731,7 @@ function macDetailView(state) {
           <span>${item.strength?.label || "强"}</span>
         </div>
         <div class="meta-row" style="margin-top:5px"><span class="k">重复检查</span><span class="v">${item.strength?.reuse || "未重复"}</span></div>
-        <div class="meta-row"><span class="k">泄露检查</span><span class="v">${state.hibpOn ? item.strength?.breach || "未发现" : "离线未查询"}</span></div>
+        <div class="meta-row"><span class="k">泄露检查</span><span class="v">产品未实现 · 离线</span></div>
 
         <div class="divider"></div>
         <h5>版本历史</h5>
@@ -795,7 +797,7 @@ function macHistoryDrawer(item) {
         )
         .join("")}
     </div>
-    <div class="drawer-f">保留最近 10 个版本 · 恢复前自动快照当前版本</div>
+    <div class="drawer-f">保留最近 10 个旧版本 · 恢复前自动快照当前版本 · 仅本机加密存储</div>
   </aside>`;
 }
 
@@ -813,7 +815,7 @@ function macQrDrawer(item) {
       <div class="mono" style="margin-top:10px;padding:7px 9px;border-radius:6px;background:var(--bg-alt);border:1px solid var(--border-light);font-size:10.5px">••••••••••••••••</div>
       <button class="btn block" style="margin-top:9px" data-act="copy" data-label="TOTP 密钥" data-copy-val="${escapeHtml(item.totpSecret || "JBSW Y3DP EHPK 3PXP")}">${icon("copy", 12)}复制 Base32 密钥</button>
     </div>
-    <div class="drawer-f">本地 Canvas 渲染，不请求任何外部二维码接口</div>
+    <div class="drawer-f">本地合成示意二维码（占位，不可扫描），不请求任何外部二维码接口</div>
   </aside>`;
 }
 
@@ -1028,8 +1030,8 @@ function macHealthPage(state) {
     <div class="panel">
       <div class="panel-h">隐私边界</div>
       <div class="setrow">
-        <div><div class="k">HIBP 泄露前缀比对（可选联网）</div><div class="d">默认关闭 · 仅手动开启时向 api.pwnedpasswords.com 发送密码 SHA-1 前 5 位</div></div>
-        <div class="right"><span class="toggle ${state.hibpOn ? "" : "off"}" role="switch" aria-checked="${state.hibpOn}" data-act="toggle-hibp"></span></div>
+        <div><div class="k">泄露查询（产品未实现）</div><div class="d">安全体检完全离线运行，不发送密码、哈希前缀，也不发起任何泄露查询请求</div></div>
+        <div class="right"><span class="chip">离线</span></div>
       </div>
     </div>
   </section>`;
@@ -1118,7 +1120,7 @@ function macFoldersPage(state) {
 function macGeneratorPage(state) {
   return `<section class="pagearea lp">
     <div class="pagehead">
-      <div><h1>密码生成器</h1><p>纯本机 WebCrypto 生成。生成历史不写入磁盘也不参与同步，锁定即清空。</p></div>
+      <div><h1>密码生成器</h1><p>“重新生成”由本机 WebCrypto 提供随机源（原型同样使用 crypto.getRandomValues）。生成历史不写入磁盘也不参与同步，锁定即清空。</p></div>
       <div class="right">
         <button class="btn sm" data-act="gen-pw">${icon("refresh", 12)}重新生成 ⌘R</button>
         <button class="btn sm primary" data-act="copy" data-label="生成密码" data-copy-val="${escapeHtml(state.genValue)}">${icon("copy", 12)}复制</button>
@@ -1229,7 +1231,7 @@ function macImportPage(state) {
             ${state.importSource === "lpjson" ? `<div class="frow" style="border:1px solid var(--border);border-radius:6px"><div class="lb">备份口令</div><div class="iv"><input type="password" value="amber-vault-9921-k7m2" /></div></div>` : ""}
           </div>
         </div>
-        <div class="callout">${icon("shield", 14)}<div>全部解析在本机内存中完成；确认导入前不会修改现有 <span class="mono">data.json</span>。</div></div>
+        <div class="callout">${icon("shield", 14)}<div>全部解析在本机内存中完成；确认导入前不会修改现有 <span class="mono">本机保险库</span>。</div></div>
       </div>
     </div>
   </section>`;
@@ -1318,7 +1320,7 @@ function macSyncPage(state) {
     </div>
     <div class="panel">
       <div class="panel-h">同步策略与状态 <span class="right"><span class="chip ${state.dirtyCount ? "warn" : "ok"}">${state.dirtyCount ? `待上传 ${state.dirtyCount}` : "已收敛 · gen #42"}</span></span></div>
-      <div class="setrow"><div><div class="k">自动同步（v2 方案 · 可随时关闭）</div><div class="d">本地写入 30 秒去抖上传 / 解锁后先拉后推 / 切回窗口刷新</div></div><div class="right"><span style="font-size:10.5px;color:var(--text-3)">${state.lastSyncText}</span><span class="toggle ${state.autoSync ? "" : "off"}" role="switch" aria-checked="${state.autoSync}" data-act="toggle-autosync"></span></div></div>
+      <div class="setrow"><div><div class="k">自动同步（原型概念 · 产品未实现）</div><div class="d">产品仅支持手动同步；此开关只演示 30 秒去抖自动上传的概念</div></div><div class="right"><span style="font-size:10.5px;color:var(--text-3)">${state.lastSyncText}</span><span class="toggle ${state.autoSync ? "" : "off"}" role="switch" aria-checked="${state.autoSync}" data-act="toggle-autosync"></span></div></div>
       <div class="setrow"><div><div class="k">存储桶 · <span class="mono">lp-7f3a</span></div><div class="d">Cloudflare R2 · 分段 gzip + Ed25519 签名防回滚 · 只存密文与元数据</div></div><div class="right"><button class="btn sm" data-act="go-screen" data-surface="mac" data-screen="mac-backup-config">编辑端点</button><span class="chip ok">已连接</span></div></div>
       <div class="setrow"><div><div class="k">冲突待处理</div><div class="d">发现双端并发修改同一条目，默认不静默覆盖</div></div><div class="right"><span class="chip warn">1 个冲突</span><button class="btn sm primary" data-act="go-screen" data-surface="mac" data-screen="mac-conflict">并排对比解决 →</button></div></div>
     </div>
@@ -1500,11 +1502,12 @@ function macDataPage(state) {
       </div>
     </div>
     <div class="stats">
-      <div class="stat"><div class="n">${state.items.length}</div><div class="l">本机密文条目</div></div>
-      <div class="stat ok"><div class="n">0600</div><div class="l">data.json 权限</div></div>
-      <div class="stat"><div class="n">3 份</div><div class="l">.bak 滚动防损坏</div></div>
-      <div class="stat ok"><div class="n">0</div><div class="l">服务端副本数</div></div>
+      <div class="stat"><div class="n">${state.items.length}</div><div class="l">本机条目（原型）</div></div>
+      <div class="stat ok"><div class="n">OS</div><div class="l">系统保护</div></div>
+      <div class="stat${state.r2TestOk ? " ok" : ""}"><div class="n">${state.r2TestOk ? "R2" : "—"}</div><div class="l">云备份（原型）</div></div>
+      <div class="stat"><div class="n">0</div><div class="l">官方服务器副本</div></div>
     </div>
+    <div style="font-size:10px;color:var(--text-3);margin:6px 0 0">以下统计为原型合成数据，不代表产品运行状态。</div>
     <div class="panel">
       <div class="panel-h">已启用的安全护栏</div>
       <div class="setrow"><div><div class="k">AES-256-GCM 本地全字段加密</div><div class="d">用户名、密码、备注、自定义字段与版本历史均写入密文区</div></div><div class="right"><span class="chip ok">已开启</span></div></div>
@@ -1514,10 +1517,10 @@ function macDataPage(state) {
     <div class="panel danger-zone">
       <div class="panel-h">${icon("alert", 13)}危险操作：退出或清空本机全部数据</div>
       <div style="padding:10px;display:grid;gap:8px">
-        <div class="callout bad" style="margin-top:0">${icon("alert", 14)}<div><strong>重要提示：LocalPass 没有服务端账号副本。</strong>清空本机数据后，若无 R2 云桶或此前导出的备份文件，全部密码将永久不可恢复。</div></div>
+        <div class="callout bad" style="margin-top:0">${icon("alert", 14)}<div><strong>重要提示：LocalPass 没有可找回安全密码的服务端账号。</strong>清空本机数据后，若无 R2 云桶或此前导出的备份文件，全部密码将永久不可恢复。</div></div>
         <button class="check-btn" data-act="toggle-wipe-confirm">
           <span class="check ${state.wipeConfirmed ? "" : "off"}">${state.wipeConfirmed ? icon("check", 9) : ""}</span>
-          <span>我已完成导出或确认拥有 R2 恢复凭据，理解此操作将永久抹除本机 <span class="mono">data.json</span></span>
+          <span>我已完成导出或确认拥有 R2 恢复凭据，理解此操作将永久抹除本机保险库数据</span>
         </button>
         <div style="display:flex;gap:6px">
           <button class="btn sm primary danger-fill" ${state.wipeConfirmed ? "" : "disabled"} data-act="go-screen" data-surface="mac" data-screen="mac-setup">清空本机保险库并退回首次建库</button>
@@ -1590,7 +1593,7 @@ function macSettingsPage(state) {
       <div class="setrow"><div><div class="k">复制后自动清空剪贴板</div><div class="d">30 秒后清除敏感内容，状态栏实时显示剩余秒数</div></div><div class="right"><span class="chip brand">30 秒</span></div></div>
       <div class="setrow"><div><div class="k">密码明文显示自动收回</div><div class="d">点击眼睛显示明文 30 秒后自动重新遮罩</div></div><div class="right"><span class="toggle" role="switch" aria-checked="true"></span></div></div>
       <div class="setrow"><div><div class="k">自动锁定超时</div><div class="d">无操作 5 分钟后锁定</div></div><div class="right"><span class="chip">5 分钟</span></div></div>
-      <div class="setrow"><div><div class="k">本地数据与清空管理</div><div class="d">查看 data.json 权限、先导出建议与退出保险库双确认</div></div><div class="right"><button class="btn sm" data-act="go-screen" data-surface="mac" data-screen="mac-data">进入数据与安全 →</button></div></div>
+      <div class="setrow"><div><div class="k">本地数据与清空管理</div><div class="d">查看系统文件保护、先导出建议与退出保险库双确认</div></div><div class="right"><button class="btn sm" data-act="go-screen" data-surface="mac" data-screen="mac-data">进入数据与安全 →</button></div></div>
     </div>`;
   } else if (state.macSettingsTab === "appearance") {
     body = `<div class="panel">
@@ -1633,7 +1636,7 @@ function macSettingsPage(state) {
     </div>`;
   }
   return `<section class="pagearea lp">
-    <div class="pagehead"><div><h1>设置</h1><p>所有修改即时写入本机 <span class="mono">data.json</span>（0600 权限 + <span class="mono">.bak</span> 滚动备份）。</p></div></div>
+    <div class="pagehead"><div><h1>设置</h1><p>所有修改即时写入本机保险库（文件由系统保护，版本快照随条目加密存储）。</p></div></div>
     <div style="display:flex;gap:2px;margin-top:8px;border-bottom:1px solid var(--border)">
       ${tabs.map(([id, label]) => `<button data-act="mac-stab" data-stab="${id}" style="height:26px;padding:0 10px;font-size:11px;color:${state.macSettingsTab === id ? "var(--text)" : "var(--text-3)"};font-weight:${state.macSettingsTab === id ? 600 : 400};border-bottom:2px solid ${state.macSettingsTab === id ? "var(--brand)" : "transparent"};margin-bottom:-1px">${label}</button>`).join("")}
     </div>
@@ -1652,7 +1655,7 @@ function macEmptyPage() {
         <button class="btn lg" data-act="go-screen" data-surface="mac" data-screen="mac-import">${icon("upload", 13)}导入 1PUX / CSV</button>
         <button class="btn lg" data-act="go-screen" data-surface="mac" data-screen="mac-restore">${icon("cloud", 13)}从 R2 桶恢复</button>
       </div>
-      <div class="kbdrow" style="margin-top:14px"><span>随时按</span><kbd>⌘N</kbd><span>新建 ·</span><kbd>⌘⇧Space</kbd><span>全局检索</span></div>
+      <div class="kbdrow" style="margin-top:14px"><span>随时按</span><kbd>⌘N</kbd><span>新建 ·</span><kbd>⌘K</kbd><span>应用内检索</span></div>
     </div>
   </section>`;
 }
@@ -1776,7 +1779,6 @@ function macTrayScreen(state) {
           ${AV(it, "sm")}
           <span style="min-width:0;flex:1"><span class="t">${escapeHtml(it.name)}</span><span class="s">${escapeHtml(it.user)}</span></span>
           <span class="m">
-            ${it.otp ? `<span class="chip ok tnum">${it.otp}</span>` : ""}
             <button class="iconbtn sm" data-act="copy" data-label="密码" data-copy-key="${it.id}:secret" aria-label="复制密码">${icon("copy", 12)}</button>
           </span>
         </div>`,

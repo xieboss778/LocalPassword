@@ -95,12 +95,25 @@ export class LocalWebAuthnPrfEnrollmentService {
     this.logService.info("Registered a security key for unlock", { userId });
   }
 
-  /** How many security keys are registered for the user. */
-  async count(userId: UserId): Promise<number> {
+  /** Lists every registered security key for the user. */
+  async list(userId: UserId): Promise<WebAuthnPrfUnlockOption[]> {
     const existing = await firstValueFrom(
       this.stateProvider.getUserState$(WEBAUTHN_PRF_OPTIONS, userId),
     );
-    return existing?.options?.length ?? 0;
+    return [...(existing?.options ?? [])];
+  }
+
+  /** How many security keys are registered for the user. */
+  async count(userId: UserId): Promise<number> {
+    return (await this.list(userId)).length;
+  }
+
+  /** Removes one registered security key, identified by its credential id. */
+  async removeOne(userId: UserId, credentialId: string): Promise<void> {
+    const options = (await this.list(userId)).filter(
+      (option) => option.credentialId !== credentialId,
+    );
+    await this.stateProvider.setUserState(WEBAUTHN_PRF_OPTIONS, { options }, userId);
   }
 
   /** Removes every registered security key, e.g. when the user loses one. */

@@ -3369,7 +3369,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "inlineMenuPasskey",
         "inlineMenuPasskeyVerifyingAria",
         "inlineMenuPasskeyVerifyingBody",
-        "inlineMenuPasskeyVerifyingMeta",
+        "inlineMenuPasskeyVerifyingTimeout",
         "inlineMenuPasskeyVerifyingTitle",
         "inlineMenuPasskeysGroup",
         "inlineMenuPassword",

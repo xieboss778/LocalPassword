@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  computed,
-  inject,
-  signal,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
@@ -54,7 +47,8 @@ const THEMES: readonly ThemeOption[] = [
 ];
 
 /**
- * 弹窗外观：三张主题卡 + 当前界面语言。主题改变只影响显示，不触碰保险库数据。
+ * 弹窗外观：三张主题卡与只读的界面语言说明。主题改变只影响显示，不触碰保险库数据；
+ * 界面语言跟随浏览器，不在此页切换。
  */
 @Component({
   selector: "appearance-v2",
@@ -147,7 +141,7 @@ const THEMES: readonly ThemeOption[] = [
             </span>
             <span class="tw-min-w-0 tw-flex-1">
               <span class="agy-k tw-block">{{ i18n.t("language") }}</span>
-              <span class="agy-d tw-block">{{ languageLabel() }}</span>
+              <span class="agy-d tw-block">{{ i18n.t("languageFollowsBrowser") }}</span>
             </span>
           </div>
         </div>
@@ -174,10 +168,6 @@ export class AppearanceV2Component implements OnInit {
   protected readonly popupWidth = toSignal(this.popupSizeService.width$, {
     initialValue: "default" as PopupWidthOption,
   });
-  private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en" });
-  protected readonly languageLabel = computed(() =>
-    this.locale().toLowerCase().startsWith("zh") ? this.i18n.t("simplifiedChinese") : "English",
-  );
 
   async ngOnInit(): Promise<void> {
     this.selectedTheme.set(await firstValueFrom(this.themeStateService.selectedTheme$));

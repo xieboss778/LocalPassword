@@ -498,7 +498,7 @@
     "message": "Strong password suggestion"
   },
   "inlineGeneratorDescription": {
-    "message": "20-character password · fills and opens the save confirmation"
+    "message": "{length}-character password · fills and opens the save confirmation"
   },
   "inlineGeneratorRegenerate": {
     "message": "Another one"
@@ -1627,7 +1627,7 @@
     "message": "Ignore"
   },
   "notificationMultiSaveHeader": {
-    "message": "$DOMAIN$ has multiple saved entries",
+    "message": "$DOMAIN$ saved logins",
     "placeholders": {
       "domain": {
         "content": "$1",
@@ -1637,6 +1637,18 @@
   },
   "notificationMultiSaveDesc": {
     "message": "A password change was detected. Choose the entry to update — nothing is overwritten silently."
+  },
+  "notificationChangeNoMatchHeader": {
+    "message": "Save a new password for $DOMAIN$?",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "northwind.io"
+      }
+    }
+  },
+  "notificationChangeNoMatchDesc": {
+    "message": "No saved entry has this current password. Saving adds a new entry; existing entries are not changed."
   },
   "notificationMultiSaveNewEntry": {
     "message": "Save as new entry #$COUNT$",
@@ -5703,12 +5715,12 @@
     "description": "Title of the passkey verification panel"
   },
   "inlineMenuPasskeyVerifyingBody": {
-    "message": "Confirm in the system passkey prompt. This menu stays until verification completes.",
+    "message": "The site only receives one signature; your private key never leaves this device.",
     "description": "Body of the passkey verification panel"
   },
-  "inlineMenuPasskeyVerifyingMeta": {
-    "message": "{domain} · WebAuthn",
-    "description": "Domain and protocol shown in the passkey verification panel"
+  "inlineMenuPasskeyVerifyingTimeout": {
+    "message": "30s timeout",
+    "description": "Timeout shown in the passkey verification panel"
   },
   "inlineMenuCancel": {
     "message": "Cancel",
@@ -9986,6 +9998,9 @@
   "createLocalVault": {
     "message": "Create vault"
   },
+  "createThenImport": {
+    "message": "Create, then import"
+  },
   "createLocalVaultDescription": {
     "message": "Choose an email to identify this vault and a master password to protect it. Both stay on this device, and the password cannot be recovered."
   },
@@ -10117,6 +10132,15 @@
   },
   "securityKeyRemove": {
     "message": "Remove all keys"
+  },
+  "securityKeyRemoveOne": {
+    "message": "Remove"
+  },
+  "securityKeyRemoveOneConfirm": {
+    "message": "Remove this security key? You can still unlock with your password."
+  },
+  "securityKeyRemovedOne": {
+    "message": "Security key removed"
   },
   "securityKeyRegistered": {
     "message": "Registered"
@@ -10871,6 +10895,9 @@
   "simplifiedChinese": {
     "message": "Simplified Chinese"
   },
+  "languageFollowsBrowser": {
+    "message": "Follows your browser language"
+  },
   "appearanceSubtitle": {
     "message": "Theme and language"
   },
@@ -11042,7 +11069,10 @@
     "message": "manual sync only"
   },
   "breachCheckSub": {
-    "message": "Off by default; turn it on manually"
+    "message": "Not implemented: health checks run fully offline; no breach query is sent."
+  },
+  "notImplemented": {
+    "message": "Not implemented"
   },
   "recentlyBlocked": {
     "message": "Recently blocked"

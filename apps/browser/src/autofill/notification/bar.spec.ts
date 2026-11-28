@@ -1,6 +1,13 @@
 import { mock } from "jest-mock-extended";
+import { render } from "lit";
+
+import { ThemeTypes } from "@localpass/common/platform/enums";
 
 import { NotificationCipherData } from "../content/components/cipher/types";
+import {
+  ChangeNotificationNewEntryTarget,
+  NotificationChangeContainer,
+} from "../content/components/notification/change/container";
 import { postWindowMessage } from "../spec/testing-utils";
 
 import { NotificationBarWindowMessage } from "./abstractions/notification-bar";
@@ -8,6 +15,8 @@ import {
   getChangeNotificationCiphers,
   getChangeNotificationExistingEntryCount,
   getI18n,
+  hasChangeNotificationCipherIds,
+  initNotificationBar,
 } from "./bar";
 
 jest.mock("lit", () => ({ render: jest.fn() }));
@@ -16,6 +25,10 @@ jest.mock("@lit-labs/signals", () => ({
 }));
 jest.mock("../content/components/notification/container", () => ({
   NotificationContainer: jest.fn(),
+}));
+jest.mock("../content/components/notification/change/container", () => ({
+  ...jest.requireActual("../content/components/notification/change/container"),
+  NotificationChangeContainer: jest.fn(),
 }));
 
 describe("NotificationBar iframe handleWindowMessage security", () => {
@@ -155,6 +168,65 @@ describe("getChangeNotificationExistingEntryCount", () => {
     expect(
       getChangeNotificationExistingEntryCount({ existingEntryCount: Number.NaN }),
     ).toBeUndefined();
+  });
+});
+
+describe("hasChangeNotificationCipherIds", () => {
+  it("accepts an empty candidate list as a supplied list", () => {
+    expect(hasChangeNotificationCipherIds({ cipherIds: [] })).toBe(true);
+  });
+
+  it("accepts a populated candidate list", () => {
+    expect(hasChangeNotificationCipherIds({ cipherIds: ["cipher-ops"] })).toBe(true);
+  });
+
+  it("rejects params without an array of cipher ids", () => {
+    expect(hasChangeNotificationCipherIds(undefined)).toBe(false);
+    expect(hasChangeNotificationCipherIds({})).toBe(false);
+    expect(hasChangeNotificationCipherIds({ cipherIds: "cipher-ops" })).toBe(false);
+  });
+});
+
+describe("change notification with an empty candidate list", () => {
+  afterEach(() => {
+    jest.mocked(render).mockClear();
+    jest.mocked(NotificationChangeContainer).mockClear();
+    (chrome.runtime.sendMessage as jest.Mock).mockReset();
+  });
+
+  it("renders the change picker with the new-entry target selected", async () => {
+    (chrome.runtime.sendMessage as jest.Mock).mockImplementation(
+      (message: { command: string }, callback: (response: unknown) => void) => {
+        const responses: Record<string, unknown> = {
+          bgGetOrgData: [],
+          bgGetFolderData: [],
+          bgGetDecryptedCiphers: [],
+          bgGetCollectionData: [],
+        };
+        callback(responses[message.command]);
+      },
+    );
+
+    await initNotificationBar({
+      command: "initNotificationBar",
+      initData: {
+        type: "change",
+        isVaultLocked: false,
+        removeIndividualVault: false,
+        theme: ThemeTypes.Light,
+        params: { cipherIds: [], existingEntryCount: 3, domain: "northwind.io" },
+      },
+    });
+
+    expect(NotificationChangeContainer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ciphers: [],
+        domain: "northwind.io",
+        existingEntryCount: 3,
+        expanded: false,
+        selectedTarget: ChangeNotificationNewEntryTarget,
+      }),
+    );
   });
 });
 

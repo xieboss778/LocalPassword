@@ -48,14 +48,29 @@
         <div>{{ "securityKeyUnsupported" | i18n }}</div>
       </div>
     } @else {
-      @if (registeredCount() > 0) {
+      @if (registeredKeys().length > 0) {
         <lp-group class="tw-pt-2" [label]="'securityKeyRegistered' | i18n">
-          <lp-row
-            icon="bwi-key"
-            [label]="'securityKey' | i18n"
-            [value]="registeredText()"
-            [clickable]="false"
-          />
+          @for (key of registeredKeys(); track key.credentialId; let i = $index) {
+            <div class="agy-setrow">
+              <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                <bit-icon name="bwi-key" class="tw-text-xs"></bit-icon>
+              </span>
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="agy-k tw-block">{{ "securityKey" | i18n }}</span>
+                <span class="agy-d tw-block">{{ maskedCredentialId(key) }}</span>
+              </span>
+              <button
+                [id]="'security-key_button_remove-' + i"
+                type="button"
+                class="agy-btn agy-danger agy-sm"
+                [disabled]="busy()"
+                [attr.aria-label]="('securityKeyRemoveOne' | i18n) + ': ' + maskedCredentialId(key)"
+                (click)="removeKey(key)"
+              >
+                {{ "securityKeyRemoveOne" | i18n }}
+              </button>
+            </div>
+          }
         </lp-group>
 
         <button

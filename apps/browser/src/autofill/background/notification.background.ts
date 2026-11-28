@@ -1145,62 +1145,43 @@ export default class NotificationBackground {
       }
     }
 
-    // If ciphers match entered username and password values
-    if (usernamePasswordMatches.length > 0) {
-      // and username, password, and new password values were entered
-      if (
-        inputScenario === inputScenarios.usernamePasswordNewPassword &&
-        changePasswordNotificationIsEnabled
-      ) {
-        await this.pushChangePasswordToQueue(
-          usernamePasswordMatches,
-          loginDomain,
-          // @TODO handle empty strings / incomplete data structure
-          data.newPassword || data.password,
-          tab,
-          false,
-          submittedLogin,
-          ciphersForURL.length,
-        );
+    // Username, current password, and new password were entered: the change card may only
+    // offer entries whose saved password equals the submitted current password. Username-only
+    // matches are never candidates, and zero candidates still renders the change card so the
+    // user can save the submitted credentials as a new entry.
+    if (
+      inputScenario === inputScenarios.usernamePasswordNewPassword &&
+      changePasswordNotificationIsEnabled
+    ) {
+      // The match categories are mutually exclusive, so this filter only guards against a
+      // future reducer that lets one cipher land in both lists.
+      const changeCandidates = [...usernamePasswordMatches, ...passwordOnlyMatches].filter(
+        (cipherId, index, cipherIds) => cipherIds.indexOf(cipherId) === index,
+      );
+      await this.pushChangePasswordToQueue(
+        changeCandidates,
+        loginDomain,
+        // @TODO handle empty strings / incomplete data structure
+        data.newPassword || data.password,
+        tab,
+        false,
+        submittedLogin,
+        ciphersForURL.length,
+      );
 
-        return true;
-      }
-
-      if (inputScenario === inputScenarios.usernamePassword) {
-        return false;
-      }
+      return true;
     }
 
-    // If ciphers match entered username value (only)
-    if (usernameOnlyMatches.length > 0) {
-      if (
-        (
-          [
-            inputScenarios.usernamePasswordNewPassword,
-            inputScenarios.usernameNewPassword,
-            inputScenarios.usernamePassword,
-          ] as InputScenario[]
-        ).includes(inputScenario) &&
-        changePasswordNotificationIsEnabled
-      ) {
-        await this.pushChangePasswordToQueue(
-          usernameOnlyMatches,
-          loginDomain,
-          // @TODO handle empty strings / incomplete data structure
-          data.newPassword || data.password,
-          tab,
-          false,
-          submittedLogin,
-          ciphersForURL.length,
-        );
+    // If ciphers match entered username and password values, a plain username + password
+    // submission represents "no change" once the change scenarios above are handled.
+    if (usernamePasswordMatches.length > 0 && inputScenario === inputScenarios.usernamePassword) {
+      return false;
+    }
 
-        return true;
-      }
-
-      // Early exit in this scenario as it represents "no change"
-      if (inputScenario === inputScenarios.username) {
-        return false;
-      }
+    // Username-only matches are never enough to offer an update, because the saved password did
+    // not match the submitted one. A username-only submission represents "no change".
+    if (usernameOnlyMatches.length > 0 && inputScenario === inputScenarios.username) {
+      return false;
     }
 
     // If ciphers match entered new password value (only)

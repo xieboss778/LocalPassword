@@ -161,9 +161,9 @@ jobs:
           if-no-files-found: error
 
   desktop-macos:
-    name: 桌面端 macOS
-    # GitHub 的 macOS runner 可能长时间排队，但 .dmg 是交付物：构建失败必须让流水线变红，
-    # 不能再用 continue-on-error 静默放过。
+    name: 桌面端 macOS（Universal）
+    # GitHub 的 macOS runner 可能长时间排队；universal 需要同时构建两种架构，
+    # 构建失败必须让流水线变红，不能静默放过。
     runs-on: macos-15
     timeout-minutes: 60
     steps:
@@ -178,13 +178,22 @@ jobs:
           workspaces: apps/desktop/desktop_native
       - name: 安装依赖
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: 构建原生模块
-        run: npm run build-native --workspace @localpass/desktop
+      - name: 构建原生模块（arm64 + x64）
+        run: npm run build-native-macos --workspace @localpass/desktop
       - name: 构建应用
         run: npm run build:oss --workspace @localpass/desktop
-      - name: 打包（未签名）
+      - name: 打包（Universal，未签名）
         working-directory: apps/desktop
-        run: npx electron-builder --mac --arm64 -p never
+        run: npx electron-builder --mac --universal -p never
+      - name: 校验 universal 架构
+        working-directory: apps/desktop
+        run: |
+          APP_BINARY="$(find dist -path '*/LocalPass.app/Contents/MacOS/LocalPass' -type f -print -quit)"
+          test -n "$APP_BINARY"
+          ARCHS="$(lipo -info "$APP_BINARY")"
+          printf '%s\n' "$ARCHS"
+          printf '%s\n' "$ARCHS" | grep -q 'arm64'
+          printf '%s\n' "$ARCHS" | grep -q 'x86_64'
       - uses: actions/upload-artifact@v7
         with:
           name: localpass-macos

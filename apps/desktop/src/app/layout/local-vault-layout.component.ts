@@ -57,7 +57,7 @@ const NAV_SECTIONS: readonly NavSection[] = [
         labelKey: "vault",
         icon: "bwi-vault",
         route: "/vault",
-        matches: ["/vault", "/new-item-v2", "/edit-item-v2"],
+        matches: ["/vault"],
         badge: "vault",
       },
       {

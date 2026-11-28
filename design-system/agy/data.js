@@ -1081,14 +1081,8 @@ const NETWORK_ALLOWLIST = [
   {
     host: "lp-7f3a.r2.cloudflarestorage.com",
     purpose: "Cloudflare R2 快照同步",
-    desc: "仅在同步与恢复时访问（SigV4 签名）",
+    desc: "仅在用户手动触发同步与恢复时访问（SigV4 签名）",
     on: true,
-  },
-  {
-    host: "api.pwnedpasswords.com",
-    purpose: "HIBP 泄露前缀比对",
-    desc: "默认关闭 · 仅手动点击体检时发送 5 位哈希前缀",
-    on: false,
   },
 ];
 
@@ -1306,7 +1300,7 @@ const CHANGELOG_ENTRIES = [
     ver: "2026.11.0",
     date: "2026-11-12",
     items: [
-      "R2 同步 v2：30s 去抖增量分片 + Ed25519 manifest 防回滚签名",
+      "R2 同步 v2：手动同步 + 增量分片 + Ed25519 manifest 防回滚签名（自动同步为原型概念，产品未实现）",
       "并发冲突默认「两份都留」，支持并排比对",
       "Chrome 扩展新增桌面端触控 ID 原生消息代理",
     ],
@@ -1324,6 +1318,7 @@ const CHANGELOG_ENTRIES = [
 const KNOWN_LIMITS = [
   "Mac 触控 ID 仅桌面端可用；浏览器扩展原生支持 WebAuthn PRF，桌面联动需启用 com.localpass.desktop。",
   "R2 同步采用客户端 AES-256 加密镜像：Cloudflare R2 看不到条目名与密码，但能看到加密分片数量与修改时间戳。",
+  "产品仅支持手动触发同步，原型中的自动同步开关为概念演示；安全体检完全离线，不实现 HIBP 或任何泄露查询。",
   "安全密码无法在本地或云端重置；遗忘后只能通过先前导出的加密备份或 R2 桶 + 原安全密码恢复。",
 ];
 

@@ -1,5 +1,5 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { NgModule, inject } from "@angular/core";
+import { RedirectFunction, Router, RouterModule, Routes } from "@angular/router";
 
 import { AuthenticationTimeoutComponent } from "@localpass/angular/auth/components/authentication-timeout.component";
 import { AuthRoute } from "@localpass/angular/auth/constants";
@@ -34,7 +34,6 @@ import {
   GeneratorV2Component,
 } from "@localpass/angular/tools/generator";
 import { HealthV2Component } from "@localpass/angular/tools/health";
-import { ItemFormV2Component, NewItemV2Component } from "@localpass/angular/tools/item-entry";
 import {
   DevicesIcon,
   RegistrationUserAddIcon,
@@ -62,6 +61,7 @@ import {
   ConfirmKeyConnectorDomainComponent,
   RemovePasswordComponent,
 } from "@localpass/key-management-ui";
+import { isItemKind } from "@localpass/local-vault";
 import {
   FOLDER_ID_PARAM,
   FOLDERS_ROUTE,
@@ -113,6 +113,37 @@ export interface RouteDataProperties {
   // For any new route data properties, add them here.
   // then assert that the data object satisfies this interface in the route object.
 }
+
+/**
+ * 旧的整页新建表单已并入保险库抽屉：`/new-item-v2?kind=login` 转成
+ * `/vault?action=add&kind=login`。`redirectTo` 的函数在注入上下文里运行，所以用 Router 造 UrlTree。
+ */
+const newItemRedirect: RedirectFunction = (route) => {
+  const kind = route.queryParamMap.get("kind");
+  return inject(Router).createUrlTree(["/vault"], {
+    queryParams: {
+      action: "add",
+      ...(isItemKind(kind) ? { kind } : {}),
+    },
+  });
+};
+
+/** 旧编辑链接：有 cipherId 就打开编辑抽屉，否则按新建处理，并保留合法的 kind。 */
+const editItemRedirect: RedirectFunction = (route) => {
+  const cipherId = route.queryParamMap.get("cipherId");
+  if (cipherId) {
+    return inject(Router).createUrlTree(["/vault"], {
+      queryParams: { cipherId, edit: "1" },
+    });
+  }
+  const kind = route.queryParamMap.get("kind");
+  return inject(Router).createUrlTree(["/vault"], {
+    queryParams: {
+      action: "add",
+      ...(isItemKind(kind) ? { kind } : {}),
+    },
+  });
+};
 
 export const routes: Routes = [
   {
@@ -549,14 +580,15 @@ export const routes: Routes = [
         data: { pageTitle: { key: "healthCheck" } } satisfies RouteDataProperties,
       },
       {
+        // 旧链接与书签仍可用；整页表单已并入保险库抽屉。
         path: "new-item-v2",
-        component: NewItemV2Component,
-        data: { pageTitle: { key: "newItem" } } satisfies RouteDataProperties,
+        pathMatch: "full",
+        redirectTo: newItemRedirect,
       },
       {
         path: "edit-item-v2",
-        component: ItemFormV2Component,
-        data: { pageTitle: { key: "editItem" } } satisfies RouteDataProperties,
+        pathMatch: "full",
+        redirectTo: editItemRedirect,
       },
       {
         path: "generator",

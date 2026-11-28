@@ -1,4 +1,13 @@
-import { Route } from "@angular/router";
+import { TestBed } from "@angular/core/testing";
+import {
+  PartialMatchRouteSnapshot,
+  RedirectFunction,
+  Route,
+  Router,
+  UrlTree,
+  convertToParamMap,
+  provideRouter,
+} from "@angular/router";
 
 import { IMPORT_DESTINATION_ROUTE_PATH } from "@localpass/importer-ui";
 import { vaultFilterRestoreGuard, VAULT_FILTER_SCOPE } from "@localpass/vault";
@@ -55,6 +64,56 @@ describe("desktop local vault edit protection", () => {
     );
 
     expect(vaultRoute?.canDeactivate).toContain(unsavedVaultEditsGuard);
+  });
+});
+
+describe("desktop legacy item form routes", () => {
+  it.each(["new-item-v2", "edit-item-v2"])(
+    "%s redirects instead of rendering a full-page form",
+    (path) => {
+      const route = findRoute(routes, path)[0];
+
+      expect(route.component).toBeUndefined();
+      expect(route.pathMatch).toBe("full");
+      expect(typeof route.redirectTo).toBe("function");
+    },
+  );
+
+  describe("redirect targets", () => {
+    let router: Router;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({ providers: [provideRouter([])] });
+      router = TestBed.inject(Router);
+    });
+
+    const target = (path: string, params: Record<string, string>): string => {
+      const redirect = findRoute(routes, path)[0].redirectTo as RedirectFunction;
+      const snapshot = {
+        queryParamMap: convertToParamMap(params),
+      } as PartialMatchRouteSnapshot;
+      const tree = TestBed.runInInjectionContext(() => redirect(snapshot)) as UrlTree;
+
+      return router.serializeUrl(tree);
+    };
+
+    it("maps new-item-v2 to the vault drawer with a valid kind", () => {
+      expect(target("new-item-v2", { kind: "login" })).toBe("/vault?action=add&kind=login");
+    });
+
+    it("drops an absent or invalid kind from new-item-v2", () => {
+      expect(target("new-item-v2", {})).toBe("/vault?action=add");
+      expect(target("new-item-v2", { kind: "bogus" })).toBe("/vault?action=add");
+    });
+
+    it("maps edit-item-v2 with a cipherId to the edit drawer", () => {
+      expect(target("edit-item-v2", { cipherId: "abc" })).toBe("/vault?cipherId=abc&edit=1");
+    });
+
+    it("falls back to creating an item when edit-item-v2 has no cipherId", () => {
+      expect(target("edit-item-v2", { kind: "card" })).toBe("/vault?action=add&kind=card");
+      expect(target("edit-item-v2", {})).toBe("/vault?action=add");
+    });
   });
 });
 

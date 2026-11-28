@@ -8551,6 +8551,9 @@
   "createLocalVaultNote": {
     "message": "Touch ID 只在 macOS 设置里开启 · 备份始终手动"
   },
+  "createThenImport": {
+    "message": "创建后导入"
+  },
   "unlockSubtitle": {
     "message": "数据只在这台电脑上。输入安全密码继续。"
   },
@@ -9379,7 +9382,10 @@
     "message": "仅手动同步"
   },
   "networkGateBreachDefaultOff": {
-    "message": "默认关闭，需要手动开启"
+    "message": "未实现：体检完全离线，不发任何泄露查询"
+  },
+  "notImplemented": {
+    "message": "未实现"
   },
   "networkGateErrorReporting": {
     "message": "错误上报"
@@ -9668,8 +9674,11 @@
       }
     }
   },
-  "dataFileMode": {
-    "message": "本机文件权限"
+  "dataFileProtection": {
+    "message": "系统保护"
+  },
+  "dataDirectoryManaged": {
+    "message": "由操作系统管理，路径随平台不同。"
   },
   "dataServerCopies": {
     "message": "官方服务器副本"

@@ -56,7 +56,7 @@ import { VaultBackupSyncService } from "@localpass/local-vault";
               <span class="agy-k">{{ i18n.t("networkGateBreach") }}</span>
               <span class="agy-d">{{ i18n.t("networkGateBreachDefaultOff") }}</span>
             </div>
-            <span class="agy-chip">{{ i18n.t("disabled") }}</span>
+            <span class="agy-chip">{{ i18n.t("notImplemented") }}</span>
           </div>
           <div class="agy-setrow">
             <div class="tw-min-w-0 tw-flex-1">

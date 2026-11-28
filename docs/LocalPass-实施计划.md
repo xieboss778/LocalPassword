@@ -3,7 +3,7 @@
 > 初版：2026-11-24　｜　修订 v2：2026-11-24（加入桌面端、代码瘦身、桌面端阻断项）
 > 修订 v3：2026-11-27（执行状态、同步策略、界面基准与验证基线对齐当前代码）
 > 修订 v4：2026-11-28（UI 目标规范切换为 `design-system/agy/` 73 屏原型，待按屏对照表逐屏升级；归并 `docs/adr` 与 `docs/agents`）
-> 修订 v5：2026-11-28（AGY 73 屏收口：72 个产品屏完成，`link-sandbox` 保留为演示辅助页；文档状态、同步代次与新增文案回退说明同步）
+> 修订 v5：2026-11-28（AGY 73 屏原型中 72 个产品屏收口对齐；`link-sandbox` 保留为演示辅助页；`check.js` 只证明结构/数量/ID/渲染，不证明交互；文档状态、同步代次与新增文案回退说明同步）
 >
 > **命名说明**：本文初版写于改名之前，文中「localpass/clients」「LocalPass 官方」是
 > 本仓库历史基线的旧称，实际指 Bitwarden clients 上游。当前产品名为 LocalPass，
@@ -49,7 +49,8 @@
   [design-system/agy/](../design-system/agy/)（AGY Compact v4 · **73 屏**：联动 1 + Mac 29 + 扩展 29 + 网页内联 14）作为新视觉与交互目标规范，
   具体完成度与待改造差异见 [LocalPass-屏对照表.md](./LocalPass-屏对照表.md)，视觉与交互红线见 [LocalPass-界面规范.md](./LocalPass-界面规范.md)
   （AGY 新增屏、8 类可增删动态表单、列表去 2FA 验证码、取消系统全局热键等改进已全部落地；
-  72 个产品屏标为 ✅，`link-sandbox` 为原型演示辅助页 —）。
+  2026-11-28 收口后 72 个产品屏标为 ✅，`link-sandbox` 为原型演示辅助页 —；`design-system/agy/check.js`
+  只校验原型结构，不能证明交互行为）。
 
 ### 验证基线（2026-11-27 最近一次完整验证）
 
@@ -64,8 +65,8 @@
 
 > 2026-11-28 AGY 全量核查与实现轮次：
 >
-> - `node design-system/agy/check.js`：通过（73 屏 + 8 类 13 条合成记录）。
-> - 语言包一致性脚本：browser `en=3189 / zh_CN=3195`（0 缺键、0 占位符差异），desktop `en=2764 / zh_CN=2769`（0 缺键、0 占位符差异），按 `GLOSSARY.md` 统一术语。
+> - `node design-system/agy/check.js`：通过（断言 73 屏数量、ID、标签平衡与 8 类 13 条合成记录的渲染；**只覆盖结构/渲染，不覆盖交互行为**）。
+> - 语言包一致性脚本（当轮快照）：browser `en=3189 / zh_CN=3195`（0 缺键、0 占位符差异），desktop `en=2764 / zh_CN=2769`（0 缺键、0 占位符差异），按 `GLOSSARY.md` 统一术语。本轮收口后的最新计数见下方「2026-11-28 UI 审计收口」验证行。
 > - 改动文件 `prettier` + `eslint`：0 errors、0 warnings。
 > - `npm run test:types`：通过（全部子库 + 3,649 个 strict 文件全过）。
 > - Jest 改动面专项套件：47/47 suites、952/952 tests、16/16 snapshots 通过（2 todo）。
@@ -73,6 +74,27 @@
 > - `npm run build:dev --workspace @localpass/desktop`：通过（`main` + `renderer` + `preload`）。
 > - 遗留待仓库负责人拍板（密钥/加密改动护栏）：桌面端本地修改安全密码的密钥重包装尚未实施，目前以说明弹窗替代已失效的远端 API 调用，避免误导或报错。
 > - 完整全仓 Jest 基线仍以上表 2026-11-27 的结果为准。
+
+### 2026-11-28 UI 审计收口
+
+> 本轮把 72 个产品屏的最后一批行为差异对齐，`link-sandbox` 仍只作演示、不实现为产品路由。修复清单：
+>
+> 1. 桌面端新建/编辑统一到 AGY 保险库抽屉：应用菜单经 `/vault?action=add&kind=...` 打开，旧 `/new-item-v2`、`/edit-item-v2` 重定向到 `/vault`；扩展保留整页新建/编辑表单。
+> 2. 扩展安全密钥逐条列出，每枚可单独解绑，「全部移除」保留；仅凭据管理，不改加密与密钥处理。
+> 3. 扩展外观的语言行只读跟随浏览器语言，不再是切换器；桌面端语言设置独立保留。
+> 4. 网页改密多账户保存只列密码匹配的同域条目（用户名可不同）；零匹配时仍显示选择器并只保留「Save as new entry #N」。
+> 5. 生成器复制回执遵循全局「清空剪贴板」延迟，「永不清空」只显示回执且不清空。
+> 6. 桌面「数据与安全」改为平台中立文案：「系统保护」（OS-protected）、云备份（未配置 R2 时显示「—」）、0 个「官方服务器副本」（Vendor server copies），目录路径由 OS 管理、不写死权限位。
+> 7. HIBP/泄露查询未实施；体检全离线，网络闸门白名单只有存储端点，泄露检查标注「未实现」，其余为默认拒绝规则。
+> 8. 桌面建库页导入改为「创建后导入」开关，不是第三个并列入口；扩展首屏仍只有创建与 R2 恢复，导入在空库引导中。
+> 9. 网页注册生成说明使用实际生成长度；填入后保存卡自动出现（`300ms` 尝试 + `1.5s` 兜底）。
+> 10. 通行密钥验证卡改为页脚「取消」按钮与「30 秒超时」提示，去掉 meta 条，正文说明私钥不离开本机。
+> 11. 版本历史保留 10 个旧版本（当前版本另计）。
+> 12. 四份文档与上述产品状态对齐（屏对照表、界面规范、验证清单、实施计划）。
+>
+> 浏览器验证时另发现并修复：保险库页的 `canDeactivate` 等待 VFO1 功能开关时，离线配置可能永不返回，导致所有页签切换被阻塞；守卫现在 250ms 回退为 `false`，读取失败时也继续导航并清理旧筛选状态。
+>
+> 本轮验证：全仓 `npm run lint` 通过（0 errors）；`npm run test:types` 通过；改动面 12 个 Jest 套件 / 404 tests / 15 snapshots 通过；`npm run build:chrome --workspace @localpass/browser` 通过（89 个既有 webpack warning）；桌面 renderer `tsc --noEmit` 通过；`node design-system/agy/check.js` 通过（73 屏 / 13 条合成记录）。语言包 browser `en=3197 / zh_CN=3203`、desktop `en=2767 / zh_CN=2772`，0 个英文缺键、0 个占位符差异；zh-only 键为既有基线（browser 6 / desktop 5）。扩展构建在 Chrome for Testing 中加载验证：建库、空库、保险库→生成器、生成器→设置页签切换正常，外观页与安全密钥直达页正常，控制台 0 errors；扩展建库页确认没有「创建后导入」开关。
 
 人工步骤与 CI 覆盖不到的内容见 `LocalPass-验证清单.md`。
 
@@ -130,7 +152,7 @@
                                       ▼
                     Cloudflare R2 / 其他 S3 兼容存储（只存密文）
 
-网络闸门：两端都在 ApiService 层拦截，只放行存储服务和用户主动点击的泄露查询
+网络闸门：两端都在 ApiService 层拦截，只放行存储服务；HIBP/泄露查询尚未实施
 ```
 
 **关键决策**
@@ -311,7 +333,7 @@
 
 **3.1 存储适配**
 
-- 桌面端状态已由主进程 `electron-store`（`data.json`，文件权限 0600）持久化，`ElectronRendererStorageService` 通过 IPC 读写，直接用即可，**不需要改存储层**。
+- 桌面端状态已由主进程 `electron-store`（`data.json`，文件权限由操作系统保护）持久化，`ElectronRendererStorageService` 通过 IPC 读写，直接用即可，**不需要改存储层**。
 - 需要确认两点：单文件写入体量（快照可能数 MB）与启动时反序列化耗时；快照类大对象建议独立文件存放，不进 `data.json`。
 - `electron-store` 底层 `atomically` 保证原子写；额外加一份 `data.json.bak` 滚动备份，用于极端情况恢复。
 

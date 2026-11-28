@@ -66,6 +66,7 @@ import {
   FieldValues,
   formatCardExpiryInput,
   generatePasswords,
+  isItemKind,
   ItemKind,
   kindOf,
   readCustomFields,
@@ -2153,6 +2154,24 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   private async openFromQuery(params: ParamMap): Promise<void> {
+    // 菜单栏「新建」与旧 `/new-item-v2` 链接都带 `action=add`；先处理它，别让同时残留的
+    // cipherId 再打开一个已有条目。
+    if (params.get("action") === "add") {
+      // 同路由只改查询参数不会触发 canDeactivate，因此在这里补上放弃编辑的确认。
+      if (!(await this.confirmNavigationAway())) {
+        this.clearDrawerQueryParams();
+        return;
+      }
+      const kind = params.get("kind");
+      this.clearFilters();
+      this.openNew();
+      if (isItemKind(kind)) {
+        this.startNewForm(kind);
+      }
+      this.clearDrawerQueryParams();
+      return;
+    }
+
     const cipherId = params.get("cipherId");
     if (!cipherId) {
       return;
@@ -2167,9 +2186,13 @@ export class VaultDesktopV2Component implements OnInit {
     if (startEditing) {
       await this.startEdit();
     }
+    this.clearDrawerQueryParams();
+  }
+
+  private clearDrawerQueryParams(): void {
     void this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { cipherId: null, edit: null },
+      queryParams: { action: null, kind: null, cipherId: null, edit: null },
       queryParamsHandling: "merge",
       replaceUrl: true,
     });

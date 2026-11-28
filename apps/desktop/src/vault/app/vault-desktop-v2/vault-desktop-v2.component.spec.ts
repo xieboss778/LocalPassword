@@ -21,6 +21,7 @@ import { CipherType } from "@localpass/common/vault/enums/cipher-type";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { PasswordHistoryView } from "@localpass/common/vault/models/view/password-history.view";
 import { DialogService } from "@localpass/components";
+import { ItemKind } from "@localpass/local-vault";
 import { PasswordRepromptService } from "@localpass/vault";
 
 import { VaultDesktopV2Component } from "./vault-desktop-v2.component";
@@ -98,6 +99,105 @@ describe("VaultDesktopV2Component", () => {
 
     expect(fixture.nativeElement.textContent).toContain("newItemPickKind");
     expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  describe("action=add query parameter", () => {
+    const openFromQuery = async (
+      fixture: ComponentFixture<VaultDesktopV2Component>,
+      params: Record<string, string>,
+    ): Promise<void> => {
+      await fixture.componentInstance["openFromQuery"](convertToParamMap(params));
+    };
+
+    const drawerState = (fixture: ComponentFixture<VaultDesktopV2Component>) => {
+      const component = fixture.componentInstance;
+      return {
+        drawer: component["drawer"]() as string,
+        newKind: component["newKind"]() as ItemKind,
+        selected: component["selected"]() as CipherView | null,
+      };
+    };
+
+    it("opens the new form for a valid kind and clears every query param", async () => {
+      const item = new CipherView();
+      item.id = "login-id";
+      item.name = "Mail";
+      cipherService.getAllDecrypted.mockResolvedValue([item]);
+
+      const fixture = TestBed.createComponent(VaultDesktopV2Component);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      await openFromQuery(fixture, {
+        action: "add",
+        kind: ItemKind.Card,
+        cipherId: "login-id",
+      });
+
+      expect(drawerState(fixture)).toEqual({
+        drawer: "new-form",
+        newKind: ItemKind.Card,
+        selected: null,
+      });
+      expect(router.navigate).toHaveBeenCalledWith([], {
+        relativeTo: expect.anything(),
+        queryParams: { action: null, kind: null, cipherId: null, edit: null },
+        queryParamsHandling: "merge",
+        replaceUrl: true,
+      });
+    });
+
+    it("keeps the open edit when the user declines to discard changes", async () => {
+      const item = new CipherView();
+      item.id = "login-id";
+      item.name = "Mail";
+      item.type = CipherType.Login;
+      cipherService.getAllDecrypted.mockResolvedValue([item]);
+      dialogService.openSimpleDialog.mockResolvedValue(false);
+
+      const fixture = TestBed.createComponent(VaultDesktopV2Component);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      const component = fixture.componentInstance;
+      await component["openView"](item);
+      await component["startEdit"]();
+      component["setValue"]("name", "Unsaved rename");
+
+      await openFromQuery(fixture, { action: "add", kind: ItemKind.Card });
+
+      expect(drawerState(fixture).drawer).toBe("edit");
+      expect(component["values"]().name).toBe("Unsaved rename");
+      expect(router.navigate).toHaveBeenCalledWith([], {
+        relativeTo: expect.anything(),
+        queryParams: { action: null, kind: null, cipherId: null, edit: null },
+        queryParamsHandling: "merge",
+        replaceUrl: true,
+      });
+    });
+
+    it("opens the type picker when no kind is given", async () => {
+      const fixture = TestBed.createComponent(VaultDesktopV2Component);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      await openFromQuery(fixture, { action: "add" });
+
+      expect(drawerState(fixture).drawer).toBe("new-type");
+    });
+
+    it("treats an unknown kind as absent and opens the type picker", async () => {
+      const fixture = TestBed.createComponent(VaultDesktopV2Component);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      await openFromQuery(fixture, { action: "add", kind: "not-a-kind" });
+
+      expect(drawerState(fixture)).toEqual({
+        drawer: "new-type",
+        newKind: ItemKind.Login,
+        selected: null,
+      });
+    });
   });
 
   it("removes a default field, adds it back, and saves the removed value as empty", async () => {

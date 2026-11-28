@@ -50,15 +50,15 @@ import { StateProvider } from "@localpass/state";
             <div class="agy-l">{{ i18n.t("totalItems") }}</div>
           </div>
           <div class="agy-stat agy-ok">
-            <div class="agy-n">0600</div>
-            <div class="agy-l">{{ i18n.t("dataFileMode") }}</div>
+            <div class="agy-n">OS</div>
+            <div class="agy-l">{{ i18n.t("dataFileProtection") }}</div>
           </div>
           <div class="agy-stat" [class.agy-ok]="syncConfigured()">
             <div class="agy-n">{{ syncConfigured() ? "R2" : "—" }}</div>
             <div class="agy-l">{{ i18n.t("cloudBackup") }}</div>
           </div>
           <div class="agy-stat">
-            <div class="agy-n" data-testid="data_stat_server_copies">—</div>
+            <div class="agy-n" data-testid="data_stat_server_copies">0</div>
             <div class="agy-l">{{ i18n.t("dataServerCopies") }}</div>
           </div>
         </div>
@@ -75,9 +75,9 @@ import { StateProvider } from "@localpass/state";
             >
               <div class="tw-flex tw-min-h-12 tw-flex-col tw-gap-0.5 tw-px-4 tw-py-3">
                 <span class="tw-text-sm tw-text-main">{{ i18n.t("dataDirectory") }}</span>
-                <span class="tw-break-all tw-font-mono tw-text-xs tw-text-muted"
-                  >~/Library/Application Support/LocalPass</span
-                >
+                <span class="tw-break-all tw-font-mono tw-text-xs tw-text-muted">{{
+                  i18n.t("dataDirectoryManaged")
+                }}</span>
               </div>
               <div
                 class="tw-flex tw-min-h-12 tw-flex-col tw-gap-0.5 tw-border-t tw-border-border-light tw-px-4 tw-py-3"

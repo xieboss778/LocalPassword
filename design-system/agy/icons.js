@@ -131,5 +131,5 @@ function svgQrMatrix(size = 112) {
       }
     }
   }
-  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="currentColor" aria-label="合成二维码示例">${rects}</svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="currentColor" aria-label="合成二维码占位示例（不可扫描）">${rects}</svg>`;
 }
