@@ -65,7 +65,6 @@ export class FileMenu extends FirstMenu implements IMenubarMenu {
     return {
       label: this.localize("addNewLogin"),
       click: () => this.sendMessage("newLogin"),
-      accelerator: "CmdOrCtrl+N",
       id: "addNewLogin",
       enabled: !this._isLocked,
     };
@@ -109,7 +108,6 @@ export class FileMenu extends FirstMenu implements IMenubarMenu {
         id: "typeCard",
         label: this.localize("typeCard"),
         click: () => this.sendMessage("newCard"),
-        accelerator: "CmdOrCtrl+Shift+C",
       },
       {
         id: "typeIdentity",

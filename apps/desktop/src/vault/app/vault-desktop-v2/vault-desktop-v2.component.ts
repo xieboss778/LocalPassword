@@ -2,37 +2,45 @@ import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
+  DestroyRef,
   OnInit,
   computed,
   effect,
   inject,
   signal,
-  viewChild,
 } from "@angular/core";
 import { takeUntilDestroyed, toObservable, toSignal } from "@angular/core/rxjs-interop";
-import { Router, RouterModule, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { firstValueFrom, of, switchMap } from "rxjs";
 
-import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   CustomFieldDraft,
+  DesktopShortcut,
+  DesktopShortcutsService,
   ITEM_KIND_ORDER,
   ITEM_KIND_UI,
   LpCustomFieldsComponent,
-  LpEmptyComponent,
   LpFieldComponent,
-  LpGroupComponent,
+  LpFieldOption,
   LpKindTileComponent,
-  LpPageHeaderComponent,
+  LpPasswordSyntaxComponent,
   LpRowComponent,
   LpToastService,
+  PASSWORD_AUTO_HIDE_MS,
+  PasswordAutoHideService,
+  VaultDensity,
+  VaultDensityService,
   newCustomFieldDraft,
 } from "@localpass/angular/local-ui";
+import {
+  CipherVersionHistoryService,
+  CipherVersionRow,
+} from "@localpass/angular/vault/services/cipher-version-history.service";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
@@ -40,12 +48,8 @@ import { CipherRepromptType } from "@localpass/common/vault/enums/cipher-repromp
 import { FieldType } from "@localpass/common/vault/enums/field-type.enum";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
-import {
-  ButtonModule,
-  IconButtonModule,
-  IconModule,
-  IconTileComponent,
-} from "@localpass/components";
+import { PasswordHistoryView } from "@localpass/common/vault/models/view/password-history.view";
+import { IconModule } from "@localpass/components";
 import {
   applyCustomFields,
   applyFieldValues,
@@ -55,6 +59,7 @@ import {
   FIELDS,
   FieldSpec,
   FieldValues,
+  formatCardExpiryInput,
   generatePasswords,
   ItemKind,
   kindOf,
@@ -63,8 +68,10 @@ import {
   setKind,
   withoutKindField,
 } from "@localpass/local-vault";
+import { TotpQrComponent } from "@localpass/vault";
 
-type DrawerMode = "closed" | "view" | "edit" | "new-type" | "new-form";
+type DrawerMode = "closed" | "edit" | "new-type" | "new-form" | "history" | "qr";
+type TypeFilter = "all" | "other" | ItemKind;
 
 interface RowView {
   readonly item: CipherView;
@@ -80,7 +87,9 @@ interface DetailRowView {
   readonly display: string;
   readonly copy: string;
   readonly mono: boolean;
+  readonly multiline: boolean;
   readonly launchUri: string;
+  readonly sshLinkId?: string;
   readonly totp: boolean;
   readonly secret: boolean;
 }
@@ -89,6 +98,12 @@ interface DetailGroupView {
   readonly key: string;
   readonly label: string;
   readonly rows: readonly DetailRowView[];
+}
+
+interface TypeTab {
+  readonly id: TypeFilter;
+  readonly label: string;
+  readonly count: number;
 }
 
 const MASK = "••••••••••••";
@@ -104,753 +119,1305 @@ const MASK = "••••••••••••";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    RouterModule,
-    JslibModule,
-    ButtonModule,
-    IconButtonModule,
     IconModule,
-    IconTileComponent,
     LpCustomFieldsComponent,
-    LpEmptyComponent,
     LpFieldComponent,
-    LpGroupComponent,
     LpKindTileComponent,
-    LpPageHeaderComponent,
+    LpPasswordSyntaxComponent,
     LpRowComponent,
+    TotpQrComponent,
   ],
   host: {
     class: "tw-block tw-h-full",
     "(document:keydown)": "onKeyDown($event)",
   },
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
-      <lp-page-header [title]="i18n.t('vault')" [sub]="subtitle()">
-        @if (items().length) {
-          <button
-            type="button"
-            bitButton
-            buttonType="secondary"
-            startIcon="bwi-import"
-            (click)="go('/import')"
-          >
-            {{ i18n.t("importNoun") }}
-          </button>
-        }
-        <button
-          type="button"
-          bitButton
-          buttonType="primary"
-          startIcon="bwi-plus"
-          (click)="openNew()"
-        >
-          {{ i18n.t("newItem") }}
-          <span class="tw-ms-1 tw-text-xs tw-font-normal tw-opacity-70">&#8984;N</span>
-        </button>
-      </lp-page-header>
-
-      @if (items().length || isFiltering()) {
-        <div class="tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-px-7 tw-pb-4">
-          <label
-            class="tw-flex tw-h-10 tw-w-80 tw-items-center tw-gap-2 tw-rounded-lg tw-border tw-border-border-base tw-bg-background tw-px-3 focus-within:tw-border-border-brand"
-          >
-            <bit-icon name="bwi-search" class="tw-text-muted"></bit-icon>
-            <input
-              #searchInput
-              type="search"
-              class="tw-min-w-0 tw-flex-1 tw-border-0 tw-bg-transparent tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted"
-              [attr.placeholder]="i18n.t('searchVaultPlaceholder')"
-              [attr.aria-label]="i18n.t('searchVault')"
-              [value]="query()"
-              (input)="onSearch($event)"
-            />
-            <kbd
-              class="tw-rounded tw-border tw-border-border-light tw-bg-background-alt tw-px-1.5 tw-py-0.5 tw-text-xs tw-text-muted"
-              >&#8984;K</kbd
-            >
-          </label>
-
-          <label class="tw-relative">
-            <select
-              class="tw-h-10 tw-appearance-none tw-rounded-full tw-border tw-border-border-base tw-bg-background tw-py-0 tw-pe-8 tw-ps-4 tw-text-sm tw-text-main"
-              [attr.aria-label]="i18n.t('type')"
-              [value]="typeFilter()"
-              (change)="onTypeFilter($event)"
-            >
-              <option value="all">{{ i18n.t("type") }}</option>
-              @for (kind of kinds; track kind) {
-                <option [value]="kind">{{ kindLabel(kind) }}</option>
-              }
-            </select>
-            <bit-icon
-              name="bwi-angle-down"
-              class="tw-pointer-events-none tw-absolute tw-end-3 tw-top-1/2 -tw-translate-y-1/2 tw-text-muted"
-            ></bit-icon>
-          </label>
-
-          <label class="tw-relative">
-            <select
-              class="tw-h-10 tw-appearance-none tw-rounded-full tw-border tw-border-border-base tw-bg-background tw-py-0 tw-pe-8 tw-ps-4 tw-text-sm tw-text-main"
-              [attr.aria-label]="i18n.t('folders')"
-              [value]="folderFilter()"
-              (change)="onFolderFilter($event)"
-            >
-              <option value="all">{{ i18n.t("folders") }}</option>
-              <option value="none">{{ i18n.t("noFolder") }}</option>
-              @for (folder of folders(); track folder.id) {
-                <option [value]="folder.id">{{ folder.name }}</option>
-              }
-            </select>
-            <bit-icon
-              name="bwi-angle-down"
-              class="tw-pointer-events-none tw-absolute tw-end-3 tw-top-1/2 -tw-translate-y-1/2 tw-text-muted"
-            ></bit-icon>
-          </label>
-
-          <button
-            type="button"
-            class="tw-flex tw-h-10 tw-items-center tw-gap-1.5 tw-rounded-full tw-border tw-px-3 tw-text-sm"
-            [class.tw-border-border-brand]="favoritesOnly()"
-            [class.tw-bg-bg-brand-softer]="favoritesOnly()"
-            [class.tw-text-fg-brand]="favoritesOnly()"
-            [class.tw-border-border-base]="!favoritesOnly()"
-            [class.tw-text-main]="!favoritesOnly()"
-            [attr.aria-pressed]="favoritesOnly()"
-            (click)="favoritesOnly.set(!favoritesOnly())"
-          >
-            <bit-icon name="bwi-star-filled" class="tw-text-xs"></bit-icon>
-            {{ i18n.t("favorites") }}
-          </button>
-
-          @if (isFiltering()) {
-            <button
-              type="button"
-              class="tw-h-10 tw-rounded-full tw-px-3 tw-text-sm tw-text-fg-brand hover:tw-bg-bg-brand-softer"
-              (click)="clearFilters()"
-            >
-              {{ i18n.t("clearFilters") }}
+    <div class="agy agy-mac tw-relative tw-h-full">
+      @if (showWelcome()) {
+        <div class="agy-mac-welcome">
+          <span class="agy-welcome-ico">
+            <bit-icon name="bwi-vault" class="tw-text-xl"></bit-icon>
+          </span>
+          <h1 class="agy-welcome-h">{{ i18n.t("noItemsInVault") }}</h1>
+          <p class="agy-welcome-s">{{ i18n.t("emptyVaultHintDesktop") }}</p>
+          <div class="agy-welcome-actions">
+            <button type="button" class="agy-btn agy-primary agy-lg" (click)="openNew()">
+              <bit-icon name="bwi-plus" class="tw-text-xs"></bit-icon>
+              {{ i18n.t("newItem") }}
             </button>
-          }
-        </div>
-      }
-
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-7 tw-pb-7">
-        @if (loading()) {
-          <p class="tw-py-10 tw-text-center tw-text-sm tw-text-muted">{{ i18n.t("loading") }}</p>
-        } @else if (!items().length) {
-          <div class="tw-grid tw-min-h-80 tw-place-items-center">
-            <div class="tw-flex tw-flex-col tw-items-center tw-px-4 tw-text-center">
-              <span
-                class="tw-grid tw-size-14 tw-place-items-center tw-rounded-full tw-bg-bg-brand-softer tw-text-fg-brand"
-              >
-                <bit-icon name="bwi-vault" class="tw-text-2xl"></bit-icon>
-              </span>
-              <h2 class="tw-mb-0 tw-mt-4 tw-text-lg tw-font-semibold tw-text-main">
-                {{ i18n.t("noItemsInVault") }}
-              </h2>
-              <p class="tw-mb-0 tw-mt-1.5 tw-max-w-sm tw-text-sm tw-leading-relaxed tw-text-muted">
-                {{ i18n.t("emptyVaultHintDesktop") }}
-              </p>
-              <div class="tw-mt-5 tw-flex tw-gap-2">
-                <button
-                  type="button"
-                  bitButton
-                  buttonType="primary"
-                  startIcon="bwi-plus"
-                  (click)="openNew()"
-                >
-                  {{ i18n.t("newItem") }}
-                </button>
-                <button
-                  type="button"
-                  bitButton
-                  buttonType="secondary"
-                  startIcon="bwi-import"
-                  (click)="go('/import')"
-                >
-                  {{ i18n.t("importData") }}
-                </button>
-              </div>
-            </div>
+            <button type="button" class="agy-btn agy-lg" (click)="go('/import')">
+              <bit-icon name="bwi-import" class="tw-text-xs"></bit-icon>
+              {{ i18n.t("importData") }}
+            </button>
+            <button type="button" class="agy-btn agy-lg" (click)="go('/restore')">
+              <bit-icon name="bwi-download" class="tw-text-xs"></bit-icon>
+              {{ i18n.t("restoreFromBackup") }}
+            </button>
           </div>
-        } @else {
-          @if (!isFiltering() && folderCards().length) {
-            <div
-              class="tw-grid tw-grid-cols-2 tw-gap-3 tw-pb-5 lg:tw-grid-cols-4 xl:tw-grid-cols-5"
-            >
-              @for (folder of folderCards(); track folder.id) {
-                <button
-                  type="button"
-                  class="tw-flex tw-items-center tw-gap-3 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-start tw-transition-shadow hover:tw-border-border-base hover:tw-shadow-sm"
-                  (click)="folderFilter.set(folder.id)"
-                >
-                  <bit-icon-tile icon="bwi-folder" variant="brand" size="lg"></bit-icon-tile>
-                  <span class="tw-min-w-0">
-                    <span class="tw-block tw-truncate tw-text-sm tw-font-semibold tw-text-main">{{
-                      folder.name
-                    }}</span>
-                    <span class="tw-block tw-text-xs tw-text-muted">{{
-                      i18n.t("itemCount", folder.count)
-                    }}</span>
-                  </span>
-                </button>
-              }
-            </div>
-          }
-
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-shadow-sm"
-          >
-            <div
-              class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-2.5"
-            >
-              <span class="tw-text-sm tw-font-semibold tw-text-main">{{
-                isFiltering() ? i18n.t("filterResults", rows().length) : i18n.t("allItems")
-              }}</span>
-              <span class="tw-text-xs tw-text-muted"
-                >{{ rows().length }} / {{ items().length }}</span
-              >
+          <p class="agy-welcome-keys">
+            ⌘N {{ i18n.t("newItem") }} · ⌘K {{ i18n.t("searchVault") }}
+          </p>
+        </div>
+      } @else {
+        <section class="agy-mac-list" [attr.aria-label]="i18n.t('vault')">
+          <div class="agy-mac-listhead">
+            <div class="tw-flex tw-items-center tw-gap-1.5 tw-px-1">
+              <span class="tw-text-xs tw-font-semibold tw-text-main">{{ i18n.t("vault") }}</span>
+              <span class="agy-chip">{{ rows().length }}</span>
               <span class="tw-flex-1"></span>
               <button
                 type="button"
-                bitIconButton="bwi-numbered-list"
-                size="small"
-                [label]="i18n.t('sort')"
-                [attr.aria-pressed]="sortAscending()"
-                (click)="toggleSort()"
-              ></button>
+                class="agy-iconbtn agy-sm"
+                [attr.title]="i18n.t('importNoun')"
+                [attr.aria-label]="i18n.t('importNoun')"
+                (click)="go('/import')"
+              >
+                <bit-icon name="bwi-import" class="tw-text-xs"></bit-icon>
+              </button>
+              <button
+                id="vault_button_new"
+                type="button"
+                class="agy-btn agy-primary agy-sm"
+                (click)="openNew()"
+              >
+                <bit-icon name="bwi-plus" class="tw-text-xs"></bit-icon>
+                {{ i18n.t("newItem") }}
+              </button>
             </div>
 
-            @if (rows().length) {
-              <div role="table" [attr.aria-label]="i18n.t('vault')">
-                <div
-                  role="row"
-                  class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-bg-background-alt tw-px-3 tw-py-2 tw-text-xs tw-font-semibold tw-text-muted"
+            <label class="agy-ext-search">
+              <bit-icon name="bwi-search" class="tw-text-xs"></bit-icon>
+              <input
+                type="search"
+                [attr.placeholder]="i18n.t('searchAllFieldsPlaceholder')"
+                [attr.aria-label]="i18n.t('searchVault')"
+                [value]="query()"
+                autocomplete="off"
+                (input)="onSearch($event)"
+              />
+              <kbd class="agy-kbd" [class.tw-hidden]="!shortcutEnabled('search')"
+                ><kbd>&#8984;K</kbd></kbd
+              >
+            </label>
+
+            <div class="agy-mac-filters" role="tablist" [attr.aria-label]="i18n.t('type')">
+              @for (tab of typeTabs(); track tab.id) {
+                <button
+                  type="button"
+                  role="tab"
+                  [attr.aria-selected]="typeFilter() === tab.id"
+                  [class.agy-on]="typeFilter() === tab.id"
+                  (click)="setTypeFilter(tab.id)"
                 >
-                  <div role="columnheader" class="tw-flex tw-w-8 tw-justify-center">
-                    <input
-                      type="checkbox"
-                      class="tw-size-4"
-                      [attr.aria-label]="i18n.t('selectAllItems')"
-                      [checked]="allSelected()"
-                      (change)="toggleSelectAll($event)"
-                    />
-                  </div>
-                  <div role="columnheader" class="tw-min-w-0 tw-flex-1">
-                    {{ i18n.t("name") }}
-                  </div>
-                  <div role="columnheader" class="tw-w-32 tw-ps-2">{{ i18n.t("folder") }}</div>
-                  <div role="columnheader" class="tw-w-32">{{ i18n.t("modifiedTime") }}</div>
-                  <div role="columnheader" class="tw-w-8 tw-text-center">
-                    {{ i18n.t("favorite") }}
-                  </div>
-                  <div role="columnheader" class="tw-w-20 tw-text-end">
-                    {{ i18n.t("options") }}
+                  <span>{{ tab.label }}</span>
+                  <span class="agy-n">{{ tab.count }}</span>
+                </button>
+              }
+              <span class="agy-spacer"></span>
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [class.agy-on]="favoritesOnly()"
+                [attr.aria-pressed]="favoritesOnly()"
+                [attr.title]="i18n.t('favorites')"
+                [attr.aria-label]="i18n.t('favorites')"
+                (click)="favoritesOnly.set(!favoritesOnly())"
+              >
+                <bit-icon name="bwi-star-filled" class="tw-text-xs"></bit-icon>
+              </button>
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [attr.aria-pressed]="sortAscending()"
+                [attr.title]="i18n.t('sort')"
+                [attr.aria-label]="i18n.t('sort')"
+                (click)="toggleSort()"
+              >
+                <bit-icon name="bwi-numbered-list" class="tw-text-xs"></bit-icon>
+              </button>
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [class.agy-on]="compactRows()"
+                [attr.aria-pressed]="compactRows()"
+                [attr.title]="i18n.t('compactRows')"
+                [attr.aria-label]="i18n.t('compactRows')"
+                (click)="toggleCompactRows()"
+              >
+                <bit-icon name="bwi-list" class="tw-text-xs"></bit-icon>
+              </button>
+            </div>
+
+            @if (folders().length) {
+              <div class="agy-mac-minirow">
+                <bit-icon name="bwi-folder" class="tw-text-xs tw-text-muted"></bit-icon>
+                <select
+                  class="agy-input"
+                  [attr.aria-label]="i18n.t('folders')"
+                  [value]="folderFilter()"
+                  (change)="onFolderFilter($event)"
+                >
+                  <option value="all">{{ i18n.t("folders") }}</option>
+                  <option value="none">{{ i18n.t("noFolder") }}</option>
+                  @for (folder of folders(); track folder.id) {
+                    <option [value]="folder.id">{{ folder.name }}</option>
+                  }
+                </select>
+                @if (isFiltering()) {
+                  <button
+                    type="button"
+                    class="agy-iconbtn agy-sm"
+                    [attr.title]="i18n.t('clearFilters')"
+                    [attr.aria-label]="i18n.t('clearFilters')"
+                    (click)="clearFilters()"
+                  >
+                    <bit-icon name="bwi-close" class="tw-text-xs"></bit-icon>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="agy-mac-rows" role="listbox" [attr.aria-label]="i18n.t('vault')">
+            @if (loading()) {
+              <div class="agy-mac-empty">
+                <div class="agy-es">{{ i18n.t("loading") }}</div>
+              </div>
+            } @else if (!items().length) {
+              <div class="agy-mac-empty">
+                <div>
+                  <span class="agy-emptyico">
+                    <bit-icon name="bwi-vault" class="tw-text-base"></bit-icon>
+                  </span>
+                  <div class="agy-eh">{{ i18n.t("noItemsInVault") }}</div>
+                  <div class="agy-es">{{ i18n.t("emptyVaultHintDesktop") }}</div>
+                  <div class="tw-mt-3 tw-flex tw-justify-center tw-gap-1.5">
+                    <button type="button" class="agy-btn agy-primary" (click)="openNew()">
+                      {{ i18n.t("newItem") }}
+                    </button>
+                    <button type="button" class="agy-btn" (click)="go('/import')">
+                      {{ i18n.t("importData") }}
+                    </button>
                   </div>
                 </div>
-
-                @for (row of rows(); track row.item) {
-                  <div
-                    role="row"
-                    tabindex="0"
+              </div>
+            } @else if (!rows().length) {
+              <div class="agy-mac-empty">
+                <div>
+                  <span class="agy-emptyico">
+                    <bit-icon name="bwi-search" class="tw-text-base"></bit-icon>
+                  </span>
+                  <div class="agy-eh">{{ i18n.t("noSearchResults") }}</div>
+                  <div class="agy-es">{{ i18n.t("searchVaultPlaceholderAll") }}</div>
+                  <button type="button" class="agy-btn tw-mt-3" (click)="clearFilters()">
+                    {{ i18n.t("clearFilters") }}
+                  </button>
+                </div>
+              </div>
+            } @else {
+              @if (!isFiltering() && favoriteRows().length) {
+                <div class="agy-grouphead">
+                  {{ i18n.t("favorites") }} <span class="agy-n">{{ favoriteRows().length }}</span>
+                </div>
+                @for (row of favoriteRows(); track row.item) {
+                  <button
+                    type="button"
+                    role="option"
                     data-testid="vault_row"
-                    class="tw-group/row tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-3 tw-py-2 last:tw-border-b-0 tw-cursor-pointer hover:tw-bg-background-alt focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-bg-brand"
-                    [class.tw-bg-bg-brand-softer]="isSelected(row.item)"
+                    [attr.data-cipher-id]="row.item.id"
+                    class="agy-mac-row"
+                    [class.agy-on]="isSelected(row.item)"
+                    [class.agy-ultra]="compactRows()"
+                    [attr.aria-selected]="isSelected(row.item)"
                     (click)="openView(row.item)"
-                    (keydown.enter)="openView(row.item)"
                   >
-                    <div role="cell" class="tw-flex tw-w-8 tw-justify-center">
-                      <input
-                        type="checkbox"
-                        class="tw-size-4"
-                        data-testid="vault_row_checkbox"
-                        [attr.aria-label]="i18n.t('selectItem', row.item.name)"
-                        [checked]="isChecked(row.item)"
-                        (click)="$event.stopPropagation()"
-                        (change)="toggleSelect(row.item, $event)"
-                      />
-                    </div>
-                    <div role="cell" class="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-3">
-                      <lp-kind-tile [kind]="row.kind" size="base"></lp-kind-tile>
-                      <span class="tw-min-w-0">
-                        <span class="tw-flex tw-items-center tw-gap-1">
-                          <span class="tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
-                            row.item.name
-                          }}</span>
-                          @if (row.favorite) {
-                            <bit-icon
-                              name="bwi-star-filled"
-                              class="tw-text-xs tw-text-fg-warning"
-                            ></bit-icon>
-                          }
-                        </span>
-                        <span class="tw-block tw-truncate tw-text-xs tw-text-muted">{{
-                          row.sub
-                        }}</span>
+                    <lp-kind-tile [kind]="row.kind" size="sm"></lp-kind-tile>
+                    <span class="agy-txt">
+                      <span class="agy-t">
+                        <span class="tw-truncate">{{ row.item.name }}</span>
+                        <bit-icon
+                          name="bwi-star-filled"
+                          class="tw-text-xs tw-text-fg-warning"
+                        ></bit-icon>
                       </span>
-                    </div>
-                    <div role="cell" class="tw-w-32 tw-truncate tw-ps-2 tw-text-sm tw-text-muted">
-                      {{ row.folder }}
-                    </div>
-                    <div role="cell" class="tw-w-32 tw-text-sm tw-text-muted">
-                      {{ row.updated ? shortDate(row.updated) : "—" }}
-                    </div>
-                    <div role="cell" class="tw-flex tw-w-8 tw-justify-center">
+                      <span class="agy-s">{{ row.sub }}</span>
+                    </span>
+                    <span class="agy-m">
+                      <span class="agy-idle-meta">
+                        <span class="agy-chip">{{ kindLabel(row.kind) }}</span>
+                      </span>
+                      <span class="agy-hoveracts">
+                        @if (row.item.login.username) {
+                          <span
+                            role="button"
+                            tabindex="-1"
+                            class="agy-iconbtn agy-sm"
+                            [attr.title]="i18n.t('copyUsername')"
+                            [attr.aria-label]="i18n.t('copyUsername')"
+                            (click)="copyUsername(row.item, $event)"
+                          >
+                            <bit-icon name="bwi-user" class="tw-text-xs"></bit-icon>
+                          </span>
+                        }
+                        @if (row.item.login.password) {
+                          <span
+                            role="button"
+                            tabindex="-1"
+                            class="agy-iconbtn agy-sm"
+                            [attr.title]="i18n.t('copyPassword')"
+                            [attr.aria-label]="i18n.t('copyPassword')"
+                            (click)="copyPassword(row.item, $event)"
+                          >
+                            <bit-icon name="bwi-key" class="tw-text-xs"></bit-icon>
+                          </span>
+                        }
+                      </span>
+                    </span>
+                  </button>
+                }
+              }
+
+              <div class="agy-grouphead">
+                @if (isFiltering()) {
+                  {{ i18n.t("filterResults", rows().length) }}
+                } @else {
+                  {{ i18n.t("allItems") }} <span class="agy-n">{{ otherRows().length }}</span>
+                }
+              </div>
+              @for (row of isFiltering() ? rows() : otherRows(); track row.item) {
+                <button
+                  type="button"
+                  role="option"
+                  data-testid="vault_row"
+                  [attr.data-cipher-id]="row.item.id"
+                  class="agy-mac-row"
+                  [class.agy-on]="isSelected(row.item)"
+                  [class.agy-ultra]="compactRows()"
+                  [attr.aria-selected]="isSelected(row.item)"
+                  (click)="openView(row.item)"
+                >
+                  <lp-kind-tile [kind]="row.kind" size="sm"></lp-kind-tile>
+                  <span class="agy-txt">
+                    <span class="agy-t">
+                      <span class="tw-truncate">{{ row.item.name }}</span>
                       @if (row.favorite) {
                         <bit-icon
                           name="bwi-star-filled"
                           class="tw-text-xs tw-text-fg-warning"
                         ></bit-icon>
                       }
-                    </div>
-                    <div
-                      role="cell"
-                      class="tw-flex tw-w-20 tw-justify-end tw-gap-1 tw-opacity-0 group-hover/row:tw-pointer-events-auto group-hover/row:tw-opacity-100 group-focus-within/row:tw-opacity-100"
-                    >
-                      <button
-                        type="button"
-                        bitIconButton="bwi-copy"
-                        size="small"
-                        data-testid="vault_row_copy"
-                        [label]="i18n.t('copyIdentifier')"
-                        (click)="copyPrimary(row.item, $event)"
-                      ></button>
-                      <button
-                        type="button"
-                        bitIconButton="bwi-more-horizontal"
-                        size="small"
-                        data-testid="vault_row_open"
-                        [label]="i18n.t('openItem')"
-                        (click)="openView(row.item, $event)"
-                      ></button>
-                    </div>
-                  </div>
-                }
-              </div>
-            } @else {
-              <div class="tw-grid tw-place-items-center tw-py-16">
-                <lp-empty
-                  icon="bwi-search"
-                  [title]="i18n.t('noSearchResults')"
-                  [text]="i18n.t('clearFilters')"
-                >
-                  <button type="button" bitButton buttonType="secondary" (click)="clearFilters()">
-                    {{ i18n.t("clearFilters") }}
-                  </button>
-                </lp-empty>
-              </div>
+                    </span>
+                    <span class="agy-s">{{ row.sub }}</span>
+                  </span>
+                  <span class="agy-m">
+                    <span class="agy-idle-meta">
+                      <span class="agy-chip">{{ kindLabel(row.kind) }}</span>
+                    </span>
+                    <span class="agy-hoveracts">
+                      @if (row.item.login.username) {
+                        <span
+                          role="button"
+                          tabindex="-1"
+                          class="agy-iconbtn agy-sm"
+                          [attr.title]="i18n.t('copyUsername')"
+                          [attr.aria-label]="i18n.t('copyUsername')"
+                          (click)="copyUsername(row.item, $event)"
+                        >
+                          <bit-icon name="bwi-user" class="tw-text-xs"></bit-icon>
+                        </span>
+                      }
+                      @if (row.item.login.password) {
+                        <span
+                          role="button"
+                          tabindex="-1"
+                          class="agy-iconbtn agy-sm"
+                          [attr.title]="i18n.t('copyPassword')"
+                          [attr.aria-label]="i18n.t('copyPassword')"
+                          (click)="copyPassword(row.item, $event)"
+                        >
+                          <bit-icon name="bwi-key" class="tw-text-xs"></bit-icon>
+                        </span>
+                      }
+                    </span>
+                  </span>
+                </button>
+              }
             }
           </div>
-        }
-      </div>
+        </section>
 
-      @if (drawer() !== "closed") {
-        <aside
-          class="tw-absolute tw-inset-y-0 tw-end-0 tw-z-30 tw-flex tw-max-w-full tw-flex-col tw-border-s tw-border-border-base tw-bg-background-alt tw-shadow-xl"
-          [style.width.px]="640"
-          [attr.aria-label]="drawerTitle()"
-        >
-          <div class="tw-flex tw-min-h-16 tw-items-center tw-gap-3 tw-px-6 tw-py-3">
-            <div class="tw-min-w-0 tw-flex-1">
-              <h2 class="tw-m-0 tw-text-xl tw-font-semibold tw-text-main">{{ drawerTitle() }}</h2>
-              @if (drawerSub()) {
-                <div class="tw-mt-0.5 tw-text-sm tw-text-muted">{{ drawerSub() }}</div>
-              }
-            </div>
-            @if (drawer() === "view") {
+        <aside class="agy-mac-detail">
+          @if (selected(); as item) {
+            <header class="agy-mac-dhead">
+              <span class="agy-crumb">
+                <span>{{ folderName(item) }}</span>
+                <bit-icon name="bwi-angle-right" class="tw-text-xs"></bit-icon>
+                <b>{{ item.name }}</b>
+              </span>
+              <span class="tw-flex-1"></span>
               <button
                 type="button"
-                bitIconButton="bwi-pencil-square"
-                [label]="i18n.t('edit')"
-                (click)="startEdit()"
-              ></button>
-            }
-            <button
-              type="button"
-              bitIconButton="bwi-close"
-              [label]="i18n.t('close')"
-              (click)="closeDrawer()"
-            ></button>
-          </div>
+                class="agy-iconbtn"
+                [class.agy-on]="item.favorite"
+                [attr.title]="i18n.t('favorite')"
+                [attr.aria-label]="i18n.t('favorite')"
+                [attr.aria-pressed]="item.favorite"
+                (click)="toggleFavorite()"
+              >
+                <bit-icon name="bwi-star-filled" class="tw-text-xs"></bit-icon>
+              </button>
+              @if (totpKey()) {
+                <button
+                  type="button"
+                  class="agy-iconbtn"
+                  [attr.title]="i18n.t('totpQrTitle')"
+                  [attr.aria-label]="i18n.t('totpQrTitle')"
+                  (click)="openQr()"
+                >
+                  <bit-icon name="bwi-grid" class="tw-text-xs"></bit-icon>
+                </button>
+              }
+              <button
+                type="button"
+                class="agy-iconbtn"
+                data-testid="vault_button_history"
+                [attr.title]="i18n.t('itemVersionHistory')"
+                [attr.aria-label]="i18n.t('itemVersionHistory')"
+                (click)="openHistory()"
+              >
+                <bit-icon name="bwi-clock" class="tw-text-xs"></bit-icon>
+              </button>
+              <button type="button" class="agy-btn agy-primary agy-sm" (click)="startEdit()">
+                <bit-icon name="bwi-pencil-square" class="tw-text-xs"></bit-icon>
+                {{ i18n.t("edit") }}
+              </button>
+              <button
+                type="button"
+                class="agy-iconbtn"
+                [attr.title]="i18n.t('archiveVerb')"
+                [attr.aria-label]="i18n.t('archiveVerb')"
+                (click)="archiveSelected()"
+              >
+                <bit-icon name="bwi-archive" class="tw-text-xs"></bit-icon>
+              </button>
+              <button
+                type="button"
+                class="agy-iconbtn"
+                data-testid="vault_drawer_delete"
+                [attr.title]="i18n.t('delete')"
+                [attr.aria-label]="i18n.t('delete')"
+                (click)="remove()"
+              >
+                <bit-icon name="bwi-trash" class="tw-text-xs"></bit-icon>
+              </button>
+              <button
+                type="button"
+                class="agy-iconbtn"
+                [attr.title]="i18n.t('close')"
+                [attr.aria-label]="i18n.t('close')"
+                (click)="clearSelection()"
+              >
+                <bit-icon name="bwi-close" class="tw-text-xs"></bit-icon>
+              </button>
+            </header>
 
-          <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-6 tw-pb-6">
-            @switch (drawer()) {
-              @case ("view") {
-                @if (selected(); as item) {
-                  <div class="tw-flex tw-items-center tw-gap-3 tw-pb-4 tw-pt-1">
-                    <lp-kind-tile [kind]="selectedKind()" size="lg"></lp-kind-tile>
-                    <div class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-muted">
-                      {{ itemIdentity(item) }} · {{ folderName(item) }}
+            <div class="agy-mac-dbody">
+              <div class="agy-mac-dmain">
+                <div class="agy-mac-hero">
+                  <lp-kind-tile [kind]="selectedKind()" size="lg"></lp-kind-tile>
+                  <div class="tw-min-w-0 tw-flex-1">
+                    <h2 class="agy-h1">{{ item.name }}</h2>
+                    <div class="agy-h2">
+                      <span class="agy-chip agy-brand">{{ kindLabel(selectedKind()) }}</span>
+                      @if (item.favorite) {
+                        <span class="agy-chip agy-warn">
+                          <bit-icon name="bwi-star-filled" class="tw-text-xs"></bit-icon>
+                          {{ i18n.t("favorite") }}
+                        </span>
+                      }
+                      <span>
+                        {{ i18n.t("lastModified") }}
+                        {{ item.revisionDate ? shortDate(item.revisionDate) : "—" }}
+                      </span>
                     </div>
-                    <div class="tw-flex tw-gap-1">
-                      @if (item.login.username) {
-                        <button
-                          type="button"
-                          bitIconButton="bwi-user"
-                          [label]="i18n.t('copyUsername')"
-                          (click)="copyValue(item.login.username, i18n.t('username'))"
-                        ></button>
-                      }
-                      @if (item.login.password) {
-                        <button
-                          type="button"
-                          bitIconButton="bwi-key"
-                          [label]="i18n.t('copyPassword')"
-                          (click)="copyValue(item.login.password, i18n.t('password'))"
-                        ></button>
-                      }
-                      @if (primaryUri(item); as uri) {
-                        <button
-                          type="button"
-                          bitIconButton="bwi-external-link"
-                          [label]="i18n.t('openWebsite')"
-                          (click)="launch(uri)"
-                        ></button>
-                      } @else if (selectedKind() !== ItemKind.Login && copyValueOf(item)) {
-                        <button
-                          type="button"
-                          bitIconButton="bwi-copy"
-                          [label]="i18n.t('copyIdentifier')"
-                          (click)="copyValue(copyValueOf(item), kindLabel(selectedKind()))"
-                        ></button>
+                  </div>
+                </div>
+
+                @if (totpRow(); as otp) {
+                  <div
+                    class="agy-otpcard"
+                    [class.agy-copied]="copiedKey() === 'otp'"
+                    role="button"
+                    tabindex="0"
+                    (click)="copyValue(otp.copy, otp.label, 'otp')"
+                    (keydown.enter)="copyValue(otp.copy, otp.label, 'otp')"
+                  >
+                    <span class="agy-ring" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <circle class="agy-bg" cx="12" cy="12" r="9.5"></circle>
+                        <circle
+                          class="agy-fg"
+                          cx="12"
+                          cy="12"
+                          r="9.5"
+                          [attr.stroke-dasharray]="totpRingCircumference"
+                          [attr.stroke-dashoffset]="totpRingOffset()"
+                        ></circle>
+                      </svg>
+                      <span class="agy-rn">{{ totpRemaining() }}</span>
+                    </span>
+                    <span class="agy-code">{{ otp.display }}</span>
+                    <span class="agy-lbl">{{ otp.label }}</span>
+                    <span class="agy-grow"></span>
+                    <button
+                      type="button"
+                      class="agy-iconbtn agy-sm"
+                      [attr.title]="i18n.t('totpQrTitle')"
+                      [attr.aria-label]="i18n.t('totpQrTitle')"
+                      (click)="$event.stopPropagation(); openQr()"
+                    >
+                      <bit-icon name="bwi-grid" class="tw-text-xs"></bit-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="agy-iconbtn agy-sm"
+                      [attr.title]="i18n.t('copy')"
+                      [attr.aria-label]="i18n.t('totpCodeLabel')"
+                      (click)="$event.stopPropagation(); copyValue(otp.copy, otp.label, 'otp')"
+                    >
+                      <bit-icon
+                        [name]="copiedKey() === 'otp' ? 'bwi-check' : 'bwi-copy'"
+                        class="tw-text-xs"
+                      ></bit-icon>
+                    </button>
+                  </div>
+                }
+
+                @for (group of detailGroups(); track group.key) {
+                  <div class="agy-fgroup">
+                    <div class="agy-flabel">
+                      <span>{{ group.label }}</span>
+                    </div>
+                    <div class="agy-fbox">
+                      @for (row of group.rows; track row.label) {
+                        @if (!row.totp) {
+                          <div
+                            class="agy-field"
+                            [class.agy-copied]="copiedKey() === row.label"
+                            [attr.data-act]="row.copy ? 'copy' : null"
+                            (click)="copyValue(row.copy, row.label, row.label)"
+                          >
+                            <span class="agy-k" [attr.title]="row.label">{{ row.label }}</span>
+                            @if (row.secret) {
+                              <span class="agy-v agy-mono" [class.agy-multiline]="row.multiline">
+                                @if (revealedLabels().has(row.label)) {
+                                  @if (row.multiline) {
+                                    {{ row.copy }}
+                                  } @else {
+                                    <lp-password-syntax [value]="row.copy" />
+                                  }
+                                } @else {
+                                  {{ row.display }}
+                                }
+                              </span>
+                            } @else {
+                              <span
+                                class="agy-v"
+                                [class.agy-mono]="row.mono"
+                                [class.agy-multiline]="row.multiline"
+                                [attr.title]="row.multiline ? null : row.display"
+                              >
+                                {{ row.display }}
+                              </span>
+                            }
+                            <span class="agy-a agy-always">
+                              @if (row.sshLinkId) {
+                                <button
+                                  type="button"
+                                  class="agy-btn agy-sm"
+                                  (click)="$event.stopPropagation(); openLinkedSsh(row.sshLinkId)"
+                                >
+                                  {{ i18n.t("openSshKey") }}
+                                </button>
+                              }
+                              @if (row.launchUri) {
+                                <button
+                                  type="button"
+                                  class="agy-iconbtn agy-sm"
+                                  [attr.title]="i18n.t('openWebsite')"
+                                  [attr.aria-label]="i18n.t('openWebsite')"
+                                  (click)="$event.stopPropagation(); launch(row.launchUri)"
+                                >
+                                  <bit-icon name="bwi-external-link" class="tw-text-xs"></bit-icon>
+                                </button>
+                              }
+                              @if (row.secret && revealedLabels().has(row.label) && autoHide()) {
+                                <span class="agy-chip">{{ i18n.t("autoHide30sChip") }}</span>
+                              }
+                              @if (row.secret) {
+                                <button
+                                  type="button"
+                                  class="agy-iconbtn agy-sm"
+                                  [attr.title]="
+                                    revealedLabels().has(row.label)
+                                      ? i18n.t('hideValue')
+                                      : i18n.t('showValue')
+                                  "
+                                  [attr.aria-label]="i18n.t('toggleVisibility')"
+                                  (click)="$event.stopPropagation(); toggleReveal(row.label)"
+                                >
+                                  <bit-icon
+                                    [name]="
+                                      revealedLabels().has(row.label) ? 'bwi-eye-slash' : 'bwi-eye'
+                                    "
+                                    class="tw-text-xs"
+                                  ></bit-icon>
+                                </button>
+                              }
+                              @if (row.copy) {
+                                <button
+                                  type="button"
+                                  class="agy-iconbtn agy-sm"
+                                  [attr.title]="row.label"
+                                  [attr.aria-label]="row.label"
+                                  (click)="
+                                    $event.stopPropagation();
+                                    copyValue(row.copy, row.label, row.label)
+                                  "
+                                >
+                                  <bit-icon
+                                    [name]="copiedKey() === row.label ? 'bwi-check' : 'bwi-copy'"
+                                    class="tw-text-xs"
+                                  ></bit-icon>
+                                </button>
+                              }
+                            </span>
+                          </div>
+                        }
                       }
                     </div>
                   </div>
+                }
 
-                  @for (group of detailGroups(); track group.key) {
-                    <lp-group [label]="group.label">
-                      @for (row of group.rows; track row.label) {
-                        @if (row.totp) {
-                          <div
-                            class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
-                          >
-                            <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main">{{
-                              row.label
-                            }}</span>
-                            <span
-                              class="tw-font-mono tw-text-lg tw-font-semibold tw-tracking-wide tw-text-fg-brand"
-                              >{{ row.display }}</span
-                            >
-                            <span
-                              class="tw-h-1.5 tw-w-10 tw-overflow-hidden tw-rounded-full tw-bg-border-light"
-                              aria-hidden="true"
-                            >
-                              <span
-                                class="tw-block tw-h-full tw-rounded-full tw-bg-fg-brand"
-                                [style.width.%]="totpProgress()"
-                              ></span>
-                            </span>
-                            <button
-                              type="button"
-                              bitIconButton="bwi-copy"
-                              size="small"
-                              [label]="row.label"
-                              (click)="copyValue(row.copy, row.label)"
-                            ></button>
-                          </div>
-                        } @else if (row.secret) {
-                          <div
-                            class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3 last:tw-border-b-0"
-                          >
-                            <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main">{{
-                              row.label
-                            }}</span>
-                            <span
-                              class="tw-min-w-0 tw-truncate tw-font-mono tw-text-sm tw-text-main"
-                              >{{ revealedLabels().has(row.label) ? row.copy : row.display }}</span
-                            >
-                            <button
-                              type="button"
-                              bitIconButton="bwi-eye"
-                              size="small"
-                              [label]="i18n.t('toggleVisibility')"
-                              (click)="toggleReveal(row.label)"
-                            ></button>
-                            <button
-                              type="button"
-                              bitIconButton="bwi-copy"
-                              size="small"
-                              [label]="row.label"
-                              (click)="copyValue(row.copy, row.label)"
-                            ></button>
-                          </div>
-                        } @else {
-                          <lp-row
-                            [label]="row.label"
-                            [value]="row.display"
-                            [copyValue]="row.copy"
-                            [copyLabel]="row.label"
-                            [mono]="row.mono"
-                            [brand]="!!row.launchUri"
-                          />
-                        }
-                      }
-                    </lp-group>
-                  }
-
-                  @if (passkeys().length) {
-                    <lp-group [label]="i18n.t('passkeys')">
+                @if (passkeys().length) {
+                  <div class="agy-fgroup">
+                    <div class="agy-flabel">
+                      <span>{{ i18n.t("passkeys") }}</span>
+                    </div>
+                    <div class="agy-fbox">
                       @for (passkey of passkeys(); track $index) {
-                        <lp-row
-                          [label]="passkey.userName || i18n.t('typePasskey')"
-                          [value]="
-                            i18n.t('dateCreated') + ' ' + (passkey.creationDate | date: 'short')
-                          "
-                          [clickable]="false"
-                        ></lp-row>
+                        <div class="agy-field">
+                          <span class="agy-k">{{ i18n.t("typePasskey") }}</span>
+                          <span class="agy-v">
+                            {{ formatPasskeyLabel(passkey) }}
+                          </span>
+                          <span class="agy-a agy-always">
+                            <span class="agy-chip">
+                              {{ passkey.creationDate | date: "short" }}
+                            </span>
+                          </span>
+                        </div>
                       }
-                    </lp-group>
-                  }
+                    </div>
+                  </div>
+                }
 
-                  @if (customFields().length) {
-                    <lp-group [label]="i18n.t('customFields')">
-                      @for (field of customFields(); track field.name) {
-                        <lp-row
-                          [label]="field.name ?? ''"
-                          [value]="fieldDisplay(field)"
-                          [copyValue]="field.value ?? ''"
-                          [copyLabel]="field.name ?? ''"
-                        ></lp-row>
+                @if (customFields().length) {
+                  <div class="agy-fgroup">
+                    <div class="agy-flabel">
+                      <span>{{ i18n.t("customFields") }}</span>
+                    </div>
+                    <div class="agy-fbox">
+                      @for (field of customFields(); track $index) {
+                        <div
+                          class="agy-field"
+                          data-act="copy"
+                          (click)="copyValue(field.value, field.name ?? '')"
+                        >
+                          <span class="agy-k" [attr.title]="field.name">{{ field.name }}</span>
+                          <span
+                            class="agy-v"
+                            [class.agy-mono]="field.type === fieldType.Hidden"
+                            [attr.title]="
+                              field.type === fieldType.Hidden ? i18n.t('typeHidden') : field.value
+                            "
+                          >
+                            {{
+                              field.type === fieldType.Hidden && !isCustomFieldRevealed(field.name)
+                                ? "••••••••••••"
+                                : field.value
+                            }}
+                          </span>
+                          <span class="agy-a agy-always">
+                            @if (field.type === fieldType.Hidden) {
+                              <button
+                                type="button"
+                                class="agy-iconbtn agy-sm"
+                                [attr.title]="
+                                  isCustomFieldRevealed(field.name)
+                                    ? i18n.t('hideValue')
+                                    : i18n.t('showValue')
+                                "
+                                [attr.aria-label]="i18n.t('toggleVisibility')"
+                                (click)="
+                                  $event.stopPropagation(); toggleCustomFieldReveal(field.name)
+                                "
+                              >
+                                <bit-icon
+                                  [name]="
+                                    isCustomFieldRevealed(field.name) ? 'bwi-eye-slash' : 'bwi-eye'
+                                  "
+                                  class="tw-text-xs"
+                                ></bit-icon>
+                              </button>
+                            }
+                            <button
+                              type="button"
+                              class="agy-iconbtn agy-sm"
+                              [attr.title]="field.name"
+                              [attr.aria-label]="field.name"
+                              (click)="$event.stopPropagation(); copyValue(field.value, field.name)"
+                            >
+                              <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                            </button>
+                          </span>
+                        </div>
                       }
-                    </lp-group>
-                  }
+                    </div>
+                  </div>
+                }
 
-                  @if (optionsRows().length) {
-                    <lp-group [label]="i18n.t('additionalOptions')">
+                @if (optionsRows().length) {
+                  <div class="agy-fgroup">
+                    <div class="agy-flabel">
+                      <span>{{ i18n.t("additionalOptions") }}</span>
+                    </div>
+                    <div class="agy-fbox">
                       @for (row of optionsRows(); track row.label) {
-                        <lp-row
-                          [label]="row.label"
-                          [sub]="row.display"
-                          [copyValue]="row.copy"
-                          [copyLabel]="row.label"
-                          [clickable]="false"
-                        ></lp-row>
+                        <div class="agy-field">
+                          <span class="agy-k">{{ row.label }}</span>
+                          <span class="agy-v" [class.agy-mono]="row.mono">{{ row.display }}</span>
+                          <span class="agy-a"></span>
+                        </div>
                       }
                       @if (selectedKind() === ItemKind.Login) {
-                        <lp-row
-                          [label]="i18n.t('passwordReprompt')"
-                          [value]="
-                            item.reprompt === repromptType.Password
-                              ? i18n.t('repromptOn')
-                              : i18n.t('repromptOff')
-                          "
-                          [clickable]="false"
-                        ></lp-row>
+                        <div class="agy-field">
+                          <span class="agy-k">{{ i18n.t("passwordReprompt") }}</span>
+                          <span class="agy-v">
+                            {{
+                              item.reprompt === repromptType.Password
+                                ? i18n.t("repromptOn")
+                                : i18n.t("repromptOff")
+                            }}
+                          </span>
+                          <span class="agy-a"></span>
+                        </div>
                       }
-                    </lp-group>
-                  }
-
-                  <lp-group [label]="i18n.t('itemInfo')">
-                    <div
-                      class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3"
-                    >
-                      <span class="tw-flex-1 tw-text-sm tw-text-main">{{ i18n.t("folder") }}</span>
-                      <span class="tw-text-sm tw-text-muted">{{ folderName(item) }}</span>
                     </div>
-                    <div
-                      class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3"
-                    >
-                      <span class="tw-flex-1 tw-text-sm tw-text-main">{{
-                        i18n.t("lastModified")
-                      }}</span>
-                      <span class="tw-text-sm tw-text-muted">{{
-                        longDate(item.revisionDate)
-                      }}</span>
-                    </div>
-                    <div
-                      class="tw-flex tw-min-h-12 tw-items-center tw-gap-3 tw-border-b tw-border-border-light tw-px-4 tw-py-3"
-                    >
-                      <span class="tw-flex-1 tw-text-sm tw-text-main">{{
-                        i18n.t("dateCreated")
-                      }}</span>
-                      <span class="tw-text-sm tw-text-muted">{{
-                        longDate(item.creationDate)
-                      }}</span>
-                    </div>
-                    <lp-row
-                      [label]="i18n.t('favorite')"
-                      [toggle]="item.favorite"
-                      [clickable]="true"
-                      (activated)="toggleFavorite()"
-                    ></lp-row>
-                  </lp-group>
+                  </div>
                 }
-              }
 
-              @case ("edit") {
-                @for (group of editGroups(); track group.key) {
-                  <lp-group [label]="i18n.t(group.labelKey)">
-                    @for (field of group.fields; track field.id) {
-                      <lp-field
-                        [label]="i18n.t(field.labelKey)"
-                        [value]="values()[field.id] ?? ''"
-                        [password]="!!field.password"
-                        [multiline]="!!field.multiline"
-                        [mono]="isMonoField(field)"
-                        [hint]="field.hintKey ? i18n.t(field.hintKey) : ''"
-                        [placeholder]="field.target === 'name' ? i18n.t('enterItemName') : ''"
-                        [actionIcon]="field.generate ? 'bwi-generate' : undefined"
-                        [actionLabel]="field.generate ? i18n.t('generatePassword') : ''"
-                        (actionTriggered)="generateInto(field)"
-                        (valueChange)="setValue(field.id, $event)"
-                      ></lp-field>
-                    }
-                    @if (group.key === "item") {
-                      <lp-field
-                        [label]="i18n.t('folder')"
-                        [value]="editFolderId()"
-                        [options]="folderOptions()"
-                        (valueChange)="editFolderId.set($event)"
-                      ></lp-field>
-                      <lp-row
-                        [label]="i18n.t('favorite')"
-                        [sub]="i18n.t('favoriteHint')"
-                        [toggle]="editFavorite()"
-                        [clickable]="true"
-                        (activated)="editFavorite.set(!editFavorite())"
-                      ></lp-row>
-                    }
-                  </lp-group>
-                }
-                <lp-custom-fields [(fields)]="editCustomFields"></lp-custom-fields>
                 @if (errorMessage()) {
-                  <p class="tw-pt-3 tw-text-sm tw-text-fg-danger">{{ errorMessage() }}</p>
+                  <p class="agy-hint agy-hint-error tw-px-0">{{ errorMessage() }}</p>
                 }
-              }
+              </div>
 
-              @case ("new-type") {
-                <div class="tw-grid tw-grid-cols-2 tw-gap-2 tw-pt-1">
-                  @for (kind of kinds; track kind) {
-                    <button
-                      type="button"
-                      class="tw-flex tw-flex-col tw-items-start tw-gap-1.5 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3 tw-text-start hover:tw-border-border-brand hover:tw-bg-bg-brand-softer"
-                      (click)="startNewForm(kind)"
-                    >
-                      <lp-kind-tile [kind]="kind" size="base"></lp-kind-tile>
-                      <span class="tw-text-sm tw-leading-tight tw-font-semibold tw-text-main">{{
-                        kindLabel(kind)
-                      }}</span>
-                      <span class="tw-text-xs tw-leading-snug tw-text-muted">{{
-                        kindBlurb(kind)
-                      }}</span>
-                    </button>
-                  }
+              <div class="agy-mac-inspector">
+                <h3 class="agy-insp-h">{{ i18n.t("itemInfo") }}</h3>
+                <div class="agy-meta-row">
+                  <span class="agy-k">{{ i18n.t("type") }}</span>
+                  <span class="agy-v">{{ kindLabel(selectedKind()) }}</span>
                 </div>
-                <div
-                  class="tw-mt-3 tw-flex tw-items-start tw-gap-2.5 tw-rounded-lg tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-px-3.5 tw-py-3 tw-text-xs tw-leading-relaxed tw-text-muted"
+                <div class="agy-meta-row">
+                  <span class="agy-k">{{ i18n.t("folder") }}</span>
+                  <span class="agy-v">{{ folderName(item) }}</span>
+                </div>
+                <div class="agy-meta-row">
+                  <span class="agy-k">{{ i18n.t("dateCreated") }}</span>
+                  <span class="agy-v">{{ shortDate(item.creationDate) }}</span>
+                </div>
+                <div class="agy-meta-row">
+                  <span class="agy-k">{{ i18n.t("lastModified") }}</span>
+                  <span class="agy-v">{{ shortDate(item.revisionDate) }}</span>
+                </div>
+
+                <div class="agy-divider"></div>
+
+                <button
+                  type="button"
+                  class="agy-setrow agy-no-divider tw-px-0"
+                  (click)="toggleFavorite()"
                 >
-                  <bit-icon name="bwi-info-circle" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
-                  <span>{{ i18n.t("newItemKindNotice") }}</span>
+                  <bit-icon
+                    name="bwi-star-filled"
+                    class="tw-text-xs"
+                    [class.tw-text-fg-warning]="item.favorite"
+                  ></bit-icon>
+                  <span class="agy-k">{{ i18n.t("favorite") }}</span>
+                  <span class="agy-right">
+                    <span
+                      class="tw-flex tw-h-4 tw-w-7 tw-flex-none tw-items-center tw-rounded-full tw-transition-colors"
+                      [class.tw-bg-fg-brand]="item.favorite"
+                      [class.tw-bg-border-strong]="!item.favorite"
+                    >
+                      <span
+                        class="tw-size-3 tw-rounded-full tw-bg-background tw-transition-transform"
+                        [class.tw-translate-x-3]="item.favorite"
+                      ></span>
+                    </span>
+                  </span>
+                </button>
+
+                <div class="agy-divider"></div>
+                @if (selectedStrength(); as strength) {
+                  <h3 class="agy-insp-h">{{ i18n.t("passwordStrength") }}</h3>
+                  <div class="agy-meta-row">
+                    <span class="agy-k">{{ strength.label }}</span>
+                    <span
+                      class="agy-chip"
+                      [class.agy-ok]="strength.tone === 'ok'"
+                      [class.agy-warn]="strength.tone === 'warn'"
+                      [class.agy-bad]="strength.tone === 'bad'"
+                      >{{ strength.score }}/4</span
+                    >
+                  </div>
+                  <div class="agy-divider"></div>
+                }
+                <h3 class="agy-insp-h">{{ i18n.t("itemVersionHistory") }}</h3>
+                <button
+                  type="button"
+                  class="agy-btn agy-sm agy-block tw-mt-1"
+                  (click)="openHistory()"
+                >
+                  <bit-icon name="bwi-clock" class="tw-text-xs"></bit-icon>
+                  {{ i18n.t("itemVersionHistory") }}
+                </button>
+
+                <div class="agy-divider"></div>
+                <h3 class="agy-insp-h">{{ i18n.t("privacySummary") }}</h3>
+                <div class="agy-meta-row">
+                  <span class="agy-k">{{ i18n.t("localEncrypted") }}</span>
                 </div>
-              }
+              </div>
+            </div>
 
-              @case ("new-form") {
-                @for (group of editGroups(); track group.key) {
-                  <lp-group [label]="i18n.t(group.labelKey)">
-                    @for (field of group.fields; track field.id) {
-                      <lp-field
-                        [label]="i18n.t(field.labelKey)"
-                        [value]="values()[field.id] ?? ''"
-                        [password]="!!field.password"
-                        [multiline]="!!field.multiline"
-                        [mono]="isMonoField(field)"
-                        [hint]="field.hintKey ? i18n.t(field.hintKey) : ''"
-                        [placeholder]="field.target === 'name' ? i18n.t('enterItemName') : ''"
-                        [actionIcon]="field.generate ? 'bwi-generate' : undefined"
-                        [actionLabel]="field.generate ? i18n.t('generatePassword') : ''"
-                        (actionTriggered)="generateInto(field)"
-                        (valueChange)="setValue(field.id, $event)"
-                      ></lp-field>
-                    }
-                    @if (group.key === "item") {
-                      <lp-field
-                        [label]="i18n.t('folder')"
-                        [value]="editFolderId()"
-                        [options]="folderOptions()"
-                        (valueChange)="editFolderId.set($event)"
-                      ></lp-field>
-                      <lp-row
-                        [label]="i18n.t('favorite')"
-                        [sub]="i18n.t('favoriteHint')"
-                        [toggle]="editFavorite()"
-                        [clickable]="true"
-                        (activated)="editFavorite.set(!editFavorite())"
-                      ></lp-row>
-                    }
-                  </lp-group>
-                }
-                <lp-custom-fields [(fields)]="editCustomFields"></lp-custom-fields>
-                @if (errorMessage()) {
-                  <p class="tw-pt-3 tw-text-sm tw-text-fg-danger">{{ errorMessage() }}</p>
-                }
+            <footer class="agy-mac-dfoot">
+              @if (toast.clipboardRemaining(); as sec) {
+                <span class="tw-inline-flex tw-items-center tw-gap-1.5">
+                  <span>{{ i18n.t("clipboardClearCountdown", sec.toString()) }}</span>
+                  <button
+                    type="button"
+                    class="tw-cursor-pointer tw-border-0 tw-bg-transparent tw-p-0 tw-text-xs tw-font-semibold tw-text-fg-brand tw-underline"
+                    (click)="toast.clearClipboardNow()"
+                  >
+                    {{ i18n.t("clearNow") }}
+                  </button>
+                </span>
+              } @else {
+                <span>{{ i18n.t("vaultSummary", rows().length) }}</span>
               }
-            }
-          </div>
-
-          @if (drawer() !== "new-type") {
-            <div
-              class="tw-flex tw-items-center tw-gap-2 tw-border-t tw-border-border-light tw-px-6 tw-py-4"
-            >
-              @switch (drawer()) {
-                @case ("view") {
-                  <button
-                    type="button"
-                    bitButton
-                    buttonType="primary"
-                    startIcon="bwi-pencil-square"
-                    (click)="startEdit()"
-                  >
-                    {{ i18n.t("edit") }}
-                  </button>
-                  <button type="button" bitButton buttonType="secondary" (click)="closeDrawer()">
-                    {{ i18n.t("close") }}
-                  </button>
-                  <span class="tw-flex-1"></span>
-                  <button
-                    type="button"
-                    bitIconButton="bwi-trash"
-                    buttonType="dangerGhost"
-                    [label]="i18n.t('delete')"
-                    data-testid="vault_drawer_delete"
-                    (click)="remove()"
-                  ></button>
+              <span class="agy-right">
+                @if (shortcutEnabled("search")) {
+                  <span class="agy-kbd"><kbd>&#8984;K</kbd>{{ i18n.t("searchVault") }}</span>
                 }
-                @case ("edit") {
-                  <button
-                    type="button"
-                    bitButton
-                    buttonType="primary"
-                    [disabled]="saving()"
-                    (click)="save()"
-                  >
-                    {{ i18n.t("save") }}
-                  </button>
-                  <button type="button" bitButton buttonType="secondary" (click)="cancelEdit()">
-                    {{ i18n.t("cancel") }}
-                  </button>
+                @if (shortcutEnabled("edit")) {
+                  <span class="agy-kbd"><kbd>&#8984;E</kbd>{{ i18n.t("edit") }}</span>
                 }
-                @case ("new-form") {
-                  <button
-                    type="button"
-                    bitButton
-                    buttonType="primary"
-                    [disabled]="saving()"
-                    (click)="save()"
-                  >
-                    {{ i18n.t("save") }}
-                  </button>
-                  <button type="button" bitButton buttonType="secondary" (click)="closeDrawer()">
-                    {{ i18n.t("cancel") }}
-                  </button>
+                @if (shortcutEnabled("copy")) {
+                  <span class="agy-kbd"><kbd>&#8984;C</kbd>{{ i18n.t("username") }}</span>
+                  <span class="agy-kbd"><kbd>&#8679;&#8984;C</kbd>{{ i18n.t("password") }}</span>
                 }
-                @default {
-                  <button type="button" bitButton buttonType="secondary" (click)="closeDrawer()">
-                    {{ i18n.t("close") }}
-                  </button>
-                }
-              }
+              </span>
+            </footer>
+          } @else {
+            <div class="agy-mac-empty">
+              <div>
+                <span class="agy-emptyico">
+                  <bit-icon name="bwi-vault" class="tw-text-base"></bit-icon>
+                </span>
+                <div class="agy-eh">
+                  {{ items().length ? i18n.t("itemDetails") : i18n.t("noItemsInVault") }}
+                </div>
+                <div class="agy-es">
+                  {{
+                    items().length ? i18n.t("selectAnItemHint") : i18n.t("emptyVaultHintDesktop")
+                  }}
+                </div>
+              </div>
             </div>
           }
         </aside>
+      }
+
+      @if (drawer() !== "closed") {
+        <div class="agy-sheetwrap" (click)="closeDrawer()">
+          <aside
+            class="agy-drawer"
+            [class.agy-drawer-history]="drawer() === 'history'"
+            (click)="$event.stopPropagation()"
+            [attr.aria-label]="drawerTitle()"
+          >
+            <div class="agy-drawer-h">
+              <div class="tw-min-w-0 tw-flex-1">
+                <div class="agy-name">{{ drawerTitle() }}</div>
+                @if (drawerSub()) {
+                  <div class="agy-sub">{{ drawerSub() }}</div>
+                }
+              </div>
+              <div class="agy-right">
+                <button
+                  type="button"
+                  class="agy-iconbtn"
+                  [attr.title]="i18n.t('close')"
+                  [attr.aria-label]="i18n.t('close')"
+                  (click)="closeDrawer()"
+                >
+                  <bit-icon name="bwi-close" class="tw-text-xs"></bit-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="agy-ext-scroll">
+              @switch (drawer()) {
+                @case ("edit") {
+                  @for (group of editGroups(); track group.key) {
+                    <div class="agy-seclbl">{{ i18n.t(group.labelKey) }}</div>
+                    <div class="agy-grp">
+                      @for (field of group.fields; track field.id) {
+                        <lp-field
+                          layout="row"
+                          [id]="'vault-field_' + field.id"
+                          [label]="i18n.t(field.labelKey)"
+                          [value]="values()[field.id] ?? ''"
+                          [password]="!!field.password"
+                          [multiline]="!!field.multiline"
+                          [mono]="isMonoField(field)"
+                          [hint]="field.hintKey ? i18n.t(field.hintKey) : ''"
+                          [placeholder]="fieldPlaceholder(field)"
+                          [actionIcon]="field.generate ? 'bwi-generate' : undefined"
+                          [actionLabel]="field.generate ? i18n.t('generatePassword') : ''"
+                          [options]="optionsFor(field)"
+                          [allowCustom]="!!field.allowCustom"
+                          [maxlength]="field.maxLength ?? null"
+                          [inputMode]="field.inputMode ?? ''"
+                          [format]="field.id === 'expiry' ? formatExpiry : null"
+                          [removable]="field.id !== 'name'"
+                          [removeLabel]="i18n.t('remove')"
+                          (actionTriggered)="generateInto(field)"
+                          (removeTriggered)="hideEditField(field.id)"
+                          (valueChange)="setValue(field.id, $event)"
+                        ></lp-field>
+                      }
+                      @if (group.key === "item") {
+                        <lp-field
+                          layout="row"
+                          [label]="i18n.t('folder')"
+                          [value]="editFolderId()"
+                          [options]="folderOptions()"
+                          (valueChange)="editFolderId.set($event)"
+                        ></lp-field>
+                        <lp-row
+                          [label]="i18n.t('favorite')"
+                          [sub]="i18n.t('favoriteHint')"
+                          [toggle]="editFavorite()"
+                          [clickable]="true"
+                          (activated)="editFavorite.set(!editFavorite())"
+                        ></lp-row>
+                        @if (activeEditKind() === ItemKind.Login) {
+                          <lp-row
+                            [label]="i18n.t('passwordReprompt')"
+                            [toggle]="editReprompt()"
+                            [clickable]="true"
+                            (activated)="editReprompt.set(!editReprompt())"
+                          ></lp-row>
+                        }
+                      }
+                    </div>
+                  }
+                  @if (editHiddenFieldPills().length > 0) {
+                    <div class="tw-flex tw-flex-wrap tw-gap-1.5 tw-px-4 tw-pb-2">
+                      @for (field of editHiddenFieldPills(); track field.id) {
+                        <button
+                          type="button"
+                          class="agy-btn agy-sm"
+                          (click)="showEditField(field.id)"
+                        >
+                          <bit-icon name="bwi-plus" class="tw-text-xs"></bit-icon>
+                          {{ i18n.t(field.labelKey) }}
+                        </button>
+                      }
+                    </div>
+                  }
+                  <lp-custom-fields [(fields)]="editCustomFields"></lp-custom-fields>
+                  @if (errorMessage()) {
+                    <p class="agy-hint agy-hint-error tw-px-0">{{ errorMessage() }}</p>
+                  }
+                }
+                @case ("new-form") {
+                  @for (group of editGroups(); track group.key) {
+                    <div class="agy-seclbl">{{ i18n.t(group.labelKey) }}</div>
+                    <div class="agy-grp">
+                      @for (field of group.fields; track field.id) {
+                        <lp-field
+                          layout="row"
+                          [id]="'vault-field_' + field.id"
+                          [label]="i18n.t(field.labelKey)"
+                          [value]="values()[field.id] ?? ''"
+                          [password]="!!field.password"
+                          [multiline]="!!field.multiline"
+                          [mono]="isMonoField(field)"
+                          [hint]="field.hintKey ? i18n.t(field.hintKey) : ''"
+                          [placeholder]="fieldPlaceholder(field)"
+                          [actionIcon]="field.generate ? 'bwi-generate' : undefined"
+                          [actionLabel]="field.generate ? i18n.t('generatePassword') : ''"
+                          [options]="optionsFor(field)"
+                          [allowCustom]="!!field.allowCustom"
+                          [maxlength]="field.maxLength ?? null"
+                          [inputMode]="field.inputMode ?? ''"
+                          [format]="field.id === 'expiry' ? formatExpiry : null"
+                          [removable]="field.id !== 'name'"
+                          [removeLabel]="i18n.t('remove')"
+                          (actionTriggered)="generateInto(field)"
+                          (removeTriggered)="hideEditField(field.id)"
+                          (valueChange)="setValue(field.id, $event)"
+                        ></lp-field>
+                      }
+                      @if (group.key === "item") {
+                        <lp-field
+                          layout="row"
+                          [label]="i18n.t('folder')"
+                          [value]="editFolderId()"
+                          [options]="folderOptions()"
+                          (valueChange)="editFolderId.set($event)"
+                        ></lp-field>
+                        <lp-row
+                          [label]="i18n.t('favorite')"
+                          [sub]="i18n.t('favoriteHint')"
+                          [toggle]="editFavorite()"
+                          [clickable]="true"
+                          (activated)="editFavorite.set(!editFavorite())"
+                        ></lp-row>
+                        @if (activeEditKind() === ItemKind.Login) {
+                          <lp-row
+                            [label]="i18n.t('passwordReprompt')"
+                            [toggle]="editReprompt()"
+                            [clickable]="true"
+                            (activated)="editReprompt.set(!editReprompt())"
+                          ></lp-row>
+                        }
+                      }
+                    </div>
+                  }
+                  @if (editHiddenFieldPills().length > 0) {
+                    <div class="tw-flex tw-flex-wrap tw-gap-1.5 tw-px-4 tw-pb-2">
+                      @for (field of editHiddenFieldPills(); track field.id) {
+                        <button
+                          type="button"
+                          class="agy-btn agy-sm"
+                          (click)="showEditField(field.id)"
+                        >
+                          <bit-icon name="bwi-plus" class="tw-text-xs"></bit-icon>
+                          {{ i18n.t(field.labelKey) }}
+                        </button>
+                      }
+                    </div>
+                  }
+                  <lp-custom-fields [(fields)]="editCustomFields"></lp-custom-fields>
+                  @if (errorMessage()) {
+                    <p class="agy-hint agy-hint-error tw-px-0">{{ errorMessage() }}</p>
+                  }
+                }
+                @case ("new-type") {
+                  <div class="agy-typegrid">
+                    @for (kind of kinds; track kind) {
+                      <button type="button" (click)="startNewForm(kind)">
+                        <lp-kind-tile [kind]="kind" size="xs"></lp-kind-tile>
+                        <span>{{ kindLabel(kind) }}</span>
+                      </button>
+                    }
+                  </div>
+                  <div class="agy-callout tw-mt-2">
+                    <bit-icon name="bwi-info-circle" class="tw-text-xs"></bit-icon>
+                    <span>{{ i18n.t("newItemKindNotice") }}</span>
+                  </div>
+                }
+                @case ("history") {
+                  @if (selected(); as item) {
+                    <div class="agy-ver agy-ver-current">
+                      <div class="agy-ver-top">
+                        <bit-icon name="bwi-check-circle" class="tw-text-xs"></bit-icon>
+                        <span>{{ i18n.t("itemHistoryCurrent") }}</span>
+                        @if (versionRows().length) {
+                          <span class="agy-chip">v{{ versionRows().length + 1 }}</span>
+                        }
+                        <span class="agy-ver-when">
+                          {{
+                            longDate(
+                              selectedKind() === ItemKind.Login
+                                ? (item.login.passwordRevisionDate ?? item.revisionDate)
+                                : item.revisionDate
+                            )
+                          }}
+                        </span>
+                      </div>
+                      <div class="agy-ver-value">
+                        @if (primarySecretOf(item); as currentSecret) {
+                          <span class="agy-mono tw-truncate">
+                            {{ historyRevealed().has(-1) ? currentSecret.value : mask }}
+                          </span>
+                          <button
+                            type="button"
+                            class="agy-iconbtn agy-sm"
+                            [attr.title]="
+                              i18n.t(historyRevealed().has(-1) ? 'hideValue' : 'showValue')
+                            "
+                            [attr.aria-label]="
+                              i18n.t(historyRevealed().has(-1) ? 'hideValue' : 'showValue')
+                            "
+                            (click)="toggleHistoryReveal(-1)"
+                          >
+                            <bit-icon
+                              [name]="historyRevealed().has(-1) ? 'bwi-eye-slash' : 'bwi-eye'"
+                              class="tw-text-xs"
+                            ></bit-icon>
+                          </button>
+                          <button
+                            type="button"
+                            class="agy-iconbtn agy-sm"
+                            [attr.title]="i18n.t('copy')"
+                            [attr.aria-label]="i18n.t('copy')"
+                            (click)="copyValue(currentSecret.value, currentSecret.label)"
+                          >
+                            <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                          </button>
+                        } @else {
+                          <span class="agy-mono">—</span>
+                          <span class="agy-hint tw-px-0">{{ kindLabel(selectedKind()) }}</span>
+                        }
+                      </div>
+                    </div>
+                  }
+
+                  @if (versionLoading()) {
+                    <p class="agy-hint tw-px-0">{{ i18n.t("loading") }}</p>
+                  } @else if (versionRows().length) {
+                    @for (row of versionRows(); track row.revisionDate.getTime(); let i = $index) {
+                      <div class="agy-ver">
+                        <div class="agy-ver-top">
+                          <bit-icon name="bwi-clock" class="tw-text-xs"></bit-icon>
+                          <span>{{
+                            i18n.t("itemHistoryVersion", (versionRows().length - i).toString())
+                          }}</span>
+                          <span class="agy-ver-when">{{ longDate(row.revisionDate) }}</span>
+                        </div>
+                        @if (row.changedFields.length) {
+                          <div class="agy-ver-diff">
+                            {{ i18n.t("itemHistoryDiff", changedLabel(row)) }}
+                          </div>
+                        }
+                        <div class="agy-ver-value">
+                          @if (primarySecretOf(row.view); as versionSecret) {
+                            <span class="agy-mono tw-truncate">
+                              {{ versionRevealed().has(i) ? versionSecret.value : mask }}
+                            </span>
+                            <button
+                              type="button"
+                              class="agy-iconbtn agy-sm"
+                              [attr.title]="
+                                i18n.t(versionRevealed().has(i) ? 'hideValue' : 'showValue')
+                              "
+                              [attr.aria-label]="
+                                i18n.t(versionRevealed().has(i) ? 'hideValue' : 'showValue')
+                              "
+                              (click)="toggleVersionReveal(i)"
+                            >
+                              <bit-icon
+                                [name]="versionRevealed().has(i) ? 'bwi-eye-slash' : 'bwi-eye'"
+                                class="tw-text-xs"
+                              ></bit-icon>
+                            </button>
+                            <button
+                              type="button"
+                              class="agy-iconbtn agy-sm"
+                              [attr.title]="i18n.t('copy')"
+                              [attr.aria-label]="i18n.t('copy')"
+                              (click)="copyValue(versionSecret.value, versionSecret.label)"
+                            >
+                              <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                            </button>
+                          } @else {
+                            <span class="agy-mono">{{ mask }}</span>
+                          }
+                          <button
+                            type="button"
+                            class="agy-btn agy-primary agy-sm"
+                            data-testid="vault_button_restore_version"
+                            [disabled]="saving()"
+                            (click)="restoreVersion(row)"
+                          >
+                            {{ i18n.t("restore") }}
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  } @else if (!historyRows().length) {
+                    <div class="agy-empty">
+                      <span class="agy-empty-ico">
+                        <bit-icon name="bwi-clock" class="tw-text-base"></bit-icon>
+                      </span>
+                      <div class="agy-eh">{{ i18n.t("itemHistoryEmptyTitle") }}</div>
+                      <div class="agy-es">{{ i18n.t("itemHistoryEmptyHint") }}</div>
+                    </div>
+                  } @else {
+                    @for (row of historyRows(); track $index) {
+                      <div class="agy-ver">
+                        <div class="agy-ver-top">
+                          <bit-icon name="bwi-clock" class="tw-text-xs"></bit-icon>
+                          <span>{{ i18n.t("passwordHistorySavedValue") }}</span>
+                          <span class="agy-ver-when">{{ longDate(row.lastUsedDate) }}</span>
+                        </div>
+                        <div class="agy-ver-value">
+                          <span class="agy-mono">
+                            {{
+                              historyRevealed().has($index)
+                                ? row.password || "—"
+                                : row.password
+                                  ? mask
+                                  : "—"
+                            }}
+                          </span>
+                          <button
+                            type="button"
+                            class="agy-iconbtn agy-sm"
+                            [attr.title]="
+                              i18n.t(
+                                historyRevealed().has($index) ? 'hidePassword' : 'showPassword'
+                              )
+                            "
+                            [attr.aria-label]="
+                              i18n.t(
+                                historyRevealed().has($index) ? 'hidePassword' : 'showPassword'
+                              )
+                            "
+                            (click)="toggleHistoryReveal($index)"
+                          >
+                            <bit-icon
+                              [name]="historyRevealed().has($index) ? 'bwi-eye-slash' : 'bwi-eye'"
+                              class="tw-text-xs"
+                            ></bit-icon>
+                          </button>
+                          <button
+                            type="button"
+                            class="agy-iconbtn agy-sm"
+                            [attr.title]="i18n.t('copyPassword')"
+                            [attr.aria-label]="i18n.t('copyPassword')"
+                            (click)="copyValue(row.password, i18n.t('password'))"
+                          >
+                            <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                          </button>
+                          @if (canRestoreHistory()) {
+                            <button
+                              type="button"
+                              class="agy-btn agy-primary agy-sm"
+                              data-testid="vault_button_restore_history"
+                              [disabled]="saving()"
+                              (click)="restoreHistory(row)"
+                            >
+                              {{ i18n.t("restore") }}
+                            </button>
+                          }
+                        </div>
+                      </div>
+                    }
+                  }
+
+                  @if (errorMessage()) {
+                    <p class="agy-hint agy-hint-error tw-px-0">{{ errorMessage() }}</p>
+                  }
+                }
+                @case ("qr") {
+                  @if (totpKey()) {
+                    <div class="agy-grp tw-mx-auto tw-mt-1 tw-w-fit tw-p-4 tw-text-center">
+                      <vault-totp-qr
+                        class="tw-mx-auto tw-block tw-w-fit"
+                        [value]="totpKey()"
+                        [size]="180"
+                        [ariaLabel]="selected()?.name ?? ''"
+                      />
+                      <p class="agy-hint tw-mt-2 tw-text-center">
+                        {{ i18n.t("totpQrCardHint") }}
+                      </p>
+                      <p class="agy-hint tw-mt-1 tw-font-mono tw-text-center">
+                        SHA1 · 6 · {{ totpPeriod() || 30 }}s · {{ totpRemaining() }}s
+                      </p>
+                    </div>
+                    <div class="agy-seclbl tw-mt-3">{{ i18n.t("manualEntry") }}</div>
+                    <div class="agy-grp">
+                      <div
+                        class="agy-ext-field"
+                        role="button"
+                        tabindex="0"
+                        (click)="copyValue(totpBase32Secret(), i18n.t('totpSecret'))"
+                        (keydown.enter)="copyValue(totpBase32Secret(), i18n.t('totpSecret'))"
+                      >
+                        <span class="agy-k">{{ i18n.t("totpSecret") }}</span>
+                        <span class="agy-v agy-mono">{{ totpBase32Secret() }}</span>
+                        <bit-icon name="bwi-copy" class="tw-text-xs tw-text-muted"></bit-icon>
+                      </div>
+                    </div>
+                    <p class="agy-hint tw-mt-2 tw-text-center">{{ i18n.t("totpQrFootnote") }}</p>
+                  }
+                }
+              }
+            </div>
+
+            <div class="agy-ext-foot">
+              @if (drawer() === "edit" || drawer() === "new-form") {
+                @if (drawer() === "edit") {
+                  <button
+                    type="button"
+                    class="agy-btn agy-danger agy-lg"
+                    (click)="closeDrawer(); remove()"
+                  >
+                    {{ i18n.t("delete") }}
+                  </button>
+                }
+                <button
+                  type="button"
+                  class="agy-btn agy-primary agy-lg tw-flex-1"
+                  [disabled]="saving()"
+                  (click)="save()"
+                >
+                  {{ i18n.t("save") }}
+                </button>
+                <button
+                  type="button"
+                  class="agy-btn agy-lg tw-flex-1"
+                  (click)="drawer() === 'edit' ? cancelEdit() : closeDrawer()"
+                >
+                  {{ i18n.t("cancel") }}
+                </button>
+              } @else if (drawer() === "history") {
+                <span class="agy-hint tw-px-0">{{
+                  versionRows().length
+                    ? i18n.t("itemHistoryRetention")
+                    : i18n.t("passwordHistoryRetention")
+                }}</span>
+                <button
+                  type="button"
+                  class="agy-btn agy-lg tw-ml-auto tw-flex-none"
+                  (click)="closeDrawer()"
+                >
+                  {{ i18n.t("close") }}
+                </button>
+              } @else {
+                <button type="button" class="agy-btn agy-lg tw-flex-1" (click)="closeDrawer()">
+                  {{ i18n.t("close") }}
+                </button>
+              }
+            </div>
+          </aside>
+        </div>
       }
 
       @if (deleteTarget(); as target) {
@@ -859,31 +1426,55 @@ const MASK = "••••••••••••";
           role="dialog"
           aria-modal="true"
           [attr.aria-label]="i18n.t('deleteItemDialogTitle')"
+          (click)="deleteTarget.set(null)"
         >
           <div
-            class="tw-w-full tw-max-w-md tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-shadow-xl"
+            class="agy-grp tw-w-full tw-max-w-sm tw-bg-background tw-shadow-xl"
+            (click)="$event.stopPropagation()"
           >
-            <div class="tw-px-5 tw-pt-5 tw-text-lg tw-font-semibold tw-text-main">
-              {{ i18n.t("deleteItemDialogTitle") }}
+            <div
+              class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-px-4 tw-py-3"
+            >
+              <span class="agy-avatar" aria-hidden="true">{{ initialOf(target) }}</span>
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="tw-block tw-truncate tw-text-xs tw-font-semibold tw-text-main">
+                  {{ target.name }}
+                </span>
+                <span class="tw-block tw-truncate tw-text-xs tw-text-muted">
+                  {{ deleteSubtitle(target) }} · {{ folderName(target) }}
+                </span>
+              </span>
+              <span class="agy-chip">{{ kindLabel(kindOfItem(target)) }}</span>
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [attr.aria-label]="i18n.t('close')"
+                (click)="deleteTarget.set(null)"
+              >
+                <bit-icon name="bwi-close" class="tw-text-xs"></bit-icon>
+              </button>
             </div>
-            <div class="tw-px-5 tw-py-4 tw-text-sm tw-leading-relaxed tw-text-muted">
+            <div class="tw-px-4 tw-py-3 tw-text-xs tw-leading-relaxed tw-text-muted">
               {{ i18n.t("deleteItemDialogBody", target.name) }}
             </div>
             <div
-              class="tw-flex tw-justify-end tw-gap-2 tw-border-t tw-border-border-light tw-px-5 tw-py-3"
+              class="tw-flex tw-justify-end tw-gap-1.5 tw-border-t tw-border-border-light tw-px-4 tw-py-2.5"
             >
-              <button
-                type="button"
-                bitButton
-                buttonType="secondary"
-                (click)="deleteTarget.set(null)"
-              >
+              <button type="button" class="agy-btn" (click)="deleteTarget.set(null)">
                 {{ i18n.t("cancel") }}
               </button>
               <button
                 type="button"
-                bitButton
-                buttonType="danger"
+                class="agy-btn"
+                [disabled]="saving()"
+                data-testid="vault_delete_archive"
+                (click)="archiveDeleteTarget()"
+              >
+                {{ i18n.t("archiveVerb") }}
+              </button>
+              <button
+                type="button"
+                class="agy-btn agy-danger"
                 [disabled]="saving()"
                 data-testid="vault_delete_confirm"
                 (click)="confirmRemove()"
@@ -900,38 +1491,77 @@ const MASK = "••••••••••••";
 export class VaultDesktopV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly cipherService = inject(CipherService);
+  private readonly versionHistory = inject(CipherVersionHistoryService);
   private readonly folderService = inject(FolderService);
   private readonly totpService = inject(TotpService);
   private readonly accountService = inject(AccountService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
-  private readonly toast = inject(LpToastService);
+  protected readonly toast = inject(LpToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly densityService = inject(VaultDensityService);
+  private readonly shortcutsService = inject(DesktopShortcutsService);
+  private readonly passwordAutoHideService = inject(PasswordAutoHideService);
+  private readonly passwordStrengthService = inject(PasswordStrengthServiceAbstraction);
+
+  protected readonly autoHide = toSignal(this.passwordAutoHideService.autoHide$, {
+    initialValue: true,
+  });
+  protected readonly totpRingCircumference = 2 * Math.PI * 9.5;
+  protected readonly copiedKey = signal("");
+  private readonly copiedTimer = signal<ReturnType<typeof setTimeout> | null>(null);
+  private readonly revealTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   protected readonly kinds = ITEM_KIND_ORDER;
+  protected readonly noOptions: readonly LpFieldOption[] = [];
   protected readonly ItemKind = ItemKind;
+  protected readonly kindOfItem = kindOf;
   protected readonly repromptType = CipherRepromptType;
+  protected readonly fieldType = FieldType;
+  protected readonly mask = MASK;
+  protected readonly formatExpiry = (value: string, deleting: boolean): string =>
+    formatCardExpiryInput(value, { autoSlash: !deleting });
   protected readonly loading = signal(true);
   protected readonly query = signal("");
-  protected readonly typeFilter = signal<"all" | ItemKind>("all");
+  protected readonly typeFilter = signal<TypeFilter>("all");
   protected readonly folderFilter = signal("all");
   protected readonly favoritesOnly = signal(false);
   protected readonly sortAscending = signal(false);
+  private readonly density = toSignal(this.densityService.density$, {
+    initialValue: VaultDensity.Compact,
+  });
+  protected readonly compactRows = computed(() => this.density() === VaultDensity.Ultra);
+  private readonly disabledShortcuts = toSignal(this.shortcutsService.disabled$, {
+    initialValue: new Set<DesktopShortcut>(),
+  });
   protected readonly items = signal<CipherView[]>([]);
   protected readonly folders = signal<FolderView[]>([]);
   protected readonly selected = signal<CipherView | null>(null);
-  protected readonly selectedIds = signal<ReadonlySet<string>>(new Set());
   protected readonly deleteTarget = signal<CipherView | null>(null);
   protected readonly drawer = signal<DrawerMode>("closed");
   protected readonly newKind = signal<ItemKind>(ItemKind.Login);
   protected readonly values = signal<FieldValues>({});
   protected readonly editFolderId = signal("");
   protected readonly editFavorite = signal(false);
+  protected readonly editReprompt = signal(false);
   protected readonly editCustomFields = signal<readonly CustomFieldDraft[]>([]);
+  protected readonly editHiddenFields = signal<ReadonlySet<string>>(new Set());
+  protected readonly activeEditKind = computed(() =>
+    this.drawer() === "new-form" ? this.newKind() : this.selectedKind(),
+  );
+  protected readonly sshKeyOptions = computed<readonly LpFieldOption[]>(() => [
+    { value: "", label: this.i18n.t("none") },
+    ...this.items()
+      .filter((item) => kindOf(item) === ItemKind.SshKey)
+      .map((item) => ({ value: item.id, label: item.name })),
+  ]);
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
-
-  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>("searchInput");
+  protected readonly historyRevealed = signal<ReadonlySet<number>>(new Set());
+  protected readonly versionRows = signal<readonly CipherVersionRow[]>([]);
+  protected readonly versionLoading = signal(false);
+  protected readonly versionRevealed = signal<ReadonlySet<number>>(new Set());
 
   protected readonly subtitle = computed(() => {
     if (!this.items().length && !this.isFiltering()) {
@@ -961,19 +1591,14 @@ export class VaultDesktopV2Component implements OnInit {
     return map;
   });
 
-  protected readonly rows = computed<RowView[]>(() => {
+  private readonly baseRows = computed<RowView[]>(() => {
     const query = this.query().trim().toLowerCase();
-    const type = this.typeFilter();
     const folderFilter = this.folderFilter();
     const favoritesOnly = this.favoritesOnly();
     const folderNames = this.folderNames();
 
     return this.items()
       .filter((item) => {
-        const kind = kindOf(item);
-        if (type !== "all" && kind !== type) {
-          return false;
-        }
         if (folderFilter === "none" && item.folderId) {
           return false;
         }
@@ -983,18 +1608,7 @@ export class VaultDesktopV2Component implements OnInit {
         if (favoritesOnly && !item.favorite) {
           return false;
         }
-        if (!query) {
-          return true;
-        }
-        const haystack = [
-          item.name,
-          item.login.username ?? "",
-          item.subTitle ?? "",
-          item.folderId ? (folderNames.get(item.folderId) ?? "") : "",
-        ]
-          .join(" ")
-          .toLowerCase();
-        return haystack.includes(query);
+        return this.matchesQuery(item, query, folderNames);
       })
       .map((item) => ({
         item,
@@ -1012,36 +1626,101 @@ export class VaultDesktopV2Component implements OnInit {
       );
   });
 
-  protected readonly allSelected = computed(() => {
-    const rows = this.rows();
-    const selected = this.selectedIds();
-    return rows.length > 0 && rows.every((row) => row.item.id && selected.has(row.item.id));
+  protected readonly rows = computed<RowView[]>(() => {
+    const type = this.typeFilter();
+    if (type === "all") {
+      return this.baseRows();
+    }
+    if (type === "other") {
+      return this.baseRows().filter(
+        (row) => row.kind !== ItemKind.Login && row.kind !== ItemKind.Card,
+      );
+    }
+    return this.baseRows().filter((row) => row.kind === type);
   });
 
-  protected readonly folderCards = computed(() =>
-    this.folders().map((folder) => ({
-      id: folder.id,
-      name: folder.name,
-      count: this.items().filter((item) => item.folderId === folder.id).length,
-    })),
-  );
+  protected readonly typeTabs = computed<readonly TypeTab[]>(() => {
+    const base = this.baseRows();
+    return [
+      { id: "all", label: this.i18n.t("allItems"), count: base.length },
+      {
+        id: ItemKind.Login,
+        label: this.kindLabel(ItemKind.Login),
+        count: base.filter((row) => row.kind === ItemKind.Login).length,
+      },
+      {
+        id: ItemKind.Card,
+        label: this.kindLabel(ItemKind.Card),
+        count: base.filter((row) => row.kind === ItemKind.Card).length,
+      },
+      {
+        id: "other",
+        label: this.i18n.t("other"),
+        count: base.filter((row) => row.kind !== ItemKind.Login && row.kind !== ItemKind.Card)
+          .length,
+      },
+    ];
+  });
+
+  protected readonly favoriteRows = computed(() => this.rows().filter((row) => row.favorite));
+  protected readonly otherRows = computed(() => this.rows().filter((row) => !row.favorite));
+
+  /**
+   * 全字段检索：名称、用户名、网址、备注、自定义字段、卡号后四位与文件夹都参与匹配，
+   * 并支持 `=favorite` / `=totp` / `=passkey` / `=ssh` 语法过滤。
+   */
+  private matchesQuery(
+    item: CipherView,
+    query: string,
+    folderNames: ReadonlyMap<string, string>,
+  ): boolean {
+    if (!query) {
+      return true;
+    }
+    if (query === "=favorite") {
+      return item.favorite;
+    }
+
+    const kind = kindOf(item);
+    const values = readFieldValues(item, kind);
+    if (query === "=totp") {
+      return !!(values.totp || item.login?.totp);
+    }
+    if (query === "=passkey") {
+      return !!item.login?.fido2Credentials?.length;
+    }
+    if (query === "=ssh") {
+      return kind === ItemKind.SshKey || kind === ItemKind.Server;
+    }
+
+    const haystack = [
+      item.name,
+      item.subTitle ?? "",
+      item.notes ?? "",
+      item.folderId ? (folderNames.get(item.folderId) ?? "") : "",
+      ...Object.values(values),
+      ...withoutKindField(item.fields).flatMap((field) => [field.name ?? "", field.value ?? ""]),
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(query);
+  }
 
   constructor() {
-    // 筛选后条目不在列表里时，右侧抽屉不能继续展示它，否则列表与详情会各说各话。
+    // 筛选后条目不在列表里时，右侧详情不能继续展示它，否则列表与详情会各说各话。
     effect(() => {
-      // 编辑中的草稿不能被筛选顺手关掉，先让用户自己保存或取消。
-      if (this.drawer() !== "view") {
+      // 编辑中的草稿不能被筛选顺手关掉，历史抽屉同样要留住当前条目，先让用户自己关闭。
+      if (this.drawer() === "edit" || this.drawer() === "new-form" || this.drawer() === "history") {
         return;
       }
       const selected = this.selected();
       if (!selected) {
         return;
       }
-      if (this.rows().some((row) => row.item.id === selected.id)) {
+      if (this.rows().some((row) => row.item === selected)) {
         return;
       }
       this.selected.set(null);
-      this.drawer.set("closed");
     });
   }
 
@@ -1053,11 +1732,33 @@ export class VaultDesktopV2Component implements OnInit {
       this.favoritesOnly(),
   );
 
+  /** 全新保险库：原型用一张居中的欢迎面板替代空列表与空详情。 */
+  protected readonly showWelcome = computed(
+    () => !this.loading() && this.baseRows().length === 0 && !this.isFiltering(),
+  );
+
   protected readonly selectedKind = computed(() =>
     this.selected() ? kindOf(this.selected()!) : ItemKind.Login,
   );
 
-  private readonly totpKey = computed(() => this.selected()?.login.totp ?? "");
+  /** 旧值只来自登录密码历史；按时间倒序，导入的旧数据顺序不齐时也能稳定展示。 */
+  protected readonly historyRows = computed<readonly PasswordHistoryView[]>(() => {
+    const item = this.selected();
+    if (!item || kindOf(item) !== ItemKind.Login || !item.passwordHistory?.length) {
+      return [];
+    }
+    return [...item.passwordHistory].sort(
+      (a, b) => (b.lastUsedDate?.getTime() ?? 0) - (a.lastUsedDate?.getTime() ?? 0),
+    );
+  });
+
+  protected readonly canRestoreHistory = computed(() => {
+    const item = this.selected();
+    return !!item && kindOf(item) === ItemKind.Login;
+  });
+
+  protected readonly totpKey = computed(() => this.selected()?.login.totp ?? "");
+  protected readonly totpBase32Secret = computed(() => totpSecretOf(this.totpKey()));
   private readonly totpResponse = toSignal(
     toObservable(this.totpKey).pipe(
       switchMap((key) => (key ? this.totpService.getCode$(key) : of(null))),
@@ -1066,18 +1767,52 @@ export class VaultDesktopV2Component implements OnInit {
     { initialValue: null },
   );
   protected readonly totpCode = computed(() => this.totpResponse()?.code ?? "");
-  protected readonly formattedTotp = computed(() => {
-    const code = this.totpCode();
-    return code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
-  });
-  protected readonly totpProgress = computed(() => {
-    // getCode$ re-emits every second, so reading Date.now() here is enough to tick the bar.
+  protected readonly totpPeriod = computed(() => this.totpResponse()?.period ?? 30);
+  protected readonly totpRemaining = computed(() => {
     const response = this.totpResponse();
     if (!response?.period) {
       return 0;
     }
     const elapsed = Math.floor(Date.now() / 1000) % response.period;
-    return ((response.period - elapsed) / response.period) * 100;
+    return Math.max(1, response.period - elapsed);
+  });
+  protected readonly formattedTotp = computed(() => {
+    const code = this.totpCode();
+    return code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
+  });
+  protected readonly totpProgress = computed(() => {
+    const response = this.totpResponse();
+    if (!response?.period) {
+      return 0;
+    }
+    return (this.totpRemaining() / response.period) * 100;
+  });
+  protected readonly totpRingOffset = computed(
+    () => this.totpRingCircumference * (1 - this.totpProgress() / 100),
+  );
+
+  protected readonly selectedStrength = computed<{
+    score: number;
+    label: string;
+    tone: "bad" | "warn" | "ok";
+  } | null>(() => {
+    const item = this.selected();
+    if (!item || this.selectedKind() !== ItemKind.Login || !item.login?.password) {
+      return null;
+    }
+    const score =
+      this.passwordStrengthService.getPasswordStrength(
+        item.login.password,
+        item.login.username ?? undefined,
+        [item.name],
+      )?.score ?? 0;
+    if (score < 2) {
+      return { score, label: this.i18n.t("weak"), tone: "bad" };
+    }
+    if (score < 3) {
+      return { score, label: this.i18n.t("good"), tone: "warn" };
+    }
+    return { score, label: this.i18n.t("strong"), tone: "ok" };
   });
 
   protected readonly revealedLabels = signal<ReadonlySet<string>>(new Set());
@@ -1114,6 +1849,12 @@ export class VaultDesktopV2Component implements OnInit {
     const values = readFieldValues(item, kind);
     const groups: DetailGroupView[] = [];
 
+    const sshKeyMap = new Map(
+      this.items()
+        .filter((entry) => kindOf(entry) === ItemKind.SshKey)
+        .map((entry) => [entry.id, entry.name]),
+    );
+
     if (kind === ItemKind.Login) {
       const credentials: DetailRowView[] = [];
       for (const spec of FIELDS[kind].filter((field) => field.section === "login")) {
@@ -1126,6 +1867,7 @@ export class VaultDesktopV2Component implements OnInit {
               display: this.formattedTotp(),
               copy: code,
               mono: true,
+              multiline: false,
               launchUri: "",
               totp: true,
               secret: false,
@@ -1141,6 +1883,7 @@ export class VaultDesktopV2Component implements OnInit {
           display: spec.password ? MASK : raw,
           copy: raw,
           mono: this.isMonoField(spec),
+          multiline: !!spec.multiline,
           launchUri: "",
           totp: false,
           secret: spec.password ?? false,
@@ -1165,6 +1908,7 @@ export class VaultDesktopV2Component implements OnInit {
           display: raw,
           copy: raw,
           mono: this.isMonoField(spec),
+          multiline: false,
           launchUri: raw,
           totp: false,
           secret: false,
@@ -1187,15 +1931,34 @@ export class VaultDesktopV2Component implements OnInit {
       const rows: DetailRowView[] = [];
       for (const spec of group.fields) {
         const raw = values[spec.id] ?? "";
+        if (spec.target === "loginTotp") {
+          const code = this.totpCode();
+          if (code) {
+            rows.push({
+              label: this.i18n.t("totpCodeLabel"),
+              display: this.formattedTotp(),
+              copy: code,
+              mono: true,
+              multiline: false,
+              launchUri: "",
+              totp: true,
+              secret: false,
+            });
+          }
+          continue;
+        }
         if (!raw) {
           continue;
         }
+        const linkedSshName = spec.sshKeyRef ? sshKeyMap.get(raw) : undefined;
         rows.push({
           label: this.i18n.t(spec.labelKey),
-          display: spec.password ? MASK : raw,
-          copy: raw,
+          display: spec.password ? MASK : (linkedSshName ?? raw),
+          copy: linkedSshName ?? raw,
           mono: this.isMonoField(spec),
+          multiline: !!spec.multiline,
           launchUri: "",
+          sshLinkId: linkedSshName ? raw : undefined,
           totp: false,
           secret: spec.password ?? false,
         });
@@ -1210,6 +1973,13 @@ export class VaultDesktopV2Component implements OnInit {
     }
     return groups;
   });
+
+  protected readonly totpRow = computed<DetailRowView | null>(
+    () =>
+      this.detailGroups()
+        .flatMap((group) => group.rows)
+        .find((row) => row.totp) ?? null,
+  );
 
   protected readonly optionsRows = computed<DetailRowView[]>(() => {
     const item = this.selected();
@@ -1228,6 +1998,7 @@ export class VaultDesktopV2Component implements OnInit {
         display: values[spec.id] ?? "",
         copy: values[spec.id] ?? "",
         mono: false,
+        multiline: !!spec.multiline,
         launchUri: "",
         totp: false,
         secret: false,
@@ -1235,9 +2006,27 @@ export class VaultDesktopV2Component implements OnInit {
       .filter((row) => row.display);
   });
 
-  protected readonly editGroups = computed(() =>
-    fieldGroups(this.drawer() === "new-form" ? this.newKind() : this.selectedKind()),
-  );
+  protected readonly editGroups = computed(() => {
+    const hidden = this.editHiddenFields();
+    return fieldGroups(this.activeEditKind())
+      .map((group) => ({
+        ...group,
+        fields: group.fields.filter((field) => {
+          if (field.id === "name") {
+            return true;
+          }
+          return !hidden.has(field.id);
+        }),
+      }))
+      .filter((group) => group.fields.length > 0);
+  });
+
+  protected readonly editHiddenFieldPills = computed(() => {
+    const hidden = this.editHiddenFields();
+    return fieldGroups(this.activeEditKind())
+      .flatMap((group) => group.fields)
+      .filter((field) => field.id !== "name" && hidden.has(field.id));
+  });
 
   protected readonly folderOptions = computed(() => [
     { value: "", label: this.i18n.t("noFolder") },
@@ -1246,14 +2035,16 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected readonly drawerTitle = computed(() => {
     switch (this.drawer()) {
-      case "view":
-        return this.selected()?.name ?? "";
       case "edit":
         return this.i18n.t("editKindTitle", this.kindLabel(this.selectedKind()));
       case "new-type":
         return this.i18n.t("newItem");
       case "new-form":
         return this.i18n.t("newKindTitle", this.kindLabel(this.newKind()));
+      case "history":
+        return this.i18n.t("itemVersionHistory");
+      case "qr":
+        return this.i18n.t("totpQrTitle");
       default:
         return "";
     }
@@ -1261,13 +2052,10 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected readonly drawerSub = computed(() => {
     switch (this.drawer()) {
-      case "view": {
-        const item = this.selected();
-        return item ? `${this.kindLabel(kindOf(item))} · ${this.folderName(item)}` : "";
-      }
-      case "edit": {
+      case "edit":
+      case "history":
+      case "qr":
         return this.selected()?.name ?? "";
-      }
       case "new-type":
         return this.i18n.t("newItemPickKind");
       case "new-form":
@@ -1278,6 +2066,7 @@ export class VaultDesktopV2Component implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    this.destroyRef.onDestroy(() => this.clearRevealTimers());
     const folder = this.route.snapshot.queryParamMap.get("folder");
     if (folder) {
       this.folderFilter.set(folder);
@@ -1289,8 +2078,33 @@ export class VaultDesktopV2Component implements OnInit {
         this.cipherService.getAllDecrypted(userId),
         firstValueFrom(this.folderService.folderViews$(userId)),
       ]);
-      this.items.set(ciphers.filter((cipher) => !cipher.isDeleted));
+      this.items.set(ciphers.filter((cipher) => !cipher.isDeleted && !cipher.isArchived));
       this.folders.set(folders.filter((folder) => folder.id !== ""));
+
+      // 快速检索（⌘K）与安全体检用 `cipherId` 把选中条目带回来；`edit=1` 直接展开编辑抽屉。
+      // 先清掉可能挡住它的列表筛选。
+      this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+        const cipherId = params.get("cipherId");
+        if (!cipherId) {
+          return;
+        }
+        const item = this.items().find((cipher) => String(cipher.id) === cipherId);
+        if (!item) {
+          return;
+        }
+        const startEditing = params.get("edit") === "1";
+        this.clearFilters();
+        this.openView(item);
+        if (startEditing) {
+          this.startEdit();
+        }
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { cipherId: null, edit: null },
+          queryParamsHandling: "merge",
+          replaceUrl: true,
+        });
+      });
     } finally {
       this.loading.set(false);
     }
@@ -1308,43 +2122,25 @@ export class VaultDesktopV2Component implements OnInit {
     return item.folderId ? (this.folderNames().get(item.folderId) ?? "") : this.i18n.t("noFolder");
   }
 
-  protected itemIdentity(item: CipherView): string {
-    const identity = item.subTitle?.trim() || primaryValue(item);
-    return identity || this.kindLabel(kindOf(item));
+  protected initialOf(item: CipherView): string {
+    return (item.name || "?").trim().slice(0, 1).toUpperCase();
+  }
+
+  protected deleteSubtitle(item: CipherView): string {
+    return this.subtitleOf(item);
   }
 
   protected isSelected(item: CipherView): boolean {
     return this.selected() === item;
   }
 
-  protected isChecked(item: CipherView): boolean {
-    return !!item.id && this.selectedIds().has(item.id);
+  protected setTypeFilter(filter: TypeFilter): void {
+    this.typeFilter.set(filter);
   }
 
-  protected toggleSelect(item: CipherView, event: Event): void {
-    if (!item.id) {
-      return;
-    }
-    const checked = (event.target as HTMLInputElement).checked;
-    const next = new Set(this.selectedIds());
-    if (checked) {
-      next.add(item.id);
-    } else {
-      next.delete(item.id);
-    }
-    this.selectedIds.set(next);
-  }
-
-  protected toggleSelectAll(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.selectedIds.set(
-      checked
-        ? new Set(
-            this.rows()
-              .map((row) => row.item.id)
-              .filter((id): id is string => !!id),
-          )
-        : new Set(),
+  protected toggleCompactRows(): void {
+    void this.densityService.setDensity(
+      this.compactRows() ? VaultDensity.Compact : VaultDensity.Ultra,
     );
   }
 
@@ -1408,11 +2204,6 @@ export class VaultDesktopV2Component implements OnInit {
     this.query.set((event.target as HTMLInputElement).value);
   }
 
-  protected onTypeFilter(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.typeFilter.set(value === "all" ? "all" : (value as ItemKind));
-  }
-
   protected onFolderFilter(event: Event): void {
     this.folderFilter.set((event.target as HTMLSelectElement).value);
   }
@@ -1426,10 +2217,52 @@ export class VaultDesktopV2Component implements OnInit {
 
   protected openView(item: CipherView, event?: Event): void {
     event?.stopPropagation();
+    this.clearRevealTimers();
     this.selected.set(item);
     this.revealedLabels.set(new Set());
+    this.historyRevealed.set(new Set());
     this.errorMessage.set(null);
-    this.drawer.set("view");
+  }
+
+  protected openLinkedSsh(sshId: string): void {
+    const target = this.items().find((entry) => entry.id === sshId);
+    if (target) {
+      this.clearFilters();
+      this.openView(target);
+    }
+  }
+
+  protected openQr(): void {
+    if (!this.totpKey()) {
+      return;
+    }
+    this.drawer.set("qr");
+  }
+
+  protected formatPasskeyLabel(passkey: { rpId?: string; userName?: string }): string {
+    return (
+      [passkey.rpId, passkey.userName].filter(Boolean).join(" · ") || this.i18n.t("typePasskey")
+    );
+  }
+
+  protected primarySecretOf(view: CipherView): { label: string; value: string } | null {
+    const kind = kindOf(view);
+    const values = readFieldValues(view, kind);
+    const secretSpec = FIELDS[kind].find((field) => field.password && (values[field.id] ?? ""));
+    if (secretSpec) {
+      return { label: this.i18n.t(secretSpec.labelKey), value: values[secretSpec.id] ?? "" };
+    }
+    if (kind === ItemKind.Note && values.notes) {
+      return { label: this.i18n.t("notes"), value: values.notes };
+    }
+    return null;
+  }
+
+  protected optionsFor(field: FieldSpec): readonly LpFieldOption[] {
+    if (field.sshKeyRef) {
+      return this.sshKeyOptions();
+    }
+    return field.options ?? this.noOptions;
   }
 
   protected closeDrawer(): void {
@@ -1438,6 +2271,12 @@ export class VaultDesktopV2Component implements OnInit {
       return;
     }
     this.drawer.set("closed");
+    this.historyRevealed.set(new Set());
+    this.errorMessage.set(null);
+  }
+
+  protected clearSelection(): void {
+    this.clearRevealTimers();
     this.selected.set(null);
     this.revealedLabels.set(new Set());
     this.errorMessage.set(null);
@@ -1447,7 +2286,9 @@ export class VaultDesktopV2Component implements OnInit {
     this.newKind.set(ItemKind.Login);
     this.values.set({});
     this.editFavorite.set(false);
+    this.editReprompt.set(false);
     this.editCustomFields.set([]);
+    this.editHiddenFields.set(new Set());
     this.editFolderId.set(
       this.folderFilter() !== "all" && this.folderFilter() !== "none" ? this.folderFilter() : "",
     );
@@ -1459,7 +2300,9 @@ export class VaultDesktopV2Component implements OnInit {
     this.newKind.set(kind);
     this.values.set({});
     this.editFavorite.set(false);
+    this.editReprompt.set(false);
     this.editCustomFields.set([]);
+    this.collapseEmptyOptionalEditFields(kind, {});
     this.errorMessage.set(null);
     this.drawer.set("new-form");
   }
@@ -1470,7 +2313,8 @@ export class VaultDesktopV2Component implements OnInit {
       return;
     }
     const kind = kindOf(item);
-    this.values.set(readFieldValues(item, kind));
+    const fieldValues = readFieldValues(item, kind);
+    this.values.set(fieldValues);
     this.editCustomFields.set(
       readCustomFields(item, kind).map((field) =>
         newCustomFieldDraft(field.name, field.value, field.hidden),
@@ -1478,17 +2322,187 @@ export class VaultDesktopV2Component implements OnInit {
     );
     this.editFolderId.set(item.folderId ?? "");
     this.editFavorite.set(item.favorite);
+    this.editReprompt.set(item.reprompt !== CipherRepromptType.None);
+    this.collapseEmptyOptionalEditFields(kind, fieldValues);
     this.errorMessage.set(null);
     this.drawer.set("edit");
   }
 
+  private collapseEmptyOptionalEditFields(kind: ItemKind, values: FieldValues): void {
+    const collapsed = new Set<string>();
+    for (const group of fieldGroups(kind)) {
+      for (const field of group.fields) {
+        if (field.optional && !(values[field.id] ?? "")) {
+          collapsed.add(field.id);
+        }
+      }
+    }
+    this.editHiddenFields.set(collapsed);
+  }
+
   protected cancelEdit(): void {
-    this.drawer.set(this.selected() ? "view" : "closed");
+    this.drawer.set("closed");
     this.errorMessage.set(null);
   }
 
+  protected openHistory(): void {
+    if (!this.selected()) {
+      return;
+    }
+    this.historyRevealed.set(new Set());
+    this.versionRevealed.set(new Set());
+    this.errorMessage.set(null);
+    this.drawer.set("history");
+    void this.loadVersionRows();
+  }
+
+  private async loadVersionRows(): Promise<void> {
+    const item = this.selected();
+    if (!item?.id) {
+      this.versionRows.set([]);
+      return;
+    }
+
+    this.versionLoading.set(true);
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      const rows = await this.versionHistory.rows(userId, item.id, item);
+      // The user can select another item while the snapshots decrypt.
+      if (this.selected()?.id === item.id) {
+        this.versionRows.set(rows);
+      }
+    } catch {
+      if (this.selected()?.id === item.id) {
+        this.versionRows.set([]);
+      }
+    } finally {
+      this.versionLoading.set(false);
+    }
+  }
+
+  protected toggleVersionReveal(index: number): void {
+    this.versionRevealed.update((revealed) => {
+      const next = new Set(revealed);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  }
+
+  protected changedLabel(row: CipherVersionRow): string {
+    return row.changedFields.map((key) => this.i18n.t(key)).join(" · ");
+  }
+
+  protected async restoreVersion(row: CipherVersionRow): Promise<void> {
+    const item = this.selected();
+    if (!item?.id || item.id !== row.view.id) {
+      return;
+    }
+
+    this.saving.set(true);
+    this.errorMessage.set(null);
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      const saved = await this.cipherService.updateWithServer(row.view, userId);
+      this.selected.set(saved);
+      this.items.update((items) =>
+        items.map((entry) =>
+          entry === item || (saved.id && entry.id === saved.id) ? saved : entry,
+        ),
+      );
+      this.versionRevealed.set(new Set());
+      await this.loadVersionRows();
+      this.toast.show(this.i18n.t("itemHistoryRestored"));
+    } catch {
+      this.errorMessage.set(this.i18n.t("unexpectedError"));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  protected toggleHistoryReveal(index: number): void {
+    this.historyRevealed.update((revealed) => {
+      const next = new Set(revealed);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  }
+
+  /**
+   * 把某个旧值恢复成当前密码。写入仍走 `updateWithServer`，本地写入器会在保存前把当前密码
+   * 记入历史，所以这一步本身可逆；字段级版本与 10 版保留并不存在，界面上不宣称。
+   */
+  protected async restoreHistory(row: PasswordHistoryView): Promise<void> {
+    const item = this.selected();
+    if (!item?.id || kindOf(item) !== ItemKind.Login || !row.password) {
+      return;
+    }
+
+    const previousPassword = item.login.password;
+    item.login.password = row.password;
+    this.saving.set(true);
+    this.errorMessage.set(null);
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      const saved = await this.cipherService.updateWithServer(item, userId);
+      this.selected.set(saved);
+      this.items.update((items) =>
+        items.map((entry) =>
+          entry === item || (saved.id && entry.id === saved.id) ? saved : entry,
+        ),
+      );
+      this.historyRevealed.set(new Set());
+      this.versionRevealed.set(new Set());
+      await this.loadVersionRows();
+      this.toast.show(this.i18n.t("passwordHistoryRestored"));
+    } catch {
+      item.login.password = previousPassword;
+      this.errorMessage.set(this.i18n.t("unexpectedError"));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
   protected setValue(id: string, value: string): void {
-    this.values.update((current) => ({ ...current, [id]: value }));
+    this.values.update((current) => ({
+      ...current,
+      [id]: value,
+    }));
+  }
+
+  protected fieldPlaceholder(field: FieldSpec): string {
+    if (field.id === "expiry") {
+      return "MM/YY";
+    }
+    return field.target === "name" ? this.i18n.t("enterItemName") : "";
+  }
+
+  /** 移除字段：先清值再隐藏，保存后对应字段即为空。 */
+  protected hideEditField(id: string): void {
+    if (id === "name") {
+      return;
+    }
+    this.values.update((current) => {
+      const next = { ...current };
+      delete next[id];
+      return next;
+    });
+    this.editHiddenFields.update((current) => new Set([...current, id]));
+  }
+
+  protected showEditField(id: string): void {
+    this.editHiddenFields.update((current) => {
+      const next = new Set(current);
+      next.delete(id);
+      return next;
+    });
   }
 
   protected generateInto(field: FieldSpec): void {
@@ -1501,14 +2515,12 @@ export class VaultDesktopV2Component implements OnInit {
     }
   }
 
-  protected fieldDisplay(field: { type: FieldType; value?: string | null }): string {
-    return field.type === FieldType.Hidden ? MASK : (field.value ?? "");
-  }
-
   protected isMonoField(field: FieldSpec): boolean {
     return (
+      !!field.mono ||
       !!field.password ||
       !!field.multiline ||
+      field.id === "expiry" ||
       field.target === "loginUsername" ||
       field.target === "loginUri" ||
       field.target === "loginUri2"
@@ -1516,8 +2528,14 @@ export class VaultDesktopV2Component implements OnInit {
   }
 
   protected async save(): Promise<void> {
-    this.saving.set(true);
     this.errorMessage.set(null);
+    const name = (this.values()["name"] ?? "").trim();
+    if (!name) {
+      this.errorMessage.set(this.i18n.t("nameRequired"));
+      return;
+    }
+
+    this.saving.set(true);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       const creating = this.drawer() === "new-form" || this.drawer() === "new-type";
@@ -1527,11 +2545,15 @@ export class VaultDesktopV2Component implements OnInit {
         return;
       }
 
-      applyFieldValues(view, kind, this.values());
+      applyFieldValues(view, kind, { ...this.values(), name });
       applyCustomFields(view, kind, this.editCustomFields());
       setKind(view, kind);
       view.folderId = this.editFolderId() || undefined;
       view.favorite = this.editFavorite();
+      view.reprompt =
+        kind === ItemKind.Login && this.editReprompt()
+          ? CipherRepromptType.Password
+          : CipherRepromptType.None;
 
       const saved = creating
         ? await this.cipherService.createWithServer(view, userId)
@@ -1546,7 +2568,7 @@ export class VaultDesktopV2Component implements OnInit {
           : [saved, ...items];
       });
       this.selected.set(saved);
-      this.drawer.set("view");
+      this.drawer.set("closed");
       this.toast.show(this.i18n.t(creating ? "itemCreated" : "itemSaved"));
     } catch {
       this.errorMessage.set(this.i18n.t("unexpectedError"));
@@ -1579,6 +2601,48 @@ export class VaultDesktopV2Component implements OnInit {
     }
   }
 
+  protected async archiveSelected(): Promise<void> {
+    const item = this.selected();
+    if (item) {
+      await this.archiveItem(item);
+    }
+  }
+
+  /** 删除确认里的「改用归档」退路：只收起条目，不进回收站。 */
+  protected async archiveDeleteTarget(): Promise<void> {
+    const item = this.deleteTarget();
+    if (!item) {
+      return;
+    }
+    this.deleteTarget.set(null);
+    await this.archiveItem(item);
+  }
+
+  private async archiveItem(item: CipherView): Promise<void> {
+    if (!item.id) {
+      return;
+    }
+
+    // 归档只改条目自身的 archivedDate；不删除、不改历史，也不碰网络。
+    const previous = item.archivedDate;
+    item.archivedDate = new Date();
+    this.saving.set(true);
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      await this.cipherService.updateWithServer(item, userId);
+      this.items.update((items) => items.filter((entry) => entry.id !== item.id));
+      if (this.selected() === item) {
+        this.selected.set(null);
+      }
+      this.toast.show(this.i18n.t("itemArchiveToast"));
+    } catch {
+      item.archivedDate = previous;
+      this.toast.show(this.i18n.t("unexpectedError"));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
   protected remove(): void {
     const item = this.selected();
     if (item) {
@@ -1592,30 +2656,37 @@ export class VaultDesktopV2Component implements OnInit {
       return;
     }
 
+    this.saving.set(true);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       await this.cipherService.softDeleteWithServer(item.id, userId);
       this.items.update((items) => items.filter((entry) => entry !== item));
-      const next = new Set(this.selectedIds());
-      next.delete(item.id);
-      this.selectedIds.set(next);
       this.deleteTarget.set(null);
       if (this.selected() === item) {
         this.selected.set(null);
-        this.drawer.set("closed");
       }
-      this.toast.show(this.i18n.t("movedToTrash"));
+      this.toast.showUndo(this.i18n.t("movedToTrash"), () => this.undoRemove(item), 5);
     } catch {
-      this.errorMessage.set(this.i18n.t("unexpectedError"));
+      this.toast.show(this.i18n.t("unexpectedError"));
+    } finally {
+      this.saving.set(false);
     }
   }
 
-  protected copyValueOf(item: CipherView): string {
-    return primaryValue(item);
-  }
+  private async undoRemove(item: CipherView): Promise<void> {
+    if (!item.id) {
+      return;
+    }
 
-  protected primaryUri(item: CipherView): string {
-    return item.login?.uris?.[0]?.uri ?? "";
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      await this.cipherService.restoreWithServer(item.id, userId);
+      const ciphers = await this.cipherService.getAllDecrypted(userId);
+      this.items.set(ciphers.filter((cipher) => !cipher.isDeleted && !cipher.isArchived));
+      this.toast.show(this.i18n.t("itemRestored"));
+    } catch {
+      this.toast.show(this.i18n.t("unexpectedError"));
+    }
   }
 
   protected launch(uri: string): void {
@@ -1624,51 +2695,123 @@ export class VaultDesktopV2Component implements OnInit {
     }
   }
 
-  protected copyPrimary(item: CipherView, event: Event): void {
+  protected copyUsername(item: CipherView, event: Event): void {
     event.stopPropagation();
-    const value = item.login.password || item.login.username || primaryValue(item);
-    if (value) {
-      this.copyValue(value, this.i18n.t("value"));
-    }
+    this.copyValue(item.login.username, this.i18n.t("username"));
   }
 
-  protected copyValue(value: string | null | undefined, label: string): void {
+  protected copyPassword(item: CipherView, event: Event): void {
+    event.stopPropagation();
+    this.copyValue(item.login.password, this.i18n.t("password"));
+  }
+
+  protected copyValue(value: string | null | undefined, label: string, flashKey?: string): void {
     if (!value) {
       return;
     }
-    void navigator.clipboard?.writeText(value);
-    this.toast.show(this.i18n.t("valueCopied", label));
+    // 走平台剪贴板服务，按设置自动清空；不把明文留在系统剪贴板历史里。
+    this.platformUtilsService.copyToClipboard(value);
+    this.toast.showClipboard(this.i18n.t("valueCopied", label), () => {
+      this.platformUtilsService.copyToClipboard("", { clearing: true });
+    });
+    if (flashKey) {
+      this.flash(flashKey);
+    }
+  }
+
+  private flash(key: string): void {
+    const previous = this.copiedTimer();
+    if (previous) {
+      clearTimeout(previous);
+    }
+    this.copiedKey.set(key);
+    this.copiedTimer.set(setTimeout(() => this.copiedKey.set(""), 1300));
   }
 
   protected toggleReveal(label: string): void {
+    const willReveal = !this.revealedLabels().has(label);
     this.revealedLabels.update((labels) => {
       const next = new Set(labels);
-      if (next.has(label)) {
-        next.delete(label);
-      } else {
+      if (willReveal) {
         next.add(label);
+      } else {
+        next.delete(label);
       }
       return next;
     });
+    this.scheduleAutoHide(label, willReveal);
+  }
+
+  private scheduleAutoHide(label: string, visible: boolean): void {
+    const existing = this.revealTimers.get(label);
+    if (existing) {
+      clearTimeout(existing);
+      this.revealTimers.delete(label);
+    }
+    if (!visible || !this.autoHide()) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      this.revealTimers.delete(label);
+      this.revealedLabels.update((labels) => {
+        const next = new Set(labels);
+        next.delete(label);
+        return next;
+      });
+    }, PASSWORD_AUTO_HIDE_MS);
+    this.revealTimers.set(label, timer);
+  }
+
+  private clearRevealTimers(): void {
+    for (const timer of this.revealTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.revealTimers.clear();
+  }
+
+  protected isCustomFieldRevealed(name: string | null | undefined): boolean {
+    return this.revealedLabels().has(`cf:${name ?? ""}`);
+  }
+
+  protected toggleCustomFieldReveal(name: string | null | undefined): void {
+    this.toggleReveal(`cf:${name ?? ""}`);
   }
 
   protected go(route: string): void {
     void this.router.navigateByUrl(route);
   }
 
-  /** ⌘N 新建、⌘K 聚焦搜索、Esc 后退一层、↑↓ 在筛选结果里移动。 */
+  protected shortcutEnabled(id: DesktopShortcut): boolean {
+    return !this.disabledShortcuts().has(id);
+  }
+
+  /** ⌘N 新建、⌘K 搜索、⌘E 编辑、⌘↵ 保存、⌘C/⇧⌘C 复制、⌘⌫ 删除、Esc 关闭、↑↓ 切换。 */
   protected onKeyDown(event: KeyboardEvent): void {
     const meta = event.metaKey || event.ctrlKey;
+    const key = event.key.toLowerCase();
 
-    if (meta && event.key.toLowerCase() === "n") {
+    if (event.key === "Escape" && this.deleteTarget() != null) {
       event.preventDefault();
-      this.openNew();
+      this.deleteTarget.set(null);
       return;
     }
 
-    if (meta && event.key.toLowerCase() === "k") {
+    if (
+      meta &&
+      event.key === "Enter" &&
+      (this.drawer() === "edit" || this.drawer() === "new-form") &&
+      !this.saving()
+    ) {
       event.preventDefault();
-      this.searchInput()?.nativeElement.focus();
+      void this.save();
+      return;
+    }
+
+    if (meta && key === "n") {
+      event.preventDefault();
+      if (this.shortcutEnabled(DesktopShortcut.Edit)) {
+        this.openNew();
+      }
       return;
     }
 
@@ -1689,20 +2832,74 @@ export class VaultDesktopV2Component implements OnInit {
       return;
     }
 
-    if (this.drawer() === "closed" && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
-      const rows = this.rows();
+    if (this.drawer() !== "closed" || this.deleteTarget() != null) {
+      return;
+    }
+
+    const selected = this.selected();
+    if (meta && key === "e") {
+      if (selected && this.shortcutEnabled(DesktopShortcut.Edit)) {
+        event.preventDefault();
+        this.startEdit();
+      }
+      return;
+    }
+
+    if (
+      (event.key === "Delete" || (meta && event.key === "Backspace")) &&
+      selected &&
+      this.shortcutEnabled(DesktopShortcut.Delete)
+    ) {
+      event.preventDefault();
+      this.remove();
+      return;
+    }
+
+    if (meta && selected && this.shortcutEnabled(DesktopShortcut.Copy)) {
+      if (event.shiftKey && key === "c" && selected.login.password) {
+        event.preventDefault();
+        this.copyValue(selected.login.password, this.i18n.t("password"));
+        return;
+      }
+      if (!event.shiftKey && key === "c" && selected.login.username) {
+        event.preventDefault();
+        this.copyValue(selected.login.username, this.i18n.t("username"));
+        return;
+      }
+    }
+
+    if (
+      (event.key === "ArrowDown" || event.key === "ArrowUp") &&
+      this.shortcutEnabled(DesktopShortcut.Nav)
+    ) {
+      const rows = this.isFiltering() ? this.rows() : [...this.favoriteRows(), ...this.otherRows()];
       if (!rows.length) {
         return;
       }
       event.preventDefault();
-      const current = this.selected();
-      const index = rows.findIndex((row) => row.item === current);
+      const index = rows.findIndex((row) => row.item === selected);
       const delta = event.key === "ArrowDown" ? 1 : -1;
       const next = rows[(index + delta + rows.length) % rows.length];
       if (next) {
-        this.selected.set(next.item);
+        this.openView(next.item);
+        setTimeout(() => {
+          document
+            .querySelector<HTMLElement>(`.agy-mac-row[data-cipher-id="${next.item.id}"]`)
+            ?.scrollIntoView({ block: "nearest" });
+        });
       }
     }
+  }
+}
+
+function totpSecretOf(value: string): string {
+  if (!value.toLowerCase().startsWith("otpauth://")) {
+    return value;
+  }
+  try {
+    return new URL(value).searchParams.get("secret") ?? "";
+  } catch {
+    return "";
   }
 }
 
@@ -1713,16 +2910,6 @@ function formatLongDate(date: Date): string {
   const hours = `${date.getHours()}`.padStart(2, "0");
   const minutes = `${date.getMinutes()}`.padStart(2, "0");
   return `${year}/${month}/${day} ${hours}:${minutes}`;
-}
-
-function primaryValue(item: CipherView): string {
-  const kind = kindOf(item);
-  const values = readFieldValues(item, kind);
-  const first = FIELDS[kind].find(
-    (field) =>
-      field.target !== "name" && field.target !== "notes" && !field.password && values[field.id],
-  );
-  return first ? values[first.id] : "";
 }
 
 function joinParts(parts: readonly (string | undefined)[]): string {

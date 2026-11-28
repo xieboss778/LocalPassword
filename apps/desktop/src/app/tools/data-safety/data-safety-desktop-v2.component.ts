@@ -18,7 +18,7 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { ButtonModule, CalloutModule, DialogService, IconModule } from "@localpass/components";
-import { VaultBackupService } from "@localpass/local-vault";
+import { VaultBackupService, VaultBackupSyncService } from "@localpass/local-vault";
 
 /**
  * 桌面端「数据与安全」。
@@ -32,13 +32,32 @@ import { VaultBackupService } from "@localpass/local-vault";
   host: { class: "tw-block tw-h-full" },
   imports: [ButtonModule, CalloutModule, IconModule, LpPageHeaderComponent],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
       <lp-page-header
         [title]="i18n.t('dataAndSafety')"
         [sub]="i18n.t('dataAndSafetySubtitle')"
       ></lp-page-header>
 
       <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-7 tw-pb-7">
+        <div class="tw-mb-4 tw-grid tw-grid-cols-4 tw-gap-2">
+          <div class="agy-stat">
+            <div class="agy-n">{{ itemCount() }}</div>
+            <div class="agy-l">{{ i18n.t("totalItems") }}</div>
+          </div>
+          <div class="agy-stat agy-ok">
+            <div class="agy-n">0600</div>
+            <div class="agy-l">{{ i18n.t("dataFileMode") }}</div>
+          </div>
+          <div class="agy-stat" [class.agy-ok]="syncConfigured()">
+            <div class="agy-n">{{ syncConfigured() ? "R2" : "—" }}</div>
+            <div class="agy-l">{{ i18n.t("cloudBackup") }}</div>
+          </div>
+          <div class="agy-stat agy-ok">
+            <div class="agy-n">0</div>
+            <div class="agy-l">{{ i18n.t("dataServerCopies") }}</div>
+          </div>
+        </div>
+
         <div class="tw-flex tw-items-start tw-gap-4">
           <div
             class="tw-min-w-0 tw-flex-1 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-4 tw-shadow-sm"
@@ -116,18 +135,42 @@ import { VaultBackupService } from "@localpass/local-vault";
             <bit-callout type="warning" [title]="null">{{
               i18n.t("clearVaultWarning")
             }}</bit-callout>
-            <button
-              type="button"
-              bitButton
-              buttonType="dangerOutline"
-              class="tw-mt-4"
-              [disabled]="itemCount() === 0 || clearing()"
-              [loading]="clearing()"
-              data-testid="data_clear_vault"
-              (click)="clearVault()"
+            <label
+              class="tw-mt-4 tw-flex tw-cursor-pointer tw-items-start tw-gap-2 tw-text-sm tw-leading-relaxed tw-text-main"
+              for="data_input_clear-confirm"
             >
-              {{ i18n.t("clearVault") }}
-            </button>
+              <input
+                id="data_input_clear-confirm"
+                type="checkbox"
+                class="tw-mt-0.5 tw-size-4 tw-flex-none"
+                data-testid="data_clear_vault_confirm"
+                [checked]="confirmed()"
+                (change)="onConfirmChange($event)"
+              />
+              <span>{{ i18n.t("clearVaultConfirmCheckbox") }}</span>
+            </label>
+            <div class="tw-mt-4 tw-flex tw-flex-wrap tw-items-center tw-gap-2">
+              <button
+                type="button"
+                bitButton
+                buttonType="dangerOutline"
+                [disabled]="!confirmed() || itemCount() === 0 || clearing()"
+                [loading]="clearing()"
+                data-testid="data_clear_vault"
+                (click)="clearVault()"
+              >
+                {{ i18n.t("clearVault") }}
+              </button>
+              <button
+                type="button"
+                bitButton
+                buttonType="secondary"
+                data-testid="data_export_first"
+                (click)="go('/export')"
+              >
+                {{ i18n.t("exportFirst") }}
+              </button>
+            </div>
             @if (errorMessage()) {
               <p class="tw-pt-3 tw-text-sm tw-text-fg-danger">{{ errorMessage() }}</p>
             }
@@ -142,36 +185,46 @@ export class DataSafetyDesktopV2Component implements OnInit {
   private readonly cipherService = inject(CipherService);
   private readonly accountService = inject(AccountService);
   private readonly backupService = inject(VaultBackupService);
+  private readonly syncService = inject(VaultBackupSyncService);
   private readonly dialogService = inject(DialogService);
   private readonly toast = inject(LpToastService);
   private readonly logService = inject(LogService);
   private readonly router = inject(Router);
 
   protected readonly itemCount = signal(0);
+  protected readonly syncConfigured = signal(false);
   protected readonly lastBackupAt = signal<string | null>(null);
   private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en" });
   protected readonly lastBackupLabel = computed(() =>
     formatBackupTimestamp(this.lastBackupAt(), this.locale(), this.i18n),
   );
   protected readonly clearing = signal(false);
+  protected readonly confirmed = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
     const userId = await this.userId();
-    const [ciphers, settings] = await Promise.all([
+    const [ciphers, settings, syncState, hasConfig] = await Promise.all([
       this.cipherService.getAll(userId),
       this.backupService.getSettings(userId),
+      this.syncService.getSyncState(userId),
+      this.syncService.hasConfig(userId),
     ]);
     this.itemCount.set(ciphers.length);
-    this.lastBackupAt.set(settings.lastBackupAt ?? null);
+    this.syncConfigured.set(hasConfig);
+    this.lastBackupAt.set(syncState.lastSyncedAt ?? settings.lastBackupAt ?? null);
   }
 
   protected go(route: string): void {
     void this.router.navigateByUrl(route);
   }
 
+  protected onConfirmChange(event: Event): void {
+    this.confirmed.set((event.target as HTMLInputElement).checked);
+  }
+
   protected async clearVault(): Promise<void> {
-    if (this.clearing()) {
+    if (this.clearing() || !this.confirmed()) {
       return;
     }
 

@@ -63,6 +63,12 @@ export class MessagingMain {
       case "hideToTray":
         this.main.trayMain.hideToTray();
         break;
+      case "trayOpenMain":
+        await this.main.trayMain.openMainWindow();
+        break;
+      case "trayClose":
+        this.main.trayMain.hideTrayPopup();
+        break;
       case "addOpenAtLogin":
         this.setOpenAtLogin(true);
         break;
@@ -97,15 +103,22 @@ export class MessagingMain {
   }
 
   private updateTrayMenu(updateRequest: MenuUpdateRequest) {
-    if (
-      this.main.trayMain == null ||
-      this.main.trayMain.contextMenu == null ||
-      updateRequest?.activeUserId == null
-    ) {
+    if (this.main.trayMain == null || this.main.trayMain.contextMenu == null) {
+      return;
+    }
+
+    const activeAccount =
+      updateRequest?.activeUserId != null
+        ? updateRequest.accounts[updateRequest.activeUserId]
+        : null;
+    this.main.trayMain.setVaultLocked(
+      activeAccount == null || !activeAccount.isAuthenticated || activeAccount.isLocked,
+    );
+
+    if (updateRequest?.activeUserId == null) {
       return;
     }
     const lockVaultTrayMenuItem = this.main.trayMain.contextMenu.getMenuItemById("lockVault");
-    const activeAccount = updateRequest.accounts[updateRequest.activeUserId];
     if (lockVaultTrayMenuItem != null && activeAccount != null) {
       lockVaultTrayMenuItem.enabled = activeAccount.isAuthenticated && !activeAccount.isLocked;
     }

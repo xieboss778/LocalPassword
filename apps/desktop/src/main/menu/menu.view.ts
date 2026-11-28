@@ -76,7 +76,6 @@ export class ViewMenu implements IMenubarMenu {
       id: "generator",
       label: this.localize("generator"),
       click: () => this.sendMessage("openGenerator"),
-      accelerator: "CmdOrCtrl+G",
       enabled: !this._isLocked,
     };
   }

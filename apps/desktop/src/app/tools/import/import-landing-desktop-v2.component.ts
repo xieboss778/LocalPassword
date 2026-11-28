@@ -11,6 +11,7 @@ import { Router } from "@angular/router";
 import { LpPageHeaderComponent, LpToastService } from "@localpass/angular/local-ui";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { ButtonModule, IconModule, IconTileComponent, LocalPassIcon } from "@localpass/components";
+import { ImportType, readImportFileContents } from "@localpass/importer-core";
 import { ImportPreviewStagingService } from "@localpass/importer-ui";
 
 interface ImportSourceCard {
@@ -20,14 +21,16 @@ interface ImportSourceCard {
   readonly descKey: string;
   /** File cards open a picker and preview the chosen file; route cards go to the full picker. */
   readonly action: "file" | "route";
+  readonly defaultFormat?: ImportType;
+  readonly accept?: string;
   readonly route?: string;
 }
 
 /**
- * 桌面端导入入口：三张常用来源卡片 + 文件区。
+ * 桌面端导入入口：5 类常用来源卡片 + 文件拖放区。
  *
- * 文件卡片和拖放区把选中的文件交给预览页，确认后才写入；其余格式仍交给
- * `@localpass/importer` 的完整选择器（`/import/all`），不复制导入逻辑。
+ * 文件卡片和拖放区把选中的文件经 `readImportFileContents` 读取后交给预览页，
+ * 确认后才写入；其余格式仍交给 `@localpass/importer` 的完整选择器（`/import/all`）。
  */
 @Component({
   selector: "import-landing-desktop-v2",
@@ -38,7 +41,7 @@ interface ImportSourceCard {
     <input
       #importFile
       type="file"
-      accept=".json,application/json"
+      [attr.accept]="fileAccept()"
       class="tw-hidden"
       [attr.aria-label]="i18n.t('importLocalPassBackup')"
       (change)="onFileSelected($event)"
@@ -139,14 +142,27 @@ export class ImportLandingDesktopV2Component {
   private readonly importFile = viewChild<ElementRef<HTMLInputElement>>("importFile");
 
   protected readonly dragging = signal(false);
+  protected readonly selectedFormat = signal<ImportType | null>(null);
+  protected readonly fileAccept = signal(".json,.csv,.1pux,.1pif,application/json,text/csv");
 
   protected readonly sources: readonly ImportSourceCard[] = [
+    {
+      icon: "bwi-key",
+      variant: "brand",
+      labelKey: "import1Password",
+      descKey: "import1PasswordDesc",
+      action: "file",
+      defaultFormat: "1password1pux",
+      accept: ".1pux,.1pif,.csv",
+    },
     {
       icon: "bwi-note",
       variant: "gray",
       labelKey: "importLocalPassBackup",
       descKey: "importLocalPassBackupDesc",
       action: "file",
+      defaultFormat: "localpassjson",
+      accept: ".json,application/json",
     },
     {
       icon: "bwi-login",
@@ -154,20 +170,33 @@ export class ImportLandingDesktopV2Component {
       labelKey: "importBitwardenExport",
       descKey: "importBitwardenExportDesc",
       action: "file",
+      defaultFormat: "localpassjson",
+      accept: ".json,.csv,application/json,text/csv",
     },
     {
-      icon: "bwi-key",
+      icon: "bwi-lock",
       variant: "warning",
       labelKey: "importGoogleAuth",
       descKey: "importGoogleAuthDesc",
       action: "route",
-      route: "/import/all",
+      route: "/import-google-auth",
+    },
+    {
+      icon: "bwi-file-text",
+      variant: "gray",
+      labelKey: "importGenericCsv",
+      descKey: "importGenericCsvDesc",
+      action: "file",
+      defaultFormat: "localpasscsv",
+      accept: ".csv,text/csv",
     },
   ];
 
   protected openSource(source: ImportSourceCard): void {
     if (source.action === "file") {
-      this.pickFile();
+      this.selectedFormat.set(source.defaultFormat ?? null);
+      this.fileAccept.set(source.accept ?? ".json,.csv,.1pux,.1pif,application/json,text/csv");
+      setTimeout(() => this.importFile()?.nativeElement.click());
       return;
     }
     if (source.route) {
@@ -176,7 +205,9 @@ export class ImportLandingDesktopV2Component {
   }
 
   protected pickFile(): void {
-    this.importFile()?.nativeElement.click();
+    this.selectedFormat.set(null);
+    this.fileAccept.set(".json,.csv,.1pux,.1pif,application/json,text/csv");
+    setTimeout(() => this.importFile()?.nativeElement.click());
   }
 
   protected openPicker(): void {
@@ -188,7 +219,7 @@ export class ImportLandingDesktopV2Component {
     const file = input.files?.[0];
     input.value = "";
     if (file) {
-      await this.preview(file);
+      await this.preview(file, this.selectedFormat());
     }
   }
 
@@ -206,21 +237,43 @@ export class ImportLandingDesktopV2Component {
     this.dragging.set(false);
     const file = event.dataTransfer?.files?.[0];
     if (file) {
-      await this.preview(file);
+      await this.preview(file, null);
     }
   }
 
   /** Hands the file to the preview page; the contents stay in memory and are consumed there. */
-  private async preview(file: File): Promise<void> {
+  private async preview(file: File, preferred: ImportType | null): Promise<void> {
     try {
+      const importType = resolveImportType(file.name, preferred);
+      const contents = await readImportFileContents(importType, file);
       this.staging.set({
-        importType: "localpassjson",
+        importType,
         fileName: file.name,
-        contents: await file.text(),
+        contents,
       });
       await this.router.navigateByUrl("/import-preview");
     } catch {
       this.toast.show(this.i18n.t("errorOccurred"));
     }
   }
+}
+
+function resolveImportType(fileName: string, preferred: ImportType | null): ImportType {
+  const lower = fileName.toLowerCase();
+  if (lower.endsWith(".1pux")) {
+    return "1password1pux";
+  }
+  if (lower.endsWith(".1pif")) {
+    return "1password1pif";
+  }
+  if (lower.endsWith(".csv")) {
+    if (preferred === "1password1pux") {
+      return "1passwordmaccsv";
+    }
+    return preferred ?? "localpasscsv";
+  }
+  if (lower.endsWith(".json")) {
+    return "localpassjson";
+  }
+  return preferred ?? "localpassjson";
 }

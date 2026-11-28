@@ -26,12 +26,14 @@ import {
 } from "@localpass/angular/auth/registration";
 import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
+import { ArchiveV2Component } from "@localpass/angular/tools/archive";
 import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
 import { FoldersV2Component } from "@localpass/angular/tools/folders";
 import {
   GeneratorHistoryV2Component,
   GeneratorV2Component,
 } from "@localpass/angular/tools/generator";
+import { HealthV2Component } from "@localpass/angular/tools/health";
 import { ItemFormV2Component, NewItemV2Component } from "@localpass/angular/tools/item-entry";
 import {
   DevicesIcon,
@@ -89,11 +91,12 @@ import { VaultComponent } from "../vault/app/vault-v3/vault.component";
 
 import { DesktopLayoutComponent } from "./layout/desktop-layout.component";
 import { LocalVaultLayoutComponent } from "./layout/local-vault-layout.component";
-import { UnlockOfflineFootnoteComponent } from "./layout/unlock-offline-footnote.component";
+import { TrayV2Component } from "./layout/tray-v2.component";
 import { SettingsDesktopV2Component } from "./settings-desktop-v2/settings-desktop-v2.component";
 import { BackupStatusDesktopV2Component } from "./tools/backup/backup-status-desktop-v2.component";
 import { DataSafetyDesktopV2Component } from "./tools/data-safety/data-safety-desktop-v2.component";
 import { ExportDesktopV2Component } from "./tools/export/export-desktop-v2.component";
+import { GoogleAuthImportDesktopV2Component } from "./tools/import/google-auth-import-desktop-v2.component";
 import { ImportLandingDesktopV2Component } from "./tools/import/import-landing-desktop-v2.component";
 import { ImportPreviewDesktopComponent } from "./tools/import/import-preview-desktop.component";
 import { ImportShellDesktopComponent } from "./tools/import/import-shell-desktop.component";
@@ -389,6 +392,7 @@ export const routes: Routes = [
           hideHeader: true,
           hideLogo: true,
           hideFooter: true,
+          hideCardWrapper: true,
           hideBackgroundIllustration: true,
           showReadonlyHostname: true,
         } satisfies AnonLayoutWrapperData,
@@ -396,11 +400,6 @@ export const routes: Routes = [
           {
             path: "",
             component: LockComponent,
-          },
-          {
-            path: "",
-            component: UnlockOfflineFootnoteComponent,
-            outlet: "secondary",
           },
         ],
       },
@@ -508,6 +507,12 @@ export const routes: Routes = [
     ],
   },
   {
+    // 菜单栏托盘面板由 Main 进程在独立 304×380 窗口加载，不使用主窗口的侧栏外壳。
+    path: "tray",
+    component: TrayV2Component,
+    canActivate: [authGuard],
+  },
+  {
     // LocalPassword：方向 C 的桌面端外壳（左 rail + 右侧内容）。所有本地保险库页面
     // 都在这里，主界面不再是上游的 Bitwarden 侧栏。
     path: "",
@@ -530,6 +535,16 @@ export const routes: Routes = [
         path: "folders-desktop-v2",
         component: FoldersV2Component,
         data: { pageTitle: { key: "myFolders" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "archive-v2",
+        component: ArchiveV2Component,
+        data: { pageTitle: { key: "archiveNoun" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "health-v2",
+        component: HealthV2Component,
+        data: { pageTitle: { key: "healthCheck" } } satisfies RouteDataProperties,
       },
       {
         path: "new-item-v2",
@@ -607,6 +622,11 @@ export const routes: Routes = [
         path: "import-preview",
         component: ImportPreviewDesktopComponent,
         data: { pageTitle: { key: "importPreviewTitle" } } satisfies RouteDataProperties,
+      },
+      {
+        path: "import-google-auth",
+        component: GoogleAuthImportDesktopV2Component,
+        data: { pageTitle: { key: "importGoogleAuth" } } satisfies RouteDataProperties,
       },
       {
         path: "import/all",

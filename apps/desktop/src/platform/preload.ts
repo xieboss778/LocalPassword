@@ -119,17 +119,20 @@ const localhostCallbackService = {
   },
 };
 
-export default {
-  versions: {
-    app: (): Promise<string> => ipcRenderer.invoke("appVersion"),
-    registerSdkVersionProvider: (provide: (resolve: (version: string) => void) => void) => {
-      const resolve = (version: string) => ipcRenderer.send("sdkVersion", version);
+const versions = {
+  app: (): Promise<string> => ipcRenderer.invoke("appVersion"),
+  electron: process.versions.electron,
+  registerSdkVersionProvider: (provide: (resolve: (version: string) => void) => void) => {
+    const resolve = (version: string) => ipcRenderer.send("sdkVersion", version);
 
-      ipcRenderer.on("sdkVersion", () => {
-        provide(resolve);
-      });
-    },
+    ipcRenderer.on("sdkVersion", () => {
+      provide(resolve);
+    });
   },
+};
+
+export default {
+  versions,
   deviceType: deviceType(),
   isDev: isDev(),
   isMacAppStore: isMacAppStore(),

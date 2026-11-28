@@ -24,7 +24,6 @@ import { PendingAuthRequestsStateService } from "@localpass/common/auth/services
 import { BillingAccountProfileStateService } from "@localpass/common/billing/abstractions";
 import { PremiumCheckoutPendingService } from "@localpass/common/billing/abstractions/account/premium-checkout-pending.service";
 import { EventUploadService } from "@localpass/common/dirt/event-logs";
-import { FeatureFlag } from "@localpass/common/enums/feature-flag.enum";
 import { PinServiceAbstraction } from "@localpass/common/key-management/pin/pin.service.abstraction";
 import { ProcessReloadServiceAbstraction } from "@localpass/common/key-management/process-reload";
 import { VaultTimeoutSettingsService } from "@localpass/common/key-management/vault-timeout";
@@ -51,7 +50,6 @@ import { LegacyCompatKeyService } from "@localpass/legacy-crypto";
 import { LockService } from "@localpass/unlock";
 
 import { AppComponent } from "./app.component";
-import { ImportDesktopComponent } from "./tools/import/import-desktop.component";
 
 describe("AppComponent (desktop)", () => {
   let component: AppComponent;
@@ -234,23 +232,11 @@ describe("AppComponent (desktop)", () => {
   });
 
   describe("importVault message", () => {
-    it("opens the legacy import dialog when the import upgrade flag is off", async () => {
-      configService.getFeatureFlag.mockResolvedValue(false);
-
-      await dispatchMessage({ command: "importVault" });
-
-      expect(configService.getFeatureFlag).toHaveBeenCalledWith(FeatureFlag.ImportUpgrade);
-      expect(dialogService.open).toHaveBeenCalledWith(ImportDesktopComponent);
-      expect(router.navigate).not.toHaveBeenCalledWith(["/import"]);
-    });
-
-    it("navigates to the new import source picker page when the import upgrade flag is on", async () => {
-      configService.getFeatureFlag.mockResolvedValue(true);
-
+    it("navigates directly to the unified AGY import landing page", async () => {
       await dispatchMessage({ command: "importVault" });
 
       expect(router.navigate).toHaveBeenCalledWith(["/import"]);
-      expect(dialogService.open).not.toHaveBeenCalledWith(ImportDesktopComponent);
+      expect(dialogService.open).not.toHaveBeenCalled();
     });
   });
 

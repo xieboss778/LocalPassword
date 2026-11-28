@@ -2,7 +2,15 @@
 // @ts-strict-ignore
 import * as path from "path";
 
-import { app, BrowserWindow, Menu, MenuItemConstructorOptions, nativeImage, Tray } from "electron";
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  MenuItemConstructorOptions,
+  nativeImage,
+  screen,
+  Tray,
+} from "electron";
 
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@localpass/common/platform/abstractions/messaging.service";
@@ -20,6 +28,9 @@ export class TrayMain {
   private tray: Tray;
   private icon: string | Electron.NativeImage;
   private pressedIcon: Electron.NativeImage;
+  /** 304×380 菜单栏面板；只在保险库解锁时显示，锁定后立即隐藏。 */
+  private popup: BrowserWindow | null = null;
+  private vaultLocked = true;
   // Cached so the close handler can decide synchronously whether to call preventDefault().
   private runInBackground = false;
 
@@ -110,6 +121,7 @@ export class TrayMain {
   }
 
   removeTray(showWindow = true) {
+    this.hideTrayPopup();
     // Due to https://github.com/electron/electron/issues/17622
     // we cannot destroy the tray icon on linux.
     if (this.tray != null && process.platform !== "linux") {
@@ -120,6 +132,26 @@ export class TrayMain {
     if (showWindow && this.windowMain.win != null && !this.windowMain.win.isVisible()) {
       this.windowMain.win.show();
     }
+  }
+
+  /** 锁库或切换账号后，菜单栏面板不能再暴露旧条目的复制入口。 */
+  setVaultLocked(locked: boolean): void {
+    this.vaultLocked = locked;
+    if (locked) {
+      this.hideTrayPopup();
+    }
+  }
+
+  hideTrayPopup(): void {
+    if (this.popup != null && !this.popup.isDestroyed()) {
+      this.popup.hide();
+    }
+  }
+
+  /** 托盘里的「打开主窗口」：收起面板并回到主窗口。 */
+  async openMainWindow(): Promise<void> {
+    this.hideTrayPopup();
+    await this.restoreFromTray();
   }
 
   hideToTray(win: BrowserWindow | null = this.windowMain.win) {
@@ -162,7 +194,7 @@ export class TrayMain {
 
     this.tray = new Tray(this.icon);
     this.tray.setToolTip(this.appName);
-    this.tray.on("click", () => this.restoreFromTray());
+    this.tray.on("click", () => void this.onTrayClick());
     this.tray.on("right-click", () => this.tray.popUpContextMenu(this.contextMenu));
 
     if (this.pressedIcon != null) {
@@ -177,6 +209,75 @@ export class TrayMain {
     if (this.tray != null && this.contextMenu != null && this.isLinux()) {
       this.tray.setContextMenu(this.contextMenu);
     }
+  }
+
+  private async onTrayClick(): Promise<void> {
+    if (this.vaultLocked) {
+      await this.restoreFromTray();
+      return;
+    }
+
+    if (this.popup != null && !this.popup.isDestroyed() && this.popup.isVisible()) {
+      this.popup.hide();
+      return;
+    }
+
+    await this.showTrayPopup();
+  }
+
+  private async showTrayPopup(): Promise<void> {
+    try {
+      if (this.popup == null || this.popup.isDestroyed()) {
+        const popup = await this.windowMain.createTrayWindow();
+        popup.on("blur", () => {
+          if (this.popup === popup && !popup.isDestroyed()) {
+            popup.hide();
+          }
+        });
+        popup.on("closed", () => {
+          if (this.popup === popup) {
+            this.popup = null;
+          }
+        });
+        this.popup = popup;
+      }
+
+      this.positionTrayPopup(this.popup);
+      this.popup.show();
+      this.popup.focus();
+    } catch {
+      // 面板本身不可用时仍让用户进入主窗口，而不是把托盘点击变成无响应。
+      await this.restoreFromTray();
+    }
+  }
+
+  /** 贴着托盘图标弹出；任务栏在底部时翻到图标上方，并夹在屏幕工作区内。 */
+  private positionTrayPopup(popup: BrowserWindow): void {
+    const trayBounds = this.tray.getBounds();
+    const display = screen.getDisplayNearestPoint({
+      x: Math.round(trayBounds.x),
+      y: Math.round(trayBounds.y),
+    });
+    const workArea = display.workArea;
+    const width = 304;
+    const height = 380;
+    const margin = 6;
+
+    const x = clamp(
+      trayBounds.x + trayBounds.width / 2 - width / 2,
+      workArea.x + margin,
+      workArea.x + workArea.width - width - margin,
+    );
+    const below = trayBounds.y + trayBounds.height + margin;
+    const above = trayBounds.y - height - margin;
+    const preferAbove = trayBounds.y > workArea.y + workArea.height / 2;
+    const y = clamp(
+      preferAbove ? above : below,
+      workArea.y + margin,
+      workArea.y + workArea.height - height - margin,
+    );
+
+    popup.setPosition(Math.round(x), Math.round(y));
   }
 
   private hideDock() {
@@ -215,4 +316,8 @@ export class TrayMain {
   private async fakePopupCreate() {
     await this.messagingService.send("loadurl", { url: "/create-passkey", modal: true });
   }
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
 }

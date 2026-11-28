@@ -70,10 +70,7 @@ import { ChangePasswordDialogComponent } from "../auth/password-management/chang
 import { MenuAccount, MenuUpdateRequest } from "../main/menu/menu.updater";
 import { SSO_COOKIE_VENDOR_CALLBACK_COMMAND } from "../platform/services/server-communication-config/server-communication-config-platform-api.service";
 
-import { SettingsDialogComponent } from "./accounts/settings-dialog.component";
-import { ExportDesktopComponent } from "./tools/export/export-desktop.component";
 import { CredentialGeneratorComponent } from "./tools/generator/credential-generator.component";
-import { ImportDesktopComponent } from "./tools/import/import-desktop.component";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes
@@ -252,7 +249,7 @@ export class AppComponent implements OnInit, OnDestroy {
             }
             break;
           case "openSettings": {
-            SettingsDialogComponent.open(this.dialogService);
+            await this.router.navigate(["/settings-desktop-v2"]);
             break;
           }
           case "openTroubleshootingDialog":
@@ -294,7 +291,7 @@ export class AppComponent implements OnInit, OnDestroy {
             await this.deleteAccount();
             break;
           case "openPasswordHistory":
-            await this.openGeneratorHistory();
+            await this.router.navigate(["/generator-history-v2"]);
             break;
           case "showToast":
             this.toastService._showToast(message);
@@ -352,20 +349,7 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           }
           case "syncVault":
-            try {
-              await this.syncService.fullSync(true, true);
-              this.platformUtilsService.showToast(
-                "success",
-                null,
-                this.i18nService.t("syncingComplete"),
-              );
-            } catch {
-              this.platformUtilsService.showToast(
-                "error",
-                null,
-                this.i18nService.t("syncingFailed"),
-              );
-            }
+            await this.router.navigate(["/backup-settings"]);
             break;
           case "checkSyncVault":
             try {
@@ -403,14 +387,10 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           }
           case "importVault":
-            if (await this.configService.getFeatureFlag(FeatureFlag.ImportUpgrade)) {
-              await this.router.navigate(["/import"]);
-            } else {
-              await this.dialogService.open(ImportDesktopComponent);
-            }
+            await this.router.navigate(["/import"]);
             break;
           case "exportVault":
-            await this.dialogService.open(ExportDesktopComponent);
+            await this.router.navigate(["/export"]);
             break;
           case "newLogin":
             this.routeToVault("add", CipherType.Login);
@@ -430,10 +410,10 @@ export class AppComponent implements OnInit, OnDestroy {
           default:
             break;
           case "newFolder":
-            await this.addFolder();
+            await this.router.navigate(["/folders-desktop-v2"]);
             break;
           case "openGenerator":
-            await this.openGenerator();
+            await this.router.navigate(["/generator"]);
             break;
           case "convertAccountToKeyConnector":
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.

@@ -6,14 +6,15 @@ import {
   LpFieldComponent,
   LpFieldOption,
   LpPageHeaderComponent,
+  LpToastService,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { EventCollectionService, EventType } from "@localpass/common/dirt/event-logs";
+import { InternalMasterPasswordServiceAbstraction } from "@localpass/common/key-management/master-password/abstractions/master-password.service.abstraction";
 import { FileDownloadService } from "@localpass/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { ButtonModule, CalloutModule, DialogService } from "@localpass/components";
 import { ExportFormat, VaultExportServiceAbstraction } from "@localpass/vault-export-core";
 
@@ -44,22 +45,30 @@ import { ExportFormat, VaultExportServiceAbstraction } from "@localpass/vault-ex
             </p>
 
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
-              @if (encrypted()) {
-                <lp-field
-                  id="export_input_password"
-                  [label]="i18n.t('masterPass')"
-                  [password]="true"
-                  [autocomplete]="'new-password'"
-                  [(value)]="password"
-                ></lp-field>
-              }
-
               <lp-field
                 id="export_select_format"
                 [label]="i18n.t('exportFormatLabel')"
                 [options]="formatOptions"
                 [(value)]="formatValue"
               ></lp-field>
+
+              <lp-field
+                id="export_input_vault_password"
+                [label]="i18n.t('masterPass')"
+                [password]="true"
+                [autocomplete]="'current-password'"
+                [(value)]="vaultPassword"
+              ></lp-field>
+
+              @if (encrypted()) {
+                <lp-field
+                  id="export_input_password"
+                  [label]="i18n.t('filePassword')"
+                  [password]="true"
+                  [autocomplete]="'new-password'"
+                  [(value)]="filePassword"
+                ></lp-field>
+              }
 
               <button
                 id="export_button_submit"
@@ -106,14 +115,16 @@ export class ExportDesktopV2Component {
   protected readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
   private readonly accountService = inject(AccountService);
+  private readonly masterPasswordService = inject(InternalMasterPasswordServiceAbstraction);
   private readonly exportService = inject(VaultExportServiceAbstraction);
   private readonly fileDownloadService = inject(FileDownloadService);
   private readonly eventCollectionService = inject(EventCollectionService);
-  private readonly platformUtilsService = inject(PlatformUtilsService);
+  private readonly toast = inject(LpToastService);
   private readonly logService = inject(LogService);
   private readonly dialogService = inject(DialogService);
 
-  protected readonly password = signal("");
+  protected readonly vaultPassword = signal("");
+  protected readonly filePassword = signal("");
   protected readonly formatValue = signal<string>("encrypted_json");
   protected readonly busy = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -121,15 +132,21 @@ export class ExportDesktopV2Component {
   protected readonly formatOptions: readonly LpFieldOption[] = [
     { value: "encrypted_json", label: this.i18n.t("exportFormatEncrypted") },
     { value: "json", label: this.i18n.t("exportFormatPlain") },
+    { value: "csv", label: this.i18n.t("exportFormatCsv") },
   ];
 
-  protected readonly format = computed<ExportFormat>(() =>
-    this.formatValue() === "json" ? "json" : "encrypted_json",
-  );
+  protected readonly format = computed<ExportFormat>(() => {
+    const value = this.formatValue();
+    return value === "json" || value === "csv" ? value : "encrypted_json";
+  });
   protected readonly encrypted = computed(() => this.format() === "encrypted_json");
-  protected readonly warning = computed(() =>
-    this.i18n.t(this.encrypted() ? "exportWarning" : "exportPlainWarning"),
-  );
+  protected readonly warning = computed(() => {
+    const format = this.format();
+    if (format === "csv") {
+      return this.i18n.t("exportCsvWarning");
+    }
+    return this.i18n.t(format === "json" ? "exportPlainWarning" : "exportWarning");
+  });
 
   protected async exportNow(): Promise<void> {
     if (this.busy()) {
@@ -137,15 +154,20 @@ export class ExportDesktopV2Component {
     }
 
     const format = this.format();
-    const password = this.password();
-    if (format === "encrypted_json" && !password) {
+    const vaultPassword = this.vaultPassword();
+    if (!vaultPassword) {
+      this.error.set(this.i18n.t("masterPasswordRequired"));
+      return;
+    }
+    const filePassword = this.filePassword();
+    if (format === "encrypted_json" && !filePassword) {
       this.error.set(this.i18n.t("filePasswordRequired"));
       return;
     }
-    if (format === "json") {
+    if (format !== "encrypted_json") {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "confirmVaultExport" },
-        content: { key: "exportPlainWarning" },
+        content: { key: format === "csv" ? "exportCsvWarning" : "exportPlainWarning" },
         type: "warning",
       });
       if (!confirmed) {
@@ -157,23 +179,42 @@ export class ExportDesktopV2Component {
     this.error.set(null);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      const unlockData = await firstValueFrom(
+        this.masterPasswordService.masterPasswordUnlockData$(userId),
+      );
+      if (unlockData == null) {
+        this.error.set(this.i18n.t("exportError"));
+        return;
+      }
+      try {
+        await this.masterPasswordService.unwrapUserKeyFromMasterPasswordUnlockData(
+          vaultPassword,
+          unlockData,
+        );
+      } catch {
+        this.error.set(this.i18n.t("invalidMasterPassword"));
+        return;
+      }
+
       const exported = await this.exportService.getExport(
         userId,
         format,
-        format === "encrypted_json" ? password : "",
+        format === "encrypted_json" ? filePassword : "",
       );
       this.fileDownloadService.download({
         fileName: exported.fileName,
         blobData: exported.data,
         blobOptions: { type: exported.type },
       });
-      this.platformUtilsService.showToast("success", "", this.i18n.t("exportSuccess"));
+      this.vaultPassword.set("");
+      this.filePassword.set("");
+      this.toast.show(this.i18n.t("exportSuccess"));
       try {
         await this.eventCollectionService.collect(EventType.User_ClientExportedVault);
       } catch {
         // Telemetry is best-effort; the file is already downloaded.
       }
-      await this.router.navigateByUrl("/settings-desktop-v2");
+      await this.router.navigateByUrl("/vault");
     } catch (error) {
       this.logService.error(error);
       this.error.set(this.i18n.t("exportError"));

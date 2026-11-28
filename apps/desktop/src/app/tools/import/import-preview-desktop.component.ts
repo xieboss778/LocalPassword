@@ -15,7 +15,10 @@ import {
   LpToastService,
   kindLabelKey,
 } from "@localpass/angular/local-ui";
+import { AccountService } from "@localpass/common/auth/abstractions/account.service";
+import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { ButtonModule, CalloutModule, DialogService } from "@localpass/components";
 import { ImportResult, ImportUpgradeServiceAbstraction } from "@localpass/importer-core";
@@ -24,7 +27,13 @@ import {
   ImportPreviewStagingService,
   ImportUpgradeProviders,
 } from "@localpass/importer-ui";
-import { ItemKind, kindOf, readFieldValues } from "@localpass/local-vault";
+import {
+  dedupeImportCiphers,
+  ImportDedupeResult,
+  ItemKind,
+  kindOf,
+  readFieldValues,
+} from "@localpass/local-vault";
 
 interface PreviewRow {
   readonly key: string;
@@ -46,7 +55,7 @@ interface PreviewRow {
   imports: [ButtonModule, CalloutModule, LpKindTileComponent, LpPageHeaderComponent],
   providers: [...ImportUpgradeProviders],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
       <lp-page-header [title]="i18n.t('importPreviewTitle')" [sub]="subtitle()">
         <button
           type="button"
@@ -61,7 +70,7 @@ interface PreviewRow {
           type="button"
           bitButton
           buttonType="primary"
-          [disabled]="!parsed() || importing()"
+          [disabled]="!parsed() || importing() || importableCount() === 0"
           [loading]="importing()"
           data-testid="import_preview_import"
           (click)="importNow()"
@@ -87,6 +96,25 @@ interface PreviewRow {
             {{ error() }}
           </div>
         } @else if (parsed(); as result) {
+          <div class="tw-mb-4 tw-grid tw-grid-cols-4 tw-gap-2">
+            <div class="agy-stat">
+              <div class="agy-n">{{ result.ciphers.length }}</div>
+              <div class="agy-l">{{ i18n.t("totalItems") }}</div>
+            </div>
+            <div class="agy-stat" [class.agy-ok]="importableCount() > 0">
+              <div class="agy-n">{{ importableCount() }}</div>
+              <div class="agy-l">{{ i18n.t("willImport") }}</div>
+            </div>
+            <div class="agy-stat" [class.agy-warn]="duplicateCount() > 0">
+              <div class="agy-n">{{ duplicateCount() }}</div>
+              <div class="agy-l">{{ i18n.t("importPreviewDuplicatesLabel") }}</div>
+            </div>
+            <div class="agy-stat" [class.agy-bad]="result.errors.length > 0">
+              <div class="agy-n">{{ result.errors.length }}</div>
+              <div class="agy-l">{{ i18n.t("unrecognized") }}</div>
+            </div>
+          </div>
+
           <div class="tw-flex tw-items-start tw-gap-4">
             <div
               class="tw-min-w-0 tw-flex-1 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-4 tw-shadow-sm"
@@ -114,9 +142,9 @@ interface PreviewRow {
                     </div>
                   }
                 </div>
-                @if (result.ciphers.length > rows().length) {
+                @if (importableCount() > rows().length) {
                   <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
-                    {{ firstFiveNote(result.ciphers.length) }}
+                    {{ firstFiveNote(importableCount()) }}
                   </p>
                 }
               } @else {
@@ -135,13 +163,26 @@ interface PreviewRow {
               <div
                 class="tw-mt-3 tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
               >
-                <div class="tw-border-b tw-border-border-light tw-p-3">
-                  <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                    i18n.t("importPreviewDuplicatesLabel")
-                  }}</span>
-                  <span class="tw-mt-0.5 tw-block tw-text-xs tw-text-muted">{{
-                    duplicateNote()
-                  }}</span>
+                <div
+                  class="tw-flex tw-items-center tw-gap-2 tw-border-b tw-border-border-light tw-p-3"
+                >
+                  <div class="tw-min-w-0 tw-flex-1">
+                    <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
+                      i18n.t("importPreviewDuplicatesLabel")
+                    }}</span>
+                    <span class="tw-mt-0.5 tw-block tw-text-xs tw-text-muted">{{
+                      duplicateNote()
+                    }}</span>
+                  </div>
+                  @if (duplicateCount() > 0) {
+                    <button
+                      type="button"
+                      class="agy-btn agy-sm"
+                      (click)="skipDuplicates.set(!skipDuplicates())"
+                    >
+                      {{ i18n.t(skipDuplicates() ? "importSkip" : "importKeepBoth") }}
+                    </button>
+                  }
                 </div>
                 <div class="tw-p-3">
                   <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
@@ -172,28 +213,34 @@ export class ImportPreviewDesktopComponent implements OnInit {
   private readonly importService = inject(ImportUpgradeServiceAbstraction);
   private readonly staging = inject(ImportPreviewStagingService);
   private readonly toast = inject(LpToastService);
+  private readonly accountService = inject(AccountService);
+  private readonly cipherService = inject(CipherService);
 
   protected readonly busy = signal(true);
   protected readonly importing = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly parsed = signal<ImportResult | null>(null);
+  protected readonly dedupe = signal<ImportDedupeResult | null>(null);
+  protected readonly skipDuplicates = signal(true);
 
-  protected readonly rows = computed<PreviewRow[]>(() => {
-    const result = this.parsed();
-    if (!result) {
-      return [];
-    }
-    return result.ciphers.slice(0, 5).map((cipher, index) => this.rowOf(cipher, index));
-  });
+  protected readonly importableCiphers = computed<readonly CipherView[]>(() =>
+    this.skipDuplicates()
+      ? (this.dedupe()?.ciphers ?? this.parsed()?.ciphers ?? [])
+      : (this.parsed()?.ciphers ?? []),
+  );
+  protected readonly importableCount = computed(() => this.importableCiphers().length);
 
-  /**
-   * The parser does not flag existing entries, and the import writes every parsed item, so no
-   * duplicate is skipped today. The card reports the true count rather than a prototype-only number.
-   */
-  protected readonly duplicateCount = computed(() => 0);
+  protected readonly rows = computed<PreviewRow[]>(() =>
+    this.importableCiphers()
+      .slice(0, 5)
+      .map((cipher, index) => this.rowOf(cipher, index)),
+  );
+
+  /** 与本机保险库比中的条目默认跳过；统计只来自内存里的真实比对。 */
+  protected readonly duplicateCount = computed(() => this.dedupe()?.duplicateCount ?? 0);
 
   protected readonly importActionLabel = computed(() =>
-    this.i18n.t("importNItems", String(this.parsed()?.ciphers.length ?? 0)),
+    this.i18n.t("importNItems", String(this.importableCount())),
   );
 
   protected subtitle(): string {
@@ -203,7 +250,7 @@ export class ImportPreviewDesktopComponent implements OnInit {
     }
     return this.i18n.t(
       "importPreviewSubtitle",
-      String(result.ciphers.length),
+      String(this.importableCount()),
       String(this.duplicateCount()),
     );
   }
@@ -235,6 +282,19 @@ export class ImportPreviewDesktopComponent implements OnInit {
         throw new Error(this.i18n.t("importFormatError"));
       }
       this.parsed.set(await this.importService.parse(importer, staged.contents));
+      const result = this.parsed();
+      if (result) {
+        const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+        const existing = await this.cipherService.getAllDecrypted(userId);
+        this.dedupe.set(
+          dedupeImportCiphers(
+            result.ciphers,
+            existing,
+            result.folderRelationships,
+            result.collectionRelationships,
+          ),
+        );
+      }
     } catch (error) {
       this.error.set(errorMessage(error, this.i18n.t("importFormatError")));
     } finally {
@@ -244,14 +304,33 @@ export class ImportPreviewDesktopComponent implements OnInit {
 
   protected async importNow(): Promise<void> {
     const result = this.parsed();
-    if (!result || this.importing()) {
+    if (!result || this.importing() || this.importableCount() === 0) {
       return;
     }
 
     this.importing.set(true);
     this.error.set(null);
     try {
-      await this.importService.importImportResult(result, undefined, undefined, false);
+      const dedupe = this.dedupe();
+      const payload = new ImportResult();
+      payload.success = result.success;
+      payload.folders = [...result.folders];
+      payload.collections = [...result.collections];
+      payload.errors = [...result.errors];
+      if (this.skipDuplicates() && dedupe) {
+        payload.ciphers = [...dedupe.ciphers];
+        payload.folderRelationships = dedupe.folderRelationships.map(
+          ([itemIndex, targetIndex]) => [itemIndex, targetIndex] as [number, number],
+        );
+        payload.collectionRelationships = dedupe.collectionRelationships.map(
+          ([itemIndex, targetIndex]) => [itemIndex, targetIndex] as [number, number],
+        );
+      } else {
+        payload.ciphers = [...result.ciphers];
+        payload.folderRelationships = [...result.folderRelationships];
+        payload.collectionRelationships = [...result.collectionRelationships];
+      }
+      await this.importService.importImportResult(payload, undefined, undefined, false);
       this.toast.show(this.i18n.t("importSuccess"));
       await this.router.navigateByUrl("/vault");
     } catch (error) {

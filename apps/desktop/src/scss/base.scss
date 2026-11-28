@@ -66,9 +66,10 @@ a:not([bitlink], [bitbutton]) {
   }
 }
 
-input:not(bit-form-field input, input[bitcheckbox], bit-search input),
-select:not(select[bitinput]),
-textarea:not(bit-form-field textarea) {
+// `.agy` 与 `.agy-input` 自带紧凑样式；留给它们自己的规则，否则这里的主题色会盖掉透明背景。
+input:not(bit-form-field input, input[bitcheckbox], bit-search input, input.agy-input, .agy input),
+select:not(select[bitinput], select.agy-input, .agy select),
+textarea:not(bit-form-field textarea, textarea.agy-input, .agy textarea) {
   @include themify($themes) {
     color: themed("textColor");
     background-color: themed("inputBackgroundColor");

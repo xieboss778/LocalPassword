@@ -4,8 +4,13 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
+import { DesktopShortcut, DesktopShortcutsService } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { GlobalStateProvider } from "@localpass/common/platform/state";
+import { FakeGlobalStateProvider } from "@localpass/common/spec";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { LockService } from "@localpass/unlock";
@@ -28,6 +33,12 @@ describe("LocalVaultLayoutComponent", () => {
         { provide: CipherService, useValue: mock<CipherService>() },
         { provide: FolderService, useValue: mock<FolderService>() },
         { provide: LockService, useValue: mock<LockService>() },
+        { provide: GlobalStateProvider, useValue: new FakeGlobalStateProvider() },
+        { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
+        {
+          provide: PasswordStrengthServiceAbstraction,
+          useValue: mock<PasswordStrengthServiceAbstraction>(),
+        },
       ],
     }).compileComponents();
   });
@@ -54,7 +65,9 @@ describe("LocalVaultLayoutComponent", () => {
 
     expect(labels).toEqual([
       "vault",
+      "healthCheck",
       "myFolders",
+      "archiveNoun",
       "trash",
       "generator",
       "importNoun",
@@ -79,5 +92,26 @@ describe("LocalVaultLayoutComponent", () => {
     generator?.click();
 
     expect(router.navigateByUrl).toHaveBeenCalledWith("/generator");
+  });
+
+  it("opens the in-app quick search with Command+K", async () => {
+    const fixture = TestBed.createComponent(LocalVaultLayoutComponent);
+    fixture.detectChanges();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector(".agy-qs")).not.toBeNull();
+  });
+
+  it("stops opening quick search after that shortcut is removed", async () => {
+    await TestBed.inject(DesktopShortcutsService).setEnabled(DesktopShortcut.Search, false);
+    const fixture = TestBed.createComponent(LocalVaultLayoutComponent);
+    fixture.detectChanges();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector(".agy-qs")).toBeNull();
   });
 });

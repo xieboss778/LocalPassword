@@ -4,12 +4,18 @@ import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { LpPageHeaderComponent, LpToastService } from "@localpass/angular/local-ui";
-import { formatBackupTimestamp, formatSnapshotId } from "@localpass/angular/tools/backup";
+import {
+  BackupConflictResolutionV2Component,
+  formatBackupTimestamp,
+  formatSnapshotId,
+} from "@localpass/angular/tools/backup";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { ButtonModule, CalloutModule, IconModule } from "@localpass/components";
 import {
+  PendingVaultConflict,
+  RemoteVaultMismatchError,
   SNAPSHOT_PREFIX,
   VaultBackupService,
   VaultBackupSyncService,
@@ -31,9 +37,15 @@ interface SnapshotRow {
   selector: "backup-status-desktop-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [ButtonModule, CalloutModule, IconModule, LpPageHeaderComponent],
+  imports: [
+    ButtonModule,
+    CalloutModule,
+    IconModule,
+    LpPageHeaderComponent,
+    BackupConflictResolutionV2Component,
+  ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background-alt">
       <lp-page-header [title]="i18n.t('backupTitle')" [sub]="i18n.t('backupSubtitle')">
         <button
           type="button"
@@ -49,8 +61,8 @@ interface SnapshotRow {
           type="button"
           bitButton
           buttonType="primary"
-          startIcon="bwi-download"
-          [disabled]="busy() || !configured()"
+          startIcon="bwi-refresh"
+          [disabled]="busy() || !configured() || pendingConflicts().length > 0"
           [loading]="busy()"
           data-testid="backup_sync_now"
           (click)="syncNow()"
@@ -68,13 +80,37 @@ interface SnapshotRow {
           </div>
         }
 
+        @if (pendingConflicts().length > 0) {
+          <div class="tw-mb-4">
+            <backup-conflict-resolution-v2
+              [conflicts]="pendingConflicts()"
+              (resolved)="onConflictResolved()"
+            ></backup-conflict-resolution-v2>
+          </div>
+        }
+
         <div class="tw-flex tw-items-start tw-gap-4">
           <div
             class="tw-min-w-0 tw-flex-1 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-4 tw-shadow-sm"
           >
-            <h2 class="tw-m-0 tw-text-sm tw-font-semibold tw-text-main">
-              {{ i18n.t("backupStatus") }}
-            </h2>
+            <div class="tw-flex tw-items-center tw-gap-2">
+              <h2 class="tw-m-0 tw-text-sm tw-font-semibold tw-text-main">
+                {{ statusHeading() }}
+              </h2>
+              @if (configured()) {
+                <span
+                  class="agy-chip"
+                  [class.agy-ok]="
+                    pendingChanges() === 0 &&
+                    pendingConflicts().length === 0 &&
+                    lastSyncedAt() != null
+                  "
+                  [class.agy-warn]="pendingChanges() > 0 || pendingConflicts().length > 0"
+                >
+                  {{ statusBadge() }}
+                </span>
+              }
+            </div>
             <p class="tw-mb-0 tw-mt-1 tw-text-xs tw-text-muted">{{ lastSyncSummary() }}</p>
 
             <div class="tw-mt-4 tw-flex tw-gap-3">
@@ -118,7 +154,12 @@ interface SnapshotRow {
               </button>
             </div>
 
-            <p class="tw-mb-0 tw-mt-4 tw-text-xs tw-leading-relaxed tw-text-muted">
+            <div class="agy-callout tw-mt-4">
+              <bit-icon name="bwi-lock" class="tw-text-xs tw-text-fg-brand"></bit-icon>
+              <div>{{ i18n.t("backupCredentialNote") }}</div>
+            </div>
+
+            <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-leading-relaxed tw-text-muted">
               {{ i18n.t("backupFootnoteButton") }}
             </p>
 
@@ -190,18 +231,59 @@ export class BackupStatusDesktopV2Component implements OnInit {
   protected readonly configured = signal(false);
   protected readonly snapshots = signal<SnapshotRow[]>([]);
   protected readonly lastSyncedAt = signal<string | null>(null);
+  /** Manifest generation last adopted or written; null until this device has synced once. */
+  protected readonly generation = signal<number | null>(null);
   protected readonly storageHost = signal("");
+  protected readonly bucketName = signal("");
+  protected readonly pendingChanges = signal(0);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly pendingConflicts = signal<readonly PendingVaultConflict[]>([]);
 
   async ngOnInit(): Promise<void> {
     await this.reload();
     this.loading.set(false);
   }
 
+  protected statusHeading(): string {
+    if (!this.configured()) {
+      return this.i18n.t("backupNotConfigured");
+    }
+    const pending = this.pendingChanges();
+    if (pending > 0) {
+      return pending === 1
+        ? this.i18n.t("backupPendingChangeOne")
+        : this.i18n.t("backupPendingChanges", pending.toString());
+    }
+    return this.lastSyncedAt() == null
+      ? this.i18n.t("backupConnectedR2")
+      : this.i18n.t("backupSynced");
+  }
+
+  protected statusBadge(): string {
+    if (this.pendingConflicts().length > 0) {
+      return this.i18n.t("syncConflictTitle");
+    }
+    if (this.pendingChanges() > 0) {
+      return this.i18n.t("backupPendingChanges", this.pendingChanges().toString());
+    }
+    return this.lastSyncedAt() == null
+      ? this.i18n.t("backupConnectedR2")
+      : this.i18n.t("backupSynced");
+  }
+
   protected lastSyncSummary(): string {
     const time = formatBackupTimestamp(this.lastSyncedAt(), this.locale(), this.i18n);
     const host = this.storageHost();
-    return host ? this.i18n.t("backupLastSyncSummary", time, host) : time;
+    const parts = [host ? this.i18n.t("backupLastSyncSummary", time, host) : time];
+    const bucket = this.bucketName();
+    if (bucket) {
+      parts.push(this.i18n.t("backupBucketName", bucket));
+    }
+    const generation = this.generation();
+    if (generation != null) {
+      parts.push(this.i18n.t("backupGeneration", generation.toString()));
+    }
+    return parts.join(" · ");
   }
 
   protected latestSize(): string {
@@ -231,14 +313,30 @@ export class BackupStatusDesktopV2Component implements OnInit {
     this.busy.set(true);
     this.errorMessage.set(null);
     try {
-      await this.syncService.sync(await this.userId());
+      const result = await this.syncService.sync(await this.userId());
       await this.reload();
-      this.toast.show(this.i18n.t("backupUploaded"));
-    } catch {
-      this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+      if (this.pendingConflicts().length > 0) {
+        return;
+      }
+      if (!result.pushed.uploaded) {
+        this.errorMessage.set(this.i18n.t("backupSyncFailed"));
+        return;
+      }
+      this.toast.show(this.i18n.t("backupSynced"));
+    } catch (error) {
+      this.errorMessage.set(
+        error instanceof RemoteVaultMismatchError
+          ? this.i18n.t("backupBucketInUse")
+          : this.i18n.t("backupSyncFailed"),
+      );
     } finally {
       this.busy.set(false);
     }
+  }
+
+  protected async onConflictResolved(): Promise<void> {
+    await this.reload();
+    this.toast.show(this.i18n.t("syncConflictResolved"));
   }
 
   protected async backupNow(): Promise<void> {
@@ -251,8 +349,12 @@ export class BackupStatusDesktopV2Component implements OnInit {
       const result = await this.backupService.backupNow(await this.userId());
       await this.reload();
       this.toast.show(this.i18n.t(result.uploaded ? "backupUploaded" : "backupFailed"));
-    } catch {
-      this.errorMessage.set(this.i18n.t("backupFailed"));
+    } catch (error) {
+      this.errorMessage.set(
+        error instanceof RemoteVaultMismatchError
+          ? this.i18n.t("backupBucketInUse")
+          : this.i18n.t("backupFailed"),
+      );
     } finally {
       this.busy.set(false);
     }
@@ -270,7 +372,11 @@ export class BackupStatusDesktopV2Component implements OnInit {
     ]);
     this.configured.set(config != null);
     this.lastSyncedAt.set(state.lastSyncedAt);
+    this.generation.set(state.generation);
     this.storageHost.set(config ? hostOf(config.endpoint) : "");
+    this.bucketName.set(config?.bucket ?? "");
+    this.pendingConflicts.set(await this.syncService.getPendingConflicts(userId));
+    this.pendingChanges.set(config ? await this.syncService.countPendingChanges(userId) : 0);
 
     if (!config) {
       this.snapshots.set([]);

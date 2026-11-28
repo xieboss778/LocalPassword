@@ -116,8 +116,8 @@ export class WindowMain {
   private enableRendererProcessForceCrashReload = true;
   session: Electron.Session;
 
-  readonly defaultWidth = 950;
-  readonly defaultHeight = 790;
+  readonly defaultWidth = 1200;
+  readonly defaultHeight = 760;
 
   constructor(
     private biometricStateService: BiometricStateService,
@@ -475,8 +475,8 @@ export class WindowMain {
     const win = new BrowserWindow({
       width: this.windowStates[mainWindowSizeKey].width,
       height: this.windowStates[mainWindowSizeKey].height,
-      minWidth: 600,
-      minHeight: 500,
+      minWidth: 980,
+      minHeight: 640,
       x: this.windowStates[mainWindowSizeKey].x,
       y: this.windowStates[mainWindowSizeKey].y,
       title: app.name,
@@ -593,33 +593,7 @@ export class WindowMain {
       });
     });
 
-    win.webContents.setWindowOpenHandler(({ url }) => {
-      // For security reasons, we redirect all requests to open new windows from the renderer process to the system browser.
-      // SafeShell will check the URL against our allowlist and log if an attempt is made to open a URL that isn't considered safe.
-
-      this.logService.debug(`Redirecting link to external browser: ${url}`);
-      void this.shell.openExternal(url, UrlType.WebUrl);
-
-      return { action: "deny" };
-    });
-
-    // The main window must only ever show the local bundle. Cancelling a
-    // foreign navigation stops the preload re-running and re-exposing
-    // main functions, like window.ipc, on the attacker's page.
-    win.webContents.on("will-navigate", (event, url) => {
-      if (!this.isLocalBundleUrl(url)) {
-        event.preventDefault();
-        void this.shell.openExternal(url, UrlType.WebUrl);
-      }
-    });
-
-    // Same purpose as above, but for server-issued redirects
-    win.webContents.on("will-redirect", (event, url) => {
-      if (!this.isLocalBundleUrl(url)) {
-        event.preventDefault();
-        void this.shell.openExternal(url, UrlType.WebUrl);
-      }
-    });
+    this.applyLocalBundleSecurityGuards(win);
 
     firstValueFrom(this.desktopSettingsService.preventScreenshots$)
       .then((preventScreenshots) => {
@@ -634,6 +608,96 @@ export class WindowMain {
     if (this.createWindowCallback) {
       this.createWindowCallback(win);
     }
+  }
+
+  /**
+   * Creates the menu-bar tray panel. It is a separate window so it can sit above the desktop at
+   * 304×380 without touching the main window's size or focus. It is only opened while the vault
+   * is unlocked; the tray decides that before calling this.
+   */
+  async createTrayWindow(): Promise<BrowserWindow> {
+    const win = new BrowserWindow({
+      width: 304,
+      height: 380,
+      minWidth: 304,
+      minHeight: 380,
+      maxWidth: 304,
+      maxHeight: 380,
+      frame: false,
+      resizable: false,
+      movable: false,
+      minimizable: false,
+      maximizable: false,
+      fullscreenable: false,
+      skipTaskbar: true,
+      alwaysOnTop: true,
+      show: false,
+      title: app.name,
+      backgroundColor: await this.getBackgroundColor(),
+      webPreferences: {
+        preload: path.join(__dirname, "preload.js"),
+        spellcheck: false,
+        nodeIntegration: false,
+        backgroundThrottling: false,
+        contextIsolation: true,
+        session: this.session,
+        devTools: isDev(),
+      },
+    });
+
+    win.setMenuBarVisibility(false);
+    this.applyLocalBundleSecurityGuards(win);
+
+    firstValueFrom(this.desktopSettingsService.preventScreenshots$)
+      .then((preventScreenshots) => {
+        if (!win.isDestroyed()) {
+          win.setContentProtection(preventScreenshots);
+        }
+      })
+      .catch((e) => {
+        this.logService.error(e);
+      });
+
+    await win.loadURL(this.getWindowUrl({ hash: "/tray", query: { redirectUrl: "/tray" } }), {
+      userAgent: cleanUserAgent(win.webContents.userAgent),
+    });
+
+    if (isMac()) {
+      win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    }
+
+    return win;
+  }
+
+  /**
+   * A renderer window must only ever show the local bundle. Cancelling a foreign navigation stops
+   * the preload re-running and re-exposing main functions, like window.ipc, on the attacker's page.
+   */
+  private applyLocalBundleSecurityGuards(win: BrowserWindow): void {
+    win.webContents.setWindowOpenHandler(({ url }) => {
+      // For security reasons, we redirect all requests to open new windows from the renderer process to the system browser.
+      // SafeShell will check the URL against our allowlist and log if an attempt is made to open a URL that isn't considered safe.
+
+      this.logService.debug(`Redirecting link to external browser: ${url}`);
+      void this.shell.openExternal(url, UrlType.WebUrl);
+
+      return { action: "deny" };
+    });
+
+    win.webContents.on("will-navigate", (event, url) => {
+      if (!this.isLocalBundleUrl(url)) {
+        event.preventDefault();
+        void this.shell.openExternal(url, UrlType.WebUrl);
+      }
+    });
+
+    // Same purpose as above, but for server-issued redirects.
+    win.webContents.on("will-redirect", (event, url) => {
+      if (!this.isLocalBundleUrl(url)) {
+        event.preventDefault();
+        void this.shell.openExternal(url, UrlType.WebUrl);
+      }
+    });
   }
 
   // Retrieve the background color
