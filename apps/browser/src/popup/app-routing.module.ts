@@ -29,12 +29,14 @@ import {
 } from "@localpass/angular/auth/registration";
 import { canAccessFeature } from "@localpass/angular/platform/guard/feature-flag.guard";
 import { featureFlaggedRoute } from "@localpass/angular/platform/utils/feature-flagged-route";
+import { ArchiveV2Component } from "@localpass/angular/tools/archive";
 import { BackupSettingsV2Component } from "@localpass/angular/tools/backup";
 import { FoldersV2Component } from "@localpass/angular/tools/folders";
 import {
   GeneratorHistoryV2Component,
   GeneratorV2Component,
 } from "@localpass/angular/tools/generator";
+import { HealthV2Component } from "@localpass/angular/tools/health";
 import { ItemFormV2Component, NewItemV2Component } from "@localpass/angular/tools/item-entry";
 import {
   DevicesIcon,
@@ -138,7 +140,6 @@ import { clearVaultStateGuard } from "../vault/popup/guards/clear-vault-state.gu
 import { restoreVaultScopeGuard } from "../vault/popup/guards/restore-vault-scope.guard";
 import { restrictedCipherGuard } from "../vault/popup/guards/restricted-cipher.guard";
 import { AdminSettingsComponent } from "../vault/popup/settings/admin-settings.component";
-import { ArchiveComponent } from "../vault/popup/settings/archive.component";
 import { DownloadLocalPassComponent } from "../vault/popup/settings/download-localpass.component";
 import { MoreFromLocalPassPageComponent } from "../vault/popup/settings/more-from-localpass-page.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
@@ -378,7 +379,7 @@ const routes: Routes = [
     // LocalPassword：方向 C 的导入来源选择（清单来自 ImportService，不是手抄的）。
     path: "import-source-v2",
     component: ImportSourceV2Component,
-    canActivate: [authGuard],
+    canActivate: [authGuard, filePickerPopoutGuard()],
     data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
@@ -447,7 +448,7 @@ const routes: Routes = [
     data: { elevation: 2 } satisfies RouteDataProperties,
   },
   {
-    // LocalPassword：网络闸门（三条规则 + 当前存储端点）。
+    // LocalPassword：网络闸门（白名单 + 默认拒绝，不列静态黑名单）。
     path: "settings-network-v2",
     component: NetworkGateV2Component,
     canActivate: [authGuard],
@@ -468,7 +469,7 @@ const routes: Routes = [
     data: { elevation: 1, compact: true } satisfies RouteDataProperties,
   },
   {
-    // LocalPassword：方向 C 的安全设置页（扩展里不出现 Touch ID）。
+    // LocalPassword：方向 C 的安全设置页（触控 ID 只以桌面代理桥接的形式出现）。
     path: "settings-security-v2",
     component: SecuritySettingsV2Component,
     canActivate: [authGuard],
@@ -1003,6 +1004,13 @@ const routes: Routes = [
         data: { elevation: 0, compact: true } satisfies RouteDataProperties,
       },
       {
+        // 同步标签：备份状态、立即同步/备份与快照；设置与恢复仍在独立页。
+        path: "sync",
+        component: BackupSettingsV2Component,
+        canActivate: [authGuard],
+        data: { elevation: 0, compact: true } satisfies RouteDataProperties,
+      },
+      {
         path: "settings",
         component: SettingsListV2Component,
         canActivate: [authGuard],
@@ -1046,9 +1054,15 @@ const routes: Routes = [
   },
   {
     path: "archive",
-    component: ArchiveComponent,
+    component: ArchiveV2Component,
     canActivate: [authGuard],
-    data: { elevation: 2 } satisfies RouteDataProperties,
+    data: { elevation: 2, compact: true } satisfies RouteDataProperties,
+  },
+  {
+    path: "health-v2",
+    component: HealthV2Component,
+    canActivate: [authGuard],
+    data: { elevation: 2, compact: true } satisfies RouteDataProperties,
   },
   {
     path: "security",

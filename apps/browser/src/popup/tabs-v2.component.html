@@ -1,45 +1,46 @@
-<div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+<div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
   <div class="tw-min-h-0 tw-flex-1">
     <router-outlet></router-outlet>
   </div>
 
-  <nav
-    class="tw-flex tw-flex-none tw-border-t tw-border-border-light tw-bg-background tw-px-2 tw-py-1"
-    [attr.aria-label]="i18n.t('primaryNavigation')"
-  >
+  <nav class="agy-ext-nav" [attr.aria-label]="i18n.t('primaryNavigation')">
     <a
       routerLink="/tabs/vault"
-      routerLinkActive="tw-text-fg-brand tw-font-semibold"
+      routerLinkActive="agy-on"
       #vaultLink="routerLinkActive"
-      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
-      [class.tw-text-muted]="!vaultLink.isActive"
       [attr.aria-current]="vaultLink.isActive ? 'page' : null"
     >
-      <bit-icon name="bwi-vault" class="tw-text-lg"></bit-icon>
+      <bit-icon name="bwi-vault" class="tw-text-base"></bit-icon>
       <span>{{ i18n.t("vault") }}</span>
     </a>
 
     <a
       routerLink="/tabs/generator"
-      routerLinkActive="tw-text-fg-brand tw-font-semibold"
+      routerLinkActive="agy-on"
       #generatorLink="routerLinkActive"
-      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
-      [class.tw-text-muted]="!generatorLink.isActive"
       [attr.aria-current]="generatorLink.isActive ? 'page' : null"
     >
-      <bit-icon name="bwi-generate" class="tw-text-lg"></bit-icon>
+      <bit-icon name="bwi-generate" class="tw-text-base"></bit-icon>
       <span>{{ i18n.t("generator") }}</span>
     </a>
 
     <a
+      routerLink="/tabs/sync"
+      routerLinkActive="agy-on"
+      #syncLink="routerLinkActive"
+      [attr.aria-current]="syncLink.isActive ? 'page' : null"
+    >
+      <bit-icon name="bwi-refresh" class="tw-text-base"></bit-icon>
+      <span>{{ i18n.t("sync") }}</span>
+    </a>
+
+    <a
       routerLink="/tabs/settings"
-      routerLinkActive="tw-text-fg-brand tw-font-semibold"
+      routerLinkActive="agy-on"
       #settingsLink="routerLinkActive"
-      class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-gap-0.5 tw-rounded-lg tw-px-2 tw-py-1.5 tw-text-xs hover:tw-bg-bg-brand-softer hover:tw-text-fg-brand"
-      [class.tw-text-muted]="!settingsLink.isActive"
       [attr.aria-current]="settingsLink.isActive ? 'page' : null"
     >
-      <bit-icon name="bwi-settings" class="tw-text-lg"></bit-icon>
+      <bit-icon name="bwi-settings" class="tw-text-base"></bit-icon>
       <span>{{ i18n.t("settings") }}</span>
     </a>
   </nav>

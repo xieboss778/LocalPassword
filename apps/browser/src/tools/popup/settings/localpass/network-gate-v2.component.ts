@@ -9,40 +9,27 @@ import {
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { LpPopupHeaderComponent, LpRowComponent } from "@localpass/angular/local-ui";
+import { LpPopupHeaderComponent } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { IconModule } from "@localpass/components";
 import { VaultBackupSyncService } from "@localpass/local-vault";
 
-interface BlockedHost {
-  readonly host: string;
-  readonly categoryKey: string;
-}
-
-const RECENT_BLOCKED: readonly BlockedHost[] = [
-  { host: "sentry.io", categoryKey: "networkGateErrorReporting" },
-  { host: "google-analytics.com", categoryKey: "networkGateTelemetry" },
-  { host: "cdn.jsdelivr.net", categoryKey: "networkGateFonts" },
-];
-
 /**
  * 网络闸门（弹窗）。
  *
  * 这一页不解密、不发请求：它只把 `NetworkGatePolicy` 的白名单摊开给用户看，
  * 外加当前存储端点。规则本身是纯函数，有单测（`gate-policy.spec.ts`）。
- *
- * 「最近拦截」列的是闸门固定拦掉的三类主机（与桌面端同一份清单），
- * 不是实时请求日志——扩展不保留出站请求历史。
+ * 闸门没有隐藏黑名单，也不保留出站请求历史；页面只呈现完整的允许清单与默认拒绝规则。
  */
 @Component({
   selector: "network-gate-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "tw-block tw-h-full" },
-  imports: [IconModule, LpPopupHeaderComponent, LpRowComponent],
+  imports: [IconModule, LpPopupHeaderComponent],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
         [title]="i18n.t('networkGate')"
         [sub]="i18n.t('networkGateSubtitle')"
@@ -50,51 +37,73 @@ const RECENT_BLOCKED: readonly BlockedHost[] = [
         (backTriggered)="back()"
       ></lp-popup-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
-        <div
-          class="tw-flex tw-items-start tw-gap-2 tw-rounded-xl tw-border tw-border-border-brand-soft tw-bg-bg-brand-softer tw-p-3 tw-text-xs tw-leading-relaxed tw-text-main"
-        >
-          <bit-icon name="bwi-shield" class="tw-mt-0.5 tw-text-fg-brand"></bit-icon>
-          <span>{{ i18n.t("networkGateCallout") }}</span>
+      <div class="agy-ext-scroll">
+        <div class="agy-callout">
+          <bit-icon name="bwi-shield" class="tw-text-xs tw-text-fg-brand"></bit-icon>
+          <div>{{ i18n.t("networkGateCallout") }}</div>
         </div>
 
-        <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-pt-2.5 tw-pb-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("whitelist") }}
-          </h2>
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-          >
-            <lp-row
-              icon="bwi-download"
-              [label]="i18n.t('cloudflareR2')"
-              [sub]="storageDescription()"
-              [toggle]="storageAllowed()"
-            />
-            <lp-row
-              icon="bwi-search"
-              [label]="i18n.t('networkGateBreach')"
-              [sub]="i18n.t('breachCheckSub')"
-              [toggle]="false"
-            />
+        <section class="tw-py-2">
+          <h2 class="agy-seclbl">{{ i18n.t("whitelist") }}</h2>
+          <div class="agy-grp">
+            <div class="agy-setrow">
+              <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                <bit-icon name="bwi-refresh" class="tw-text-xs"></bit-icon>
+              </span>
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="agy-k tw-block">{{ i18n.t("cloudflareR2") }}</span>
+                <span class="agy-d tw-block">{{ storageDescription() }}</span>
+              </span>
+              <span class="agy-chip" [class.agy-ok]="storageAllowed()">
+                {{ i18n.t(storageAllowed() ? "enabled" : "disabled") }}
+              </span>
+            </div>
+            <div class="agy-setrow">
+              <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                <bit-icon name="bwi-search" class="tw-text-xs"></bit-icon>
+              </span>
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="agy-k tw-block">{{ i18n.t("networkGateBreach") }}</span>
+                <span class="agy-d tw-block">{{ i18n.t("breachCheckSub") }}</span>
+              </span>
+              <span class="agy-chip">{{ i18n.t("disabled") }}</span>
+            </div>
           </div>
         </section>
 
         <section class="tw-pb-2">
-          <h2 class="tw-m-0 tw-px-2.5 tw-py-1 tw-text-xs tw-font-semibold tw-text-muted">
-            {{ i18n.t("networkGateRecentBlocked") }}
-          </h2>
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-          >
-            @for (entry of blocked; track entry.host) {
-              <lp-row
-                icon="bwi-globe"
-                [label]="entry.host + ' · ' + i18n.t(entry.categoryKey)"
-                [sub]="i18n.t('blockedLabel')"
-                [clickable]="false"
-              />
-            }
+          <h2 class="agy-seclbl">{{ i18n.t("rulesTitle") }}</h2>
+          <div class="agy-grp">
+            <div class="agy-setrow">
+              <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                <bit-icon name="bwi-lock" class="tw-text-xs"></bit-icon>
+              </span>
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="agy-k tw-block">{{ i18n.t("networkGateLockedRuleTitle") }}</span>
+                <span class="agy-d tw-block">{{ i18n.t("networkGateLockedRuleDesc") }}</span>
+              </span>
+              <span class="agy-chip agy-ok">{{ i18n.t("enabled") }}</span>
+            </div>
+            <div class="agy-setrow">
+              <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                <bit-icon name="bwi-globe" class="tw-text-xs"></bit-icon>
+              </span>
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="agy-k tw-block">{{ i18n.t("networkGateNoFaviconRuleTitle") }}</span>
+                <span class="agy-d tw-block">{{ i18n.t("networkGateNoFaviconRuleDesc") }}</span>
+              </span>
+              <span class="agy-chip agy-ok">{{ i18n.t("enabled") }}</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="tw-pb-2">
+          <div class="agy-callout">
+            <bit-icon name="bwi-shield" class="tw-text-xs tw-text-fg-brand"></bit-icon>
+            <div>
+              <div class="agy-k">{{ i18n.t("networkGatePolicyTitle") }}</div>
+              <div class="agy-d">{{ i18n.t("networkGatePolicyDesc") }}</div>
+            </div>
           </div>
         </section>
       </div>
@@ -109,7 +118,6 @@ export class NetworkGateV2Component implements OnInit {
 
   protected readonly storageHost = signal("");
   protected readonly storageAllowed = signal(false);
-  protected readonly blocked = RECENT_BLOCKED;
 
   protected readonly storageDescription = computed(() => {
     const host = this.storageHost();

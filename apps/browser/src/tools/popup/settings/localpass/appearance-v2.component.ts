@@ -1,13 +1,28 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
-import { LpPopupHeaderComponent } from "@localpass/angular/local-ui";
+import {
+  LpPopupHeaderComponent,
+  VaultDensity,
+  VaultDensityService,
+} from "@localpass/angular/local-ui";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { Theme, ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
 import { IconModule } from "@localpass/components";
+
+import { PopupWidthOption } from "../../../../platform/browser/popup-view";
+import { PopupSizeService } from "../../../../platform/popup/layout/popup-size.service";
 
 interface ThemeOption {
   readonly value: Theme;
@@ -47,7 +62,7 @@ const THEMES: readonly ThemeOption[] = [
   host: { class: "tw-block tw-h-full" },
   imports: [JslibModule, IconModule, LpPopupHeaderComponent],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
         [title]="i18n.t('appearance')"
         [sub]="i18n.t('appearanceSubtitle')"
@@ -55,60 +70,89 @@ const THEMES: readonly ThemeOption[] = [
         (backTriggered)="back()"
       ></lp-popup-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
-        <div class="tw-grid tw-grid-cols-3 tw-gap-2 tw-pt-3">
+      <div class="agy-ext-scroll">
+        <h2 class="agy-seclbl">{{ i18n.t("theme") }}</h2>
+        <div class="agy-grp">
           @for (theme of themes; track theme.value) {
             <button
               type="button"
-              class="tw-relative tw-flex tw-flex-col tw-gap-1 tw-rounded-xl tw-border tw-p-1.5 tw-text-start"
-              [class.tw-border-border-brand]="selectedTheme() === theme.value"
-              [class.tw-border-border-light]="selectedTheme() !== theme.value"
-              [class.tw-bg-brand-softer]="selectedTheme() === theme.value"
-              [class.tw-bg-background]="selectedTheme() !== theme.value"
+              class="agy-setrow"
               [attr.aria-pressed]="selectedTheme() === theme.value"
               (click)="setTheme(theme.value)"
             >
               <span
-                class="tw-block tw-h-12 tw-w-full tw-rounded-md tw-border tw-border-border-light"
+                class="tw-h-7 tw-w-9 tw-flex-none tw-rounded-md tw-border tw-border-border-light"
                 [style.background]="theme.swatch"
                 aria-hidden="true"
               ></span>
-              <span class="tw-block tw-text-xs tw-font-semibold tw-text-main">{{
-                i18n.t(theme.labelKey)
-              }}</span>
-              <span class="tw-block tw-text-xs tw-leading-snug tw-text-muted">{{
-                i18n.t(theme.descKey)
-              }}</span>
+              <span class="tw-min-w-0 tw-flex-1">
+                <span class="agy-k tw-block">{{ i18n.t(theme.labelKey) }}</span>
+                <span class="agy-d tw-block">{{ i18n.t(theme.descKey) }}</span>
+              </span>
               @if (selectedTheme() === theme.value) {
-                <span
-                  class="tw-absolute tw-end-1.5 tw-top-1.5 tw-grid tw-size-5 tw-place-items-center tw-rounded-full tw-bg-bg-brand tw-text-fg-contrast"
-                >
-                  <bit-icon name="bwi-check" class="tw-text-xs"></bit-icon>
-                </span>
+                <bit-icon name="bwi-check" class="tw-text-xs tw-text-fg-brand"></bit-icon>
               }
             </button>
           }
         </div>
 
-        <div
-          class="tw-mt-2.5 tw-flex tw-items-center tw-gap-2.5 tw-rounded-xl tw-border tw-border-border-light tw-bg-background tw-p-3"
-        >
-          <span
-            class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
+        <h2 class="agy-seclbl tw-pt-2">{{ i18n.t("listDensity") }}</h2>
+        <div class="agy-segtabs">
+          <button
+            type="button"
+            [class.agy-on]="density() === 'compact'"
+            [attr.aria-pressed]="density() === 'compact'"
+            (click)="setDensity('compact')"
           >
-            <bit-icon name="bwi-globe" class="tw-text-base"></bit-icon>
-          </span>
-          <span class="tw-min-w-0 tw-flex-1">
-            <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-              i18n.t("language")
-            }}</span>
-            <span class="tw-block tw-text-xs tw-leading-relaxed tw-text-muted">{{
-              i18n.t("simplifiedChinese")
-            }}</span>
-          </span>
+            {{ i18n.t("densityCompact") }}
+          </button>
+          <button
+            type="button"
+            [class.agy-on]="density() === 'ultra'"
+            [attr.aria-pressed]="density() === 'ultra'"
+            (click)="setDensity('ultra')"
+          >
+            {{ i18n.t("densityUltra") }}
+          </button>
+        </div>
+        <p class="agy-hint">
+          {{ i18n.t(density() === "ultra" ? "densityUltraDesc" : "densityCompactDesc") }}
+        </p>
+
+        <h2 class="agy-seclbl tw-pt-2">{{ i18n.t("popupWidth") }}</h2>
+        <div class="agy-segtabs">
+          <button
+            type="button"
+            [class.agy-on]="popupWidth() !== 'wide'"
+            [attr.aria-pressed]="popupWidth() !== 'wide'"
+            (click)="setWidth('default')"
+          >
+            {{ i18n.t("default") }} (380px)
+          </button>
+          <button
+            type="button"
+            [class.agy-on]="popupWidth() === 'wide'"
+            [attr.aria-pressed]="popupWidth() === 'wide'"
+            (click)="setWidth('wide')"
+          >
+            {{ i18n.t("wide") }} (600px)
+          </button>
         </div>
 
-        <p class="tw-px-0.5 tw-pt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+        <h2 class="agy-seclbl tw-pt-2">{{ i18n.t("language") }}</h2>
+        <div class="agy-grp">
+          <div class="agy-setrow">
+            <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+              <bit-icon name="bwi-globe" class="tw-text-xs"></bit-icon>
+            </span>
+            <span class="tw-min-w-0 tw-flex-1">
+              <span class="agy-k tw-block">{{ i18n.t("language") }}</span>
+              <span class="agy-d tw-block">{{ languageLabel() }}</span>
+            </span>
+          </div>
+        </div>
+
+        <p class="agy-hint tw-text-center">
           {{ i18n.t("themeOnlyDisplayNotice") }}
         </p>
       </div>
@@ -118,10 +162,22 @@ const THEMES: readonly ThemeOption[] = [
 export class AppearanceV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly themeStateService = inject(ThemeStateService);
+  private readonly densityService = inject(VaultDensityService);
+  private readonly popupSizeService = inject(PopupSizeService);
   private readonly router = inject(Router);
 
   protected readonly themes = THEMES;
   protected readonly selectedTheme = signal<Theme>(ThemeTypes.System);
+  protected readonly density = toSignal(this.densityService.density$, {
+    initialValue: VaultDensity.Compact,
+  });
+  protected readonly popupWidth = toSignal(this.popupSizeService.width$, {
+    initialValue: "default" as PopupWidthOption,
+  });
+  private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en" });
+  protected readonly languageLabel = computed(() =>
+    this.locale().toLowerCase().startsWith("zh") ? this.i18n.t("simplifiedChinese") : "English",
+  );
 
   async ngOnInit(): Promise<void> {
     this.selectedTheme.set(await firstValueFrom(this.themeStateService.selectedTheme$));
@@ -130,6 +186,14 @@ export class AppearanceV2Component implements OnInit {
   protected async setTheme(theme: Theme): Promise<void> {
     await this.themeStateService.setSelectedTheme(theme);
     this.selectedTheme.set(theme);
+  }
+
+  protected setDensity(density: VaultDensity): void {
+    void this.densityService.setDensity(density);
+  }
+
+  protected setWidth(width: PopupWidthOption): void {
+    void this.popupSizeService.setWidth(width);
   }
 
   protected back(): void {

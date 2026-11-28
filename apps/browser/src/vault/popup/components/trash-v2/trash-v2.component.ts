@@ -1,20 +1,24 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
-import { toSignal } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { filter, firstValueFrom, switchMap } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpEmptyComponent,
   LpKindTileComponent,
   LpPopupHeaderComponent,
+  LpToastService,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
+import { UserId } from "@localpass/common/types/guid";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@localpass/common/vault/enums/cipher-type";
+import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
 import { DialogService, IconModule } from "@localpass/components";
 import { ItemKind, kindOf } from "@localpass/local-vault";
@@ -36,30 +40,15 @@ import { PopupCipherViewLike } from "../../views/popup-cipher.view";
     LpPopupHeaderComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
         [title]="i18n.t('trash')"
         [sub]="subtitle()"
         [back]="true"
         (backTriggered)="back()"
-      >
-        <div slot="actions">
-          @if (items().length) {
-            <button
-              id="trash_button_empty"
-              type="button"
-              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-fg-danger hover:tw-bg-bg-danger-soft"
-              [attr.aria-label]="i18n.t('emptyTrash')"
-              [attr.title]="i18n.t('emptyTrash')"
-              (click)="emptyTrash()"
-            >
-              <bit-icon name="bwi-trash" class="tw-text-base"></bit-icon>
-            </button>
-          }
-        </div>
-      </lp-popup-header>
+      ></lp-popup-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
+      <div class="agy-ext-scroll">
         @if (items().length === 0) {
           <div class="tw-grid tw-min-h-72 tw-place-items-center">
             <lp-empty
@@ -69,50 +58,57 @@ import { PopupCipherViewLike } from "../../views/popup-cipher.view";
             ></lp-empty>
           </div>
         } @else {
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-          >
+          <div class="agy-grp">
             @for (item of items(); track item.id) {
-              <div
-                class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-px-3 tw-py-2.5 last:tw-border-b-0"
-              >
+              <div class="agy-setrow">
                 <lp-kind-tile [kind]="kindFor(item)" size="sm"></lp-kind-tile>
                 <span class="tw-min-w-0 tw-flex-1">
-                  <span class="tw-block tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
-                    item.name
-                  }}</span>
-                  <span class="tw-block tw-truncate tw-text-xs tw-text-muted">{{
-                    deletedLabel(item)
-                  }}</span>
+                  <span class="agy-k tw-block tw-truncate">{{ item.name }}</span>
+                  <span class="agy-d tw-block tw-truncate">{{ rowSubtitle(item) }}</span>
                 </span>
+                @if (daysLeft(item); as left) {
+                  <span class="agy-chip agy-warn">{{ i18n.t("trashDaysLeft", left) }}</span>
+                }
                 <button
                   [attr.id]="'trash_button_restore-' + item.id"
                   type="button"
-                  class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
-                  [attr.aria-label]="i18n.t('restore')"
-                  [attr.title]="i18n.t('restore')"
+                  class="agy-btn agy-primary agy-sm"
                   (click)="restore(item.id)"
                 >
-                  <bit-icon name="bwi-undo" class="tw-text-base"></bit-icon>
+                  {{ i18n.t("restore") }}
                 </button>
                 <button
                   [attr.id]="'trash_button_purge-' + item.id"
                   type="button"
-                  class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-danger-soft hover:tw-text-fg-danger"
+                  class="agy-iconbtn agy-sm tw-text-fg-danger"
                   [attr.aria-label]="i18n.t('deleteForever')"
                   [attr.title]="i18n.t('deleteForever')"
                   (click)="purge(item.id)"
                 >
-                  <bit-icon name="bwi-trash" class="tw-text-base"></bit-icon>
+                  <bit-icon name="bwi-trash" class="tw-text-xs"></bit-icon>
                 </button>
               </div>
             }
           </div>
-          <p class="tw-px-2.5 tw-pt-2 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+          <p class="agy-hint tw-text-center">
             {{ i18n.t("trashFootnote") }}
           </p>
         }
       </div>
+
+      @if (items().length) {
+        <div class="agy-ext-foot">
+          <button
+            id="trash_button_empty"
+            type="button"
+            class="agy-btn agy-danger agy-lg tw-w-full"
+            (click)="emptyTrash()"
+          >
+            <bit-icon name="bwi-trash" class="tw-text-xs"></bit-icon>
+            {{ i18n.t("emptyTrash") }}
+          </button>
+        </div>
+      }
     </div>
   `,
 })
@@ -120,11 +116,22 @@ export class TrashV2Component {
   protected readonly i18n = inject(I18nService);
   private readonly itemsService = inject(VaultPopupItemsService);
   private readonly cipherService = inject(CipherService);
+  private readonly folderService = inject(FolderService);
   private readonly accountService = inject(AccountService);
   private readonly dialogService = inject(DialogService);
+  private readonly toast = inject(LpToastService);
   private readonly router = inject(Router);
 
   protected readonly items = toSignal(this.itemsService.deletedCiphers$, { initialValue: [] });
+  private readonly folders = toSignal(
+    this.accountService.activeAccount$.pipe(
+      takeUntilDestroyed(),
+      getUserId,
+      filter((userId): userId is UserId => userId != null),
+      switchMap((userId) => this.folderService.folderViews$(userId)),
+    ),
+    { initialValue: [] as FolderView[] },
+  );
 
   protected readonly subtitle = computed(() => this.i18n.t("trashRetentionLocal"));
 
@@ -159,7 +166,27 @@ export class TrashV2Component {
     }
   }
 
-  protected deletedLabel(item: PopupCipherViewLike): string {
+  protected rowSubtitle(item: PopupCipherViewLike): string {
+    const folder = item.folderId
+      ? (this.folders().find((entry) => entry.id === String(item.folderId))?.name ?? "")
+      : "";
+    const deleted = this.deletedAgo(item);
+    return [folder, deleted].filter(Boolean).join(" · ");
+  }
+
+  protected daysLeft(item: PopupCipherViewLike): number | null {
+    if (!item.deletedDate) {
+      return null;
+    }
+    const date = item.deletedDate instanceof Date ? item.deletedDate : new Date(item.deletedDate);
+    if (Number.isNaN(date.getTime())) {
+      return null;
+    }
+    const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000));
+    return Math.max(0, 30 - days);
+  }
+
+  private deletedAgo(item: PopupCipherViewLike): string {
     if (!item.deletedDate) {
       return "";
     }
@@ -168,17 +195,14 @@ export class TrashV2Component {
       return "";
     }
     const days = Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000));
-    const daysLeft = Math.max(0, 30 - days);
-    return `${this.i18n.t("deletedDaysAgo", String(days))} · ${this.i18n.t(
-      "trashDaysLeft",
-      String(daysLeft),
-    )}`;
+    return this.i18n.t("deletedDaysAgo", String(days));
   }
 
   protected async restore(rawId: unknown): Promise<void> {
     const id = rawId as string;
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
     await this.cipherService.restoreWithServer(id, userId);
+    this.toast.show(this.i18n.t("itemRestored"));
   }
 
   protected async purge(rawId: unknown): Promise<void> {
@@ -194,6 +218,7 @@ export class TrashV2Component {
 
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
     await this.cipherService.deleteWithServer(id, userId);
+    this.toast.show(this.i18n.t("deleted"));
   }
 
   protected async emptyTrash(): Promise<void> {
@@ -215,5 +240,6 @@ export class TrashV2Component {
 
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
     await this.cipherService.deleteManyWithServer(ids, userId);
+    this.toast.show(this.i18n.t("trashEmptied"));
   }
 }

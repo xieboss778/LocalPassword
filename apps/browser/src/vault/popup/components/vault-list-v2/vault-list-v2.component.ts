@@ -3,39 +3,60 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   OnInit,
   computed,
   inject,
   signal,
+  viewChild,
+  viewChildren,
 } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom, timeout } from "rxjs";
 
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
-  ITEM_KIND_ORDER,
   ITEM_KIND_UI,
   LpEmptyComponent,
   LpKindTileComponent,
   LpPopupHeaderComponent,
   LpToastService,
+  VaultDensity,
+  VaultDensityService,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
+import { ClearClipboardDelay } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { ClearClipboardDelaySetting } from "@localpass/common/autofill/types";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
+import { Utils } from "@localpass/common/platform/misc/utils";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderView } from "@localpass/common/vault/models/view/folder.view";
 import { CipherViewLikeUtils } from "@localpass/common/vault/utils/cipher-view-like-utils";
 import { ButtonModule, IconModule, LocalPassIcon } from "@localpass/components";
-import { isItemKind, ItemKind, kindFromFields } from "@localpass/local-vault";
+import { BiometricsService, BiometricsStatus } from "@localpass/key-management";
+import {
+  FIELDS,
+  isItemKind,
+  ItemKind,
+  KIND_FIELD,
+  kindFromFields,
+  kindOf,
+  readField,
+} from "@localpass/local-vault";
 import { CipherListView } from "@localpass/sdk-internal";
 import { LockService, LockSource } from "@localpass/unlock";
 import { MY_ITEMS_ROUTE } from "@localpass/vault";
 
 import { ImportConfirmationPopupService } from "../../../../tools/popup/settings/import/import-confirmation-popup.service";
+import { VaultPopupAutofillService } from "../../services/vault-popup-autofill.service";
+
+type Filter = "all" | "login" | "card" | "other";
+type FolderFilter = "all" | string;
 
 interface VaultRow {
   readonly id: string;
@@ -44,6 +65,8 @@ interface VaultRow {
   readonly sub: string;
   readonly favorite: boolean;
   readonly username: string;
+  readonly hasSecret: boolean;
+  readonly siteMatch: boolean;
 }
 
 interface VaultGroup {
@@ -53,20 +76,27 @@ interface VaultGroup {
   readonly rows: readonly VaultRow[];
 }
 
-type TypeFilter = "all" | ItemKind;
-type FolderFilter = "all" | string;
+interface SearchQuery {
+  readonly text: string;
+  readonly favorite: boolean;
+  readonly totp: boolean;
+  readonly kind: ItemKind | null;
+}
 
 /**
- * 保险库列表（弹窗）。
+ * 保险库列表（弹窗，AGY 紧凑版）。
  *
- * 数据仍来自 `CipherService.getAllDecrypted`：按作用域（组织/我的条目）过滤后，
- * 在这里做搜索、类型/文件夹/收藏过滤，再按「收藏 + 所有条目」分组。
- * 新建/编辑/删除都在独立页面，列表只负责读和导航。
+ * 数据仍来自 `CipherService` 的列表广播；搜索覆盖名称、用户名、网址、备注与自定义字段，
+ * 并支持 `=favorite` / `=totp` / `=ssh` 这类过滤记号。当前标签页匹配的登录条目置顶，
+ * 行内 hover 直接复制用户名/密码或填充，不离开列表。
  */
 @Component({
   selector: "vault-list-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: "tw-block tw-h-full" },
+  host: {
+    class: "tw-block tw-h-full",
+    "(document:keydown)": "onDocumentKeydown($event)",
+  },
   imports: [
     CommonModule,
     JslibModule,
@@ -77,217 +107,234 @@ type FolderFilter = "all" | string;
     LpPopupHeaderComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
-      <lp-popup-header [title]="i18n.t('vault')" [sub]="subtitle()">
+    <div
+      class="agy tw-flex tw-h-full tw-flex-col tw-bg-background"
+      [class.agy-ultra]="density() === 'ultra'"
+    >
+      <lp-popup-header
+        [title]="i18n.t('vault')"
+        [avatar]="true"
+        [badge]="bridgeOnline() ? i18n.t('bridgeBadge') : null"
+        badgeTone="ok"
+        [badgeTitle]="i18n.t('touchIdBridgeReady')"
+      >
         <div slot="actions" class="tw-flex tw-items-center tw-gap-0.5">
-          @if (ciphers().length) {
-            <button
-              type="button"
-              class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-              [attr.aria-label]="i18n.t('lockVault')"
-              [attr.title]="i18n.t('lockVault')"
-              (click)="lock()"
-            >
-              <bit-icon name="bwi-lock" class="tw-text-base"></bit-icon>
-            </button>
-          }
           <button
             type="button"
-            class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-fg-brand hover:tw-bg-bg-brand-softer"
+            class="agy-iconbtn"
+            [attr.aria-label]="i18n.t('shortcutHelpTitle')"
+            [attr.title]="i18n.t('shortcutHelpTitle')"
+            (click)="helpOpen.set(true)"
+          >
+            <bit-icon name="bwi-question-circle" class="tw-text-base"></bit-icon>
+          </button>
+          <button
+            type="button"
+            class="agy-iconbtn"
+            [attr.aria-label]="i18n.t('lockVault')"
+            [attr.title]="i18n.t('lockVault')"
+            (click)="lock()"
+          >
+            <bit-icon name="bwi-lock" class="tw-text-base"></bit-icon>
+          </button>
+          <button
+            type="button"
+            class="agy-iconbtn agy-on"
             [attr.aria-label]="i18n.t('newItem')"
             [attr.title]="i18n.t('newItem')"
             (click)="createItem()"
           >
-            <bit-icon name="bwi-plus" class="tw-text-lg"></bit-icon>
+            <bit-icon name="bwi-plus" class="tw-text-base"></bit-icon>
           </button>
         </div>
       </lp-popup-header>
 
       @if (ciphers().length) {
-        <div class="tw-flex tw-flex-none tw-flex-col tw-gap-2 tw-px-3.5 tw-pb-2">
-          <div
-            class="tw-flex tw-items-center tw-gap-2 tw-rounded-lg tw-border tw-border-border-light tw-bg-background-alt tw-px-2.5 tw-py-2 focus-within:tw-border-border-focus"
-          >
-            <bit-icon name="bwi-search" class="tw-text-sm tw-text-muted"></bit-icon>
-            <input
-              type="search"
-              class="tw-min-w-0 tw-flex-1 tw-border-0 tw-bg-transparent tw-text-sm tw-text-main tw-outline-none placeholder:tw-text-muted"
-              [attr.aria-label]="i18n.t('searchVault')"
-              [attr.placeholder]="i18n.t('searchVaultPlaceholder')"
-              [value]="query()"
-              (input)="onSearch($event)"
-            />
-          </div>
+        <label class="agy-ext-search">
+          <bit-icon name="bwi-search" class="tw-text-xs"></bit-icon>
+          <input
+            #searchInput
+            type="search"
+            [attr.aria-label]="i18n.t('searchVault')"
+            [attr.placeholder]="i18n.t('searchVaultPlaceholderAll')"
+            [value]="query()"
+            (input)="onSearch($event)"
+          />
+        </label>
 
-          <div class="tw-flex tw-items-center tw-gap-1.5 tw-overflow-x-auto tw-pb-0.5">
-            <label
-              class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-border-light tw-bg-background tw-py-1 tw-ps-2.5 tw-pe-1.5 tw-text-xs hover:tw-border-border-base"
-            >
-              <bit-icon name="bwi-list" class="tw-text-xs tw-text-muted"></bit-icon>
-              <select
-                class="tw-appearance-none tw-border-0 tw-bg-transparent tw-py-0 tw-ps-0.5 tw-pe-0 tw-text-xs tw-font-medium tw-text-main tw-outline-none"
-                [attr.aria-label]="i18n.t('type')"
-                [value]="typeFilter()"
-                (change)="onTypeFilter($event)"
-              >
-                <option value="all">{{ i18n.t("type") }}</option>
-                @for (kind of kinds; track kind) {
-                  <option [value]="kind">{{ kindLabel(kind) }}</option>
-                }
-              </select>
-              <bit-icon name="bwi-angle-down" class="tw-text-xs tw-text-muted"></bit-icon>
-            </label>
-
-            <label
-              class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-border-light tw-bg-background tw-py-1 tw-ps-2.5 tw-pe-1.5 tw-text-xs hover:tw-border-border-base"
-            >
-              <bit-icon name="bwi-folder" class="tw-text-xs tw-text-muted"></bit-icon>
-              <select
-                class="tw-appearance-none tw-border-0 tw-bg-transparent tw-py-0 tw-ps-0.5 tw-pe-0 tw-text-xs tw-font-medium tw-text-main tw-outline-none"
-                [attr.aria-label]="i18n.t('folder')"
-                [value]="folderFilter()"
-                (change)="onFolderFilter($event)"
-              >
-                <option value="all" [selected]="folderFilter() === 'all'">
-                  {{ i18n.t("folder") }}
-                </option>
-                <option value="" [selected]="folderFilter() === ''">
-                  {{ i18n.t("noFolder") }}
-                </option>
-                @for (folder of folders(); track folder.id) {
-                  <option [value]="folder.id" [selected]="folderFilter() === folder.id">
-                    {{ folder.name }}
-                  </option>
-                }
-              </select>
-              <bit-icon name="bwi-angle-down" class="tw-text-xs tw-text-muted"></bit-icon>
-            </label>
-
-            <button
-              type="button"
-              class="tw-inline-flex tw-flex-none tw-items-center tw-gap-1 tw-rounded-full tw-border tw-py-1 tw-ps-2.5 tw-pe-3 tw-text-xs tw-font-medium"
-              [class.tw-border-border-brand]="favoritesOnly()"
-              [class.tw-bg-bg-brand-softer]="favoritesOnly()"
-              [class.tw-text-fg-brand]="favoritesOnly()"
-              [class.tw-border-border-light]="!favoritesOnly()"
-              [class.tw-bg-background]="!favoritesOnly()"
-              [class.tw-text-main]="!favoritesOnly()"
-              [attr.aria-pressed]="favoritesOnly()"
-              (click)="favoritesOnly.set(!favoritesOnly())"
-            >
-              <bit-icon
-                [name]="favoritesOnly() ? 'bwi-star-filled' : 'bwi-star'"
-                class="tw-text-xs"
-              ></bit-icon>
-              {{ i18n.t("favorites") }}
+        @if (activeFolderName()) {
+          <div class="tw-flex tw-items-center tw-gap-1.5 tw-px-2.5 tw-pb-1">
+            <span class="agy-chip agy-brand">
+              <bit-icon name="bwi-folder" class="tw-text-xs"></bit-icon>
+              {{ activeFolderName() }}
+            </span>
+            <button type="button" class="agy-btn agy-sm" (click)="clearFolderFilter()">
+              {{ i18n.t("clearFilters") }}
             </button>
           </div>
+        }
+
+        <div class="agy-ext-tabs" role="tablist">
+          @for (item of filters(); track item.id) {
+            <button
+              type="button"
+              role="tab"
+              [class.agy-on]="filter() === item.id"
+              [attr.aria-selected]="filter() === item.id"
+              (click)="filter.set(item.id)"
+            >
+              {{ item.label }}<span class="agy-n">{{ item.count }}</span>
+            </button>
+          }
         </div>
       }
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-5">
+      <div class="agy-ext-list" (keydown)="onListKeydown($event)">
         @if (loading()) {
           <p class="tw-px-2 tw-py-6 tw-text-sm tw-text-muted">{{ i18n.t("loading") }}</p>
         } @else if (ciphers().length === 0) {
-          <div class="tw-grid tw-min-h-72 tw-place-items-center">
+          <div class="tw-flex tw-h-full tw-flex-col tw-justify-center">
             <lp-empty
-              icon="bwi-vault"
+              icon="bwi-key"
               [title]="i18n.t('vaultIsEmpty')"
               [text]="i18n.t('emptyVaultText')"
             >
-              <div class="tw-flex tw-flex-row tw-gap-2">
-                <button
-                  type="button"
-                  bitButton
-                  buttonType="primary"
-                  startIcon="bwi-plus"
-                  (click)="createItem()"
-                >
-                  {{ i18n.t("newItemCta") }}
-                </button>
-                <button
-                  type="button"
-                  bitButton
-                  buttonType="secondary"
-                  startIcon="bwi-import"
-                  (click)="importItems()"
-                >
-                  {{ i18n.t("importData") }}
-                </button>
-              </div>
+              <button
+                type="button"
+                class="agy-btn agy-primary agy-lg tw-w-full"
+                (click)="createItem()"
+              >
+                <bit-icon name="bwi-plus" class="tw-text-xs"></bit-icon>
+                {{ i18n.t("newItemCta") }}
+              </button>
+              <button type="button" class="agy-btn agy-lg tw-w-full" (click)="importItems()">
+                <bit-icon name="bwi-import" class="tw-text-xs"></bit-icon>
+                {{ i18n.t("importData") }}
+              </button>
+              <button type="button" class="agy-btn agy-lg tw-w-full" (click)="restoreItems()">
+                <bit-icon name="bwi-refresh" class="tw-text-xs"></bit-icon>
+                {{ i18n.t("restoreVaultFromCloud") }}
+              </button>
             </lp-empty>
           </div>
         } @else if (visible().length === 0) {
-          <div class="tw-grid tw-min-h-72 tw-place-items-center">
-            <lp-empty icon="bwi-search" [title]="i18n.t('noResults')" [text]="noResultsHint()">
-              @if (isFiltering()) {
-                <button type="button" bitButton buttonType="secondary" (click)="clearFilters()">
-                  {{ i18n.t("clearFilters") }}
-                </button>
+          <div class="tw-px-5 tw-py-10 tw-text-center">
+            <div class="tw-text-xs tw-font-semibold tw-text-main">{{ i18n.t("noResults") }}</div>
+            <div class="tw-mt-1 tw-text-xs tw-leading-relaxed tw-text-muted">
+              @if (query().trim()) {
+                {{ i18n.t("noResultsFor", query().trim()) }}
+              } @else {
+                {{ i18n.t("emptyFilterHint") }}
               }
-            </lp-empty>
+            </div>
+            <button type="button" class="agy-btn agy-sm tw-mt-3" (click)="clearFilters()">
+              {{ i18n.t("clearFilters") }}
+            </button>
           </div>
         } @else {
           @for (group of groups(); track group.key) {
-            <section class="tw-pb-1.5">
-              <h2
-                class="tw-m-0 tw-flex tw-items-center tw-gap-1.5 tw-px-2.5 tw-pt-2.5 tw-pb-1 tw-text-xs tw-font-semibold tw-text-muted"
-              >
-                @if (group.icon) {
-                  <bit-icon [name]="group.icon" class="tw-text-[11px]"></bit-icon>
-                }
-                <span>{{ group.label }}</span>
-                @if (group.key !== "favorites") {
-                  <span class="tw-font-normal tw-text-muted">{{ group.rows.length }}</span>
-                }
-              </h2>
+            <div class="agy-grouphead">
+              @if (group.icon) {
+                <bit-icon [name]="group.icon" class="tw-text-xs"></bit-icon>
+              }
+              <span>{{ group.label }}</span>
+              <span class="agy-n">{{ group.rows.length }}</span>
+            </div>
 
-              @for (row of group.rows; track row.id) {
-                <button
-                  type="button"
-                  class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-rounded-xl tw-p-2.5 tw-text-start hover:tw-bg-background-alt"
-                  (click)="open(row.id)"
-                >
-                  <lp-kind-tile [kind]="row.kind" size="base"></lp-kind-tile>
-                  <span class="tw-min-w-0 tw-flex-1">
-                    <span class="tw-flex tw-items-center tw-gap-1">
-                      <span class="tw-truncate tw-text-sm tw-font-medium tw-text-main">{{
-                        row.name
-                      }}</span>
-                      @if (row.favorite) {
-                        <bit-icon
-                          name="bwi-star-filled"
-                          class="tw-text-xs tw-text-fg-brand"
-                        ></bit-icon>
-                      }
-                    </span>
-                    <span
-                      class="tw-block tw-truncate tw-text-xs tw-leading-relaxed tw-text-muted"
-                      >{{ row.sub }}</span
-                    >
+            @for (row of group.rows; track row.id; let i = $index) {
+              <div
+                #rowButton
+                class="agy-ext-row"
+                [class.agy-on]="activeId() === row.id"
+                role="button"
+                tabindex="0"
+                [attr.data-row]="rowKey(group.key, i)"
+                [attr.aria-label]="row.name"
+                (click)="open(row.id)"
+                (keydown.enter)="open(row.id)"
+                (keydown.space)="onRowSpace($event, row.id)"
+                (focus)="activeId.set(row.id)"
+              >
+                <lp-kind-tile [kind]="row.kind" size="sm"></lp-kind-tile>
+                <span class="tw-min-w-0 tw-flex-1">
+                  <span class="agy-t">
+                    {{ row.name }}
+                    @if (row.favorite) {
+                      <bit-icon
+                        name="bwi-star-filled"
+                        class="tw-ms-0.5 tw-inline tw-align-middle tw-text-xs tw-text-fg-brand"
+                      ></bit-icon>
+                    }
                   </span>
-                  <span class="tw-flex tw-flex-none tw-items-center tw-gap-0.5 tw-text-muted">
+                  <span class="agy-s">{{ row.sub }}</span>
+                </span>
+                <span class="agy-m">
+                  <span class="agy-idle-meta">
+                    <span class="agy-chip">{{ kindLabel(row.kind) }}</span>
+                  </span>
+                  <span class="agy-hoveracts">
                     @if (row.username) {
-                      <span
-                        role="button"
-                        tabindex="0"
-                        class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md hover:tw-bg-bg-hover hover:tw-text-main"
+                      <button
+                        type="button"
+                        class="agy-iconbtn agy-sm"
                         [attr.aria-label]="i18n.t('copyUsername')"
                         [attr.title]="i18n.t('copyUsername')"
                         (click)="copyUsername($event, row.username)"
-                        (keydown.enter)="copyUsername($event, row.username)"
                       >
-                        <bit-icon name="bwi-user" class="tw-text-base"></bit-icon>
-                      </span>
+                        <bit-icon name="bwi-user" class="tw-text-xs"></bit-icon>
+                      </button>
                     }
-                    <bit-icon name="bwi-angle-right" class="tw-text-sm"></bit-icon>
+                    @if (row.hasSecret) {
+                      <button
+                        type="button"
+                        class="agy-iconbtn agy-sm"
+                        [attr.aria-label]="i18n.t('copyPassword')"
+                        [attr.title]="i18n.t('copyPassword')"
+                        (click)="copyPassword($event, row.id)"
+                      >
+                        <bit-icon name="bwi-key" class="tw-text-xs"></bit-icon>
+                      </button>
+                    }
+                    @if (row.siteMatch) {
+                      <button
+                        type="button"
+                        class="agy-btn agy-sm agy-primary"
+                        (click)="fill($event, row.id)"
+                      >
+                        {{ i18n.t("fill") }}
+                      </button>
+                    }
                   </span>
-                </button>
-              }
-            </section>
+                </span>
+              </div>
+            }
           }
         }
       </div>
+
+      @if (helpOpen()) {
+        <div class="agy-sheetwrap" (click)="helpOpen.set(false)">
+          <div class="agy-sheet" (click)="$event.stopPropagation()">
+            <div class="agy-st">{{ i18n.t("shortcutHelpTitle") }}</div>
+            <div class="agy-prow">
+              <div class="agy-t">{{ i18n.t("shortcutOpenPopup") }}</div>
+              <div class="agy-right"><kbd>&#8984;&#8679;Y</kbd></div>
+            </div>
+            <div class="agy-prow">
+              <div class="agy-t">{{ i18n.t("shortcutFillPage") }}</div>
+              <div class="agy-right"><kbd>&#8984;&#8679;L</kbd></div>
+            </div>
+            <div class="agy-prow">
+              <div class="agy-t">{{ i18n.t("shortcutListMove") }}</div>
+              <div class="agy-right"><kbd>&#8593;&#8595;</kbd> <kbd>&#8629;</kbd></div>
+            </div>
+            <div class="agy-prow">
+              <div class="agy-t">{{ i18n.t("shortcutCopyFields") }}</div>
+              <div class="agy-right"><kbd>&#8984;C</kbd> <kbd>&#8679;&#8984;C</kbd></div>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   `,
 })
@@ -303,102 +350,154 @@ export class VaultListV2Component implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly importConfirmationPopup = inject(ImportConfirmationPopupService);
+  private readonly autofillService = inject(VaultPopupAutofillService);
+  private readonly densityService = inject(VaultDensityService);
+  private readonly biometricsService = inject(BiometricsService, { optional: true });
+  private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
+    optional: true,
+  });
 
-  protected readonly kinds = ITEM_KIND_ORDER;
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>("searchInput");
+  private readonly rows = viewChildren<ElementRef<HTMLElement>>("rowButton");
+
+  protected readonly density = toSignal(this.densityService.density$, {
+    initialValue: VaultDensity.Compact,
+  });
+  private readonly clearClipboardDelay = this.autofillSettingsService
+    ? toSignal(this.autofillSettingsService.clearClipboardDelay$, {
+        initialValue: ClearClipboardDelay.ThirtySeconds,
+      })
+    : signal(ClearClipboardDelay.ThirtySeconds);
+
   protected readonly loading = signal(true);
   protected readonly query = signal("");
   protected readonly ciphers = signal<CipherListView[]>([]);
   protected readonly folders = signal<FolderView[]>([]);
-  protected readonly typeFilter = signal<TypeFilter>("all");
+  protected readonly filter = signal<Filter>("all");
   protected readonly folderFilter = signal<FolderFilter>("all");
-  protected readonly favoritesOnly = signal(false);
+  protected readonly helpOpen = signal(false);
+  protected readonly activeId = signal<string | null>(null);
+  protected readonly bridgeOnline = signal(false);
 
-  protected readonly subtitle = computed(() =>
-    this.ciphers().length === 0
-      ? this.i18n.t("emptyVaultSubtitle")
-      : `${this.ciphers().length} ${this.i18n.t("itemCountShort")} · ${this.i18n.t("encryptedLocally")}`,
+  private readonly currentTab = toSignal(this.autofillService.currentAutofillTab$, {
+    initialValue: null,
+  });
+
+  protected readonly activeFolderName = computed(() => {
+    const folder = this.folderFilter();
+    if (folder === "all") {
+      return "";
+    }
+    return this.folderName(folder) || folder;
+  });
+
+  private readonly folderScopedCiphers = computed(() => {
+    const folder = this.folderFilter();
+    const items = this.ciphers();
+    if (folder === "all") {
+      return items;
+    }
+    return items.filter((cipher) => String(cipher.folderId ?? "") === folder);
+  });
+
+  /** 当前标签页的主机名；只在 http(s) 页面参与置顶匹配。 */
+  protected readonly siteHost = computed(() => {
+    const url = this.currentTab()?.url;
+    if (!url || !/^https?:/i.test(url)) {
+      return "";
+    }
+    return (Utils.getHostname(url) ?? "").toLowerCase();
+  });
+
+  protected readonly filters = computed<readonly { id: Filter; label: string; count: number }[]>(
+    () => {
+      const items = this.folderScopedCiphers();
+      return [
+        { id: "all", label: this.i18n.t("allItems"), count: items.length },
+        {
+          id: "login",
+          label: this.i18n.t("typeLogin"),
+          count: items.filter((cipher) => this.kindOf(cipher) === ItemKind.Login).length,
+        },
+        {
+          id: "card",
+          label: this.i18n.t("typeCard"),
+          count: items.filter((cipher) => this.kindOf(cipher) === ItemKind.Card).length,
+        },
+        {
+          id: "other",
+          label: this.i18n.t("other"),
+          count: items.filter((cipher) => {
+            const kind = this.kindOf(cipher);
+            return kind !== ItemKind.Login && kind !== ItemKind.Card;
+          }).length,
+        },
+      ];
+    },
   );
 
+  private readonly parsedQuery = computed(() => parseSearch(this.query()));
+
   protected readonly visible = computed(() => {
-    const query = this.query().trim().toLowerCase();
-    const type = this.typeFilter();
+    const query = this.parsedQuery();
+    const filter = this.filter();
     const folder = this.folderFilter();
-    const favoritesOnly = this.favoritesOnly();
+    const host = this.siteHost();
 
     return this.ciphers()
       .filter((cipher) => {
-        if (type !== "all" && this.kindOf(cipher) !== type) {
+        if (cipher.deletedDate != null || cipher.archivedDate != null) {
           return false;
         }
         if (folder !== "all" && String(cipher.folderId ?? "") !== folder) {
           return false;
         }
-        if (favoritesOnly && !cipher.favorite) {
+        const kind = this.kindOf(cipher);
+        if (filter === "login" && kind !== ItemKind.Login) {
           return false;
         }
-        if (!query) {
-          return true;
+        if (filter === "card" && kind !== ItemKind.Card) {
+          return false;
         }
-        const haystack = [
-          cipher.name,
-          cipher.subtitle ?? "",
-          this.folderName(cipher.folderId),
-          this.usernameOf(cipher),
-        ]
-          .join(" ")
-          .toLowerCase();
-        return haystack.includes(query);
+        if (filter === "other" && (kind === ItemKind.Login || kind === ItemKind.Card)) {
+          return false;
+        }
+        if (query.favorite && !cipher.favorite) {
+          return false;
+        }
+        if (query.totp && !this.totpOf(cipher)) {
+          return false;
+        }
+        if (query.kind && kind !== query.kind) {
+          return false;
+        }
+        return !query.text || this.searchSources(cipher, query.text).length > 0;
       })
-      .sort((a, b) => this.revisionTime(b) - this.revisionTime(a) || a.name.localeCompare(b.name));
-  });
-
-  /** 仅按文件夹筛选时，标题直接写文件夹名；有搜索词时仍显示「搜索结果」。 */
-  private readonly resultsHeading = computed(() => {
-    if (this.query().trim()) {
-      return this.i18n.t("searchResults");
-    }
-    const folderId = this.folderFilter();
-    if (folderId === "") {
-      return this.i18n.t("noFolder");
-    }
-    return (
-      this.folders().find((folder) => folder.id === folderId)?.name ?? this.i18n.t("searchResults")
-    );
+      .sort((a, b) => this.revisionTime(b) - this.revisionTime(a) || a.name.localeCompare(b.name))
+      .map((cipher) => this.toRow(cipher, host));
   });
 
   protected readonly groups = computed<readonly VaultGroup[]>(() => {
-    const rows = this.visible().map((cipher) => this.toRow(cipher));
-    if (this.isFiltering()) {
-      return [{ key: "results", label: this.resultsHeading(), rows }];
+    const rows = this.visible();
+    const query = this.parsedQuery();
+    if (query.text || query.favorite || query.totp || query.kind) {
+      return [{ key: "results", label: this.i18n.t("searchResults"), rows }];
     }
 
-    const favorites = rows.filter((row) => row.favorite);
+    const site = rows.filter((row) => row.siteMatch);
+    const rest = rows.filter((row) => !row.siteMatch);
     const groups: VaultGroup[] = [];
-    if (favorites.length) {
+    if (site.length) {
       groups.push({
-        key: "favorites",
-        label: this.i18n.t("favorites"),
-        icon: "bwi-star-filled",
-        rows: favorites,
+        key: "site",
+        label: this.siteGroupLabel(),
+        icon: "bwi-globe",
+        rows: site,
       });
     }
-    groups.push({ key: "all", label: this.i18n.t("allItems"), rows });
+    groups.push({ key: "all", label: this.i18n.t("recentAndAll"), rows: rest });
     return groups;
   });
-
-  protected readonly isFiltering = computed(
-    () =>
-      this.query().trim().length > 0 ||
-      this.typeFilter() !== "all" ||
-      this.folderFilter() !== "all" ||
-      this.favoritesOnly(),
-  );
-
-  protected readonly noResultsHint = computed(() =>
-    this.query().trim()
-      ? this.i18n.t("noResultsFor", this.query().trim())
-      : this.i18n.t("emptyFilterHint"),
-  );
 
   async ngOnInit(): Promise<void> {
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
@@ -415,7 +514,11 @@ export class VaultListV2Component implements OnInit {
         }
         clearTimeout(loadingFallback);
         const listViews = views.filter(CipherViewLikeUtils.isCipherListView);
-        this.ciphers.set(this.scoped(listViews.filter((view) => view.deletedDate == null)));
+        this.ciphers.set(
+          this.scoped(
+            listViews.filter((view) => view.deletedDate == null && view.archivedDate == null),
+          ),
+        );
         this.loading.set(false);
       });
 
@@ -441,6 +544,81 @@ export class VaultListV2Component implements OnInit {
 
     // An import that finished in its own tab leaves its result for the popup to show.
     void this.importConfirmationPopup.conditionallyOpen(userId);
+    void this.refreshBridgeStatus();
+  }
+
+  private async refreshBridgeStatus(): Promise<void> {
+    try {
+      const status = await this.biometricsService?.getBiometricsStatus();
+      this.bridgeOnline.set(status === BiometricsStatus.Available);
+    } catch {
+      this.bridgeOnline.set(false);
+    }
+  }
+
+  protected clearFolderFilter(): void {
+    this.folderFilter.set("all");
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { folder: null },
+      queryParamsHandling: "merge",
+      replaceUrl: true,
+    });
+  }
+
+  protected onDocumentKeydown(event: KeyboardEvent): void {
+    if (event.key === "Escape" && this.helpOpen()) {
+      event.preventDefault();
+      this.helpOpen.set(false);
+      return;
+    }
+
+    const target = event.target as HTMLElement | null;
+    const inInput =
+      target?.tagName === "INPUT" ||
+      target?.tagName === "TEXTAREA" ||
+      target?.tagName === "SELECT" ||
+      target?.isContentEditable;
+
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      this.searchInput()?.nativeElement.focus();
+      return;
+    }
+    if (inInput) {
+      return;
+    }
+
+    if (event.key === "/") {
+      event.preventDefault();
+      this.searchInput()?.nativeElement.focus();
+      return;
+    }
+    if (event.key === "?" && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      event.preventDefault();
+      this.helpOpen.set(!this.helpOpen());
+      return;
+    }
+
+    const activeId = this.activeId();
+    if (!activeId || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== "c") {
+      return;
+    }
+    if (window.getSelection()?.toString()) {
+      return;
+    }
+    const activeRow = this.visible().find((row) => row.id === activeId);
+    if (!activeRow) {
+      return;
+    }
+    event.preventDefault();
+    if (event.shiftKey) {
+      void this.copyPassword(event, activeRow.id);
+    } else if (activeRow.username) {
+      this.copyUsername(event, activeRow.username);
+    } else if (activeRow.hasSecret) {
+      void this.copyPassword(event, activeRow.id);
+    }
   }
 
   protected kindLabel(kind: ItemKind): string {
@@ -451,20 +629,10 @@ export class VaultListV2Component implements OnInit {
     this.query.set((event.target as HTMLInputElement).value);
   }
 
-  protected onTypeFilter(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.typeFilter.set(value === "all" || isItemKind(value) ? value : "all");
-  }
-
-  protected onFolderFilter(event: Event): void {
-    this.folderFilter.set((event.target as HTMLSelectElement).value);
-  }
-
   protected clearFilters(): void {
     this.query.set("");
-    this.typeFilter.set("all");
+    this.filter.set("all");
     this.folderFilter.set("all");
-    this.favoritesOnly.set(false);
     // 文件夹筛选来自 URL，若只改本地信号，下次进入列表时旧 query 又会把筛选带回来。
     void this.router.navigate([], {
       relativeTo: this.route,
@@ -480,6 +648,10 @@ export class VaultListV2Component implements OnInit {
     });
   }
 
+  protected restoreItems(): void {
+    void this.router.navigateByUrl("/restore-vault");
+  }
+
   protected createItem(): void {
     void this.router.navigate(["/new-item-v2"], {
       queryParams: { next: "/tabs/vault" },
@@ -490,18 +662,114 @@ export class VaultListV2Component implements OnInit {
     void this.router.navigate(["/view-cipher-v2"], { queryParams: { cipherId: id } });
   }
 
-  protected async lock(): Promise<void> {
-    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-    await this.lockService.lock(userId, LockSource.Manual);
-    await this.router.navigateByUrl("/");
+  protected onRowSpace(event: Event, id: string): void {
+    event.preventDefault();
+    this.open(id);
+  }
+
+  /** ↑↓ 在行之间移动焦点，Enter 由行自身的键盘处理。 */
+  protected onListKeydown(event: KeyboardEvent): void {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") {
+      return;
+    }
+    const list = this.rows();
+    if (!list.length) {
+      return;
+    }
+    const active = document.activeElement as HTMLElement | null;
+    const index = active ? list.findIndex((row) => row.nativeElement === active) : -1;
+    if (index === -1) {
+      return;
+    }
+    const next = event.key === "ArrowDown" ? index + 1 : index - 1;
+    if (next < 0 || next >= list.length) {
+      return;
+    }
+    event.preventDefault();
+    list[next].nativeElement.focus();
+    list[next].nativeElement.scrollIntoView({ block: "nearest" });
+  }
+
+  protected rowKey(group: string, index: number): string {
+    return `${group}:${index}`;
   }
 
   protected copyUsername(event: Event, username: string): void {
     event.stopPropagation();
     const copied = this.platformUtilsService.copyToClipboard(username, { window });
     if (copied !== false) {
-      this.toast.show(this.i18n.t("valueCopied", this.i18n.t("username")));
+      this.showCopyToast(this.i18n.t("valueCopied", this.i18n.t("username")));
     }
+  }
+
+  protected async copyPassword(event: Event, id: string): Promise<void> {
+    event.stopPropagation();
+    const view = await this.decrypt(id);
+    if (!view) {
+      return;
+    }
+    const kind = kindOf(view);
+    const secretField = FIELDS[kind].find((field) => field.password);
+    const secretValue =
+      (secretField ? readField(view, secretField.target) : "") || view.login?.password || "";
+    if (!secretValue) {
+      return;
+    }
+    const label = secretField ? this.i18n.t(secretField.labelKey) : this.i18n.t("password");
+    const copied = this.platformUtilsService.copyToClipboard(secretValue, { window });
+    if (copied !== false) {
+      this.showCopyToast(this.i18n.t("valueCopied", label));
+    }
+  }
+
+  private showCopyToast(message: string): void {
+    const delay = this.clipboardClearSeconds(this.clearClipboardDelay());
+    if (delay > 0) {
+      this.toast.showClipboard(
+        message,
+        () => {
+          this.platformUtilsService.copyToClipboard("", { window });
+        },
+        delay,
+      );
+    } else {
+      this.toast.show(message);
+    }
+  }
+
+  private clipboardClearSeconds(setting: ClearClipboardDelaySetting): number {
+    switch (setting) {
+      case ClearClipboardDelay.TenSeconds:
+        return 10;
+      case ClearClipboardDelay.TwentySeconds:
+        return 20;
+      case ClearClipboardDelay.ThirtySeconds:
+        return 30;
+      case ClearClipboardDelay.OneMinute:
+        return 60;
+      case ClearClipboardDelay.TwoMinutes:
+        return 120;
+      case ClearClipboardDelay.FiveMinutes:
+        return 300;
+      case ClearClipboardDelay.Never:
+      default:
+        return 0;
+    }
+  }
+
+  protected async fill(event: Event, id: string): Promise<void> {
+    event.stopPropagation();
+    const view = await this.decrypt(id);
+    if (!view) {
+      return;
+    }
+    await this.autofillService.doAutofill(view, true, false);
+  }
+
+  protected async lock(): Promise<void> {
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+    await this.lockService.lock(userId, LockSource.Manual);
+    await this.router.navigateByUrl("/");
   }
 
   /** `/vault/:vaultId` 或 `…/my-items` 收窄作用域；其余路由不裁剪。 */
@@ -538,11 +806,51 @@ export class VaultListV2Component implements OnInit {
       : "";
   }
 
-  private toRow(view: CipherListView): VaultRow {
+  private totpOf(view: CipherListView): string {
+    const type = view.type;
+    return typeof type === "object" && type !== null && "login" in type
+      ? (type.login?.totp ?? "")
+      : "";
+  }
+
+  private loginUris(view: CipherListView): readonly string[] {
+    const type = view.type;
+    if (typeof type !== "object" || type === null || !("login" in type)) {
+      return [];
+    }
+    return (type.login?.uris ?? [])
+      .map((uri) => uri.uri ?? "")
+      .filter((uri): uri is string => uri.length > 0);
+  }
+
+  private matchesSite(view: CipherListView, host: string): boolean {
+    if (!host || this.kindOf(view) !== ItemKind.Login) {
+      return false;
+    }
+    return this.loginUris(view).some((uri) => {
+      const uriHost = (Utils.getHostname(uri) ?? "").toLowerCase();
+      if (!uriHost) {
+        return false;
+      }
+      return (
+        uriHost === host ||
+        uriHost === `www.${host}` ||
+        (uriHost.startsWith("www.") && uriHost.slice(4) === host)
+      );
+    });
+  }
+
+  protected siteGroupLabel(): string {
+    return this.siteHost()
+      ? `${this.i18n.t("currentTab")} · ${this.siteHost()}`
+      : this.i18n.t("currentTab");
+  }
+
+  private toRow(view: CipherListView, host: string): VaultRow {
     const kind = this.kindOf(view);
-    const sub = [this.subtitleOf(view, kind), this.folderName(view.folderId)]
-      .filter(Boolean)
-      .join(" · ");
+    const query = this.parsedQuery();
+    const sources = query.text ? this.searchSources(view, query.text) : [];
+    const sub = sources.length ? sources[0] : this.subtitleOf(view, kind);
     return {
       id: String(view.id ?? ""),
       kind,
@@ -552,7 +860,34 @@ export class VaultListV2Component implements OnInit {
       // Only logins have a username to copy; for tokens/servers that slot holds a service
       // or host, which should not grow a username copy affordance.
       username: kind === ItemKind.Login ? this.usernameOf(view) : "",
+      hasSecret: kind !== ItemKind.Note && kind !== ItemKind.Identity,
+      siteMatch: this.matchesSite(view, host),
     };
+  }
+
+  /** 全字段搜索命中的「字段: 片段」，用来解释这一行为什么出现在结果里。 */
+  private searchSources(view: CipherListView, rawQuery: string): readonly string[] {
+    const query = rawQuery.toLowerCase();
+    const sources: string[] = [];
+    const push = (label: string, value: string | null | undefined) => {
+      const text = (value ?? "").trim();
+      if (text && text.toLowerCase().includes(query)) {
+        sources.push(`${label}: ${snippet(text, query)}`);
+      }
+    };
+
+    push(this.i18n.t("name"), view.name);
+    push(this.i18n.t("username"), this.usernameOf(view));
+    push(this.i18n.t("folder"), this.folderName(view.folderId));
+    push(this.i18n.t("notes"), view.notes);
+    push(this.i18n.t("uri"), this.loginUris(view).join(" "));
+    for (const field of view.fields ?? []) {
+      if (field.name === KIND_FIELD) {
+        continue;
+      }
+      push(field.name || this.i18n.t("customFields"), field.value);
+    }
+    return sources;
   }
 
   /** Kind-aware subtitle: kind + the fields this kind actually carries, never a raw username. */
@@ -616,8 +951,69 @@ export class VaultListV2Component implements OnInit {
     const time = new Date(view.revisionDate).getTime();
     return Number.isNaN(time) ? 0 : time;
   }
+
+  /** 列表只持有脱敏视图；复制/填充时才按 id 取回并解密单条。 */
+  private async decrypt(id: string) {
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+    const cipher = await this.cipherService.get(id, userId);
+    return this.cipherService.decrypt(cipher, userId);
+  }
 }
 
 function joinParts(parts: readonly (string | undefined)[]): string {
   return parts.filter((part): part is string => !!part).join(" · ");
 }
+
+function snippet(text: string, query: string): string {
+  const index = text.toLowerCase().indexOf(query);
+  if (index < 0) {
+    return text;
+  }
+  const start = Math.max(0, index - 12);
+  const end = Math.min(text.length, index + query.length + 24);
+  return `${start > 0 ? "…" : ""}${text.slice(start, end)}${end < text.length ? "…" : ""}`;
+}
+
+/** 支持 `=favorite`、`=totp`、`=ssh`、`=login` 等过滤记号；其余词仍做全字段检索。 */
+function parseSearch(query: string): SearchQuery {
+  const words = query.trim().split(/\s+/).filter(Boolean);
+  const text: string[] = [];
+  let favorite = false;
+  let totp = false;
+  let kind: ItemKind | null = null;
+
+  for (const word of words) {
+    const token = word.toLowerCase();
+    if (token === "=favorite" || token === "=fav") {
+      favorite = true;
+      continue;
+    }
+    if (token === "=totp" || token === "=2fa") {
+      totp = true;
+      continue;
+    }
+    const mapped = KIND_TOKENS[token];
+    if (mapped) {
+      kind = mapped;
+      continue;
+    }
+    if (isItemKind(token)) {
+      kind = token;
+      continue;
+    }
+    text.push(word);
+  }
+
+  return { text: text.join(" "), favorite, totp, kind };
+}
+
+const KIND_TOKENS: Readonly<Record<string, ItemKind>> = Object.freeze({
+  "=login": ItemKind.Login,
+  "=card": ItemKind.Card,
+  "=identity": ItemKind.Identity,
+  "=note": ItemKind.Note,
+  "=token": ItemKind.Token,
+  "=server": ItemKind.Server,
+  "=license": ItemKind.License,
+  "=ssh": ItemKind.SshKey,
+});

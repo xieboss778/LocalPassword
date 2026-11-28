@@ -10,15 +10,20 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
-import { LpPopupHeaderComponent, LpRowComponent } from "@localpass/angular/local-ui";
+import {
+  LpPopupHeaderComponent,
+  LpRowComponent,
+  LpToastService,
+} from "@localpass/angular/local-ui";
 import { formatBackupTimestamp } from "@localpass/angular/tools/backup";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { FolderApiServiceAbstraction } from "@localpass/common/vault/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { DialogService } from "@localpass/components";
-import { VaultBackupService } from "@localpass/local-vault";
+import { VaultBackupService, VaultBackupSyncService } from "@localpass/local-vault";
 
 /**
  * 数据与安全（弹窗）。
@@ -32,7 +37,7 @@ import { VaultBackupService } from "@localpass/local-vault";
   host: { class: "tw-block tw-h-full" },
   imports: [LpPopupHeaderComponent, LpRowComponent],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
         [title]="i18n.t('dataAndSafety')"
         [sub]="i18n.t('dataAndSafetySubtitle')"
@@ -40,11 +45,9 @@ import { VaultBackupService } from "@localpass/local-vault";
         (backTriggered)="back()"
       ></lp-popup-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
-        <section class="tw-pb-2 tw-pt-1">
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-          >
+      <div class="agy-ext-scroll">
+        <section class="tw-pb-2">
+          <div class="agy-grp">
             <lp-row
               icon="bwi-folder"
               [label]="i18n.t('dataLocation')"
@@ -58,7 +61,7 @@ import { VaultBackupService } from "@localpass/local-vault";
               [clickable]="false"
             />
             <lp-row
-              icon="bwi-download"
+              icon="bwi-refresh"
               [label]="i18n.t('lastBackup')"
               [sub]="lastBackupText()"
               [clickable]="false"
@@ -67,9 +70,7 @@ import { VaultBackupService } from "@localpass/local-vault";
         </section>
 
         <section class="tw-pb-2">
-          <div
-            class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-          >
+          <div class="agy-grp">
             <lp-row
               icon="bwi-download"
               [label]="i18n.t('exportEncryptedBackup')"
@@ -83,19 +84,33 @@ import { VaultBackupService } from "@localpass/local-vault";
 
         <section class="tw-pt-2">
           <div
-            class="tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-p-4"
+            class="tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-p-3"
           >
-            <div class="tw-text-sm tw-font-semibold tw-text-fg-danger-strong">
+            <div class="tw-text-xs tw-font-semibold tw-text-fg-danger-strong">
               {{ i18n.t("dangerZone") }}
             </div>
-            <p class="tw-m-0 tw-pt-1 tw-text-xs tw-leading-relaxed tw-text-muted">
+            <p class="agy-hint tw-pl-0 tw-pt-1">
               {{ i18n.t("clearVaultDescription") }}
             </p>
+            <label
+              class="tw-mt-2 tw-flex tw-cursor-pointer tw-items-start tw-gap-2 tw-text-sm tw-leading-relaxed tw-text-main"
+              for="data-safety_input_clear-confirm"
+            >
+              <input
+                id="data-safety_input_clear-confirm"
+                type="checkbox"
+                class="tw-mt-0.5 tw-size-4 tw-flex-none"
+                data-testid="data_safety_clear_confirm"
+                [checked]="confirmed()"
+                (change)="onConfirmChange($event)"
+              />
+              <span>{{ i18n.t("clearVaultConfirmCheckbox") }}</span>
+            </label>
             <button
               id="data-safety_button_clear-vault"
               type="button"
-              class="tw-mt-3 tw-flex tw-h-9 tw-w-full tw-items-center tw-justify-center tw-rounded-lg tw-bg-background tw-text-sm tw-font-semibold tw-text-fg-danger-strong tw-transition-colors hover:tw-bg-bg-danger-soft focus-visible:tw-outline-none focus-visible:tw-ring-2 focus-visible:tw-ring-border-danger disabled:tw-opacity-60"
-              [disabled]="clearing()"
+              class="agy-btn agy-danger agy-lg agy-block tw-mt-2 tw-bg-background"
+              [disabled]="!confirmed() || clearing()"
               [attr.aria-busy]="clearing()"
               (click)="clearVault()"
             >
@@ -112,13 +127,17 @@ export class DataSafetyV2Component implements OnInit {
   private readonly router = inject(Router);
   private readonly accountService = inject(AccountService);
   private readonly cipherService = inject(CipherService);
+  private readonly folderService = inject(FolderService);
+  private readonly folderApiService = inject(FolderApiServiceAbstraction, { optional: true });
   private readonly backupService = inject(VaultBackupService);
+  private readonly syncService = inject(VaultBackupSyncService);
   private readonly dialogService = inject(DialogService);
-  private readonly platformUtilsService = inject(PlatformUtilsService);
+  private readonly toast = inject(LpToastService);
   private readonly locale = toSignal(this.i18n.locale$, { initialValue: "en-US" });
 
   protected readonly lastBackupAt = signal<string | null>(null);
   protected readonly clearing = signal(false);
+  protected readonly confirmed = signal(false);
 
   protected readonly lastBackupText = computed(() =>
     formatBackupTimestamp(this.lastBackupAt(), this.locale(), this.i18n),
@@ -126,8 +145,11 @@ export class DataSafetyV2Component implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-    const settings = await this.backupService.getSettings(userId);
-    this.lastBackupAt.set(settings.lastBackupAt);
+    const [settings, syncState] = await Promise.all([
+      this.backupService.getSettings(userId),
+      this.syncService.getSyncState(userId),
+    ]);
+    this.lastBackupAt.set(syncState.lastSyncedAt ?? settings.lastBackupAt);
   }
 
   protected back(): void {
@@ -138,31 +160,46 @@ export class DataSafetyV2Component implements OnInit {
     void this.router.navigateByUrl(route);
   }
 
+  protected onConfirmChange(event: Event): void {
+    this.confirmed.set((event.target as HTMLInputElement).checked);
+  }
+
   protected async clearVault(): Promise<void> {
-    if (this.clearing()) {
+    if (this.clearing() || !this.confirmed()) {
       return;
     }
 
-    const confirmed = await this.dialogService.openSimpleDialog({
+    const dialogConfirmed = await this.dialogService.openSimpleDialog({
       title: { key: "clearVaultConfirmTitle" },
       content: { key: "clearVaultConfirmBody" },
       type: "warning",
     });
-    if (!confirmed) {
+    if (!dialogConfirmed) {
       return;
     }
 
     this.clearing.set(true);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
-      const ciphers = await this.cipherService.getAll(userId);
+      const [ciphers, folders] = await Promise.all([
+        this.cipherService.getAll(userId),
+        firstValueFrom(this.folderService.folderViews$(userId)),
+      ]);
       const ids = ciphers.map((cipher) => cipher.id).filter((id): id is string => id != null);
       if (ids.length > 0) {
         await this.cipherService.deleteManyWithServer(ids, userId);
       }
-      this.platformUtilsService.showToast("success", "", this.i18n.t("vaultCleared"));
+      if (this.folderApiService) {
+        for (const folder of folders) {
+          if (folder.id) {
+            await this.folderApiService.delete(folder.id, userId);
+          }
+        }
+      }
+      this.confirmed.set(false);
+      this.toast.show(this.i18n.t("vaultCleared"));
     } catch {
-      this.platformUtilsService.showToast("error", "", this.i18n.t("errorOccurred"));
+      this.toast.show(this.i18n.t("errorOccurred"));
     } finally {
       this.clearing.set(false);
     }

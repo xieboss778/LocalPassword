@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, Location } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,16 +13,15 @@ import { firstValueFrom } from "rxjs";
 import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   LpGroupComponent,
-  LpHeroComponent,
   LpPageHeaderComponent,
   LpPopupHeaderComponent,
   LpRowComponent,
+  LpToastService,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
-import { AsyncActionsModule, ButtonModule, TypographyModule } from "@localpass/components";
+import { DialogService, IconModule } from "@localpass/components";
 import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui";
 
 /**
@@ -33,14 +32,12 @@ import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui"
   selector: "auth-security-key",
   templateUrl: "./security-key.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "tw-block tw-h-full" },
   imports: [
     CommonModule,
     JslibModule,
-    AsyncActionsModule,
-    ButtonModule,
-    TypographyModule,
+    IconModule,
     LpGroupComponent,
-    LpHeroComponent,
     LpPageHeaderComponent,
     LpPopupHeaderComponent,
     LpRowComponent,
@@ -49,10 +46,12 @@ import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui"
 export class SecurityKeyComponent implements OnInit {
   private readonly enrollmentService = inject(LocalWebAuthnPrfEnrollmentService);
   private readonly accountService = inject(AccountService);
-  private readonly platformUtilsService = inject(PlatformUtilsService);
+  private readonly toast = inject(LpToastService);
+  private readonly dialogService = inject(DialogService);
   private readonly i18nService = inject(I18nService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
 
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
 
@@ -64,6 +63,15 @@ export class SecurityKeyComponent implements OnInit {
   );
 
   protected goBack(): void {
+    const next = this.route.snapshot.queryParamMap.get("next");
+    if (next) {
+      void this.router.navigateByUrl(next);
+      return;
+    }
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
     void this.router.navigateByUrl("/settings-security-v2");
   }
 
@@ -81,25 +89,31 @@ export class SecurityKeyComponent implements OnInit {
       }
 
       await this.enrollmentService.enroll(account.id, account.email, account.name ?? account.email);
-      this.platformUtilsService.showToast("success", "", this.i18nService.t("securityKeyEnrolled"));
+      this.toast.show(this.i18nService.t("securityKeyEnrolled"));
       await this.refresh();
     } catch {
-      this.platformUtilsService.showToast(
-        "error",
-        "",
-        this.i18nService.t("securityKeyEnrollFailed"),
-      );
+      this.toast.show(this.i18nService.t("securityKeyEnrollFailed"));
     } finally {
       this.busy.set(false);
     }
   };
 
   protected readonly removeAll = async (): Promise<void> => {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "securityKeyRemove" },
+      content: { key: "securityKeyRemoveConfirm" },
+      type: "warning",
+    });
+    if (!confirmed) {
+      return;
+    }
+
     this.busy.set(true);
     try {
       const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
       await this.enrollmentService.removeAll(userId);
       await this.refresh();
+      this.toast.show(this.i18nService.t("securityKeyRemoved"));
     } finally {
       this.busy.set(false);
     }

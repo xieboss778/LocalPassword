@@ -2,11 +2,13 @@ import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   computed,
   inject,
   signal,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Params, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -21,6 +23,7 @@ import { AccountService } from "@localpass/common/auth/abstractions/account.serv
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
+import { TotpService } from "@localpass/common/vault/abstractions/totp.service";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { PasswordRepromptService, TotpQrComponent } from "@localpass/vault";
 
@@ -35,6 +38,7 @@ import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils"
 @Component({
   selector: "totp-qr-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: "tw-block tw-h-full" },
   imports: [
     CommonModule,
     RouterModule,
@@ -46,7 +50,7 @@ import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils"
     TotpQrComponent,
   ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
       @if (compact()) {
         <lp-popup-header
           [title]="i18n.t('totpQrTitle')"
@@ -61,29 +65,41 @@ import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils"
         ></lp-page-header>
       }
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
+      <div
+        class="tw-min-h-0 tw-flex-1 tw-overflow-auto"
+        [class.agy-ext-scroll]="compact()"
+        [class.tw-px-4]="!compact()"
+        [class.tw-pb-8]="!compact()"
+      >
         @if (loading()) {
-          <p class="tw-px-4 tw-py-6 tw-text-xs tw-text-muted">
+          <p class="tw-py-6 tw-text-xs tw-text-muted">
             {{ i18n.t("loading") }}
           </p>
         } @else if (totpUri()) {
-          <div
-            class="tw-mx-auto tw-mt-3 tw-w-fit tw-rounded-2xl tw-border tw-border-border-light tw-bg-background tw-p-3.5 tw-shadow-sm"
-          >
+          <div class="agy-grp tw-mx-auto tw-mt-1 tw-w-fit tw-p-3">
             <vault-totp-qr
               class="tw-block tw-w-fit"
               [value]="totpUri()"
               [size]="164"
               [ariaLabel]="cipher()?.name ?? ''"
             />
-            <p
-              class="tw-mx-auto tw-mt-2.5 tw-max-w-60 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted"
-            >
+            <p class="agy-hint tw-px-1 tw-pt-2 tw-text-center">
               {{ i18n.t("totpQrCardHint") }}
             </p>
           </div>
 
-          <lp-group [label]="i18n.t('manualEntry')">
+          <lp-group class="tw-pt-2" [label]="i18n.t('manualEntry')">
+            @if (totpCode()) {
+              <lp-row
+                [label]="i18n.t('verificationCode')"
+                [sub]="totpMeta()"
+                [value]="formattedCode()"
+                [mono]="true"
+                [brand]="true"
+                [copyValue]="totpCode()"
+                [copyLabel]="i18n.t('verificationCode')"
+              />
+            }
             <lp-row
               [label]="i18n.t('totpSecret')"
               [value]="totpSecret()"
@@ -93,11 +109,11 @@ import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils"
             />
           </lp-group>
 
-          <p class="tw-px-4 tw-pt-3 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+          <p class="agy-hint tw-text-center">
             {{ i18n.t("totpQrFootnote") }}
           </p>
         } @else {
-          <p class="tw-px-4 tw-py-6 tw-text-xs tw-text-muted">
+          <p class="tw-py-6 tw-text-xs tw-text-muted">
             {{ i18n.t("totpNotSet") }}
           </p>
         }
@@ -108,17 +124,30 @@ import BrowserPopupUtils from "../../../../platform/browser/browser-popup-utils"
 export class TotpQrV2Component implements OnInit {
   protected readonly i18n = inject(I18nService);
   private readonly cipherService = inject(CipherService);
+  private readonly totpService = inject(TotpService);
   private readonly accountService = inject(AccountService);
   private readonly passwordRepromptService = inject(PasswordRepromptService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly compact = signal(this.route.snapshot.data["compact"] === true);
   protected readonly loading = signal(true);
   protected readonly cipher = signal<CipherView | null>(null);
   protected readonly totpUri = signal("");
+  protected readonly totpCode = signal("");
+  protected readonly totpPeriod = signal(30);
+  protected readonly totpRemaining = signal(30);
   /** 手动输入只需要密钥本体；otpauth 链接里取出 secret，裸密钥原样展示。 */
   protected readonly totpSecret = computed(() => totpSecretOf(this.totpUri()));
+  protected readonly formattedCode = computed(() => {
+    const code = this.totpCode();
+    return code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
+  });
+  protected readonly totpMeta = computed(() => {
+    const params = totpParamsOf(this.totpUri());
+    return `${params.algorithm} · ${params.digits} · ${this.totpPeriod()}s · ${this.totpRemaining()}s`;
+  });
 
   async ngOnInit(): Promise<void> {
     const params: Params = await firstValueFrom(this.route.queryParams);
@@ -139,7 +168,20 @@ export class TotpQrV2Component implements OnInit {
         return;
       }
       this.cipher.set(view);
-      this.totpUri.set(view.login?.totp ?? "");
+      const totp = view.login?.totp ?? "";
+      this.totpUri.set(totp);
+      if (totp) {
+        this.totpService
+          .getCode$(totp)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((response) => {
+            this.totpCode.set(response.code ?? "");
+            const period = response.period || 30;
+            const epoch = Math.floor(Date.now() / 1000);
+            this.totpPeriod.set(period);
+            this.totpRemaining.set(period - (epoch % period));
+          });
+      }
     } finally {
       this.loading.set(false);
     }
@@ -169,5 +211,20 @@ function totpSecretOf(value: string): string {
     return new URL(value).searchParams.get("secret") ?? "";
   } catch {
     return "";
+  }
+}
+
+function totpParamsOf(value: string): { algorithm: string; digits: string } {
+  if (!value.toLowerCase().startsWith("otpauth://")) {
+    return { algorithm: "SHA1", digits: "6" };
+  }
+  try {
+    const params = new URL(value).searchParams;
+    return {
+      algorithm: (params.get("algorithm") || "SHA1").toUpperCase(),
+      digits: params.get("digits") || "6",
+    };
+  } catch {
+    return { algorithm: "SHA1", digits: "6" };
   }
 }

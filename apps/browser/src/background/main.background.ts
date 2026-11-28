@@ -1140,7 +1140,6 @@ export default class MainBackground {
       this.policyService,
       this.accountService,
       this.stateProvider,
-      this.sdkService,
     );
 
     this.devicesApiService = new DevicesApiServiceImplementation(this.apiService);
@@ -1773,6 +1772,8 @@ export default class MainBackground {
       this.#intraprocessMessageSender,
       this.messageListener,
       this.fillCipherPolicy,
+      this.passwordStrengthService,
+      this.stateProvider,
     );
 
     this.overlayNotificationsBackground = new OverlayNotificationsBackground(
@@ -2463,10 +2464,7 @@ export default class MainBackground {
     // LocalGeneratorHistoryService is always the correct implementation for the
     // browser extension background — there is no feature-flag branching here unlike
     // createCredentialGeneratorService.
-    this.generatorHistoryService = new LocalGeneratorHistoryService(
-      this.stateProvider,
-      this.sdkService,
-    );
+    this.generatorHistoryService = new LocalGeneratorHistoryService(this.stateProvider);
 
     this.overlayBackground = new OverlayBackground(
       this.logService,
@@ -2491,6 +2489,8 @@ export default class MainBackground {
       this.#intraprocessMessageSender,
       this.messageListener,
       this.fillCipherPolicy,
+      this.unlockService,
+      this.biometricsService,
     );
 
     this.autofillBadgeUpdaterService = new AutofillBadgeUpdaterService(

@@ -4,7 +4,7 @@
  * import anything that drags the app along.
  */
 export const PopupWidthOptions = Object.freeze({
-  default: 480,
+  default: 380,
   wide: 600,
   narrow: 380,
 });

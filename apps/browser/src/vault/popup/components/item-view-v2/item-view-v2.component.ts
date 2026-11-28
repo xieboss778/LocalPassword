@@ -8,7 +8,7 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -16,16 +16,22 @@ import { JslibModule } from "@localpass/angular/jslib.module";
 import {
   ITEM_KIND_UI,
   LpKindTileComponent,
+  LpPasswordSyntaxComponent,
   LpPopupHeaderComponent,
   LpToastService,
+  PASSWORD_AUTO_HIDE_MS,
+  PasswordAutoHideService,
 } from "@localpass/angular/local-ui";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import {
   AUTOFILL_ID,
+  ClearClipboardDelay,
   COPY_PASSWORD_ID,
   COPY_VERIFICATION_CODE_ID,
 } from "@localpass/common/autofill/constants";
+import { AutofillSettingsServiceAbstraction } from "@localpass/common/autofill/services/autofill-settings.service";
+import { ClearClipboardDelaySetting } from "@localpass/common/autofill/types";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
@@ -73,10 +79,13 @@ interface CustomRow {
   readonly label: string;
   readonly value: string;
   readonly display: string;
+  readonly hidden: boolean;
   readonly revealed: boolean;
 }
 
 const MASK = "••••••••••••";
+const RING_RADIUS = 8;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 /**
  * 条目详情（弹窗）。
@@ -87,202 +96,297 @@ const MASK = "••••••••••••";
 @Component({
   selector: "vault-item-view-v2",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: "tw-block tw-h-full" },
-  imports: [CommonModule, JslibModule, IconModule, LpKindTileComponent, LpPopupHeaderComponent],
+  host: {
+    class: "tw-relative tw-block tw-h-full",
+    "(document:keydown.escape)": "onEscape()",
+  },
+  imports: [
+    CommonModule,
+    JslibModule,
+    IconModule,
+    LpKindTileComponent,
+    LpPasswordSyntaxComponent,
+    LpPopupHeaderComponent,
+  ],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+    <div class="agy tw-relative tw-flex tw-h-full tw-flex-col tw-bg-background">
       <lp-popup-header
         [title]="cipher()?.name ?? ''"
         [sub]="headerSubtitle()"
         [back]="true"
         (backTriggered)="back()"
-      >
-        <div slot="actions" class="tw-flex tw-items-center tw-gap-0.5">
-          <button
-            type="button"
-            class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-            [attr.aria-label]="i18n.t('editItem')"
-            [attr.title]="i18n.t('editItem')"
-            (click)="edit()"
-          >
-            <bit-icon name="bwi-pencil-square" class="tw-text-base"></bit-icon>
-          </button>
-          <button
-            type="button"
-            class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-            [attr.aria-label]="i18n.t('moreOptions')"
-            [attr.title]="i18n.t('moreOptions')"
-            (click)="sheetOpen.set(true)"
-          >
-            <bit-icon name="bwi-more-horizontal" class="tw-text-base"></bit-icon>
-          </button>
-        </div>
-      </lp-popup-header>
+      ></lp-popup-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
+      <div class="agy-ext-scroll">
         @if (loading()) {
           <p class="tw-px-2 tw-py-6 tw-text-sm tw-text-muted">{{ i18n.t("loading") }}</p>
         } @else if (cipher(); as item) {
-          <div class="tw-flex tw-items-center tw-gap-3 tw-px-0.5 tw-pt-1 tw-pb-3.5">
+          <div class="agy-ext-hero">
             <lp-kind-tile [kind]="kind()" size="lg"></lp-kind-tile>
             <div class="tw-min-w-0 tw-flex-1">
-              <p class="tw-m-0 tw-truncate tw-text-xs tw-leading-relaxed tw-text-muted">
+              <div class="agy-h1">{{ item.name }}</div>
+              <div class="agy-h2">
                 {{ item.subTitle || kindLabel() }}
                 @if (folderName()) {
                   · {{ folderName() }}
                 }
-              </p>
+              </div>
             </div>
-            <div class="tw-flex tw-flex-none tw-items-center tw-gap-0.5">
-              @if (kind() === loginKind) {
-                @if (item.login.username) {
-                  <button
-                    type="button"
-                    class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-                    [attr.aria-label]="i18n.t('copyUsername')"
-                    [attr.title]="i18n.t('copyUsername')"
-                    (click)="copyValue(item.login.username, i18n.t('username'))"
-                  >
-                    <bit-icon name="bwi-user" class="tw-text-base"></bit-icon>
-                  </button>
-                }
-                @if (item.login.password) {
-                  <button
-                    type="button"
-                    class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-                    [attr.aria-label]="i18n.t('copyPassword')"
-                    [attr.title]="i18n.t('copyPassword')"
-                    (click)="copyValue(item.login.password, i18n.t('password'))"
-                  >
-                    <bit-icon name="bwi-key" class="tw-text-base"></bit-icon>
-                  </button>
-                }
-                @if (primaryUri()) {
-                  <button
-                    type="button"
-                    class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-fg-brand hover:tw-bg-bg-brand-softer"
-                    [attr.aria-label]="i18n.t('openWebsite')"
-                    [attr.title]="i18n.t('openWebsite')"
-                    (click)="launch()"
-                  >
-                    <bit-icon name="bwi-external-link" class="tw-text-base"></bit-icon>
-                  </button>
-                }
-              } @else if (item.subTitle) {
-                <button
-                  type="button"
-                  class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
-                  [attr.aria-label]="i18n.t('copy')"
-                  [attr.title]="i18n.t('copy')"
-                  (click)="copyValue(item.subTitle, kindLabel())"
-                >
-                  <bit-icon name="bwi-copy" class="tw-text-base"></bit-icon>
-                </button>
-              }
-            </div>
+            <button
+              type="button"
+              class="agy-iconbtn"
+              [class.agy-on]="item.favorite"
+              [attr.aria-label]="i18n.t('favorite')"
+              [attr.title]="i18n.t('favorite')"
+              (click)="toggleFavorite()"
+            >
+              <bit-icon
+                [name]="item.favorite ? 'bwi-star-filled' : 'bwi-star'"
+                class="tw-text-base"
+              ></bit-icon>
+            </button>
+            <button
+              type="button"
+              class="agy-iconbtn"
+              [attr.aria-label]="i18n.t('moreOptions')"
+              [attr.title]="i18n.t('moreOptions')"
+              (click)="sheetOpen.set(true)"
+            >
+              <bit-icon name="bwi-ellipsis-h" class="tw-text-base"></bit-icon>
+            </button>
           </div>
 
-          @for (section of sections(); track section.key) {
-            <section class="tw-pb-2.5">
-              <h2
-                class="tw-m-0 tw-flex tw-items-center tw-gap-1.5 tw-px-0.5 tw-pt-2.5 tw-pb-1.5 tw-text-xs tw-font-semibold tw-text-muted"
+          @if (hasTotpKey()) {
+            <div
+              class="agy-ext-otp"
+              [class.agy-copied]="copiedKey() === 'otp'"
+              role="button"
+              tabindex="0"
+              (click)="copyTotp()"
+              (keydown.enter)="copyTotp()"
+              (keydown.space)="$event.preventDefault(); copyTotp()"
+            >
+              <span class="agy-ring" [class.agy-low]="totpRemaining() <= 5" aria-hidden="true">
+                <svg viewBox="0 0 20 20" width="20" height="20">
+                  <circle class="agy-track" cx="10" cy="10" r="8"></circle>
+                  <circle
+                    class="agy-prog"
+                    cx="10"
+                    cy="10"
+                    r="8"
+                    [attr.stroke-dasharray]="ringCircumference"
+                    [attr.stroke-dashoffset]="totpRingOffset()"
+                  ></circle>
+                </svg>
+              </span>
+              <span class="agy-code">{{ formattedTotp() }}</span>
+              <span class="agy-sub">{{ totpRemaining() }}s</span>
+              <span class="tw-flex-1"></span>
+              @if (copiedKey() === "otp") {
+                <bit-icon name="bwi-check" class="tw-text-sm tw-text-fg-success"></bit-icon>
+              }
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [attr.aria-label]="i18n.t('totpQrTitle')"
+                [attr.title]="i18n.t('totpQrTitle')"
+                (click)="openTotpQr($event)"
               >
+                <bit-icon name="bwi-grid" class="tw-text-xs"></bit-icon>
+              </button>
+              <button
+                type="button"
+                class="agy-iconbtn agy-sm"
+                [attr.aria-label]="i18n.t('copy')"
+                [attr.title]="i18n.t('copy')"
+                (click)="$event.stopPropagation(); copyTotp()"
+              >
+                <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+              </button>
+            </div>
+          }
+
+          @for (section of sections(); track section.key) {
+            <section class="tw-pb-2">
+              <h2 class="agy-seclbl tw-flex tw-items-center tw-gap-1.5">
                 {{ section.label }}
               </h2>
-              <div
-                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-              >
+              <div class="agy-grp">
                 @for (row of section.rows; track row.id) {
-                  <div
-                    class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-p-3 last:tw-border-b-0"
-                    [class.tw-cursor-pointer]="!row.multiline"
-                    [class.hover:tw-bg-background-alt]="!row.multiline"
-                    [attr.role]="row.multiline ? null : 'button'"
-                    [attr.tabindex]="row.multiline ? null : 0"
-                    (click)="copyRow(row)"
-                    (keydown.enter)="copyRow(row)"
-                  >
-                    <span class="tw-w-20 tw-flex-none tw-text-xs tw-text-muted">{{
-                      row.label
-                    }}</span>
-                    @if (row.multiline) {
+                  @if (row.multiline) {
+                    <div class="agy-ext-field tw-cursor-default">
+                      <span class="agy-k">{{ row.label }}</span>
                       <span
-                        class="tw-min-w-0 tw-flex-1 tw-whitespace-pre-wrap tw-break-words tw-text-sm tw-leading-relaxed tw-text-main"
-                        [class.tw-font-mono]="row.mono"
+                        class="agy-v"
+                        [class.agy-multiline]="!row.secret || row.revealed"
+                        [class.agy-mono]="row.mono"
                         >{{ row.display }}</span
                       >
-                    } @else {
-                      <span
-                        class="tw-min-w-0 tw-flex-1 tw-break-words tw-text-sm tw-leading-relaxed"
-                        [class.tw-font-mono]="row.mono"
-                        [class.tw-text-fg-brand]="row.totp"
-                        [class.tw-font-semibold]="row.totp"
-                        [class.tw-text-main]="!row.totp"
-                        >{{ row.display }}</span
-                      >
-                    }
-                    <span class="tw-flex tw-flex-none tw-items-center tw-gap-1.5 tw-text-muted">
-                      @if (row.totp && totpPeriod()) {
-                        <span
-                          class="tw-h-1 tw-w-10 tw-overflow-hidden tw-rounded-full tw-bg-background-alt"
-                          aria-hidden="true"
-                        >
-                          <span
-                            class="tw-block tw-h-full tw-rounded-full tw-bg-primary-600 tw-transition-all"
-                            [style.width.%]="totpRemainingPercent()"
-                          ></span>
-                        </span>
-                      }
-                      @if (row.totp && hasTotpKey()) {
+                      <span class="tw-flex tw-flex-none tw-items-center tw-gap-0.5 tw-text-muted">
+                        @if (row.secret) {
+                          <button
+                            type="button"
+                            class="agy-iconbtn agy-sm"
+                            [attr.aria-label]="
+                              row.revealed ? i18n.t('hideValue') : i18n.t('showValue')
+                            "
+                            [attr.title]="row.revealed ? i18n.t('hideValue') : i18n.t('showValue')"
+                            (click)="toggleReveal($event, row.id)"
+                          >
+                            <bit-icon
+                              [name]="row.revealed ? 'bwi-visibility-off' : 'bwi-visibility'"
+                              class="tw-text-xs"
+                            ></bit-icon>
+                          </button>
+                        }
                         <button
                           type="button"
-                          class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md hover:tw-bg-bg-hover hover:tw-text-main"
-                          [attr.aria-label]="i18n.t('totpQrSubtitle')"
-                          [attr.title]="i18n.t('totpQrSubtitle')"
-                          (click)="openTotpQr($event)"
-                        >
-                          <bit-icon name="bwi-camera" class="tw-text-base"></bit-icon>
-                        </button>
-                      }
-                      @if (row.secret) {
-                        <button
-                          type="button"
-                          class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md hover:tw-bg-bg-hover hover:tw-text-main"
-                          [attr.aria-label]="
-                            row.revealed ? i18n.t('hideValue') : i18n.t('showValue')
-                          "
-                          [attr.title]="row.revealed ? i18n.t('hideValue') : i18n.t('showValue')"
-                          (click)="toggleReveal($event, row.id)"
-                        >
-                          <bit-icon
-                            [name]="row.revealed ? 'bwi-visibility-off' : 'bwi-visibility'"
-                            class="tw-text-base"
-                          ></bit-icon>
-                        </button>
-                      }
-                      @if (row.uri) {
-                        <button
-                          type="button"
-                          class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md hover:tw-bg-bg-hover hover:tw-text-main"
-                          [attr.aria-label]="i18n.t('openWebsite')"
-                          [attr.title]="i18n.t('openWebsite')"
-                          (click)="launchUri($event, row.value)"
-                        >
-                          <bit-icon name="bwi-external-link" class="tw-text-base"></bit-icon>
-                        </button>
-                      }
-                      @if (row.multiline && row.value) {
-                        <button
-                          type="button"
-                          class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md hover:tw-bg-bg-hover hover:tw-text-main"
+                          class="agy-iconbtn agy-sm"
                           [attr.aria-label]="i18n.t('copy')"
                           [attr.title]="i18n.t('copy')"
                           (click)="copyMultiline($event, row)"
                         >
-                          <bit-icon name="bwi-copy" class="tw-text-base"></bit-icon>
+                          @if (copiedKey() === row.id) {
+                            <bit-icon
+                              name="bwi-check"
+                              class="tw-text-xs tw-text-fg-success"
+                            ></bit-icon>
+                          } @else {
+                            <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                          }
                         </button>
-                      } @else if (!row.multiline) {
-                        <bit-icon name="bwi-copy" class="tw-text-base"></bit-icon>
+                      </span>
+                    </div>
+                  } @else {
+                    <div
+                      class="agy-ext-field"
+                      [class.agy-copied]="copiedKey() === row.id"
+                      role="button"
+                      tabindex="0"
+                      (click)="copyRow(row)"
+                      (keydown.enter)="copyRow(row)"
+                    >
+                      <span class="agy-k">{{ row.label }}</span>
+                      <span class="agy-v" [class.agy-mono]="row.mono">
+                        @if (row.secret && row.revealed) {
+                          <lp-password-syntax [value]="row.value" />
+                        } @else {
+                          {{ row.display }}
+                        }
+                      </span>
+                      <span class="tw-flex tw-flex-none tw-items-center tw-gap-0.5 tw-text-muted">
+                        @if (row.secret && row.revealed && autoHide()) {
+                          <span class="agy-chip">{{ i18n.t("autoHide30sChip") }}</span>
+                        }
+                        @if (row.secret) {
+                          <button
+                            type="button"
+                            class="agy-iconbtn agy-sm"
+                            [attr.aria-label]="
+                              row.revealed ? i18n.t('hideValue') : i18n.t('showValue')
+                            "
+                            [attr.title]="row.revealed ? i18n.t('hideValue') : i18n.t('showValue')"
+                            (click)="toggleReveal($event, row.id)"
+                          >
+                            <bit-icon
+                              [name]="row.revealed ? 'bwi-visibility-off' : 'bwi-visibility'"
+                              class="tw-text-xs"
+                            ></bit-icon>
+                          </button>
+                        }
+                        @if (row.uri) {
+                          <button
+                            type="button"
+                            class="agy-iconbtn agy-sm"
+                            [attr.aria-label]="i18n.t('openWebsite')"
+                            [attr.title]="i18n.t('openWebsite')"
+                            (click)="launchUri($event, row.value)"
+                          >
+                            <bit-icon name="bwi-external-link" class="tw-text-xs"></bit-icon>
+                          </button>
+                        }
+                        @if (copiedKey() === row.id) {
+                          <bit-icon
+                            name="bwi-check"
+                            class="tw-text-xs tw-text-fg-success"
+                          ></bit-icon>
+                        } @else {
+                          <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
+                        }
+                      </span>
+                    </div>
+                  }
+                }
+              </div>
+            </section>
+          }
+
+          @if (passkeys().length) {
+            <section class="tw-pb-2">
+              <h2 class="agy-seclbl tw-flex tw-items-center tw-gap-1.5">
+                {{ i18n.t("passkeys") }}
+              </h2>
+              <div class="agy-grp">
+                @for (passkey of passkeys(); track $index) {
+                  <div class="agy-ext-field tw-cursor-default">
+                    <span class="agy-k">{{ passkey.rpId || i18n.t("passkey") }}</span>
+                    <span class="agy-v">
+                      {{ passkey.userName ? passkey.userName + " · " : ""
+                      }}{{ i18n.t("dateCreated") }} {{ passkey.creationDate | date: "short" }}
+                    </span>
+                    <span></span>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+
+          @if (customFields().length) {
+            <section class="tw-pb-2">
+              <h2 class="agy-seclbl tw-flex tw-items-center tw-gap-1.5">
+                {{ i18n.t("customFields") }}
+              </h2>
+              <div class="agy-grp">
+                @for (field of customFields(); track field.id) {
+                  <div
+                    class="agy-ext-field"
+                    [class.agy-copied]="copiedKey() === 'custom:' + field.id"
+                    role="button"
+                    tabindex="0"
+                    (click)="copyCustomField(field)"
+                    (keydown.enter)="copyCustomField(field)"
+                  >
+                    <span class="agy-k tw-truncate" [attr.title]="field.label">{{
+                      field.label
+                    }}</span>
+                    <span class="agy-v" [class.agy-mono]="field.hidden">
+                      @if (field.hidden && field.revealed) {
+                        <lp-password-syntax [value]="field.value" />
+                      } @else {
+                        {{ field.display }}
+                      }
+                    </span>
+                    <span class="tw-flex tw-flex-none tw-items-center tw-gap-0.5 tw-text-muted">
+                      @if (field.hidden) {
+                        <button
+                          type="button"
+                          class="agy-iconbtn agy-sm"
+                          [attr.aria-label]="
+                            field.revealed ? i18n.t('hideValue') : i18n.t('showValue')
+                          "
+                          [attr.title]="field.revealed ? i18n.t('hideValue') : i18n.t('showValue')"
+                          (click)="toggleCustomReveal($event, field.id)"
+                        >
+                          <bit-icon
+                            [name]="field.revealed ? 'bwi-visibility-off' : 'bwi-visibility'"
+                            class="tw-text-xs"
+                          ></bit-icon>
+                        </button>
+                      }
+                      @if (copiedKey() === "custom:" + field.id) {
+                        <bit-icon name="bwi-check" class="tw-text-xs tw-text-fg-success"></bit-icon>
+                      } @else {
+                        <bit-icon name="bwi-copy" class="tw-text-xs"></bit-icon>
                       }
                     </span>
                   </div>
@@ -291,158 +395,96 @@ const MASK = "••••••••••••";
             </section>
           }
 
-          @if (passkeys().length) {
-            <section class="tw-pb-2.5">
-              <h2
-                class="tw-m-0 tw-flex tw-items-center tw-gap-1.5 tw-px-0.5 tw-pt-2.5 tw-pb-1.5 tw-text-xs tw-font-semibold tw-text-muted"
-              >
-                {{ i18n.t("passkeys") }}
-              </h2>
-              <div
-                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-              >
-                @for (passkey of passkeys(); track $index) {
-                  <div
-                    class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-p-3 last:tw-border-b-0"
-                  >
-                    <bit-icon
-                      name="bwi-passkey"
-                      class="tw-flex-none tw-text-base tw-text-muted"
-                    ></bit-icon>
-                    <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main"
-                      >{{ passkey.userName ? passkey.userName + " · " : ""
-                      }}{{ i18n.t("dateCreated") }} {{ passkey.creationDate | date: "short" }}</span
-                    >
-                  </div>
-                }
-              </div>
-            </section>
-          }
-
-          @if (customFields().length) {
-            <section class="tw-pb-2.5">
-              <h2
-                class="tw-m-0 tw-flex tw-items-center tw-gap-1.5 tw-px-0.5 tw-pt-2.5 tw-pb-1.5 tw-text-xs tw-font-semibold tw-text-muted"
-              >
-                {{ i18n.t("customFields") }}
-              </h2>
-              <div
-                class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-              >
-                @for (field of customFields(); track field.id) {
-                  <div
-                    class="tw-flex tw-cursor-pointer tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-p-3 last:tw-border-b-0 hover:tw-bg-background-alt"
-                    role="button"
-                    tabindex="0"
-                    (click)="copyValue(field.value, field.label)"
-                    (keydown.enter)="copyValue(field.value, field.label)"
-                  >
-                    <span class="tw-w-20 tw-flex-none tw-text-xs tw-text-muted">{{
-                      field.label
-                    }}</span>
-                    <span class="tw-min-w-0 tw-flex-1 tw-break-words tw-text-sm tw-text-main">{{
-                      field.display
-                    }}</span>
-                    @if (field.display !== field.value) {
-                      <button
-                        type="button"
-                        class="tw-grid tw-size-7 tw-place-items-center tw-rounded-md tw-text-muted hover:tw-bg-bg-hover hover:tw-text-main"
-                        [attr.aria-label]="i18n.t('showValue')"
-                        [attr.title]="i18n.t('showValue')"
-                        (click)="toggleCustomReveal($event, field.id)"
-                      >
-                        <bit-icon name="bwi-visibility" class="tw-text-base"></bit-icon>
-                      </button>
-                    }
-                    <bit-icon name="bwi-copy" class="tw-text-base tw-text-muted"></bit-icon>
-                  </div>
-                }
-              </div>
-            </section>
-          }
-
-          <section class="tw-pb-2.5">
-            <h2
-              class="tw-m-0 tw-flex tw-items-center tw-gap-1.5 tw-px-0.5 tw-pt-2.5 tw-pb-1.5 tw-text-xs tw-font-semibold tw-text-muted"
-            >
+          <section class="tw-pb-2">
+            <h2 class="agy-seclbl tw-flex tw-items-center tw-gap-1.5">
               {{ i18n.t("itemInformation") }}
             </h2>
-            <div
-              class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-            >
-              <div
-                class="tw-flex tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-p-3"
-              >
-                <span class="tw-w-20 tw-flex-none tw-text-xs tw-text-muted">{{
-                  i18n.t("folder")
-                }}</span>
-                <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main">{{
-                  folderName() || i18n.t("noFolder")
-                }}</span>
+            <div class="agy-grp">
+              <div class="agy-ext-field tw-cursor-default">
+                <span class="agy-k">{{ i18n.t("folder") }}</span>
+                <span class="agy-v">{{ folderName() || i18n.t("noFolder") }}</span>
+                <span></span>
               </div>
-              <div class="tw-flex tw-items-center tw-gap-2.5 tw-p-3">
-                <span class="tw-w-20 tw-flex-none tw-text-xs tw-text-muted">{{
-                  i18n.t("lastModified")
-                }}</span>
-                <span class="tw-min-w-0 tw-flex-1 tw-text-sm tw-text-main">{{
-                  item.revisionDate | date: "medium"
-                }}</span>
+              <div class="agy-ext-field tw-cursor-default">
+                <span class="agy-k">{{ i18n.t("lastModified") }}</span>
+                <span class="agy-v">{{ item.revisionDate | date: "medium" }}</span>
+                <span></span>
               </div>
             </div>
           </section>
         }
       </div>
+
+      @if (cipher()) {
+        <div class="agy-ext-foot">
+          @if (fillable()) {
+            <button type="button" class="agy-btn agy-primary agy-lg tw-flex-1" (click)="fill()">
+              <bit-icon name="bwi-autofill" class="tw-text-xs"></bit-icon>
+              {{ i18n.t("fill") }}
+            </button>
+          }
+          <button
+            type="button"
+            class="agy-btn agy-lg tw-flex-1"
+            [class.agy-primary]="!fillable()"
+            (click)="edit()"
+          >
+            <bit-icon name="bwi-pencil-square" class="tw-text-xs"></bit-icon>
+            {{ i18n.t("edit") }}
+          </button>
+          <button
+            type="button"
+            class="agy-iconbtn"
+            [attr.aria-label]="i18n.t('moreOptions')"
+            [attr.title]="i18n.t('moreOptions')"
+            (click)="sheetOpen.set(true)"
+          >
+            <bit-icon name="bwi-ellipsis-h" class="tw-text-base"></bit-icon>
+          </button>
+        </div>
+      }
     </div>
 
     @if (sheetOpen()) {
-      <div
-        class="tw-fixed tw-inset-0 tw-z-40 tw-bg-bg-overlay"
-        aria-hidden="true"
-        (click)="sheetOpen.set(false)"
-      ></div>
-      <div
-        class="tw-fixed tw-inset-x-0 tw-bottom-0 tw-z-50 tw-rounded-t-2xl tw-bg-background tw-p-4 tw-pt-2 tw-shadow-lg"
-        role="dialog"
-        [attr.aria-label]="i18n.t('moreOptions')"
-        (click)="$event.stopPropagation()"
-      >
-        <div class="tw-mx-auto tw-mb-3 tw-h-1 tw-w-9 tw-rounded-full tw-bg-border-strong"></div>
-        <div class="tw-pb-2 tw-text-sm tw-font-semibold tw-text-main">{{ cipher()?.name }}</div>
-        <button
-          type="button"
-          class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-rounded-lg tw-px-2 tw-py-2.5 tw-text-start tw-text-sm tw-text-main hover:tw-bg-background-alt"
-          (click)="edit()"
+      <div class="agy-sheetwrap" (click)="sheetOpen.set(false)">
+        <div
+          class="agy-sheet"
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-label]="i18n.t('moreOptions')"
+          (click)="$event.stopPropagation()"
         >
-          <bit-icon name="bwi-pencil-square" class="tw-w-5 tw-text-muted"></bit-icon>
-          {{ i18n.t("edit") }}
-        </button>
-        <button
-          type="button"
-          class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-rounded-lg tw-px-2 tw-py-2.5 tw-text-start tw-text-sm tw-text-main hover:tw-bg-background-alt"
-          (click)="clone()"
-        >
-          <bit-icon name="bwi-clone" class="tw-w-5 tw-text-muted"></bit-icon>
-          {{ i18n.t("clone") }}
-        </button>
-        <button
-          type="button"
-          class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-rounded-lg tw-px-2 tw-py-2.5 tw-text-start tw-text-sm tw-text-main hover:tw-bg-background-alt"
-          (click)="toggleFavorite()"
-        >
-          <bit-icon
-            [name]="cipher()?.favorite ? 'bwi-star-filled' : 'bwi-star'"
-            class="tw-w-5 tw-text-muted"
-          ></bit-icon>
-          {{ cipher()?.favorite ? i18n.t("removeFavorite") : i18n.t("favorite") }}
-        </button>
-        <button
-          type="button"
-          class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-rounded-lg tw-px-2 tw-py-2.5 tw-text-start tw-text-sm tw-text-fg-danger hover:tw-bg-bg-danger-soft"
-          (click)="remove()"
-        >
-          <bit-icon name="bwi-trash" class="tw-w-5"></bit-icon>
-          {{ i18n.t("moveToTrash") }}
-        </button>
+          <div class="agy-st">{{ cipher()?.name }}</div>
+          <button type="button" class="agy-sb" (click)="edit()">
+            <bit-icon name="bwi-pencil-square" class="tw-w-4 tw-text-muted"></bit-icon>
+            {{ i18n.t("edit") }}
+          </button>
+          <button type="button" class="agy-sb" (click)="clone()">
+            <bit-icon name="bwi-clone" class="tw-w-4 tw-text-muted"></bit-icon>
+            {{ i18n.t("clone") }}
+          </button>
+          @if (hasTotpKey()) {
+            <button type="button" class="agy-sb" (click)="openTotpQr($event)">
+              <bit-icon name="bwi-grid" class="tw-w-4 tw-text-muted"></bit-icon>
+              {{ i18n.t("totpQrTitle") }}
+            </button>
+          }
+          <button type="button" class="agy-sb" (click)="toggleFavorite()">
+            <bit-icon
+              [name]="cipher()?.favorite ? 'bwi-star-filled' : 'bwi-star'"
+              class="tw-w-4 tw-text-muted"
+            ></bit-icon>
+            {{ cipher()?.favorite ? i18n.t("removeFavorite") : i18n.t("favorite") }}
+          </button>
+          <button type="button" class="agy-sb" (click)="archive()">
+            <bit-icon name="bwi-archive" class="tw-w-4 tw-text-muted"></bit-icon>
+            {{ i18n.t("archiveVerb") }}
+          </button>
+          <button type="button" class="agy-sb agy-danger" (click)="remove()">
+            <bit-icon name="bwi-trash" class="tw-w-4"></bit-icon>
+            {{ i18n.t("moveToTrash") }}
+          </button>
+        </div>
       </div>
     }
   `,
@@ -461,7 +503,21 @@ export class VaultItemViewV2Component implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly passwordRepromptService = inject(PasswordRepromptService);
   private readonly vaultPopupAutofillService = inject(VaultPopupAutofillService);
+  private readonly passwordAutoHideService = inject(PasswordAutoHideService);
+  private readonly autofillSettingsService = inject(AutofillSettingsServiceAbstraction, {
+    optional: true,
+  });
+  protected readonly autoHide = toSignal(this.passwordAutoHideService.autoHide$, {
+    initialValue: true,
+  });
+  private readonly clearClipboardDelay = this.autofillSettingsService
+    ? toSignal(this.autofillSettingsService.clearClipboardDelay$, {
+        initialValue: ClearClipboardDelay.ThirtySeconds,
+      })
+    : signal(ClearClipboardDelay.ThirtySeconds);
+  private readonly revealTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
+  protected readonly ringCircumference = RING_CIRCUMFERENCE;
   protected readonly loginKind = ItemKind.Login;
   protected readonly loading = signal(true);
   protected readonly cipher = signal<CipherView | null>(null);
@@ -472,6 +528,9 @@ export class VaultItemViewV2Component implements OnInit {
   protected readonly revealed = signal<Record<string, boolean>>({});
   protected readonly customRevealed = signal<Record<string, boolean>>({});
   protected readonly sheetOpen = signal(false);
+
+  protected readonly copiedKey = signal("");
+  private readonly copiedTimer = signal<ReturnType<typeof setTimeout> | null>(null);
 
   protected readonly kind = computed<ItemKind>(() => {
     const item = this.cipher();
@@ -495,6 +554,9 @@ export class VaultItemViewV2Component implements OnInit {
     const period = this.totpPeriod();
     return period ? Math.max(0, Math.min(100, (this.totpRemaining() / period) * 100)) : 0;
   });
+  protected readonly totpRingOffset = computed(
+    () => RING_CIRCUMFERENCE * (1 - this.totpRemainingPercent() / 100),
+  );
 
   protected readonly sections = computed<readonly DetailSection[]>(() => {
     const item = this.cipher();
@@ -503,16 +565,17 @@ export class VaultItemViewV2Component implements OnInit {
     }
 
     const kind = this.kind();
+    // 顶部独立动态口令卡片已展示实时验证码与倒计时环，字段组里跳过 totp 避免重复。
     const specs = FIELDS[kind].filter(
-      (field) => field.target !== "name" && field.target !== "notes",
+      (field) => field.target !== "name" && field.target !== "notes" && field.id !== "totp",
     );
     const rows = specs
       .map((field) => this.toDetailRow(item, field))
       .filter((row) => row.value.length > 0);
 
     if (kind === ItemKind.Login) {
-      const credentials = rows.filter((row) => row.id !== "uri");
-      const uris = rows.filter((row) => row.id === "uri");
+      const credentials = rows.filter((row) => row.id !== "uri" && row.id !== "uri2");
+      const uris = rows.filter((row) => row.id === "uri" || row.id === "uri2");
       const sections: DetailSection[] = [];
       if (credentials.length) {
         sections.push({
@@ -570,6 +633,7 @@ export class VaultItemViewV2Component implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    this.destroyRef.onDestroy(() => this.clearRevealTimers());
     const params: Params = await firstValueFrom(this.route.queryParams);
     const cipherId = params["cipherId"] as string | undefined;
     const action = params["action"] as string | undefined;
@@ -685,20 +749,35 @@ export class VaultItemViewV2Component implements OnInit {
 
   protected openTotpQr(event: Event): void {
     event.stopPropagation();
+    this.sheetOpen.set(false);
     const id = this.cipher()?.id;
     if (id) {
       void this.router.navigate(["/totp-qr-v2"], { queryParams: { cipherId: id } });
     }
   }
 
+  protected onEscape(): void {
+    if (this.sheetOpen()) {
+      this.sheetOpen.set(false);
+    }
+  }
+
   protected toggleReveal(event: Event, id: string): void {
     event.stopPropagation();
-    this.revealed.update((current) => ({ ...current, [id]: !current[id] }));
+    const visible = !this.revealed()[id];
+    this.revealed.update((current) => ({ ...current, [id]: visible }));
+    this.scheduleAutoHide(`login:${id}`, visible, () =>
+      this.revealed.update((current) => ({ ...current, [id]: false })),
+    );
   }
 
   protected toggleCustomReveal(event: Event, id: string): void {
     event.stopPropagation();
-    this.customRevealed.update((current) => ({ ...current, [id]: !current[id] }));
+    const visible = !this.customRevealed()[id];
+    this.customRevealed.update((current) => ({ ...current, [id]: visible }));
+    this.scheduleAutoHide(`custom:${id}`, visible, () =>
+      this.customRevealed.update((current) => ({ ...current, [id]: false })),
+    );
   }
 
   protected copyRow(row: DetailRow): void {
@@ -706,12 +785,52 @@ export class VaultItemViewV2Component implements OnInit {
       return;
     }
     this.copyValue(row.value, row.label);
+    this.flash(row.id);
+  }
+
+  protected copyCustomField(field: CustomRow): void {
+    this.copyValue(field.value, field.label);
+    this.flash(`custom:${field.id}`);
+  }
+
+  protected copyTotp(): void {
+    const code = this.totpCode();
+    if (!code) {
+      return;
+    }
+    this.copyValue(code, this.i18n.t("verificationCode"));
+    this.flash("otp");
+  }
+
+  protected readonly fillable = computed(() => {
+    const kind = this.kind();
+    return kind === ItemKind.Login || kind === ItemKind.Card || kind === ItemKind.Identity;
+  });
+
+  protected async fill(): Promise<void> {
+    const item = this.cipher();
+    if (!item) {
+      return;
+    }
+    // The page already passed the reprompt check on open, so do not ask again.
+    await this.vaultPopupAutofillService.doAutofill(item, true, true);
+  }
+
+  /** 行内复制后的短暂绿色反馈；只表示已写入剪贴板，不代表已自动清除。 */
+  private flash(key: string): void {
+    const previous = this.copiedTimer();
+    if (previous) {
+      clearTimeout(previous);
+    }
+    this.copiedKey.set(key);
+    this.copiedTimer.set(setTimeout(() => this.copiedKey.set(""), 1300));
   }
 
   /** 多行字段（公钥、备注）不整行触发，只允许点尾部复制按钮。 */
   protected copyMultiline(event: Event, row: DetailRow): void {
     event.stopPropagation();
     this.copyValue(row.value, row.label);
+    this.flash(row.id);
   }
 
   protected copyValue(value: string, label: string): void {
@@ -720,7 +839,39 @@ export class VaultItemViewV2Component implements OnInit {
     }
     const copied = this.platformUtilsService.copyToClipboard(value, { window });
     if (copied !== false) {
-      this.toast.show(this.i18n.t("copiedField", label));
+      const delay = this.clipboardClearSeconds(this.clearClipboardDelay());
+      if (delay > 0) {
+        this.toast.showClipboard(
+          this.i18n.t("copiedField", label),
+          () => {
+            this.platformUtilsService.copyToClipboard("", { window });
+          },
+          delay,
+        );
+      } else {
+        this.toast.show(this.i18n.t("copiedField", label));
+      }
+    }
+  }
+
+  /** 设置里存的是可读档位，复制回执需要秒数；Never 与关闭时返回 0。 */
+  private clipboardClearSeconds(setting: ClearClipboardDelaySetting): number {
+    switch (setting) {
+      case ClearClipboardDelay.TenSeconds:
+        return 10;
+      case ClearClipboardDelay.TwentySeconds:
+        return 20;
+      case ClearClipboardDelay.ThirtySeconds:
+        return 30;
+      case ClearClipboardDelay.OneMinute:
+        return 60;
+      case ClearClipboardDelay.TwoMinutes:
+        return 120;
+      case ClearClipboardDelay.FiveMinutes:
+        return 300;
+      case ClearClipboardDelay.Never:
+      default:
+        return 0;
     }
   }
 
@@ -760,6 +911,26 @@ export class VaultItemViewV2Component implements OnInit {
     }
   }
 
+  protected async archive(): Promise<void> {
+    const item = this.cipher();
+    if (!item?.id) {
+      return;
+    }
+
+    const previous = item.archivedDate;
+    item.archivedDate = new Date();
+    try {
+      const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
+      await this.cipherService.updateWithServer(item, userId);
+      this.sheetOpen.set(false);
+      this.toast.show(this.i18n.t("itemArchiveToast"));
+      await this.router.navigateByUrl("/tabs/vault");
+    } catch {
+      item.archivedDate = previous;
+      this.toast.show(this.i18n.t("unexpectedError"));
+    }
+  }
+
   protected async remove(): Promise<void> {
     const item = this.cipher();
     if (!item?.id) {
@@ -778,7 +949,19 @@ export class VaultItemViewV2Component implements OnInit {
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(getUserId));
     await this.cipherService.softDeleteWithServer(item.id, userId);
     this.sheetOpen.set(false);
-    this.toast.show(this.i18n.t("movedToTrash"));
+    const deletedId = item.id;
+    this.toast.showUndo(
+      this.i18n.t("movedToTrash"),
+      async () => {
+        try {
+          await this.cipherService.restoreWithServer(deletedId, userId);
+          this.toast.show(this.i18n.t("itemRestored"));
+        } catch {
+          this.toast.show(this.i18n.t("unexpectedError"));
+        }
+      },
+      5,
+    );
     await this.router.navigateByUrl("/tabs/vault");
   }
 
@@ -799,6 +982,32 @@ export class VaultItemViewV2Component implements OnInit {
       });
   }
 
+  /** Restarts the mask timer for one revealed value; hiding it manually cancels the timer. */
+  private scheduleAutoHide(key: string, visible: boolean, hide: () => void): void {
+    const existing = this.revealTimers.get(key);
+    if (existing) {
+      clearTimeout(existing);
+      this.revealTimers.delete(key);
+    }
+
+    if (!visible || !this.autoHide()) {
+      return;
+    }
+
+    this.revealTimers.set(
+      key,
+      setTimeout(() => {
+        this.revealTimers.delete(key);
+        hide();
+      }, PASSWORD_AUTO_HIDE_MS),
+    );
+  }
+
+  private clearRevealTimers(): void {
+    this.revealTimers.forEach((timer) => clearTimeout(timer));
+    this.revealTimers.clear();
+  }
+
   private toDetailRow(item: CipherView, field: FieldSpec): DetailRow {
     const id = field.id;
     const value = readField(item, field.target);
@@ -817,8 +1026,8 @@ export class VaultItemViewV2Component implements OnInit {
       revealed,
       totp,
       multiline: !!field.multiline,
-      mono: secret || id === "username" || id === "uri" || totp,
-      uri: id === "uri",
+      mono: secret || !!field.mono || id === "username" || id === "uri" || id === "uri2" || totp,
+      uri: id === "uri" || id === "uri2",
     };
   }
 
@@ -849,6 +1058,7 @@ export class VaultItemViewV2Component implements OnInit {
       label: name,
       value: field.value ?? "",
       display: hidden && !revealed ? MASK : (field.value ?? ""),
+      hidden,
       revealed,
     };
   }

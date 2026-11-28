@@ -3,14 +3,21 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { filter, firstValueFrom, map, switchMap } from "rxjs";
 
-import { LpPopupHeaderComponent } from "@localpass/angular/local-ui";
+import {
+  LpPopupHeaderComponent,
+  VaultDensity,
+  VaultDensityService,
+} from "@localpass/angular/local-ui";
+import { scanVaultHealth } from "@localpass/angular/tools/health";
 import { AccountService } from "@localpass/common/auth/abstractions/account.service";
 import { getUserId } from "@localpass/common/auth/services/account.service";
 import { I18nService } from "@localpass/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@localpass/common/platform/abstractions/platform-utils.service";
 import { Theme, ThemeTypes } from "@localpass/common/platform/enums/theme-type.enum";
 import { ThemeStateService } from "@localpass/common/platform/theming/theme-state.service";
+import { PasswordStrengthServiceAbstraction } from "@localpass/common/tools/password-strength";
 import { UserId } from "@localpass/common/types/guid";
+import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { FolderService } from "@localpass/common/vault/abstractions/folder/folder.service.abstraction";
 import { IconModule, LocalPassIcon } from "@localpass/components";
 import { LocalWebAuthnPrfEnrollmentService } from "@localpass/key-management-ui";
@@ -23,7 +30,7 @@ interface SettingsRow {
   readonly labelKey: string;
   readonly descKey: string;
   readonly route: string;
-  readonly countKey?: "folders" | "trash";
+  readonly countKey?: "folders" | "trash" | "archive" | "health";
   /** 设置页里的计数来自服务，而不是固定文案。 */
   readonly dynamicCount?: "securityKey";
   readonly version?: boolean;
@@ -39,7 +46,7 @@ interface SettingsGroup {
 const GROUPS: readonly SettingsGroup[] = [
   {
     key: "account",
-    labelKey: "accountGroup",
+    labelKey: "securityAndUnlockGroup",
     rows: [
       {
         icon: "bwi-shield",
@@ -68,6 +75,13 @@ const GROUPS: readonly SettingsGroup[] = [
         route: "/folders",
       },
       {
+        icon: "bwi-archive",
+        labelKey: "archiveNoun",
+        descKey: "itemsInArchive",
+        countKey: "archive",
+        route: "/archive",
+      },
+      {
         icon: "bwi-trash",
         labelKey: "trash",
         descKey: "trashCount",
@@ -93,6 +107,13 @@ const GROUPS: readonly SettingsGroup[] = [
     labelKey: "tools",
     rows: [
       {
+        icon: "bwi-shield",
+        labelKey: "healthCheck",
+        descKey: "healthCheckDesc",
+        countKey: "health",
+        route: "/health-v2",
+      },
+      {
         icon: "bwi-generate",
         labelKey: "generator",
         descKey: "generatorSettingsDesc",
@@ -111,7 +132,7 @@ const GROUPS: readonly SettingsGroup[] = [
     labelKey: "backupPrivacyGroup",
     rows: [
       {
-        icon: "bwi-download",
+        icon: "bwi-refresh",
         labelKey: "cloudBackup",
         descKey: "backupSettingsDesc",
         route: "/backup-settings",
@@ -151,12 +172,16 @@ const GROUPS: readonly SettingsGroup[] = [
   host: { class: "tw-block tw-h-full" },
   imports: [IconModule, LpPopupHeaderComponent],
   template: `
-    <div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
-      <lp-popup-header [title]="i18n.t('settings')" [sub]="i18n.t('settingsSubtitle')">
+    <div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
+      <lp-popup-header
+        [title]="i18n.t('settings')"
+        [sub]="i18n.t('settingsSubtitle')"
+        [avatar]="true"
+      >
         <div slot="actions">
           <button
             type="button"
-            class="tw-grid tw-size-8 tw-place-items-center tw-rounded-lg tw-text-muted hover:tw-bg-background-alt hover:tw-text-main"
+            class="agy-iconbtn"
             [attr.aria-label]="i18n.t('lockVault')"
             [attr.title]="i18n.t('lockVault')"
             (click)="lock()"
@@ -166,45 +191,28 @@ const GROUPS: readonly SettingsGroup[] = [
         </div>
       </lp-popup-header>
 
-      <div class="tw-min-h-0 tw-flex-1 tw-overflow-y-auto tw-px-3.5 tw-pb-6">
+      <div class="agy-ext-scroll">
         @for (group of groups; track group.key) {
-          <section class="tw-pb-1.5">
-            <h2
-              class="tw-m-0 tw-px-2.5 tw-pt-2.5 tw-pb-1 tw-text-xs tw-font-semibold tw-text-muted"
-            >
-              {{ i18n.t(group.labelKey) }}
-            </h2>
-            <div
-              class="tw-overflow-hidden tw-rounded-xl tw-border tw-border-border-light tw-bg-background"
-            >
+          <section class="tw-pb-2">
+            <h2 class="agy-seclbl">{{ i18n.t(group.labelKey) }}</h2>
+            <div class="agy-grp">
               @for (row of group.rows; track row.labelKey) {
-                <button
-                  type="button"
-                  class="tw-flex tw-w-full tw-items-center tw-gap-2.5 tw-border-b tw-border-border-light tw-px-3 tw-py-2.5 tw-text-start last:tw-border-b-0 hover:tw-bg-background-alt"
-                  (click)="go(row.route)"
-                >
-                  <span
-                    class="tw-grid tw-size-8 tw-flex-none tw-place-items-center tw-rounded-lg tw-bg-background-alt tw-text-muted"
-                  >
-                    <bit-icon [name]="row.icon" class="tw-text-base"></bit-icon>
+                <button type="button" class="agy-setrow" (click)="go(row.route)">
+                  <span class="agy-iconbtn agy-sm tw-bg-background-alt">
+                    <bit-icon [name]="row.icon" class="tw-text-xs"></bit-icon>
                   </span>
                   <span class="tw-min-w-0 tw-flex-1">
-                    <span class="tw-block tw-text-sm tw-font-medium tw-text-main">{{
-                      i18n.t(row.labelKey)
-                    }}</span>
-                    <span
-                      class="tw-block tw-truncate tw-text-xs tw-leading-relaxed tw-text-muted"
-                      >{{ description(row) }}</span
-                    >
+                    <span class="agy-k tw-block">{{ i18n.t(row.labelKey) }}</span>
+                    <span class="agy-d tw-block tw-truncate">{{ description(row) }}</span>
                   </span>
-                  <bit-icon name="bwi-angle-right" class="tw-text-sm tw-text-muted"></bit-icon>
+                  <bit-icon name="bwi-angle-right" class="tw-text-xs tw-text-muted"></bit-icon>
                 </button>
               }
             </div>
           </section>
         }
 
-        <p class="tw-px-2.5 tw-pt-2 tw-text-xs tw-leading-relaxed tw-text-muted">
+        <p class="agy-hint tw-pl-2">
           {{ i18n.t("settingsPrivacyNote") }}
         </p>
       </div>
@@ -216,17 +224,23 @@ export class SettingsListV2Component implements OnInit {
   private readonly router = inject(Router);
   private readonly accountService = inject(AccountService);
   private readonly folderService = inject(FolderService);
+  private readonly cipherService = inject(CipherService);
   private readonly itemsService = inject(VaultPopupItemsService);
   private readonly themeStateService = inject(ThemeStateService);
   private readonly platformUtilsService = inject(PlatformUtilsService);
   private readonly lockService = inject(LockService);
   private readonly enrollmentService = inject(LocalWebAuthnPrfEnrollmentService);
+  private readonly densityService = inject(VaultDensityService);
+  private readonly passwordStrengthService = inject(PasswordStrengthServiceAbstraction);
 
   protected readonly groups = GROUPS;
   protected readonly version = signal("");
   protected readonly securityKeyCount = signal(0);
   protected readonly theme = toSignal(this.themeStateService.selectedTheme$, {
     initialValue: ThemeTypes.System as Theme,
+  });
+  protected readonly density = toSignal(this.densityService.density$, {
+    initialValue: VaultDensity.Compact,
   });
 
   protected readonly trashCount = toSignal(
@@ -236,6 +250,25 @@ export class SettingsListV2Component implements OnInit {
     ),
     { initialValue: 0 },
   );
+
+  private readonly allCiphers = toSignal(
+    this.accountService.activeAccount$.pipe(
+      takeUntilDestroyed(),
+      getUserId,
+      filter((userId): userId is UserId => userId != null),
+      switchMap((userId) => this.cipherService.cipherViews$(userId)),
+    ),
+    { initialValue: [] },
+  );
+
+  protected readonly archiveCount = () =>
+    this.allCiphers().filter((cipher) => cipher.isArchived && !cipher.isDeleted).length;
+
+  protected readonly healthIssueCount = () =>
+    scanVaultHealth(
+      this.allCiphers().filter((cipher) => !cipher.isDeleted && !cipher.isArchived),
+      this.passwordStrengthService,
+    ).issues.length;
 
   protected readonly folderCount = toSignal(
     this.accountService.activeAccount$.pipe(
@@ -261,6 +294,15 @@ export class SettingsListV2Component implements OnInit {
     if (row.countKey === "trash") {
       return this.i18n.t("trashCount").replace("{COUNT}", String(this.trashCount()));
     }
+    if (row.countKey === "archive") {
+      return this.i18n.t("itemCount", String(this.archiveCount()));
+    }
+    if (row.countKey === "health") {
+      const issues = this.healthIssueCount();
+      return issues > 0
+        ? this.i18n.t("healthIssuesCount", String(issues))
+        : this.i18n.t("healthCheckDesc");
+    }
     if (row.dynamicCount === "securityKey") {
       return this.securityKeyCount() > 0
         ? this.i18n.t("registeredKeysCount", this.securityKeyCount().toString())
@@ -270,13 +312,17 @@ export class SettingsListV2Component implements OnInit {
       return `${this.i18n.t("appVersion")} ${this.version()}`;
     }
     if (row.descKey === "appearance") {
-      return this.i18n.t(
+      const themeLabel = this.i18n.t(
         this.theme() === ThemeTypes.Dark
           ? "dark"
           : this.theme() === ThemeTypes.Light
             ? "light"
             : "default",
       );
+      const densityLabel = this.i18n.t(
+        this.density() === VaultDensity.Ultra ? "densityUltra" : "densityCompact",
+      );
+      return `${themeLabel} · ${densityLabel}`;
     }
     return this.i18n.t(row.descKey);
   }

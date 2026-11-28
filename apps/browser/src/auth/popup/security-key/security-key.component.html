@@ -1,4 +1,4 @@
-<div class="tw-flex tw-h-full tw-flex-col tw-bg-background">
+<div class="agy tw-flex tw-h-full tw-flex-col tw-bg-background">
   @if (compact()) {
     <lp-popup-header
       [title]="'securityKey' | i18n"
@@ -13,33 +13,43 @@
     ></lp-page-header>
   }
 
-  <div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-pb-8">
-    <lp-hero
-      icon="bwi-key"
-      [title]="'securityKeyHeroTitle' | i18n"
-      [text]="'securityKeyHeroText' | i18n"
+  <div class="agy-ext-scroll">
+    <div class="agy-callout">
+      <bit-icon name="bwi-key" class="tw-text-sm tw-text-fg-brand"></bit-icon>
+      <div>
+        <div class="agy-k">{{ "securityKeyHeroTitle" | i18n }}</div>
+        <div>{{ "securityKeyHeroText" | i18n }}</div>
+      </div>
+    </div>
+
+    <button
+      id="security-key_button_enroll"
+      type="button"
+      class="agy-btn agy-primary agy-lg agy-block tw-mt-2"
+      [disabled]="!supported() || busy()"
+      (click)="enroll()"
     >
-      <button
-        id="security-key_button_enroll"
-        type="button"
-        bitButton
-        buttonType="primary"
-        [disabled]="!supported() || busy()"
-        (click)="enroll()"
-      >
-        {{ "securityKeyEnroll" | i18n }}
-      </button>
-    </lp-hero>
+      {{ (busy() ? "securityKeyWaiting" : "securityKeyEnroll") | i18n }}
+    </button>
+
+    @if (busy()) {
+      <div class="agy-callout tw-mt-2">
+        <div
+          class="tw-size-3.5 tw-flex-none tw-animate-spin tw-rounded-full tw-border-2 tw-border-border-light tw-border-t-border-brand"
+          aria-hidden="true"
+        ></div>
+        <div>{{ "securityKeyWaitingHint" | i18n }}</div>
+      </div>
+    }
 
     @if (!supported()) {
-      <div
-        class="tw-mx-3 tw-rounded-xl tw-border tw-border-border-danger-soft tw-bg-bg-danger-soft tw-px-3 tw-py-2.5 tw-text-xs tw-text-fg-danger-strong"
-      >
-        {{ "securityKeyUnsupported" | i18n }}
+      <div class="agy-callout agy-bad tw-mt-2">
+        <bit-icon name="bwi-exclamation-triangle" class="tw-text-xs"></bit-icon>
+        <div>{{ "securityKeyUnsupported" | i18n }}</div>
       </div>
     } @else {
       @if (registeredCount() > 0) {
-        <lp-group [label]="'securityKeyRegistered' | i18n">
+        <lp-group class="tw-pt-2" [label]="'securityKeyRegistered' | i18n">
           <lp-row
             icon="bwi-key"
             [label]="'securityKey' | i18n"
@@ -48,22 +58,18 @@
           />
         </lp-group>
 
-        <div class="tw-px-4 tw-pt-3">
-          <button
-            id="security-key_button_remove-all"
-            type="button"
-            bitButton
-            buttonType="danger"
-            [block]="true"
-            [disabled]="busy()"
-            (click)="removeAll()"
-          >
-            {{ "securityKeyRemove" | i18n }}
-          </button>
-        </div>
+        <button
+          id="security-key_button_remove-all"
+          type="button"
+          class="agy-btn agy-danger agy-lg agy-block tw-mt-1"
+          [disabled]="busy()"
+          (click)="removeAll()"
+        >
+          {{ "securityKeyRemove" | i18n }}
+        </button>
       }
 
-      <p class="tw-px-4 tw-pt-4 tw-text-center tw-text-xs tw-leading-relaxed tw-text-muted">
+      <p class="agy-hint tw-text-center">
         {{ "securityKeyFootnote" | i18n }}
       </p>
     }

@@ -5,9 +5,9 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
 import { IconModule } from "@localpass/components";
 
 /**
- * 弹窗底部导航：保险库 / 生成器 / 设置。
+ * 弹窗底部导航：保险库 / 生成器 / 同步 / 设置。
  *
- * LocalPass 没有 Send（需要服务器转发），也没有账号健康报告；这三格是实际存在的去处。
+ * LocalPass 没有 Send（需要服务器转发），这四格覆盖弹窗核心主入口。
  * 详情、表单、设置二级页都在 `tabs` 路由之外，所以打开它们时导航自然隐藏。
  */
 @Component({
