@@ -187,6 +187,19 @@ export class DefaultLocalVaultWriter implements LocalVaultWriter {
       }
       return next;
     });
+
+    // Items in a deleted folder are re-assigned to "No Folder", matching FolderService.delete.
+    // Without this the stored items would keep pointing at a folder that no longer exists.
+    // Copy the row instead of re-encrypting it: imported rows may carry dates `Cipher` rejects.
+    await this.ciphersState(userId).update((state) => {
+      const next = { ...(state ?? {}) };
+      for (const [cipherId, data] of Object.entries(next)) {
+        if (data.folderId != null && ids.includes(data.folderId)) {
+          next[cipherId as CipherId] = { ...data, folderId: undefined };
+        }
+      }
+      return next;
+    });
     this.changeListener?.(userId);
     return true;
   }

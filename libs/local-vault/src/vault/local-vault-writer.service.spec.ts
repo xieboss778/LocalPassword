@@ -6,6 +6,7 @@ import { UserId } from "@localpass/common/types/guid";
 import { CipherEncryptionService } from "@localpass/common/vault/abstractions/cipher-encryption.service";
 import { CipherType } from "@localpass/common/vault/enums/cipher-type";
 import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
+import { FolderData } from "@localpass/common/vault/models/data/folder.data";
 import { Cipher } from "@localpass/common/vault/models/domain/cipher";
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 import { LoginView } from "@localpass/common/vault/models/view/login.view";
@@ -24,6 +25,7 @@ describe("DefaultLocalVaultWriter", () => {
   const logService = mock<LogService>();
 
   let state: Record<string, CipherData>;
+  let folders: Record<string, FolderData>;
   let versions: Record<string, CipherVersion[]>;
 
   const createWriter = () => {
@@ -33,6 +35,13 @@ describe("DefaultLocalVaultWriter", () => {
           updater: (current: Record<string, CipherData> | null) => Record<string, CipherData>,
         ) => {
           state = updater(state);
+        },
+      ),
+      folders: jest.fn(
+        async (
+          updater: (current: Record<string, FolderData> | null) => Record<string, FolderData>,
+        ) => {
+          folders = updater(folders);
         },
       ),
       cipherVersionHistory: jest.fn(
@@ -46,13 +55,16 @@ describe("DefaultLocalVaultWriter", () => {
       ),
     };
     const stateProvider = {
-      getUser: (_userId: unknown, definition: { key: string }) => ({
-        state$: of(definition.key === "cipherVersionHistory" ? versions : state),
-        update:
-          definition.key === "cipherVersionHistory"
-            ? updates.cipherVersionHistory
-            : updates.ciphers,
-      }),
+      getUser: (_userId: unknown, definition: { key: string }) => {
+        switch (definition.key) {
+          case "folders":
+            return { state$: of(folders), update: updates.folders };
+          case "cipherVersionHistory":
+            return { state$: of(versions), update: updates.cipherVersionHistory };
+          default:
+            return { state$: of(state), update: updates.ciphers };
+        }
+      },
     };
 
     return new DefaultLocalVaultWriter(
@@ -66,6 +78,7 @@ describe("DefaultLocalVaultWriter", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     state = {};
+    folders = {};
     versions = {};
     localAccountService.isLocalAccount.mockResolvedValue(true);
   });
@@ -256,6 +269,21 @@ describe("DefaultLocalVaultWriter", () => {
 
     await writer.deleteManyCiphers([id], userId);
     expect(versions[id]).toBeUndefined();
+  });
+
+  it("moves a deleted folder's items to no folder", async () => {
+    state = {
+      kept: Object.assign(new CipherData(), { id: "kept", folderId: "folder-2" }),
+      moved: Object.assign(new CipherData(), { id: "moved", folderId: "folder-1" }),
+    };
+    folders = { "folder-1": new FolderData({ id: "folder-1" }) };
+    const writer = createWriter();
+
+    await writer.deleteFolder(["folder-1"], userId);
+
+    expect(folders["folder-1"]).toBeUndefined();
+    expect(state["moved"].folderId).toBeUndefined();
+    expect(state["kept"].folderId).toBe("folder-2");
   });
 
   it("keeps only the ten most recent password history entries", async () => {
