@@ -59,6 +59,19 @@ export class RemoteVaultMismatchError extends Error {
   }
 }
 
+/**
+ * Raised when `manifest.json` or the snapshot it points at is missing or unreadable.
+ *
+ * A damaged cloud backup must not be reported as "already up to date": the restore screen would
+ * then announce success while applying nothing, and a sync would quietly replace the manifest.
+ */
+export class RemoteSnapshotUnavailableError extends Error {
+  constructor(message = "The cloud backup snapshot is missing or unreadable.") {
+    super(message);
+    this.name = "RemoteSnapshotUnavailableError";
+  }
+}
+
 export interface PushResult {
   readonly uploaded: boolean;
   readonly snapshotId: string | null;
@@ -367,7 +380,7 @@ export class VaultBackupSyncService {
     if (manifestObject == null) {
       return { applied: 0, upToDate: true, conflicts: [] };
     }
-    const manifest = JSON.parse(manifestObject.text) as Manifest;
+    const manifest = this.parseManifest(manifestObject.text);
 
     const state = await this.getSyncState(userId);
     if (state.manifestEtag != null && manifestObject.etag === state.manifestEtag) {
@@ -376,10 +389,10 @@ export class VaultBackupSyncService {
 
     const remote = await syncClient.getText(`${SNAPSHOT_PREFIX}${manifest.snapshot}.json`);
     if (remote == null) {
-      return { applied: 0, upToDate: true, conflicts: [] };
+      throw new RemoteSnapshotUnavailableError();
     }
 
-    const remoteSnapshot = JSON.parse(remote.text) as Snapshot;
+    const remoteSnapshot = this.parseSnapshot(remote.text);
     const localSnapshot = await this.buildSnapshot(userId);
     const base = await firstValueFrom(this.baseSnapshotState(userId).state$);
 
@@ -708,6 +721,11 @@ export class VaultBackupSyncService {
    * pending-change counts and sync state reflect the restored vault immediately.
    */
   async restoreSnapshot(userId: UserId, snapshot: Snapshot): Promise<number> {
+    // The caller parses the selected snapshot; a valid-looking JSON object of the wrong shape
+    // must fail here instead of being written as an empty vault.
+    if (!isSnapshot(snapshot)) {
+      throw new RemoteSnapshotUnavailableError();
+    }
     const applied = await this.applySnapshot(userId, snapshot);
     await this.baseSnapshotState(userId).update(() => snapshot);
     await this.conflictsState(userId).update(() => []);
@@ -718,6 +736,32 @@ export class VaultBackupSyncService {
       pending: false,
     }));
     return applied;
+  }
+
+  private parseManifest(text: string): Manifest {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      throw new RemoteSnapshotUnavailableError("The cloud backup manifest is not readable.");
+    }
+    if (!isManifest(parsed)) {
+      throw new RemoteSnapshotUnavailableError("The cloud backup manifest is not readable.");
+    }
+    return parsed;
+  }
+
+  private parseSnapshot(text: string): Snapshot {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      throw new RemoteSnapshotUnavailableError();
+    }
+    if (!isSnapshot(parsed)) {
+      throw new RemoteSnapshotUnavailableError();
+    }
+    return parsed;
   }
 
   private async requireClient(userId: UserId): Promise<S3Client> {
@@ -762,6 +806,48 @@ function isoOf(value: unknown): string {
     return value.toISOString();
   }
   return typeof value === "string" ? value : new Date(0).toISOString();
+}
+
+/** A manifest written by any build always names the snapshot it points at. */
+function isManifest(value: unknown): value is Manifest {
+  if (value == null || typeof value !== "object") {
+    return false;
+  }
+  const manifest = value as Partial<Manifest>;
+  return typeof manifest.snapshot === "string" && manifest.snapshot.length > 0;
+}
+
+/** Records written by this service always carry an id and a revision timestamp. */
+function isVaultRecord(value: unknown): value is VaultRecord {
+  if (value == null || typeof value !== "object") {
+    return false;
+  }
+  const record = value as Partial<VaultRecord>;
+  return typeof record.id === "string" && typeof record.revisionDate === "string";
+}
+
+function isTombstone(value: unknown): value is Snapshot["tombstones"][number] {
+  if (value == null || typeof value !== "object") {
+    return false;
+  }
+  const tombstone = value as { id?: unknown; deletedAt?: unknown };
+  return typeof tombstone.id === "string" && typeof tombstone.deletedAt === "string";
+}
+
+/** Cheap structural check so `{}` or `null` cannot be mistaken for a restorable snapshot. */
+function isSnapshot(value: unknown): value is Snapshot {
+  if (value == null || typeof value !== "object") {
+    return false;
+  }
+  const snapshot = value as Partial<Snapshot>;
+  return (
+    Array.isArray(snapshot.ciphers) &&
+    snapshot.ciphers.every(isVaultRecord) &&
+    Array.isArray(snapshot.folders) &&
+    snapshot.folders.every(isVaultRecord) &&
+    Array.isArray(snapshot.tombstones) &&
+    snapshot.tombstones.every(isTombstone)
+  );
 }
 
 /** Shape held conflicts as the merge summary the sync screen already understands. */

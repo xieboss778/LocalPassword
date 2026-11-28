@@ -1,7 +1,8 @@
 import { Jsonify } from "type-fest";
 
+import { UserId } from "@localpass/common/types/guid";
 import { CipherData } from "@localpass/common/vault/models/data/cipher.data";
-import { LOCAL_VAULT_DISK, UserKeyDefinition } from "@localpass/state";
+import { LOCAL_VAULT_DISK, StateProvider, UserKeyDefinition } from "@localpass/state";
 
 /** One previous encrypted snapshot of an item, kept locally so it can be shown or restored. */
 export interface CipherVersion {
@@ -38,3 +39,18 @@ export const CIPHER_VERSION_HISTORY = new UserKeyDefinition<Record<string, Ciphe
     clearOn: ["logout"],
   },
 );
+
+/**
+ * Drops every stored revision for a user.
+ *
+ * Clearing the vault removes the items those revisions belong to. Per-item deletion already
+ * drops that item's stack, but a stack can outlive its row (for example after a snapshot
+ * restore), so clearing everything keeps no old password on disk once the warning said every
+ * item is gone.
+ */
+export async function clearCipherVersionHistory(
+  stateProvider: StateProvider,
+  userId: UserId,
+): Promise<void> {
+  await stateProvider.getUser(userId, CIPHER_VERSION_HISTORY).update(() => ({}));
+}

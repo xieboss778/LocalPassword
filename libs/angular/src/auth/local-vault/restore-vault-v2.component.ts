@@ -26,6 +26,7 @@ import {
   ACCOUNT_OBJECT,
   CreateLocalAccountService,
   PendingVaultConflict,
+  RemoteSnapshotUnavailableError,
   S3Client,
   SNAPSHOT_PREFIX,
   Snapshot,
@@ -511,20 +512,36 @@ export class RestoreVaultV2Component implements OnInit {
       const client = await this.resolveSavedClient(userId, password);
       const stored = await client.getText(`${SNAPSHOT_PREFIX}${this.selectedSnapshotId()}.json`);
       if (stored == null) {
-        throw new Error(this.i18n.t("backupNoSnapshots"));
+        throw new RemoteSnapshotUnavailableError();
       }
 
       const applied = await this.syncService.restoreSnapshot(
         userId,
-        JSON.parse(stored.text) as Snapshot,
+        this.parseSnapshot(stored.text),
       );
       this.toast.show(this.i18n.t("restoreSuccess", applied));
       await this.router.navigateByUrl(this.desktop() ? "/vault" : "/");
     } catch (error) {
-      this.savedError.set(error instanceof Error ? error.message : this.i18n.t("restoreFailed"));
+      this.savedError.set(this.restoreErrorMessage(error));
     } finally {
       this.busy.set(false);
     }
+  }
+
+  /** 云端快照缺失或损坏时给本地化提示，不把解析器的英文错误直接抛给用户。 */
+  private parseSnapshot(text: string): Snapshot {
+    try {
+      return JSON.parse(text) as Snapshot;
+    } catch {
+      throw new RemoteSnapshotUnavailableError();
+    }
+  }
+
+  private restoreErrorMessage(error: unknown): string {
+    if (error instanceof RemoteSnapshotUnavailableError) {
+      return this.i18n.t("restoreFailed");
+    }
+    return error instanceof Error ? error.message : this.i18n.t("restoreFailed");
   }
 
   /** 安全密码输入完成时才去读快照，避免每敲一个字符就验一次。 */
@@ -714,7 +731,13 @@ export class RestoreVaultV2Component implements OnInit {
       this.state.set("done");
       this.toast.show(this.i18n.t("restoreFinished"));
     } catch (error) {
-      this.errorMessage.set(error instanceof Error ? error.message : this.i18n.t("restoreFailed"));
+      this.errorMessage.set(
+        error instanceof RemoteSnapshotUnavailableError
+          ? this.i18n.t("backupSyncFailed")
+          : error instanceof Error
+            ? error.message
+            : this.i18n.t("restoreFailed"),
+      );
       this.state.set("error");
     } finally {
       this.busy.set(false);

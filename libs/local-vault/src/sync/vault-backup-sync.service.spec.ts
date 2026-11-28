@@ -9,7 +9,11 @@ import { S3PreconditionFailedError } from "../s3/s3-client";
 import { ACCOUNT_OBJECT, MANIFEST_OBJECT, SNAPSHOT_PREFIX } from "./backup-layout";
 import { LocalAccountObject } from "./local-account-object";
 import { Snapshot, VaultRecord } from "./snapshot-merge";
-import { RemoteVaultMismatchError, VaultBackupSyncService } from "./vault-backup-sync.service";
+import {
+  RemoteSnapshotUnavailableError,
+  RemoteVaultMismatchError,
+  VaultBackupSyncService,
+} from "./vault-backup-sync.service";
 
 const userId = "11111111-1111-1111-1111-111111111111" as UserId;
 const otherUserId = "22222222-2222-2222-2222-222222222222" as UserId;
@@ -651,5 +655,87 @@ describe("VaultBackupSyncService", () => {
     expect([...fakeS3.objects.keys()]).toEqual(
       expect.arrayContaining([ACCOUNT_OBJECT, MANIFEST_OBJECT]),
     );
+  });
+
+  it("rejects a pull when the manifest points at a missing snapshot", async () => {
+    const { service, fakeS3 } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+    await configure(service);
+    fakeS3.objects.set(MANIFEST_OBJECT, {
+      body: JSON.stringify({ snapshot: "gone", updatedAt: "2026-11-24T11:00:00.000Z" }),
+      etag: "etag-m",
+    });
+
+    await expect(service.pull(userId)).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+
+    // The local vault is untouched when the cloud copy cannot be read.
+    expect((await service.buildSnapshot(userId)).ciphers.map((record) => record.id)).toEqual([
+      "c1",
+    ]);
+  });
+
+  it("rejects a pull when the manifest itself is not readable", async () => {
+    const { service, fakeS3 } = setup();
+    await configure(service);
+    fakeS3.objects.set(MANIFEST_OBJECT, { body: "<html>not json</html>", etag: "etag-m" });
+
+    await expect(service.pull(userId)).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+  });
+
+  it("rejects a pull when the snapshot is not readable", async () => {
+    const { service, fakeS3 } = setup();
+    await configure(service);
+    fakeS3.objects.set(MANIFEST_OBJECT, {
+      body: JSON.stringify({ snapshot: "broken", updatedAt: "2026-11-24T11:00:00.000Z" }),
+      etag: "etag-m",
+    });
+    fakeS3.objects.set(`${SNAPSHOT_PREFIX}broken.json`, {
+      body: "not json",
+      etag: "etag-s",
+    });
+
+    await expect(service.pull(userId)).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+  });
+
+  it("rejects a pull when the snapshot parses but has the wrong shape", async () => {
+    const { service, fakeS3 } = setup();
+    await configure(service);
+    fakeS3.objects.set(MANIFEST_OBJECT, {
+      body: JSON.stringify({ snapshot: "empty", updatedAt: "2026-11-24T11:00:00.000Z" }),
+      etag: "etag-m",
+    });
+    fakeS3.objects.set(`${SNAPSHOT_PREFIX}empty.json`, {
+      body: JSON.stringify({ updatedAt: "2026-11-24T11:00:00.000Z" }),
+      etag: "etag-s",
+    });
+
+    await expect(service.pull(userId)).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+  });
+
+  it("propagates a damaged cloud copy out of sync instead of reporting success", async () => {
+    const { service, fakeS3 } = setup();
+    await configure(service);
+    fakeS3.objects.set(ACCOUNT_OBJECT, { body: JSON.stringify(account), etag: "etag-account" });
+    fakeS3.objects.set(MANIFEST_OBJECT, {
+      body: JSON.stringify({ snapshot: "gone", updatedAt: "2026-11-24T11:00:00.000Z" }),
+      etag: "etag-m",
+    });
+
+    await expect(service.sync(userId)).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+  });
+
+  it("refuses to restore a snapshot of the wrong shape and leaves local state alone", async () => {
+    const { service } = setup({
+      "ciphers:ciphers": { c1: { revisionDate: "2026-11-24T09:00:00.000Z" } },
+    });
+
+    await expect(
+      service.restoreSnapshot(userId, { updatedAt: "2026-11-24T11:00:00.000Z" } as Snapshot),
+    ).rejects.toBeInstanceOf(RemoteSnapshotUnavailableError);
+
+    expect((await service.buildSnapshot(userId)).ciphers.map((record) => record.id)).toEqual([
+      "c1",
+    ]);
   });
 });

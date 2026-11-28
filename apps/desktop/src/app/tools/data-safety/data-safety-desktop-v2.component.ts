@@ -18,7 +18,12 @@ import { I18nService } from "@localpass/common/platform/abstractions/i18n.servic
 import { LogService } from "@localpass/common/platform/abstractions/log.service";
 import { CipherService } from "@localpass/common/vault/abstractions/cipher.service";
 import { ButtonModule, CalloutModule, DialogService, IconModule } from "@localpass/components";
-import { VaultBackupService, VaultBackupSyncService } from "@localpass/local-vault";
+import {
+  clearCipherVersionHistory,
+  VaultBackupService,
+  VaultBackupSyncService,
+} from "@localpass/local-vault";
+import { StateProvider } from "@localpass/state";
 
 /**
  * 桌面端「数据与安全」。
@@ -52,8 +57,8 @@ import { VaultBackupService, VaultBackupSyncService } from "@localpass/local-vau
             <div class="agy-n">{{ syncConfigured() ? "R2" : "—" }}</div>
             <div class="agy-l">{{ i18n.t("cloudBackup") }}</div>
           </div>
-          <div class="agy-stat agy-ok">
-            <div class="agy-n">0</div>
+          <div class="agy-stat">
+            <div class="agy-n" data-testid="data_stat_server_copies">—</div>
             <div class="agy-l">{{ i18n.t("dataServerCopies") }}</div>
           </div>
         </div>
@@ -186,6 +191,7 @@ export class DataSafetyDesktopV2Component implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly backupService = inject(VaultBackupService);
   private readonly syncService = inject(VaultBackupSyncService);
+  private readonly stateProvider = inject(StateProvider);
   private readonly dialogService = inject(DialogService);
   private readonly toast = inject(LpToastService);
   private readonly logService = inject(LogService);
@@ -257,6 +263,8 @@ export class DataSafetyDesktopV2Component implements OnInit {
       if (ids.length) {
         await this.cipherService.deleteManyWithServer(ids, userId);
       }
+      // 条目删除会带走各自的版本栈；这里再整体清一次，连没有对应条目的旧版本也不留下。
+      await clearCipherVersionHistory(this.stateProvider, userId);
       this.itemCount.set(0);
       this.toast.show(this.i18n.t("vaultCleared"));
       await this.router.navigateByUrl("/vault");
