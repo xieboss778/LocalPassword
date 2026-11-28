@@ -1,3 +1,5 @@
+import { hostOf, LOCAL_VAULT_SENTINEL_HOST, NetworkGatePolicy } from "../network/gate-policy";
+
 import { AwsCredentials, encodeRfc3986, signRequest } from "./sigv4";
 
 /** Everything the settings page collects before a connection test. */
@@ -52,11 +54,28 @@ export type FetchLike = (request: Request) => Promise<Response>;
  * Cloudflare R2, MinIO, Backblaze B2, Alibaba OSS and Tencent COS.
  */
 export class S3Client {
+  /**
+   * The same host allowlist the app's network gate applies to API traffic. S3 requests do not go
+   * through `ApiService`, so the client carries its own gate: only the configured endpoint and
+   * its virtual-hosted bucket form may be contacted, never the placeholder sentinel host.
+   */
+  private readonly gate: NetworkGatePolicy;
+
   constructor(
     private readonly config: S3ClientConfig,
     private readonly fetchFn: FetchLike = (request) => fetch(request),
     private readonly now: () => Date = () => new Date(),
-  ) {}
+  ) {
+    const endpointHost = hostOf(this.config.endpoint);
+    const storageHost =
+      endpointHost === "" || endpointHost === LOCAL_VAULT_SENTINEL_HOST
+        ? []
+        : [endpointHost, `${this.config.bucket}.${endpointHost}`];
+    this.gate = new NetworkGatePolicy({
+      storageHosts: storageHost,
+      breachCheckEnabled: false,
+    });
+  }
 
   /** Fully qualified key; leading slashes are dropped so callers can paste paths. */
   keyFor(path: string): string {
@@ -160,6 +179,10 @@ export class S3Client {
     query: string = "",
   ): Promise<Response> {
     const url = this.urlFor(path, query);
+    const decision = this.gate.evaluate({ url });
+    if (decision.action === "block") {
+      throw new Error(`S3 request blocked: ${decision.reason}`);
+    }
     const signed = await signRequest(
       {
         method,
@@ -176,6 +199,8 @@ export class S3Client {
       method,
       headers: signed.headers,
       body: method === "GET" || method === "DELETE" ? undefined : (body as BodyInit),
+      // A redirect could otherwise carry the signed Authorization header to another host.
+      redirect: "error",
     });
 
     const response = await this.fetchFn(request);

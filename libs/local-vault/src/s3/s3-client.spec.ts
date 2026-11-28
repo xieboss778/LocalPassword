@@ -79,6 +79,30 @@ describe("S3Client", () => {
     await expect(client.getObject("user-a/manifest.json")).resolves.toBeNull();
   });
 
+  it("blocks the placeholder sentinel host without sending a request", async () => {
+    const requests: Request[] = [];
+    const client = new S3Client(
+      { ...config, endpoint: "https://vault.local.invalid" },
+      async (request) => {
+        requests.push(request);
+        return new Response("", { status: 200 });
+      },
+    );
+
+    await expect(client.getObject("user-a/manifest.json")).rejects.toThrow(
+      "S3 request blocked: not-allowlisted",
+    );
+    expect(requests).toHaveLength(0);
+  });
+
+  it("refuses to follow redirects that would leave the configured storage host", async () => {
+    const { client, requests } = clientWith(new Response("", { status: 200 }));
+
+    await client.putObject("user-a/manifest.json", "{}");
+
+    expect(requests[0].redirect).toBe("error");
+  });
+
   it("reads the body and the etag", async () => {
     const { client } = clientWith(
       new Response('{"snapshot":"abc"}', { status: 200, headers: { etag: '"etag-1"' } }),
