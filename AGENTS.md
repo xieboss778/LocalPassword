@@ -9,17 +9,40 @@ These instructions apply to every agent working in this repository. More specifi
 - This is an independent project. Some code has Bitwarden origins, but the official
   Bitwarden repository, plugins, marketplaces, issue trackers, and delivery workflows
   are not authoritative here.
-- Use `origin` only: `https://github.com/xieboss778/LocalPass.git`.
+- Fetch and pull only from `origin`: `https://github.com/xieboss778/LocalPass.git`.
+  Do not add an `upstream` remote or merge, rebase onto, or cherry-pick official Bitwarden code.
 
 ## Required Workflow
 
-1. Inspect the target app or library and nearby code before editing.
-2. Load every applicable skill with the `skill` tool before acting. Catalog summaries
+1. Decompose the request first: identify every independent workstream and apply
+   [Multi-Agent Parallel Work](#multi-agent-parallel-work-mandatory) before acting.
+2. Inspect the target app or library and nearby code before editing.
+3. Load every applicable skill with the `skill` tool before acting. Catalog summaries
    are routing hints, not skill instructions.
-3. For UI work, load `ui-ux-pro-max`. For Angular implementation, also load
+4. For UI work, load `ui-ux-pro-max`. For Angular implementation, also load
    `writing-client-code`; load `angular-modernization` only for migration work.
-4. Make the smallest change that satisfies the request. Preserve unrelated user work.
-5. Validate the changed surface and report the exact commands and observed results.
+5. Make the smallest change that satisfies the request. Preserve unrelated user work.
+6. Validate the changed surface and report the exact commands and observed results.
+
+## Multi-Agent Parallel Work (Mandatory)
+
+Split before you start. A task with two or more independent workstreams MUST run those
+workstreams concurrently: launch one agent per workstream in a single message, then
+integrate and verify the combined result yourself. Workstreams are independent when
+neither needs the other's output and their file sets are disjoint.
+
+- **Fan out, don't queue.** Separate areas to read, search, or analyze → one read-only
+  agent per area, launched together. Separate modules to change → one agent per module.
+- **Keep file ownership disjoint.** Each agent edits only its own files. Serialize any
+  work that must touch the same file; never let two agents edit it concurrently.
+- **Integrate in the dispatching agent.** Define each scope, wait for every result,
+  reconcile findings, run the verification commands, and report each agent's outcome.
+  A subagent does not declare the task complete.
+- **Guardrails apply to subagents.** Pass only the context a workstream requires.
+
+Run a single workstream directly, even if it takes several steps. If independent work
+exists but the harness cannot launch agents, report that limitation rather than claiming
+it ran in parallel.
 
 ## Security Guardrails
 
@@ -27,14 +50,15 @@ These instructions apply to every agent working in this repository. More specifi
 - Keep sensitive values out of logs, errors, screenshots, search queries, persisted
   design files, commits, and external services.
 - Add no new encryption logic. Escalate significant encryption or key-handling changes
-  to the repository owner before implementation.
+  to the repository owner before implementation. Report suspected vulnerabilities privately
+  per [SECURITY.md](SECURITY.md), not in public issues or PRs.
 - Commit no secrets or credentials.
 
 ## Monorepo Boundaries
 
 - `apps/<client>/` contains client-specific code.
-- `libs/common/` is shared with non-Angular clients: no Angular decorators, `inject()`,
-  `@Injectable`, or template-only APIs.
+- Code in `libs/common/` must work in background scripts and service workers without
+  Angular: no Angular decorators, `inject()`, or template-only APIs.
 - `libs/angular/` may contain Angular APIs shared by browser and desktop.
 - Place new code as deep and narrow as possible. Promote to `libs/` only when a second
   client needs it.
@@ -79,10 +103,15 @@ local rule before editing that area; do not fetch upstream documentation as a su
 | Storybook stories                     | `.claude/rules/storybook-routing.md`, `.claude/rules/storybook-dates.md` |
 | Browser autofill content scripts      | `.claude/rules/autofill-content-scripts.md`                              |
 | Vault model or cipher-service changes | `.claude/rules/vault-sdk-sync.md`                                        |
+| Desktop Flatpak manifest              | `.claude/rules/flatpak-manifest.md`                                      |
 
 ## Verification
 
-For localized changes, scope linting and formatting to touched files:
+For Markdown-only changes, run `npx prettier --check` on the changed Markdown files and
+`git diff --check`. Verify changed links, rule globs, and workspace commands against the
+repository. Type checks, Jest, and application builds are for code changes.
+
+For localized code changes, scope linting and formatting to touched files:
 
 ```bash
 npx eslint <changed-files> --fix

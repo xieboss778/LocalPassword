@@ -2,11 +2,9 @@
 
 ## Project Context Files
 
-**Read these files before reviewing to ensure that you fully understand the project and contributing guidelines**
+Before a review, read the [project overview](../README.md) and [contributing guidelines](../CONTRIBUTING.md). Use the repository's PR checklist:
 
-1. `README.md` (read on demand for project overview)
-2. `CONTRIBUTING.md` (read on demand for contributing guidelines)
-3. @../.github/PULL_REQUEST_TEMPLATE.md
+@../.github/PULL_REQUEST_TEMPLATE.md
 
 ## Critical Rules
 
@@ -16,12 +14,13 @@
   - All `git pull` / `git fetch` operations must target `origin` only (`https://github.com/xieboss778/LocalPass.git`).
 - **NEVER** use code regions: If complexity suggests regions, refactor for better readability
 - **CRITICAL**: new encryption logic should not be added to this repo.
-  - If significant encryption related logic is added or changed, make sure @bitwarden/team-key-management-dev is aware of the PR
+  - Discuss significant changes to existing encryption or key handling with the maintainer before implementation. For non-sensitive design changes, use a project issue and summarize the change in the PR (see [CONTRIBUTING.md](../CONTRIBUTING.md)). Report suspected vulnerabilities privately per [SECURITY.md](../SECURITY.md), never in a public issue or PR.
 - **NEVER** send unencrypted vault data to API services
 - **NEVER** commit secrets, credentials, or sensitive information.
 - **NEVER** log decrypted data, encryption keys, or PII
   - No vault data in error messages or console logs
 - **ALWAYS** Respect configuration files at the root and within each app/library (e.g., `eslint.config.mjs`, `jest.config.js`, `tsconfig.json`).
+- **Mandatory parallel work:** when a request has two or more independent workstreams, launch their agents together in one message. Follow [AGENTS.md → Multi-Agent Parallel Work](../AGENTS.md#multi-agent-parallel-work-mandatory) for file ownership, integration, and verification.
 - **CRITICAL**: Tailwind CSS classes MUST use the `tw-` prefix (e.g., `tw-flex`, `tw-p-4`). Missing prefix means the class is ignored and styling silently breaks. See [.claude/rules/tailwind.md](./rules/tailwind.md) for additional Tailwind rules.
 
 ## Mono-Repo Architecture
@@ -29,9 +28,9 @@
 This repository is organized as a **monorepo** containing multiple applications and libraries. The
 main directories are:
 
-- `apps/<client>/` — single-client code (browser, cli, desktop, web). Each app is self-contained.
-- `libs/common/` — code shared across **all** clients, including non-Angular (CLI). No Angular APIs here: no `@Injectable`, no `inject()`, no decorators, no template references.
-- `libs/angular/` — code shared across Angular clients (browser/desktop/web). Angular APIs allowed.
+- `apps/<client>/` — single-client code (browser, desktop). Each app is self-contained.
+- `libs/common/` — shared code that must work in background scripts, service workers, and other non-UI contexts. Keep it free of Angular decorators, `inject()`, and template APIs.
+- `libs/angular/` — code shared across Angular clients (browser, desktop). Angular APIs allowed.
 - Other `libs/*` (e.g. `ui`, `platform`, `key-management`, `vault`) — domain-scoped, follow the same Angular / non-Angular split based on which clients consume them.
 
 When adding new code, place it as deep and as narrow as possible. Promote to a shared `libs/` only when a second client needs it.
@@ -42,16 +41,19 @@ dependency rules defined in `eslint.config.mjs`, `nx.json`, and other configurat
 
 ## Verifying Changes
 
-After modifying code, run:
+For documentation-only changes, use the [Markdown checks](../AGENTS.md#verification). For code changes, run:
 
 - `npm run lint:fix` — applies ESLint fixes
 - `npm run prettier` — formats with Prettier
 - `npm run test:types` — type-checks the workspace
 - `npm test` — runs Jest. Scope with `npm test -- <path-or-pattern>` when changes are localized.
+- For browser extension changes, run `npm run build:chrome --workspace @localpass/browser` from the repository root. For extension UI changes, load `apps/browser/build` and verify the changed behavior in the browser.
 
 If any of these fail, fix the underlying issue before reporting the task complete. Do not skip hooks or bypass failures.
 
 ## References
+
+These are upstream-origin reference materials. LocalPass documentation (in `docs/`, `README.md`, `CONTRIBUTING.md`, and `.claude/rules/`) takes precedence where they differ.
 
 - [Web Clients Architecture](https://contributing.bitwarden.com/architecture/clients)
 - [Architectural Decision Records (ADRs)](https://contributing.bitwarden.com/architecture/adr/)
