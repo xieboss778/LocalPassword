@@ -32,6 +32,68 @@ function sshKey(name: string, fingerprint: string): CipherView {
   return view;
 }
 
+function token(
+  name: string,
+  service: string,
+  accessKeyId = "",
+  secret = "token-secret",
+): CipherView {
+  const view = new CipherView();
+  setKind(view, ItemKind.Token);
+  applyFieldValues(view, ItemKind.Token, { name, service, accessKeyId, token: secret });
+  return view;
+}
+
+function license(
+  name: string,
+  software: string,
+  edition = "",
+  orderId = "",
+  serial = "",
+): CipherView {
+  const view = new CipherView();
+  setKind(view, ItemKind.License);
+  applyFieldValues(view, ItemKind.License, { name, software, edition, orderId, serial });
+  return view;
+}
+
+function server(
+  name: string,
+  host: string,
+  port = "",
+  protocol = "",
+  loginUser = "",
+  password = "",
+): CipherView {
+  const view = new CipherView();
+  setKind(view, ItemKind.Server);
+  applyFieldValues(view, ItemKind.Server, { name, host, port, protocol, loginUser, password });
+  return view;
+}
+
+function identityItem(
+  name: string,
+  firstName: string,
+  lastName: string,
+  email = "",
+  phone = "",
+  idNumber = "",
+  address = "",
+): CipherView {
+  const view = new CipherView();
+  setKind(view, ItemKind.Identity);
+  applyFieldValues(view, ItemKind.Identity, {
+    name,
+    firstName,
+    lastName,
+    email,
+    phone,
+    idNumber,
+    address,
+  });
+  return view;
+}
+
 describe("dedupeImportCiphers", () => {
   it("skips entries matching an existing name and username, ignoring case and spacing", () => {
     const existing = login("GitHub", "BossXie");
@@ -162,6 +224,158 @@ describe("dedupeImportCiphers", () => {
 
     expect(result.duplicateCount).toBe(1);
     expect(result.ciphers.map((cipher) => cipher.name)).toEqual(["Work key", "Home key"]);
+  });
+
+  it("keeps tokens with the same name and service but different access key ids", () => {
+    const result = dedupeImportCiphers(
+      [
+        token("AWS", "Amazon Web Services", "AKIA-OLD"),
+        token("AWS", "Amazon Web Services", "AKIA-NEW"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(0);
+    expect(result.ciphers).toHaveLength(2);
+  });
+
+  it("dedupes tokens when normalized name, service and access key id all match", () => {
+    const result = dedupeImportCiphers(
+      [
+        token("AWS", "Amazon Web Services", "AKIA123", "secret-one"),
+        token("aws ", "amazon  web services", "akia123", "secret-two"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers).toHaveLength(1);
+  });
+
+  it("keeps a token without an access key id apart from one that has it", () => {
+    const result = dedupeImportCiphers(
+      [token("AWS", "Amazon Web Services"), token("AWS", "Amazon Web Services", "AKIA123")],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(0);
+    expect(result.ciphers).toHaveLength(2);
+  });
+
+  it("still compares tokens against the vault by the name and service fingerprint", () => {
+    const result = dedupeImportCiphers(
+      [token("AWS", "Amazon Web Services", "AKIA-NEW")],
+      [token("AWS", "Amazon Web Services", "AKIA-OLD")],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers).toHaveLength(0);
+  });
+
+  it("keeps licenses with the same name and software but a different edition or order id", () => {
+    const result = dedupeImportCiphers(
+      [
+        license("JetBrains", "IntelliJ IDEA", "Personal", "ORDER-1"),
+        license("JetBrains", "IntelliJ IDEA", "Enterprise", "ORDER-1"),
+        license("JetBrains", "IntelliJ IDEA", "Personal", "ORDER-2"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(0);
+    expect(result.ciphers).toHaveLength(3);
+  });
+
+  it("ignores the license serial when deduping within a file", () => {
+    const result = dedupeImportCiphers(
+      [
+        license("JetBrains", "IntelliJ IDEA", "Personal", "ORDER-1", "SERIAL-A"),
+        license("JetBrains", "IntelliJ IDEA", "personal", "order-1", "SERIAL-B"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers).toHaveLength(1);
+  });
+
+  it("keeps servers with the same name and host but a different port, protocol or login user", () => {
+    const result = dedupeImportCiphers(
+      [
+        server("Prod", "db.example.com", "22", "SSH", "deploy"),
+        server("Prod", "db.example.com", "2222", "SSH", "deploy"),
+        server("Prod", "db.example.com", "22", "SFTP", "deploy"),
+        server("Prod", "db.example.com", "22", "SSH", "root"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(0);
+    expect(result.ciphers).toHaveLength(4);
+  });
+
+  it("ignores the server password when deduping within a file", () => {
+    const result = dedupeImportCiphers(
+      [
+        server("Prod", "db.example.com", " 22 ", "ssh", "Deploy", "password-a"),
+        server("Prod", "db.example.com", "22", "SSH", "deploy", "password-b"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers).toHaveLength(1);
+  });
+
+  it("keeps identities with the same name but a different email or phone", () => {
+    const result = dedupeImportCiphers(
+      [
+        identityItem("Alice", "Alice", "Wang", "alice@example.com", "555-0100"),
+        identityItem("Alice", "Alice", "Wang", "alice@work.example", "555-0100"),
+        identityItem("Alice", "Alice", "Wang", "alice@example.com", "555-0199"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(0);
+    expect(result.ciphers).toHaveLength(3);
+  });
+
+  it("ignores identity PII numbers and address when deduping within a file", () => {
+    const result = dedupeImportCiphers(
+      [
+        identityItem("Alice", "Alice", "Wang", "alice@example.com", "555-0100", "ID-A", "Addr A"),
+        identityItem("Alice", "Alice", "Wang", "alice@example.com", "555-0100", "ID-B", "Addr B"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(1);
+    expect(result.ciphers).toHaveLength(1);
+  });
+
+  it("still dedupes entries whose extra in-file identifiers are all empty", () => {
+    const result = dedupeImportCiphers(
+      [
+        token("AWS", "Amazon Web Services"),
+        token("AWS", "Amazon Web Services"),
+        license("JetBrains", "IntelliJ IDEA"),
+        license("JetBrains", "IntelliJ IDEA"),
+        server("Prod", "db.example.com"),
+        server("Prod", "db.example.com"),
+        identityItem("Alice", "Alice", "Wang"),
+        identityItem("Alice", "Alice", "Wang"),
+      ],
+      [],
+    );
+
+    expect(result.duplicateCount).toBe(4);
+    expect(result.ciphers.map((cipher) => cipher.name)).toEqual([
+      "AWS",
+      "JetBrains",
+      "Prod",
+      "Alice",
+    ]);
   });
 
   it("remaps folder and collection relationships after dropping an in-file duplicate", () => {

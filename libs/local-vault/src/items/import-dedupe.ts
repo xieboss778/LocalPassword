@@ -1,6 +1,6 @@
 import { CipherView } from "@localpass/common/vault/models/view/cipher.view";
 
-import { readFieldValues } from "./item-fields";
+import { readFieldValues, type FieldValues } from "./item-fields";
 import { ItemKind, kindOf } from "./item-kind";
 
 /** 导入结果里的关系是「条目下标 → 文件夹/集合下标」，去重后要同步重排。 */
@@ -16,10 +16,16 @@ export interface ImportDedupeResult {
 /**
  * 导入去重：先和本机现有条目比对，再丢弃同一文件内的重复条目，比中即跳过。
  *
- * 指纹只看条目标识（类型 + 名称 + 用户名/主机/卡号后四位），
+ * 和本机保险库比对用的指纹只看条目标识（类型 + 名称 + 用户名/主机/卡号后四位），
  * 不读取密码、备注、TOTP 等敏感值，也不把指纹写进任何存储或日志。
  *
- * 文件内比对只使用标识足够具体的指纹：备注没有标识，卡片只有卡号后四位
+ * 文件内比对在指纹之上追加额外的非敏感标识，避免同名但实际不同的条目被误合并：
+ * 令牌加 `accessKeyId`，许可证加版本和订单号，服务器加端口/协议/登录用户，
+ * 身份加邮箱和电话。读取的只有这些字段；密钥、序列号、密码、备注、TOTP、
+ * 证件号、地址等一律不读。额外字段即使为空也占位参与比较，因此任一侧有值且
+ * 不同即不合并；两边都为空时文件内键仍然一致，照旧合并（不放松原有行为）。
+ *
+ * 文件内比对仍只使用标识足够具体的指纹：备注没有标识，卡片只有卡号后四位
  * （不同卡片可能撞号），这两类不参与文件内去重，宁可留下重复也不误删不同条目；
  * 其余类别的标识（用户名/主 URI、服务名、密钥指纹、软件名、主机、姓名）为空时
  * 同样不参与。和本机保险库的比对不受此限制，保持原有行为。
@@ -36,7 +42,7 @@ export function dedupeImportCiphers(
 
   const kept: CipherView[] = [];
   const indexMap = new Map<number, number>();
-  // 只记录标识足够具体的指纹，弱标识（备注、卡片）永远不会按文件内重复跳过。
+  // 只记录标识足够具体的键；弱标识（备注、卡片）永远不会按文件内重复跳过。
   const seenInFile = new Set<string>();
 
   ciphers.forEach((cipher, index) => {
@@ -44,11 +50,11 @@ export function dedupeImportCiphers(
     if (existingFingerprints.has(identity.fingerprint)) {
       return;
     }
-    if (identity.discriminating && seenInFile.has(identity.fingerprint)) {
+    if (identity.discriminating && seenInFile.has(identity.inFileKey)) {
       return;
     }
     if (identity.discriminating) {
-      seenInFile.add(identity.fingerprint);
+      seenInFile.add(identity.inFileKey);
     }
     indexMap.set(index, kept.length);
     kept.push(cipher);
@@ -68,8 +74,13 @@ export function importFingerprint(cipher: CipherView): string {
 }
 
 interface ImportIdentity {
-  /** 类型 + 名称 + 标识；指纹相同即视为同一来源。 */
+  /** 类型 + 名称 + 标识；指纹相同即视为本机保险库里的同一来源。 */
   readonly fingerprint: string;
+  /**
+   * 文件内去重用的更细键：指纹加上该类额外的非敏感标识字段（无则等于指纹）。
+   * 额外字段按空值占位比较，任一侧有值且不同即视为不同条目。
+   */
+  readonly inFileKey: string;
   /** 标识是否具体到足以区分两个不同条目（备注、卡号后四位不算）。 */
   readonly discriminating: boolean;
 }
@@ -106,10 +117,37 @@ function importIdentityOf(cipher: CipherView): ImportIdentity {
     discriminating = identity !== "";
   }
 
-  return {
-    fingerprint: [kind, normalize(cipher.name), identity].join("\u0000"),
-    discriminating,
-  };
+  const fingerprint = [kind, normalize(cipher.name), identity].join("\u0000");
+  const extras = extraInFileFields(kind, values);
+  // 追加的字段即使为空也占位：两边都为空时键相同（照旧合并），任一侧不同则不合并。
+  const inFileKey = extras.length === 0 ? fingerprint : [fingerprint, ...extras].join("\u0000");
+
+  return { fingerprint, inFileKey, discriminating };
+}
+
+/**
+ * 文件内去重额外读取的字段，只含非敏感标识：
+ * 令牌的 accessKeyId、许可证的版本与订单号、服务器的端口/协议/登录用户、
+ * 身份的邮箱与电话。值统一走 {@link normalize}；顺序固定，空值也保留占位。
+ */
+function extraInFileFields(kind: ItemKind, values: FieldValues): string[] {
+  if (kind === ItemKind.Token) {
+    return [normalize(values["accessKeyId"])];
+  }
+  if (kind === ItemKind.License) {
+    return [normalize(values["edition"]), normalize(values["orderId"])];
+  }
+  if (kind === ItemKind.Server) {
+    return [
+      normalize(values["port"]),
+      normalize(values["protocol"]),
+      normalize(values["loginUser"]),
+    ];
+  }
+  if (kind === ItemKind.Identity) {
+    return [normalize(values["email"]), normalize(values["phone"])];
+  }
+  return [];
 }
 
 function normalizeUri(value: string | null | undefined): string {
