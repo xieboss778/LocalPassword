@@ -25,3 +25,4 @@ export * from "./sync/vault-backup.service";
 export * from "./vault/cipher-version-history";
 export * from "./vault/local-vault-writer.service";
 export * from "./vault/trash-maintenance.service";
+export * from "./vault/trash-sweep.scheduler";

@@ -307,6 +307,7 @@ import {
   LocalAccountService,
   LocalPassApiService,
   LocalVaultNetworkGate,
+  TRASH_SWEEP_INTERVAL_MS,
   TrashMaintenanceService,
 } from "@localpass/local-vault";
 import { FlightRecorderLogRecorder, limitPerformanceMeasurements } from "@localpass/logging";
@@ -446,6 +447,16 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
+
+/**
+ * 回收站巡检闹钟的名字。
+ *
+ * `chrome.alarms.create` 遇到同名闹钟会替换而不是新增，因此每次解锁重复注册也只会留下一个。
+ */
+export const TRASH_SWEEP_ALARM_NAME = "localpass-trash-sweep";
+
+/** 回收站条目按天到期，每小时巡检一次足够；扩展闹钟的最小周期为 1 分钟。 */
+const TRASH_SWEEP_PERIOD_MINUTES = TRASH_SWEEP_INTERVAL_MS / (60 * 1000);
 
 export default class MainBackground {
   messagingService: MessageSender;
@@ -596,6 +607,7 @@ export default class MainBackground {
   cipherEncryptionService: CipherEncryptionService;
   localAccountService: LocalAccountService;
   localVaultWriter: DefaultLocalVaultWriter;
+  private trashMaintenance: TrashMaintenanceService;
   networkGate: LocalVaultNetworkGate;
   createLocalAccountService: CreateLocalAccountService;
   collectionEncryptionService: CollectionEncryptionService;
@@ -1270,6 +1282,20 @@ export default class MainBackground {
       this.stateProvider,
       this.logService,
     );
+
+    this.trashMaintenance = new TrashMaintenanceService(
+      this.localVaultWriter,
+      this.stateProvider,
+      this.logService,
+    );
+
+    // MV3 的 service worker 空闲时会被回收，setInterval 无法跨回收继续运行；改用扩展闹钟。
+    // 闹钟事件可能唤醒一个全新的 worker，所以监听器必须在构造函数（worker 顶层同步执行）
+    // 里注册，而不是 bootstrap 中。BrowserApi 没有 alarms 封装，这里沿用后台对 chrome.*
+    // 的直接接线方式。
+    if (chrome.alarms?.onAlarm != null) {
+      BrowserApi.addListener(chrome.alarms.onAlarm, this.handleTrashSweepAlarm.bind(this));
+    }
 
     this.cipherFileUploadService = new CipherFileUploadService(
       this.apiService,
@@ -1989,13 +2015,13 @@ export default class MainBackground {
     // 回收站保留 30 天：解锁后清掉已经到期的条目。弹窗里的解锁会通过
     // CrossContextUnlockService 的 runOnUnlockActions 走到这个后台实例，所以注册在自动
     // 解锁之前即可同时覆盖手动解锁与 never-lock 启动解锁；服务内部吞掉错误，不影响解锁。
-    const trashMaintenance = new TrashMaintenanceService(
-      this.localVaultWriter,
-      this.stateProvider,
-      this.logService,
-    );
     this.unlockService.registerOnUnlockAction(async (userId) => {
-      await trashMaintenance.purgeExpiredTrash(userId);
+      await this.trashMaintenance.purgeExpiredTrash(userId);
+      // 保险库长时间保持解锁时，仅靠解锁回调不会再清理；为本地账号注册每小时一次的扩展
+      // 闹钟。同名闹钟会被替换，重复解锁不会叠加。
+      if (await this.trashMaintenance.isLocalAccount(userId)) {
+        this.scheduleTrashSweepAlarm();
+      }
     });
 
     for (const userId of userIds) {
@@ -2087,6 +2113,58 @@ export default class MainBackground {
         resolve();
       }, 500);
     });
+  }
+
+  /**
+   * 注册（或替换）回收站巡检闹钟。
+   *
+   * 同名闹钟由 `chrome.alarms.create` 替换，因此重复解锁只会留下一个闹钟。调度失败只记
+   * 日志，不会影响解锁。
+   */
+  private scheduleTrashSweepAlarm(): void {
+    const logFailure = (error: unknown) =>
+      this.logService.error("Failed to schedule trash sweep alarm", error);
+
+    try {
+      // MV3 的 create 返回 Promise；同步抛错和异步拒绝都要吞掉，不能影响解锁。
+      Promise.resolve(
+        chrome.alarms.create(TRASH_SWEEP_ALARM_NAME, {
+          delayInMinutes: TRASH_SWEEP_PERIOD_MINUTES,
+          periodInMinutes: TRASH_SWEEP_PERIOD_MINUTES,
+        }),
+      ).catch(logFailure);
+    } catch (error) {
+      logFailure(error);
+    }
+  }
+
+  /**
+   * 处理回收站巡检闹钟。
+   *
+   * 闹钟可能在 service worker 被回收后唤醒一个全新的实例，因此不依赖内存里「最近解锁的
+   * 用户」，而是读取持久化的当前账号。`purgeExpiredTrash` 对非本地账号直接返回，这里不
+   * 需要重复判断。
+   */
+  private async handleTrashSweepAlarm(alarm: chrome.alarms.Alarm): Promise<void> {
+    if (alarm.name !== TRASH_SWEEP_ALARM_NAME) {
+      return;
+    }
+
+    await this.sweepExpiredTrash();
+  }
+
+  /** 巡检一次回收站的到期条目；任何失败都只记日志。 */
+  private async sweepExpiredTrash(): Promise<void> {
+    try {
+      const account = await firstValueFrom(this.accountService.activeAccount$);
+      if (account == null) {
+        return;
+      }
+
+      await this.trashMaintenance.purgeExpiredTrash(account.id);
+    } catch (error) {
+      this.logService.error("Failed to run scheduled trash sweep", error);
+    }
   }
 
   async refreshMenu(forLocked = false) {

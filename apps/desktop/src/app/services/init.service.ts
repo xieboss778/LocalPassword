@@ -23,7 +23,7 @@ import { LocalVaultWriter } from "@localpass/common/vault/abstractions/local-vau
 import { BiometricsService, KeyService as KeyServiceAbstraction } from "@localpass/key-management";
 // eslint-disable-next-line no-restricted-imports
 import { EncryptService, LegacyCompatKeyService } from "@localpass/legacy-crypto";
-import { TrashMaintenanceService } from "@localpass/local-vault";
+import { TrashMaintenanceService, TrashSweepScheduler } from "@localpass/local-vault";
 import { limitPerformanceMeasurements, LogService } from "@localpass/logging";
 import { StateProvider } from "@localpass/state";
 import { UnlockService } from "@localpass/unlock";
@@ -42,6 +42,10 @@ import { UpdateRestartService } from "./update-restart.service";
 
 @Injectable()
 export class InitService {
+  private readonly trashMaintenance: TrashMaintenanceService;
+  private readonly trashSweepScheduler: TrashSweepScheduler;
+  private trashSweepShutdownRegistered = false;
+
   constructor(
     @Inject(WINDOW) private win: Window,
     private vaultTimeoutService: DefaultVaultTimeoutService,
@@ -76,7 +80,15 @@ export class InitService {
     private automationDriver: AutomationDriver,
     private localVaultWriter: LocalVaultWriter,
     private stateProvider: StateProvider,
-  ) {}
+  ) {
+    this.trashMaintenance = new TrashMaintenanceService(
+      this.localVaultWriter,
+      this.stateProvider,
+      this.logService,
+    );
+    // 单例调度器：即使 init 再次执行，解锁回调也只会复用它，不会叠加计时器。
+    this.trashSweepScheduler = new TrashSweepScheduler(this.trashMaintenance, this.logService);
+  }
 
   init() {
     return async () => {
@@ -97,14 +109,18 @@ export class InitService {
 
       // 回收站保留 30 天：解锁后清掉已经到期的条目。放在自动解锁之前，never-lock 的本地
       // 保险库在启动时也会被清理；服务内部吞掉错误，不会影响解锁本身。
-      const trashMaintenance = new TrashMaintenanceService(
-        this.localVaultWriter,
-        this.stateProvider,
-        this.logService,
-      );
       this.unlockService.registerOnUnlockAction(async (userId) => {
-        await trashMaintenance.purgeExpiredTrash(userId);
+        await this.trashMaintenance.purgeExpiredTrash(userId);
+        // 保险库长时间保持解锁时，仅靠解锁回调不会再清理；这里为最近解锁的本地账号启动
+        // 每小时巡检。start 对非本地账号不启动、对同一个用户也不会叠加计时器。
+        await this.trashSweepScheduler.start(userId);
       });
+
+      // 渲染进程销毁（窗口关闭或进程重载）时停掉巡检计时器。
+      if (!this.trashSweepShutdownRegistered) {
+        this.trashSweepShutdownRegistered = true;
+        this.win.addEventListener("beforeunload", () => this.trashSweepScheduler.stop());
+      }
 
       // For each acct, we must await the process of unlocking with the never-lock key
       // if it is set, to avoid race conditions of any code trying to access the user key

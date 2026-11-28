@@ -111,6 +111,27 @@ describe("TrashMaintenanceService", () => {
     expect(localVaultWriter.deleteManyCiphers).not.toHaveBeenCalled();
   });
 
+  it("reports whether the account is a local vault", async () => {
+    const service = createService();
+
+    await expect(service.isLocalAccount(userId)).resolves.toBe(true);
+
+    localVaultWriter.isLocalAccount.mockResolvedValue(false);
+    await expect(service.isLocalAccount(userId)).resolves.toBe(false);
+  });
+
+  it("treats a failed local-account lookup as non-local without throwing", async () => {
+    localVaultWriter.isLocalAccount.mockRejectedValue(new Error("storage failure"));
+    const service = createService();
+
+    await expect(service.isLocalAccount(userId)).resolves.toBe(false);
+
+    expect(logService.error).toHaveBeenCalledWith(
+      "Failed to check local vault account",
+      expect.any(Error),
+    );
+  });
+
   it("does not throw and logs no item data when the delete fails", async () => {
     state = { "old-id": item("old-id", daysAgo(31)) };
     localVaultWriter.deleteManyCiphers.mockRejectedValue(new Error("storage failure"));

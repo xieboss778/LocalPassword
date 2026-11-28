@@ -34,11 +34,25 @@ export class TrashMaintenanceService {
   ) {}
 
   /**
+   * 账号是否是本机创建、没有服务端的本地保险库。
+   *
+   * 维护属于尽力而为：查询失败按「非本地」处理并只记一条通用日志，调用方不需要额外兜底。
+   */
+  async isLocalAccount(userId: UserId): Promise<boolean> {
+    try {
+      return await this.localVaultWriter.isLocalAccount(userId);
+    } catch (error) {
+      this.logService.error("Failed to check local vault account", error);
+      return false;
+    }
+  }
+
+  /**
    * @returns 永久删除的条目数；非本地账号或失败时返回 0。
    */
   async purgeExpiredTrash(userId: UserId, now: Date = new Date()): Promise<number> {
     try {
-      if (!(await this.localVaultWriter.isLocalAccount(userId))) {
+      if (!(await this.isLocalAccount(userId))) {
         return 0;
       }
 
