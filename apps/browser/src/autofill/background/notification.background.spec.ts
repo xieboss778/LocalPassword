@@ -2144,7 +2144,7 @@ describe("NotificationBackground", () => {
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
         });
 
-        it("and no cipher update candidates match `password`, trigger an update cipher notification with ALL cipher update candidates", async () => {
+        it("and no cipher update candidates match `password`, do not offer unrelated accounts for update", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -2165,16 +2165,11 @@ describe("NotificationBackground", () => {
 
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
+          // The password field carries no username, so none of these entries can be identified as
+          // the one the user changed; offering them as update targets could overwrite another
+          // account on the same site.
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
-          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
-            ["cipher-id-1", "cipher-id-2", "cipher-id-3"],
-            mockFormattedURI,
-            formEntryData.password,
-            sender.tab,
-            false,
-            { username: formEntryData.username, uri: formEntryData.uri },
-            storedCiphersForURL.length,
-          );
+          expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
         });
 
         it("and no cipher update candidates match `password`, do not trigger an update cipher notification if the update cipher notification setting is disabled", async () => {
@@ -2501,7 +2496,7 @@ describe("NotificationBackground", () => {
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
         });
 
-        it("and no cipher update candidates match `newPassword`, trigger an update cipher notification with ALL cipher update candidates", async () => {
+        it("and no cipher update candidates match `newPassword`, do not offer unrelated accounts for update", async () => {
           const storedCiphersForURL = [
             mock<CipherView>({
               id: "cipher-id-1",
@@ -2522,16 +2517,10 @@ describe("NotificationBackground", () => {
 
           await notificationBackground.triggerCipherNotification(formEntryData, tab);
 
+          // A new password with no username cannot be attributed to one of several same-site
+          // accounts; the picker must not list them all as possible overwrite targets.
           expect(pushAddLoginToQueueSpy).not.toHaveBeenCalled();
-          expect(pushChangePasswordToQueueSpy).toHaveBeenCalledWith(
-            ["cipher-id-1", "cipher-id-2", "cipher-id-3"],
-            mockFormattedURI,
-            formEntryData.newPassword,
-            sender.tab,
-            false,
-            { username: formEntryData.username, uri: formEntryData.uri },
-            storedCiphersForURL.length,
-          );
+          expect(pushChangePasswordToQueueSpy).not.toHaveBeenCalled();
         });
 
         it("and no cipher update candidates match `newPassword`, do not trigger an update cipher notification if the update cipher notification setting is disabled", async () => {
@@ -2650,6 +2639,44 @@ describe("NotificationBackground", () => {
             command: ADD_TO_LOCKED_VAULT_PENDING_NOTIFICATIONS.command,
             data: {
               commandToRetry: { message, [RETRY_SENDER]: sender },
+              target: "notification.background",
+            },
+          },
+        ]);
+      });
+
+      it("keeps the target cipher and save-as-new choice in the retry queued while locked", async () => {
+        const sender = mock<chrome.runtime.MessageSender>({ tab: { id: 1 } });
+        const message: NotificationBackgroundExtensionMessage = {
+          command: "bgSaveCipher",
+          cipherId: "cipher-id",
+          edit: true,
+          folder: "folder-id",
+          saveAsNew: true,
+        };
+        activeAccountStatusMock$.next(AuthenticationStatus.Locked);
+
+        sendMockExtensionMessage(message, sender);
+        await flushPromises();
+
+        const queued: unknown[] = [];
+        intraprocessMessageSender.messages$().subscribe((published) => queued.push(published));
+        openUnlockPopoutSpy.mock.calls[0][1]();
+
+        expect(queued).toEqual([
+          {
+            command: ADD_TO_LOCKED_VAULT_PENDING_NOTIFICATIONS.command,
+            data: {
+              commandToRetry: {
+                message: {
+                  command: "bgSaveCipher",
+                  cipherId: "cipher-id",
+                  edit: true,
+                  folder: "folder-id",
+                  saveAsNew: true,
+                },
+                [RETRY_SENDER]: sender,
+              },
               target: "notification.background",
             },
           },

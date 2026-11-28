@@ -1104,20 +1104,10 @@ export default class NotificationBackground {
           inputScenario,
         )
       ) {
-        if (ciphersForURL.length > 0 && changePasswordNotificationIsEnabled) {
-          await this.pushChangePasswordToQueue(
-            ciphersForURL.map((c) => c.id),
-            loginDomain,
-            // @TODO handle empty strings / incomplete data structure
-            data.newPassword || data.password,
-            tab,
-            false,
-            submittedLogin,
-            ciphersForURL.length,
-          );
-
-          return true;
-        }
+        // Password-only submissions carry no username, so there is no way to tell which of the
+        // site's entries the password belongs to. Offering every same-site account as an update
+        // target would let the user overwrite an unrelated entry; with no matching candidate,
+        // leave the decision to the vault instead of guessing.
 
         // No existing ciphers for this URL — offer to save the generated password as a new login.
         // The cipher may lack a username, but that is easier for the user to fix than losing
@@ -1366,8 +1356,10 @@ export default class NotificationBackground {
             commandToRetry: {
               message: {
                 command: message.command,
+                cipherId: message.cipherId,
                 edit: message.edit,
                 folder: message.folder,
+                saveAsNew: message.saveAsNew,
               },
               [RETRY_SENDER]: sender,
             },
